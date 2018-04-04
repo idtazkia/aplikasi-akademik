@@ -4,10 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class DashboardController {
-
-    @GetMapping("/dashboard")
-    public void daftarDashboard(){
+public class KurikulumController {
+    @GetMapping("/kurikulum/list")
+    public void daftarKurikulum(){
     }
 
+    @GetMapping("/kurikulum/form")
+    public void  formKurikulum(){
+    }
 }
