@@ -1,10 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Lembaga</h6>
+        </div>
+    </div>
 
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+    <form>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Nama Lembaga</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Alamat</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Provinsi</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+                <option>Jawa Barat</option>
+                <option>Jawa Tengah</option>
+                <option>Jawa Timur</option>
+                <option>DKI Jakarta</option>
+                <option>Yogyakarta</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Kota / Kabupaten</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+                <option>Bogor</option>
+                <option>Bandung</option>
+                <option>Depok</option>
+                <option>Sukabumi</option>
+                <option>Garut</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Pilih file logo Lembaga</label>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Simpan">
+        <a th:href="@{/lembaga/list}" class="btn btn-primary" role="button">
+            <span aria-hidden="true"></span>Batal
+        </a>
+    </form>
+    </div>
+</section>
 </body>
 </html>

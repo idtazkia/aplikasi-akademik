@@ -1,10 +1,601 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Data Mahasiswa</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#pribadi" role="tab" data-toggle="tab">Data Pribadi</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#kost" role="tab" data-toggle="tab">Alamat Kost</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#akademik" role="tab" data-toggle="tab">Akademik</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#ortu" role="tab" data-toggle="tab">Orang tua</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#sekolah" role="tab" data-toggle="tab">Sekolah Asal</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="pribadi">
+
+                <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <br>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Nama</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Nomor Induk Mahasiswa (NIM)</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nomor Induk Mahasiswa (NIM)">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Tempat Lahir</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Tempat lahir">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Tanggal Lahir</label>
+                                    <input type="text" class="form-control" id="datepicker">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleRadios1">Jenis Kelamin</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Laki-laki
+                                        </label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Perempuan
+                                        </label>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Asal Negara</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Asal Negara">
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Agama</label>
+                                    <select class="form-control" id="exampleFormControlSelect1">
+                                        <option>Islam</option>
+                                        <option>Kristen</option>
+                                        <option>Katholik</option>
+                                        <option>Hindu</option>
+                                        <option>Budha</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Status Sipil</label>
+                                    <select class="form-control" id="exampleFormControlSelect1">
+                                        <option>Belum Menikah</option>
+                                        <option>Manikah</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <br>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlInput1">Alamat</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Alamat">
+                                </div>
+
+
+
+
+                                <div class="form-group">
+                                    <label for="provinsi">Provinsi</label>
+                                    <select class="form-control select2" id="provinsi" name="provinsi">
+                                        <option>Pilih Provinsi</option>
+                                    </select>
+                                </div>
+
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
+                                <select class="js-example-placeholder-single js-states form-control" name="kokab" p>
+                                    <option>Pilih Kabupaten/Kota</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kode pos</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode Pos">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Negara</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Negara">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Tempat Tinggal</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Asrama</option>
+                                    <option>Kost/Sewa</option>
+                                    <option>Sendiri/Keluarga</option>
+                                    <option>Lain-lain</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Pernah Kuliah</label>
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                <label class="form-check-label" for="exampleRadios1">
+                                    Tidak
+                                </label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+                                <label class="form-check-label" for="exampleRadios1">
+                                    Ya
+                                </label>
+                            </div>
+                            </div>
+
+                            <br>
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="kost">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <br>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Alamat Kost</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Alamat">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="provinsi">Provinsi</label>
+                                <select class="form-control select2" id="provinsi" name="provinsi">
+                                    <option>Pilih Provinsi</option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
+                                <select class="js-example-placeholder-single js-states form-control" name="kokab" p>
+                                    <option>Pilih Kabupaten/Kota</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kode pos</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode Pos">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Negara</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Negara">
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div role="tabpanel" class="tab-pane fade" id="akademik">
+
+                       <div class="col-md-12">
+                           <div class="row">
+                                <div class="col-md-6">
+                                    <br>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Fakultas</label>
+                                        <select class="form-control" id="exampleFormControlSelect1">
+                                            <option>Ekonomi</option>
+                                            <option>Pendidikan</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Jenjang</label>
+                                        <select class="form-control" id="exampleFormControlSelect1">
+                                            <option>Diploma</option>
+                                            <option>Sarjana</option>
+                                            <option>Pascasarjana</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Program Studi</label>
+                                        <select class="form-control" id="exampleFormControlSelect1">
+                                            <option>Akuntansi Syariah</option>
+                                            <option>Ekonomi Syariah</option>
+                                            <option>Bisnis Syariah</option>
+                                            <option>Muamalat</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Konsentrasi</label>
+                                        <select class="form-control" id="exampleFormControlSelect1">
+                                            <option>MKI</option>
+                                            <option>Audit</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">Pendidikan sebelumnya</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jenjang Pendidikan Sebelumnya">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Jenjang Pendidikan Sebelumnya</label>
+                                        <select class="form-control" id="exampleFormControlSelect1">
+                                            <option>SMA</option>
+                                            <option>SMK</option>
+                                            <option>MA</option>
+                                            <option>lainnya</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                               <div class="col-md-6">
+<br>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">NIRM</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="NIRM">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">NISN</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="NISN">
+                                    </div>
+
+
+                                   <div class="form-group">
+                                       <label for="exampleFormControlInput1">Tanggal Masuk</label>
+                                       <input type="text" class="form-control" id="datepicker2">
+                                   </div>
+
+
+                                   <div class="form-group">
+                                       <label for="exampleFormControlSelect1">Status Keaktifan</label>
+                                       <select class="form-control" id="exampleFormControlSelect1">
+                                           <option>Aktif</option>
+                                           <option>Pasif</option>
+                                           <option>Keluar</option>
+                                           <option>Drop Out</option>
+                                           <option>Cuti</option>
+                                           <option>Lulus</option>
+                                       </select>
+                                   </div>
+
+                                   <div class="form-group">
+                                       <label for="exampleFormControlInput1">Tanggal Aktif</label>
+                                       <input type="text" class="form-control" id="datepicker3">
+                                   </div>
+
+                                </div>
+
+                            </div>
+                       </div>
+
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="ortu">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                        <br>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Nama Ayah</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pekerjaan Ayah">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Agama</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Islam</option>
+                                    <option>Kristen</option>
+                                    <option>Katholik</option>
+                                    <option>Hindu</option>
+                                    <option>Budha</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Pendidikan</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Tidak Tamat SD</option>
+                                    <option>Tamat SD/MI</option>
+                                    <option>Tamat SMP/MTS</option>
+                                    <option>Tamat SMA/SMK/MA</option>
+                                    <option>Diploma 1</option>
+                                    <option>Diploma 2</option>
+                                    <option>Diploma 3</option>
+                                    <option>Diploma 4</option>
+                                    <option>Sarjana Muda</option>
+                                    <option>Sarjana</option>
+                                    <option>Pascasarjana</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Pekerjaan</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Pegawai Negeri</option>
+                                    <option>TNI</option>
+                                    <option>Polisi</option>
+                                    <option>Pegawai Swasta</option>
+                                    <option>Pengusaha</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Hidup</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Hidup</option>
+                                    <option>Sudah Meninggal</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Nama Ibu</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama Ibu">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Agama</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Islam</option>
+                                    <option>Kristen</option>
+                                    <option>Katholik</option>
+                                    <option>Hindu</option>
+                                    <option>Budha</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Pendidikan</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Tidak Tamat SD</option>
+                                    <option>Tamat SD/MI</option>
+                                    <option>Tamat SMP/MTS</option>
+                                    <option>Tamat SMA/SMK/MA</option>
+                                    <option>Diploma 1</option>
+                                    <option>Diploma 2</option>
+                                    <option>Diploma 3</option>
+                                    <option>Diploma 4</option>
+                                    <option>Sarjana Muda</option>
+                                    <option>Sarjana</option>
+                                    <option>Pascasarjana</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Pekerjaan</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Pegawai Negeri</option>
+                                    <option>TNI</option>
+                                    <option>Polisi</option>
+                                    <option>Pegawai Swasta</option>
+                                    <option>Pengusaha</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Hidup</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Hidup</option>
+                                    <option>Sudah Meninggal</option>
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-6">
+                            <br>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Penghasilan Orang Tua per bulan</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Penghasilan rata-rata per bulan">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Alamat Orang Tua</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Alamat">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="provinsi">Provinsi</label>
+                                <select class="form-control select2" id="provinsi" name="provinsi">
+                                    <option>Pilih Provinsi</option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
+                                <select class="js-example-placeholder-single js-states form-control" name="kokab" p>
+                                    <option>Pilih Kabupaten/Kota</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kode pos</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode Pos">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Negara</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Negara">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Telepon Orang Tua</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Telepon Orang Tua">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Handphone Orang Tua</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Handphone Orang Tua">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Email</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Email">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="sekolah">
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <br>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Alamat Kost</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Alamat">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="provinsi">Provinsi</label>
+                                <select class="form-control select2" id="provinsi" name="provinsi">
+                                    <option>Pilih Provinsi</option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
+                                <select class="js-example-placeholder-single js-states form-control" name="kokab" p>
+                                    <option>Pilih Kabupaten/Kota</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kode pos</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode Pos">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Negara</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Negara">
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+        <br>
+                <input class="btn btn-primary" type="submit" value="Simpan">
+                <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                    <span aria-hidden="true"></span>Batal
+                </a>
+        </div>
+
+
+    </div>
+
+
+</section>
+
 </body>
 </html>
+
+<script>
+
+    $( function() {
+        $( "#datepicker" ).datepicker();
+        $( "#datepicker2" ).datepicker();
+        $( "#datepicker3" ).datepicker();
+    } );
+
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+
+
+
+</script>
+

@@ -1,10 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Daftar Lembaga</h6>
+        </div>
+    </div>
 
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+    <table width="100%">
+        <tr>
+            <td>
+                <a th:href="@{/lembaga/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+            </td>
+            <td align="right">
+                <form method="get" th:action="@{/lembaga/list}">
+                    <div class="input-group input-group-sm" style="width: 100%;">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
+                        <input type="hidden" name="mode" id="mode"/>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+        <br>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+
+    </div>
+
+</section>
 </body>
 </html>
