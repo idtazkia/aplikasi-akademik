@@ -9,4 +9,7 @@ public class ProgramController {
     public void daftarProgram(){
     }
 
+    @GetMapping("/program/form")
+    public void  formProgram(){
+    }
 }
