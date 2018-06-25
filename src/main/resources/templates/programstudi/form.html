@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+
 </head>
 <body>
 
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Daftar Program Studi</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <form>
+
+            <div class="form-group">
+                <label>Fakultas</label>
+                <select class="form-control js-example-placeholder-single" id="provinsi"
+                        name="provinsi">
+                    <option></option>
+                    <option>Fakultas Tehknik</option>
+                    <option>Fakultas Pendidikan</option>
+                    <option>Fakultas Ekonomi</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Kode Program Studi</label>
+                <input type="text" class="form-control" placeholder="Kode">
+            </div>
+
+            <div class="form-group">
+                <label>Nama Program Studi</label>
+                <input type="text" class="form-control" placeholder="Nama">
+            </div>
+
+            <div class="form-group">
+                <label>Pejabat</label>
+                <input type="text" class="form-control" placeholder="Pejabat">
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Simpan">
+            <a th:href="@{/programstudi/list}" class="btn btn-primary" role="button">
+                <span aria-hidden="true"></span>Batal
+            </a>
+        </form>
+    </div>
+
+</section>
+
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+</script>
