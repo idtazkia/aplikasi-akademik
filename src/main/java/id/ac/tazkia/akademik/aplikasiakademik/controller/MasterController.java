@@ -12,4 +12,8 @@ public class MasterController {
     @GetMapping("/menu/kbm")
     public void menuKbm(){
     }
+
+    @GetMapping("/menu/keuangan")
+    public void menuKeuangan(){
+    }
 }
