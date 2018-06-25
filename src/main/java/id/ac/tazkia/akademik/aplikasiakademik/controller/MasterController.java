@@ -8,4 +8,8 @@ public class MasterController {
     @GetMapping("/menu/master")
     public void masterData(){
     }
+
+    @GetMapping("/menu/kbm")
+    public void menuKbm(){
+    }
 }
