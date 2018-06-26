@@ -8,4 +8,7 @@ public class AkademikController {
 
     @GetMapping("/akademik/list")
     public void akademikList(){}
+
+    @GetMapping("/akademik/form")
+    public void akademikForm(){}
 }
