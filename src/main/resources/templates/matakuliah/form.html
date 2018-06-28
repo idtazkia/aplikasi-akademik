@@ -1,10 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Daftar Tahun Akademik</h6>
+        </div>
+    </div>
+
+    <form method="get" th:action="@{/akademik/list}">
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+
+            <h6 class="border-bottom border-gray pb-2 mb-0"><center><b>Tambah Matakuliah</b></center></h6>
+            <br>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kode Matakuliah</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nama (Inggris)</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Punya Responsi/Lab?</label><br>
+                            <input type="checkbox">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pilihan Wajib</label>
+                            <select class="form-control js-example-placeholder-single">
+                                <option></option>
+                                <option>Akuntansi</option>
+                                <option>Ekonomi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Matakuliah Wajib</label><br>
+                            <input type="checkbox">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Semester</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKS Tatap Muka</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKS Praktek Lapangan</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>IPK Minimal</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Penanggung Jawab</label>
+                            <select class="form-control js-example-placeholder-single">
+                                <option></option>
+                                <option>Asep Sunandar</option>
+                                <option>James</option>
+                                <option>Bryant</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nama Matakuliah</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Singkatan</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Jenis</label>
+                            <select class="form-control js-example-placeholder-single">
+                                <option></option>
+                                <option>Jenis 1</option>
+                                <option>Jenis 2</option>
+                                <option>Jenis 3</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pilihan Kurikulum</label>
+                            <select class="form-control js-example-placeholder-single">
+                                <option></option>
+                                <option>Kurikulum 1</option>
+                                <option>Kurikulum 2</option>
+                                <option>Kurikulum 3</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Konsentrasi</label>
+                            <select class="form-control js-example-placeholder-single">
+                                <option></option>
+                                <option>S1</option>
+                                <option>S2</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKS</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKS Praktikum</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>SKS Minimal</label>
+                            <input type="number" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tugas Akhir</label><br>
+                            <input type="checkbox"><small>&nbsp&nbsp *) Jika dicentang maka mahasiswa harus mengambil MK ini untuk dapat lulus</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tidak Aktif?</label><br>
+                            <input type="checkbox">
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+                        <label>Keterangan</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
+            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+            <br>
+
+            <div class="align-content-md-center">
+                <button class="btn btn-success">Simpan</button>
+                <a th:href="@{/akademik/list}" class="btn btn-danger">Batal</a>
+            </div>
+
+        </div>
+    </form>
+
+</section>
+
+
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
