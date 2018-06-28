@@ -9,4 +9,8 @@ public class PrasyaratController {
     @GetMapping("/prasyarat/form")
     public void formPrasyarat(){
     }
+
+    @GetMapping("/prasyarat/list")
+    public void listPrasyarat(){
+    }
 }
