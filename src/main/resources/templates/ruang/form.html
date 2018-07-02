@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
         <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Data Jurusan</h6>
+            <h6 class="mb-0 text-white lh-100">Ruang Kelas</h6>
         </div>
     </div>
 
@@ -20,38 +20,31 @@
         <form>
 
             <div class="form-group">
-                <label>Fakultas</label>
-                <select class="form-control js-example-placeholder-single" id="fakultas"
-                        name="provinsi">
+                <label>Pilih Gedung</label>
+                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="gedung"
+                        name="gedung">
                     <option></option>
-                    <option>Fakultas Tehknik</option>
-                    <option>Fakultas Pendidikan</option>
-                    <option>Fakultas Ekonomi</option>
+                    <option>GRANADA - STEI TAZKIA SENTUL</option>
+                    <option>ABU HANIFAH - STEI TAZKIA MATRIKULASI</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Kode Jurusani</label>
-                <input type="text" class="form-control" placeholder="Kode">
+                <label for="exampleFormControlInput1">Nama Ruang</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
             </div>
 
             <div class="form-group">
-                <label>Nama Jurusan</label>
-                <input type="text" class="form-control" placeholder="Nama">
-            </div>
-
-            <div class="form-group">
-                <label>Pejabat</label>
-                <input type="text" class="form-control" placeholder="Pejabat">
+                <label for="exampleFormControlTextarea1">Keterangan</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
             </div>
 
             <input class="btn btn-primary" type="submit" value="Simpan">
-            <a th:href="@{/jurusan/list}" class="btn btn-primary" role="button">
+            <a th:href="@{/ruang/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
             </a>
         </form>
     </div>
-
 </section>
 
 </body>

@@ -8,5 +8,109 @@
 </head>
 <body>
 
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Daftar Jurusan</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <table width="100%">
+            <tr>
+                <td>
+                    <a th:href="@{/jurusan/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                </td>
+                <td align="right">
+                    <form method="get" th:action="@{/jurusan/list}">
+                        <div class="input-group input-group-sm" style="width: 100%;">
+                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
+                            <input type="hidden" name="mode" id="mode"/>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Kode</th>
+                    <th scope="col">Fakultas</th>
+                    <th scope="col">Jurusan</th>
+                    <th scope="col">Pejabat</th>
+                    <th scope="col" width="30px"></th>
+                    <th scope="col" width="40px"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>P01</td>
+                    <td>Ekonomi Syariah</td>
+                    <td>Bisnis Islam</td>
+                    <td>-</td>
+                    <td align="center">
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jurusan/form}" title="edit">Edit</a></td>
+                    <td align="center">
+                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jurusan/list}" title="Delete">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>P02</td>
+                    <td>Ekonomi Syariah</td>
+                    <td>Bisnis Islam</td>
+                    <td>-</td>
+                    <td align="center">
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
+                    <td align="center">
+                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>P03</td>
+                    <td>Ekonomi Syariah</td>
+                    <td>Ekonomi Islam</td>
+                    <td>-</td>
+                    <td align="center">
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
+                    <td align="center">
+                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</section>
+
 </body>
 </html>

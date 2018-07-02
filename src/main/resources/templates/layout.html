@@ -37,43 +37,81 @@
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link"th:href="@{/menu/master}">Master</a>
+            <!-- <li class="nav-item">
+                 <a class="nav-link"th:href="@{/menu/master}">Master</a>
+             </li> -->
+
+             <li class="nav-item dropdown">
+                 <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
+                 <div class="dropdown-menu" aria-labelledby="dropdown01">
+                     <a class="dropdown-item" th:href="@{/lembaga/list}">Lembaga</a>
+                     <a class="dropdown-item" th:href="@{/gedung/list}">Gedung Kampus</a>
+                     <a class="dropdown-item" th:href="@{/ruang/list}">Ruang Kelas</a>
+                     <a class="dropdown-item" th:href="@{/program/list}">Program</a>
+                     <a class="dropdown-item" th:href="@{/jenjang/list}">Jenjang</a>
+                     <a class="dropdown-item" href="#">-----------------</a>
+                     <a class="dropdown-item" th:href="@{/fakultas/list}">Fakultas</a>
+                     <a class="dropdown-item" th:href="@{/jurusan/list}">Jurusan</a>
+                     <a class="dropdown-item" th:href="@{/programstudi/list}">Program Studi</a>
+                     <a class="dropdown-item" th:href="@{/konsentrasi/list}">Konsentrasi</a>
+                     <a class="dropdown-item" href="#">-----------------</a>
+                     <a class="dropdown-item" th:href="@{/dosen/list}">Dosen</a>
+                     <a class="dropdown-item" th:href="@{/mahasiswa/list}">Mahasiswa</a>
+
+
+                 </div>
+
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link" href="#">Matrikulasi</a>
+             </li>
+
+            <!--  <li class="nav-item">
+                 <a class="nav-link"th:href="@{/menu/kbm}">KBM</a>
+             </li> -->
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">KBM</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" th:href="@{/akademik/list}">Tahun Akademik</a>
+                    <a class="dropdown-item" th:href="@{/matakuliah/list}">Kurikulum</a>
+                    <a class="dropdown-item" href="#">Penjadwalan Kuliah</a>
+                    <a class="dropdown-item" href="#">Penjadwalan Ujian</a>
+                    <a class="dropdown-item" href="#">-----------------</a>
+                    <a class="dropdown-item" href="#">Kartu Rencana Studi</a>
+                    <a class="dropdown-item" href="#">Presensi</a>
+                    <a class="dropdown-item" href="#">Penilaian</a>
+                    <a class="dropdown-item" href="#">-----------------</a>
+                    <a class="dropdown-item" th:href="@{/dosen/list}">Magang</a>
+                </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">Matrikulasi</a>
-            </li>
+             <li class="nav-item">
+                 <a class="nav-link" href="#">Tugas Akhir</a>
+             </li>
 
-            <li class="nav-item">
-                <a class="nav-link"th:href="@{/menu/kbm}">KBM</a>
-            </li>
+             <li class="nav-item">
+                 <a class="nav-link" href="#">kelulusan</a>
+             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">Tugas Akhir</a>
-            </li>
+             <li class="nav-item">
+                 <a class="nav-link" href="#">Alumni</a>
+             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">kelulusan</a>
-            </li>
+             <li class="nav-item">
+                 <a class="nav-link"th:href="@{/menu/keuangan}">Keuangan</a>
+             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">Alumni</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link"th:href="@{/menu/keuangan}">Keuangan</a>
-            </li>
-
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-         </form>
-     </div>
- </nav>
+         </ul>
+         <form class="form-inline my-2 my-lg-0">
+          </form>
+      </div>
+  </nav>
 
 
-<main layout:fragment="main" class="container">
-    <!-- Content here -->
+ <main layout:fragment="main" class="container">
+     <!-- Content here -->
 </main>
 
 <!-- Bootstrap core JavaScript

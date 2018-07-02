@@ -8,5 +8,304 @@
 </head>
 <body>
 
+
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Data Dosen</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+
+
+        <!-- Tab panes -->
+
+
+                <div class="col-md-12"><br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">NIP
+
+                                </label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Nama">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">NIDN</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Nomor Induk Mahasiswa (NIM)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Nama Lengkap Beserta Gelar</label>
+                                &nbsp&nbsp
+                                <small class="text-danger">* Isi nama dan gelar sesuai dengan ijazah</small>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Nomor Induk Mahasiswa (NIM)">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Tempat Lahir</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Tempat lahir">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Tanggal Lahir</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleRadios1">Jenis Kelamin</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exampleRadios"
+                                           id="exampleRadios1" value="option1" checked>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Laki-laki
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input class="form-check-input" type="radio" name="exampleRadios"
+                                           id="exampleRadios1" value="option1">
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Perempuan
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Asal Negara</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Asal Negara">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Agama</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Islam</option>
+                                    <option>Kristen</option>
+                                    <option>Katholik</option>
+                                    <option>Hindu</option>
+                                    <option>Budha</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Status Sipil</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Belum Menikah</option>
+                                    <option>Manikah</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Alamat</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Alamat">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="provinsi">Provinsi</label>
+                                <select class="form-control js-example-placeholder-single" id="provinsi"
+                                        name="provinsi">
+                                    <option></option>
+                                    <option>Jawa Barat</option>
+                                    <option>Jawa Tengah</option>
+                                    <option>Jawa Timur</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
+                                <select class="form-control js-example-placeholder-single">
+                                    <option></option>
+                                    <option>Kota Bogor</option>
+                                    <option>Kota Depok</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="kecamatan">Kecamatan</label>
+                                <select class="form-control js-example-placeholder-single" id="kecamatan"
+                                        name="kecamatan">
+                                    <option></option>
+                                    <option>Cisarua</option>
+                                    <option>Megamendung</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Kelurahan</label>
+                                <select class="form-control js-example-placeholder-single" name="kelurahan">
+                                    <option></option>
+                                    <option>Tugu Utara</option>
+                                    <option>Tugu Selatan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="provinsi">Kode Pos</label>
+                                <select class="form-control js-example-tags" id="kodepos" name="Kode Pos">
+                                    <option></option>
+                                    <option></option>
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Negara</label>
+                                <select class="form-control js-example-placeholder-single">
+                                    <option></option>
+                                    <option>Indonesia</option>
+                                    <option>Singapura</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Tempat Tinggal</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Asrama</option>
+                                    <option>Kost/Sewa</option>
+                                    <option>Sendiri/Keluarga</option>
+                                    <option>Lain-lain</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Telepon</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Telepon">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Ponsel</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Ponsel">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Email</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Prodi Hombase</label>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>Fakultas Ekonomi - Jurusan Ekonomi Syariah - Akuntansi Islam</option>
+                                    <option>Fakultas Ekonomi - Jurusan Ekonomi Syariah - Ekonomi Islam</option>
+                                    <option>Fakultas Ekonomi - Jurusan Ekonomi Syariah - Hukum Ekonomi Islam</option>
+                                    <option>Fakultas Ekonomi - Jurusan Ekonomi Syariah - Bisnis Manejemen Islam Islam</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Akta Sertifikat Mengajar</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Akta Sertifikat Mengajar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                            <table class="table table-responsive">
+                                <tr>
+                                    <td>Tidak Aktif? (NA)</td>
+                                    <td><input type="checkbox" class="form-control"></td>
+                                    <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                                </tr>
+                            </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+
+        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+        <br>
+        <input class="btn btn-primary" type="submit" value="Simpan">
+        <a th:href="@{/dosen/list}" class="btn btn-primary" role="button">
+            <span aria-hidden="true"></span>Batal
+        </a>
+    </div>
+
+
+    </div>
+
+
+</section>
+
 </body>
 </html>

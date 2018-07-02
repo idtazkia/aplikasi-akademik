@@ -12,4 +12,9 @@ public class DosenController {
     @GetMapping("/dosen/form")
     public void  formDosen(){
     }
+
+
+    @GetMapping("/dosen/jurusan/list")
+    public void  listJurusanDosen(){
+    }
 }

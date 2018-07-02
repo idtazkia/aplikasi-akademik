@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Input Kampus</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <form method="get" th:action="@{/gedung/list}">
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label>Kode</label>
+                    <input type="text" class="form-control" placeholder="Kode">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label>Nama Kampus</label>
+                    <input type="text" class="form-control" placeholder="Nama Kampus">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label>Alamat</label>
+                    <input type="text" class="form-control" placeholder="Alamat Kampus">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label>Keterangan</label>
+                    <input type="text" class="form-control" placeholder="Keterangan">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td>Tidak Aktif? (NA)</td>
+                            <td><input type="checkbox" class="form-control"></td>
+                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Simpan">
+            <a th:href="@{/matakuliah/list}" class="btn btn-primary" role="button">
+                <span aria-hidden="true"></span>Batal
+            </a>
+        </form>
+    </div>
+
+</section>
+
+</body>
+</html>
