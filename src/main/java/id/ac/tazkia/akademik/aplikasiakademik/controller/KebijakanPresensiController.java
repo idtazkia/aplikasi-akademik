@@ -12,4 +12,12 @@ public class KebijakanPresensiController {
     @GetMapping("/kebijakanpresensi/form")
     public void  formKebijakanPresensi(){
     }
+
+    @GetMapping("/kebijakanpresensi/dosen")
+    public void dosenKebijakanPresensi(){
+    }
+
+    @GetMapping("/kebijakanpresensi/mahasiswa")
+    public void mahasiswaKebijakanPresensi(){
+    }
 }
