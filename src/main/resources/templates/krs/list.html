@@ -1,74 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 
-
 <section layout:fragment="main" class="container">
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
         <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Jadwal Kuliah</h6>
+            <h6 class="mb-0 text-white lh-100">KARTU RENCANA STUDI</h6>
         </div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Jadwal Kuliah</center></h6>
+        <h6 class="border-bottom border-gray pb-2 mb-0"><center>KRS MAHASISWA</center></h6>
         <br>
         <form method="get">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label>Semester</label>
-                            <select class="form-control js-example-placeholder-single"
-                                    name="provinsi">
-                                <option></option>
-                                <option>2017/2018 Semester Ganjil</option>
-                                <option>2017/2018 Semester genap</option>
-                                <option>2017/2018 Semester Pendek</option>
-                            </select>
+                            <div class="input-group input-group-sm" style="....">
+                                <table border="0" cellpadding="9" cellspacing="10" align="center">
+                                    <td>Tahun Akd:</td>
+                                    <td><input type="text" class="form-control js-example-placeholder-singel"></td>
+                                    <td>Nim:</td>
+                                    <td><input type="text" class="form-control js-example-placeholder-singel"></td>
+                                    <td><button type="button" class="btn btn-primary">Aktifkan</button></td>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>NIM</label>
-                            <input type="text" class="form-control" placeholder="Kode">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <button class="btn btn-primary">Cari Jadwal</button>
-                    </div>
-
                 </div>
             </div>
-
         </form>
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="lh-100">
+                            <h6 class="mb-0 text-white lh-100" align="center">Batas Pengambilan/Pengubahan KRS Sudah Selesai. KRS Tidak Bisa Diubah</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <br>
 
+        <form method="get">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Tambahkan</button>
+                                </div>
+                                <table border="0" cellpadding="9" cellspacing="10">
+                                    <td>
+                                        <select class="form-control js-example-placeholder-single"
+                                            name="provinsi">
+                                            <option></option>
+                                            <option>Aspek Hukum Dalam Ekonomi</option>
+                                            <option>Etika Bisnis Islam</option>
+                                        </select>
+                                    </td>
+                                    <td>&#9654</td>
+                                    <td>Daftar Matakuliah Yang Diambil Oleh Mahasiswa:</td>
+                                    <td><button class="btn btn-primary">Cetak Kartu UAS</button></td>
+                                    <td><button class="btn btn-primary">Cetak Kartu UTS</button></td>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
-        <table width="100%">
-            <tr>
-                <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">
-                        Tambah Jadwal
-                    </button>
-                </td>
-            </tr>
-        </table>
         <br>
         <div class="box-body table-responsive no-padding">
             <label><b>Senin</b></label>
@@ -76,31 +88,26 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Ruangan</th>
-                    <th>Jam</th>
                     <th>Kode</th>
-                    <th>Matahuliah</th>
-                    <th>Kelas</th>
+                    <th>Jam Kuliah</th>
+                    <th>Mata Kuliah</th>
                     <th>SKS</th>
+                    <th>Kelas</th>
+                    <th>Ruang</th>
                     <th>Dosen</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
                     <th colspan="2">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>1</td>
+                    <td>AEM2305</td>
+                    <td>09:31 - 11:10 </td>
+                    <td>Aspek Hukum Dalam Ekonomi</td>
+                    <td>2</td>
+                    <td>BMI-C-16</td>
                     <td>1.5</td>
-                    <td>07:00 - 09:30 </td>
-                    <td>AEGS345</td>
-                    <td>Ekonometrik Dasar</td>
-                    <td>SP 0 - 45</td>
-                    <td>3</td>
-                    <td>Dr. Indra M.SI</td>
-                    <td>00-00-00 <br> 00:00 - 00:00</td>
-                    <td><small>Rabu</small>&nbsp&nbsp 10-10-18 <br>10:00 - 12:00</td>
-                    <td>DPNA <br> Kursi</td>
+                    <td>Ramawansyah</td>
                     <td><button class="btn btn-danger">Hapus</button></td>
                 </tr>
                 </tbody>
@@ -112,31 +119,26 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Ruangan</th>
-                    <th>Jam</th>
                     <th>Kode</th>
-                    <th>Matahuliah</th>
-                    <th>Kelas</th>
+                    <th>Jam Kuliah</th>
+                    <th>Mata Kuliah</th>
                     <th>SKS</th>
+                    <th>Kelas</th>
+                    <th>Ruang</th>
                     <th>Dosen</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
                     <th colspan="2">Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>1.5</td>
-                    <td>07:00 - 09:30 </td>
-                    <td>AEGS345</td>
-                    <td>Ekonometrik Dasar</td>
-                    <td>SP 0 - 45</td>
-                    <td>3</td>
-                    <td>Dr. Indra M.SI</td>
-                    <td>00-00-00 <br> 00:00 - 00:00</td>
-                    <td><small>Rabu</small>&nbsp&nbsp 10-10-18 <br>10:00 - 12:00</td>
-                    <td>DPNA <br> Kursi</td>
+                    <td>2</td>
+                    <td>ACC2701</td>
+                    <td>07:50 - 09:30 </td>
+                    <td>Etika Bisnis Islam</td>
+                    <td>2</td>
+                    <td>BMI-C-16</td>
+                    <td>3.1</td>
+                    <td>Neti Dewi Hartati,STP,M.E.Sy</td>
                     <td><button class="btn btn-danger">Hapus</button></td>
                 </tr>
                 </tbody>
@@ -163,9 +165,7 @@
                     </li>
                 </ul>
             </nav>
-
         </div>
-
     </div>
 
     <!-- Modal -->
@@ -173,180 +173,64 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <center><h5 class="modal-title" id="exampleModalLongTitle" align="center">Jadwal Yang Bisa Diambil</h5></center>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="col-md-12"><br>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program StudiStudi</label><br>
-                                    <label><b>Manajemen Bisnis Syariah</b></label>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>Reguler</option>
-                                        <option>FTUI</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Hari</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>Senin</option>
-                                        <option>Selasa</option>
-                                        <option>Rabu</option>
-                                        <option>Kamis</option>
-                                        <option>Jumat</option>
-                                        <option>Sabtu</option>
-                                        <option>Minggu</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <Label>Jam Kuliah</Label>
-                                    <table class="table-responsive">
-                                        <tr>
-                                            <td><input type="time" class="form-control"></td>
-                                            <td>-</td>
-                                            <td><input type="time" class="form-control"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                        <div class="input-group input-group-sm" style="width:41%;">
+                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Kode">
+                                            <input type="hidden" name="mode" id="mode"/>
+                                            <a th:href="@{/krs/list}" class="btn btn-primary" role="button" aria-pressed="true">Cari</a>
+                                            <form method="get" th:action="@{/krs/list}">
+                                        </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Kode</th>
+                                                <th>Nama</th>
+                                                <th>Dosen</th>
+                                                <th>Kelas</th>
+                                                <th colspan="2">Aksi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>AEM2305</td>
+                                                <td>Ramawansyah</td>
+                                                <td>Aspek Hukum Dalam Ekonomi</td>
+                                                <td>2</td>
+                                                <td><center><input type="radio" name="Aksi"></center></td>
+                                            </tr>
+                                            <tr>
+                                                <td>ACC2701</td>
+                                                <td>Neti Dewi Hartati,STP,M.E.Sy</td>
+                                                <td>Etika Bisnis Islam</td>
+                                                <td>32</td>
+                                                <td><center><input type="radio" name="Aksi"></center></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Ruangan</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>Eksekutif 1</option>
-                                        <option>2.1</option>
-                                        <option>Eksekutif 2</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Kapasitas</label>
-                                    <input type="text" class="form-control" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Matakuliah</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>Pengantar Akuntansi</option>
-                                        <option>Bank & Lembaga Keuangan</option>
-                                        <option>Pengantar Akuntansi II</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Dosen Pengampu</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>James</option>
-                                        <option>Bryant</option>
-                                        <option>Curry</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Kelas</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="provinsi">Jenis</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" id="provinsi"
-                                            name="provinsi">
-                                        <option></option>
-                                        <option>Kuliah</option>
-                                        <option>Seminar</option>
-                                        <option>Praktek</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Rencana Kehadiran</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Minimal Kehadiran</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>tanggal UAS</label>
-                                    <input type="date" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="provinsi">Jam UAS</label>
-                                    <table class="table-responsive">
-                                        <tr>
-                                            <td><input type="time" class="form-control"></td>
-                                            <td>-</td>
-                                            <td><input type="time" class="form-control"></td>
-                                        </tr>
-                                    </table>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-success">Save</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success">Save</button>
                 </div>
             </div>
         </div>
@@ -355,7 +239,11 @@
     <!--End Modal-->
 
 </section>
-
-
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Kebijakan Presensi</h6>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+        <h3 class="border-bottom border-gray pb-2 mb-0"><center>Presensi Dosen & Mahasiswa</center></h3>
+        <br>
+        <form method="get">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="input-group input-group-sm" style="....">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Thn Akademik:</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Matakuliah</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Program Studi</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Dosen</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>SKS</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Kelas</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Jadwal Kuliah</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Jadwal Ujian</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br>
+        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+        <br>
+
+        <form method="get">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Tambahkan Presensi</button>
+                                <button type="button" class="btn btn-primary">Refresh</button>
+                                <button type="button" class="btn btn-primary">Kembali Ke Daftar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br>
+        <div class="box-body table-responsive no-padding">
+            <label><b>Senin</b></label>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>tanggal</th>
+                    <th>Jam</th>
+                    <th>Dosen Pemberi Kuliah</th>
+                    <th>Catatan</th>
+                    <th>Regist From</th>
+                    <th>Siswa Hadir</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>AEM2305</td>
+                    <td>09:31 - 11:10 </td>
+                    <td>Aspek Hukum Dalam Ekonomi</td>
+                    <td>2</td>
+                    <td>Ramawansyah</td>
+                    <td><a th:href="@{/kebijakanpresensi/mahasiswa}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+
+            <label><b>Selasa</b></label>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>tanggal</th>
+                    <th>Jam</th>
+                    <th>Dosen Pemberi Kuliah</th>
+                    <th>Catatan</th>
+                    <th>Regist From</th>
+                    <th>Siswa Hadir</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>AEM2305</td>
+                    <td>09:31 - 11:10 </td>
+                    <td>Aspek Hukum Dalam Ekonomi</td>
+                    <td>2</td>
+                    <td>Ramawansyah</td>
+                    <td><a th:href="@{/kebijakanpresensi/mahasiswa}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <br>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <center><h5 class="modal-title" id="exampleModalLongTitle">TAMBAH PRESENSI</h5></center>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12"><br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Pertemuan Ke :</label><br>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Tanggal :</label>
+                                        <input type="date">
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Pemberi MataKuliah :</label>
+                                            <select class="form-control js-example-placeholder-single">
+                                                <option></option>
+                                                <option>Budiono</option>
+                                                <option>jalil</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Jam Kuliah :</label>
+                                            <input type="time" class="form-control">-<input type="time" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <table border="0">
+                                    <tr>
+                                        <td>
+                                            <label>Catatan :</label>
+                                        </td>
+                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <textarea rows="4" cols="77"></textarea>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                            <div class="modal-footer" align="center">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"                                                                  n >Batal</button>
+                                <button type="button" class="btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!--End Modal-->
+
+</section>
+</body>
+</html>
