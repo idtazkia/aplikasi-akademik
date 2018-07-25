@@ -1,0 +1,36 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" th:href="@{/favicon.ico}">
+
+    <title>Signin</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/dist/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/signin.css}" rel="stylesheet">
+</head>
+
+<body class="text-center">
+<form class="form-signin" id="sign_in" method="POST" th:action="@{/login}">
+    <img class="mb-4" style="width: 50%; margin-left: 20%; height: 50%;" th:src="@{https://tazkia.ac.id/wp-content/uploads/2017/09/logo-tazkia-new-bluelight-wide2-min.png}" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Sistem Akademik</h1>
+    <label for="inputText" class="sr-only">Email address</label>
+    <input type="text" id="inputText" class="form-control" name="username" placeholder="Username" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
+    <div class="checkbox mb-3">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </div>
+    <label>
+        <a href="">Forgot password?</a>
+    </label>
+    <p class="mt-5 mb-3 text-muted">&copy;2018</p>
+</form>
+</body>
+</html>

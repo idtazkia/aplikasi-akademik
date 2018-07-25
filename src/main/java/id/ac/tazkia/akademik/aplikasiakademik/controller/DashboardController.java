@@ -10,4 +10,8 @@ public class DashboardController {
     public void daftarDashboard(){
     }
 
+    @GetMapping("/login")
+    public void login(){
+    }
+
 }
