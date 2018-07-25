@@ -33,6 +33,37 @@
                 </div>
             </div>
 
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="Provinsi">Provinsi</label>
+                        <select  class="form-control" id="Provinsi" onchange=""  name="provinsi">
+                            <option>Pilih Provinsi</option>
+                            <option>Jawa Barat</option>
+                            <option>Jawa Tengah</option>
+                            <option>Jawa Timur</option>
+                            <option>DKI Jakarta</option>
+                            <option>Yogyakarta</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="Kota/Kabupaten">Kota / Kabupaten</label>
+                        <select onchange="" style="..." class="form-control" id="Kota/Kabupaten">
+                            <option>Pilih Kota/Kabupaten</option>
+                            <option>Bogor</option>
+                            <option>Bandung</option>
+                            <option>Depok</option>
+                            <option>Sukabumi</option>
+                            <option>Garut</option>
+                        </select>
+                    </div>
+                </div>
+
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Alamat</label>
@@ -60,7 +91,7 @@
             </div>
 
             <input class="btn btn-primary" type="submit" value="Simpan">
-            <a th:href="@{/matakuliah/list}" class="btn btn-primary" role="button">
+            <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
             </a>
         </form>
