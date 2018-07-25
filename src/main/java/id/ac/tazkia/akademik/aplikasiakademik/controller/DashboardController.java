@@ -14,4 +14,9 @@ public class DashboardController {
     public void login(){
     }
 
+    @GetMapping("/")
+    public String formAwal(){
+        return "redirect:/login";
+    }
+
 }
