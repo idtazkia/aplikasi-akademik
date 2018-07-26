@@ -12,4 +12,9 @@ public class PenilaianController {
     @GetMapping("/penilaian/form")
     public void formPenilaian(){
     }
+
+
+    @GetMapping("/penilaian/nilai")
+    public void nilaiPenilaian(){
+    }
 }
