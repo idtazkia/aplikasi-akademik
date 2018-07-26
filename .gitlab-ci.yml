@@ -4,12 +4,23 @@ cache:
  paths:
  - /root/.m2/repository
 
+services:
+  - mysql:latest
+
+variables:
+  MYSQL_ROOT_PASSWORD: admin
+  MYSQL_DATABASE: db_simak
+  MYSQL_USER: tazkia
+  MYSQL_PASSWORD: 12345
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql/db_simak?useSSL=false
+
 stages:
  - build
  - deploy
 
 build:
  stage: build
+ 
  script:
  - mvn clean package sonar:sonar -Dsonar.organization=$SONAR_ORG -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
  artifacts:
