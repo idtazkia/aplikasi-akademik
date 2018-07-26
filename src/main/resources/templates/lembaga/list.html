@@ -37,23 +37,15 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Nama Lembaga</th>
-            <th scope="col">Logo</th>
+            <th scope="col">Alamat</th>
             <th colspan="2">Aksi</th>
-            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-            <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
+        <tr th:each="data,row  : ${list}">
+            <td th:text="${(row.index + 1)}"></td>
+            <td th:text="${data.namaLembaga}" >Thuba Jazil, M.Sc., (Fin)</td>
+            <td th:text="${data.alamat}">Prodi Bisnis & Manajemen Islam</td>
             <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
             <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
         </tr>
