@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Table(name = "tb_kampus")
 public class Kampus {
 
     @Id
@@ -58,5 +59,8 @@ public class Kampus {
     @NotNull
     @JoinColumn(name = "user_edit ")
     private User userEdit;
+
+    @NotNull
+    private String na;
 
 }

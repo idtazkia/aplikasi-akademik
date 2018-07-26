@@ -53,31 +53,31 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Kode</th>
+                            <th>No</th>
+                            <th>NA</th>
                             <th>Nama Kampus</th>
                             <th>Alamat</th>
                             <th>Keterangan</th>
-                            <th>NA</th>
+                            <th colspan="2"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>K0001</td>
-                            <td>STEI TAZKIA SENTUL</td>
-                            <td>Jl. Ir. H. Juanda no 78 Sentul City, Citaringgul, Bogor</td>
-                            <td>-</td>
-                            <td>v</td>
-                        </tr>
+                        <tr th:each="data,row  : ${list}">
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                    <i class="material-icons" style="font-size:36px">wb_incandescent</i>
+                                </span>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                    <i class="material-icons" style="font-size:36px;color:black;">wb_incandescent</i>
 
-                        <tr>
-                            <th>1</th>
-                            <td>K0002</td>
-                            <td>STEI TAZKIA MATRIKULASI</td>
-                            <td>Dramaga</td>
-                            <td>-</td>
-                            <td>v</td>
+                                </span>
+                            </td>
+                            <td th:text="${data.namaKampus}">STEI TAZKIA SENTUL</td>
+                            <td th:text="${data.alamat}">Jl. Ir. H. Juanda no 78 Sentul City, Citaringgul, Bogor</td>
+                            <td th:text="${data.keterangan}">-</td>
+                            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
                         </tr>
                         </tbody>
                     </table>
