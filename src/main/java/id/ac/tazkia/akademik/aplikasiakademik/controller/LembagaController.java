@@ -91,7 +91,66 @@ public class LembagaController {
     }
 
     @PostMapping("/lembaga/form")
-    public void uploadBukti(){
+    public String uploadBukti(@Valid Lembaga lembaga,
+                              BindingResult error, MultipartFile logo,
+                              Authentication currentUser) throws Exception {
+
+//        mengambil data user yang login
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+
+        String namaFile = logo.getName();
+        String jenisFile = logo.getContentType();
+        String namaAsli = logo.getOriginalFilename();
+        Long ukuran = logo.getSize();
+
+        LOGGER.debug("Nama File : {}", namaFile);
+        LOGGER.debug("Jenis File : {}", jenisFile);
+        LOGGER.debug("Nama Asli File : {}", namaAsli);
+        LOGGER.debug("Ukuran File : {}", ukuran);
+
+//        memisahkan extensi
+        String extension = "";
+
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = namaAsli.substring(i + 1);
+        }
+
+        String idFile = UUID.randomUUID().toString();
+        String lokasiUpload = uploadFolder + File.separator + u.getUsername();
+        LOGGER.debug("Lokasi upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdirs();
+        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+        logo.transferTo(tujuan);
+        LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+
+
+        lembaga.setLogo(idFile + "." + extension);
+        lembaga.setTglEdit(LocalDateTime.now());
+        lembaga.setTglInsert(LocalDateTime.now());
+        lembaga.setUserEdit(u);
+        lembaga.setUserInsert(u);
+        lembaga.setStatus(StatusConstants.Aktif);
+        lembagaDao.save(lembaga);
+
+
+
+
+        return "redirect:/lembaga/list";
 
     }
 
