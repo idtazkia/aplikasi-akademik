@@ -10,20 +10,20 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
+@Table(name = "tb_kokab")
 public class KabupatenKota {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idKobab;
+    private String idKokab;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_provinsi")
-    private Provinsi provinsi;
+    private Provinsi idProvinsi;
 
     @NotNull
-    @javax.validation.constraints.NotEmpty
     private String nama;
 
 }
