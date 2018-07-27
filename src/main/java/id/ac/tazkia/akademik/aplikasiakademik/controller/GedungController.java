@@ -95,7 +95,7 @@ public class GedungController {
         kampus.setStatus(StatusConstants.Aktif);
         kampusDao.save(kampus);
 
-        return "/gedung/list";
+        return "redirect:/gedung/list";
 
     }
 

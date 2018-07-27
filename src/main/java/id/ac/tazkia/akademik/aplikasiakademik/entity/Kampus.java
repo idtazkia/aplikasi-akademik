@@ -61,6 +61,6 @@ public class Kampus {
     private User userEdit;
 
     @NotNull
-    private String na;
+    private String na = "1";
 
 }

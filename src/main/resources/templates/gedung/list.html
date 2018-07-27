@@ -66,10 +66,10 @@
                             <td th:text="${(row.index + 1)}"></td>
                             <td>
                                 <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                    <i class="material-icons" style="font-size:36px">wb_incandescent</i>
+                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
                                 <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                                    <i class="material-icons" style="font-size:36px;color:black;">wb_incandescent</i>
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
 
                                 </span>
                             </td>
@@ -134,15 +134,15 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody>+
+                        <tbody>
                         <tr th:each="data,row  : ${gedung}">
                             <td th:text="${(row.index + 1)}"></td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                    <i class="material-icons" style="font-size:36px">wb_incandescent</i>
+                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
                                 <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                                    <i class="material-icons" style="font-size:36px;color:black;">wb_incandescent</i>
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
 
                                 </span>
                             </td>
