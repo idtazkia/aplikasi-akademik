@@ -126,22 +126,31 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Lokasi</th>
+                            <th>NA</th>
+                            <th>Nama Gedung</th>
+                            <th>Nama Kampus</th>
                             <th>Keterangan</th>
+                            <th></th>
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">S0001</th>
-                            <td rowspan="2">Granada</td>
-                            <td rowspan="2">STEI TAZKIA SENTUL</td>
-                            <td>Gedung Kembar Sebelah Barat</td>
+                        <tbody>+
+                        <tr th:each="data,row  : ${gedung}">
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                    <i class="material-icons" style="font-size:36px">wb_incandescent</i>
+                                </span>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                    <i class="material-icons" style="font-size:36px;color:black;">wb_incandescent</i>
 
+                                </span>
+                            </td>
+                            <td th:text="${data.namaGedung}"></td>
+                            <td th:text="${data.idKampus.namaKampus}"></td>
+                            <td th:text="${data.keterangan}"></td>
                             <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
 
                         </tr>
                         </tbody>
