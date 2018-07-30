@@ -6,41 +6,32 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "tb_kampus")
-public class Kampus {
+@Table(name = "tb_gedung")
+public class Gedung {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idKampus;
-
-    @Column(nullable = false)
-    private String namaKampus;
-
-    @Column(nullable = false)
-    private String alamat;
-
+    private String idGedung;
 
     @ManyToOne
     @NotNull
-    @JoinColumn(name = "propinsi")
-    private Provinsi propinsi;
+    @JoinColumn(name = "id_Kampus")
+    private Kampus idKampus;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "kokab")
-    private KabupatenKota kabupatenKota;
+    @Column(nullable = false)
+    private String namaGedung;
 
     @Column(nullable = false)
     private String keterangan;
 
     @NotNull
     private String status;
+
 
     @NotNull @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
