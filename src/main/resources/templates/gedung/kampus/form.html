@@ -17,12 +17,12 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/gedung/kampus/form}">
-
+        <form method="post" th:action="@{/gedung/kampus/form}" th:object="${kampus}">
+            <input type="hidden" name="idKampus" th:field="*{idKampus}">
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Nama Kampus</label>
-                    <input type="text" class="form-control" name="namaKampus" placeholder="Nama Kampus">
+                    <input type="text" class="form-control" th:field="*{namaKampus}" name="namaKampus" placeholder="Nama Kampus">
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label>Provinsi</label>
-                        <select onchange="" class="form-control js-example-placeholder-single" id="provinsi"
+                        <select onchange="" th:field="*{propinsi}" class="form-control js-example-placeholder-single" id="provinsi"
                                 name="propinsi">
                             <option value="">-Pilih Provinsi-</option>
                             <option th:each="ins : ${daftarProp}"
@@ -45,7 +45,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label>Kabupaten / Kota</label>
-                        <select onchange="" class="form-control js-example-placeholder-single"
+                        <select onchange="" th:field="*{kabupatenKota}" class="form-control js-example-placeholder-single"
                                 name="kabupatenKota">
                             <option value="">-Pilih Kabupaten / Kota-</option>
                             <option th:each="ins : ${daftarKokab}"
@@ -58,14 +58,14 @@
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Alamat</label>
-                    <input type="text" name="alamat" class="form-control" placeholder="Alamat Kampus">
+                    <input type="text" name="alamat" th:field="*{alamat}" class="form-control" placeholder="Alamat Kampus">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Keterangan</label>
-                    <input type="text" name="keterangan" class="form-control" placeholder="Keterangan">
+                    <input type="text" name="keterangan" th:field="*{keterangan}" class="form-control" placeholder="Keterangan">
                 </div>
             </div>
             <div class="form-group">
@@ -83,10 +83,17 @@
 
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <small th:if="*{idKampus}!= null">
+            <input class="btn btn-primary" type="submit" value="Perbarui">
+            </small>
+            <small th:if="*{idKampus}== null">
+                <input class="btn btn-primary" type="submit" value="Simpan">
+            </small>
+            <small>
             <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
             </a>
+            </small>
         </form>
     </div>
 

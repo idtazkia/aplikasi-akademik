@@ -41,9 +41,7 @@ public class GedungController {
 
 
 
-    @GetMapping("/gedung/kampus/form")
-    public void  formKampus(){
-    }
+
 
     @GetMapping("/gedung/list")
     public ModelMap GedungList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
@@ -69,8 +67,23 @@ public class GedungController {
     }
 
 //Controller Kampus
+
+    @GetMapping("/gedung/kampus/form")
+    public void   formKampus(@RequestParam(value = "id", required = false) String idKampus,
+    Model m){
+        //defaultnya, isi dengan object baru
+        m.addAttribute("kampus", new Kampus());
+
+        if (idKampus != null && !idKampus.isEmpty()){
+            Kampus kampus= kampusDao.findById(idKampus).get();
+            if (kampus != null){
+                m.addAttribute("kampus", kampus);
+            }
+        }
+    }
+
     @PostMapping(value = "/gedung/kampus/form")
-    public String uploadBukti(@Valid Kampus kampus,
+    public String simpanKampus(@Valid Kampus kampus,
                               BindingResult error,
                               Authentication currentUser) throws Exception {
 
