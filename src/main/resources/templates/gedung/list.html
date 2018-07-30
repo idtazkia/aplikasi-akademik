@@ -135,7 +135,7 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th>NO</th>
                             <th>NA</th>
                             <th>Nama Gedung</th>
                             <th>Nama Kampus</th>
@@ -160,8 +160,15 @@
                             <td th:text="${data.idKampus.namaKampus}"></td>
                             <td th:text="${data.keterangan}"></td>
                             <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-                            <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
-
+                            <td>
+                                <form method="post" th:action="@{/delete/gedung(gedung=${data.idGedung})}">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> hapus
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
