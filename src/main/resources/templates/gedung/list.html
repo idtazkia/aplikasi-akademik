@@ -77,7 +77,14 @@
                             <td th:text="${data.alamat}">Jl. Ir. H. Juanda no 78 Sentul City, Citaringgul, Bogor</td>
                             <td th:text="${data.keterangan}">-</td>
                             <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-                            <td><button type="button" class="btn btn-danger btn-sm">Hapus</button></td>
+                            <td>
+                                <form method="post" th:action="@{/gedung/kampus/delete(kampus=${data.idKampus})}">
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                    <i class="ti-eraser"></i> hapus
+                                </button>
+                            </form></td>
                         </tr>
                         </tbody>
                     </table>

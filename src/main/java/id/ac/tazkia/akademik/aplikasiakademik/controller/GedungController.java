@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -67,6 +68,7 @@ public class GedungController {
         model.addAttribute("kampus",kampusDao.findByStatus(StatusConstants.Aktif));
     }
 
+//Controller Kampus
     @PostMapping(value = "/gedung/kampus/form")
     public String uploadBukti(@Valid Kampus kampus,
                               BindingResult error,
@@ -99,7 +101,19 @@ public class GedungController {
 
     }
 
+    @PostMapping(value = "/gedung/kampus/delete")
+    public String deleteKampus(@RequestParam Kampus kampus){
 
+        kampus.setStatus(StatusConstants.Nonaktif);
+        kampusDao.save(kampus);
+
+        return "redirect:/gedung/list";
+    }
+
+
+///////
+
+//Controller Gedung
     @PostMapping(value = "/gedung/form")
     public String simpanData(@Valid Gedung gedung,
                               BindingResult error,
