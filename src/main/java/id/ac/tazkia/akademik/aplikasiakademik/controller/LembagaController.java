@@ -154,5 +154,14 @@ public class LembagaController {
 
     }
 
+    @PostMapping("/delete/lembaga")
+    public String delete(@RequestParam Lembaga lembaga){
+
+        lembaga.setStatus(StatusConstants.Nonaktif);
+        lembagaDao.save(lembaga);
+
+        return "redirect:/lembaga/list";
+    }
+
 
 }
