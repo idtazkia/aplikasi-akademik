@@ -145,4 +145,13 @@ public class GedungController {
         return "redirect:/gedung/list";
 
     }
+
+    @PostMapping("/delete/gedung")
+    public String delete(@RequestParam Gedung gedung){
+
+        gedung.setStatus(StatusConstants.Nonaktif);
+        gedungDao.save(gedung);
+
+        return "redirect:/gedung/list";
+    }
 }
