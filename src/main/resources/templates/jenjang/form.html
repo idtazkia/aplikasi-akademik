@@ -19,7 +19,7 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/jenjang/form}" th:object="${jenjang}">
+        <form method="post" th:action="@{/jenjang/form(id = ${jenjang.idJenjang})}" th:object="${jenjang}">
 
             <div class="form-group">
                 <label>Kode</label>
@@ -46,9 +46,7 @@
                         </tr>
                         <input type="hidden" name="idLembaga" th:field="*{idJenjang}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="userEdit" th:text="${userEdit}" th:field="*{userEdit}">
                         <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
-                        <input type="hidden" name="tglEdit" th:text="${tglEdit}" th:field="*{tglEdit}">
                     </table>
                 </div>
             

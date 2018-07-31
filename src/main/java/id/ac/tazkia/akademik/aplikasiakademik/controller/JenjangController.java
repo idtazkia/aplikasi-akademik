@@ -74,7 +74,7 @@ public class JenjangController {
 
     @PostMapping(value = "/jenjang/form")
     public String uploadBukti(@Valid Jenjang jenjang,
-                              BindingResult error,
+                              BindingResult error,@RequestParam(required = false) Jenjang id,
                               Authentication currentUser){
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
@@ -90,18 +90,19 @@ public class JenjangController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        if (jenjang.getUserEdit() == null) {
+        if (id != null){
+            jenjang.setTglEdit(LocalDateTime.now());
+            jenjang.setUserEdit(u);
+            jenjang.setTglInsert(id.getTglInsert());
+        }
+
+        if (id == null) {
             jenjang.setUserInsert(u);
             jenjang.setTglInsert(LocalDateTime.now());
         }
-        jenjang.setStatus(StatusConstants.Aktif);
-
-        if (jenjang.getUserEdit() != null){
-            jenjang.setUserEdit(u);
-            jenjang.setTglEdit(LocalDateTime.now());
-        }
 
         jenjangDao.save(jenjang);
+
 
         return "redirect:/jenjang/list";
 
