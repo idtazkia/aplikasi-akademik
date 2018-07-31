@@ -147,9 +147,23 @@ public class GedungController {
     }
 
     @PostMapping("/delete/gedung")
-    public String delete(@RequestParam Gedung gedung){
+    public String delete(@RequestParam Gedung gedung,Authentication currentUser){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
 
         gedung.setStatus(StatusConstants.Nonaktif);
+        gedung.setUserEdit(u);
         gedungDao.save(gedung);
 
         return "redirect:/gedung/list";
