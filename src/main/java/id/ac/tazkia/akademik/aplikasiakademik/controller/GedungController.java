@@ -164,6 +164,7 @@ public class GedungController {
 
         gedung.setStatus(StatusConstants.Nonaktif);
         gedung.setUserEdit(u);
+        gedung.setTglEdit(LocalDateTime.now());
         gedungDao.save(gedung);
 
         return "redirect:/gedung/list";
