@@ -63,7 +63,13 @@
                     <td align="center">
                         <a href="#" class="btn btn-success btn-sm" th:href="@{/fakultas/form}" title="edit">Edit</a></td>
                     <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/fakultas/list}" title="Delete">Delete</a>
+                        <form method="post" th:action="@{/delete/fakultas(fakultas=${data.idFakultas})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

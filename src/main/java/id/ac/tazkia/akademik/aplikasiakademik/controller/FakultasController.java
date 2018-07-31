@@ -72,8 +72,24 @@ public class FakultasController {
     }
 
     @PostMapping("/delete/fakultas")
-    public String delete(@RequestParam Fakultas fakultas){
+    public String delete(@RequestParam Fakultas fakultas,
+                         Authentication currentUser) {
 
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+        fakultas.setTglEdit(LocalDateTime.now());
+        fakultas.setUserEdit(u);
         fakultas.setStatus(StatusConstants.Nonaktif);
         fakultasDao.save(fakultas);
 
