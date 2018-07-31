@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "tb__jenjang")
+@Table(name = "tb_jenjang")
 public class Jenjang {
 
     @Id
@@ -28,7 +28,7 @@ public class Jenjang {
     private String keterangan;
 
     @NotNull
-    private String na;
+    private String na = "1";
 
     private String status;
 

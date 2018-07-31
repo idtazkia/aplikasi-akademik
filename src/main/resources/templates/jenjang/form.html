@@ -19,27 +19,44 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form>
+        <form method="post" th:action="@{/jenjang/form}" th:object="${jenjang}">
 
             <div class="form-group">
                 <label>Kode</label>
-                <input type="text" class="form-control" placeholder="Kode">
+                <input type="text" th:field="*{kodeJenjang}" class="form-control" name="kodeJenjang" placeholder="Kode">
             </div>
 
             <div class="form-group">
                 <label>Nama</label>
-                <input type="text" class="form-control" placeholder="Nama">
+                <input type="text" th:field="*{namaJenjang}" class="form-control" name="namaJenjang" placeholder="Nama">
             </div>
 
             <div class="form-group">
                 <label>Keterangan</label>
-                <input type="text" class="form-control" placeholder="Keterangan">
+                <input type="text" class="form-control" th:field="*{keterangan}" name="keterangan" placeholder="Keterangan">
             </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td>Tidak Aktif? (NA)</td>
+                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
+                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                        </tr>
+                        <input type="hidden" name="idLembaga" th:field="*{idJenjang}">
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="userEdit" th:text="${userEdit}" th:field="*{userEdit}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                        <input type="hidden" name="tglEdit" th:text="${tglEdit}" th:field="*{tglEdit}">
+                    </table>
+                </div>
             
             <input class="btn btn-primary" type="submit" value="Simpan">
             <a th:href="@{/jenjang/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
             </a>
+    </div>
         </form>
     </div>
 
