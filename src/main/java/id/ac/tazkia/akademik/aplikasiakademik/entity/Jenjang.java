@@ -28,7 +28,7 @@ public class Jenjang {
     private String keterangan;
 
     @NotNull
-    private String na;
+    private String na = "1";
 
     private String status;
 
