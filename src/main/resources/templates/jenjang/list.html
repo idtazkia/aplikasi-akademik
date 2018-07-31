@@ -52,7 +52,7 @@
                     <td th:text="${data.namaJenjang}">S1</td>
                     <td th:text="${data.keterangan}">Sarjana</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
+                        <a th:href="@{/jenjang/form(id=${data.idJenjang})}" class="btn btn-success btn-sm" title="edit">Edit</a></td>
                     <td align="center">
                         <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
                     </td>
