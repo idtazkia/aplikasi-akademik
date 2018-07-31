@@ -38,6 +38,7 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">NA</th>
                     <th scope="col">Kode</th>
                     <th scope="col">Nama</th>
                     <th scope="col">Keterangan</th>
@@ -48,6 +49,15 @@
                 <tbody>
                 <tr th:each="data,row : ${list}">
                     <th th:text="${(row.index + 1)}">1</th>
+                    <td>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+
+                        </span>
+                    </td>
                     <td th:text="${data.kodeJenjang}">E001</td>
                     <td th:text="${data.namaJenjang}">S1</td>
                     <td th:text="${data.keterangan}">Sarjana</td>
