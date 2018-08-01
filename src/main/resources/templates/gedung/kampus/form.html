@@ -17,7 +17,7 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/gedung/kampus/form}" th:object="${kampus}">
+        <form method="post" th:action="@{/gedung/kampus/form(id=${kampus.idKampus})}" th:object="${kampus}">
             <input type="hidden" name="idKampus" th:field="*{idKampus}">
             <div class="form-group">
                 <div class="col-sm-12">
@@ -78,17 +78,15 @@
                                 </td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
+                        <input type="hidden" name="idKampus" th:field="*{idKampus}">
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
                     </table>
                 </div>
 
             </div>
 
-            <small th:if="*{idKampus}!= null">
-            <input class="btn btn-primary" type="submit" value="Perbarui">
-            </small>
-            <small th:if="*{idKampus}== null">
                 <input class="btn btn-primary" type="submit" value="Simpan">
-            </small>
+
             <small>
             <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
