@@ -107,4 +107,28 @@ public class JenjangController {
         return "redirect:/jenjang/list";
 
     }
+
+    @PostMapping("/delete/jenjang")
+    public String hapusJenjang(@RequestParam Jenjang jenjang,Authentication currentUser){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+        jenjang.setUserEdit(u);
+        jenjang.setTglEdit(LocalDateTime.now());
+        jenjang.setStatus(StatusConstants.Nonaktif);
+        jenjangDao.save(jenjang);
+
+        return "redirect:/jenjang/list";
+    }
 }
