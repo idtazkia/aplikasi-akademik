@@ -20,43 +20,35 @@
 
 
 
-        <form method="get" th:action="@{/gedung/list}">
-
-            <div class="form-group">
-                <label>Pilih Kampus</label>
-                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="kampus"
-                        name="provinsi">
-                    <option></option>
-                    <option>STEI TAZKIA SENTUL</option>
-                    <option>STEI TAZKIA MATRIKULASI</option>
-                </select>
-            </div>
+        <form method="post" th:action="@{/gedung/form(id=${gedung.idGedung})}"th:object="${gedung}">
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <label>Kode</label>
-                    <input type="text" class="form-control" placeholder="Kode">
+                    <label>Pilih Kampus</label>
+                    <select th:field="*{idKampus}" onchange="" style="width: 1050px;   " class="form-control js-example-placeholder-single"
+                            id="kampus"
+                            name="idKampus">
+                        <option value="">-Pilih Kampus-</option>
+                        <option th:each="data : ${kampus}"
+                                th:value="${data.idKampus}"
+                                th:text="${data.namaKampus}">STEI TAZKIA SENTUL
+                        </option>
+                    </select>
                 </div>
+
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Nama Gedung</label>
-                    <input type="text" class="form-control" placeholder="Nama Kampus">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Lokasi</label>
-                    <input type="text" class="form-control" placeholder="Alamat Kampus">
+                    <input type="text" class="form-control" th:field="*{namaGedung}" placeholder="Nama Gedung" name="namaGedung">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Keterangan</label>
-                    <input type="text" class="form-control" placeholder="Keterangan">
+                    <input type="text" class="form-control" th:field="*{keterangan}" placeholder="Keterangan" name="keterangan">
                 </div>
             </div>
             <div class="form-group">
@@ -64,16 +56,19 @@
                     <table class="table table-responsive">
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
-                            <td><input type="checkbox" class="form-control"></td>
+                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
+                        <input type="hidden" name="idGedung" th:field="*{idGedung}">
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </table>
                 </div>
 
             </div>
 
             <input class="btn btn-primary" type="submit" value="Simpan">
-            <a th:href="@{/matakuliah/list}" class="btn btn-primary" role="button">
+            <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Batal
             </a>
         </form>
