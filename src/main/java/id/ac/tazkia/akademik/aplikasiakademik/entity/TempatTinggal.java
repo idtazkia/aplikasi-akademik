@@ -11,17 +11,17 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
-@Table(name = "tb_agama")
-public class Agama {
+@Table(name = "tb_tinggal")
+public class TempatTinggal {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idAgama;
+    private String idTinggal;
 
     @NotNull
     @javax.validation.constraints.NotEmpty
-    private String agama;
+    private String tempatTinggal;
 
     private String status ;
 
