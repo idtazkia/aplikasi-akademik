@@ -18,7 +18,6 @@
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/gedung/kampus/form(id=${kampus.idKampus})}" th:object="${kampus}">
-            <input type="hidden" name="idKampus" th:field="*{idKampus}">
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Nama Kampus</label>
@@ -27,33 +26,33 @@
             </div>
 
 
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label>Provinsi</label>
-                        <select onchange="" th:field="*{propinsi}" class="form-control js-example-placeholder-single" id="provinsi"
-                                name="propinsi">
-                            <option value="">-Pilih Provinsi-</option>
-                            <option th:each="ins : ${daftarProp}"
-                                    th:value="${ins.idProvinsi}"
-                                    th:text="${ins.nama}">Jawa Barat</option>
-                        </select>
-                    </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Provinsi</label>
+                    <select onchange="" th:field="*{propinsi}" class="form-control js-example-placeholder-single" id="provinsi"
+                            name="propinsi">
+                        <option value="">-Pilih Provinsi-</option>
+                        <option th:each="ins : ${daftarProp}"
+                                th:value="${ins.idProvinsi}"
+                                th:text="${ins.nama}">Jawa Barat</option>
+                    </select>
                 </div>
+            </div>
 
 
 
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label>Kabupaten / Kota</label>
-                        <select onchange="" th:field="*{kabupatenKota}" class="form-control js-example-placeholder-single"
-                                name="kabupatenKota">
-                            <option value="">-Pilih Kabupaten / Kota-</option>
-                            <option th:each="ins : ${daftarKokab}"
-                                    th:value="${ins.idKokab}"
-                                    th:text="${ins.nama}">Bogor</option>
-                        </select>
-                    </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Kabupaten / Kota</label>
+                    <select onchange="" th:field="*{kabupatenKota}" class="form-control js-example-placeholder-single"
+                            name="kabupatenKota">
+                        <option value="">-Pilih Kabupaten / Kota-</option>
+                        <option th:each="ins : ${daftarKokab}"
+                                th:value="${ins.idKokab}"
+                                th:text="${ins.nama}">Bogor</option>
+                    </select>
                 </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
@@ -73,24 +72,25 @@
                     <table class="table table-responsive">
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
-                                <td>
-                                    <input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
-                                </td>
+                            <td>
+                                <input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
+                            </td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
-                        <input type="hidden" name="idKampus" th:field="*{idKampus}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="idLembaga" th:field="*{idKampus}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </table>
                 </div>
 
             </div>
 
-                <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Simpan">
 
             <small>
-            <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Batal
-            </a>
+                <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
+                    <span aria-hidden="true"></span>Batal
+                </a>
             </small>
         </form>
     </div>
