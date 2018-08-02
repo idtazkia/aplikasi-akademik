@@ -8,4 +8,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface GedungDao extends PagingAndSortingRepository<Gedung,String> {
     Page<Gedung> findByStatus (String status, Pageable page);
+    Iterable<Gedung> findByStatusAndNa(String status,String na);
 }
