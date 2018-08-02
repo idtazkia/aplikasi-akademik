@@ -38,6 +38,7 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">NA</th>
                     <th scope="col">Kode</th>
                     <th scope="col">Nama</th>
                     <th scope="col">Keterangan</th>
@@ -46,37 +47,30 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>E001</td>
-                    <td>S1</td>
-                    <td>Sarjana</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
+                <tr th:each="data,row : ${list}">
+                    <th th:text="${(row.index + 1)}">1</th>
+                    <td>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+
+                        </span>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>P001</td>
-                    <td>S2</td>
-                    <td>Pasca Sarjana</td>
+                    <td th:text="${data.kodeJenjang}">E001</td>
+                    <td th:text="${data.namaJenjang}">S1</td>
+                    <td th:text="${data.keterangan}">Sarjana</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
+                        <a th:href="@{/jenjang/form(id=${data.idJenjang})}" class="btn btn-success btn-sm" title="edit">Edit</a></td>
                     <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>T001</td>
-                    <td>S3</td>
-                    <td>Doktoral</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
+                        <form method="post" th:action="@{/delete/jenjang(jenjang=${data.idJenjang})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

@@ -17,33 +17,54 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="get" th:action="@{/gedung/list}">
-
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Kode</label>
-                    <input type="text" class="form-control" placeholder="Kode">
-                </div>
-            </div>
-
+        <form method="post" th:action="@{/gedung/kampus/form(id=${kampus.idKampus})}" th:object="${kampus}">
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Nama Kampus</label>
-                    <input type="text" class="form-control" placeholder="Nama Kampus">
+                    <input type="text" class="form-control" th:field="*{namaKampus}" name="namaKampus" placeholder="Nama Kampus">
+                </div>
+            </div>
+
+
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Provinsi</label>
+                    <select onchange="" th:field="*{propinsi}" class="form-control js-example-placeholder-single" id="provinsi"
+                            name="propinsi">
+                        <option value="">-Pilih Provinsi-</option>
+                        <option th:each="ins : ${daftarProp}"
+                                th:value="${ins.idProvinsi}"
+                                th:text="${ins.nama}">Jawa Barat</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Kabupaten / Kota</label>
+                    <select onchange="" th:field="*{kabupatenKota}" class="form-control js-example-placeholder-single"
+                            name="kabupatenKota">
+                        <option value="">-Pilih Kabupaten / Kota-</option>
+                        <option th:each="ins : ${daftarKokab}"
+                                th:value="${ins.idKokab}"
+                                th:text="${ins.nama}">Bogor</option>
+                    </select>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Alamat</label>
-                    <input type="text" class="form-control" placeholder="Alamat Kampus">
+                    <input type="text" name="alamat" th:field="*{alamat}" class="form-control" placeholder="Alamat Kampus">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Keterangan</label>
-                    <input type="text" class="form-control" placeholder="Keterangan">
+                    <input type="text" name="keterangan" th:field="*{keterangan}" class="form-control" placeholder="Keterangan">
                 </div>
             </div>
             <div class="form-group">
@@ -51,18 +72,26 @@
                     <table class="table table-responsive">
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
-                            <td><input type="checkbox" class="form-control"></td>
+                            <td>
+                                <input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
+                            </td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="idLembaga" th:field="*{idKampus}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </table>
                 </div>
 
             </div>
 
             <input class="btn btn-primary" type="submit" value="Simpan">
-            <a th:href="@{/matakuliah/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Batal
-            </a>
+
+            <small>
+                <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
+                    <span aria-hidden="true"></span>Batal
+                </a>
+            </small>
         </form>
     </div>
 
@@ -70,3 +99,10 @@
 
 </body>
 </html>
+
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
