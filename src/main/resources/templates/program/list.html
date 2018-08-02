@@ -37,46 +37,40 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Kode</th>
-                    <th scope="col">Nama</th>
+                    <th scope="col">No</th>
+                    <th>NA</th>
+                    <th scope="col">Nama Program</th>
                     <th scope="col">Keterangan</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>PR01</td>
-                    <td>Reguler</td>
-                    <td>S1</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/program/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/program/list}" title="Delete">Delete</a>
+                <tr th:each="data,row : ${list}">
+                    <th th:text="${(row.index + 1)}">1</th>
+                    <td>
+                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+
+                                </span>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>PR02</td>
-                    <td>Reguler</td>
-                    <td>S2</td>
+                    <td th:text="${data.namaProgram}">S1</td>
+                    <td th:text="${data.keterangan}">Sarjana</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/program/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/program/list}" title="Delete">Delete</a>
+                        <a th:href="@{/program/form(id=${data.idProgram})}" class="btn btn-success btn-sm" role="button" title="edit">Edit</a>
+                        <!--<a th:href="@{/program/form(id=${data.idProgram})}" class="btn btn-success" role="button" title="edit">Edit</a>-->
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>PR03</td>
-                    <td>Eksekutif</td>
-                    <td>S2</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/program/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/program/list}" title="Delete">Delete</a>
+                    <td>
+                        <form method="post" th:action="@{/program/delete(program=${data.idProgram})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i>Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
@@ -106,6 +100,7 @@
 
         </div>
     </div>
+
 </section>
 
 </body>
