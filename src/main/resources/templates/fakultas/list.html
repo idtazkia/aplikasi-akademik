@@ -61,7 +61,7 @@
                     <td th:text="${data.namaFakultas}" >Fakultas Ekonomi</td>
                     <td th:text="${data.pejabat}" ></td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/fakultas/form}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/fakultas/form(id=${data.idFakultas})}" title="edit">Edit</a></td>
                     <td align="center">
                         <form method="post" th:action="@{/delete/fakultas(fakultas=${data.idFakultas})}">
                             <button type="submit" class="btn btn-danger btn-sm"

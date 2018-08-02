@@ -39,15 +39,10 @@ public class FakultasController {
     }
 
     @GetMapping("/fakultas/form")
-    public void formFakultas(){
-    }
+    public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id) {
 
-    @PostMapping(value = "/fakultas/form")
-    public String uploadBukti(@Valid Fakultas fakultas,
-                              BindingResult error,
-                              Authentication currentUser) throws Exception {
+        model.addAttribute("fakultas", new Fakultas());
 
-//        mengambil data user yang login
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
         if (currentUser == null) {
@@ -61,14 +56,51 @@ public class FakultasController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        fakultas.setTglEdit(LocalDateTime.now());
-        fakultas.setTglInsert(LocalDateTime.now());
-        fakultas.setUserEdit(u);
-        fakultas.setUserInsert(u);
-        fakultas.setStatus(StatusConstants.Aktif);
+        if (id != null && !id.isEmpty()) {
+            Fakultas fakultas = fakultasDao.findById(id).get();
+            if (fakultas != null) {
+                fakultas.setUserEdit(u);
+                fakultas.setTglEdit(LocalDateTime.now());
+                model.addAttribute("fakultas", fakultas);
+            }
+        }
+        return "/fakultas/form";
+    }
+
+    @PostMapping(value = "/fakultas/form")
+    public String uploadBukti(@Valid Fakultas fakultas,
+                              BindingResult error,@RequestParam(required = false) Fakultas id,
+                              Authentication currentUser){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+        if (id != null){
+            fakultas.setTglEdit(LocalDateTime.now());
+            fakultas.setUserEdit(u);
+            fakultas.setTglInsert(id.getTglInsert());
+        }
+
+        if (id == null) {
+            fakultas.setUserInsert(u);
+            fakultas.setTglInsert(LocalDateTime.now());
+        }
+
         fakultasDao.save(fakultas);
 
+
         return "redirect:/fakultas/list";
+
     }
 
     @PostMapping("/delete/fakultas")

@@ -32,7 +32,7 @@ public class Fakultas {
     private String na = "1";
 
     @NotNull
-    private String status;
+    private String status = "1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
