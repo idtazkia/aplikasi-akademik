@@ -16,8 +16,6 @@
         </div>
     </div>
 
-
-
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
         <h6 class="border-bottom border-gray pb-2 mb-0"><center>Daftar Ruang Kelas</center></h6>
@@ -25,90 +23,85 @@
 
         <div class="box-body table-responsive no-padding">
 
-
-                    <table width="100%">
-                        <tr>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Pilih Kampus</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="kampus"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>STEI TAZKIA SENTUL</option>
-                                                    <option>STEI TAZKIA MATRIKULASI</option>
-                                                </select>
-                                            </div>
-                                        </div>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pilih Kampus</label>
+                                        <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="kampus"
+                                                name="provinsi">
+                                            <option>Pilih</option>
+                                            <option>STEI TAZKIA SENTUL</option>
+                                            <option>STEI TAZKIA MATRIKULASI</option>
+                                        </select>
                                     </div>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <a th:href="@{/ruang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Ruang Kelas</a>
 
-                        <tr>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Pilih Gedung</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="gedung"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>Granada</option>
-                                                    <option>Abu Hanifah</option>
-                                                </select>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">NA</th>
+                    <th scope="col">Nama Gedung</th>
+                    <th scope="col">Nama Ruangan</th>
+                    <th scope="col">Kapasitas</th>
+                    <th scope="col">Keterangan</th>
+                    <th scope="col" width="30px"></th>
+                    <th scope="col" width="40px"></th>
+                </thead>
+                <tbody>
+                <tr th:each="data, row : ${list}">
+                    <td th:text="${(row.index + 1)}"></td>
+                    <td>
+                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
 
-                        <tr>
-                            <td colspan="2">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <a th:href="@{/ruang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Ruang Kelas</a>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Lokasi</th>
-                            <th>Keterangan</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">S0001</th>
-                            <td rowspan="2">Ruang 1.1 Lab Mini Bank</td>
-                            <td rowspan="2">Granada - STEI TAZKIA SENTUL</td>
-                            <td>Untuk Praktikum Mini Bank</td>
-                            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <br>
-
+                                </span>
+                    </td>
+                    <td th:text="${(data.idGedung.namaGedung)}"></td>
+                    <td th:text="${(data.namaRuangan)}"></td>
+                    <td th:text="${(data.kapasitas)}"></td>
+                    <td th:text="${(data.keterangan)}"></td>
+                    <td align="center">
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/ruang/form(id=${data.idRuangan})}" title="edit">Edit</a></td>
+                    <td align="center">
+                        <form method="post" th:action="@{/delete/ruangan(ruangan=${data.idRuangan})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
         </div>
         <br>
         <div>
@@ -137,7 +130,6 @@
     </div>
 
 </section>
-
 
 </body>
 </html>
