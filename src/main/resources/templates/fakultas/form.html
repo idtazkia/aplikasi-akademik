@@ -19,39 +19,36 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-    <form>
+        <form method="post" th:action="@{/fakultas/form(id=${fakultas.idFakultas})}" th:object="${fakultas}">
 
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Lembaga</label>
-            <select class="form-control" id="exampleFormControlSelect1">
-                <option>STEI TAZKIA</option>
-            </select>
+            <label>Kode Fakultas</label>
+            <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Kode">
         </div>
 
         <div class="form-group">
-            <label for="exampleFormControlInput1">Kode Fakultas</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode">
+            <label>Nama Fakultas</label>
+            <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Nama">
         </div>
 
         <div class="form-group">
-            <label for="exampleFormControlInput1">Nama Fakultas</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
+            <label>Pejabat</label>
+            <input type="text" th:field="*{pejabat}" name="pejabat" class="form-control" placeholder="Pejabat">
         </div>
 
         <div class="form-group">
-            <label for="exampleFormControlInput1">Pejabat</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pejabat">
-        </div>
-
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Jabtan</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jabatan">
-        </div>
-
-
-        <div class="form-group">
-            <label for="exampleFormControlFile1">Pilih file logo Fakultas</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+            <div class="col-sm-12">
+                <table class="table table-responsive">
+                    <tr>
+                        <td>Tidak Aktif? (NA)</td>
+                        <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
+                        <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                    </tr>
+                        <input type="hidden" name="idFakultas" th:field="*{idFakultas}">
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                </table>
+            </div>
         </div>
 
         <input class="btn btn-primary" type="submit" value="Simpan">

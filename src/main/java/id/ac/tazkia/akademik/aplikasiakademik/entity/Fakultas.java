@@ -8,29 +8,31 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@Table(name = "tb_fakultas")
 @Entity
 @Data
-@Table(name = "tb_jenjang")
-public class Jenjang {
+public class Fakultas {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idJenjang;
+    private String idFakultas;
+
 
     @NotNull
-    private String kodeJenjang;
+    private String kodeFakultas;
 
     @NotNull
-    private String namaJenjang;
+    private String namaFakultas;
 
     @NotNull
-    private String keterangan;
+    private String pejabat;
 
     @NotNull
-    private String na;
+    private String na = "1";
 
-    private String status;
+    @NotNull
+    private String status = "1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -47,5 +49,4 @@ public class Jenjang {
     @ManyToOne
     @JoinColumn(name = "user_edit ")
     private User userEdit;
-
 }
