@@ -159,7 +159,10 @@
                             <td th:text="${data.namaGedung}"></td>
                             <td th:text="${data.idKampus.namaKampus}"></td>
                             <td th:text="${data.keterangan}"></td>
-                            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
+                            <td>
+                                <a href="form"  th:href="@{/gedung/form(id=${data.idGedung})}">
+                                <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                            </td>
                             <td>
                                 <form method="post" th:action="@{/delete/gedung(gedung=${data.idGedung})}">
                                     <button type="submit" class="btn btn-danger"

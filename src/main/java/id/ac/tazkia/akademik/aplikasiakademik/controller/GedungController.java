@@ -60,34 +60,41 @@ public class GedungController {
     public Iterable<KabupatenKota> daftaKokab() {
         return kokabDao.findAll();
     }
-
-    @GetMapping("/gedung/form")
-    private void gedungForm(Model model){
-        model.addAttribute("kampus",kampusDao.findByStatus(StatusConstants.Aktif));
-    }
-
-//Controller Kampus
+    //Controller Kampus
 
     @GetMapping("/gedung/kampus/form")
-    public void   formKampus(@RequestParam(value = "id", required = false) String idKampus,
-    Model m){
+    public void   formKampus(@RequestParam(value = "id", required = false) String idKampus,Authentication currentUser,
+                             Model m){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
         //defaultnya, isi dengan object baru
         m.addAttribute("kampus", new Kampus());
-
         if (idKampus != null && !idKampus.isEmpty()){
             Kampus kampus= kampusDao.findById(idKampus).get();
             if (kampus != null){
+                kampus.setUserInsert(u);
                 m.addAttribute("kampus", kampus);
             }
         }
     }
 
-    @PostMapping(value = "/gedung/kampus/form")
-    public String simpanKampus(@Valid Kampus kampus,
-                              BindingResult error,
-                              Authentication currentUser) throws Exception {
 
-//        mengambil data user yang login
+    @PostMapping(value = "/gedung/kampus/form")
+    public String tampilkampus(@Valid Kampus kampus,
+                              BindingResult error,@RequestParam(required = false) Kampus id,
+                              Authentication currentUser){
+
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
         if (currentUser == null) {
@@ -101,38 +108,100 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
+        System.out.println("user " + u.getId());
 
+        if (id != null){
+            kampus.setTglEdit(LocalDateTime.now());
+            kampus.setUserEdit(u);
+            kampus.setTglInsert(id.getTglInsert());
+            kampus.setUserInsert(id.getUserInsert());
+        }
 
-        kampus.setTglEdit(LocalDateTime.now());
-        kampus.setTglInsert(LocalDateTime.now());
-        kampus.setUserEdit(u);
-        kampus.setUserInsert(u);
-        kampus.setStatus(StatusConstants.Aktif);
+        if (id == null) {
+            kampus.setUserInsert(u);
+            kampus.setTglInsert(LocalDateTime.now());
+        }
+
         kampusDao.save(kampus);
+
 
         return "redirect:/gedung/list";
 
-    }
-
-    @PostMapping(value = "/gedung/kampus/delete")
-    public String deleteKampus(@RequestParam Kampus kampus){
-
-        kampus.setStatus(StatusConstants.Nonaktif);
-        kampusDao.save(kampus);
-
-        return "redirect:/gedung/list";
     }
 
 
 ///////
 
 //Controller Gedung
-    @PostMapping(value = "/gedung/form")
-    public String simpanData(@Valid Gedung gedung,
-                              BindingResult error,
-                              Authentication currentUser) throws Exception {
+@GetMapping("/gedung/form")
+public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id) {
 
-//        mengambil data user yang login
+    model.addAttribute("gedung", new Gedung());
+    model.addAttribute("kampus",kampusDao.findByStatus(StatusConstants.Aktif));
+
+
+    LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+    if (currentUser == null) {
+        LOGGER.warn("Current user is null");
+    }
+
+    String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+    User u = userDao.findByUsername(username);
+    LOGGER.debug("User ID : {}", u.getId());
+    if (u == null) {
+        LOGGER.warn("Username {} not found in database ", username);
+    }
+
+    if (id != null && !id.isEmpty()) {
+       Gedung gedung = gedungDao.findById(id).get();
+        if (gedung != null) {
+            gedung.setUserEdit(u);
+            gedung.setTglEdit(LocalDateTime.now());
+            model.addAttribute("gedung", gedung);
+        }
+    }
+    return "/gedung/form";
+}
+
+@PostMapping(value = "/gedung/form")
+public String uploadBukti(@Valid Gedung gedung,
+                          BindingResult error,@RequestParam(required = false) Gedung id,
+                          Authentication currentUser){
+
+    LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+    if (currentUser == null) {
+        LOGGER.warn("Current user is null");
+    }
+
+    String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+    User u = userDao.findByUsername(username);
+    LOGGER.debug("User ID : {}", u.getId());
+    if (u == null) {
+        LOGGER.warn("Username {} not found in database ", username);
+    }
+
+    if (id != null){
+        gedung.setTglEdit(LocalDateTime.now());
+        gedung.setUserEdit(u);
+        gedung.setTglInsert(id.getTglInsert());
+    }
+
+    if (id == null) {
+        gedung.setUserInsert(u);
+        gedung.setTglInsert(LocalDateTime.now());
+    }
+
+    gedungDao.save(gedung);
+
+
+    return "redirect:/gedung/list";
+
+}
+    @PostMapping("/delete/gedung")
+    public String delete(@RequestParam Gedung gedung,Authentication currentUser){
+
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
         if (currentUser == null) {
@@ -146,25 +215,13 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-
-
-        gedung.setTglEdit(LocalDateTime.now());
-        gedung.setTglInsert(LocalDateTime.now());
-        gedung.setUserEdit(u);
-        gedung.setUserInsert(u);
-        gedung.setStatus(StatusConstants.Aktif);
-        gedungDao.save(gedung);
-
-        return "redirect:/gedung/list";
-
-    }
-
-    @PostMapping("/delete/gedung")
-    public String delete(@RequestParam Gedung gedung){
-
         gedung.setStatus(StatusConstants.Nonaktif);
+        gedung.setUserEdit(u);
+        gedung.setTglEdit(LocalDateTime.now());
         gedungDao.save(gedung);
 
         return "redirect:/gedung/list";
     }
+
+
 }
