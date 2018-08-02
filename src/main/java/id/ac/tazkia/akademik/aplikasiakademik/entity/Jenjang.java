@@ -28,9 +28,9 @@ public class Jenjang {
     private String keterangan;
 
     @NotNull
-    private String na;
+    private String na = "1";
 
-    private String status;
+    private String status = "1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
