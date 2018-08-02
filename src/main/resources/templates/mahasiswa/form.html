@@ -45,20 +45,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <input type='file' onchange="readURL(this);" /> <!-- Membuat inputan gambar -->
+                                <img id="preview_gambar" src="#" alt="Gambar Anda" /> <!-- Area preview gambar -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="exampleFormControlInput1">Nama
                                     &nbsp&nbsp
                                     <small class="text-danger">* Isi nama sesuai dengan ijazah</small>
                                 </label>
                                 <input type="text" class="form-control" id="exampleFormControlInput1"
                                        placeholder="Nama">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nomor Induk Mahasiswa (NIM)</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Nomor Induk Mahasiswa (NIM)">
                             </div>
                         </div>
                     </div>
@@ -480,6 +479,12 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Password</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Masukan Password">
+                            </div>
+
                         </div>
                         <div class="col-md-6">
                             <br>
@@ -517,6 +522,13 @@
                             <div class="form-group">
                                 <label for="exampleFormControlInput1">Tanggal Aktif</label>
                                 <input type="text" class="form-control" id="datepicker3">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Tahun Angkatan</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                       placeholder="Masukan Tahun Angkatan">
                             </div>
 
                         </div>
@@ -917,6 +929,24 @@
         placeholder: "Pilih Kode Pos",
         allowClear: true
     });
+
+
+    function readURL(input) { // Mulai membaca inputan gambar
+        if (input.files && input.files[0]) {
+            var reader = new FileReader(); // Membuat variabel reader untuk API FileReader
+
+            reader.onload = function (e) { // Mulai pembacaan file
+                $('#preview_gambar') // Tampilkan gambar yang dibaca ke area id #preview_gambar
+                    .attr('src', e.target.result)
+                    .width(300)
+                    .height(150);
+                    // Menentukan lebar gambar preview (dalam pixel)
+//.height(200); // Jika ingin menentukan lebar gambar silahkan aktifkan perintah pada baris ini
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
 </script>
 

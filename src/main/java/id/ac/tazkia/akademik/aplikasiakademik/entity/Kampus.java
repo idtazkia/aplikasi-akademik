@@ -40,23 +40,21 @@ public class Kampus {
     private String keterangan;
 
     @NotNull
-    private String status;
+    private String status ="1";
 
     @NotNull @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime tglInsert;
 
-    @NotNull @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime tglEdit;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "user_insert")
     private User userInsert;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "user_edit ")
     private User userEdit;
 

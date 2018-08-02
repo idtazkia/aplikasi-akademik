@@ -20,15 +20,15 @@
 
 
 
-        <form method="post" th:action="@{/gedung/form}">
+        <form method="post" th:action="@{/gedung/form(id=${gedung.idGedung})}"th:object="${gedung}">
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Pilih Kampus</label>
-                    <select onchange="" style="width: 1050px;" class="form-control js-example-placeholder-single"
+                    <select th:field="*{idKampus}" onchange="" style="width: 1050px;   " class="form-control js-example-placeholder-single"
                             id="kampus"
                             name="idKampus">
-                        <option></option>
+                        <option value="">-Pilih Kampus-</option>
                         <option th:each="data : ${kampus}"
                                 th:value="${data.idKampus}"
                                 th:text="${data.namaKampus}">STEI TAZKIA SENTUL
@@ -41,14 +41,14 @@
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Nama Gedung</label>
-                    <input type="text" class="form-control" placeholder="Nama Gedung" name="namaGedung">
+                    <input type="text" class="form-control" th:field="*{namaGedung}" placeholder="Nama Gedung" name="namaGedung">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Keterangan</label>
-                    <input type="text" class="form-control" placeholder="Keterangan" name="keterangan">
+                    <input type="text" class="form-control" th:field="*{keterangan}" placeholder="Keterangan" name="keterangan">
                 </div>
             </div>
             <div class="form-group">
@@ -59,6 +59,9 @@
                             <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
+                        <input type="hidden" name="idGedung" th:field="*{idGedung}">
+                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </table>
                 </div>
 
