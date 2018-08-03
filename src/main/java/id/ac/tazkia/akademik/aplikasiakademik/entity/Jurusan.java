@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 public class Jurusan {
+
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
