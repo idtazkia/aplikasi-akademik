@@ -39,45 +39,32 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Kode</th>
-                    <th scope="col">Nama</th>
+                    <th scope="col">Nama Prodi & Fakultas</th>
+                    <th scope="col">Jenjang</th>
                     <th scope="col">Pejabat</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>P01</td>
-                    <td>Bisnis Manajemen Islam</td>
-                    <td>-</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
+                <tr th:each="data,row : ${prodi}">
+                    <th th:text="${(row.index + 1)}">1</th>
+                    <td th:text="${data.kodeProdi}"></td>
+                    <td th:text="${data.namaProdi + '&nbsp&nbsp&nbsp&nbsp' + '(' + data.idJurusan.idFakultas.namaFakultas + ')'}"></td>
+                    <td th:text="${data.idJenjang.namaJenjang}"></td>
+                    <td th:text="${data.pejabat}"></td>
+                    <td>
+                        <a href="form"  th:href="@{/programstudi/form(id=${data.idProdi})}">
+                            <button type="button" class="btn btn-primary btn-sm">Edit</button></a>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>P02</td>
-                    <td>Akuntansi Islam</td>
-                    <td>-</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>P03</td>
-                    <td>Ekonomi Islam</td>
-                    <td>-</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
-                    </td>
+                    <td>
+                        <form method="post" th:action="@{/delete/programstudi(prodi=${data.idProdi})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> hapus
+                            </button>
+                        </form></td>
                 </tr>
                 </tbody>
             </table>

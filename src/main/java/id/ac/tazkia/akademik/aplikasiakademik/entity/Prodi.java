@@ -19,23 +19,21 @@ import java.time.LocalDateTime;
         private String idProdi;
 
         @ManyToOne
-        @NotNull
         @JoinColumn(name = "id_jurusan")
         private Jurusan idJurusan;
 
         @ManyToOne
-        @NotNull
         @JoinColumn(name = "id_jenjang")
-        private Jurusan idJenjang;
+        private Jenjang idJenjang;
 
-        @NotNull
+
         private String kodeProdi;
 
-        @NotNull
+
         private String namaProdi;
 
 
-        @NotNull
+
         private String pejabat;
 
         @NotNull
