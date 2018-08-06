@@ -7,4 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface FakultasDao extends PagingAndSortingRepository<Fakultas, String> {
     Page<Fakultas> findByStatus(String status, Pageable page);
+    Iterable<Fakultas> findByStatusAndNa(String status, String na);
 }

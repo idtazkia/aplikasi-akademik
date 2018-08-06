@@ -37,7 +37,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">No</th>
+                    <th scope="col">Na</th>
                     <th scope="col">Kode</th>
                     <th scope="col">Fakultas</th>
                     <th scope="col">Jurusan</th>
@@ -47,40 +48,30 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>P01</td>
-                    <td>Ekonomi Syariah</td>
-                    <td>Bisnis Islam</td>
-                    <td>-</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jurusan/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jurusan/list}" title="Delete">Delete</a>
+                <tr th:each="data,row : ${list}">
+                    <td th:text="${(row.index + 1)}">1</td>
+                    <td>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                        </span>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>P02</td>
-                    <td>Ekonomi Syariah</td>
-                    <td>Bisnis Islam</td>
-                    <td>-</td>
+                    <td th:text="${data.kodeJurusan}" >E001</td>
+                    <td th:text="${data.idFakultas.namaFakultas}"></td>
+                    <td th:text="${data.namaJurusan}" >Fakultas Ekonomi</td>
+                    <td th:text="${data.pejabat}" ></td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jurusan/form(id=${data.idJurusan})}" title="edit">Edit</a></td>
                     <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>P03</td>
-                    <td>Ekonomi Syariah</td>
-                    <td>Ekonomi Islam</td>
-                    <td>-</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/programstudi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/programstudi/list}" title="Delete">Delete</a>
+                        <form method="post" th:action="@{/delete/jurusan(jurusan=${data.idJurusan})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
