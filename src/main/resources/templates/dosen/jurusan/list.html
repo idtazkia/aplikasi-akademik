@@ -51,7 +51,7 @@
                         <tr>
                             <td colspan="2">
                                 <input class="btn btn-primary" type="submit" value="Simpan">
-                                <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">
+                                <a th:href="@{/dosen/list}" class="btn btn-primary" role="button">
                                     <span aria-hidden="true"></span>Batal
                                 </a>
 
@@ -68,21 +68,26 @@
                         <tr>
                             <th>#</th>
                             <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Singkatan</th>
-                            <th>SKS</th>
-                            <th>Pras</th>
+                            <th>Nama Program Studi</th>
+                            <th width="30px"></th>
+                            <th width="40px"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">5454</th>
-                            <td rowspan="2">Pengantar Akutansi II</td>
-                            <td rowspan="2">PA2</td>
-                            <td>4</td>
-                            <td>
-                                <a th:href="@{/prasyarat/form}" class="btn btn-primary" role="button" aria-pressed="true">+</a>
+                            <th>1</th>
+                            <th>5454</th>
+                            <td>Akuntansi Islam</td>
+                            <td align="center">
+                                <a href="#" class="btn btn-success btn-sm"  title="edit">Edit</a></td>
+                            <td align="center">
+                                <form method="post" >
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Hapus
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>

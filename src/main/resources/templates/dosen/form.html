@@ -96,11 +96,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Agama</label>
-                                <select onchange="" class="form-control js-example-placeholder-single" id="agama"
+                                <select onchange="" class="form-control" id="agama"
                                         th:field="*{agama}" name="agama">
                                     <option value=""></option>
                                     <option th:each="ins : ${daftarAgama}"
-                                            th:value="${ins.agama}"
+                                            th:value="${ins.idAgama}"
                                             th:text="${ins.agama}">Islam</option>
                                 </select>
                             </div>
