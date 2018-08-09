@@ -61,7 +61,7 @@ public class DosenController {
     public Iterable<Agama> daftaAgama() {return agamaDao.findAll();}
 
     @ModelAttribute("daftarProdi")
-    public Iterable<Prodi> daftaProdi() {return prodiDao.findAll();}
+    public Iterable<Prodi> daftaProdi() {return prodiDao.findByStatusAndNa(StatusConstants.Aktif, StatusConstants.Aktif);}
 
 
     @GetMapping("/dosen/list")
