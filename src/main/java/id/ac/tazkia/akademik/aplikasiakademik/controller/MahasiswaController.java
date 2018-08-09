@@ -228,7 +228,7 @@ public class MahasiswaController {
         mhswAkademik.setTahunAngkatan(data.getTahunAngkatan());
         mhswAkademik.setNisn(data.getNisn());
         mhswAkademik.setTglMasuk(data.getTglMasuk());
-        mhswAkademik.setIdStatusKeaktifan("adasds");
+        mhswAkademik.setIdStatusKeaktifan(data.getIdStatusKeaktifan());
         mhswAkademik.setTglAktif(data.getTglAktif());
         mhswAkademik.setPendSebelum(data.getPendSebelum());
         mhswAkademik.setUserInsert(u);
