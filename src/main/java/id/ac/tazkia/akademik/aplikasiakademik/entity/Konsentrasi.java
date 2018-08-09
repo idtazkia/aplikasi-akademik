@@ -22,13 +22,13 @@ public class Konsentrasi {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_prodi")
-    private Gedung idProdi;
+    private Prodi idProdi;
 
     @NotNull
     private String kodeKonsentrasi;
 
     @NotNull
-    private BigInteger namaKonsentrasi;
+    private String namaKonsentrasi;
 
     @NotNull
     private String na = "1";
