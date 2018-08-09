@@ -25,10 +25,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="exampleFormControlSelect1">Fakultas</label>
+                        <label for="exampleFormControlSelect1">Program</label>
                         <select class="form-control" id="exampleFormControlSelect1">
-                            <option>Ekonomi</option>
-                            <option>Pendidikan</option>
+                            <option></option>
+                            <option>S1</option>
+                            <option>S2</option>
                         </select>
                     </div>
 
@@ -105,12 +106,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>1519001</td>
-                            <td>Student 1</td>
-                            <td>Ekonomi</td>
-                            <td>Akuntansi Syariah</td>
+                        <tr th:each="data,row : ${list}">
+                            <th th:text="${(row.index + 1)}" scope="row">1</th>
+                            <td th:text="${data.idMhsw.nim}">1519001</td>
+                            <td th:text="${data.idMhsw.nama}">1519001</td>
+                            <td th:text="${data.idFakultas.namaFakultas}">Student 1</td>
+                            <td th:text="${data.idProdi.namaProdi}">Ekonomi</td>
                             <td align="center">
                                 <a href="#" class="btn btn-success btn-sm" th:href="@{/mahasiswa/form}" title="edit">Edit</a></td>
                             <td align="center">

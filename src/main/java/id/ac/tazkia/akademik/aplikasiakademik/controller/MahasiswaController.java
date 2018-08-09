@@ -132,7 +132,8 @@ public class MahasiswaController {
     }
 
     @GetMapping("/mahasiswa/list")
-    public void daftarMahasiswa(){
+    public void daftarMahasiswa(Model model,Pageable page){
+        model.addAttribute("list",mahasiswaAkademikDao.findByStatus(StatusConstants.Aktif,page));
     }
 
     @GetMapping("/mahasiswa/form")
