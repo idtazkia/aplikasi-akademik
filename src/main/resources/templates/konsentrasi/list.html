@@ -38,51 +38,39 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Fakultas</th>
+                    <th scope="col">na</th>
                     <th scope="col">Program Studi</th>
+                    <th scope="col">Kode</th>
                     <th scope="col">Konsentrasi</th>
-                    <th scope="col">Keterangan</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Fakultas Ekonomi</td>
-                    <td>Bisnis Manajemen Islam</td>
-                    <td>S1</td>
-                    <td></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/konsentrasi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/konsentrasi/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
+                <tr th:each="data, row : ${list}">
+                    <td th:text="${(row.index + 1)}"></td>
+                    <td>
+                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
 
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Fakultas Tekhnik</td>
-                    <td>Akuntansi Islam</td>
-                    <td>S1</td>
-                    <td></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/konsentrasi/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/konsentrasi/list}" title="Delete">Delete</a>
+                                </span>
                     </td>
-                </tr>
-
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Fakultas Pendidikan</td>
-                    <td>Ekonomi Islam</td>
-                    <td>S1</td>
-                    <td></td>
+                    <td th:text="${data.idProdi.namaProdi}">Fakultas Ekonomi</td>
+                    <td th:text="${data.kodeKonsentrasi}">Bisnis Manajemen Islam</td>
+                    <td th:text="${data.namaKonsentrasi}">Bisnis Manajemen Islam</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/konsentrasi/form}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/konsentrasi/form(id=${data.idKonsentrasi})}" title="edit">Edit</a></td>
                     <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/konsentrasi/list}" title="Delete">Delete</a>
+                        <form method="post" th:action="@{/delete/konsentrasi(konsentrasi=${data.idKonsentrasi})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
 
