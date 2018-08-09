@@ -26,8 +26,9 @@ public class MhswOrtu {
     @NotNull
     private String namaAyah;
 
-    @NotNull
-    private String agamaAyah;
+    @ManyToOne
+    @JoinColumn(name = "agama_ayah")
+    private Agama agamaAyah;
 
     @NotNull
     private String pendAyah;
@@ -41,8 +42,9 @@ public class MhswOrtu {
     @NotNull
     private String namaIbu;
 
-    @NotNull
-    private String agamaIbu;
+    @ManyToOne
+    @JoinColumn(name = "agama_ibu")
+    private Agama agamaIbu;
 
     @NotNull
     private String pendIbu;
@@ -83,7 +85,7 @@ public class MhswOrtu {
     private String email;
 
     @NotNull
-    private String status;
+    private String status="1";
 
     @ManyToOne
     @JoinColumn(name = "user_insert")

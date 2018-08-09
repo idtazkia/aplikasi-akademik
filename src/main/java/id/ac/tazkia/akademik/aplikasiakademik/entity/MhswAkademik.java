@@ -71,7 +71,7 @@ public class MhswAkademik {
     private String pendSebelum;
 
     @NotNull
-    private String status;
+    private String status = "1";
 
     @ManyToOne
     @JoinColumn(name = "user_insert")

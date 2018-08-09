@@ -29,8 +29,8 @@ public class MhswKost {
 
     @ManyToOne
     @NotNull
-    @JoinColumn(name = "id_provinsi")
-    private Provinsi idProvinsi;
+    @JoinColumn(name = "id_propinsi")
+    private Provinsi idPropinsi;
 
     @ManyToOne
     @NotNull
@@ -44,7 +44,7 @@ public class MhswKost {
     private String negara;
 
     @NotNull
-    private String status;
+    private String status ="1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

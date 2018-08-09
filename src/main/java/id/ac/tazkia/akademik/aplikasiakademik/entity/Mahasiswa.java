@@ -32,7 +32,7 @@ public class Mahasiswa {
     private String asalNegara;
 
     @NotNull
-    private String tempatLahir;
+    private String tmpLahir;
 
     @NotNull
     private LocalDate tglLahir;
@@ -46,14 +46,18 @@ public class Mahasiswa {
     @NotNull
     private  String alamat;
 
+    @ManyToOne
     @NotNull
-    private  String kokab;
+    @JoinColumn(name = "kokab")
+        private  KabupatenKota kokab;
 
     @NotNull
     private  String kodepos;
 
+    @ManyToOne
     @NotNull
-    private  String provinsi;
+    @JoinColumn(name = "provinsi")
+        private  Provinsi provinsi;
 
     @NotNull
     private  String negara;
@@ -99,7 +103,6 @@ public class Mahasiswa {
     private String status ="1";
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "id_user")
     private User idUser;
 }

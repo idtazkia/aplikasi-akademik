@@ -34,11 +34,10 @@ public class MhswSekolahAsal {
     @NotNull
     private String negara;
 
+    @ManyToOne
     @NotNull
-    private String namaSekolah;
-
-    @NotNull
-    private String idSekolah;
+    @JoinColumn(name = "id_sekolah")
+    private Sekolah idSekolah;
 
     @NotNull
     private String alamat;
@@ -57,11 +56,10 @@ public class MhswSekolahAsal {
     @NotNull
     private String tahunLulus;
 
-    @NotNull
     private String ijazah;
 
     @NotNull
-    private String status;
+    private String status ="1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
