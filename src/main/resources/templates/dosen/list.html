@@ -12,7 +12,7 @@
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
         <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Mahasiswa</h6>
+            <h6 class="mb-0 text-white lh-100">Daftar Dosen</h6>
         </div>
     </div>
 
@@ -41,7 +41,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">No</th>
+                    <th scope="col">NA</th>
                     <th scope="col">NIDN</th>
                     <th scope="col">Nama</th>
                     <th scope="col" width="40px">Jurusan</th>
@@ -50,18 +51,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>D1223123</td>
-                    <td>Dosen 1</td>
+                <tr th:each="data, row : ${listDosen}">
+                    <th  th:text="${(row.index + 1)}">1</th>
                     <td>
-                        <a href="#" class="btn btn-info btn-sm" th:href="@{/dosen/jurusan/list}" title="edit">Jurusan</a></td>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+
+                        </span>
+                    </td>
+                    <td th:text="${data.nidn}">D1223123</td>
+                    <td th:text="${data.nama}">Dosen 1</td>
+                    <td>
+                        <a href="#" class="btn btn-info btn-sm" th:href="@{/dosen/jurusan/list(id=${data.idDosen})}" title="edit">Jurusan</a></td>
                     </td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/dosen/form}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/dosen/form(id=${data.idDosen})}" title="edit">Edit</a></td>
                     <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/dosen/list}" title="Delete">Delete</a>
-                    </td>
+                        <form method="post" th:action="@{/delete/dosen(dosen=${data.idDosen})}">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                <i class="ti-eraser"></i> Hapus
+                            </button>
+                        </form>                    </td>
                 </tr>
                 </tbody>
             </table>

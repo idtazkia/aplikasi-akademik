@@ -17,32 +17,47 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form>
+        <form method="post" th:action="@{/jurusan/form(id = ${jurusan.idJurusan})}"  th:object="${jurusan}">
 
             <div class="form-group">
                 <label>Fakultas</label>
                 <select class="form-control js-example-placeholder-single" id="fakultas"
-                        name="provinsi">
+                        name="idFakultas">
                     <option></option>
-                    <option>Fakultas Tehknik</option>
+                    <option th:each="list : ${daftarFakultas}" th:text="${list.namaFakultas}" th:value="${list.idFakultas}">Fakultas Tehknik</option>
                     <option>Fakultas Pendidikan</option>
                     <option>Fakultas Ekonomi</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Kode Jurusani</label>
-                <input type="text" class="form-control" placeholder="Kode">
+                <label>Kode Jurusan</label>
+                <input type="text"  name="kodeJurusan" class="form-control" placeholder="Kode">
             </div>
 
             <div class="form-group">
                 <label>Nama Jurusan</label>
-                <input type="text" class="form-control" placeholder="Nama">
+                <input type="text"  name="namaJurusan" class="form-control" placeholder="Nama">
             </div>
 
             <div class="form-group">
                 <label>Pejabat</label>
-                <input type="text" class="form-control" placeholder="Pejabat">
+                <input type="text"  name="pejabat" class="form-control" placeholder="Pejabat">
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <table class="table table-responsive">
+                        <tr>
+                            <td>Tidak Aktif? (NA)</td>
+                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
+                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                        </tr>
+                        <!--<input type="hidden" name="idJurusan" th:field="*{idJurusan}">-->
+                        <!--<input type="hidden" name="userInsert" th:field="*{userInsert}">-->
+                        <!--<input type="hidden" name="tglInsert" th:field="*{tglInsert}">-->
+                    </table>
+                </div>
             </div>
 
             <input class="btn btn-primary" type="submit" value="Simpan">
