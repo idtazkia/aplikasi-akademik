@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProdiDao extends PagingAndSortingRepository<Prodi, String> {
     Page<Prodi> findByStatus(String status, Pageable page);
     List<Prodi> findByStatusAndNa(String status,String na);
+    Iterable<Prodi> findByStatus(String aktif);
 }

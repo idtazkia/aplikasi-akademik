@@ -16,48 +16,54 @@
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-    <form method="post" th:action="@{/lembaga/form}" th:object="${lembaga}" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Nama Lembaga</label>
-            <input type="text" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
-        </div>
+        <form method="post" th:action="@{/lembaga/form(id = ${lembaga.idLembaga})}" th:object="${lembaga}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Nama Lembaga</label>
+                <input type="text" th:field="*{namaLembaga}" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
+            </div>
 
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Alamat</label>
-            <textarea class="form-control" name="alamat" id="exampleFormControlTextarea1" rows="3"></textarea>
-        </div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Alamat</label>
+                <textarea class="form-control" th:field="*{alamat}" name="alamat" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
 
-        <div class="form-group">
-            <label>Provinsi</label>
-            <select name="provinsi" class="form-control js-example-placeholder-single">
-                <option></option>
-                <option th:each="ins : ${provinsi}"
-                        th:value="${ins.idProvinsi}"
-                        th:text="${ins.nama}">Jawa Barat</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label>Provinsi</label>
+                <select name="provinsi" th:field="*{provinsi}" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option th:each="ins : ${provinsi}"
+                            th:value="${ins.idProvinsi}"
+                            th:text="${ins.nama}">Jawa Barat</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label>Kota / Kabupaten</label>
-            <select name="kokab" class="form-control js-example-placeholder-single">
-                <option></option>
-                <option th:each="ins : ${kokab}"
-                        th:value="${ins.idKokab}"
-                        th:text="${ins.nama}">Jawa Barat</option>
-            </select>
+            <div class="form-group">
+                <label>Kota / Kabupaten</label>
+                <select name="kokab" th:field="*{kokab}" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option th:each="ins : ${kokab}"
+                            th:value="${ins.idKokab}"
+                            th:text="${ins.nama}">Jawa Barat</option>
+                </select>
 
-        </div>
+            </div>
 
-        <div class="form-group">
-            <label for="exampleFormControlFile1">Pilih file logo Lembaga</label>
-            <input type="file" class="form-control-file" name="logo" id="exampleFormControlFile1">
-        </div>
+            <div class="form-group">
+                <label for="exampleFormControlFile1">Pilih file logo Lembaga</label>
+                <input type="file" th:field="*{logo}" class="form-control-file" name="logo" id="exampleFormControlFile1">
 
-        <input class="btn btn-primary" type="submit" value="Simpan">
-        <a th:href="@{/lembaga/list}" class="btn btn-primary" role="button">
-            <span aria-hidden="true"></span>Batal
-        </a>
-    </form>
+                <input type="hidden" name="idLembaga" th:field="*{idLembaga}">
+                <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                <input type="hidden" name="userEdit" th:field="*{userEdit}">
+                <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                <input type="hidden" name="tglEdit" th:field="*{tglEdit}">
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Simpan">
+            <a th:href="@{/lembaga/list}" class="btn btn-primary" role="button">
+                <span aria-hidden="true"></span>Batal
+            </a>
+        </form>
     </div>
 </section>
 </body>

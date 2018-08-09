@@ -8,4 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface KonsentrasiDao extends PagingAndSortingRepository<Konsentrasi, String> {
     Page<Konsentrasi> findByStatus(String status, Pageable page);
+
+    Iterable<Konsentrasi> findByStatus(String aktif);
 }

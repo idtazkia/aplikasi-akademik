@@ -8,4 +8,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface JenjangDao extends PagingAndSortingRepository<Jenjang,String> {
     Page<Jenjang> findByStatus(String status, Pageable page);
     Iterable<Jenjang> findByStatusAndNa(String status, String na);
+    Iterable<Jenjang> findByStatus(String s);
 }
