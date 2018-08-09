@@ -42,6 +42,8 @@ public class DosenController {
     private  AgamaDao agamaDao;
     @Autowired
     private  ProdiDao prodiDao;
+    @Autowired
+    private  DosenProdiDao dosenProdiDao;
 
 
     @ModelAttribute("daftarProp")
@@ -95,10 +97,6 @@ public class DosenController {
             }
         }
         return "/dosen/form";
-    }
-
-    @GetMapping("/dosen/jurusan/list")
-    public void  listJurusanDosen(){
     }
 
     @PostMapping(value = "/dosen/form")
@@ -158,5 +156,71 @@ public class DosenController {
         dosenDao.save(dosen);
 
         return "redirect:/dosen/list";
+    }
+
+    @GetMapping("/dosen/jurusan/list")
+    public void  listJurusanDosen(@PageableDefault(direction = Sort.Direction.ASC) Pageable page,
+                                  @RequestParam(value = "id", required = true) String id,
+                                  @RequestParam(required = false) String error,
+                                  Model m){
+        Dosen d = dosenDao.findById(id).get();
+
+        m.addAttribute("listDosenProdi",dosenProdiDao.findByIdDosenAndStatus(d, StatusConstants.Aktif, page));
+
+
+        m.addAttribute("dosen", d);
+        if (d != null){
+            LOGGER.debug("Dosen :" + d.getNama());
+        }
+
+
+    }
+
+    @PostMapping("/dosen/jurusan/list")
+    public String prosesJurusanDosen(@Valid DosenProdi dosenProdi, Authentication currentUser){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+            dosenProdi.setUserInsert(u);
+            dosenProdi.setTglInsert(LocalDateTime.now());
+
+        dosenProdiDao.save(dosenProdi);
+
+        return "redirect:/dosen/jurusan/list?id="+dosenProdi.getIdDosen().getIdDosen();
+    }
+
+    @PostMapping("/delete/jurusan/dosenProdi")
+    public String deleteJurusanDosen(@RequestParam DosenProdi dosenProdi,Authentication currentUser){
+
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
+        }
+
+        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
+        User u = userDao.findByUsername(username);
+        LOGGER.debug("User ID : {}", u.getId());
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
+        }
+
+        dosenProdi.setStatus(StatusConstants.Nonaktif);
+        dosenProdi.setUserEdit(u);
+        dosenProdi.setTglEdit(LocalDateTime.now());
+        dosenProdiDao.save(dosenProdi);
+
+        return "redirect:/dosen/jurusan/list?id="+dosenProdi.getIdDosen().getIdDosen();
     }
 }
