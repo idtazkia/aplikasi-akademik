@@ -10,142 +10,731 @@
 
 <section layout:fragment="main" class="container">
     <form th:action="@{/mahasiswa/form}" method="post" enctype="multipart/form-data">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Data Mahasiswa</h6>
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+            <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+            <div class="lh-100">
+                <h6 class="mb-0 text-white lh-100">Data Mahasiswa</h6>
+            </div>
         </div>
-    </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" href="#pribadi" role="tab" data-toggle="tab">Data Pribadi</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#kost" role="tab" data-toggle="tab">Alamat Kost</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#akademik" role="tab" data-toggle="tab">Akademik</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#ortu" role="tab" data-toggle="tab">Orang tua</a>
-            </li>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#pribadi" role="tab" data-toggle="tab">Data Pribadi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#kost" role="tab" data-toggle="tab">Alamat Kost</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#akademik" role="tab" data-toggle="tab">Akademik</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ortu" role="tab" data-toggle="tab">Orang tua</a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#sekolah" role="tab" data-toggle="tab">Sekolah Asal</a>
-            </li>
-        </ul>
+                <li class="nav-item">
+                    <a class="nav-link" href="#sekolah" role="tab" data-toggle="tab">Sekolah Asal</a>
+                </li>
+            </ul>
 
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="pribadi">
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="pribadi">
 
-                <div class="col-md-12"><br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Foto
-                                </label>
-                                <input type="file" class="form-control-file" name="foto" id="exampleFormControlFile1">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama
-                                    &nbsp&nbsp
-                                    <small class="text-danger">* Isi nama sesuai dengan ijazah</small>
-                                </label>
-                                <input type="text" class="form-control" name="nama"
-                                       placeholder="Nama">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Tempat Lahir</label>
-                                <input type="text" class="form-control" name="tempatLahir"
-                                       placeholder="Tempat lahir">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Tanggal Lahir</label>
-                                <input type="date" name="tglLahir" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Jenis Kelamin</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="jk" value="L" checked>
-                                    <label class="form-check-label">
-                                        Laki-laki
+                    <div class="col-md-12"><br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Foto
                                     </label>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input class="form-check-input" type="radio" name="jk" value="P">
-                                    <label class="form-check-label">
-                                        Perempuan
+                                    <input type="file" class="form-control-file" name="foto" id="exampleFormControlFile1">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nama
+                                        &nbsp&nbsp
+                                        <small class="text-danger">* Isi nama sesuai dengan ijazah</small>
                                     </label>
+                                    <input type="text" class="form-control" name="nama"
+                                           placeholder="Nama">
                                 </div>
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tempat Lahir</label>
+                                    <input type="text" class="form-control" name="tempatLahir"
+                                           placeholder="Tempat lahir">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tanggal Lahir</label>
+                                    <input type="date" name="tglLahir" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Jenis Kelamin</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="jk" value="L" checked>
+                                        <label class="form-check-label">
+                                            Laki-laki
+                                        </label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input class="form-check-input" type="radio" name="jk" value="P">
+                                        <label class="form-check-label">
+                                            Perempuan
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Asal Negara</label>
+                                    <input type="text" class="form-control" name="asalNegara"
+                                           placeholder="Asal Negara">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Agama</label>
+                                    <select class="form-control" name="agama">
+                                        <option></option>
+                                        <option th:each="data : ${daftarAgama}"
+                                                th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Status Sipil</label>
+                                    <select class="form-control" name="statusSipil">
+                                        <option></option>
+                                        <option value="Belum Menikah">Belum Menikah</option>
+                                        <option value="Menikah">Manikah</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <input type="text" class="form-control" name="alamat"
+                                           placeholder="Alamat">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="provinsi">Provinsi</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            name="provinsiMahasiswa">
+                                        <option></option>
+                                        <option th:each="data : ${daftarProp}"
+                                                th:text="${data.nama}" th:value="${data.idProvinsi}">Jawa Barat</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Kabupaten/Kota</label>
+                                    <select name="kokabMahasiswa" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option th:each="data : ${daftarKokab}"
+                                                th:text="${data.nama}" th:value="${data.idKokab}">Kota Bogor</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Kode Pos</label>
+                                    <input type="text" name="kodeposmhas" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Negara</label>
+                                    <input type="text" name="negaraMahasiswa" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tempat Tinggal</label>
+                                    <select class="form-control" name="tempatTinggalMahasiswa">
+                                        <option>Asrama</option>
+                                        <option>Kost/Sewa</option>
+                                        <option>Sendiri/Keluarga</option>
+                                        <option>Lain-lain</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pernah Kuliah</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="pernahKuliah"
+                                               value="T" checked>
+                                        <label class="form-check-label">
+                                            Tidak
+                                        </label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input class="form-check-input" type="radio" name="pernahKuliah"
+                                               value="Y">
+                                        <label class="form-check-label">
+                                            Ya
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Telepon</label>
+                                    <input type="text" class="form-control" name="teleponMahasiswa"
+                                           placeholder="Telepon">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ponsel</label>
+                                    <input type="text" class="form-control" name="ponselMahasiswa"
+                                           placeholder="Ponsel">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" class="form-control" name="emailMahasiswa" placeholder="Email">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <table class="table table-responsive">
+                                        <tr>
+                                            <td>Tidak Aktif? (NA)</td>
+                                            <td><input type="checkbox" name="naMahasiswa" value="0" class="form-control"></td>
+                                            <td>
+                                                <small class="alert-danger">*) Beri centang jika tidak aktif</small>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane fade" id="kost">
+                    <br>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Asal Negara</label>
-                                <input type="text" class="form-control" name="asalNegara"
-                                       placeholder="Asal Negara">
+                                <label>Alamat Kost</label>
+                                <input type="text" class="form-control" name="alamatKost" placeholder="Alamat">
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Agama</label>
-                                <select class="form-control" name="agama">
-                                    <option></option>
-                                    <option th:each="data : ${daftarAgama}"
-                                            th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Status Sipil</label>
-                                <select class="form-control" name="statusSipil">
-                                    <option></option>
-                                    <option value="Belum Menikah">Belum Menikah</option>
-                                    <option value="Menikah">Manikah</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Alamat</label>
-                                <input type="text" class="form-control" name="alamat"
-                                       placeholder="Alamat">
-                            </div>
-                        </div>
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="provinsi">Provinsi</label>
                                 <select class="form-control js-example-placeholder-single"
-                                        name="provinsiMahasiswa">
+                                        style="width: 500px;"name="idPropinsi">
+                                    <option></option>
+                                    <option  th:each="data : ${daftarProp}"
+                                             th:text="${data.nama}"
+                                             th:value="${data.idProvinsi}">Jawa Barat</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Kabupaten/Kota</label>
+                                <select class="form-control js-example-placeholder-single" name="idKokab"
+                                        style="width: 500px;">
+                                    <option></option>
+                                    <option th:each="data : ${daftarKokab}"
+                                            th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="provinsi">Kode Pos</label>
+                                <input type="text" name="kodeposKost" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Negara</label>
+                                <input type="text" name="negaraKost" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane fade" id="akademik">
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <br>
+
+                                <div class="form-group">
+                                    <label>Fakultas</label><br>
+                                    <select style="width: 100%" name="idFakultas" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option  th:each="data : ${daftarFak}"
+                                                 th:text="${data.namaFakultas}" th:value="${data.idFakultas}">Pendidikan</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Jenjang</label>
+                                    <select style="width: 100%" name="idJenjang" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option  th:each="data : ${daftarJenjang}"
+                                                 th:text="${data.namaJenjang}" th:value="${data.idJenjang}">Sarjana</option>
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Program Studi</label>
+                                    <select style="width: 100%" name="idProdi" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option th:each="data : ${daftarProdi}"
+                                                th:text="${data.namaProdi}" th:value="${data.idProdi}">Akuntansi Syariah</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Konsentrasi</label>
+                                    <select style="width: 100%" name="idKonsentrasi" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option  th:each="data : ${daftarKonsen}"
+                                                 th:text="${data.namaKonsentrasi}" th:value="${data.idKonsentrasi}">Audit</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Jenjang Pendidikan Sebelumnya</label>
+                                    <select class="form-control" name="pendSebelum">
+                                        <option></option>
+                                        <option>SMA</option>
+                                        <option>SMK</option>
+                                        <option>MA</option>
+                                        <option>lainnya</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="text" name="password" class="form-control"
+                                           placeholder="Masukan Password">
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <br>
+                                <div class="form-group">
+                                    <label>NIRM</label>
+                                    <input type="text" name="nirm" class="form-control"
+                                           placeholder="NIRM">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>NISN</label>
+                                    <input type="text" name="nisn" class="form-control"
+                                           placeholder="NISN">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Tanggal Masuk</label>
+                                    <input type="date" name="tglMasuk" class="form-control" id="datepicker2">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Status Keaktifan</label>
+                                    <select name="idStatusKeaktifan" class="form-control">
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Pasif">Pasif</option>
+                                        <option value="Keluar">Keluar</option>
+                                        <option value="Drop Out">Drop Out</option>
+                                        <option value="Cuti">Cuti</option>
+                                        <option value="Lulus">Lulus</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Tanggal Aktif</label>
+                                    <input type="date" name="tglAktif"  class="form-control" id="datepicker3">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Tahun Angkatan</label>
+                                    <input type="text" name="tahunAngkatan" class="form-control"
+                                           placeholder="Masukan Tahun Angkatan">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="ortu">
+                    <br>
+                    <div class="col-md-12"><br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nama Ayah</label>
+                                    <input type="text" name="namaAyah" class="form-control"
+                                           placeholder="Pekerjaan Ayah">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Agama</label>
+                                    <select name="agamaAyah" class="form-control">
+                                        <option></option>
+                                        <option th:each="data : ${daftarAgama}"
+                                                th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pendidikan</label>
+                                    <select name="pendAyah" class="form-control">
+                                        <option value="Tidak Tamat SD">Tidak Tamat SD</option>
+                                        <option value="Tamat SD/MI">Tamat SD/MI</option>
+                                        <option value="Tamat SMP/MTS">Tamat SMP/MTS</option>
+                                        <option value="Tamat SMA/SMK/MA">Tamat SMA/SMK/MA</option>
+                                        <option value="Diploma 1">Diploma 1</option>
+                                        <option value="Diploma 2">Diploma 2</option>
+                                        <option value="Diploma 3">Diploma 3</option>
+                                        <option value="Sarjana">Sarjana</option>
+                                        <option value="Pascasarjana">Pascasarjana</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pekerjaan</label>
+                                    <select name="pekerjaanAyah" class="form-control">
+                                        <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                        <option value="TNI">TNI</option>
+                                        <option value="Polisi">Polisi</option>
+                                        <option value="Pegawai Swasta">Pegawai Swasta</option>
+                                        <option value="Pengusaha">Pengusaha</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Hidup</label>
+                                    <select name="stHidupAyah" class="form-control">
+                                        <option value="Hidup">Hidup</option>
+                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nama Ibu</label>
+                                    <input type="text" name="namaIbu" class="form-control"
+                                           placeholder="Nama Ibu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Agama</label>
+                                    <select name="agamaIbu" class="form-control">
+                                        <option></option>
+                                        <option th:each="data : ${daftarAgama}"
+                                                th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pendidikan</label>
+                                    <select name="pendIbu" class="form-control">
+                                        <option value="Tidak Tamat SD">Tidak Tamat SD</option>
+                                        <option value="Tamat SD/MI">Tamat SD/MI</option>
+                                        <option value="Tamat SMP/MTS">Tamat SMP/MTS</option>
+                                        <option value="Tamat SMA/SMK/MA">Tamat SMA/SMK/MA</option>
+                                        <option value="Diploma 1">Diploma 1</option>
+                                        <option value="Diploma 2">Diploma 2</option>
+                                        <option value="Diploma 3">Diploma 3</option>
+                                        <option value="Sarjana">Sarjana</option>
+                                        <option value="Pascasarjana">Pascasarjana</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Pekerjaan</label>
+                                    <select name="pekerjaanIbu" class="form-control">
+                                        <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                        <option value="TNI">TNI</option>
+                                        <option value="Polisi">Polisi</option>
+                                        <option value="Pegawai Swasta">Pegawai Swasta</option>
+                                        <option value="Pengusaha">Pengusaha</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Hidup</label>
+                                    <select  name="stHidupIbu" class="form-control">
+                                        <option value="Hidup">Hidup</option>
+                                        <option value="Sudah Meninggal">Sudah Meninggal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Penghasilan Orang Tua per bulan</label>
+                                    <input name="hasilOrtuPerBulan" type="text" class="form-control"
+                                           placeholder="Penghasilan rata-rata per bulan">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Alamat Orang Tua</label>
+                                    <input name="alamatOrtu" type="text" class="form-control"
+                                           placeholder="Alamat">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Provinsi</label>
+                                    <select class="form-control js-example-placeholder-single" style="width: 100%;"
+                                            name="provinsiOrtu">
+                                        <option></option>
+                                        <option  th:each="data : ${daftarProp}"
+                                                 th:text="${data.nama}" th:value="${data.idProvinsi}">Jawa Barat</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Kabupaten/Kota</label><br>
+                                    <select class="form-control js-example-placeholder-single" style="width: 100%;"
+                                            name="kokabOrtu">
+                                        <option></option>
+                                        <option  th:each="data : ${daftarKokab}"
+                                                 th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Kode Pos</label>
+                                    <input type="text" name="kodepos" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Negara</label>
+                                    <input type="text" name="negaraOrtu" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Telepon Orang Tua</label>
+                                    <input type="text" name="teleponOrtu" class="form-control"
+                                           placeholder="Telepon Orang Tua">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Handphone Orang Tua</label>
+                                    <input type="text" name="ponselOrtu" class="form-control"
+                                           placeholder="Handphone Orang Tua">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" name="emailOrtu" class="form-control"
+                                           placeholder="Email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="sekolah">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Sekolah</label>
+                                <select class="form-control js-example-placeholder-single" name="sekolah"
+                                        style="width: 100%;">
+                                    <option></option>
+                                    <option th:each="data : ${daftarSekolah}"
+                                            th:text="${data.namaSekolah}" th:value="${data.idSekolah}">Sman 1</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jurusan Sekolah</label>
+                                <input type="text" name="jurusanSekolah" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nilai</label>
+                                <input type="text" name="nilai" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tahun Lulus</label>
+                                <input type="text" name="tahunLulus" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat Kost</label>
+                                <input type="text" name="alamatSekolah" class="form-control"
+                                       placeholder="Alamat">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="provinsi">Provinsi</label>
+                                <select class="form-control js-example-placeholder-single" style="width: 100%;"
+                                        id="provinsi" name="provinsiSekolah">
                                     <option></option>
                                     <option th:each="data : ${daftarProp}"
                                             th:text="${data.nama}" th:value="${data.idProvinsi}">Jawa Barat</option>
@@ -158,632 +747,43 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Kabupaten/Kota</label>
-                                <select name="kokabMahasiswa" class="form-control js-example-placeholder-single">
+                                <select class="form-control js-example-placeholder-single" name="kokabSekolah"
+                                        style="width: 100%;">
                                     <option></option>
                                     <option th:each="data : ${daftarKokab}"
-                                            th:text="${data.nama}" th:value="${data.idKokab}">Kota Bogor</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kode Pos</label>
-                                <input type="text" name="kodeposmhas" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Negara</label>
-                                <input type="text" name="negaraMahasiswa" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Tempat Tinggal</label>
-                                <select class="form-control" name="tempatTinggalMahasiswa">
-                                    <option>Asrama</option>
-                                    <option>Kost/Sewa</option>
-                                    <option>Sendiri/Keluarga</option>
-                                    <option>Lain-lain</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pernah Kuliah</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="pernahKuliah"
-                                           value="T" checked>
-                                    <label class="form-check-label">
-                                        Tidak
-                                    </label>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input class="form-check-input" type="radio" name="pernahKuliah"
-                                           value="Y">
-                                    <label class="form-check-label">
-                                        Ya
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Telepon</label>
-                                <input type="text" class="form-control" name="teleponMahasiswa"
-                                       placeholder="Telepon">
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Ponsel</label>
-                                <input type="text" class="form-control" name="ponselMahasiswa"
-                                       placeholder="Ponsel">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" name="emailMahasiswa" placeholder="Email">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <table class="table table-responsive">
-                                    <tr>
-                                        <td>Tidak Aktif? (NA)</td>
-                                        <td><input type="checkbox" name="naMahasiswa" value="0" class="form-control"></td>
-                                        <td>
-                                            <small class="alert-danger">*) Beri centang jika tidak aktif</small>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div role="tabpanel" class="tab-pane fade" id="kost">
-                <br>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Alamat Kost</label>
-                            <input type="text" class="form-control" name="alamatKost" placeholder="Alamat">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Provinsi</label>
-                            <select class="form-control js-example-placeholder-single"
-                                    style="width: 500px;"name="idPropinsi">
-                                <option></option>
-                                <option  th:each="data : ${daftarProp}"
-                                         th:text="${data.nama}"
-                                         th:value="${data.idProvinsi}">Jawa Barat</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kabupaten/Kota</label>
-                            <select class="form-control js-example-placeholder-single" name="idKokab"
-                                    style="width: 500px;">
-                                <option></option>
-                                <option th:each="data : ${daftarKokab}"
-                                        th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Kode Pos</label>
-                            <input type="text" name="kodeposKost" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Negara</label>
-                            <input type="text" name="negaraKost" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div role="tabpanel" class="tab-pane fade" id="akademik">
-
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <br>
-
-                            <div class="form-group">
-                                <label>Fakultas</label><br>
-                                <select style="width: 100%" name="idFakultas" class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option  th:each="data : ${daftarFak}"
-                                             th:text="${data.namaFakultas}" th:value="${data.idFakultas}">Pendidikan</option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Jenjang</label>
-                                <select style="width: 100%" name="idJenjang" class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option  th:each="data : ${daftarJenjang}"
-                                             th:text="${data.namaJenjang}" th:value="${data.idJenjang}">Sarjana</option>
-
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Program Studi</label>
-                                <select style="width: 100%" name="idProdi" class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option th:each="data : ${daftarProdi}"
-                                            th:text="${data.namaProdi}" th:value="${data.idProdi}">Akuntansi Syariah</option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Konsentrasi</label>
-                                <select style="width: 100%" name="idKonsentrasi" class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option  th:each="data : ${daftarKonsen}"
-                                             th:text="${data.namaKonsentrasi}" th:value="${data.idKonsentrasi}">Audit</option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Jenjang Pendidikan Sebelumnya</label>
-                                <select class="form-control" name="pendSebelum">
-                                    <option></option>
-                                    <option>SMA</option>
-                                    <option>SMK</option>
-                                    <option>MA</option>
-                                    <option>lainnya</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="text" name="password" class="form-control"
-                                       placeholder="Masukan Password">
-                            </div>
-
-                        </div>
-                        <div class="col-md-6">
-                            <br>
-                            <div class="form-group">
-                                <label>NIRM</label>
-                                <input type="text" name="nirm" class="form-control"
-                                       placeholder="NIRM">
-                            </div>
-
-                            <div class="form-group">
-                                <label>NISN</label>
-                                <input type="text" name="nisn" class="form-control"
-                                       placeholder="NISN">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Tanggal Masuk</label>
-                                <input type="date" name="tglMasuk" class="form-control" id="datepicker2">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Status Keaktifan</label>
-                                <select name="idStatusKeaktifan" class="form-control">
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Pasif">Pasif</option>
-                                    <option value="Keluar">Keluar</option>
-                                    <option value="Drop Out">Drop Out</option>
-                                    <option value="Cuti">Cuti</option>
-                                    <option value="Lulus">Lulus</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Tanggal Aktif</label>
-                                <input type="date" name="tglAktif"  class="form-control" id="datepicker3">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label>Tahun Angkatan</label>
-                                <input type="text" name="tahunAngkatan" class="form-control"
-                                       placeholder="Masukan Tahun Angkatan">
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-            <div role="tabpanel" class="tab-pane fade" id="ortu">
-                <br>
-                <div class="col-md-12"><br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Ayah</label>
-                                <input type="text" name="namaAyah" class="form-control"
-                                       placeholder="Pekerjaan Ayah">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Agama</label>
-                                <select name="agamaAyah" class="form-control">
-                                    <option></option>
-                                    <option th:each="data : ${daftarAgama}"
-                                            th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
+                                            th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pendidikan</label>
-                                <select name="pendAyah" class="form-control">
-                                    <option value="Tidak Tamat SD">Tidak Tamat SD</option>
-                                    <option value="Tamat SD/MI">Tamat SD/MI</option>
-                                    <option value="Tamat SMP/MTS">Tamat SMP/MTS</option>
-                                    <option value="Tamat SMA/SMK/MA">Tamat SMA/SMK/MA</option>
-                                    <option value="Diploma 1">Diploma 1</option>
-                                    <option value="Diploma 2">Diploma 2</option>
-                                    <option value="Diploma 3">Diploma 3</option>
-                                    <option value="Sarjana">Sarjana</option>
-                                    <option value="Pascasarjana">Pascasarjana</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pekerjaan</label>
-                                <select name="pekerjaanAyah" class="form-control">
-                                    <option value="Pegawai Negeri">Pegawai Negeri</option>
-                                    <option value="TNI">TNI</option>
-                                    <option value="Polisi">Polisi</option>
-                                    <option value="Pegawai Swasta">Pegawai Swasta</option>
-                                    <option value="Pengusaha">Pengusaha</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Hidup</label>
-                                <select name="stHidupAyah" class="form-control">
-                                    <option value="Hidup">Hidup</option>
-                                    <option value="Sudah Meninggal">Sudah Meninggal</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Ibu</label>
-                                <input type="text" name="namaIbu" class="form-control"
-                                       placeholder="Nama Ibu">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Agama</label>
-                                <select name="agamaIbu" class="form-control">
-                                    <option></option>
-                                    <option th:each="data : ${daftarAgama}"
-                                            th:text="${data.agama}" th:value="${data.idAgama}">Islam</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pendidikan</label>
-                                <select name="pendIbu" class="form-control">
-                                    <option value="Tidak Tamat SD">Tidak Tamat SD</option>
-                                    <option value="Tamat SD/MI">Tamat SD/MI</option>
-                                    <option value="Tamat SMP/MTS">Tamat SMP/MTS</option>
-                                    <option value="Tamat SMA/SMK/MA">Tamat SMA/SMK/MA</option>
-                                    <option value="Diploma 1">Diploma 1</option>
-                                    <option value="Diploma 2">Diploma 2</option>
-                                    <option value="Diploma 3">Diploma 3</option>
-                                    <option value="Sarjana">Sarjana</option>
-                                    <option value="Pascasarjana">Pascasarjana</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pekerjaan</label>
-                                <select name="pekerjaanIbu" class="form-control">
-                                    <option value="Pegawai Negeri">Pegawai Negeri</option>
-                                    <option value="TNI">TNI</option>
-                                    <option value="Polisi">Polisi</option>
-                                    <option value="Pegawai Swasta">Pegawai Swasta</option>
-                                    <option value="Pengusaha">Pengusaha</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Hidup</label>
-                                <select  name="stHidupIbu" class="form-control">
-                                    <option value="Hidup">Hidup</option>
-                                    <option value="Sudah Meninggal">Sudah Meninggal</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Penghasilan Orang Tua per bulan</label>
-                                <input name="hasilOrtuPerBulan" type="text" class="form-control"
-                                       placeholder="Penghasilan rata-rata per bulan">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Alamat Orang Tua</label>
-                                <input name="alamatOrtu" type="text" class="form-control"
-                                       placeholder="Alamat">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Provinsi</label>
-                                <select class="form-control js-example-placeholder-single" style="width: 100%;"
-                                        name="provinsiOrtu">
-                                    <option></option>
-                                    <option  th:each="data : ${daftarProp}"
-                                             th:text="${data.nama}" th:value="${data.idProvinsi}">Jawa Barat</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kabupaten/Kota</label><br>
-                                <select class="form-control js-example-placeholder-single" style="width: 100%;"
-                                        name="kokabOrtu">
-                                    <option></option>
-                                    <option  th:each="data : ${daftarKokab}"
-                                             th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Kode Pos</label>
-                                <input type="text" name="kodepos" class="form-control">
+                                <input type="text" class="form-control" name="kodeposSekolah">
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Negara</label>
-                                <input type="text" name="negaraOrtu" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Telepon Orang Tua</label>
-                                <input type="text" name="teleponOrtu" class="form-control"
-                                       placeholder="Telepon Orang Tua">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Handphone Orang Tua</label>
-                                <input type="text" name="ponselOrtu" class="form-control"
-                                       placeholder="Handphone Orang Tua">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" name="emailOrtu" class="form-control"
-                                       placeholder="Email">
+                                <input type="text" name="negaraSekolah" class="form-control">
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-
-            <div role="tabpanel" class="tab-pane fade" id="sekolah">
-                <br>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nama Sekolah</label>
-                            <select class="form-control js-example-placeholder-single" name="sekolah"
-                                    style="width: 100%;">
-                                <option></option>
-                                <option th:each="data : ${daftarSekolah}"
-                                        th:text="${data.namaSekolah}" th:value="${data.idSekolah}">Sman 1</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Jurusan Sekolah</label>
-                            <input type="text" name="jurusanSekolah" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nilai</label>
-                            <input type="text" name="nilai" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Tahun Lulus</label>
-                            <input type="text" name="tahunLulus" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Alamat Kost</label>
-                            <input type="text" name="alamatSekolah" class="form-control"
-                                   placeholder="Alamat">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Provinsi</label>
-                            <select class="form-control js-example-placeholder-single" style="width: 100%;"
-                                    id="provinsi" name="provinsiSekolah">
-                                <option></option>
-                                <option th:each="data : ${daftarProp}"
-                                        th:text="${data.nama}" th:value="${data.idProvinsi}">Jawa Barat</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kabupaten/Kota</label>
-                            <select class="form-control js-example-placeholder-single" name="kokabSekolah"
-                                    style="width: 100%;">
-                                <option></option>
-                                <option th:each="data : ${daftarKokab}"
-                                        th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kode Pos</label>
-                            <input type="text" class="form-control" name="kodeposSekolah">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Negara</label>
-                            <input type="text" name="negaraSekolah" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+            <br>
+            <input class="btn btn-primary" type="submit" value="Simpan">
+            <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                <span aria-hidden="true"></span>Batal
+            </a>
         </div>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-        <input class="btn btn-primary" type="submit" value="Simpan">
-        <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
-            <span aria-hidden="true"></span>Batal
-        </a>
-    </div>
     </form>
 
 </section>
@@ -821,6 +821,3 @@
     }
 
 </script>
-
-
-
