@@ -37,7 +37,7 @@ public class Lembaga {
 
     private String logo;
 
-    private String status;
+    private String status = "1";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
