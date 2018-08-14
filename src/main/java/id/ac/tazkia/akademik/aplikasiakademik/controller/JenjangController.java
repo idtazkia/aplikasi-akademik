@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,9 +38,15 @@ public class JenjangController {
     UserDao userDao;
 
     @GetMapping("/jenjang/list")
-    public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("list",jenjangDao.findByStatus(StatusConstants.Aktif,page));
+    public void list(Model model,@PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("list", jenjangDao.findByStatusAndNamaJenjangContainingIgnoreCaseOrderByNamaJenjang(StatusConstants.Aktif, search, page));
+        } else {
+            model.addAttribute("list",jenjangDao.findByStatus(StatusConstants.Aktif,page));
+
+        }
     }
 
     @GetMapping("/jenjang/form")
