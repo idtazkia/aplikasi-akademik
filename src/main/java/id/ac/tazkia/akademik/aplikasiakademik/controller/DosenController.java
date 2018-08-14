@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,11 +40,11 @@ public class DosenController {
     @Autowired
     private TempatTinggalDao tempatTinggalDao;
     @Autowired
-    private  AgamaDao agamaDao;
+    private AgamaDao agamaDao;
     @Autowired
-    private  ProdiDao prodiDao;
+    private ProdiDao prodiDao;
     @Autowired
-    private  DosenProdiDao dosenProdiDao;
+    private DosenProdiDao dosenProdiDao;
 
 
     @ModelAttribute("daftarProp")
@@ -52,22 +53,36 @@ public class DosenController {
     }
 
     @ModelAttribute("daftarKokab")
-    public Iterable<KabupatenKota> daftaKokab() {return kokabDao.findAll();}
+    public Iterable<KabupatenKota> daftaKokab() {
+        return kokabDao.findAll();
+    }
 
     @ModelAttribute("daftarTempat")
-    public Iterable<TempatTinggal> daftarTempat() {return tempatTinggalDao.findAll();}
+    public Iterable<TempatTinggal> daftarTempat() {
+        return tempatTinggalDao.findAll();
+    }
 
     @ModelAttribute("daftarAgama")
-    public Iterable<Agama> daftaAgama() {return agamaDao.findAll();}
+    public Iterable<Agama> daftaAgama() {
+        return agamaDao.findAll();
+    }
 
     @ModelAttribute("daftarProdi")
-    public Iterable<Prodi> daftaProdi() {return prodiDao.findByStatusAndNa(StatusConstants.Aktif, StatusConstants.Aktif);}
+    public Iterable<Prodi> daftaProdi() {
+        return prodiDao.findByStatusAndNa(StatusConstants.Aktif, StatusConstants.Aktif);
+    }
 
 
     @GetMapping("/dosen/list")
-    public ModelMap GedungList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("listDosen",dosenDao.findByStatus(StatusConstants.Aktif,page));
+    public String gedungList(@RequestParam(required = false) String search, Model m, Pageable page) {
+        if (StringUtils.hasText(search)) {
+            m.addAttribute("search", search);
+            m.addAttribute("listDosen", dosenDao.findByStatusAndNamaContainingIgnoreCaseOrderByNama( StatusConstants.Aktif,search, page));
+        } else {
+            m.addAttribute("listDosen", dosenDao.findByStatus(StatusConstants.Aktif, page));
+        }
+        return "dosen/list";
+
     }
 
     @GetMapping("/dosen/form")
