@@ -622,7 +622,7 @@
                                             name="kokabOrtu">
                                         <option></option>
                                         <option  th:each="data : ${daftarKokab}"
-                                                 th:text="${data.nama}" th:value="${data.idKokab}">Bogor</option>
+                                                 th:text="${data.nama},${data.nama},${data.nama}" th:value="${data.idKokab}">Bogor</option>
                                     </select>
                                 </div>
                             </div>

@@ -26,13 +26,9 @@ import java.time.LocalDateTime;
         @JoinColumn(name = "id_jenjang")
         private Jenjang idJenjang;
 
-
         private String kodeProdi;
 
-
         private String namaProdi;
-
-
 
         private String pejabat;
 
@@ -41,7 +37,6 @@ import java.time.LocalDateTime;
 
         @NotNull
         private String status = "1";
-
 
         @Column(columnDefinition = "DATE")
         @DateTimeFormat(pattern = "yyyy-MM-dd")

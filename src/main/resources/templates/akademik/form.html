@@ -1,4 +1,6 @@
+
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
@@ -16,9 +18,9 @@
         </div>
     </div>
 
-    <form method="get" th:action="@{/akademik/list}">
+    <form role="form" th:action="@{/akademik/form}" th:object="${tahunAkademik}" method="post">
     <div class="my-3 p-3 bg-white rounded box-shadow">
-
+        <input type="hidden" name="idLembaga" th:field="*{idTahunakademik}">
         <h6 class="border-bottom border-gray pb-2 mb-0"><center><b>Tambah Tahun Akademik</b></center></h6>
         <br>
             <div class="col-md-12">
@@ -26,18 +28,23 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Program Studi</label>
-                            <select onchange="" class="form-control js-example-placeholder-single" id="provinsi"
-                                    name="provinsi">
-                                <option></option>
-                                <option>Akuntasi Islam</option>
-                                <option>Ekonomi Islam</option>
-                                <option>Bisnis Manajemen Islam</option>
+                            <select th:field="*{prodi}" class="form-control js-example-placeholder-single" id="idProdi"
+                                    name="idProdi">
+                                <option th:each="p : ${listProdi}"
+                                        th:value="${p.idProdi}"
+                                        th:text="${p.idJurusan.idFakultas.namaFakultas+', '+p.idJurusan.namaJurusan+', '+p.namaProdi}">Pilih Klinik
+                                </option>
+
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>Kode Tahun</label>
-                            <input type="text" class="form-control">
+                            <input type="text" th:field="*{kodeTahun}"
+                                   name="kodeTahun" class="form-control" id="kodeTahun" placeholder="Kode Tahun" />
+                            <label class="control-label error-label" th:errors="*{kodeTahun}">
+                                Pesan error nanti di sini
+                            </label>
                         </div>
                     </div>
 
@@ -45,16 +52,22 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Program</label>
-                            <select onchange="" class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>S1 Reguler</option>
-                                <option>S2</option>
+                            <select th:field="*{program}" class="form-control js-example-placeholder-single" id="idProgram"
+                                    name="idProgram">
+                                <option th:each="p : ${listProgram}"
+                                        th:value="${p.idProgram}"
+                                        th:text="${p.namaProgram}">Pilih Klinik
+                                </option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>Nama Tahun</label>
-                            <input type="text" class="form-control">
+                            <input type="text" th:field="*{namaTahun}"
+                                   name="mamaTahun" class="form-control" id="mamaTahun" placeholder="Nama Tahun" />
+                            <label class="control-label error-label" th:errors="*{namaTahun}">
+                                Pesan error nanti di sini
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -72,32 +85,38 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Mulai Kuliah</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiKuliah}"
+                               name="mulaiKuliah" class="form-control" id="mulaiKuliah" />
                     </div>
 
                     <div class="form-group">
                         <label>Mulai KRS</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiKrs}"
+                               name="mulaiKrs" class="form-control" id="mulaiKrs"  />
                     </div>
 
                     <div class="form-group">
                         <label>Mulai Bayar</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiBayar}"
+                               name="mulaiBayar" class="form-control" id="mulaiBayar" />
                     </div>
 
                     <div class="form-group">
                         <label>Mulai UTS</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiUts}"
+                               name="mulaiUts" class="form-control" id="mulaiUts" />
                     </div>
 
                     <div class="form-group">
                         <label>Mulai UAS</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiUas}"
+                               name="mulaiUas" class="form-control" id="mulaiUas" />
                     </div>
 
                     <div class="form-group">
                         <label>Penilaian</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{mulaiPenilaian}"
+                               name="mulaiPenilaian" class="form-control" id="mulaiPenilaian" />
                     </div>
                 </div>
 
@@ -105,45 +124,52 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Tanggal Selesai</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{selesaiKuliah}"
+                               name="selesaiKuliah" class="form-control" id="selesaiKuliah" />
                     </div>
 
                     <div class="form-group">
                         <label>Selesai</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{selesaiKrs}"
+                               name="selesaiKrs" class="form-control" id="selesaiKrs" />
                     </div>
 
                     <div class="form-group">
                         <label>Selesai</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{selesaiBayar}"
+                               name="selesaiBayar" class="form-control" id="selesaiBayar" />
                     </div>
 
                     <div class="form-group">
                         <label>Selesai</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{selesaiUts}"
+                               name="selesaiUts" class="form-control" id="selesaiUts" />
                     </div>
 
                     <div class="form-group">
                         <label>Selesai</label>
-                        <input type="date" class="form-control">
+                        <input type="date" th:field="*{selesaiUas}"
+                               name="selesaiUas" class="form-control" id="selesaiUas" />
                     </div>
 
                     <div class="form-group">
-                        <label>Pengajuan Cuti</label>
-                        <input type="date" class="form-control">
+                        <label>Selesai Penilaian</label>
+                        <input type="date" th:field="*{selesaiPenilaian}"
+                               name="selesaiPenilaian" class="form-control" id="selesaiPenilaian"  />
                     </div>
                 </div>
 
                 <div class="col-md-12">
                     <label>Catatan</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea th:field="*{catatan}"
+                              name="catatan" class="form-control" id="catatan"></textarea>
                 </div>
 
                 <div class="col-md-12">
                     <table class="table table-responsive">
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
-                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox" name='na' id='na' th:value="'0'"></td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
                     </table>
@@ -153,7 +179,7 @@
 
         </div>
         <div class="align-content-md-center">
-            <button class="btn btn-success">Simpan</button>
+            <button type="submit" class="btn btn-success">Simpan</button>
             <a th:href="@{/akademik/list}" class="btn btn-danger">Batal</a>
         </div>
 
