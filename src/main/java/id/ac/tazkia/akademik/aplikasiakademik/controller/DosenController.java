@@ -69,7 +69,7 @@ public class DosenController {
 
     @ModelAttribute("daftarProdi")
     public Iterable<Prodi> daftaProdi() {
-        return prodiDao.findByStatusAndNa(StatusConstants.Aktif, StatusConstants.Aktif);
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
 

@@ -4,6 +4,9 @@ import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.ProdiDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.ProgramDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.TahunAkademikDao;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Prodi;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Program;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.TahunAkademik;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +36,21 @@ public class AkademikController {
     ProgramDao programDao;
 
     @GetMapping("/akademik/list")
-    public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("tahunAkademik",tahunAkademikDao.findByStatus(StatusConstants.Aktif,page))
-                .addAttribute("prodi",prodiDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
-                .addAttribute("program",programDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
+    public ModelMap list(@PageableDefault( direction = Sort.Direction.ASC) Pageable page, @RequestParam(name="prodi", required = false)Prodi prodi, @RequestParam(name="program",required = false)Program program){
+
+        if (prodi != null && program != null) {
+            return new ModelMap()
+                    .addAttribute("keypro", prodiDao.findByStatusAndIdProdi(StatusRecord.AKTIF, prodi.getIdProdi()))
+                    .addAttribute("keypr", programDao.findByStatusAndIdProgram(StatusRecord.AKTIF, program.getIdProgram()))
+                    .addAttribute("tahunAkademik", tahunAkademikDao.findByProdiAndProgramAndStatusNotIn(prodi, program, StatusRecord.HAPUS, page))
+                    .addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF))
+                    .addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
+        }else{
+            return new ModelMap()
+                    .addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrStatus(StatusRecord.AKTIF, StatusRecord.NONAKTIF, page))
+                    .addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF))
+                    .addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
+        }
     }
 
 
@@ -51,8 +64,8 @@ public class AkademikController {
         }
 
         model.addAttribute("tahunAkademik", tahunAkademik);
-        model.addAttribute("listProdi", prodiDao.findByStatusAndNa("1","1"));
-        model.addAttribute("listProgram", programDao.findByStatusAndNa("1","1"));
+        model.addAttribute("listProdi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listProgram", programDao.findByStatus(StatusRecord.AKTIF));
         return "akademik/form";
     }
 
@@ -62,7 +75,7 @@ public class AkademikController {
 //            return "akademik/form";
 //        }
 
-        tahunAkademik.setStatus("1");
+        tahunAkademik.setStatus(StatusRecord.AKTIF);
         tahunAkademikDao.save(tahunAkademik);
         return "redirect:/akademik/list";
     }

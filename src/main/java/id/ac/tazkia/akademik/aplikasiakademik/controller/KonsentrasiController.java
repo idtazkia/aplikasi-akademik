@@ -40,7 +40,7 @@ public class KonsentrasiController {
 
     @ModelAttribute("daftarProdi")
     public Iterable<Prodi> daftarProdi() {
-        return prodiDao.findByStatusAndNa(Aktif,Aktif);
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @GetMapping("/konsentrasi/list")

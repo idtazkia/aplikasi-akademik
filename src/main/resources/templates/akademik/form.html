@@ -169,9 +169,13 @@
                     <table class="table table-responsive">
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
-                            <td><input type="checkbox" name='na' id='na' th:value="'0'"></td>
+                            <td>
+                                <input type="checkbox" name='na' id='na' th:if="*{na} == 0" th:value="'0'" checked="true">
+                                <input type="checkbox" name='na' id='na' th:if="*{na} != 0" th:value="'1'">
+                            </td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
+
                     </table>
                 </div>
 

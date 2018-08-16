@@ -28,7 +28,10 @@
                             <label>Program Studi</label>
                             <select onchange="" class="form-control js-example-placeholder-single" id="prodi"
                                     name="prodi">
-                                <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
+                                <option selected th:if="${keypro} != null" th:each="data,row : ${keypro}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
+                                <option></option>
+                                <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
+
                             </select>
                         </div>
                     </div>
@@ -38,6 +41,7 @@
                         <div class="form-group">
                             <label>Program</label>
                             <select onchange="" class="form-control js-example-placeholder-single" id="program" name="program">
+                                <option selected th:if="${keypr} != null" th:each="data,row : ${keypr}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Akuntasi Islam</option>
                                 <option></option>
                                 <option th:each="data,row : ${program}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Reguler</option>
                             </select>
@@ -70,13 +74,12 @@
                 <tr>
                     <th>#</th>
                     <th>Kode</th>
-                    <th>Nama Tahun</th>
-                    <th>Perkuliahan</th>
-                    <th>Pembayaran</th>
+                    <th>Tahun</th>
+                    <th>Prodi</th>
+                    <th>Kuliah</th>
+                    <th>Bayar</th>
                     <th>KRS</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
-                    <th>Penilaian</th>
+                    <th>ST</th>
                     <th>Aktif</th>
                     <th>Aksi</th>
                 </tr>
@@ -86,17 +89,17 @@
                     <th th:text="${(row.index + 1)}">1</th>
                     <td th:text="${data.kodeTahun}"></td>
                     <td th:text="${data.namaTahun}"></td>
+                    <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
                     <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
                     <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
                     <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
-                    <td th:text="${data.mulaiUts+' - '+data.selesaiUts}">19-02-2017</td>
-                    <td th:text="${data.mulaiUas+' - '+data.selesaiUas}"></td>
-                    <td th:text="${data.mulaiPenilaian+' - '+data.selesaiPenilaian}"></td>
+                    <td th:text="${data.status}"></td>
+
                     <td>
-                         <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                         <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status}==AKTIF">
                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status}==NONAKTIF">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
                                 </span>
                     </td>

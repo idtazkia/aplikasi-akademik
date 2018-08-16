@@ -38,7 +38,7 @@ public class ProgramController {
     @GetMapping("/program/list")
     public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page) {
         return new ModelMap()
-                .addAttribute("list", programDao.findByStatus(StatusConstants.Aktif, page));
+                .addAttribute("list", programDao.findByStatus(StatusRecord.AKTIF, page));
     }
 
     @GetMapping("/program/form")
@@ -124,7 +124,7 @@ public class ProgramController {
             LOGGER.warn("Username {} not found in database", username);
         }
 
-        program.setStatus(StatusConstants.Nonaktif);
+        program.setStatus(StatusRecord.NONAKTIF);
         program.setUserEdit(u);
         program.setTglEdit(LocalDateTime.now());
         programDao.save(program);

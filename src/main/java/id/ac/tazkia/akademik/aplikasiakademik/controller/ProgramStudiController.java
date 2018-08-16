@@ -2,10 +2,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Jenjang;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Prodi;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Provinsi;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +53,7 @@ public class ProgramStudiController {
     @GetMapping("/programstudi/list")
     public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
         return new ModelMap()
-                .addAttribute("prodi",prodiDao.findByStatus(StatusConstants.Aktif,page))
+                .addAttribute("prodi",prodiDao.findByStatus(StatusRecord.AKTIF,page))
                 .addAttribute("jurusan",jurusanDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
                 .addAttribute("jenjang",jenjangDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
                 .addAttribute("fakultas",fakultasDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
@@ -146,7 +143,7 @@ public class ProgramStudiController {
 
         prodi.setUserEdit(u);
         prodi.setTglEdit(LocalDateTime.now());
-        prodi.setStatus(StatusConstants.Nonaktif);
+        prodi.setStatus(StatusRecord.NONAKTIF);
         prodiDao.save(prodi);
 
         return "redirect:/programstudi/list";
