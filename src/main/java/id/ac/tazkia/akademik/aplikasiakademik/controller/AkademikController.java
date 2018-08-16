@@ -38,7 +38,7 @@ public class AkademikController {
     @GetMapping("/akademik/list")
     public ModelMap list(@PageableDefault( direction = Sort.Direction.ASC) Pageable page, @RequestParam(name="prodi", required = false)Prodi prodi, @RequestParam(name="program",required = false)Program program){
 
-        if (prodi != null && program != null) {
+        if (prodi != null && program !=null) {
             return new ModelMap()
                     .addAttribute("keypro", prodiDao.findByStatusAndIdProdi(StatusRecord.AKTIF, prodi.getIdProdi()))
                     .addAttribute("keypr", programDao.findByStatusAndIdProgram(StatusRecord.AKTIF, program.getIdProgram()))

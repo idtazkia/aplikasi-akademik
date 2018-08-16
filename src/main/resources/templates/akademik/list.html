@@ -76,10 +76,9 @@
                     <th>Kode</th>
                     <th>Tahun</th>
                     <th>Prodi</th>
-                    <th>Kuliah</th>
                     <th>Bayar</th>
                     <th>KRS</th>
-                    <th>ST</th>
+                    <th>Kuliah</th>
                     <th>Aktif</th>
                     <th>Aksi</th>
                 </tr>
@@ -90,16 +89,16 @@
                     <td th:text="${data.kodeTahun}"></td>
                     <td th:text="${data.namaTahun}"></td>
                     <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
-                    <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
                     <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
                     <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
-                    <td th:text="${data.status}"></td>
+                    <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
+
 
                     <td>
-                         <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status}==AKTIF">
+                         <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status}==NONAKTIF">
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
                                 </span>
                     </td>
