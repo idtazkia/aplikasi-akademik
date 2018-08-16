@@ -20,7 +20,7 @@ public class MataKuliahController {
 
 
     @GetMapping("/matakuliah/list")
-
+    public void  list(){
     }
 
     @GetMapping("/matakuliah/form")
