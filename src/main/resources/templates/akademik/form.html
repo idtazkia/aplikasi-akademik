@@ -170,8 +170,8 @@
                         <tr>
                             <td>Tidak Aktif? (NA)</td>
                             <td>
-                                <input type="checkbox" name='na' id='na' th:if="*{na} == 0" th:value="'0'" checked="true">
-                                <input type="checkbox" name='na' id='na' th:if="*{na} != 0" th:value="'1'">
+                                <input type="checkbox" name='status' id='status' th:if="*{status.AKTIF}==*{status}" th:value="'AKTIF'" checked="true">
+                                <input type="checkbox" name='status' id='status' th:if="*{status.NONAKTIF}==*{status}" th:value="'NONAKTIF'">
                             </td>
                             <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
                         </tr>
