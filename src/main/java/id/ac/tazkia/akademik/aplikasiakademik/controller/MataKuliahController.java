@@ -10,17 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MataKuliahController {
 
-    @Autowired
-    private KurikulumDao kurikulumDao;
-
-    @Autowired
-    private ProdiDao prodiDao;
-
-
 
 
     @GetMapping("/matakuliah/list")
-    public void  list(){
+    public void  listMatakuliah(){
     }
 
     @GetMapping("/matakuliah/form")

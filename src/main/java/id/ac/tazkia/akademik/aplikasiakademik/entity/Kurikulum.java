@@ -28,6 +28,7 @@ public class Kurikulum {
     @NotNull
     private String namaSesi;
 
+
     @NotNull
     private Integer jumlahSesi;
 

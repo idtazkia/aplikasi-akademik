@@ -113,7 +113,7 @@ public class MahasiswaController {
 
     @ModelAttribute("daftarProdi")
     public Iterable<Prodi> daftarProdi() {
-        return prodiDao.findByStatus(StatusConstants.Aktif);
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("daftarKonsen")
