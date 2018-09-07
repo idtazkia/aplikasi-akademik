@@ -19,131 +19,130 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
         <h6 class="border-bottom border-gray pb-2 mb-0">Pilih Kriteria</h6>
-<br>
+        <br>
         <form method="get" th:action="@{/mahasiswa/list}">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Program</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option></option>
-                            <option>S1</option>
-                            <option>S2</option>
-                        </select>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Fakultas</label>
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>Ekonomi</option>
+                                <option>Pendidikan</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Jenjang</label>
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>Diploma III</option>
+                                <option>Sarjana</option>
+                                <option>Pascasarjana</option>
+                                <option>Doktoral</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Jenjang</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>Diploma III</option>
-                            <option>Sarjana</option>
-                            <option>Pascasarjana</option>
-                            <option>Doktoral</option>
-                        </select>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Program Studi</label>
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>Akuntansi Syariah</option>
+                                <option>Bisnis Manajemen Syariah</option>
+                                <option>Ekonomi Syariah</option>
+                                <option>Muamalat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Konsentrasi</label>
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>MKI</option>
+                                <option>MPI</option>
+                                <option>AUDIT</option>
+                                <option>SIA</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Program Studi</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>Akuntansi Syariah</option>
-                            <option>Bisnis Manajemen Syariah</option>
-                            <option>Ekonomi Syariah</option>
-                            <option>Muamalat</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Konsentrasi</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>MKI</option>
-                            <option>MPI</option>
-                            <option>AUDIT</option>
-                            <option>SIA</option>
-                        </select>
-                    </div>
-                </div>
             </div>
-
-        </div>
             <input class="btn btn-primary" type="submit" value="Tampilkan">
 
         </form>
         <br>
-            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-            <br>
+        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+        <br>
 
 
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <a th:href="@{/mahasiswa/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                        </td>
-                        <td align="right">
-                            <form method="get" th:action="@{/mahasiswa/list}">
-                                <div class="input-group input-group-sm" style="width: 100%;">
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
-                                    <input type="hidden" name="mode" id="mode"/>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-                <br>
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">NIM</th>
-                            <th scope="col">Nama</th>
-                            <th scope="col">Fakultas</th>
-                            <th scope="col">Prodi</th>
-                            <th scope="col" width="30px"></th>
-                            <th scope="col" width="40px"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="data,row : ${list}">
-                            <th th:text="${(row.index + 1)}" scope="row">1</th>
-                            <td th:text="${data.idMhsw.nim}">1519001</td>
-                            <td th:text="${data.idMhsw.nama}">1519001</td>
-                            <td th:text="${data.idFakultas.namaFakultas}">Student 1</td>
-                            <td th:text="${data.idProdi.namaProdi}">Ekonomi</td>
-                            <td align="center">
-                                <a href="#" class="btn btn-success btn-sm" th:href="@{/mahasiswa/form}" title="edit">Edit</a></td>
-                            <td align="center">
-                                <a href="#" class="btn btn-danger btn-sm" th:href="@{/mahasiswa/list}" title="Delete">Delete</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <br>
-                <div>
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+        <table width="100%">
+            <tr>
+                <td>
+                    <a th:href="@{/mahasiswa/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                </td>
+                <td align="right">
+                    <form method="get" th:action="@{/mahasiswa/list}">
+                        <div class="input-group input-group-sm" style="width: 100%;">
+                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
+                            <input type="hidden" name="mode" id="mode"/>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">NIM</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Fakultas</th>
+                    <th scope="col">Prodi</th>
+                    <th scope="col" width="30px"></th>
+                    <th scope="col" width="40px"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>1519001</td>
+                    <td>Student 1</td>
+                    <td>Ekonomi</td>
+                    <td>Akuntansi Syariah</td>
+                    <td align="center">
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/mahasiswa/form}" title="edit">Edit</a></td>
+                    <td align="center">
+                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/mahasiswa/list}" title="Delete">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-                </div>
+        </div>
 
     </div>
 
