@@ -21,6 +21,7 @@
     <link th:href="@{/css/build/css/custom.min.css}" rel="stylesheet" />
 
 
+
 </head>
 
 <body class="login">
@@ -31,8 +32,9 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
+                <img th:src="@{/images/tazkia_VCw_icon.ico}" />
                 <form id="sign_in" method="POST" th:action="@{/login}">
-                    <h1>SIMAK</h1>
+                    <h1>LOGIN SIMAK</h1>
                     <div>
                         <input type="text" name='username' class="form-control" placeholder="Username" required="" />
                     </div>
@@ -47,15 +49,12 @@
                     <div class="clearfix"></div>
 
                     <div class="separator">
-                        <p class="change_link">New to site?
-                            <a href="#signup" class="to_register"> Create Account </a>
-                        </p>
 
                         <div class="clearfix"></div>
                         <br />
 
                         <div>
-                            <h1><i class="fa fa-paw"></i> STEI TAZKIA</h1>
+                            <h1>STEI TAZKIA</h1>
                             <p>©2018 All Rights Reserved. Sistem Informasi Akademik STEI TAZKIA</p>
                         </div>
                     </div>
