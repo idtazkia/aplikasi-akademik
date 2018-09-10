@@ -4,123 +4,129 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Academic Years</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Tahun Akademik</h6>
-        </div>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Setup Akademik Per-Program Studi</center></h6>
-        <br>
-        <form method="get" th:action="@{/akademik/list}">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Program Studi</label>
-                            <select onchange="" class="form-control js-example-placeholder-single" id="prodi"
-                                    name="prodi">
-                                <option selected th:if="${keypro} != null" th:each="data,row : ${keypro}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
-                                <option></option>
-                                <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
-
-                            </select>
-                        </div>
-                    </div>
 
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Program</label>
-                            <select onchange="" class="form-control js-example-placeholder-single" id="program" name="program">
-                                <option selected th:if="${keypr} != null" th:each="data,row : ${keypr}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Akuntasi Islam</option>
-                                <option></option>
-                                <option th:each="data,row : ${program}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Reguler</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-group-btn">
-                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
 
+
+            <div class="x_title">
+                <h2>Academic Year <small>List</small></h2>
+                <div class="clearfix"></div>
             </div>
 
-        </form>
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
+<br>
+
+            <div class="x_content">
+                <form method="get" th:action="@{/akademik/list}">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Program Studi</label>
+                                    <select onchange="" class="form-control js-example-placeholder-single" id="prodi"
+                                            name="prodi">
+                                        <option selected th:if="${keypro} != null" th:each="data,row : ${keypro}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
+                                        <option></option>
+                                        <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
+
+                                    </select>
+                                </div>
+                            </div>
 
 
-        <table width="100%">
-            <tr>
-                <td>
-                    <a th:href="@{/akademik/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Kode</th>
-                    <th>Tahun</th>
-                    <th>Prodi</th>
-                    <th>Bayar</th>
-                    <th>KRS</th>
-                    <th>Kuliah</th>
-                    <th>Aktif</th>
-                    <th>Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="data,row : ${tahunAkademik}">
-                    <th th:text="${(row.index + 1)}">1</th>
-                    <td th:text="${data.kodeTahun}"></td>
-                    <td th:text="${data.namaTahun}"></td>
-                    <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
-                    <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
-                    <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
-                    <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Program</label>
+                                    <select onchange="" class="form-control js-example-placeholder-single" id="program" name="program">
+                                        <option selected th:if="${keypr} != null" th:each="data,row : ${keypr}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Akuntasi Islam</option>
+                                        <option></option>
+                                        <option th:each="data,row : ${program}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Reguler</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        </div>
+
+                    </div>
+
+                </form>
 
 
-                    <td>
-                         <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
-                    </td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
-                </tr>
-                </tbody>
-            </table>
+                <div class="x_title">
+                    <div class="clearfix"></div>
+                </div>
+
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <a th:href="@{/akademik/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                            </td>
+                        </tr>
+                    </table>
             <br>
-            <nav class="pull-right">
-                <ul class="pagination" sd:pagination="full">
-                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                </ul>
-            </nav>
-        </div>
-        <br>
+                <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Kode</th>
+                                        <th>Tahun</th>
+                                        <th>Prodi</th>
+                                        <th>Bayar</th>
+                                        <th>KRS</th>
+                                        <th>Kuliah</th>
+                                        <th>Aktif</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${tahunAkademik}">
+                                        <th th:text="${(row.index + 1)}">1</th>
+                                        <td th:text="${data.kodeTahun}"></td>
+                                        <td th:text="${data.namaTahun}"></td>
+                                        <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
+                                        <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
+                                        <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
+                                        <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
 
-        <div>
+
+                                        <td>
+                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                                       <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                                    </span>
+                                            <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                                        <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                                    </span>
+                                        </td>
+                                        <td align="center">
+                                            <a href="#" class="btn btn-success btn-sm" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <nav class="pull-right">
+                                    <ul class="pagination" sd:pagination="full">
+                                        <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+            <br>
+
+                    <div>
 
 
+                    </div>
+            </div>
         </div>
 
     </div>

@@ -65,27 +65,31 @@
                             <li><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
                             <li><a><i class="fa fa-edit"></i> Administrator <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Sarana dan Prasarana<span class="fa fa-chevron-down"></span></a>
+                                    <li><a>Equipment<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/lembaga/list}">Lembaga</a></li>
                                             <li><a th:href="@{/gedung/list}">Gedung Kampus</a></li>
                                             <li><a th:href="@{/ruang/list}">Ruang Kelas</a></li>
                                         </ul>
                                     </li>
-                                    <li><a th:href="@{/program/list}">Program</a></li>
-                                    <li><a th:href="@{/jenjang/list}">Jenjang</a></li>
-                                    <li><a th:href="@{/fakultas/list}">Fakultas</a></li>
-                                    <li><a th:href="@{/jurusan/list}">Jurusan</a></li>
-                                    <li><a th:href="@{/programstudi/list}">Program Studi</a></li>
-                                    <li><a th:href="@{/konsentrasi/list}">Konsentrasi</a></li>
-                                    <li><a th:href="@{/dosen/list}">Dosen</a></li>
-                                    <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
+                                    <li><a>Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/program/list}">Program</a></li>
+                                            <li><a th:href="@{/jenjang/list}">Jenjang</a></li>
+                                            <li><a th:href="@{/fakultas/list}">Fakultas</a></li>
+                                            <li><a th:href="@{/jurusan/list}">Jurusan</a></li>
+                                            <li><a th:href="@{/programstudi/list}">Program Studi</a></li>
+                                            <li><a th:href="@{/konsentrasi/list}">Konsentrasi</a></li>
+                                            <li><a th:href="@{/dosen/list}">Dosen</a></li>
+                                            <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-sitemap"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#level1_1">Level One</a>
-                                    <li><a>Level One<span class="fa fa-chevron-down"></span></a>
+                                    <li><a>Pembianaan<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="sub_menu"><a href="level2.html">Level Two</a>
                                             </li>
@@ -95,12 +99,51 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li><a href="#level1_2">Level One</a>
+                                    <li><a>Akademik<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="sub_menu"><a href="level2.html">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_1">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_2">Level Two</a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/akademik/list}">Academic Years</a></li>
+                                            <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
+                                            <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
+                                            <li><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/krs/list}">K R S</a></li>
+                                            <li><a th:href="@{/attendance/list}">Attendance</a></li>
+                                            <li><a th:href="@{/assesment/list}">Assesment</a></li>
+                                            <li><a th:href="@{/khs/list}">K H S</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Graduations<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/intership/list}">Internship</a></li>
+                                            <li><a th:href="@{/conceptnote/list}">Concept Note</a></li>
+                                            <li><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                            <li><a th:href="@{/thesis/list}">Thesis</a></li>
+                                            <li><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                            <li><a th:href="@{/skpi/list}">S K P I</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li><a><i class="fa fa-desktop"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="general_elements.html">General Elements</a></li>
                                     <li><a href="media_gallery.html">Media Gallery</a></li>
@@ -113,22 +156,14 @@
                                     <li><a href="calendar.html">Calendar</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-table"></i> Human Sesources <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="tables.html">Tables</a></li>
                                     <li><a href="tables_dynamic.html">Table Dynamic</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="chartjs.html">Chart JS</a></li>
-                                    <li><a href="chartjs2.html">Chart JS2</a></li>
-                                    <li><a href="morisjs.html">Moris JS</a></li>
-                                    <li><a href="echarts.html">ECharts</a></li>
-                                    <li><a href="other_charts.html">Other Charts</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
+
+                            <li><a><i class="fa fa-clone"></i>Users <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
                                     <li><a href="fixed_footer.html">Fixed Footer</a></li>
