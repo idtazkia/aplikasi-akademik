@@ -38,7 +38,7 @@ public class ProgramController {
     @GetMapping("/program/list")
     public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page) {
         return new ModelMap()
-                .addAttribute("list", programDao.findByStatus(StatusRecord.AKTIF, page));
+                .addAttribute("list", programDao.findByStatusNotIn(StatusRecord.HAPUS, page));
     }
 
     @GetMapping("/program/form")

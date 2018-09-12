@@ -10,7 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface ProgramDao extends PagingAndSortingRepository<Program,String> {
-    Page<Program> findByStatus(StatusRecord aktif, Pageable page);
+    Page<Program> findByStatusNotIn(StatusRecord status, Pageable page);
     List<Program> findByStatus(StatusRecord status);
     List<Program> findByStatusAndIdProgram(StatusRecord status, String id);
 //    Page<Program> findbyStatus (String status, Pageable page);
