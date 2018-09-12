@@ -27,10 +27,8 @@ public class Jenjang {
     @NotNull
     private String keterangan;
 
-    @NotNull
-    private String na = "1";
-
-    private String status = "1";
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

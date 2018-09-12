@@ -103,7 +103,7 @@ public class MahasiswaController {
 
     @ModelAttribute("daftarJenjang")
     public Iterable<Jenjang> daftarJenjang() {
-        return jenjangDao.findByStatus(StatusConstants.Aktif);
+        return jenjangDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("daftarAgama")

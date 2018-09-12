@@ -47,7 +47,7 @@ public class ProgramStudiController {
 
     @ModelAttribute("daftarJenjang")
     public Iterable<Jenjang> daftarJenjang() {
-        return jenjangDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif);
+        return jenjangDao.findByStatusNotIn(StatusRecord.HAPUS);
     }
 
     @GetMapping("/programstudi/list")
@@ -55,7 +55,7 @@ public class ProgramStudiController {
         return new ModelMap()
                 .addAttribute("prodi",prodiDao.findByStatus(StatusRecord.AKTIF,page))
                 .addAttribute("jurusan",jurusanDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
-                .addAttribute("jenjang",jenjangDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
+                .addAttribute("jenjang",jenjangDao.findByStatusNotIn(StatusRecord.HAPUS))
                 .addAttribute("fakultas",fakultasDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
     }
 

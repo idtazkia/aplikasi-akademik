@@ -9,100 +9,185 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Jenjang</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Jenjang
+                    <small>List</small>
+                </h2>
+                <div class="clearfix"></div>
+            </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-        <table width="100%">
-            <tr>
-                <td>
-                    <a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                </td>
-                <td align="right">
-                    <form method="get">
-                        <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="submit" value="Search" class="btn btn-success">
-                            <input type="text" id="keyresult" autocomplete="off"
-                                           placeholder="Cari berdasarkan nama jenjang" class="form-control" name="search"
-                                           th:value="${search}">
-                        </div>
-                    </form>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <td>Show <span sd:page-size-selector="javascript"></span> entries</td>
-            <br><br>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">NA</th>
-                    <th scope="col">Kode</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Keterangan</th>
-                    <th scope="col" width="30px"></th>
-                    <th scope="col" width="40px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="data,row : ${list}">
-                    <th th:text="${(row.index + 1)}">1</th>
-                    <td>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                        </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+            <div class="x_content">
 
-                        </span>
-                    </td>
-                    <td th:text="${data.kodeJenjang}">E001</td>
-                    <td th:text="${data.namaJenjang}">S1</td>
-                    <td th:text="${data.keterangan}">Sarjana</td>
-                    <td align="center">
-                        <a th:href="@{/jenjang/form(id=${data.idJenjang})}" class="btn btn-success btn-sm" title="edit">Edit</a></td>
-                    <td align="center">
-                        <form method="post" th:action="@{/delete/jenjang(jenjang=${data.idJenjang})}">
-                            <button type="submit" class="btn btn-danger btn-sm"
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                        </td>
+                        <td align="right">
+                            <form method="get">
+                                <div class="input-group input-group-sm" style="width: 100%;">
+                                    <input type="text" id="keyresult" autocomplete="off"
+                                    placeholder="Cari berdasarkan nama jenjang" class="form-control col-md-5" name="search"
+                                    th:value="${search}">
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">NA</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Name</th>
+                            <th class="column-title">Description</th>
+                            <th colspan="2" class="column-title no-link last"><span class="nobr">Action</span>
+                            </th>
+                            <th class="bulk-actions" colspan="7">
+                                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="data,row  : ${list}" class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td th:text="${(row.index + 1)}" class=" ">121000040</td>
+                            <td>
+                                 <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                 </span>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                </span>
+                            </td>
+                            <td th:text="${data.kodeJenjang}" class=" ">May 23, 2014 11:47:56 PM </td>
+                            <td th:text="${data.namaJenjang}" class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td th:text="${data.keterangan}" class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td>
+                                <a th:href="@{/jenjang/form(id=${data.idJenjang})}" class="btn btn-success btn-sm" title="edit">Edit</a>
+                            </td>
+                            <td>
+                            <form method="post" th:action="@{/delete/jenjang(jenjang=${data.idJenjang})}">
+                                <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                 ' to recover this imaginary file!')">
-                                <i class="ti-eraser"></i> Hapus
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div class="col-md-5">
-            <div class="row">
-                <div class="col-sm-7">
-                    <div sd:pagination-summary="" style="font-size: small">info</div>
+                                    ' to recover this imaginary file!')">
+                                    <i class="ti-eraser"></i> Hapus
+                                </button>
+                            </form>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-8">
-                <nav class="pull-right">
-                    <ul class="pagination" sd:pagination="full">
-                        <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                        <li class="disabled"><a href="#" aria-label="Previous"><span
-                                aria-hidden="true">&laquo;</span></a>
-                        </li>
-                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                        </li>
-                    </ul>
-                </nav>
+
+
             </div>
         </div>
     </div>
+    <!--<div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">-->
+    <!--<img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">-->
+    <!--<div class="lh-100">-->
+    <!--<h6 class="mb-0 text-white lh-100">Daftar Jenjang</h6>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="my-3 p-3 bg-white rounded box-shadow">-->
+    <!--<table width="100%">-->
+    <!--<tr>-->
+    <!--<td>-->
+    <!--<a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>-->
+    <!--</td>-->
+    <!--<td align="right">-->
+    <!--<form method="get">-->
+    <!--<div class="input-group input-group-sm" style="width: 100%;">-->
+    <!--<input type="submit" value="Search" class="btn btn-success">-->
+    <!--<input type="text" id="keyresult" autocomplete="off"-->
+    <!--placeholder="Cari berdasarkan nama jenjang" class="form-control" name="search"-->
+    <!--th:value="${search}">-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</table>-->
+    <!--<br>-->
+    <!--<div class="box-body table-responsive no-padding">-->
+    <!--<td>Show <span sd:page-size-selector="javascript"></span> entries</td>-->
+    <!--<br><br>-->
+    <!--<table class="table table-striped">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th scope="col">#</th>-->
+    <!--<th scope="col">NA</th>-->
+    <!--<th scope="col">Kode</th>-->
+    <!--<th scope="col">Nama</th>-->
+    <!--<th scope="col">Keterangan</th>-->
+    <!--<th scope="col" width="30px"></th>-->
+    <!--<th scope="col" width="40px"></th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr th:each="data,row : ${list}">-->
+    <!--<th th:text="${(row.index + 1)}">1</th>-->
+    <!--<td>-->
+    <!--<span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">-->
+    <!--<i class="fa fa-lightbulb-o" style="font-size:33px;"></i>-->
+    <!--</span>-->
+    <!--<span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">-->
+    <!--<i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>-->
+
+    <!--</span>-->
+    <!--</td>-->
+    <!--<td th:text="${data.kodeJenjang}">E001</td>-->
+    <!--<td th:text="${data.namaJenjang}">S1</td>-->
+    <!--<td th:text="${data.keterangan}">Sarjana</td>-->
+    <!--<td align="center">-->
+    <!--<a th:href="@{/jenjang/form(id=${data.idJenjang})}" class="btn btn-success btn-sm" title="edit">Edit</a></td>-->
+    <!--<td align="center">-->
+    <!--<form method="post" th:action="@{/delete/jenjang(jenjang=${data.idJenjang})}">-->
+    <!--<button type="submit" class="btn btn-danger btn-sm"-->
+    <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+    <!--' to recover this imaginary file!')">-->
+    <!--<i class="ti-eraser"></i> Hapus-->
+    <!--</button>-->
+    <!--</form>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--<br>-->
+    <!--<div class="col-md-5">-->
+    <!--<div class="row">-->
+    <!--<div class="col-sm-7">-->
+    <!--<div sd:pagination-summary="" style="font-size: small">info</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+    <!--<div class="col-sm-8">-->
+    <!--<nav class="pull-right">-->
+    <!--<ul class="pagination" sd:pagination="full">-->
+    <!--&lt;!&ndash; Pagination created by SpringDataDialect, this content is just for mockup &ndash;&gt;-->
+    <!--<li class="disabled"><a href="#" aria-label="Previous"><span-->
+    <!--aria-hidden="true">&laquo;</span></a>-->
+    <!--</li>-->
+    <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--</nav>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
 </section>
 

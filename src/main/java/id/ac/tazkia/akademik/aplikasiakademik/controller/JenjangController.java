@@ -4,6 +4,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.JenjangDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jenjang;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,9 +42,9 @@ public class JenjangController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", jenjangDao.findByStatusAndNamaJenjangContainingIgnoreCaseOrderByNamaJenjang(StatusConstants.Aktif, search, page));
+            model.addAttribute("list", jenjangDao.findByStatusNotInAndNamaJenjangContainingIgnoreCaseOrderByNamaJenjang(StatusRecord.HAPUS, search, page));
         } else {
-            model.addAttribute("list",jenjangDao.findByStatus(StatusConstants.Aktif,page));
+            model.addAttribute("list",jenjangDao.findByStatusNotIn(StatusRecord.HAPUS,page));
 
         }
     }
@@ -133,7 +133,7 @@ public class JenjangController {
 
         jenjang.setUserEdit(u);
         jenjang.setTglEdit(LocalDateTime.now());
-        jenjang.setStatus(StatusConstants.Nonaktif);
+        jenjang.setStatus(StatusRecord.HAPUS);
         jenjangDao.save(jenjang);
 
         return "redirect:/jenjang/list";
