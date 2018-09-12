@@ -74,8 +74,12 @@ public class AkademikController {
 //        if (errors.hasErrors()) {
 //            return "akademik/form";
 //        }
+        if (tahunAkademik.getStatus() == null){
+            tahunAkademik.setStatus(StatusRecord.NONAKTIF);
+        }
 
-        tahunAkademik.setStatus(StatusRecord.AKTIF);
+
+       //tahunAkademik.setStatus(StatusRecord.AKTIF);
         tahunAkademikDao.save(tahunAkademik);
         return "redirect:/akademik/list";
     }

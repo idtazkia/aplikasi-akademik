@@ -16,119 +16,175 @@
 
 
             <div class="x_title">
-                <h2>Academic Year <small>List</small></h2>
+                <h2>Curiculum <small>List</small></h2>
                 <div class="clearfix"></div>
             </div>
 
-            <br>
-
             <div class="x_content">
-                <form method="get" th:action="@{/akademik/list}">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program Studi</label>
-                                    <select onchange="" class="form-control js-example-placeholder-single" id="prodi"
-                                            name="prodi">
-                                        <option selected th:if="${keypro} != null" th:each="data,row : ${keypro}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
-                                        <option></option>
-                                        <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
 
-                                    </select>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program</label>
-                                    <select onchange="" class="form-control js-example-placeholder-single" id="program" name="program">
-                                        <option selected th:if="${keypr} != null" th:each="data,row : ${keypr}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Akuntasi Islam</option>
-                                        <option></option>
-                                        <option th:each="data,row : ${program}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Reguler</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                        </div>
-
-                    </div>
-
-                </form>
-
-
-                <div class="x_title">
-                    <div class="clearfix"></div>
-                </div>
-
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <a th:href="@{/akademik/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                        </td>
-                    </tr>
-                </table>
-                <br>
                 <div class="table-responsive">
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
                         <tr class="headings">
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Tahun</th>
-                            <th>Prodi</th>
-                            <th>Bayar</th>
-                            <th>KRS</th>
-                            <th>Kuliah</th>
-                            <th>Aktif</th>
-                            <th>Aksi</th>
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">Invoice </th>
+                            <th class="column-title">Invoice Date </th>
+                            <th class="column-title">Order </th>
+                            <th class="column-title">Bill to Name </th>
+                            <th class="column-title">Status </th>
+                            <th class="column-title">Amount </th>
+                            <th class="column-title no-link last"><span class="nobr">Action</span>
+                            </th>
+                            <th class="bulk-actions" colspan="7">
+                                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
                         </tr>
                         </thead>
+
                         <tbody>
-                        <tr th:each="data,row : ${tahunAkademik}">
-                            <th th:text="${(row.index + 1)}">1</th>
-                            <td th:text="${data.kodeTahun}"></td>
-                            <td th:text="${data.namaTahun}"></td>
-                            <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
-                            <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
-                            <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
-                            <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
-
-
-                            <td>
-                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                                       <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                                    </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                                        <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                                    </span>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td align="center">
-                                <a href="#" class="btn btn-success btn-sm" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
+                            <td class=" ">121000040</td>
+                            <td class=" ">May 23, 2014 11:47:56 PM </td>
+                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$7.45</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="odd pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000039</td>
+                            <td class=" ">May 23, 2014 11:30:12 PM</td>
+                            <td class=" ">121000208 <i class="success fa fa-long-arrow-up"></i>
+                            </td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$741.20</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000038</td>
+                            <td class=" ">May 24, 2014 10:55:33 PM</td>
+                            <td class=" ">121000203 <i class="success fa fa-long-arrow-up"></i>
+                            </td>
+                            <td class=" ">Mike Smith</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$432.26</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="odd pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000037</td>
+                            <td class=" ">May 24, 2014 10:52:44 PM</td>
+                            <td class=" ">121000204</td>
+                            <td class=" ">Mike Smith</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$333.21</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000040</td>
+                            <td class=" ">May 24, 2014 11:47:56 PM </td>
+                            <td class=" ">121000210</td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$7.45</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="odd pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000039</td>
+                            <td class=" ">May 26, 2014 11:30:12 PM</td>
+                            <td class=" ">121000208 <i class="error fa fa-long-arrow-down"></i>
+                            </td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$741.20</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000038</td>
+                            <td class=" ">May 26, 2014 10:55:33 PM</td>
+                            <td class=" ">121000203</td>
+                            <td class=" ">Mike Smith</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$432.26</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="odd pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000037</td>
+                            <td class=" ">May 26, 2014 10:52:44 PM</td>
+                            <td class=" ">121000204</td>
+                            <td class=" ">Mike Smith</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$333.21</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000040</td>
+                            <td class=" ">May 27, 2014 11:47:56 PM </td>
+                            <td class=" ">121000210</td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$7.45</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
+                        </tr>
+                        <tr class="odd pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td class=" ">121000039</td>
+                            <td class=" ">May 28, 2014 11:30:12 PM</td>
+                            <td class=" ">121000208</td>
+                            <td class=" ">John Blank L</td>
+                            <td class=" ">Paid</td>
+                            <td class="a-right a-right ">$741.20</td>
+                            <td class=" last"><a href="#">View</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
-                    <br>
-                    <nav class="pull-right">
-                        <ul class="pagination" sd:pagination="full">
-                            <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                        </ul>
-                    </nav>
                 </div>
-                <br>
 
-                <div>
-
-
-                </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
 </section>

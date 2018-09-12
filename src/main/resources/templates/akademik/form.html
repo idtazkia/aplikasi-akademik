@@ -165,17 +165,17 @@
                             </div>
 
                             <div class="col-md-6">
-                               Tidak Aktif? (NA)
+                                <br>
 
-                                <input type="checkbox" name='status' id='status' th:if="*{status.AKTIF}==*{status}" th:value="'AKTIF'" checked="true">
-                                <input type="checkbox" name='status' id='status' th:if="*{status.NONAKTIF}==*{status}" th:value="'NONAKTIF'">
+                                <label>
+                                    <input type="checkbox" th:field="*{status}" value="AKTIF" class="js-switch" checked /> N/A
+                                </label>
 
-                                <small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
 
                             </div>
 
                         </div>
-
+                        <br>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="align-content-md-center">
