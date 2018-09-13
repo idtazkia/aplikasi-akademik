@@ -11,18 +11,17 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Input Konsentrasi</h6>
-        </div>
-    </div>
-
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Input Concentration</h2>
+                <div class="clearfix"></div>
+            </div>
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/konsentrasi/form(id = ${konsentrasi.idKonsentrasi})}" th:object="${konsentrasi}">
 
             <div class="form-group">
-                <label>Program Studi</label>
+                <label>Study program</label>
                 <select class="form-control js-example-placeholder-single" name="idProdi">
                     <option></option>
                     <option th:field="*{idProdi}" th:each="list : ${daftarProdi}" th:text="${list.namaProdi}" th:value="${list.idProdi}">Ekonomi Islam</option>
@@ -30,32 +29,35 @@
             </div>
 
             <div class="form-group">
-                <label>Kode Konsentrasi</label>
-                <input th:field="*{kodeKonsentrasi}" type="text" name="kodeKonsentrasi" class="form-control" placeholder="konsentrasi">
+                <label>Concentration Code</label>
+                <input th:field="*{kodeKonsentrasi}" type="text" name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
             </div>
 
             <div class="form-group">
-                <label>Konsentrasi</label>
-                <input th:field="*{namaKonsentrasi}" type="text" name="namaKonsentrasi" class="form-control" placeholder="konsentrasi">
+                <label>Concentration</label>
+                <input th:field="*{namaKonsentrasi}" type="text" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <table class="table table-responsive">
                         <tr>
-                            <td>Tidak Aktif? (NA)</td>
-                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
-                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                            <div class="form-group">
+                                <label>Status</label><br>
+                                <label>
+                                    <input name="status" type="checkbox" value="NONAKTIF" class="js-switch" />
+                                </label>
+                                <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
+                                <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                                <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                            </div>
                         </tr>
-                        <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </table>
                 </div>
             </div>
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Save">
             <a class="btn btn-primary" th:href="@{/konsentrasi/list}" role="button">
-                <span aria-hidden="true"></span>Batal
+                <span aria-hidden="true"></span>Cancel
             </a>
         </form>
     </div>
@@ -66,7 +68,7 @@
 </html>
 <script>
     $(".js-example-placeholder-single").select2({
-        placeholder: "Pilih Salah Satu",
+        placeholder: "Select one",
         allowClear: true
     });
 
