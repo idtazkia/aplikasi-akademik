@@ -9,16 +9,16 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">KARTU RENCANA STUDI</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>STUDY PLAN CARD</h2>
+                <div class="clearfix"></div>
+            </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>KRS MAHASISWA</center></h6>
+        <h6 class="border-bottom border-gray pb-2 mb-0"><b><center>KRS STUDENTS</center></b></h6>
         <br>
         <form method="get">
             <div class="col-md-12">
@@ -26,19 +26,35 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="input-group input-group-sm" style="....">
-                                <table border="0" cellpadding="9" cellspacing="10" align="center">
-                                    <td>Kode Semester:</td>
-                                    <td> <select class="form-control js-example-placeholder-single"
-                                                 name="provinsi">
-                                        <option></option>
-                                        <option>Semester Ganjil</option>
-                                        <option>Semester genap</option>
-                                        <option>Semester Pendek</option>
-                                    </select></td>
-                                    <td>Nim:</td>
-                                    <td><input type="text" class="form-control js-example-placeholder-singel"></td>
-                                    <td><button type="button" class="btn btn-primary">Aktifkan</button></td>
+                                <center>
+                                <table border="0" cellpadding="20" cellspacing="10" align="center">
+                                    <td>
+                                    <div class="form-group">
+                                        <center>
+                                        <label for="exampleFormControlSelect1">Semester Code:</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                name="provinsi">
+                                            <option></option>
+                                            <option>Semester Ganjil</option>
+                                            <option>Semester genap</option>
+                                            <option>Semester Pendek</option>
+                                        </select>
+                                        </center>
+                                    </div>
+                            </div>
+                            </td>
+                                    <td>&nbsp;&nbsp;</td>
+                            <td>
+                            <div class="form-group">
+                                <center>
+                                <label>Nim:</label>
+                                <input type="text" class="form-control js-example-placeholder-singel">
+                                </center>
+                            </div>
+                            </td>
                                 </table>
+                            &nbsp;&nbsp;
+                            <div><center><button type="button" class="btn btn-primary">Activate</button></center></div>
                             </div>
                         </div>
                     </div>
@@ -51,7 +67,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="lh-100">
-                            <h6 class="mb-0 text-white lh-100" align="center">Batas Pengambilan/Pengubahan KRS Sudah Selesai. KRS Tidak Bisa Diubah</h6>
+                            <h6 class="mb-0 text-white lh-100" align="center">The Limit on the KRS Retrieval / Modification is Complete. KRS Can't Be Changed</h6>
                         </div>
                     </div>
                 </div>
@@ -65,7 +81,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                                 <div class="col-md-6">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Tambahkan</button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
                                 </div>
                                 <table border="0" cellpadding="9" cellspacing="10">
                                     <td>
@@ -77,9 +93,9 @@
                                         </select>
                                     </td>
                                     <td>&#9654</td>
-                                    <td>Daftar Matakuliah Yang Diambil Oleh Mahasiswa:</td>
-                                    <td><button class="btn btn-primary">Cetak Kartu UAS</button></td>
-                                    <td><button class="btn btn-primary">Cetak Kartu UTS</button></td>
+                                    <td>List of subjects taken by students:</td>
+                                    <td><button class="btn btn-primary">Print UAS Card</button></td>
+                                    <td><button class="btn btn-primary">Print UTS Card</button></td>
                                 </table>
                         </div>
                     </div>
@@ -89,19 +105,19 @@
 
         <br>
         <div class="box-body table-responsive no-padding">
-            <label><b>Senin</b></label>
+            <label><b>Monday</b></label>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Kode</th>
-                    <th>Jam Kuliah</th>
-                    <th>Mata Kuliah</th>
+                    <th>Code</th>
+                    <th>Lecture Hours</th>
+                    <th>Courses</th>
                     <th>SKS</th>
-                    <th>Kelas</th>
-                    <th>Ruang</th>
-                    <th>Dosen</th>
-                    <th colspan="2">Aksi</th>
+                    <th>Class</th>
+                    <th>Room</th>
+                    <th>Lecturer</th>
+                    <th colspan="2">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -114,25 +130,25 @@
                     <td>BMI-C-16</td>
                     <td>1.5</td>
                     <td>Ramawansyah</td>
-                    <td><button class="btn btn-danger">Hapus</button></td>
+                    <td><button class="btn btn-danger">Delete</button></td>
                 </tr>
                 </tbody>
             </table>
             <br>
 
-            <label><b>Selasa</b></label>
+            <label><b>Tuesday</b></label>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Kode</th>
-                    <th>Jam Kuliah</th>
-                    <th>Mata Kuliah</th>
+                    <th>Code</th>
+                    <th>Lecture Hours</th>
+                    <th>Courses</th>
                     <th>SKS</th>
-                    <th>Kelas</th>
-                    <th>Ruang</th>
-                    <th>Dosen</th>
-                    <th colspan="2">Aksi</th>
+                    <th>Class</th>
+                    <th>Room</th>
+                    <th>Lecturer</th>
+                    <th colspan="2">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -145,7 +161,7 @@
                     <td>BMI-C-16</td>
                     <td>3.1</td>
                     <td>Neti Dewi Hartati,STP,M.E.Sy</td>
-                    <td><button class="btn btn-danger">Hapus</button></td>
+                    <td><button class="btn btn-danger">Delete</button></td>
                 </tr>
                 </tbody>
             </table>
@@ -175,72 +191,76 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <center><h5 class="modal-title" id="exampleModalLongTitle" align="center">Jadwal Yang Bisa Diambil</h5></center>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-md-12"><br>
-                        <table width="100%">
-                            <tr>
-                                <td>
-                                        <div class="input-group input-group-sm" style="width:41%;">
-                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Kode">
-                                            <input type="hidden" name="mode" id="mode"/>
-                                            <a th:href="@{/krs/list}" class="btn btn-primary" role="button" aria-pressed="true">Cari</a>
-                                            <form method="get" th:action="@{/krs/list}">
-                                        </div>
-                                    <div class="box-body table-responsive no-padding">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Kode</th>
-                                                <th>Nama</th>
-                                                <th>Dosen</th>
-                                                <th>Kelas</th>
-                                                <th colspan="2">Aksi</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>AEM2305</td>
-                                                <td>Ramawansyah</td>
-                                                <td>Aspek Hukum Dalam Ekonomi</td>
-                                                <td>2</td>
-                                                <td><center><input type="checkbox" name="Aksi"></center></td>
-                                            </tr>
-                                            <tr>
-                                                <td>ACC2701</td>
-                                                <td>Neti Dewi Hartati,STP,M.E.Sy</td>
-                                                <td>Etika Bisnis Islam</td>
-                                                <td>32</td>
-                                                <td><center><input type="checkbox" name="Aksi"></center></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    </form>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <div class="row">
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-success">Save</button>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <center><u><b><h5 class="modal-title" id="exampleModalLongTitle">Schedules that can be taken</h5></u></b></center>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group input-group-sm" style="width:90%;">
+                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-left top_search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search for...">
+                                    <span class="input-group-btn">
+                              <button class="btn btn-default" type="button">Go!</button>
+                          </span>
                                 </div>
                             </div>
                         </div>
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Lecturer</th>
+                                    <th>Class</th>
+                                    <th colspan="2">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>AEM2305</td>
+                                    <td>Ramawansyah</td>
+                                    <td>Aspek Hukum Dalam Ekonomi</td>
+                                    <td>2</td>
+                                    <td><center><div class="col-md-9 col-sm-9 col-xs-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" class="flat" checked="checked">
+                                            </label>
+                                        </div></center></td>
+                                </tr>
+                                <tr>
+                                    <td>ACC2701</td>
+                                    <td>Neti Dewi Hartati,STP,M.E.Sy</td>
+                                    <td>Etika Bisnis Islam</td>
+                                    <td>32</td>
+                                    <td><center> <div class="col-md-9 col-sm-9 col-xs-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" class="flat" checked="checked">
+                                            </label>
+                                        </div></center></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-success">Save</button>
+                            </div>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <!--End Modal-->
 
