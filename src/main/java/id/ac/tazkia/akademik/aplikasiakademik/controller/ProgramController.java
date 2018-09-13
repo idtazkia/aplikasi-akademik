@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,13 +37,18 @@ public class ProgramController {
     UserDao userDao;
 
     @GetMapping("/program/list")
-    public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page) {
-        return new ModelMap()
-                .addAttribute("list", programDao.findByStatusNotIn(StatusRecord.HAPUS, page));
+    public void list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page,Model model, String search) {
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("list", programDao.findByStatusNotInAndNamaProgramContainingIgnoreCaseOrderByNamaProgram(StatusRecord.HAPUS, search, page));
+        } else {
+            model.addAttribute("list",programDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+
+        }
     }
 
     @GetMapping("/program/form")
-    public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id){
+    public String  formProgram(Model model,Authentication currentUser, @RequestParam(required = false)String id){
 
         model.addAttribute("program", new Program());
 
@@ -93,12 +99,15 @@ public class ProgramController {
             program.setTglEdit(LocalDateTime.now());
             program.setUserEdit(u);
             program.setTglInsert(id.getTglInsert());
-            program.setUserInsert(id.getUserInsert());
         }
 
         if (id == null) {
             program.setUserInsert(u);
             program.setTglInsert(LocalDateTime.now());
+        }
+
+        if (program.getStatus() == null){
+            program.setStatus(StatusRecord.NONAKTIF);
         }
 
         programDao.save(program);
@@ -108,27 +117,26 @@ public class ProgramController {
 
     }
 
-    @PostMapping(value = "/program/delete")
-    public String deleteProgram(@RequestParam Program program,Authentication currentUser) {
+    @PostMapping("/delete/program")
+    public String hapusprogram(@RequestParam Program program,Authentication currentUser){
 
-        LOGGER.debug("Authentication class : ()", currentUser.getClass().getName());
+        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
-        if(currentUser == null){
-            LOGGER.warn("Current User is null");
+        if (currentUser == null) {
+            LOGGER.warn("Current user is null");
         }
 
         String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
         User u = userDao.findByUsername(username);
         LOGGER.debug("User ID : {}", u.getId());
-        if(u == null){
-            LOGGER.warn("Username {} not found in database", username);
+        if (u == null) {
+            LOGGER.warn("Username {} not found in database ", username);
         }
 
-        program.setStatus(StatusRecord.NONAKTIF);
         program.setUserEdit(u);
         program.setTglEdit(LocalDateTime.now());
+        program.setStatus(StatusRecord.HAPUS);
         programDao.save(program);
-
 
         return "redirect:/program/list";
     }

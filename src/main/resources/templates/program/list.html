@@ -21,22 +21,28 @@
                 </div>
 
                 <div class="x_content">
-                                        <table width="100%">
-                                            <tr>
-                                                <td>
-                                                    <a th:href="@{/program/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                                                </td>
-                                                <td align="right">
-                                                    <form method="get" th:action="@{/program/list}">
-                                                        <div class="input-group input-group-sm" style="width: 100%;">
-                                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
-                                                            <input type="hidden" name="mode" id="mode"/>
-                                                        </div>
-                                                    </form>
-                                                </td>
-                                            </tr>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <a th:href="@{/program/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                            </td>
+                            <td align="right">
+                                <div class="title_right">
+                                    <form method="get">
+                                        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" th:value="${search}" name="search" placeholder="Search by Program Name">
+                                                <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
 
-                                        </table>
+                    </table>
 
 
                     <br>
@@ -49,38 +55,37 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th>NA</th>
-                                <th scope="col">Nama Program</th>
-                                <th scope="col">Keterangan</th>
+                                <th scope="col">Program Name</th>
+                                <th scope="col">Description</th>
                                 <th scope="col" width="30px"></th>
                                 <th scope="col" width="40px"></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="data,row : ${list}">
-                                <th th:text="${(row.index + 1)}">1</th>
-                                <td>
+                                <tr th:each="data,row : ${list}">
+                                    <th th:text="${(row.index + 1)}">1</th>
+                                        <td>
                                              <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
                                                        <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                                     </span>
-                                    <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
                                                         <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
                                                     </span>
-                                </td>
-                                <td th:text="${data.namaProgram}">S1</td>
-                                <td th:text="${data.keterangan}">Sarjana</td>
-                                <td align="center">
-                                    <a th:href="@{/program/form(id=${data.idProgram})}" class="btn btn-success btn-sm" role="button" title="edit">Edit</a>
-                                    <!--<a th:href="@{/program/form(id=${data.idProgram})}" class="btn btn-success" role="button" title="edit">Edit</a>-->
-                                </td>
-                                <td>
-                                    <form method="post" th:action="@{/program/delete(program=${data.idProgram})}">
-                                        <button type="submit" class="btn btn-danger btn-sm"
+                                        </td>
+                                        <td th:text="${data.namaProgram}">S1</td>
+                                        <td th:text="${data.keterangan}">Sarjana</td>
+                                        <td align="center">
+                                             <a th:href="@{/program/form(id=${data.idProgram})}" class="btn btn-success btn-sm" role="button" title="edit">Edit</a>
+                                        </td>
+                                        <td>
+                                            <form method="post" th:action="@{/delete/program(program=${data.idProgram})}">
+                                                <button type="submit" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                             ' to recover this imaginary file!')">
-                                            <i class="ti-eraser"></i>Hapus
-                                        </button>
-                                    </form>
-                                </td>
+                                    ' to recover this imaginary file!')">
+                                            <i class="ti-eraser"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </td>
                             </tr>
                             </tbody>
                         </table>

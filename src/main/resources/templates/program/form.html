@@ -58,21 +58,20 @@
 
 
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="status">Status <span class="required">*</span>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Status <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
 
                                             <div class="">
                                                 <label>
-
-                                                    <input type="checkbox" name="status" id="status" class="js-switch" th:if="*{status.AKTIF}==*{status}" th:value="'AKTIF'" checked />
-
-                                                    <input type="checkbox" name="status" id="status" class="js-switch" th:if="*{status.NONAKTIF}==*{status}" th:value="'NONAKTIF'" /> Active
-
-                                                </label>
+                                                    <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                                                </label >
                                             </div>
 
                                 </div>
+                                <input type="hidden" name="idProgram" th:field="*{idProgram}">
+                                <input type="hidden" name="userInsert" th:field="*{userInsert}">
+                                <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                             </div>
 
 
