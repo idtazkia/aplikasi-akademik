@@ -9,8 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface ProdiDao extends PagingAndSortingRepository<Prodi, String> {
-    Page<Prodi> findByStatus(StatusRecord status, Pageable page);
+    Page<Prodi> findByStatusNotInAndAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord status,String nama,Pageable page);
     List<Prodi> findByStatus(StatusRecord status);
     List<Prodi> findByStatusAndIdProdi(StatusRecord status, String id);
-    Iterable<Prodi> findByStatus(String aktif);
+    Page<Prodi> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
 }

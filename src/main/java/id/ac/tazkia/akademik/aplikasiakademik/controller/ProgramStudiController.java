@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,12 +52,14 @@ public class ProgramStudiController {
     }
 
     @GetMapping("/programstudi/list")
-    public ModelMap list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("prodi",prodiDao.findByStatus(StatusRecord.AKTIF,page))
-                .addAttribute("jurusan",jurusanDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif))
-                .addAttribute("jenjang",jenjangDao.findByStatusNotIn(StatusRecord.HAPUS))
-                .addAttribute("fakultas",fakultasDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
+    public void list(@PageableDefault(direction = Sort.Direction.ASC) Pageable page,Model model,String search){
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("prodi", prodiDao.findByStatusNotInAndAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.HAPUS, search, page));
+        } else {
+            model.addAttribute("prodi",prodiDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+
+        }
     }
 
     @GetMapping("/programstudi/form")

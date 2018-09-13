@@ -23,17 +23,19 @@
                     <a th:href="@{/programstudi/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </td>
                 <td align="right">
+                    <form method="get">
                     <div class="title_right">
                         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for..." name="search"
-                                       th:value="${programstudi}">
+                                <input type="text"  class="form-control" placeholder="Search for..." name="search"
+                                       th:value="${search}">
                                 <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Search</button>
+                              <button class="btn btn-default" type="submit">Search</button>
                           </span>
                             </div>
                         </div>
                     </div>
+                    </form>
                 </td>
             </tr>
         </table>
