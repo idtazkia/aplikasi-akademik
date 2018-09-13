@@ -11,25 +11,23 @@
 <section layout:fragment="main" class="container">
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Kampus dan Gedung</h6>
-        </div>
     </div>
-
 
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Daftar Kampus Dan Gedung</center></h6>
-        <br>
+        <div class="x_title">
+            <h2>Campus Building<small>List</small></h2>
+            <div class="clearfix"></div>
+        </div>
 
         <div class="box-body table-responsive no-padding">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kampus" role="tab">Kampus</a>
+                    <a class="nav-link active" data-toggle="tab" href="#kampus" role="tab">Campus</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#gedung" role="tab">Gedung</a>
+                    <a class="nav-link" data-toggle="tab" href="#gedung" role="tab">Building</a>
                 </li>
             </ul>
             <br>
@@ -41,23 +39,34 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <a th:href="@{/gedung/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Kampus</a>
-
-                                        </div>
+                                        <td class="form-group">
+                                            <a th:href="@{/gedung/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Add Campus</a>
+                                                <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
+                                                    <form method="get">
+                                                        <div class="input-group">
+                                                            <input type="text" id="keyresult" autocomplete="off"
+                                                                   class="form-control" placeholder="Search for..." name="search"
+                                                                   th:value="${search}">
+                                                            <span class="input-group-btn">
+                                                          <button class="btn btn-default" type="submit">Go!</button>
+                                                        </span>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                        </td>
                                     </div>
                                 </div>
                             </div>
                         </tr>
                     </table>
-                    <table class="table table-striped">
+                    <table class="table table-striped jambo_table bulk_action">
                         <thead>
                         <tr>
                             <th>No</th>
                             <th>NA</th>
-                            <th>Nama Kampus</th>
-                            <th>Alamat</th>
-                            <th>Keterangan</th>
+                            <th>Name Campus</th>
+                            <th>Address</th>
+                            <th>Information</th>
                             <th colspan="2"></th>
                         </tr>
                         </thead>
@@ -85,7 +94,7 @@
                                 <button type="submit" class="btn btn-danger btn-sm"
                                         onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
-                                    <i class="ti-eraser"></i> hapus
+                                    <i class="ti-eraser"></i> delete
                                 </button>
                             </form></td>
                         </tr>
@@ -103,7 +112,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Pilih Kampus</label>
+                                                <label>Select Campus</label>
                                                 <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
                                                         name="provinsi">
                                                     <option></option>
@@ -122,7 +131,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Gedung</a>
+                                                <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
 
                                             </div>
                                         </div>
@@ -133,14 +142,14 @@
                     </table>
 
 
-                    <table class="table table-striped">
+                    <table class="table table-striped jambo_table bulk_action">
                         <thead>
                         <tr>
                             <th>NO</th>
                             <th>NA</th>
-                            <th>Nama Gedung</th>
-                            <th>Nama Kampus</th>
-                            <th>Keterangan</th>
+                            <th>Name Building</th>
+                            <th>Name Campus</th>
+                            <th>Information</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -169,7 +178,7 @@
                                     <button type="submit" class="btn btn-danger"
                                             onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> hapus
+                                        <i class="ti-eraser"></i> Delete
                                     </button>
                                 </form>
                             </td>

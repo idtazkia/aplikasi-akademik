@@ -11,27 +11,24 @@
 <section layout:fragment="main" class="container">
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Input Kampus</h6>
-        </div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/gedung/kampus/form(id=${kampus.idKampus})}" th:object="${kampus}">
             <div class="form-group">
                 <div class="col-sm-12">
-                    <label>Nama Kampus</label>
-                    <input type="text" class="form-control" th:field="*{namaKampus}" name="namaKampus" placeholder="Nama Kampus">
+                    <label>Name Campus</label>
+                    <input type="text" class="form-control" th:field="*{namaKampus}" name="namaKampus" placeholder="Name Campus">
                 </div>
             </div>
 
 
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label>Provinsi</label>
+                    <label>Province</label>
                     <select onchange="" th:field="*{propinsi}" class="form-control js-example-placeholder-single" id="provinsi"
                             name="propinsi">
-                        <option value="">-Pilih Provinsi-</option>
+                        <option value="">-Select Province-</option>
                         <option th:each="ins : ${daftarProp}"
                                 th:value="${ins.idProvinsi}"
                                 th:text="${ins.nama}">Jawa Barat</option>
@@ -43,10 +40,10 @@
 
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label>Kabupaten / Kota</label>
+                    <label>Regency / City</label>
                     <select onchange="" th:field="*{kabupatenKota}" class="form-control js-example-placeholder-single"
                             name="kabupatenKota">
-                        <option value="">-Pilih Kabupaten / Kota-</option>
+                        <option value="">-Select Regency / City-</option>
                         <option th:each="ins : ${daftarKokab}"
                                 th:value="${ins.idKokab}"
                                 th:text="${ins.nama}">Bogor</option>
@@ -56,14 +53,14 @@
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <label>Alamat</label>
-                    <input type="text" name="alamat" th:field="*{alamat}" class="form-control" placeholder="Alamat Kampus">
+                    <label>Address</label>
+                    <input type="text" name="alamat" th:field="*{alamat}" class="form-control" placeholder="Address Campus">
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <label>Keterangan</label>
+                    <label>Information</label>
                     <input type="text" name="keterangan" th:field="*{keterangan}" class="form-control" placeholder="Keterangan">
                 </div>
             </div>
@@ -71,11 +68,11 @@
                 <div class="col-sm-12">
                     <table class="table table-responsive">
                         <tr>
-                            <td>Tidak Aktif? (NA)</td>
+                            <td>Not active? (NA)</td>
                             <td>
                                 <input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
                             </td>
-                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                            <td><small class="alert-danger">*) Check if it's not active</small></td>
                         </tr>
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
                         <input type="hidden" name="idLembaga" th:field="*{idKampus}">
@@ -85,11 +82,11 @@
 
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Save">
 
             <small>
                 <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
-                    <span aria-hidden="true"></span>Batal
+                    <span aria-hidden="true"></span>Cancel
                 </a>
             </small>
         </form>
