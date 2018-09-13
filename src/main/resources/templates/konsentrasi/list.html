@@ -9,26 +9,30 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Konsentrasi</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>List of Concentration</h2>
+                <div class="clearfix"></div>
+            </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <table width="100%">
             <tr>
                 <td>
-                    <a th:href="@{/konsentrasi/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
+                    <a th:href="@{/konsentrasi/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </td>
                 <td align="right">
-                    <form method="get" th:action="@{/konsentrasi/list}">
-                        <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Fakultas">
-                            <input type="hidden" name="mode" id="mode"/>
+                    <div class="title_right">
+                        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                              <button class="btn btn-default" type="button">Go!</button>
+                          </span>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -39,9 +43,9 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">na</th>
-                    <th scope="col">Program Studi</th>
-                    <th scope="col">Kode</th>
-                    <th scope="col">Konsentrasi</th>
+                    <th scope="col">Study program</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Concentration</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
@@ -68,7 +72,7 @@
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
-                                <i class="ti-eraser"></i> hapus
+                                <i class="ti-eraser"></i> delete
                             </button>
                         </form>
                     </td>
