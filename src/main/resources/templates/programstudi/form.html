@@ -11,18 +11,18 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Program Studi</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Study Program List</h2>
+                <div class="clearfix"></div>
+            </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/programstudi/form(id=${prodi.idProdi})}" th:object="${prodi}">
 
             <div class="form-group">
-                <label>Jurusan</label>
+                <label>Departement</label>
                 <select onchange="" class="form-control js-example-placeholder-single" id="jurusan"
                         name="idJurusan" th:field="*{idJurusan}" >
                     <option value=""></option>
@@ -31,7 +31,7 @@
             </div>
 
             <div class="form-group">
-                <label>Jenjang</label>
+                <label>Level</label>
                 <select onchange="" class="form-control js-example-placeholder-single"
                         name="idJenjang" th:field="*{idJenjang}" >
                     <option value=""></option>
@@ -40,30 +40,31 @@
             </div>
 
             <div class="form-group">
-                <label>Kode Program Studi</label>
+                <label>Study Program Code</label>
                 <input type="text" class="form-control" th:field="*{kodeProdi}"  placeholder="Kode" name="kodeProdi" maxlength="2">
             </div>
 
             <div class="form-group">
-                <label>Nama Program Studi</label>
+                <label>Nama Program Study</label>
                 <input type="text" class="form-control" th:field="*{namaProdi}" placeholder="Nama" name="namaProdi">
             </div>
 
             <div class="form-group">
-                <label>Pejabat</label>
+                <label>Official</label>
                 <input type="text" class="form-control" th:field="*{pejabat}" placeholder="Pejabat" name="pejabat">
             </div>
             <input type="hidden" name="idProdi" th:field="*{idProdi}">
             <input type="hidden" name="userInsert" th:field="*{userInsert}">
             <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
 
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Save">
             <a th:href="@{/programstudi/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Batal
+                <span aria-hidden="true"></span>Cancel
             </a>
         </form>
     </div>
-
+        </div>
+    </div>
 </section>
 
 </body>
