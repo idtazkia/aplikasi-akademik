@@ -11,35 +11,33 @@
 <section layout:fragment="main" class="container">
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Ruang Kelas</h6>
-        </div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/ruang/form(id = ${ruangan.idRuangan})}" th:object="${ruangan}">
 
             <div class="form-group">
-                <label>Pilih Gedung</label>
+                <label>Select Building</label>
                 <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="gedung"
                         name="idGedung">
                     <option></option>
+                    <option> STEI TAZKIA SENTUL</option>
                     <option th:field="*{idGedung}" th:each="list : ${daftarGedung}" th:text="${list.namaGedung}" th:value="${list.idGedung}">GRANADA - STEI TAZKIA SENTUL</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlInput1">Nama Ruang</label>
-                <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Nama">
+                <label for="exampleFormControlInput1">Space Name</label>
+                <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Name">
             </div>
 
             <div class="form-group">
-                <label>Kapasitas</label>
+                <label>Capacity</label>
                 <input type="number" th:field="*{kapasitas}" name="kapasitas" class="form-control">
             </div>
 
             <div class="form-group">
-                <label>Keterangan</label>
+                <label>Information</label>
                 <textarea class="form-control" th:field="*{keterangan}" name="keterangan" rows="3"></textarea>
             </div>
 
@@ -47,9 +45,9 @@
                 <div class="col-sm-12">
                     <table class="table table-responsive">
                         <tr>
-                            <td>Tidak Aktif? (NA)</td>
+                            <td>Not active? (NA)</td>
                             <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
-                            <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
+                            <td><small class="alert-danger">*) Check if it's not active</small></td>
                         </tr>
                         <input type="hidden" name="idRuangan" th:field="*{idRuangan}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
@@ -59,9 +57,9 @@
 
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Save">
             <a class="btn btn-primary" th:href="@{/ruang/list}" role="button">
-                <span aria-hidden="true"></span>Batal
+                <span aria-hidden="true"></span>Cancel
             </a>
         </form>
     </div>
