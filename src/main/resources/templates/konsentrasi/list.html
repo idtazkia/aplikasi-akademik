@@ -23,16 +23,19 @@
                     <a th:href="@{/konsentrasi/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </td>
                 <td align="right">
-                    <div class="title_right">
-                        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Go!</button>
+                    <form method="get">
+                        <div class="title_right">
+                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                <div class="input-group">
+                                    <input type="text"  class="form-control" placeholder="Search for..." name="search"
+                                           th:value="${search}">
+                                    <span class="input-group-btn">
+                              <button class="btn btn-default" type="submit">Search</button>
                           </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </td>
             </tr>
         </table>
@@ -54,13 +57,13 @@
                 <tr th:each="data, row : ${list}">
                     <td th:text="${(row.index + 1)}"></td>
                     <td>
-                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
 
-                                </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                        </span>
                     </td>
                     <td th:text="${data.idProdi.namaProdi}">Fakultas Ekonomi</td>
                     <td th:text="${data.kodeKonsentrasi}">Bisnis Manajemen Islam</td>

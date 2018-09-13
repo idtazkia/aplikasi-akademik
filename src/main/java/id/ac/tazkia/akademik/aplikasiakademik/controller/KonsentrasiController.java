@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,9 +45,14 @@ public class KonsentrasiController {
     }
 
     @GetMapping("/konsentrasi/list")
-    public ModelMap RuangList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("list", konsentrasiDao.findByStatus(StatusConstants.Aktif,page));
+    public void RuangList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page,String search,Model model){
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("list", konsentrasiDao.findByStatusNotInAndAndNamaKonsentrasiContainingIgnoreCaseOrderByNamaKonsentrasi(StatusRecord.HAPUS, search, page));
+        } else {
+            model.addAttribute("list",konsentrasiDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+
+        }
     }
 
     @GetMapping("/konsentrasi/form")
@@ -89,6 +95,10 @@ public class KonsentrasiController {
             LOGGER.warn("Current user is null");
         }
 
+        if (konsentrasi.getStatus() == null){
+            konsentrasi.setStatus(StatusRecord.NONAKTIF);
+        }
+
         String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
         User u = userDao.findByUsername(username);
         LOGGER.debug("User ID : {}", u.getId());
@@ -129,7 +139,7 @@ public class KonsentrasiController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        konsentrasi.setStatus(StatusConstants.Nonaktif);
+        konsentrasi.setStatus(StatusRecord.HAPUS);
         konsentrasi.setTglEdit(LocalDateTime.now());
         konsentrasi.setUserEdit(u);
         konsentrasiDao.save(konsentrasi);
