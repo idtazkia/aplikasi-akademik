@@ -9,4 +9,5 @@ public interface FakultasDao extends PagingAndSortingRepository<Fakultas, String
     Page<Fakultas> findByStatus(String status, Pageable page);
     Iterable<Fakultas> findByStatusAndNa(String status, String na);
     Iterable<Fakultas> findByStatus(String s);
+    Page<Fakultas> findByStatusAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(String status, String nama, Pageable page);
 }

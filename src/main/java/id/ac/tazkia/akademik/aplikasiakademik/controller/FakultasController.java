@@ -9,10 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,12 +34,18 @@ public class FakultasController {
     @Autowired
     UserDao userDao;
 
-    //    syntaxtampil
     @GetMapping("/fakultas/list")
-    public void daftarFakultas(Model model, Pageable pagel) {
-        model.addAttribute("list", fakultasDao.findByStatus(StatusConstants.Aktif, pagel));
-    }
+    public void list(Model model, @PageableDefault(size = 10) Pageable page, String search){
 
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("list", fakultasDao.findByStatusAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(StatusConstants.Aktif, search, page));
+        } else {
+            model.addAttribute("list",fakultasDao.findByStatus(StatusConstants.Aktif,page));
+
+        }
+    }
+    
     @GetMapping("/fakultas/form")
     public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id) {
 
