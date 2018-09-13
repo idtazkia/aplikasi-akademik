@@ -108,6 +108,10 @@ public class JenjangController {
             jenjang.setTglInsert(LocalDateTime.now());
         }
 
+        if (jenjang.getStatus() == null){
+            jenjang.setStatus(StatusRecord.NONAKTIF);
+        }
+
         jenjangDao.save(jenjang);
 
 

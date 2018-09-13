@@ -26,13 +26,18 @@
                             <a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
                         </td>
                         <td align="right">
-                            <form method="get">
-                                <div class="input-group input-group-sm" style="width: 100%;">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                    placeholder="Cari berdasarkan nama jenjang" class="form-control col-md-5" name="search"
-                                    th:value="${search}">
+                            <div class="title_right">
+                                <form method="get">
+                                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" th:value="${search}" name="search" placeholder="Search by Jenjang Name">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                         </span>
+                                    </div>
                                 </div>
-                            </form>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 </table>

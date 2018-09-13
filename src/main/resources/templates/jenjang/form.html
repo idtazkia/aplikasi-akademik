@@ -26,25 +26,25 @@
 
                     <div class="form-group">
                         <label>Code</label>
-                        <input type="text" th:field="*{kodeJenjang}" class="form-control" name="kodeJenjang" placeholder="Kode">
+                        <input type="text" th:field="*{kodeJenjang}" class="form-control" name="Code" placeholder="Kode">
                     </div>
 
                     <div class="form-group">
                         <label>Jenjang Name</label>
-                        <input type="text" th:field="*{namaJenjang}" class="form-control" name="namaJenjang" placeholder="Nama">
+                        <input type="text" th:field="*{namaJenjang}" class="form-control" name="Jenjang Name" placeholder="Nama">
                     </div>
 
                     <div class="form-group">
                         <label>Description</label>
-                        <input type="text" class="form-control" th:field="*{keterangan}" name="keterangan" placeholder="Keterangan">
+                        <input type="text" class="form-control" th:field="*{keterangan}" name="Description" placeholder="Keterangan">
                     </div>
 
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input name="status" type="checkbox" value="NONAKTIF" class="js-switch" />
-                        </label>
-                        <input type="hidden" name="idLembaga" th:field="*{idJenjang}">
+                            <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
+                        <input type="hidden" name="idJenjang" th:field="*{idJenjang}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
                         <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </div>
