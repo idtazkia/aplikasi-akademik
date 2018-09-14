@@ -1,10 +1,12 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.GedungDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.RuanganDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Gedung;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Ruangan;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-
-import static id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants.*;
 
 @Controller
 public class RuangController {
@@ -42,17 +42,22 @@ public class RuangController {
 
     @ModelAttribute("daftarGedung")
     public Iterable<Gedung> daftarGedung() {
-        return gedungDao.findByStatusAndNa(Aktif,Aktif);
+        return gedungDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @GetMapping("/ruang/list")
-    public ModelMap RuangList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("list", ruanganDao.findByStatus(StatusConstants.Aktif,page));
+    public void RuangList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page, Model model, String search) {
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("list", ruanganDao.findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(StatusRecord.HAPUS, search, page));
+        } else {
+            model.addAttribute("list", ruanganDao.findByStatusNotIn(StatusRecord.HAPUS, page));
+
+        }
     }
 
     @GetMapping("/ruang/form")
-    public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id){
+    public String formFakultas(Model model, Authentication currentUser, @RequestParam(required = false) String id) {
 
         model.addAttribute("ruangan", new Ruangan());
 
@@ -82,8 +87,8 @@ public class RuangController {
 
     @PostMapping(value = "/ruang/form")
     public String uploadBukti(@Valid Ruangan ruangan,
-                              BindingResult error,@RequestParam(required = false) Ruangan id,
-                              Authentication currentUser){
+                              BindingResult error, @RequestParam(required = false) Ruangan id,
+                              Authentication currentUser) {
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
@@ -98,7 +103,10 @@ public class RuangController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        if (id != null){
+        if (ruangan.getStatus() == null) {
+            ruangan.setStatus(StatusRecord.NONAKTIF);
+        }
+        if (id != null) {
             ruangan.setTglEdit(LocalDateTime.now());
             ruangan.setUserEdit(u);
             ruangan.setTglInsert(id.getTglInsert());
@@ -117,7 +125,7 @@ public class RuangController {
     }
 
     @PostMapping(value = "/delete/ruangan")
-    public String deleteRuangan(@RequestParam Ruangan ruangan,Authentication currentUser){
+    public String deleteRuangan(@RequestParam Ruangan ruangan, Authentication currentUser) {
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
         if (currentUser == null) {
@@ -131,7 +139,7 @@ public class RuangController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        ruangan.setStatus(StatusConstants.Nonaktif);
+        ruangan.setStatus(StatusRecord.HAPUS);
         ruangan.setTglEdit(LocalDateTime.now());
         ruangan.setUserEdit(u);
         ruanganDao.save(ruangan);

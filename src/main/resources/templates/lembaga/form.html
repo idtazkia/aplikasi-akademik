@@ -19,17 +19,17 @@
 
                 <form method="post" th:action="@{/lembaga/form(id = ${lembaga.idLembaga})}" th:object="${lembaga}" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">Nama Lembaga</label>
-                        <input type="text" th:field="*{namaLembaga}" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
+                        <label for="exampleFormControlInput1">Institution Name</label>
+                        <input type="text" th:field="*{namaLembaga}" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Institution Name">
                     </div>
 
                     <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Alamat</label>
+                        <label for="exampleFormControlTextarea1">Address</label>
                         <textarea class="form-control" th:field="*{alamat}" name="alamat" id="exampleFormControlTextarea1" rows="3"></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>Provinsi</label>
+                        <label>Province</label>
                         <select name="provinsi" th:field="*{provinsi}" class="form-control js-example-placeholder-single">
                             <option value=""></option>
                             <option th:each="ins : ${provinsi}"
@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Kota / Kabupaten</label>
+                        <label>District</label>
                         <select name="kokab" th:field="*{kokab}" class="form-control js-example-placeholder-single">
                             <option value=""></option>
                             <option th:each="ins : ${kokab}"
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="exampleFormControlFile1">Pilih file logo Lembaga</label>
+                        <label for="exampleFormControlFile1">Logo</label>
                         <input type="file" th:field="*{logo}" class="form-control-file" name="logo" id="exampleFormControlFile1">
 
                         <input type="hidden" name="idLembaga" th:field="*{idLembaga}">
@@ -60,9 +60,9 @@
                         <input type="hidden" name="tglEdit" th:field="*{tglEdit}">
                     </div>
 
-                    <input class="btn btn-primary" type="submit" value="Simpan">
+                    <input class="btn btn-primary" type="submit" value="Save">
                     <a th:href="@{/lembaga/list}" class="btn btn-primary" role="button">
-                        <span aria-hidden="true"></span>Batal
+                        <span aria-hidden="true"></span>Cancel
                     </a>
                 </form>
 

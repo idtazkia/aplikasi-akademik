@@ -75,13 +75,12 @@
                 <tr th:each="data, row : ${list}">
                     <td th:text="${(row.index + 1)}"></td>
                     <td>
-                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-
-                                </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                        </span>
                     </td>
                     <td th:text="${(data.idGedung.namaGedung)}"></td>
                     <td th:text="${(data.namaRuangan)}"></td>
@@ -90,7 +89,7 @@
                     <td align="center">
                         <a href="#" class="btn btn-success btn-sm" th:href="@{/ruang/form(id=${data.idRuangan})}" title="edit">Edit</a></td>
                     <td align="center">
-                        <form method="post" th:action="@{/delete/ruang(ruangan=${data.idRuangan})}">
+                        <form method="post" th:action="@{/delete/ruangan(ruangan=${data.idRuangan})}">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">

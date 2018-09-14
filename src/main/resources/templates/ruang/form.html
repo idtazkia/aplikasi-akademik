@@ -21,13 +21,12 @@
                 <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="gedung"
                         name="idGedung">
                     <option></option>
-                    <option> STEI TAZKIA SENTUL</option>
                     <option th:field="*{idGedung}" th:each="list : ${daftarGedung}" th:text="${list.namaGedung}" th:value="${list.idGedung}">GRANADA - STEI TAZKIA SENTUL</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlInput1">Space Name</label>
+                <label for="exampleFormControlInput1">Room Name</label>
                 <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Name">
             </div>
 
@@ -43,16 +42,13 @@
 
             <div class="form-group">
                 <div class="col-sm-12">
-                    <table class="table table-responsive">
-                        <tr>
-                            <td>Not active? (NA)</td>
-                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
-                            <td><small class="alert-danger">*) Check if it's not active</small></td>
-                        </tr>
+                    <label>Status</label><br>
+                    <label>
+                        <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                    </label >
                         <input type="hidden" name="idRuangan" th:field="*{idRuangan}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">
                         <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
-                    </table>
                 </div>
 
             </div>
