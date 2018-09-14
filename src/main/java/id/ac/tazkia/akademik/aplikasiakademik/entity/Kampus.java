@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -39,8 +38,8 @@ public class Kampus {
     @Column(nullable = false)
     private String keterangan;
 
-    @NotNull
-    private String status ="1";
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
     @NotNull @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -57,8 +56,5 @@ public class Kampus {
     @ManyToOne
     @JoinColumn(name = "user_edit ")
     private User userEdit;
-
-    @NotNull
-    private String na = "1";
 
 }

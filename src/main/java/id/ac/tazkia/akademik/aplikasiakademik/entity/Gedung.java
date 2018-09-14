@@ -29,8 +29,8 @@ public class Gedung {
     @Column(nullable = false)
     private String keterangan;
 
-    @NotNull
-    private String status ="1";
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
 
     @NotNull @Column(columnDefinition = "DATE")
@@ -49,8 +49,5 @@ public class Gedung {
     @ManyToOne
     @JoinColumn(name = "user_edit ")
     private User userEdit;
-
-    @NotNull
-    private String na = "1";
 
 }

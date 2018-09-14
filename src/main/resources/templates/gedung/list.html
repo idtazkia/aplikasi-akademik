@@ -74,12 +74,11 @@
                         <tr th:each="data,row  : ${list}">
                             <td th:text="${(row.index + 1)}"></td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-
                                 </span>
                             </td>
                             <td th:text="${data.namaKampus}">STEI TAZKIA SENTUL</td>
@@ -158,12 +157,11 @@
                         <tr th:each="data,row  : ${gedung}">
                             <td th:text="${(row.index + 1)}"></td>
                             <td>
-                               <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                                   <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-
                                 </span>
                             </td>
                             <td th:text="${data.namaGedung}"></td>

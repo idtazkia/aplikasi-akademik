@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,6 +29,16 @@ public class GedungController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GedungController.class);
 
+    @ModelAttribute("daftarProp")
+    public Iterable<Provinsi> daftaProp() {
+        return provinsiDao.findAll();
+    }
+
+    @ModelAttribute("daftarKokab")
+    public Iterable<KabupatenKota> daftaKokab() {
+        return kokabDao.findAll();
+    }
+
     @Autowired
     ProvinsiDao provinsiDao;
     @Autowired
@@ -40,30 +51,20 @@ public class GedungController {
     GedungDao gedungDao;
 
 
-
-
-
     @GetMapping("/gedung/list")
-    public ModelMap GedungList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page){
-        return new ModelMap()
-                .addAttribute("list",kampusDao.findByStatus(StatusConstants.Aktif,page))
-                .addAttribute("gedung",gedungDao.findByStatus(StatusConstants.Aktif,page));
+    public void GedungList(@PageableDefault(direction = Sort.Direction.ASC) Pageable page,Model model,@RequestParam(required = false) String search,@RequestParam(required = false) String searchGedung) {
+
+        model.addAttribute("gedung",gedungDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+        model.addAttribute("list",kampusDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+
+
     }
 
 
-    @ModelAttribute("daftarProp")
-    public Iterable<Provinsi> daftaProp() {
-        return provinsiDao.findAll();
-    }
-
-    @ModelAttribute("daftarKokab")
-    public Iterable<KabupatenKota> daftaKokab() {
-        return kokabDao.findAll();
-    }
     //Controller Kampus
 
     @GetMapping("/gedung/kampus/form")
-    public String  formGedung(Model model,Authentication currentUser, @RequestParam(required = false)String id){
+    public String formGedung(Model model, Authentication currentUser, @RequestParam(required = false) String id) {
 
         model.addAttribute("kampus", new Kampus());
 
@@ -94,8 +95,8 @@ public class GedungController {
 
     @PostMapping(value = "/gedung/kampus/form")
     public String proses(@Valid Kampus kampus,
-                         BindingResult error,@RequestParam(required = false) Kampus id,
-                         Authentication currentUser){
+                         BindingResult error, @RequestParam(required = false) Kampus id,
+                         Authentication currentUser) {
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
@@ -110,7 +111,7 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        if (id != null){
+        if (id != null) {
             kampus.setTglEdit(LocalDateTime.now());
             kampus.setUserEdit(u);
             kampus.setTglInsert(id.getTglInsert());
@@ -129,7 +130,7 @@ public class GedungController {
     }
 
     @PostMapping("/delete/gedung/kampus")
-    public String delete(@RequestParam Kampus kampus,Authentication currentUser){
+    public String delete(@RequestParam Kampus kampus, Authentication currentUser) {
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
@@ -144,7 +145,7 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        kampus.setStatus(StatusConstants.Nonaktif);
+        kampus.setStatus(StatusRecord.HAPUS);
         kampus.setUserEdit(u);
         kampus.setTglEdit(LocalDateTime.now());
         kampusDao.save(kampus);
@@ -157,10 +158,10 @@ public class GedungController {
 
     //Controller Gedung
     @GetMapping("/gedung/form")
-    public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id) {
+    public String formFakultas(Model model, Authentication currentUser, @RequestParam(required = false) String id) {
 
         model.addAttribute("gedung", new Gedung());
-        model.addAttribute("kampus",kampusDao.findByStatus(StatusConstants.Aktif));
+        model.addAttribute("kampus", kampusDao.findByStatus(StatusRecord.AKTIF));
 
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
@@ -189,8 +190,8 @@ public class GedungController {
 
     @PostMapping(value = "/gedung/form")
     public String uploadBukti(@Valid Gedung gedung,
-                              BindingResult error,@RequestParam(required = false) Gedung id,
-                              Authentication currentUser){
+                              BindingResult error, @RequestParam(required = false) Gedung id,
+                              Authentication currentUser) {
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
@@ -205,7 +206,7 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        if (id != null){
+        if (id != null) {
             gedung.setTglEdit(LocalDateTime.now());
             gedung.setUserEdit(u);
             gedung.setTglInsert(id.getTglInsert());
@@ -222,8 +223,9 @@ public class GedungController {
         return "redirect:/gedung/list";
 
     }
+
     @PostMapping("/delete/gedung")
-    public String delete(@RequestParam Gedung gedung,Authentication currentUser){
+    public String delete(@RequestParam Gedung gedung, Authentication currentUser) {
 
         LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
 
@@ -238,7 +240,7 @@ public class GedungController {
             LOGGER.warn("Username {} not found in database ", username);
         }
 
-        gedung.setStatus(StatusConstants.Nonaktif);
+        gedung.setStatus(StatusRecord.HAPUS);
         gedung.setUserEdit(u);
         gedung.setTglEdit(LocalDateTime.now());
         gedungDao.save(gedung);
