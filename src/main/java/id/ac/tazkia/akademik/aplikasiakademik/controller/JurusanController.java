@@ -6,6 +6,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.dao.JurusanDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Fakultas;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jurusan;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class JurusanController {
 
     @ModelAttribute("daftarFakultas")
     public Iterable<Fakultas> daftarFakultas(){
-        return fakultasDao.findByStatusAndNa(Aktif,Aktif);
+        return fakultasDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @GetMapping("/jurusan/list")

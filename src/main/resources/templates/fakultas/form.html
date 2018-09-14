@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input name="na" type="checkbox" value="1" class="js-switch" />
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                         </label>
                         <input type="hidden" name="idFakultas" th:field="*{idFakultas}">
                         <input type="hidden" name="userInsert" th:field="*{userInsert}">

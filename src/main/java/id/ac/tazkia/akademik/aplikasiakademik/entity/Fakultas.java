@@ -28,11 +28,8 @@ public class Fakultas {
     @NotNull
     private String pejabat;
 
-    @NotNull
-    private String na = "1";
-
-    @NotNull
-    private String status = "1";
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -4,6 +4,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.FakultasDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Fakultas;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +40,9 @@ public class FakultasController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", fakultasDao.findByStatusAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(StatusConstants.Aktif, search, page));
+            model.addAttribute("list", fakultasDao.findByStatusNotInAndAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(StatusRecord.HAPUS, search, page));
         } else {
-            model.addAttribute("list",fakultasDao.findByStatus(StatusConstants.Aktif,page));
+            model.addAttribute("list",fakultasDao.findByStatusNotIn(StatusRecord.HAPUS,page));
 
         }
     }
@@ -104,6 +105,10 @@ public class FakultasController {
             fakultas.setTglInsert(LocalDateTime.now());
         }
 
+        if (fakultas.getStatus() == null){
+            fakultas.setStatus(StatusRecord.NONAKTIF);
+        }
+
         fakultasDao.save(fakultas);
 
 
@@ -130,7 +135,7 @@ public class FakultasController {
 
         fakultas.setTglEdit(LocalDateTime.now());
         fakultas.setUserEdit(u);
-        fakultas.setStatus(StatusConstants.Nonaktif);
+        fakultas.setStatus(StatusRecord.HAPUS);
         fakultasDao.save(fakultas);
 
         return "redirect:/fakultas/list";

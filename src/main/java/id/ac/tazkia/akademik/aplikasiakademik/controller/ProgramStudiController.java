@@ -64,7 +64,7 @@ public class ProgramStudiController {
 
     @GetMapping("/programstudi/form")
     public String  formFakultas(Model model, Authentication currentUser, @RequestParam(required = false)String id){
-        model.addAttribute("fakultas",fakultasDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
+        model.addAttribute("fakultas",fakultasDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("jurusan",jurusanDao.findByStatusAndNa(StatusConstants.Aktif,StatusConstants.Aktif));
         model.addAttribute("prodi", new Prodi());
 
