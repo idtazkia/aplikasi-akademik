@@ -10,5 +10,5 @@ public interface JenjangDao extends PagingAndSortingRepository<Jenjang,String> {
     Page<Jenjang> findByStatusNotIn(StatusRecord status, Pageable page);
     Iterable<Jenjang> findByStatusNotIn(StatusRecord s);
     Iterable<Jenjang> findByStatus(StatusRecord s);
-    Page<Jenjang> findByStatusNotInAndNamaJenjangContainingIgnoreCaseOrderByNamaJenjang(StatusRecord status, String nama, Pageable page);
+    Page<Jenjang> findByStatusNotInAndNamaJenjangContainingIgnoreCaseOrderByNamaJenjang(StatusRecord statusRecord, String search, Pageable page);
 }
