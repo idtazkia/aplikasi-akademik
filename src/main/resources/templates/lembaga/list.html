@@ -21,13 +21,17 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <a th:href="@{/lembaga/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
                         </td>
-                        <td align="right">
-                            <form method="get" th:action="@{/lembaga/list}">
-                                <div class="input-group input-group-sm" style="width: 100%;">
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
-                                    <input type="hidden" name="mode" id="mode"/>
+                        <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
+                            <form method="get">
+                                <div class="input-group">
+                                    <input type="text" id="keyresult" autocomplete="off"
+                                           class="form-control" placeholder="Search for..." name="search"
+                                           th:value="${search}">
+                                    <span class="input-group-btn">
+                                                          <button class="btn btn-default" type="submit">Go!</button>
+                                                        </span>
                                 </div>
                             </form>
                         </td>
@@ -42,32 +46,51 @@
                                 <input type="checkbox" id="check-all" class="flat">
                             </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">Institution</th>
-                            <th class="column-title">Address </th>
-                            <th class="column-title no-link last"><span class="nobr">Action</span>
-                            </th>
-                            <th class="bulk-actions" colspan="7">
-                                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                            </th>
+                            <th class="column-title">Institution Name</th>
+                            <th class="column-title"></th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr th:each="data,row  : ${list}" class="even pointer">
+                        <tr class="even pointer">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td th:text="${(row.index + 1)}" class=" ">121000040</td>
-                            <td th:text="${data.namaLembaga}" class=" ">May 23, 2014 11:47:56 PM </td>
-                            <td th:text="${data.alamat}" class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+                            <td>121000040</td>
+                            <td>May 23, 2014 11:47:56 PM </td>
                             <td class=" last">
-                                <a th:href="@{/lembaga/form(id=${data.idLembaga})}" class="btn btn-success btn-sm" title="edit">Edit</a>
+                                <a th:href="@{/lembaga/form}" class="btn btn-success btn-sm" title="edit">Edit</a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
 
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <center><u><b><h5 class="modal-title" id="exampleModalLongTitle">Institution</h5></u></b></center>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box-body table-responsive no-padding">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlInput1">Institution Name</label>
+                                        <input type="text" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Institution Name">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-success">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
 
             </div>
         </div>
