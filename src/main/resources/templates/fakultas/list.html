@@ -27,9 +27,8 @@
                         <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
                             <form method="get">
                                 <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           placeholder="Search for..." class="form-control" name="search"
-                                           th:value="${search}">
+                                    <input type="text" id="keyresult"
+                                           placeholder="Search for..." class="form-control">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit">Go!</button>
                                     </span>
@@ -46,38 +45,31 @@
                         <tr class="headings">
                             <th class="column-title">#</th>
                             <th class="column-title">NA</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Name</th>
-                            <th class="column-title">official</th>
+                            <th class="column-title">Institution</th>
+                            <th class="column-title">Faculty Code</th>
+                            <th class="column-title">Faculty Name</th>
                             <th colspan="2" class="column-title">Action</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr th:each="data,row : ${list}" class="even pointer">
-                            <td th:text="${(row.index + 1)}">1</td>
+                        <tr class="even pointer">
+                            <td>1</td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
+                                <span style="color: #4fa9e8; font-size: 16px;">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
                             </td>
-                            <td th:text="${data.kodeFakultas}" >E001</td>
-                            <td th:text="${data.namaFakultas}" >Fakultas Ekonomi</td>
-                            <td th:text="${data.pejabat}" ></td>
+                            <td>STEI TAZKIA</td>
+                            <td>1</td>
+                            <td>Fakultas Ekonomi</td>
                             <td class="last">
-                                <a href="#" class="btn btn-success btn-sm" th:href="@{/fakultas/form(id=${data.idFakultas})}" title="Edit">Edit</a>
-                            </td>
-                            <td class="last">
-                                <form method="post" th:action="@{/delete/fakultas(fakultas=${data.idFakultas})}">
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                <a href="#" class="btn btn-success btn-sm" title="Edit">Edit</a>
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                      ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
+                                    <i class="ti-eraser"></i> Delete
+                                </button>
                             </td>
                         </tr>
                         </tbody>
