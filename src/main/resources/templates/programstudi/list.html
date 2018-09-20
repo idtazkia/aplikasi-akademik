@@ -45,27 +45,31 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Code</th>
+                    <th scope="col">NA</th>
+                    <th scope="col">Department ID</th>
+                    <th scope="col">Educational Level ID</th>
                     <th scope="col">Name Of Study Program & Faculty</th>
-                    <th scope="col">Level</th>
-                    <th scope="col">Official</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="data,row : ${prodi}">
-                    <th th:text="${(row.index + 1)}">1</th>
-                    <td th:text="${data.kodeProdi}"></td>
-                    <td th:text="${data.namaProdi + '&nbsp&nbsp&nbsp&nbsp' + '(' + data.idJurusan.idFakultas.namaFakultas + ')'}"></td>
-                    <td th:text="${data.idJenjang.namaJenjang}"></td>
-                    <td th:text="${data.pejabat}"></td>
+                <tr>
+                    <td>1</td>
                     <td>
-                        <a href="form"  th:href="@{/programstudi/form(id=${data.idProdi})}">
+                                <span style="color: #4fa9e8; font-size: 16px;">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                    </td>
+                    <td>Id Department</td>
+                    <td>Id Level</td>
+                    <td>Name Prodi</td>
+                    <td>
+                        <a href="form"  th:href="@{/programstudi/form}">
                             <button type="button" class="btn btn-primary btn-sm">Edit</button></a>
                     </td>
                     <td>
-                        <form method="post" th:action="@{/delete/programstudi(prodi=${data.idProdi})}">
+                        <form method="post" th:action="@{/delete/programstudi}">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
