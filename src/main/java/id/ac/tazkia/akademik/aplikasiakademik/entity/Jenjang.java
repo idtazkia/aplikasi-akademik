@@ -1,5 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +14,10 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "tb_jenjang")
 public class Jenjang {
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "idJenjang")
 
     @Id
     @GeneratedValue(generator = "uuid" )

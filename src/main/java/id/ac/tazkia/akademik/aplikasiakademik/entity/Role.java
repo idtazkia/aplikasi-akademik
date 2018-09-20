@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_role") @Data
+@Table(name = "s_role") @Data
 public class Role {
     @Id
     @GeneratedValue(generator = "uuid" )

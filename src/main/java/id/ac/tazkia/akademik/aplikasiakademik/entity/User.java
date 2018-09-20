@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "s_user")
 @Data
 public class User {
 
@@ -16,10 +16,11 @@ public class User {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     private String username;
-    private String email;
     private Boolean active;
 
         @NotNull
         @ManyToOne @JoinColumn(name = "id_role")
         private Role role;
+
+    private String email;
 }
