@@ -19,44 +19,41 @@
             </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/programstudi/form(id=${prodi.idProdi})}" th:object="${prodi}">
+        <form method="post" th:action="@{/programstudi/form}">
 
             <div class="form-group">
-                <label>Departement</label>
-                <select onchange="" class="form-control js-example-placeholder-single" id="jurusan"
-                        name="idJurusan" th:field="*{idJurusan}" >
+                <label>Code</label>
+                <input type="text" class="form-control" name="Code" placeholder="Kode">
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <select name="provinsi" class="form-control js-example-placeholder-single">
                     <option value=""></option>
-                    <option th:each="data : ${jurusan}" th:text="${data.namaJurusan}" th:value="${data.idJurusan}">Pendidikan Islam</option>
+                    <option>Department ID</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Level</label>
-                <select onchange="" class="form-control js-example-placeholder-single"
-                        name="idJenjang" th:field="*{idJenjang}" >
+                <label>Educational Level</label>
+                <select name="provinsi" class="form-control js-example-placeholder-single">
                     <option value=""></option>
-                    <option th:each="data : ${daftarJenjang}" th:text="${data.namaJenjang}" th:value="${data.idJenjang}">Pendidikan Islam</option>
+                    <option>Educational Level ID</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Study Program Code</label>
-                <input type="text" class="form-control" th:field="*{kodeProdi}"  placeholder="Kode" name="kodeProdi" maxlength="2">
+                <label>Name Program Study</label>
+                <input type="text" class="form-control" placeholder="Nama" name="namaProdi">
             </div>
 
             <div class="form-group">
-                <label>Nama Program Study</label>
-                <input type="text" class="form-control" th:field="*{namaProdi}" placeholder="Nama" name="namaProdi">
-            </div>
+                <label>Status</label><br>
+                <label>
+                    <input name="status" type="checkbox" value="NONAKTIF" class="js-switch" />
+                </label>
 
-            <div class="form-group">
-                <label>Official</label>
-                <input type="text" class="form-control" th:field="*{pejabat}" placeholder="Pejabat" name="pejabat">
             </div>
-            <input type="hidden" name="idProdi" th:field="*{idProdi}">
-            <input type="hidden" name="userInsert" th:field="*{userInsert}">
-            <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
-
             <input class="btn btn-primary" type="submit" value="Save">
             <a th:href="@{/programstudi/list}" class="btn btn-primary" role="button">
                 <span aria-hidden="true"></span>Cancel
