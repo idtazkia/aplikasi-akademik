@@ -17,49 +17,25 @@
 
             <div class="x_content">
 
-                <form method="post" th:action="@{/lembaga/form(id = ${lembaga.idLembaga})}" th:object="${lembaga}" enctype="multipart/form-data">
+                <form method="post" th:action="@{/lembaga/form}" th:object="${lembaga}" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">Institution Name</label>
-                        <input type="text" th:field="*{namaLembaga}" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Institution Name">
+                        <label>Institution Code</label>
+                        <input type="text" name="kodeLembaga" th:field="*{kodeLembaga}" class="form-control" placeholder="Institution Name">
                     </div>
 
                     <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Address</label>
-                        <textarea class="form-control" th:field="*{alamat}" name="alamat" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <label>Institution Name</label>
+                        <input type="text" name="namaLembaga" th:field="*{namaLembaga}" class="form-control" placeholder="Institution Name">
                     </div>
 
                     <div class="form-group">
-                        <label>Province</label>
-                        <select name="provinsi" th:field="*{provinsi}" class="form-control js-example-placeholder-single">
-                            <option value=""></option>
-                            <option th:each="ins : ${provinsi}"
-                                    th:value="${ins.idProvinsi}"
-                                    th:text="${ins.nama}">Jawa Barat</option>
-                        </select>
+                        <label>Status</label><br>
+                        <label>
+                            <input name="status" th:field="*{status}"  type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
                     </div>
 
-                    <div class="form-group">
-                        <label>District</label>
-                        <select name="kokab" th:field="*{kokab}" class="form-control js-example-placeholder-single">
-                            <option value=""></option>
-                            <option th:each="ins : ${kokab}"
-                                    th:value="${ins.idKokab}"
-                                    th:text="${ins.nama}">Jawa Barat</option>
-                        </select>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label for="exampleFormControlFile1">Logo</label>
-                        <input type="file" th:field="*{logo}" class="form-control-file" name="logo" id="exampleFormControlFile1">
-
-                        <input type="hidden" name="idLembaga" th:field="*{idLembaga}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="userEdit" th:field="*{userEdit}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
-                        <input type="hidden" name="tglEdit" th:field="*{tglEdit}">
-                    </div>
-
+                    <input type="hidden" name="id" th:field="*{id}">
                     <input class="btn btn-primary" type="submit" value="Save">
                     <a th:href="@{/lembaga/list}" class="btn btn-primary" role="button">
                         <span aria-hidden="true"></span>Cancel
