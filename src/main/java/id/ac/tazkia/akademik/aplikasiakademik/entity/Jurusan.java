@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Table(name = "tb_jurusan")
 @Entity
 @Data
 public class Jurusan {
@@ -16,7 +15,7 @@ public class Jurusan {
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idJurusan;
+    private String id;
 
     @ManyToOne
     @NotNull
@@ -30,27 +29,9 @@ public class Jurusan {
     private String namaJurusan;
 
     @NotNull
-    private String pejabat;
+    private String keterangan;
 
-    @NotNull
-    private String na = "1";
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
-    @NotNull
-    private String status = "1";
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
 }
