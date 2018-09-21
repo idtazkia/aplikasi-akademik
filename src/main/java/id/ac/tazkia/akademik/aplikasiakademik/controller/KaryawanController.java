@@ -4,14 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class RuangController {
-
-    @GetMapping("/ruang/list")
-    public void daftarRuang(){
+public class KaryawanController {
+    @GetMapping("/karyawan/list")
+    public void daftarKaryawan(){
     }
 
-    @GetMapping("/ruang/form")
-    public void  formRuang(){
+    @GetMapping("/karyawan/form")
+    public void  formKaryawan(){
     }
-
 }
