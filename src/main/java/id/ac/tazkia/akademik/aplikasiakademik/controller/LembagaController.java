@@ -57,5 +57,11 @@ public class LembagaController {
         return "redirect:list";
     }
 
+    @PostMapping("/lembaga/delete")
+    public String deleteJenjang(@RequestParam Lembaga lembaga){
+        lembaga.setStatus(StatusRecord.HAPUS);
+        lembagaDao.save(lembaga);
 
+        return "redirect:list";
+    }
 }
