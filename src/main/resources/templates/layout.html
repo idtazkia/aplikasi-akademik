@@ -65,31 +65,30 @@
                         <h3>General</h3>
                         <ul class="nav side-menu">
                             <li><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
-                            <li><a><i class="fa fa-edit"></i> Administrator <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-gear"></i> Administrator <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Equipment<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li><a th:href="@{/lembaga/list}">Lembaga</a></li>
-                                            <li><a th:href="@{/gedung/list}">Gedung Kampus</a></li>
-                                            <li><a th:href="@{/ruang/list}">Ruang Kelas</a></li>
+                                            <li><a th:href="@{/lembaga/list}">Institution</a></li>
+                                            <li><a th:href="@{/kampus/list}">Campus</a></li>
+                                            <li><a th:href="@{/gedung/list}">Building</a></li>
+                                            <li><a th:href="@{/ruang/list}">Class Room</a></li>
                                         </ul>
                                     </li>
                                     <li><a>Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/program/list}">Program</a></li>
-                                            <li><a th:href="@{/jenjang/list}">Jenjang</a></li>
-                                            <li><a th:href="@{/fakultas/list}">Fakultas</a></li>
+                                            <li><a th:href="@{/jenjang/list}">Level</a></li>
+                                            <li><a th:href="@{/fakultas/list}">Faculty</a></li>
                                             <li><a th:href="@{/jurusan/list}">Jurusan</a></li>
                                             <li><a th:href="@{/programstudi/list}">Program Studi</a></li>
                                             <li><a th:href="@{/konsentrasi/list}">Konsentrasi</a></li>
-                                            <li><a th:href="@{/dosen/list}">Dosen</a></li>
-                                            <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
                                         </ul>
                                     </li>
 
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-sitemap"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Pembianaan<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -144,8 +143,12 @@
                                     </li>
                                 </ul>
                             </li>
-
-                            <li><a><i class="fa fa-desktop"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="general_elements.html">General Elements</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="general_elements.html">General Elements</a></li>
                                     <li><a href="media_gallery.html">Media Gallery</a></li>
@@ -158,62 +161,33 @@
                                     <li><a href="calendar.html">Calendar</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-table"></i> Human Sesources <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-male"></i> Human Resources <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="tables.html">Tables</a></li>
-                                    <li><a href="tables_dynamic.html">Table Dynamic</a></li>
+                                    <li><a>Master<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/departemen/list}">Department</a></li>
+                                            <li><a th:href="@{/golongan/list}">Golongan</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a th:href="@{/karyawan/list}">Employee</a></li>
+                                    <li><a th:href="@{/dosen/list}">Lecture</a></li>
+                                    <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
+                                    <li><a>Payroll<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/salary/list}">Salary</a></li>
+                                            <li><a th:href="@{/loan/list}">Loan</a></li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </li>
 
-                            <li><a><i class="fa fa-clone"></i>Users <span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
                                     <li><a href="fixed_footer.html">Fixed Footer</a></li>
                                 </ul>
                             </li>
-                        </ul>
-                    </div>
-                    <div class="menu_section">
-                        <h3>Live On</h3>
-                        <ul class="nav side-menu">
-                            <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="e_commerce.html">E-commerce</a></li>
-                                    <li><a href="projects.html">Projects</a></li>
-                                    <li><a href="project_detail.html">Project Detail</a></li>
-                                    <li><a href="contacts.html">Contacts</a></li>
-                                    <li><a href="profile.html">Profile</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="page_403.html">403 Error</a></li>
-                                    <li><a href="page_404.html">404 Error</a></li>
-                                    <li><a href="page_500.html">500 Error</a></li>
-                                    <li><a href="plain_page.html">Plain Page</a></li>
-                                    <li><a href="login.html">Login Page</a></li>
-                                    <li><a href="pricing_tables.html">Pricing Tables</a></li>
-                                </ul>
-                            </li>
-                            <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="#level1_1">Level One</a>
-                                    <li><a>Level One<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li class="sub_menu"><a href="level2.html">Level Two</a>
-                                            </li>
-                                            <li><a href="#level2_1">Level Two</a>
-                                            </li>
-                                            <li><a href="#level2_2">Level Two</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#level1_2">Level One</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
-
                         </ul>
                     </div>
 
