@@ -51,6 +51,9 @@ public class JenjangController {
 
     @PostMapping("/jenjang/form")
     public String prosesForm(@Valid Jenjang jenjang){
+        if (jenjang.getStatus() == null){
+            jenjang.setStatus(StatusRecord.NONAKTIF);
+        }
         jenjangDao.save(jenjang);
         return "redirect:list";
     }
