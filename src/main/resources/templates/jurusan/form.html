@@ -18,32 +18,23 @@
             </div>
 
             <div class="x_content">
-                <form method="post" th:action="@{/jurusan/form(id = ${jurusan.idJurusan})}"  th:object="${jurusan}">
+                <form method="post" th:action="@{/jurusan/form}">
+
 
                     <div class="form-group">
                         <label>Select Faculty</label>
                         <select class="form-control js-example-placeholder-single" id="fakultas"
                                 name="idFakultas">
                             <option></option>
-                            <option th:field="*{idFakultas}" th:each="list : ${daftarFakultas}" th:text="${list.namaFakultas}" th:value="${list.idFakultas}">Fakultas Tehknik</option>
+                            <option>Fakultas Tehknik</option>
                             <option>Fakultas Pendidikan</option>
                             <option>Fakultas Ekonomi</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Department code</label>
-                        <input type="text" th:field="*{kodeJurusan}"  name="kodeJurusan" class="form-control" placeholder="Department code">
-                    </div>
-
-                    <div class="form-group">
                         <label>Name of department</label>
-                        <input type="text" th:field="*{namaJurusan}" name="namaJurusan" class="form-control" placeholder="Name of department">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Official</label>
-                        <input type="text" th:field="*{pejabat}" name="pejabat" class="form-control" placeholder="Official">
+                        <input type="text" name="namaJurusan" class="form-control" placeholder="Name of department">
                     </div>
 
                     <div class="form-group">
@@ -51,9 +42,9 @@
                         <label>
                             <input name="na" type="checkbox" value="1" class="js-switch" />
                         </label>
-                        <input type="hidden" name="idJurusan" th:field="*{idJurusan}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                        <input type="hidden" name="idJurusan">
+                        <input type="hidden" name="userInsert">
+                        <input type="hidden" name="tglInsert">
                     </div>
 
                     <div class="form-group">
@@ -72,3 +63,10 @@
 
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select one",
+        allowClear: true
+    });
+
+</script>
