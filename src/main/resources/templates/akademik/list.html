@@ -76,11 +76,11 @@
                                 <table class="table table-striped jambo_table bulk_action">
                                     <thead>
                                     <tr class="headings">
-                                        <th>
+
                                         <th>
                                             <input type="checkbox" id="check-all" class="flat">
                                         </th>
-                                        </th>
+
                                         <th>Kode</th>
                                         <th>Tahun</th>
                                         <th>Prodi</th>
@@ -93,7 +93,11 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${tahunAkademik}">
-                                        <th th:text="${(row.index + 1)}">1</th>
+
+                                        <td class="a-center ">
+                                            <input type="checkbox" class="flat" name="table_records">
+                                        </td>
+
                                         <td th:text="${data.kodeTahun}"></td>
                                         <td th:text="${data.namaTahun}"></td>
                                         <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
@@ -104,14 +108,14 @@
 
                                         <td>
                                              <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                                       <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                                       <i class="fa fa-lightbulb-o" style="font-size:100%;height: auto"></i>
                                                     </span>
                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                                        <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                                        <i class="fa fa-lightbulb-o" style="font-size:100%;color:black;height: auto"></i>
                                                     </span>
                                         </td>
                                         <td align="center">
-                                            <a href="#" class="btn btn-success btn-sm" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
+                                            <a href="#" class="btn btn-success btn-sm" style="font-size:8px;" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
