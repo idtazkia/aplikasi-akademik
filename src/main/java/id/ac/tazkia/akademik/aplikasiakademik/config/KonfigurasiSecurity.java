@@ -18,16 +18,16 @@ import javax.sql.DataSource;
 public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     private static final String SQL_LOGIN
             = "select u.username as username,p.password as password, active\n"
-            + "FROM tb_user u\n"
-            + "inner join tb_user_password p on p.id_user = u.id\n"
+            + "FROM s_user u\n"
+            + "inner join s_user_password p on p.id_user = u.id\n"
             + "WHERE u.username = ?";
 
     private static final String SQL_PERMISSION
             = "select u.username, p.permission_value as authority "
-            + "from tb_user u "
-            + "inner join tb_role r on u.id_role = r.id "
-            + "inner join tb_role_permission rp on rp.id_role = r.id "
-            + "inner join tb_permission p on rp.id_permission = p.id "
+            + "from s_user u "
+            + "inner join s_role r on u.id_role = r.id "
+            + "inner join s_role_permission rp on rp.id_role = r.id "
+            + "inner join s_permission p on rp.id_permission = p.id "
             + "where u.username = ?";
 
     @Autowired
@@ -59,6 +59,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers("/css/**")
+                .antMatchers("/api/jenjang")
                 .antMatchers("/images/**");
 
 
@@ -67,7 +68,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(17);
+        return new BCryptPasswordEncoder(4);
     }
 
 }

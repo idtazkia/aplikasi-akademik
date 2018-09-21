@@ -22,16 +22,16 @@
 
             <div class="x_content">
 
-                <form method="post" th:action="@{/jenjang/form(id = ${jenjang.idJenjang})}" th:object="${jenjang}">
+                <form method="post" th:action="@{/jenjang/form}" th:object="${jenjang}">
 
                     <div class="form-group">
                         <label>Code</label>
-                        <input type="text" th:field="*{kodeJenjang}" class="form-control" name="Code" placeholder="Code">
+                        <input type="text" th:field="*{kodeJenjang}" class="form-control" name="kodeJenjang" placeholder="Code">
                     </div>
 
                     <div class="form-group">
                         <label>Jenjang Name</label>
-                        <input type="text" th:field="*{namaJenjang}" class="form-control" name="Jenjang Name" placeholder="Jenjang Name">
+                        <input type="text" th:field="*{namaJenjang}" class="form-control" name="namaJenjang" placeholder="Jenjang Name">
                     </div>
 
                     <div class="form-group">
@@ -42,12 +42,11 @@
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                         </label >
-                        <input type="hidden" name="idJenjang" th:field="*{idJenjang}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
                     </div>
+
+                    <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
 

@@ -1,23 +1,15 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.constants.StatusConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.JenjangDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Fakultas;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jenjang;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,18 +19,11 @@ import java.time.LocalDateTime;
 
 @Controller
 public class JenjangController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JenjangController.class);
-
-
     @Autowired
-    JenjangDao jenjangDao;
-
-    @Autowired
-    UserDao userDao;
+    private JenjangDao jenjangDao;
 
     @GetMapping("/jenjang/list")
-    public void list(Model model,@PageableDefault(size = 10) Pageable page, String search){
+    public void daftarJenjang(Model model, @PageableDefault(size = 10) Pageable page, String search){
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
@@ -50,96 +35,32 @@ public class JenjangController {
     }
 
     @GetMapping("/jenjang/form")
-    public String  formFakultas(Model model,Authentication currentUser, @RequestParam(required = false)String id){
-
+    public void jenjangForm(Model model,@RequestParam(required = false) String id){
         model.addAttribute("jenjang", new Jenjang());
-
-        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
-
-        if (currentUser == null) {
-            LOGGER.warn("Current user is null");
-        }
-
-        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User u = userDao.findByUsername(username);
-        LOGGER.debug("User ID : {}", u.getId());
-        if (u == null) {
-            LOGGER.warn("Username {} not found in database ", username);
-        }
 
         if (id != null && !id.isEmpty()) {
             Jenjang jenjang = jenjangDao.findById(id).get();
             if (jenjang != null) {
-                jenjang.setUserEdit(u);
-                jenjang.setTglEdit(LocalDateTime.now());
                 model.addAttribute("jenjang", jenjang);
+                if (jenjang.getStatus() == null){
+                    jenjang.setStatus(StatusRecord.NONAKTIF);
+                }
             }
         }
-        return "/jenjang/form";
     }
 
-
-    @PostMapping(value = "/jenjang/form")
-    public String uploadBukti(@Valid Jenjang jenjang,
-                              BindingResult error,@RequestParam(required = false) Jenjang id,
-                              Authentication currentUser){
-
-        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
-
-        if (currentUser == null) {
-            LOGGER.warn("Current user is null");
-        }
-
-        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User u = userDao.findByUsername(username);
-        LOGGER.debug("User ID : {}", u.getId());
-        if (u == null) {
-            LOGGER.warn("Username {} not found in database ", username);
-        }
-
-        if (id != null){
-            jenjang.setTglEdit(LocalDateTime.now());
-            jenjang.setUserEdit(u);
-            jenjang.setTglInsert(id.getTglInsert());
-        }
-
-        if (id == null) {
-            jenjang.setUserInsert(u);
-            jenjang.setTglInsert(LocalDateTime.now());
-        }
-
-        if (jenjang.getStatus() == null){
-            jenjang.setStatus(StatusRecord.NONAKTIF);
-        }
-
+    @PostMapping("/jenjang/form")
+    public String prosesForm(@Valid Jenjang jenjang){
         jenjangDao.save(jenjang);
-
-
-        return "redirect:/jenjang/list";
-
+        return "redirect:list";
     }
 
-    @PostMapping("/delete/jenjang")
-    public String hapusJenjang(@RequestParam Jenjang jenjang,Authentication currentUser){
-
-        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
-
-        if (currentUser == null) {
-            LOGGER.warn("Current user is null");
-        }
-
-        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User u = userDao.findByUsername(username);
-        LOGGER.debug("User ID : {}", u.getId());
-        if (u == null) {
-            LOGGER.warn("Username {} not found in database ", username);
-        }
-
-        jenjang.setUserEdit(u);
-        jenjang.setTglEdit(LocalDateTime.now());
+    @PostMapping("/jenjang/delete")
+    public String deleteJenjang(@RequestParam Jenjang jenjang){
         jenjang.setStatus(StatusRecord.HAPUS);
         jenjangDao.save(jenjang);
 
-        return "redirect:/jenjang/list";
+        return "redirect:list";
     }
 }
+

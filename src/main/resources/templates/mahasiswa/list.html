@@ -25,45 +25,27 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Faculty</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>Ekonomi</option>
-                                <option>Pendidikan</option>
-                            </select>
+                                <label>Study Programs</label>
+                                <select name="study"  class="form-control js-select2">
+                                    <option>Pasca Sarjana</option>
+                                </select>
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Level</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>Diploma III</option>
-                                <option>Sarjana</option>
-                                <option>Pascasarjana</option>
-                                <option>Doktoral</option>
-                            </select>
-                        </div>
+
                     </div>
 
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Study program</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
+                            <label>Konsentrasi</label>
+                            <select name="konsen"  class="form-control js-select2">
                                 <option>Akuntansi Syariah</option>
                                 <option>Bisnis Manajemen Syariah</option>
                                 <option>Ekonomi Syariah</option>
                                 <option>Muamalat</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Concentration</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>MKI</option>
-                                <option>MPI</option>
-                                <option>AUDIT</option>
-                                <option>SIA</option>
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
 
             </div>
@@ -102,8 +84,10 @@
                     <th scope="col">#</th>
                     <th scope="col">NIM</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Faculty</th>
-                    <th scope="col">Study program</th>
+                    <th scope="col">Status Matrikulasi</th>
+                    <th scope="col">Program Study</th>
+                    <th scope="col">Konsentrasi</th>
+                    <th scope="col">Program</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
@@ -115,6 +99,8 @@
                     <td>Student 1</td>
                     <td>Ekonomi</td>
                     <td>Akuntansi Syariah</td>
+                    <td>Good Job</td>
+                    <td>S2</td>
                     <td align="center">
                         <a href="#" class="btn btn-success btn-sm" th:href="@{/mahasiswa/form}" title="edit">Edit</a></td>
                     <td align="center">
@@ -149,9 +135,17 @@
         </div>
 
     </div>
+        </div>
+    </div>
 
 </section>
 
 
 </body>
 </html>
+<script>
+    $(".js-select2").select2({
+       placeholder:"Harap Diisi!",
+       allowClear: true
+    });
+</script>
