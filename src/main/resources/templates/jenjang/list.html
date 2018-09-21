@@ -85,14 +85,16 @@
                             <td>
                                 <a th:href="@{/jenjang/form(id = ${data.id})}" class="btn btn-success btn-sm" title="edit">Edit</a>
                             </td>
+
                             <td>
-                            <form method="post">
+                            <form method="post" th:action="@{/jenjang/delete(jenjang=${data.id})}">
                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                     ' to recover this imaginary file!')">
                                     <i class="ti-eraser"></i>  Delete
                                 </button>
                             </form>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

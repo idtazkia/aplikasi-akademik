@@ -54,5 +54,13 @@ public class JenjangController {
         jenjangDao.save(jenjang);
         return "redirect:list";
     }
+
+    @PostMapping("/jenjang/delete")
+    public String deleteJenjang(@RequestParam Jenjang jenjang){
+        jenjang.setStatus(StatusRecord.HAPUS);
+        jenjangDao.save(jenjang);
+
+        return "redirect:list";
+    }
 }
 
