@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Table(name = "tb_lembaga")
 @Entity
 @Data
 public class Lembaga {
@@ -17,43 +16,17 @@ public class Lembaga {
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idLembaga;
+    private String id;
 
+    @NotNull
+    private String kodeLembaga;
 
     @NotNull
     private String namaLembaga;
 
-    @NotNull
-    private String alamat;
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "propinsi")
-    private Provinsi provinsi;
-
-    @ManyToOne
-    @JoinColumn(name = "kokab")
-    private KabupatenKota kokab;
-
-    private String logo;
-
-    private String status = "1";
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
 
 
 }

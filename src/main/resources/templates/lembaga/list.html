@@ -21,19 +21,23 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
+                            <a th:href="@{/lembaga/form}" class="btn btn-primary">Add</a>
                         </td>
                         <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
                             <form method="get">
                                 <div class="input-group">
                                     <input type="text" id="keyresult" autocomplete="off"
-                                           class="form-control" placeholder="Search for..." name="search"
-                                           th:value="${search}">
+                                           class="form-control" placeholder="Search for...">
                                     <span class="input-group-btn">
                                                           <button class="btn btn-default" type="submit">Go!</button>
                                                         </span>
                                 </div>
                             </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Show <span sd:page-size-selector="javascript"></span> entries
                         </td>
                     </tr>
                 </table>
@@ -46,65 +50,68 @@
                                 <input type="checkbox" id="check-all" class="flat">
                             </th>
                             <th class="column-title">#</th>
+                            <th class="column-title">Status</th>
+                            <th class="column-title">Institution Code</th>
                             <th class="column-title">Institution Name</th>
-                            <th class="column-title"></th>
+                            <th class="column-title" colspan="2">Action</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row :${list}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-<<<<<<< HEAD
-                            <td th:text="${(row.index + 1)}" >121000040</td>
-                            <td th:text="${data.namaLembaga}" >May 23, 2014 11:47:56 PM </td>
-                            <td th:text="${data.alamat}" >121000210</td>
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">121000040</td>
                             <td>
-                                <a th:href="@{/lembaga/form(id=${data.idLembaga})}" class="btn btn-info btn-xs" title="edit">edit</a>
-=======
-                            <td>121000040</td>
-                            <td>May 23, 2014 11:47:56 PM </td>
-                            <td class=" last">
-                                <a th:href="@{/lembaga/form}" class="btn btn-success btn-sm" title="edit">Edit</a>
->>>>>>> ffe78742b8cb635824a0b37c8e267cfabccc251d
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                </span>
                             </td>
+                            <td th:text="${data.kodeLembaga}">121000040</td>
+                            <td th:text="${data.namaLembaga}">May 23, 2014 11:47:56 PM </td>
+                            <td>
+                                <a href="form"  th:href="@{/lembaga/form(id = ${data.id})}">
+                                    <button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+                            </td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form></td>
                         </tr>
                         </tbody>
                     </table>
-                </div>
 
-                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <center><u><b><h5 class="modal-title" id="exampleModalLongTitle">Institution</h5></u></b></center>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="box-body table-responsive no-padding">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Institution Name</label>
-                                        <input type="text" name="namaLembaga" class="form-control" id="exampleFormControlInput1" placeholder="Institution Name">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-success">Save</button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-right">
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
-                </div>
+
                 </div>
 
             </div>
+
         </div>
+    </div>
     </div>
 
 </section>
 </body>
 </html>
-
