@@ -26,7 +26,6 @@ public class Fakultas {
     @NotNull
     private String namaFakultas;
 
-    @NotNull
     private String keterangan;
 
     @NotNull @Enumerated(EnumType.STRING)

@@ -19,32 +19,40 @@
 
             <div class="x_content">
 
-                <form>
+                <form method="post" th:action="@{/fakultas/form}" th:object="${fakultas}">
 
                     <div class="form-group">
                         <label>Select Institution</label>
-                        <select class="form-control js-example-placeholder-single">
-                            <option></option>
+                        <select style="width:100%!important;" name="idLembaga" th:field="*{idLembaga}" class="form-control js-example-placeholder-single">
+                            <option value=""></option>
+                            <option th:each="data : ${lembaga}"
+                                    th:text="${data.namaLembaga}" th:value="${data.id}"></option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Faculty Code</label>
-                        <input type="text" class="form-control" placeholder="Faculty Code">
+                        <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Faculty Code">
                     </div>
 
                     <div class="form-group">
                         <label>Faculty Name</label>
-                        <input type="text" class="form-control" placeholder="Faculty Name">
+                        <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Faculty Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Faculty Name">
                     </div>
 
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input type="checkbox" class="js-switch" />
-                        </label>
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
                     </div>
 
+                    <input type="hidden" name="id" th:field="*{id}">
                     <div class="form-group">
                         <input class="btn btn-primary" type="submit" value="Save">
                         <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">

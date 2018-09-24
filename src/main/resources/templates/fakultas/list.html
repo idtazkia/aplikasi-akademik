@@ -76,10 +76,12 @@
                                 <a th:href="@{/fakultas/form(id = ${data.id})}" class="btn btn-success btn-xs" title="Edit">Edit</a>
                             </td>
                             <td>
+                                <form method="post" th:action="@{/fakultas/delete(fakultas = ${data.id})}">
                                 <button type="submit" class="btn btn-danger btn-xs"
                                         onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                      ' to recover this imaginary file!')">Delete
                                 </button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>
