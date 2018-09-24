@@ -18,24 +18,39 @@
                 <div class="clearfix"></div>
             </div>
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/konsentrasi/form}">
+        <form method="post" th:action="@{/konsentrasi/form}" th:object="${konsentrasi}">
 
             <div class="form-group">
+                <div class="col-sm-12">
                 <label>Concentration Code</label>
-                <input type="text" name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
+                <input type="text" th:field="*{kodeKonsentrasi}"name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
+                </div>
             </div>
 
             <div class="form-group">
+                <div class="col-sm-12">
                 <label>Program Study</label>
-                <select name="provinsi" class="form-control js-example-placeholder-single">
+                <select name="idProdi"  class="form-control js-example-placeholder-single" th:field="*{idProdi}">
                     <option value=""></option>
-                    <option>Program Study ID</option>
+                    <option th:each="data : ${prodi}"
+                            th:text="${data.namaProdi}"
+                            th:value="${data.id}">P</option>
                 </select>
+                </div>
             </div>
 
             <div class="form-group">
+                <div class="col-sm-12">
                 <label>Concentration</label>
-                <input type="text" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
+                <input type="text" th:field="*{namaKonsentrasi}" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label>Information</label>
+                    <input type="text"  th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Keterangan">
+                </div>
             </div>
 
             <div class="form-group">
@@ -45,17 +60,15 @@
                             <div class="form-group">
                                 <label>Status</label><br>
                                 <label>
-                                    <input name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                                 </label >
-                                <input type="hidden" name="idKonsentrasi">
-                                <input type="hidden" name="userInsert">
-                                <input type="hidden" name="tglInsert">
+                                <input type="hidden" name="id" th:field="*{id}">
                             </div>
                         </tr>
                     </table>
                 </div>
             </div>
-            <input class="btn btn-primary" type="submit" value="Save">
+            <button class="btn btn-primary" type="submit">Save</button>
             <a class="btn btn-primary" th:href="@{/konsentrasi/list}" role="button">
                 <span aria-hidden="true"></span>Cancel
             </a>
