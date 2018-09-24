@@ -23,6 +23,9 @@
                         <td>
                             <a th:href="@{/lembaga/form}" class="btn btn-primary">Add</a>
                         </td>
+                        <td>
+                            Show <span sd:page-size-selector="javascript"></span> entries
+                        </td>
                         <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
                             <form method="get">
                                 <div class="input-group">
@@ -34,12 +37,11 @@
                                 </div>
                             </form>
                         </td>
+
+
+
                     </tr>
-                    <tr>
-                        <td>
-                            Show <span sd:page-size-selector="javascript"></span> entries
-                        </td>
-                    </tr>
+
                 </table>
 
                 <div class="table-responsive">
@@ -64,11 +66,11 @@
                             </td>
                             <td th:text="${(row.index + 1) + (list.number * list.size)}">121000040</td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                <span th:if="${data.status.AKTIF} == ${data.status}" class="label label-success">
+                                    Active
                                 </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                <span th:if="${data.status.NONAKTIF} == ${data.status}" class="label label-danger">
+                                    Inactive
                                 </span>
                             </td>
                             <td th:text="${data.kodeLembaga}">121000040</td>
@@ -91,7 +93,10 @@
 
                     <div class="row">
                         <div class="col-sm-8">
-                            <nav class="pull-right">
+                            <nav class="pull-left">
+
+
+
                                 <ul class="pagination" sd:pagination="full">
                                     <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
                                     <li class="disabled"><a href="#" aria-label="Previous"><span
