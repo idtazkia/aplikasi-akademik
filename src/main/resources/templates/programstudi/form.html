@@ -28,7 +28,7 @@
 
             <div class="form-group">
                 <label>Major</label>
-                <select name="idJurusan" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
+                <select name="idJurusan" style="width:100%!important;" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
                     <option value=""></option>
                     <option th:each="data : ${jurusan}"
                             th:text="${data.namaJurusan}" th:value="${data.id}">Department ID</option>

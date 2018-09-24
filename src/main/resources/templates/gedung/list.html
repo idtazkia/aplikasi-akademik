@@ -4,65 +4,52 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Gedung</title>
+    <title>Title</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-    </div>
+    <div class="col-md-12 col-sm-12 col-md-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Campus<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
 
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <div class="x_title">
-            <h2>Building<small>List</small></h2>
-            <div class="clearfix"></div>
-        </div>
-
-        <div class="box-body table-responsive no-padding">
-            <br>
-            <div class="tab-content">
-                <!--Tab Kurilulum-->
-                <div class="tab-pane active" id="kampus" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <td class="form-group">
-                                            <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-                                                <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                                                    <form method="get">
-                                                        <div class="input-group">
-                                                            <input type="text" id="keyresult" autocomplete="off"
-                                                                   class="form-control" placeholder="Search for..." name="search">
-                                                            <span class="input-group-btn">
-                                                          <button class="btn btn-default" type="submit">Go!</button>
-                                                        </span>
-                                                        </div>
-                                                    </form>
-                                                </td>
-                                        </td>
-                                    </div>
+            <div class="x_content">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                        </td>
+                        <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                            <form method="get">
+                                <div class="input-group">
+                                    <input type="text" id="keyresult" autocomplete="off"
+                                           placeholder="Search for..." class="form-control" name="search">
+                                    <span class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
                                 </div>
-                            </div>
-                        </tr>
-                    </table>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
 
-                    <table class="table table-striped jambo_table bulk_action">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk-action">
                         <thead>
                         <tr>
-                            <th>NO</th>
-                            <th>NA</th>
-                            <th>Name Building</th>
-                            <th>ID Campus</th>
-                            <th>Information</th>
-                            <th>Action</th>
-                            <th></th>
+                            <th>#</th>
+                            <th>Status</th>
+                            <th>Building Name</th>
+                            <th>Building Code</th>
+                            <th>Description</th>
+                            <th width="30px"></th>
+                            <th width="40px"></th>
                         </tr>
                         </thead>
+
                         <tbody>
                         <tr >
                             <td>1</td>
@@ -78,6 +65,8 @@
                                 <a href="form">
                                     <button type="button" class="btn btn-primary btn-xs">Edit</button>
                                 </a>
+                            </td>
+                            <td>
                                 <button type="submit" class="btn btn-danger btn-xs"
                                         onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
@@ -86,37 +75,33 @@
                             </td>
                         </tr>
                         </tbody>
-                    </table>
-                    <br>
 
+                    </table>
+                    <div align="right">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
                 </div>
             </div>
-
         </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-
     </div>
 
 </section>
