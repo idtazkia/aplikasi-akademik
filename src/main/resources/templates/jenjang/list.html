@@ -53,12 +53,11 @@
                                 <input type="checkbox" id="check-all" class="flat">
                             </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">Status</th>
                             <th class="column-title">Code</th>
                             <th class="column-title">Name</th>
                             <th class="column-title">Description</th>
+                            <th class="column-title">Action</th>
                             <th scope="col" width="30px"></th>
-                            <th scope="col" width="40px"></th>
                             <th class="bulk-actions" colspan="7">
                                 <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
                             </th>
@@ -71,26 +70,19 @@
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
                             <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
-                            <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
-                            </td>
                             <td th:text="${data.kodeJenjang}">May 23, 2014 11:47:56 PM </td>
-                            <td th:text="${data.namaJenjang}">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td th:text="${data.keterangan}">121000210 <i class="success fa fa-long-arrow-up"></i></td>
                             <td>
-                                <a th:href="@{/jenjang/form(id = ${data.id})}" class="btn btn-success btn-sm" title="edit">Edit</a>
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaJenjang}"  th:href="@{/jenjang/form(id = ${data.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaJenjang}"  th:href="@{/jenjang/form(id = ${data.id})}">
+                                </a>
                             </td>
+                            <td th:text="${data.keterangan}">121000210 <i class="success fa fa-long-arrow-up"></i></td>
 
                             <td>
                             <form method="post" th:action="@{/jenjang/delete(jenjang=${data.id})}">
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                    ' to recover this imaginary file!')">
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Are you sure want to delete this?')">
                                     <i class="ti-eraser"></i>  Delete
                                 </button>
                             </form>
