@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Gedung</title>
 </head>
 <body>
 
@@ -17,19 +17,11 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
         <div class="x_title">
-            <h2>Campus Building<small>List</small></h2>
+            <h2>Building<small>List</small></h2>
             <div class="clearfix"></div>
         </div>
 
         <div class="box-body table-responsive no-padding">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kampus" role="tab">Campus</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#gedung" role="tab">Building</a>
-                </li>
-            </ul>
             <br>
             <div class="tab-content">
                 <!--Tab Kurilulum-->
@@ -40,13 +32,12 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <td class="form-group">
-                                            <a th:href="@{/gedung/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Add Campus</a>
+                                            <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                                                 <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
                                                     <form method="get">
                                                         <div class="input-group">
                                                             <input type="text" id="keyresult" autocomplete="off"
-                                                                   class="form-control" placeholder="Search for..." name="search"
-                                                                   th:value="${search}">
+                                                                   class="form-control" placeholder="Search for..." name="search">
                                                             <span class="input-group-btn">
                                                           <button class="btn btn-default" type="submit">Go!</button>
                                                         </span>
@@ -59,87 +50,6 @@
                             </div>
                         </tr>
                     </table>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>NA</th>
-                            <th>Name Campus</th>
-                            <th>Address</th>
-                            <th>Information</th>
-                            <th colspan="2"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="data,row  : ${list}">
-                            <td th:text="${(row.index + 1)}"></td>
-                            <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
-                            </td>
-                            <td th:text="${data.namaKampus}">STEI TAZKIA SENTUL</td>
-                            <td th:text="${data.alamat}">Jl. Ir. H. Juanda no 78 Sentul City, Citaringgul, Bogor</td>
-                            <td th:text="${data.keterangan}">-</td>
-                            <td>
-                                <a href="form"  th:href="@{/gedung/kampus/form(id=${data.idKampus})}">
-                                    <button type="button" class="btn btn-primary btn-sm">Edit</button></a>
-                            </td>
-                            <td>
-                                <form method="post" th:action="@{/delete/gedung/kampus(kampus=${data.idKampus})}">
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                 ' to recover this imaginary file!')">
-                                    <i class="ti-eraser"></i> delete
-                                </button>
-                            </form></td>
-                        </tr>
-                        </tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <!---->
-                <!--Tab Mata Kuliah-->
-                <div class="tab-pane" id="gedung" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Select Campus</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>STEI TAZKIA SENTUL</option>
-                                                    <option>STEI TAZKIA MATRIKULASI</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
 
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
@@ -147,38 +57,32 @@
                             <th>NO</th>
                             <th>NA</th>
                             <th>Name Building</th>
-                            <th>Name Campus</th>
+                            <th>ID Campus</th>
                             <th>Information</th>
-                            <th></th>
+                            <th>Action</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="data,row  : ${gedung}">
-                            <td th:text="${(row.index + 1)}"></td>
+                        <tr >
+                            <td>1</td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                                <span style="color: #4fa9e8; font-size: 16px;">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
                             </td>
-                            <td th:text="${data.namaGedung}"></td>
-                            <td th:text="${data.idKampus.namaKampus}"></td>
-                            <td th:text="${data.keterangan}"></td>
+                            <td>PATRICK STAR</td>
+                            <td>17</td>
+                            <td>BANGUN DAN SEMANGAT</td>
                             <td>
-                                <a href="form"  th:href="@{/gedung/form(id=${data.idGedung})}">
-                                <button type="button" class="btn btn-primary btn-sm">Edit</button>
-                            </td>
-                            <td>
-                                <form method="post" th:action="@{/delete/gedung(gedung=${data.idGedung})}">
-                                    <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                <a href="form">
+                                    <button type="button" class="btn btn-primary btn-xs">Edit</button>
+                                </a>
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
+                                    <i class="ti-eraser"></i> Delete
+                                </button>
                             </td>
                         </tr>
                         </tbody>

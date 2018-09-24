@@ -4,71 +4,48 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Gedung</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-
-
-        <form method="post" th:action="@{/gedung/form(id=${gedung.idGedung})}"th:object="${gedung}">
-
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Select Campus</label>
-                    <select th:field="*{idKampus}" onchange="" style="width: 1050px;   " class="form-control js-example-placeholder-single"
-                            id="kampus"
-                            name="idKampus">
-                        <option value="">-Select Campus-</option>
-                        <option th:each="data : ${kampus}"
-                                th:value="${data.idKampus}"
-                                th:text="${data.namaKampus}">STEI TAZKIA SENTUL
-                        </option>
-                    </select>
-                </div>
-
+    <div class="col-md-6 col-md-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Building <small>Form</small></h2>
+                <div class="clearfix"></div>
             </div>
+            <div class="x_content">
+                <div class="my-3 p-3 bg-white rounded box-shadow">
+                    <form method="post">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>Name Building</label>
+                                <input type="text" class="form-control" placeholder="Building" name="namaGedung">
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Name Building</label>
-                    <input type="text" class="form-control" th:field="*{namaGedung}" placeholder="Building" name="namaGedung">
-                </div>
-            </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>Information</label>
+                                <input type="text" class="form-control"placeholder="Keterangan" name="keterangan">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label><br>
+                            <label>
+                                <input type="checkbox" class="js-switch" />
+                            </label>
+                        </div>
 
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Information</label>
-                    <input type="text" class="form-control" th:field="*{keterangan}" placeholder="Keterangan" name="keterangan">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                        <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
+                            <span aria-hidden="true"></span>Cancel
+                        </a>
+                    </form>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <table class="table table-responsive">
-                        <tr>
-                            <td>Not Active? (NA)</td>
-                            <td><input name="na" th:value="'0'" type="checkbox" class="input-group-text"></td>
-                            <td><small class="alert-danger">*) Check if it's not active</small></td>
-                        </tr>
-                        <input type="hidden" name="idGedung" th:field="*{idGedung}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
-                    </table>
-                </div>
-
-            </div>
-
-            <input class="btn btn-primary" type="submit" value="Save">
-            <a th:href="@{/gedung/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Cancel
-            </a>
-        </form>
+        </div>
     </div>
 
 </section>
