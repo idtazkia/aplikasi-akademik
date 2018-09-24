@@ -40,7 +40,7 @@ public class AkademikController {
 
         if (prodi != null && program !=null) {
             return new ModelMap()
-                    .addAttribute("keypro", prodiDao.findByStatusAndIdProdi(StatusRecord.AKTIF, prodi.getIdProdi()))
+//                    .addAttribute("keypro", prodiDao.findByStatusNotInAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF, prodi.getNamaProdi()))
                     .addAttribute("keypr", programDao.findByStatusAndIdProgram(StatusRecord.AKTIF, program.getIdProgram()))
                     .addAttribute("tahunAkademik", tahunAkademikDao.findByProdiAndProgramAndStatusNotIn(prodi, program, StatusRecord.HAPUS, page))
                     .addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF))

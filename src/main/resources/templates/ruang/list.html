@@ -26,14 +26,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Select Campus</label>
-                                        <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="kampus"
-                                                name="provinsi">
-                                            <option>Select</option>
-                                            <option>STEI TAZKIA SENTUL</option>
-                                            <option>STEI TAZKIA MATRIKULASI</option>
-                                        </select>
-                                    </div>
+                                    <label>Select Campus</label>
+                                    <select name="provinsi" class="form-control js-example-placeholder-single">
+                                        <option></option>
+                                        <option>STEI TAZKIA SENTUL</option>
+                                        <option>STEI TAZKIA MATRIKULASI</option>
+                                    </select>
+                                </div>
                                 </div>
                               </div>
                         </div>
@@ -64,6 +63,7 @@
                 <tr>
                     <th scope="col">No</th>
                     <th scope="col">NA</th>
+                    <th scope="col">Building ID</th>
                     <th scope="col">Building Name</th>
                     <th scope="col">Room Name</th>
                     <th scope="col">Capacity</th>
@@ -72,25 +72,23 @@
                     <th scope="col" width="40px"></th>
                 </thead>
                 <tbody>
-                <tr th:each="data, row : ${list}">
-                    <td th:text="${(row.index + 1)}"></td>
+                <tr>
+                    <td>1</td>
                     <td>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
+                        <span style="color: #4fa9e8; font-size: 16px;">
                             <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                         </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                        </span>
                     </td>
-                    <td th:text="${(data.idGedung.namaGedung)}"></td>
-                    <td th:text="${(data.namaRuangan)}"></td>
-                    <td th:text="${(data.kapasitas)}"></td>
-                    <td th:text="${(data.keterangan)}"></td>
+                    <td>as</td>
+                    <td>ad</td>
+                    <td>afs</td>
+                    <td>asd</td>
+                    <td>asd</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/ruang/form(id=${data.idRuangan})}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-xs" th:href="@{/ruang/form}" title="edit">Edit</a></td>
                     <td align="center">
-                        <form method="post" th:action="@{/delete/ruangan(ruangan=${data.idRuangan})}">
-                            <button type="submit" class="btn btn-danger btn-sm"
+                        <form method="post" th:action="@{/delete/ruangan}">
+                            <button type="submit" class="btn btn-danger btn-xs"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
                                 <i class="ti-eraser"></i> Delete
@@ -132,3 +130,10 @@
 
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select one",
+        allowClear: true
+    });
+
+</script>

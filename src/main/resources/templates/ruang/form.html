@@ -9,46 +9,52 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+    <div class="x_title">
+        <h2>Class Room</h2>
+        <div class="clearfix"></div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/ruang/form(id = ${ruangan.idRuangan})}" th:object="${ruangan}">
+        <form method="post" th:action="@{/ruang/form}">
 
             <div class="form-group">
-                <label>Select Building</label>
-                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="gedung"
-                        name="idGedung">
-                    <option></option>
-                    <option th:field="*{idGedung}" th:each="list : ${daftarGedung}" th:text="${list.namaGedung}" th:value="${list.idGedung}">GRANADA - STEI TAZKIA SENTUL</option>
-                </select>
+                <label>Class Room Code</label>
+                <input type="text" name="kodeRuangan" class="form-control" placeholder="Class Room Code">
             </div>
 
             <div class="form-group">
+                <label>Building</label>
+                <select name="provinsi" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option>Building ID</option>
+                </select>
+            </div>
+            
+
+            <div class="form-group">
                 <label for="exampleFormControlInput1">Room Name</label>
-                <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Name">
+                <input type="text" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Name">
             </div>
 
             <div class="form-group">
                 <label>Capacity</label>
-                <input type="number" th:field="*{kapasitas}" name="kapasitas" class="form-control">
+                <input type="number" name="kapasitas" class="form-control">
             </div>
 
             <div class="form-group">
                 <label>Information</label>
-                <textarea class="form-control" th:field="*{keterangan}" name="keterangan" rows="3"></textarea>
+                <textarea class="form-control" name="keterangan" rows="3"></textarea>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-12">
                     <label>Status</label><br>
                     <label>
-                        <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                        <input name="status" type="checkbox" value="AKTIF" class="js-switch" />
                     </label >
-                        <input type="hidden" name="idRuangan" th:field="*{idRuangan}">
-                        <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                        <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                        <input type="hidden" name="idRuangan">
+                        <input type="hidden" name="userInsert">
+                        <input type="hidden" name="tglInsert">
                 </div>
 
             </div>
@@ -63,3 +69,10 @@
 
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select one",
+        allowClear: true
+    });
+
+</script>

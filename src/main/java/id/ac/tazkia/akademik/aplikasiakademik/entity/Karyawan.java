@@ -2,36 +2,36 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Jurusan {
+public class Karyawan {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @NotNull
+    private String nik;
+
+    @NotNull
+    private String nama_karyawan;
+
+    @NotNull
+    private String gelar;
+
+    @NotNull
+    private String jk;
+
     @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_fakultas")
-    private Fakultas idFakultas;
+    @JoinColumn(name = "id_user")
+    private User idUser;
 
-    @NotNull
-    private String kodeJurusan;
+    private String status = "1";
 
-    @NotNull
-    private String namaJurusan;
-
-    @NotNull
-    private String keterangan;
-
-    @NotNull @Enumerated(EnumType.STRING)
-    private StatusRecord status = StatusRecord.AKTIF;
 
 }

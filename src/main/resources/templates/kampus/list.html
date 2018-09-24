@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Gedung</title>
+    <title>Kampus</title>
 </head>
 <body>
 
@@ -17,7 +17,7 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
         <div class="x_title">
-            <h2>Building<small>List</small></h2>
+            <h2>Campus<small>List</small></h2>
             <div class="clearfix"></div>
         </div>
 
@@ -32,18 +32,18 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <td class="form-group">
-                                            <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-                                                <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                                                    <form method="get">
-                                                        <div class="input-group">
-                                                            <input type="text" id="keyresult" autocomplete="off"
-                                                                   class="form-control" placeholder="Search for..." name="search">
-                                                            <span class="input-group-btn">
+                                            <a th:href="@{/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                                        <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
+                                            <form method="get">
+                                                <div class="input-group">
+                                                    <input type="text" id="keyresult" autocomplete="off"
+                                                           class="form-control" placeholder="Search for..." name="search">
+                                                    <span class="input-group-btn">
                                                           <button class="btn btn-default" type="submit">Go!</button>
                                                         </span>
-                                                        </div>
-                                                    </form>
-                                                </td>
+                                                </div>
+                                            </form>
+                                        </td>
                                         </td>
                                     </div>
                                 </div>
@@ -56,8 +56,8 @@
                         <tr>
                             <th>NO</th>
                             <th>NA</th>
-                            <th>Name Building</th>
-                            <th>ID Campus</th>
+                            <th>Code Campus</th>
+                            <th>Name Campus</th>
                             <th>Information</th>
                             <th>Action</th>
                             <th></th>
@@ -71,9 +71,9 @@
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
                             </td>
-                            <td>PATRICK STAR</td>
-                            <td>17</td>
-                            <td>BANGUN DAN SEMANGAT</td>
+                            <td>117</td>
+                            <td>STEI TAZKIA SENTUL</td>
+                            <td>KAMPUS EKONOMI ISLAM</td>
                             <td>
                                 <a href="form">
                                     <button type="button" class="btn btn-primary btn-xs">Edit</button>

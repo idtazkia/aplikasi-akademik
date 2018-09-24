@@ -27,14 +27,18 @@
                         <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
                             <form method="get">
                                 <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           placeholder="Search for..." class="form-control" name="search"
-                                           th:value="${search}">
+                                    <input type="text" name="search"
+                                           placeholder="Search for..." class="form-control" th:value="${search}">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">Go!</button>
+                                        <button class="btn btn-default" type="submit">Search</button>
                                     </span>
                                 </div>
                             </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Show <span sd:page-size-selector="javascript"></span> entries
                         </td>
                     </tr>
                 </table>
@@ -46,16 +50,17 @@
                         <tr class="headings">
                             <th class="column-title">#</th>
                             <th class="column-title">NA</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Name</th>
-                            <th class="column-title">official</th>
-                            <th colspan="2" class="column-title">Action</th>
+                            <th class="column-title">Institution</th>
+                            <th class="column-title">Faculty Code</th>
+                            <th class="column-title">Faculty Name</th>
+                            <th scope="col" width="30px"></th>
+                            <th scope="col" width="40px"></th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr th:each="data,row : ${list}" class="even pointer">
-                            <td th:text="${(row.index + 1)}">1</td>
+                        <tr class="even pointer" th:each="data,row : ${list}">
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
                             <td>
                                 <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
@@ -64,46 +69,39 @@
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
                                 </span>
                             </td>
-                            <td th:text="${data.kodeFakultas}" >E001</td>
-                            <td th:text="${data.namaFakultas}" >Fakultas Ekonomi</td>
-                            <td th:text="${data.pejabat}" ></td>
+                            <td th:text="${data.idLembaga.namaLembaga}">STEI TAZKIA</td>
+                            <td th:text="${data.kodeFakultas}">1</td>
+                            <td th:text="${data.namaFakultas}">Fakultas Ekonomi</td>
                             <td class="last">
-                                <a href="#" class="btn btn-success btn-sm" th:href="@{/fakultas/form(id=${data.idFakultas})}" title="Edit">Edit</a>
+                                <a th:href="@{/fakultas/form(id = ${data.id})}" class="btn btn-success btn-xs" title="Edit">Edit</a>
                             </td>
-                            <td class="last">
-                                <form method="post" th:action="@{/delete/fakultas(fakultas=${data.idFakultas})}">
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
+                            <td>
+                                <form method="post" th:action="@{/fakultas/delete(fakultas = ${data.id})}">
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">Delete
+                                </button>
                                 </form>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                </div>
 
-                <div align="right">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-right">
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>

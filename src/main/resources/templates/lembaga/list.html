@@ -52,7 +52,6 @@
                                 <input type="checkbox" id="check-all" class="flat">
                             </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">Status</th>
                             <th class="column-title">Institution Code</th>
                             <th class="column-title">Institution Name</th>
                             <th class="column-title" colspan="2">Action</th>
@@ -65,20 +64,21 @@
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
                             <td th:text="${(row.index + 1) + (list.number * list.size)}">121000040</td>
-                            <td>
-                                <span th:if="${data.status.AKTIF} == ${data.status}" class="label label-success">
-                                    Active
-                                </span>
-                                <span th:if="${data.status.NONAKTIF} == ${data.status}" class="label label-danger">
-                                    Inactive
-                                </span>
-                            </td>
                             <td th:text="${data.kodeLembaga}">121000040</td>
-                            <td th:text="${data.namaLembaga}">May 23, 2014 11:47:56 PM </td>
-                            <td>
-                                <a href="form"  th:href="@{/lembaga/form(id = ${data.id})}">
-                                    <button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+
+
+                            <td >
+
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaLembaga}"  th:href="@{/lembaga/form(id = ${data.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaLembaga}"  th:href="@{/lembaga/form(id = ${data.id})}">
+                                </a>
+
                             </td>
+
+
+
+
                             <td>
                                 <form method="post" th:action="@{/lembaga/delete(lembaga = ${data.id    })}">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -86,7 +86,8 @@
                                                                  ' to recover this imaginary file!')">
                                         <i class="ti-eraser"></i> Delete
                                     </button>
-                                </form></td>
+                                </form>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

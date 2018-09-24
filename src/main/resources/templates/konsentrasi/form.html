@@ -18,24 +18,24 @@
                 <div class="clearfix"></div>
             </div>
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form method="post" th:action="@{/konsentrasi/form(id = ${konsentrasi.idKonsentrasi})}" th:object="${konsentrasi}">
+        <form method="post" th:action="@{/konsentrasi/form}">
 
             <div class="form-group">
-                <label>Study program</label>
-                <select class="form-control js-example-placeholder-single" name="idProdi">
-                    <option></option>
-                    <option th:field="*{idProdi}" th:each="list : ${daftarProdi}" th:text="${list.namaProdi}" th:value="${list.idProdi}">Ekonomi Islam</option>
+                <label>Concentration Code</label>
+                <input type="text" name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
+            </div>
+
+            <div class="form-group">
+                <label>Program Study</label>
+                <select name="provinsi" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option>Program Study ID</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Concentration Code</label>
-                <input th:field="*{kodeKonsentrasi}" type="text" name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
-            </div>
-
-            <div class="form-group">
                 <label>Concentration</label>
-                <input th:field="*{namaKonsentrasi}" type="text" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
+                <input type="text" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
             </div>
 
             <div class="form-group">
@@ -45,11 +45,11 @@
                             <div class="form-group">
                                 <label>Status</label><br>
                                 <label>
-                                    <input th:field="*{status}" name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                                    <input name="status" type="checkbox" value="AKTIF" class="js-switch" />
                                 </label >
-                                <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
-                                <input type="hidden" name="userInsert" th:field="*{userInsert}">
-                                <input type="hidden" name="tglInsert" th:field="*{tglInsert}">
+                                <input type="hidden" name="idKonsentrasi">
+                                <input type="hidden" name="userInsert">
+                                <input type="hidden" name="tglInsert">
                             </div>
                         </tr>
                     </table>

@@ -23,17 +23,20 @@
                     <a th:href="@{/programstudi/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </td>
                 <td align="right">
-                    <form method="get">
                     <div class="title_right">
-                        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                            <div class="input-group">
-                                <input type="text"  class="form-control" placeholder="Search for..." name="search"
-                                       th:value="${search}">
-                                <span class="input-group-btn">
-                              <button class="btn btn-default" type="submit">Search</button>
-                          </span>
+                        <form method="get">
+                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" th:value="${search}" name="search" placeholder="Search by Jenjang Name">
+                                    <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                         </span>
+                                </div>
+                                <div>
+                                    Show <span sd:page-size-selector="javascript"></span> entries
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                     </form>
                 </td>
@@ -45,32 +48,37 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">NA</th>
-                    <th scope="col">Department ID</th>
-                    <th scope="col">Educational Level ID</th>
-                    <th scope="col">Name Of Study Program & Faculty</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Major</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Study Program</th>
+                    <th scope="col">Description</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
+                <tr th:each="data,row : ${list}">
+                    <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
                     <td>
-                                <span style="color: #4fa9e8; font-size: 16px;">
+                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
                                     <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                 </span>
+                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                </span>
                     </td>
-                    <td>Id Department</td>
-                    <td>Id Level</td>
-                    <td>Name Prodi</td>
+                    <td th:text="${data.idJurusan.namaJurusan}">Name Prodi</td>
+                    <td th:text="${data.kodeProdi}">Id Department</td>
+                    <td th:text="${data.namaProdi}">Id Level</td>
+                    <td th:text="${data.keterangan}">Name Prodi</td>
                     <td>
-                        <a href="form"  th:href="@{/programstudi/form}">
-                            <button type="button" class="btn btn-primary btn-sm">Edit</button></a>
+                        <a href="form" th:href="@{/programstudi/form(id = ${data.id})}">
+                            <button type="button" class="btn btn-primary btn-xs">Edit</button></a>
                     </td>
                     <td>
-                        <form method="post" th:action="@{/delete/programstudi}">
-                            <button type="submit" class="btn btn-danger btn-sm"
+                        <form method="post" th:action="@{/programstudi/delete(prodi = ${data.id})}">
+                            <button type="submit" class="btn btn-danger btn-xs"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
                                 <i class="ti-eraser"></i> Delete
@@ -81,26 +89,19 @@
             </table>
         </div>
         <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="row">
+            <div class="col-sm-8">
+                <nav class="pull-right">
+                    <ul class="pagination" sd:pagination="full">
+                        <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                        <li class="disabled"><a href="#" aria-label="Previous"><span
+                                aria-hidden="true">&laquo;</span></a>
+                        </li>
+                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
         </div>
