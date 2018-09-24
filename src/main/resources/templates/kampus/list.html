@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Kampus</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
+    </div>
+
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+        <div class="x_title">
+            <h2>Campus<small>List</small></h2>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="box-body table-responsive no-padding">
+            <br>
+            <div class="tab-content">
+                <!--Tab Kurilulum-->
+                <div class="tab-pane active" id="kampus" role="tabpanel">
+                    <table width="100%">
+                        <tr>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <td class="form-group">
+                                            <a th:href="@{/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                                        <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
+                                            <form method="get">
+                                                <div class="input-group">
+                                                    <input type="text" id="keyresult" autocomplete="off"
+                                                           class="form-control" placeholder="Search for..." name="search">
+                                                    <span class="input-group-btn">
+                                                          <button class="btn btn-default" type="submit">Go!</button>
+                                                        </span>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        </td>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    </table>
+
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>NA</th>
+                            <th>Code Campus</th>
+                            <th>Name Campus</th>
+                            <th>Information</th>
+                            <th>Action</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr >
+                            <td>1</td>
+                            <td>
+                                <span style="color: #4fa9e8; font-size: 16px;">
+                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                                </span>
+                            </td>
+                            <td>117</td>
+                            <td>STEI TAZKIA SENTUL</td>
+                            <td>KAMPUS EKONOMI ISLAM</td>
+                            <td>
+                                <a href="form">
+                                    <button type="button" class="btn btn-primary btn-xs">Edit</button>
+                                </a>
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                    <i class="ti-eraser"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <br>
+
+                </div>
+            </div>
+
+        </div>
+        <br>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+    </div>
+
+</section>
+
+</body>
+</html>
