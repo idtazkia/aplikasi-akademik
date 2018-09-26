@@ -48,9 +48,8 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Status</th>
                     <th scope="col">Major</th>
-                    <th scope="col">Code</th>
+                    <th scope="col">Level</th>
                     <th scope="col">Study Program</th>
                     <th scope="col">Description</th>
                     <th scope="col" width="30px"></th>
@@ -60,22 +59,22 @@
                 <tbody>
                 <tr th:each="data,row : ${list}">
                     <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
-                    <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
-                    </td>
                     <td th:text="${data.idJurusan.namaJurusan}">Name Prodi</td>
-                    <td th:text="${data.kodeProdi}">Id Department</td>
-                    <td th:text="${data.namaProdi}">Id Level</td>
-                    <td th:text="${data.keterangan}">Name Prodi</td>
+                    <td th:text="${data.idJenjang.namaJenjang}">Name Prodi</td>
                     <td>
-                        <a href="form" th:href="@{/programstudi/form(id = ${data.id})}">
-                            <button type="button" class="btn btn-primary btn-xs">Edit</button></a>
+                        <a type="button" class="btn btn-success btn-xs"
+                           th:if="${data.status.AKTIF} == ${data.status}"
+                           th:text="${data.namaProdi + '    ' + '(' + data.kodeProdi + ')' }"
+                           th:href="@{/programstudi/form(id = ${data.id})}">
+                        </a>
+
+                        <a type="button" class="btn btn-danger btn-xs"
+                           th:if="${data.status.NONAKTIF} == ${data.status}"
+                           th:text="${data.namaProdi + '    ' + '(' + data.kodeProdi + ')'}"
+                           th:href="@{/programstudi/form(id = ${data.id})}">
+                        </a>
                     </td>
+                    <td th:text="${data.keterangan}">Name Prodi</td>
                     <td>
                         <form method="post" th:action="@{/programstudi/delete(prodi = ${data.id})}">
                             <button type="submit" class="btn btn-danger btn-xs"
