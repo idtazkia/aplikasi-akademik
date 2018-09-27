@@ -7,9 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Table(name = "tb_mhsw")
 @Entity
 @Data
 public class Mahasiswa {
@@ -17,7 +15,20 @@ public class Mahasiswa {
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idMhsw;
+    private String id;
+
+    @NotNull
+    private String angkatan;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_prodi")
+    private  Prodi idProdi;
+
+    @ManyToOne
+    @NotNull
+        @JoinColumn(name = "id_konsentrasi")
+    private  Konsentrasi idKonsentrasi;
 
     @NotNull
     private String nim;
@@ -26,83 +37,56 @@ public class Mahasiswa {
     private String nama;
 
     @NotNull
-    private String jk;
-
-    @NotNull
-    private String asalNegara;
-
-    @NotNull
-    private String tmpLahir;
-
-    @NotNull
-    private LocalDate tglLahir;
-
-    @NotNull
-    private String agama;
-
-    @NotNull
-    private  String statusSipil;
-
-    @NotNull
-    private  String alamat;
+    private String statusMatrikulasi;
 
     @ManyToOne
     @NotNull
-    @JoinColumn(name = "kokab")
-        private  KabupatenKota kokab;
+    @JoinColumn(name = "id_program")
+    private  Program idProgram;
 
-    @NotNull
-    private  String kodepos;
+    private  String jenisKelamin;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "provinsi")
-        private  Provinsi provinsi;
+    private String idAgama;
 
-    @NotNull
-    private  String negara;
-
-    @NotNull
-    private  String telepon;
-
-    @NotNull
-    private  String ponsel;
-
-    @NotNull
-    private  String email;
-
-    @NotNull
-    private  String pernahKuliah;
-
-    @NotNull
-    private  String tempatTinggal;
-
-    @NotNull
-    private  String foto;
+    private  String tempatLahir;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
+    private LocalDate tanggalLahir;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
+    private String idKelurahan;
+
+    private  String idKecamatan;
+
+    private  String idKotaKabupaten;
+
+    private  String idProvinsi;
+
+    private  String idNegara;
+
+    private  String kewarganegaraan;
+
+    private  String nik;
+
+    private  String nisn;
+
+    private String namaJalan;
+    private String rt;
+    private String rw;
+    private String namaDusun;
+    private String kodepos;
+    private String jenisTinggal;
+    private String alatTransportasi;
+    private String teleponRumah;
+    private String teleponSeluler;
+    private String emailPribadi;
+    private String statusAktif;
+
+    @NotNull @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
     @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
-
     @NotNull
-    private String na = "1";
-
-    @NotNull
-    private String status ="1";
-
-    @ManyToOne
     @JoinColumn(name = "id_user")
-    private User idUser;
+    private  User idUser;
 }
