@@ -12,6 +12,5 @@ import java.util.List;
 public interface ProgramDao extends PagingAndSortingRepository<Program,String> {
     Page<Program> findByStatusNotIn(StatusRecord status, Pageable page);
     List<Program> findByStatus(StatusRecord status);
-    List<Program> findByStatusAndIdProgram(StatusRecord status, String id);
     Page<Program> findByStatusNotInAndNamaProgramContainingIgnoreCaseOrderByNamaProgram (StatusRecord status,String nama, Pageable page);
 }

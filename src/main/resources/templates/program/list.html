@@ -62,21 +62,27 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th>1</th>
+                                <tr th:each="data,row : ${daftarProgram}">
+                                    <th th:text="${(row.index + 1)}">1</th>
                                         <td>
-                                             <span style="color: #4fa9e8; font-size: 16px;">
+                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
                                                        <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
                                                     </span>
-                                        </td>
-                                        <td>S1</td>
-                                        <td>Sarjana</td>
-                                        <td align="center">
-                                             <a class="btn btn-success btn-sm" role="button" title="edit">Edit</a>
+                                            <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
+                                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
+                                            </span>
                                         </td>
                                         <td>
+                                            <a type="button" class="btn btn-success btn-xs" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/program/form(id = ${data.id})}">
+                                            </a>
+                                            <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/program/form(id = ${data.id})}">
+                                            </a>
+                                        </td>
+                                        <td th:text="${data.keterangan}">Sarjana</td>
+
+                                        <td>
                                             <form method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                <button type="submit" class="btn btn-danger btn-xs"
                                                 onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                     ' to recover this imaginary file!')">
                                             <i class="ti-eraser"></i> Hapus

@@ -11,13 +11,15 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table (name = "tb_program")
 public class Program {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idProgram;
+    private String id;
+
+
+    private  String kodeProgram;
 
 
     @NotNull
@@ -29,21 +31,7 @@ public class Program {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
 
 
 }
