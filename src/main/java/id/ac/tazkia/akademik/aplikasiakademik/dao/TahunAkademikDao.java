@@ -9,7 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
-    Page<TahunAkademik> findByStatusNotInOrderByStatusAsc(StatusRecord status, Pageable page);
+    Page<TahunAkademik> findByStatusNotInOrderByKodeTahunAkademikDesc(StatusRecord status, Pageable page);
     TahunAkademik findByStatus(StatusRecord status);
-    Page<TahunAkademik> findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByStatusAsc(StatusRecord status,String search, Pageable page);
+    Page<TahunAkademik> findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(StatusRecord status,String search, Pageable page);
 }

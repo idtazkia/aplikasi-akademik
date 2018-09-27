@@ -25,9 +25,9 @@ public class AkademikController {
     public void akademikList(Model model, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", tahunAkademikDao.findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByStatusAsc(StatusRecord.HAPUS, search, page));
+            model.addAttribute("list", tahunAkademikDao.findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(StatusRecord.HAPUS, search, page));
         } else {
-            model.addAttribute("list",tahunAkademikDao.findByStatusNotInOrderByStatusAsc(StatusRecord.HAPUS,page));
+            model.addAttribute("list",tahunAkademikDao.findByStatusNotInOrderByKodeTahunAkademikDesc(StatusRecord.HAPUS,page));
 
         }
     }

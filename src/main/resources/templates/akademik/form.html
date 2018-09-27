@@ -65,8 +65,15 @@
 
                                         <div class="form-group">
                                             <label>Exam Start Date</label>
-                                            <input type="date" name="tanggalMulaiUjian"
-                                                   th:field="*{tanggalMulaiUjian}"
+                                            <input type="date" name="tanggalMulaiUts"
+                                                   th:field="*{tanggalMulaiUts}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam Start Date</label>
+                                            <input type="date" name="tanggalMulaiUts"
+                                                   th:field="*{tanggalMulaiUas}"
                                                    class="form-control">
                                         </div>
 
@@ -74,12 +81,6 @@
                                             <label>Score Start Date</label>
                                             <input type="date" name="tanggalMulaiNilai"
                                                    th:field="*{tanggalMulaiNilai}"
-                                                   class="form-control">
-                                        </div>
-
-                                        <div class="form-group" th:if="${tahunAkademik.id != null}">
-                                            <label>Year</label>
-                                            <input type="text" name="tahun" th:field="*{tahun}"
                                                    class="form-control">
                                         </div>
 
@@ -117,8 +118,15 @@
 
                                         <div class="form-group">
                                             <label>Exam End Date</label>
-                                            <input type="date" name="tanggalSelesaiUjian"
-                                                   th:field="*{tanggalSelesaiUjian}"
+                                            <input type="date" name="tanggalSelesaiUts"
+                                                   th:field="*{tanggalSelesaiUts}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam End Date</label>
+                                            <input type="date" name="tanggalSelesaiUts"
+                                                   th:field="*{tanggalSelesaiUas}"
                                                    class="form-control">
                                         </div>
 
@@ -129,20 +137,12 @@
                                                    class="form-control">
                                         </div>
 
-                                        <div class="form-group" th:if="${tahunAkademik.id != null}">
-                                            <label>Status</label><br>
-                                            <label>
-                                                <input name="status" th:field="*{status}"
-                                                       type="checkbox" value="AKTIF"
-                                                       class="js-switch"/>
-                                            </label >
-                                        </div>
-
                                     </div>
-                                    <center th:if="${tahunAkademik.id == null}">
+                                    <center>
                                             <div style="margin-left: 25%" class="form-group col-md-6">
                                                 <label>Year</label>
-                                                <input type="text" maxlength="4" name="tahun" class="form-control">
+                                                <input type="text" maxlength="4" name="tahun"
+                                                       class="form-control">
                                             </div>
                                     </center>
 

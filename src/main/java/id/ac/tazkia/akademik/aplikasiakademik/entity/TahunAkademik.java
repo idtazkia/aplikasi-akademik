@@ -51,11 +51,19 @@ public class TahunAkademik {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tanggalMulaiUjian;
+    private LocalDate tanggalMulaiUts;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tanggalSelesaiUjian;
+    private LocalDate tanggalSelesaiUts;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalMulaiUas;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalSelesaiUas;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
