@@ -18,9 +18,8 @@ public class Program {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-
+    @NotNull
     private  String kodeProgram;
-
 
     @NotNull
     private String namaProgram;
@@ -28,7 +27,7 @@ public class Program {
     @NotNull
     private String keterangan;
 
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
 

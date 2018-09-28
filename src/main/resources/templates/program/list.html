@@ -54,7 +54,6 @@
                             <thead>
                             <tr>
                                 <th scope="col">No</th>
-                                <th>NA</th>
                                 <th scope="col">Program Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col" width="30px"></th>
@@ -65,14 +64,6 @@
                                 <tr th:each="data,row : ${daftarProgram}">
                                     <th th:text="${(row.index + 1)}">1</th>
                                         <td>
-                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                                       <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                                    </span>
-                                            <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                            </span>
-                                        </td>
-                                        <td>
                                             <a type="button" class="btn btn-success btn-xs" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/program/form(id = ${data.id})}">
                                             </a>
                                             <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/program/form(id = ${data.id})}">
@@ -81,11 +72,10 @@
                                         <td th:text="${data.keterangan}">Sarjana</td>
 
                                         <td>
-                                            <form method="post">
+                                            <form method="post" th:action="@{/program/delete(program=${data.id})}">
                                                 <button type="submit" class="btn btn-danger btn-xs"
-                                                onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                    ' to recover this imaginary file!')">
-                                            <i class="ti-eraser"></i> Hapus
+                                                        onclick="return confirm('Are you sure want to delete this?')">
+                                                    <i class="ti-eraser"></i>  Delete
                                                 </button>
                                             </form>
                                         </td>
