@@ -44,6 +44,13 @@ public class AkademikController {
         }
     }
 
+    @GetMapping("/akademik/detail")
+    public void akademikDetail(Model model,String id){
+        model.addAttribute("detailAkademik", tahunAkademikDao.findById(id).get());
+
+
+    }
+
     @PostMapping("/akademik/form")
     public String prosesForm(@Valid TahunAkademik tahunAkademik){
 

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Program</title>
+</head>
+
+<body class="nav-md">
+
+<section layout:fragment="main" class="container">
+
+<div class="container body">
+        <!-- page content -->
+        <div role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3></h3>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Detail</h2>
+                                    <div style="margin-left: 1040px; margin-top: 3px">
+                                        <a th:href="@{/akademik/list}"><i class="fa fa-close"></i></a>
+                                    </div>
+                                <div class="clearfix"></div>
+                            </div>
+
+
+                                <div class="x_content" th:each="dtl : ${detailAkademik}">
+                                    <form th:action="@{/akademik/detail}" method="post">
+                                        <center><h3></h3></center>
+                                        <br>
+
+                                        <div class="x_panel">
+                                            <ul class="stats-overview">
+                                                <li>
+                                                    <span class="name" > Kode Tahun Akademik </span>
+                                                    <span class="value text-success" th:text="${dtl.kodeTahunAkademik}"> 20081 </span>
+                                                </li>
+                                                <li>
+                                                    <span class="name"> Nama Tahun Akademik </span>
+                                                    <span class="value text-success" th:text="${dtl.namaTahunAkademik}"> 2008/2009 Semester Ganjil </span>
+                                                </li>
+                                                <li class="hidden-phone">
+                                                    <span class="name"> Tahun </span>
+                                                    <span class="value text-success" th:text="${dtl.tahun}"> 2008 </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+
+                                        <div class="row col-sm-offset-1 ">
+
+
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulai}">2011-08-15</li>
+                                                    <li class="list-group-item active">Tanggal Selesai</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesai}">2011-09-16</li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai KRS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiKrs}">2011-08-15</li>
+                                                    <li class="list-group-item active">Tanggal Selesai KRS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiKrs}">2011-09-16</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai Kuliah</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiKuliah}">2011-08-15</li>
+                                                    <li class="list-group-item active">Tanggal Selesai Kuliah</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiKuliah}">2011-09-16</li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div class="row col-sm-offset-1">
+
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai UTS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiUts}"></li>
+                                                    <li class="list-group-item active">Tanggal Selesai UTS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiUts}"></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai UAS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiUas}"></li>
+                                                    <li class="list-group-item active">Tanggal Selesai UAS</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiUas}"></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item active">Tanggal Mulai Nilai</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiNilai}">2011-08-15</li>
+                                                    <li class="list-group-item active">Tanggal Selesai Nilai</li>
+                                                    <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiNilai}">2011-09-16</li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+
+                                        <hr>
+                                        <br>
+
+                                    </form>
+                                </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+    </div>
+
+</section>
+</body>
+</html>
