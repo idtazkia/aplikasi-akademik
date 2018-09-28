@@ -11,5 +11,9 @@ import java.util.List;
 
 public interface JurusanDao extends PagingAndSortingRepository<Jurusan, String> {
     List<Jurusan> findByStatus(StatusRecord statusRecord);
-    Page<Jurusan> findByStatusAndNamaJurusanContainingIgnoreCaseOrderByNamaJurusan(String status, String nama, Pageable page);
+    Page<Jurusan> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
+    Page<Jurusan> findByStatusAndNamaJurusanContainingIgnoreCaseOrderByNamaJurusan(StatusRecord statusRecord, String nama, Pageable page);
+    Page<Jurusan> findByStatusNotInAndNamaJurusanContainingIgnoreCaseOrderByNamaJurusan(StatusRecord statusRecord, String nama, Pageable page);
+
+
 }
