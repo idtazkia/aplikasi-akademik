@@ -39,20 +39,28 @@
                     </div>
                     <div class="x_content">
                         <br />
-                        <form method="post" th:action="@{/program/form}" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <form method="post" th:action="@{/program/form}" th:object="${program}" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="namaProgram">Program code<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" th:field="*{kodeProgram}" name="kodeProgram" id="kodeProgram" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="namaProgram">Program Name <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text"  name="namaProgram" id="namaProgram" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" th:field="*{namaProgram}" name="namaProgram" id="namaProgram" required="required" class="form-control col-md-7 col-xs-12">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="keterangan">Description <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" name="keterangan" id="keterangan" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" th:field="*{keterangan}" name="keterangan" id="keterangan" required="required" class="form-control col-md-7 col-xs-12">
                                 </div>
                             </div>
 
@@ -64,14 +72,13 @@
 
                                             <div class="">
                                                 <label>
-                                                    <input name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                                                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                                                 </label >
+                                                <input type="hidden" name="id" th:field="*{id}">
                                             </div>
 
                                 </div>
-                                <input type="hidden" name="idProgram">
-                                <input type="hidden" name="userInsert">
-                                <input type="hidden" name="tglInsert">
+
                             </div>
 
 
