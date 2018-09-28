@@ -21,6 +21,10 @@ import java.time.LocalDateTime;
         @JoinColumn(name = "id_jurusan")
         private Jurusan idJurusan;
 
+        @ManyToOne
+        @JoinColumn(name = "id_jenjang")
+        private Jenjang idJenjang;
+
         private String kodeProdi;
 
         private String namaProdi;

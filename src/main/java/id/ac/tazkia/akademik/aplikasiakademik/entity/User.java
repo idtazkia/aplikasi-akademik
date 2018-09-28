@@ -21,6 +21,4 @@ public class User {
         @NotNull
         @ManyToOne @JoinColumn(name = "id_role")
         private Role role;
-
-    private String email;
 }

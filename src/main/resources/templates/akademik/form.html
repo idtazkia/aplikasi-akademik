@@ -1,208 +1,171 @@
-
 <!DOCTYPE html>
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Academic Years</title>
+    <title>Program</title>
+
+
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="col-md-12 col-sm-12 col-xs-12">
 
-        <div class="x_panel">
-            <div class="x_title">
-                <h2>Academic Year <small>Form</small></h2>
-                <div class="clearfix"></div>
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Academic Year</h3>
             </div>
 
-            <form role="form" th:action="@{/akademik/form}" th:object="${tahunAkademik}" method="post">
-                <div class="my-3 p-3 bg-white rounded box-shadow">
-                    <input type="hidden" name="idLembaga" th:field="*{idTahunakademik}">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Program Studi</label>
-                                        <select th:field="*{prodi}" class="form-control js-example-placeholder-single" id="idProdi"
-                                                name="idProdi">
-                                            <option th:each="p : ${listProdi}"
-                                                    th:value="${p.idProdi}"
-                                                    th:text="${p.idJurusan.idFakultas.namaFakultas+', '+p.idJurusan.namaJurusan+', '+p.namaProdi}">Pilih Klinik
-                                            </option>
-
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Kode Tahun</label>
-                                        <input type="text" th:field="*{kodeTahun}"
-                                               name="kodeTahun" class="form-control" id="kodeTahun" placeholder="Kode Tahun" />
-                                        <label class="control-label error-label" th:errors="*{kodeTahun}">
-                                            Pesan error nanti di sini
-                                        </label>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Program</label>
-                                        <select th:field="*{program}" class="form-control js-example-placeholder-single" id="idProgram"
-                                                name="idProgram">
-                                            <option th:each="p : ${listProgram}"
-                                                    th:value="${p.idProgram}"
-                                                    th:text="${p.namaProgram}">Pilih Klinik
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Nama Tahun</label>
-                                        <input type="text" th:field="*{namaTahun}"
-                                               name="mamaTahun" class="form-control" id="mamaTahun" placeholder="Nama Tahun" />
-                                        <label class="control-label error-label" th:errors="*{namaTahun}">
-                                            Pesan error nanti di sini
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    <br>
-                    <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-                    <br>
-
-                    <h6 class="border-bottom border-gray pb-2 mb-0"><center><b>Detail Kalendar</b></center></h6>
-                    <br>
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Mulai Kuliah</label>
-                                    <input type="date" th:field="*{mulaiKuliah}"
-                                           name="mulaiKuliah" class="form-control" id="mulaiKuliah" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Mulai KRS</label>
-                                    <input type="date" th:field="*{mulaiKrs}"
-                                           name="mulaiKrs" class="form-control" id="mulaiKrs"  />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Mulai Bayar</label>
-                                    <input type="date" th:field="*{mulaiBayar}"
-                                           name="mulaiBayar" class="form-control" id="mulaiBayar" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Mulai UTS</label>
-                                    <input type="date" th:field="*{mulaiUts}"
-                                           name="mulaiUts" class="form-control" id="mulaiUts" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Mulai UAS</label>
-                                    <input type="date" th:field="*{mulaiUas}"
-                                           name="mulaiUas" class="form-control" id="mulaiUas" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Penilaian</label>
-                                    <input type="date" th:field="*{mulaiPenilaian}"
-                                           name="mulaiPenilaian" class="form-control" id="mulaiPenilaian" />
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Tanggal Selesai</label>
-                                    <input type="date" th:field="*{selesaiKuliah}"
-                                           name="selesaiKuliah" class="form-control" id="selesaiKuliah" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Selesai</label>
-                                    <input type="date" th:field="*{selesaiKrs}"
-                                           name="selesaiKrs" class="form-control" id="selesaiKrs" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Selesai</label>
-                                    <input type="date" th:field="*{selesaiBayar}"
-                                           name="selesaiBayar" class="form-control" id="selesaiBayar" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Selesai</label>
-                                    <input type="date" th:field="*{selesaiUts}"
-                                           name="selesaiUts" class="form-control" id="selesaiUts" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Selesai</label>
-                                    <input type="date" th:field="*{selesaiUas}"
-                                           name="selesaiUas" class="form-control" id="selesaiUas" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Selesai Penilaian</label>
-                                    <input type="date" th:field="*{selesaiPenilaian}"
-                                           name="selesaiPenilaian" class="form-control" id="selesaiPenilaian"  />
-                                </div>
-                            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Academic Year <small>form</small></h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form method="post" th:action="@{/akademik/form}" th:object="${tahunAkademik}"
+                              id="demo-form2" data-parsley-validate
+                              class="form-horizontal form-label-left">
 
                             <div class="col-md-12">
-                                <label>Catatan</label>
-                                <textarea th:field="*{catatan}"
-                                          name="catatan" class="form-control" id="catatan"></textarea>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Academic Year Code</label>
+                                            <input type="text" name="kodeTahunAkademik"
+                                                   th:field="*{kodeTahunAkademik}"
+                                                   class="form-control">
+                                        </div>
 
-                            <div class="col-md-6">
-                                <br>
+                                        <div class="form-group">
+                                            <label>Start Date</label>
+                                            <input type="date" name="tanggalMulai"
+                                                   th:field="*{tanggalMulai}"
+                                                   class="form-control">
+                                        </div>
 
-                                <label>
-                                    <input type="checkbox" th:field="*{status}" value="AKTIF" class="js-switch" checked /> N/A
-                                </label>
+                                        <div class="form-group">
+                                            <label>KRS Start Date</label>
+                                            <input type="date" name="tanggalMulaiKrs"
+                                                   th:field="*{tanggalMulaiKrs}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>College Start Date</label>
+                                            <input type="date" name="tanggalMulaiKuliah"
+                                                   th:field="*{tanggalMulaiKuliah}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam Start Date</label>
+                                            <input type="date" name="tanggalMulaiUts"
+                                                   th:field="*{tanggalMulaiUts}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam Start Date</label>
+                                            <input type="date" name="tanggalMulaiUts"
+                                                   th:field="*{tanggalMulaiUas}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Score Start Date</label>
+                                            <input type="date" name="tanggalMulaiNilai"
+                                                   th:field="*{tanggalMulaiNilai}"
+                                                   class="form-control">
+                                        </div>
+
+                                    </div>
 
 
-                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Academic Year Name</label>
+                                            <input type="text" name="namaTahunAkademik"
+                                                   th:field="*{namaTahunAkademik}"
+                                                   class="form-control">
+                                        </div>
 
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="align-content-md-center">
-                                    <button type="submit" class="btn btn-success">Simpan</button>
-                                    <a th:href="@{/akademik/list}" class="btn btn-danger">Batal</a>
+                                        <div class="form-group">
+                                            <label>End Date</label>
+                                            <input type="date" name="tanggalSelesai"
+                                                   th:field="*{tanggalSelesai}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>KRS End Date</label>
+                                            <input type="date" name="tanggalSelesaiKrs"
+                                                   th:field="*{tanggalSelesaiKrs}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>College Start Date</label>
+                                            <input type="date" name="tanggalSelesaiKuliah"
+                                                   th:field="*{tanggalSelesaiKuliah}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam End Date</label>
+                                            <input type="date" name="tanggalSelesaiUts"
+                                                   th:field="*{tanggalSelesaiUts}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Exam End Date</label>
+                                            <input type="date" name="tanggalSelesaiUts"
+                                                   th:field="*{tanggalSelesaiUas}"
+                                                   class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Score End Date</label>
+                                            <input type="date" name="tanggalSelesaiNilai"
+                                                   th:field="*{tanggalSelesaiNilai}"
+                                                   class="form-control">
+                                        </div>
+
+                                    </div>
+                                    <center>
+                                            <div style="margin-left: 25%" class="form-group col-md-6">
+                                                <label>Year</label>
+                                                <input type="text" maxlength="4" name="tahun"
+                                                       class="form-control">
+                                            </div>
+                                    </center>
+
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <input type="hidden" name="status" th:field="*{status}">
                                 </div>
+
                             </div>
-                        </div>
 
+                            <center>
+                            <div class="form-group"><br><br><br><br><br>
+                                <a th:href="@{/akademik/list}"
+                                   class="btn btn-primary" type="button">Cancel</a>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                            </center>
+
+                        </form>
                     </div>
-
-
-
-
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-
 </section>
-
-
 </body>
 </html>
-<script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Pilih Salah Satu",
-        allowClear: true
-    });
-</script>

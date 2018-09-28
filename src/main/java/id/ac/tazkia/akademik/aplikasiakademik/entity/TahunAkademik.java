@@ -12,96 +12,71 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name="tb_tahunakademik")
 public class TahunAkademik {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idTahunakademik;
-
-    @ManyToOne
-    @JoinColumn(name = "id_prodi")
-    private Prodi prodi;
-
-    @ManyToOne
-    @JoinColumn(name = "id_program")
-    private Program program;
+    private String id;
 
     @NotNull
-    private String kodeTahun;
+    private String kodeTahunAkademik;
 
     @NotNull
-    private String namaTahun;
+    private String namaTahunAkademik;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiBayar;
+    private LocalDate tanggalMulai;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiBayar;
+    private LocalDate tanggalSelesai;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiKrs;
+    private LocalDate tanggalMulaiKrs;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiKrs;
+    private LocalDate tanggalSelesaiKrs;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiKuliah;
+    private LocalDate tanggalMulaiKuliah;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiKuliah;
+    private LocalDate tanggalSelesaiKuliah;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiUts;
+    private LocalDate tanggalMulaiUts;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiUts;
+    private LocalDate tanggalSelesaiUts;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiUas;
+    private LocalDate tanggalMulaiUas;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiUas;
+    private LocalDate tanggalSelesaiUas;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate mulaiPenilaian;
+    private LocalDate tanggalMulaiNilai;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate selesaiPenilaian;
+    private LocalDate tanggalSelesaiNilai;
 
     @NotNull
-    private String catatan;
+    private String tahun;
 
-    @NotNull @Enumerated(EnumType.STRING)
-    private StatusRecord status = StatusRecord.AKTIF;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.NONAKTIF;
 
 }

@@ -4,146 +4,129 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Academic Years</title>
+    <title>Accademic Years</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
 
-
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
-
-
             <div class="x_title">
-                <h2>Academic Year <small>List</small></h2>
+                <h2>Accademic Years <small>List</small></h2>
                 <div class="clearfix"></div>
             </div>
 
-<br>
-
             <div class="x_content">
-                <form method="get" th:action="@{/akademik/list}">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program Studi</label>
-                                    <select onchange="" class="form-control js-example-placeholder-single" id="prodi"
-                                            name="prodi">
-                                        <option selected th:if="${keypro} != null" th:each="data,row : ${keypro}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
-                                        <option></option>
-                                        <option th:each="data,row : ${prodi}" th:value="${data.idProdi}" th:text="${data.idJurusan.idFakultas.namaFakultas+', '+data.idJurusan.namaJurusan+', '+data.namaProdi}">Akuntasi Islam</option>
 
-                                    </select>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/akademik/form}" class="btn btn-primary"
+                               role="button" aria-pressed="true">Add</a>
+                        </td>
+                        <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                            <form method="get">
+                                <div class="input-group">
+                                    <input type="text" name="search"
+                                           placeholder="Search for..." class="form-control">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Search</button>
+                                    </span>
                                 </div>
-                            </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Show <span sd:page-size-selector="javascript"></span> entries
+                        </td>
+                    </tr>
+                </table>
 
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk-action">
+                        <thead>
+                        <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Academic Year Code</th>
+                            <th class="column-title">Academic Year Name</th>
+                            <th class="column-title">Year</th>
+                            <th scope="col" width="30px">Active</th>
+                            <th scope="col" width="30px">Detail</th>
+                            <th scope="col" width="30px"></th>
+                        </tr>
+                        </thead>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program</label>
-                                    <select onchange="" class="form-control js-example-placeholder-single" id="program" name="program">
-                                        <option selected th:if="${keypr} != null" th:each="data,row : ${keypr}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Akuntasi Islam</option>
-                                        <option></option>
-                                        <option th:each="data,row : ${program}" th:value="${data.idProgram}" th:text="${data.namaProgram}">Reguler</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${list}">
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
+                            <td th:text="${data.kodeTahunAkademik}">nama</td>
+                            <td>
+                                <a type="button" class="btn btn-success btn-xs"
+                                   th:if="${data.status.AKTIF} == ${data.status}"
+                                   th:text="${data.namaTahunAkademik }"
+                                   th:href="@{/akademik/form(id = ${data.id})}">
+                                </a>
+
+                                <a type="button" class="btn btn-danger btn-xs"
+                                   th:if="${data.status.NONAKTIF} == ${data.status}"
+                                   th:text="${data.namaTahunAkademik}"
+                                   th:href="@{/akademik/form(id = ${data.id})}">
+                                </a>
+                            </td>
+                            <td th:text="${data.tahun}">1</td>
+
+                            <td>
+                                <form method="post" th:if="${data.status.NONAKTIF} == ${data.status}"
+                                      th:action="@{/akademik/aktif(tahunAkademik = ${data.id})}">
+                                    <button type="submit" class="btn btn-primary btn-xs">Activate
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td>
+                                <a href="" class="btn btn-info btn-xs">See Detail</a>
+                            </td>
+
+                            <td>
+                                <form method="post"
+                                      th:action="@{/akademik/delete(tahunAkademik = ${data.id})}">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, ' +
+                                             'you will not be able' + ' to recover this imaginary ' +
+                                              'file!')">Delete
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-right">
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                        </div>
-
                     </div>
 
-                </form>
 
-
-                <div class="x_title">
-                    <div class="clearfix"></div>
                 </div>
-
-                    <table width="100%">
-                        <tr>
-                            <td>
-                                <a th:href="@{/akademik/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                            </td>
-                        </tr>
-                    </table>
-            <br>
-                <div class="table-responsive">
-                                <table class="table table-striped jambo_table bulk_action">
-                                    <thead>
-                                    <tr class="headings">
-
-                                        <th>
-                                            <input type="checkbox" id="check-all" class="flat">
-                                        </th>
-
-                                        <th>Kode</th>
-                                        <th>Tahun</th>
-                                        <th>Prodi</th>
-                                        <th>Bayar</th>
-                                        <th>KRS</th>
-                                        <th>Kuliah</th>
-                                        <th>Aktif</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="data,row : ${tahunAkademik}">
-
-                                        <td class="a-center ">
-                                            <input type="checkbox" class="flat" name="table_records">
-                                        </td>
-
-                                        <td th:text="${data.kodeTahun}"></td>
-                                        <td th:text="${data.namaTahun}"></td>
-                                        <td th:text="${data.prodi.idJurusan.idFakultas.namaFakultas+', '+data.prodi.idJurusan.namaJurusan+', '+data.prodi.namaProdi}">19-02-2017 - 19-02-2018</td>
-                                        <td th:text="${data.mulaiBayar+' - '+data.selesaiBayar}">19-02-2017 - 19-02-2018</td>
-                                        <td th:text="${data.mulaiKrs+' - '+data.selesaiKrs}">19-02-2017</td>
-                                        <td th:text="${data.mulaiKuliah+' - '+data.selesaiKuliah}">19-02-2017 - 19-02-2018</td>
-
-
-                                        <td>
-                                             <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                                       <i class="fa fa-lightbulb-o" style="font-size:100%;height: auto"></i>
-                                                    </span>
-                                            <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                                        <i class="fa fa-lightbulb-o" style="font-size:100%;color:black;height: auto"></i>
-                                                    </span>
-                                        </td>
-                                        <td align="center">
-                                            <a href="#" class="btn btn-success btn-sm" style="font-size:8px;" th:href="@{/akademik/form(id=${data.idTahunakademik})}" title="edit">Edit</a></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <br>
-                                <nav class="pull-right">
-                                    <ul class="pagination" sd:pagination="full">
-                                        <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-            <br>
-
 
             </div>
         </div>
-
     </div>
 
 </section>
 
-
 </body>
 </html>
-<script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Pilih Salah Satu",
-        allowClear: true
-    });
-</script>

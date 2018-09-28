@@ -17,58 +17,20 @@
             </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h6 class="border-bottom border-gray pb-2 mb-0">Select Criteria</h6>
-        <br>
-        <form method="get" th:action="@{/mahasiswa/list}">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                                <label>Study Programs</label>
-                                <select name="study"  class="form-control js-select2">
-                                    <option>Pasca Sarjana</option>
-                                </select>
-                        </div>
-
-
-                    </div>
-
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Konsentrasi</label>
-                            <select name="konsen"  class="form-control js-select2">
-                                <option>Akuntansi Syariah</option>
-                                <option>Bisnis Manajemen Syariah</option>
-                                <option>Ekonomi Syariah</option>
-                                <option>Muamalat</option>
-                            </select>
-                        </div>
-
-                </div>
-
-            </div>
-            <input class="btn btn-primary" type="submit" value="Show">
-
-        </form>
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-
-
         <table width="100%">
             <tr>
                 <td>
                     <a th:href="@{/mahasiswa/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </td>
                 <div class="title_right">
-                    <form method="get" th:action="@{/mahasiswa/list}">
+                    <form method="get">
                     <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
+                            <input type="text" name="search"
+                                   class="form-control" th:value="${search}"
+                                   placeholder="Search for...">
                             <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Go!</button>
+                              <button class="btn btn-default" type="submit">Search</button>
                           </span>
                         </div>
                     </div>
@@ -89,51 +51,54 @@
                     <th scope="col">Konsentrasi</th>
                     <th scope="col">Program</th>
                     <th scope="col" width="30px"></th>
-                    <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>1519001</td>
-                    <td>Student 1</td>
-                    <td>Ekonomi</td>
-                    <td>Akuntansi Syariah</td>
-                    <td>Good Job</td>
-                    <td>S2</td>
+                <tr th:each="data,row : ${list}">
+                    <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
+                    <td th:text="${data.nim}">1519001</td>
+                    <td>
+                        <a type="button" class="btn btn-success btn-xs"
+                           th:if="${data.status.AKTIF} == ${data.status}"
+                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(id = ${data.id})}">
+                        </a>
+
+                        <a type="button" class="btn btn-danger btn-xs"
+                           th:if="${data.status.NONAKTIF} == ${data.status}"
+                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(id = ${data.id})}">
+                        </a>
+                    </td>
+                    <td th:text="${data.statusMatrikulasi}">Ekonomi</td>
+                    <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>
+                    <td th:text="${data.idKonsentrasi.namaKonsentrasi}">Good Job</td>
+                    <td th:text="${data.idProgram.namaProgram}">S2</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/mahasiswa/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/mahasiswa/list}" title="Delete">Delete</a>
+                        <form method="post">
+                            <button type="submit" class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Are you sure want to delete this?')">
+                                <i class="ti-eraser"></i>  Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <div class="row">
+                <div class="col-sm-8">
+                    <nav class="pull-right">
+                        <ul class="pagination" sd:pagination="full">
+                            <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                            <li class="disabled"><a href="#" aria-label="Previous"><span
+                                    aria-hidden="true">&laquo;</span></a>
+                            </li>
+                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
         <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-
     </div>
         </div>
     </div>
