@@ -28,12 +28,5 @@ public class TahunAkademikDaoTests {
 
         Program program = programDao.findById("09bdf769-efdc-4b3b-9af3-6884d158a7ac").get();
 
-        Page<TahunAkademik> hasil = tahunAkademikDao.findByStatusAndProdiAndProgram(StatusRecord.AKTIF, prodi, program, PageRequest.of(0, 10));
-        Assert.assertNotNull(hasil);
-
-        System.out.println("Jumlah record : "+hasil.getTotalElements());
-        hasil.forEach( t -> {
-            System.out.println("Kode tahun "+t.getKodeTahun());
-        });
     }
 }
