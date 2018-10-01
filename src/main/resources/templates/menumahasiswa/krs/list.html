@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>List Krs</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Study Plan Card <small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+
+                        <form method="get">
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Academic Years</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" name="tahun" id="autocomplete-custom-append" class="form-control col-md-10"/>
+                                </div>
+                            </div>
+                        </form>
+<br>
+
+            <table class="table table-striped jambo_table bulk_action" width="100%">
+                <tr>
+                    <td>Nama : Fulan</td>
+                    <td>Pemb Akd : Andang Heryahya</td>
+                </tr>
+                <tr>
+                    <td>NIM : 1519001</td>
+                    <td>Studi : Andang Heryahya</td>
+                </tr>
+            </table>
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <a th:href="@{/menumahasiswa/krs/form}" class="btn btn-primary">Add</a>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" id="keyresult" autocomplete="off"
+                                       class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                                          <button class="btn btn-default" type="submit">Go!</button>
+                                                        </span>
+                            </div>
+                        </form>
+                    </td>
+
+
+
+                </tr>
+
+            </table>
+
+            <div class="x_content">
+                <div class="table-responsive">
+                    <div class="x_title">
+                        <h2>Sunday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Monday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Tuesday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Wednesday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Thursday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Friday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="x_title">
+                        <h2>Saturday</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                            <th class="column-title" colspan="2">Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td>1</td>
+                            <td>1519001</td>
+                            <td>07:00 - 09:30</td>
+                            <td>Pengantar Akuntansi 1</td>
+                            <td>3</td>
+                            <td >AI-A-15</td>
+                            <td >1.6</td>
+                            <td >Dewi Febriani</td>
+                            <td>
+                                <form method="post">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                     ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-left">
+
+
+
+                                <ul class="pagination">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
