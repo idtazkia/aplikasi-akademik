@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Majors</title>
 </head>
 <body>
 
@@ -18,34 +18,49 @@
             </div>
 
             <div class="x_content">
-                <form method="post" th:action="@{/jurusan/form}">
+                <form method="post" th:action="@{/jurusan/form}" th:object="${jurusan}" enctype="multipart/form-data">
 
 
                     <div class="form-group">
+
+                        <div class="form-group">
+                            <label>Majors Code</label>
+                            <input type="text" name="kodeJurusan" th:field="*{kodeJurusan}" class="form-control" placeholder="Majors Code">
+                        </div>
+
                         <label>Select Faculty</label>
-                        <select class="form-control js-example-placeholder-single" id="fakultas"
-                                name="idFakultas">
-                            <option></option>
-                            <option>Fakultas Tehknik</option>
-                            <option>Fakultas Pendidikan</option>
-                            <option>Fakultas Ekonomi</option>
+                        <select class="form-control js-example-placeholder-single" id="listFakultas"
+                                name="idFakultas" th:field="*{idFakultas}">
+                            <option value=""></option>
+                            <option th:each="dtf :${listFakultas}"
+                                    th:text="${dtf.namaFakultas}"
+                                    th:value="${dtf.id}">
+                            </option>
                         </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Name of Department</label>
+                        <input type="text" name="namaJurusan" th:field="*{namaJurusan}" class="form-control" placeholder="Majors Name">
                     </div>
 
                     <div class="form-group">
-                        <label>Name of department</label>
-                        <input type="text" name="namaJurusan" class="form-control" placeholder="Name of department">
+                        <label>Description</label>
+                        <input type="text" name="keterangan" th:field="*{keterangan}" class="form-control" placeholder="Description">
                     </div>
 
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input name="na" type="checkbox" value="1" class="js-switch" />
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                         </label>
                         <input type="hidden" name="idJurusan">
                         <input type="hidden" name="userInsert">
                         <input type="hidden" name="tglInsert">
                     </div>
+                    <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
 

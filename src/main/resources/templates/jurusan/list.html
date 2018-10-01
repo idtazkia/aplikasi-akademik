@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Majors</title>
 </head>
 <body>
 
@@ -40,32 +40,41 @@
                     <table class="table table-striped jambo_table bulk-action">
                         <thead>
                         <tr class="heading">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">Na</th>
                             <th class="column-title">Faculty</th>
-                            <th class="column-title">Name of department</th>
-                            <th></th>
+                            <th class="column-title">Majors</th>
+                            <th class="column-title">Description</th>
+                            <th class="column-title">Action</th>
                             <th></th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
-                            <td>1</td>
-                            <td>
-                                <span style="color: #4fa9e8; font-size: 16px;">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
+                        <tr class="even pointer" th:each="dataJ,row :${listJurusan}">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>Fakultas Ekonomi</td>
-                            <td>STEI TAZKIA</td>
+                            <td th:text="${(row.index + 1) + (listJurusan.number * listJurusan.size)}"></td>
+                            <td th:text="${dataJ.kodeJurusan}"></td>
+
                             <td>
-                                <a href="#" class="btn btn-success btn-xs" th:href="@{/jurusan/form}" title="edit">Edit</a>
+
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${dataJ.status.AKTIF} == ${dataJ.status}" th:text="${dataJ.namaJurusan}"  th:href="@{/jurusan/form(id = ${dataJ.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${dataJ.status.NONAKTIF} == ${dataJ.status}" th:text="${dataJ.namaJurusan}"  th:href="@{/jurusan/form(id = ${dataJ.id})}">
+                                </a>
+
                             </td>
+
+                            <td th:text="${dataJ.keterangan}" ></td>
+
                             <td>
-                                <form method="post" th:action="@{/delete/jurusan}">
+                                <form method="post" th:action="@{/delete/jurusan(jurusan = ${dataJ.id})}">
                                 <button type="submit" class="btn btn-danger btn-xs"
-                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                 ' to recover this imaginary file!')">
+                                        onclick="return confirm('Are you sure want tho delete this?')">
                                     <i class="ti-eraser"></i> Delete
                                 </button>
                             </form>

@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Program</title>
+    <title>Academic Years</title>
 </head>
 
 <body class="nav-md">
@@ -43,15 +43,15 @@
                                         <div class="x_panel">
                                             <ul class="stats-overview">
                                                 <li>
-                                                    <span class="name" > Kode Tahun Akademik </span>
+                                                    <span class="name" > Academic Year Code </span>
                                                     <span class="value text-success" th:text="${dtl.kodeTahunAkademik}"> 20081 </span>
                                                 </li>
                                                 <li>
-                                                    <span class="name"> Nama Tahun Akademik </span>
+                                                    <span class="name"> Academic Year Name </span>
                                                     <span class="value text-success" th:text="${dtl.namaTahunAkademik}"> 2008/2009 Semester Ganjil </span>
                                                 </li>
                                                 <li class="hidden-phone">
-                                                    <span class="name"> Tahun </span>
+                                                    <span class="name"> Year </span>
                                                     <span class="value text-success" th:text="${dtl.tahun}"> 2008 </span>
                                                 </li>
                                             </ul>
@@ -63,26 +63,26 @@
 
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai</li>
+                                                    <li class="list-group-item active">Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulai}">2011-08-15</li>
-                                                    <li class="list-group-item active">Tanggal Selesai</li>
+                                                    <li class="list-group-item active">End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesai}">2011-09-16</li>
                                                 </ul>
                                             </div>
 
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai KRS</li>
+                                                    <li class="list-group-item active">KRS Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiKrs}">2011-08-15</li>
-                                                    <li class="list-group-item active">Tanggal Selesai KRS</li>
+                                                    <li class="list-group-item active">KRS End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiKrs}">2011-09-16</li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai Kuliah</li>
+                                                    <li class="list-group-item active">College Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiKuliah}">2011-08-15</li>
-                                                    <li class="list-group-item active">Tanggal Selesai Kuliah</li>
+                                                    <li class="list-group-item active">College End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiKuliah}">2011-09-16</li>
                                                 </ul>
                                             </div>
@@ -95,25 +95,25 @@
 
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai UTS</li>
+                                                    <li class="list-group-item active">Midterm Tests Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiUts}"></li>
-                                                    <li class="list-group-item active">Tanggal Selesai UTS</li>
+                                                    <li class="list-group-item active">Midterm Tests End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiUts}"></li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai UAS</li>
+                                                    <li class="list-group-item active">End Semester Tests Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiUas}"></li>
-                                                    <li class="list-group-item active">Tanggal Selesai UAS</li>
+                                                    <li class="list-group-item active">End Semester Tests End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalSelesaiUas}"></li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-4">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item active">Tanggal Mulai Nilai</li>
+                                                    <li class="list-group-item active">Score Start Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiNilai}">2011-08-15</li>
-                                                    <li class="list-group-item active">Tanggal Selesai Nilai</li>
+                                                    <li class="list-group-item active">Score End Date</li>
                                                     <li class="list-group-item" style="font-weight: bold" th:text="${dtl.tanggalMulaiNilai}">2011-09-16</li>
                                                 </ul>
                                             </div>
