@@ -1,7 +1,8 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -186,7 +187,7 @@
                                 </ul>
                             </li>
 
-                            <li><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>
                                     <li><a th:href="@{/menumahasiswa/krs/list}">K R S</a></li>
