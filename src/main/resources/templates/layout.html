@@ -66,7 +66,7 @@
                         <h3>General</h3>
                         <ul class="nav side-menu">
                             <li><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
-                            <li><a><i class="fa fa-gear"></i> Administrator <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-gear"></i> Administrator <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Equipment<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -89,7 +89,7 @@
 
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Pembianaan<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -114,7 +114,7 @@
                                 </ul>
                             </li>
 
-                            <li><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -144,12 +144,12 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -166,7 +166,7 @@
                                     <li><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-male"></i> Human Resources <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-male"></i> Human Resources <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Master<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
@@ -198,7 +198,7 @@
                             </li>
 
 
-                            <li><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
                                     <li><a href="fixed_footer.html">Fixed Footer</a></li>
