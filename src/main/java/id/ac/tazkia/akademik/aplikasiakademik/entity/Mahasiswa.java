@@ -7,6 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -82,11 +84,19 @@ public class Mahasiswa {
     private String emailPribadi;
     private String statusAktif;
 
+    @ManyToMany
+    @JoinTable(name = "mahasiswa_dosen_wali",
+            joinColumns=@JoinColumn(name = "id_mahasiswa"),
+            inverseJoinColumns = @JoinColumn(name = "id_dosen"))
+    @OrderBy
+    private Set<Dosen> wali = new HashSet<>();
+
+
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_user")
-    private  User idUser;
+    private  User user;
 }

@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>List Krs</title>
+    <title>KRS Mahasiswa</title>
 </head>
 <body>
 
@@ -26,17 +26,21 @@
                                 </div>
                             </div>
                         </form>
+
 <br>
 
             <table class="table table-striped jambo_table bulk_action" width="100%">
-                <tr>
-                    <td>Nama : Fulan</td>
-                    <td>Pemb Akd : Andang Heryahya</td>
-                </tr>
-                <tr>
-                    <td>NIM : 1519001</td>
-                    <td>Studi : Andang Heryahya</td>
-                </tr>
+                <span th:each="dm : ${mahasiswaDetail}">
+                    <tr>
+                        <td >Nama : <span th:text="${dm.nama}"></span></td>
+                        <td >NIM : <span th:text="${dm.nim}"></span></td>
+                    </tr>
+
+                    <tr>
+                        <td>Pemb Akd : <span></span></td>
+                        <td>Studi : <span  th:text="${dm.idProdi.namaProdi}"></span></td>
+                    </tr>
+                </span>
             </table>
 
             <table width="100%">
@@ -47,23 +51,10 @@
                     <td>
 
                     </td>
-                    <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                        <form method="get">
-                            <div class="input-group">
-                                <input type="text" id="keyresult" autocomplete="off"
-                                       class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                                          <button class="btn btn-default" type="submit">Go!</button>
-                                                        </span>
-                            </div>
-                        </form>
-                    </td>
-
-
-
                 </tr>
-
             </table>
+
+            <hr>
 
             <div class="x_content">
                 <div class="table-responsive">
@@ -402,6 +393,8 @@
                         </tr>
                         </tbody>
                     </table>
+
+                    <hr>
 
                     <div class="row">
                         <div class="col-sm-8">
