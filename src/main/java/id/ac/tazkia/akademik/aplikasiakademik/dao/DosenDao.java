@@ -8,8 +8,4 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
-    Page<Dosen> findByStatus (String status, Pageable page);
-
-    Page<Dosen> findByStatusAndNamaContainingIgnoreCaseOrderByNama( String status, String nama,Pageable page);
-
 }

@@ -6,20 +6,22 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
 @Data
-public class Agama {
+@Entity
+public class JenisTinggal {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idAgama;
+    private String id;
 
     @NotNull
-    private String agama;
+    private String jenisTinggal;
 
-    @Enumerated (value = EnumType.STRING)
+    @NotNull
+    private String keterangan;
+
+    @Enumerated(value = EnumType.STRING)
     @NotNull
     private StatusRecord status = StatusRecord.AKTIF ;
-
 }

@@ -60,12 +60,12 @@
                     <td>
                         <a type="button" class="btn btn-success btn-xs"
                            th:if="${data.status.AKTIF} == ${data.status}"
-                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(id = ${data.id})}">
+                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
                         </a>
 
                         <a type="button" class="btn btn-danger btn-xs"
                            th:if="${data.status.NONAKTIF} == ${data.status}"
-                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(id = ${data.id})}">
+                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
                         </a>
                     </td>
                     <td th:text="${data.statusMatrikulasi}">Ekonomi</td>

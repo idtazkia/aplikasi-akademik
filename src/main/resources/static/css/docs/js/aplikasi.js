@@ -10,6 +10,7 @@ $(document).ready(function(){
     var inputHiddenIdKecamatan = $("input[name=idKecamatan]");
     var inputHiddenIdKotakabupaten = $("input[name=idKotaKabupaten]");
     var inputHiddenIdprovinsi = $("input[name=idProvinsi]");
+    var inputKodepos = $("input[name=kodepos]");
 
 
     var resetInput = function(inputField){
@@ -19,47 +20,30 @@ $(document).ready(function(){
 
     // resetInput(inputKabupatenKota);
     inputKelurahan.typeahead({
-        displayText: function(item){ return item.nama  + item.kecamatan.nama;},
+        displayText: function(item){ return item.propinsi  + '  ,  ' + item.kabupaten + '  ,  ' + item.kecamatan + '  ,  ' + item.kelurahan;},
         source: _.debounce(function(cari, process){
             kelurahan = null;
-            $.get(urlKelurahan, {nama: cari}, function(hasil){
+            $.get(urlKelurahan, {search: cari}, function(hasil){
                 process(hasil.content);
             }, "json");
         }, 500),
         afterSelect: function(pilihan) {
-            inputHiddenIdKelurahan.val(pilihan.id);
-            console.log( pilihan.id);
+            inputHiddenIdKelurahan.val(pilihan.kelurahan);
+            inputHiddenIdKecamatan.val(pilihan.kecamatan);
+            inputHiddenIdKotakabupaten.val(pilihan.kabupaten);
+            inputHiddenIdprovinsi.val(pilihan.propinsi);
+            inputKodepos.val(pilihan.kodepos);
+            console.log( pilihan.kelurahan);
+            console.log( pilihan.kecamatan);
+            console.log( pilihan.kabupaten);
+            console.log( pilihan.propinsi);
+            console.log( pilihan.kodepos);
         }
 
     });
 
-    inputProvinsi.typeahead({
-        displayText: function(item){ return item.nama;},
-        source: _.debounce(function(cari, process){
-            provinsi = null;
-            // resetInput(inputKabupatenKota);
-            $.get(urlProvinsi, {nama: cari}, function(hasil){
-                process(hasil);
-            }, "json");
-        }, 500),
-        afterSelect: function(pilihan){
-            provinsi = pilihan;
-            inputKabupatenKota.prop('disabled', false);
-            urlKabupaten = _.replace(templateUrlKabupaten, '{provinsi}', provinsi.id);
-        }
-    });
 
-    inputKabupatenKota.typeahead({
-        displayText: function(item){ return item.nama;},
-        source: _.debounce(function(cari, process){
-            kabupatenKota = null;
-            $.get(urlKabupaten, {nama: cari}, function(hasil){
-                process(hasil);
-            }, "json");
-        }, 500),
-        afterSelect: function(pilihan) {
-            console.log( pilihan.id);}
-    });
+
 
     inputCariKokab.typeahead({
         displayText: function(item){ return item.nama;},
