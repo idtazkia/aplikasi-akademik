@@ -10,51 +10,25 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "tb_kampus")
 public class Kampus {
 
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idKampus;
+    private String id;
 
-    @Column(nullable = false)
+    @NotNull
+    private String kodeKampus;
+
+    @NotNull
     private String namaKampus;
 
-    @Column(nullable = false)
-    private String alamat;
-
-
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "propinsi")
-    private Provinsi propinsi;
-
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "kokab")
-    private KabupatenKota kabupatenKota;
 
     @Column(nullable = false)
     private String keterangan;
 
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
-    @NotNull @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    @ManyToOne
-    @JoinColumn(name = "user_insert")
-    private User userInsert;
-
-    @ManyToOne
-    @JoinColumn(name = "user_edit ")
-    private User userEdit;
 
 }

@@ -14,11 +14,4 @@ public class GedungController {
     public void  formGedung(){
     }
 
-    @GetMapping("/kampus/list")
-    public void  listKampus(){
-    }
-
-    @GetMapping("/kampus/form")
-    public void  formKampus(){
-    }
 }
