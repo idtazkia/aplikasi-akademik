@@ -16,8 +16,7 @@ public class MhswSekolahAsal {
     @Id
     @GeneratedValue(generator = "uuid" )
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idMhswSekolahAsal;
-
+    private String id;
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_mhsw")
@@ -26,10 +25,6 @@ public class MhswSekolahAsal {
     @NotNull
     private String kodepos;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_provinsi")
-    private Provinsi idProvinsi;
 
     @NotNull
     private String negara;
@@ -42,10 +37,6 @@ public class MhswSekolahAsal {
     @NotNull
     private String alamat;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_kokab")
-    private KabupatenKota idKokab;
 
     @NotNull
     private String jurusanSekolah;
