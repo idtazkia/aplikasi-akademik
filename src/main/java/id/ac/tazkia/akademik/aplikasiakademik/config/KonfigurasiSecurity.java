@@ -49,7 +49,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().logout().permitAll()
-                .and().formLogin().defaultSuccessUrl("/dashboard",true)
+                .and().formLogin().defaultSuccessUrl("/dashboard")
                 .loginPage("/login")
                 .permitAll();
 
