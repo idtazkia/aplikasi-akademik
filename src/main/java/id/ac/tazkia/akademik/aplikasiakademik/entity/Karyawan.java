@@ -18,20 +18,23 @@ public class Karyawan {
     @NotNull
     private String nik;
 
+    @Column(name = "nama_karyawan")
     @NotNull
-    private String nama_karyawan;
+    private String namaKaryawan;
 
     @NotNull
     private String gelar;
 
+    @Column(name = "jenis_kelamin")
     @NotNull
     private String jk;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_user")
     private User idUser;
 
-    private String status = "1";
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 
 
 }

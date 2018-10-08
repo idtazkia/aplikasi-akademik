@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Campus</title>
 </head>
 <body>
 
@@ -22,16 +22,22 @@
                         <td>
                             <a th:href="@{/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                         </td>
-                        <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
-                            <form method="get">
-                                <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           placeholder="Search for..." class="form-control" name="search">
-                                    <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit">Go!</button>
-                                    </span>
-                                </div>
-                            </form>
+                        <td align="right">
+                            <div class="title_right">
+                                <form method="get">
+                                    <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" th:value="${search}" name="search" placeholder="Search by Campus Name">
+                                            <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                         </span>
+                                        </div>
+                                        <div>
+                                            Show <span sd:page-size-selector="javascript"></span> entries
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -41,66 +47,56 @@
                         <thead>
                         <tr>
                             <th>NO</th>
-                            <th>Status</th>
                             <th>Campus Code</th>
                             <th>campus name</th>
                             <th>Description</th>
-                            <th>Action</th>
-                            <th width="30px"></th>
-                            <th width="40px"></th>
+                            <th>
+                               Action
+                            </th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr >
+                        <tr th:each="dataKampus,row : ${listKampus}" >
                             <td>1</td>
+                            <td th:text="${dataKampus.kodeKampus}"></td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                            </td>
-                            <td>117</td>
-                            <td>STEI TAZKIA SENTUL</td>
-                            <td>KAMPUS EKONOMI ISLAM</td>
-                            <td>
-                                <a href="form">
-                                    <button type="button" class="btn btn-primary btn-xs">Edit</button>
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${dataKampus.status.AKTIF} == ${dataKampus.status}" th:text="${dataKampus.namaKampus}"  th:href="@{/kampus/form(id = ${dataKampus.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${dataKampus.status.NONAKTIF} == ${dataKampus.status}" th:text="${dataKampus.namaKampus}"  th:href="@{/kampus/form(id = ${dataKampus.id})}">
                                 </a>
                             </td>
+                            <td th:text="${dataKampus.keterangan}">STEI TAZKIA SENTUL</td>
                             <td>
-                                <button type="submit" class="btn btn-danger btn-xs"
-                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                 ' to recover this imaginary file!')">
-                                    <i class="ti-eraser"></i> Delete
-                                </button>
+                                <form method="post" th:action="@{/kampus/delete(kampus=${dataKampus.id})}">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure want to delete this?')">
+                                        <i class="ti-eraser"></i>  Delete
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>
 
                     </table>
-                    <div align="right">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
+
+                </div>
+
+
+                <div class="row">
+                        <nav class="pull-right">
+                            <ul class="pagination" sd:pagination="full">
+                                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
                                 </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
                                 </li>
                             </ul>
                         </nav>
 
-                    </div>
                 </div>
+
             </div>
         </div>
     </div>
