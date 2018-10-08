@@ -2,232 +2,91 @@ package id.ac.tazkia.akademik.aplikasiakademik.dto;
 
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 public class MahasiswaDto {
-    @Id
-    @GeneratedValue(generator = "uuid" )
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String idMhsw;
 
-    @NotNull
+    private String id;
+    private String angkatan;
+    private Prodi idProdi;
+    private Konsentrasi idKonsentrasi;
     private String nim;
-
-    @NotNull
     private String nama;
-
-    @NotNull
-    private String jk;
-
-    @NotNull
-    private String asalNegara;
-
-    @NotNull
-    private String tempatLahir;
-
+    private String statusMatrikulasi;
+    private Program idProgram;
+    private String jenisKelamin;
+    private String idAgama;
+    private String tempat;
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tglLahir;
-
+    private LocalDate tanggalLahir;
+    private String idKelurahan;
+    private String idKecamatan;
+    private String idKotaKabupaten;
+    private String idProvinsi;
+    private String idNegara;
+    private String kewarganegaraan;
+    private String nik;
+    private String nisn;
+    private String namaJalan;
+    private String rt;
+    private String rw;
+    private String namaDusun;
+    private String kodepos;
+    private String jenisTinggal;
+    private String alatTransportasi;
+    private String teleponRumah;
+    private String teleponSeluler;
+    private String emailPribadi;
+    private String emailTazkia;
+    private String statusAktif;
     @NotNull
-    private String agama;
-
-    @NotNull
-    private  String statusSipil;
-
-    @NotNull
-    private  String alamat;
-
-    private  KabupatenKota kokabMahasiswa;
-
-    @NotNull
-    private  String kodeposmhas;
-
-    private  Provinsi provinsiMahasiswa;
-
-    @NotNull
-    private  String negaraMahasiswa;
-
-    @NotNull
-    private  String teleponMahasiswa;
-
-    @NotNull
-    private  String ponselMahasiswa;
-
-    @NotNull
-    private  String emailMahasiswa;
-
-    @NotNull
-    private  String pernahKuliah;
-
-    @NotNull
-    private  String tempatTinggalMahasiswa;
-
-    @NotNull
-    private  String foto;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglInsert;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglEdit;
-
-    private User userInsert;
-
-    private User userEdit;
-
-    private String naMahasiswa = "1";
-
-    @NotNull
-    private String statusMahasiswa ="1";
-
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
     private User idUser;
 
-    private UserPassword userPassword;
-
-    private MhswAkademik mhswAkademik;
-
-    private Fakultas idFakultas;
-
-    private Jenjang idJenjang;
-
-    private Prodi idProdi;
-
-    private Konsentrasi idKonsentrasi;
-
-    @NotNull
-    private String nirm;
-
-    @NotNull
-    private String nisn;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglMasuk;
-
-    @NotNull
-    private String idStatusKeaktifan;
-
-    @NotNull
-    private String tahunAngkatan;
-
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime tglAktif;
-
-    @NotNull
-    private String pendSebelum;
-
-    @NotNull
-    private String password;
-
-    private MhswKost mhswKost;
-
-    @NotNull
-    private String alamatKost;
-
-    private Provinsi idPropinsi;
-
-    private KabupatenKota idKokab;
-
-    @NotNull
-    private String kodeposKost;
-
-    @NotNull
-    private String negaraKost;
-
-    private MhswOrtu idMhswOrtu;
-
-    @NotNull
+    private String ayah;
     private String namaAyah;
+    private String kebutuhanKhusus;
+    private String tempatLahirAyah;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalLahirAyah;
+    private String idJenjangPendidikan;
+    private String idPekerjaan;
+    private String penghasilan;
+    private  Agama agama;
+    private String hidup;
 
-    @NotNull
-    private Agama agamaAyah;
+    private String ibu;
+    private String namaIbuKandung;
+    private String kebutuhanKhususIbu;
+    private String tempatLahirIbu;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalLahirIbu;
+    private String idJenjangPendidikanIbu;
+    private String idPekerjaanIbu;
+    private String penghasilanIbu;
+    private  Agama agamaIbu;
+    private String statusHidupIbu;
 
-    @NotNull
-    private String pendAyah;
-
-    @NotNull
-    private String pekerjaanAyah;
-
-    @NotNull
-    private String stHidupAyah;
-
-    @NotNull
-    private String namaIbu;
-
-    @NotNull
-    private Agama agamaIbu;
-
-    @NotNull
-    private String pendIbu;
-
-    @NotNull
-    private String pekerjaanIbu;
-
-    @NotNull
-    private String stHidupIbu;
-
-    @NotNull
-    private String hasilOrtuPerBulan;
-
-    @NotNull
-    private String alamatOrtu;
-
-    private KabupatenKota kokabOrtu;
-
-    @NotNull
-    private String kodepos;
-
-    private Provinsi provinsiOrtu;
-
-    @NotNull
-    private String negaraOrtu;
-
-    @NotNull
-    private String teleponOrtu;
-
-    @NotNull
-    private String ponselOrtu;
-
-    @NotNull
-    private String emailOrtu;
-
-    private MhswSekolahAsal mhswSekolahAsal;
-
-    private String kodeposSekolah;
-
-    private Provinsi provinsiSekolah;
-
-    @NotNull
-    private String negaraSekolah;
-
-    private Sekolah sekolah;
-
-    private String alamatSekolah;
-
-    private KabupatenKota kokabSekolah;
-
-    @NotNull
-    private String jurusanSekolah;
-
-    @NotNull
-    private String nilai;
-
-    @NotNull
-    private String tahunLulus;
-
-    @NotNull
-    private String ijazah;
-
-
+    private String wali;
+    private String namaWali;
+    private String kebutuhanKhususWali;
+    private String tempatLahirWali;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalLahirWali;
+    private String idJenjangPendidikanWali;
+    private String idPekerjaanWali;
+    private String idPenghasilanWali;
+    private  Agama agamaWali;
 }

@@ -39,7 +39,7 @@ public class DashboardController {
     public void dashboardMahasiswa(Model model, Authentication currentUser){
         String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
         User u=userDao.findByUsername(username);
-        model.addAttribute("datamahasiswa", mahasiswaDao.findByStatusNotInAndIdUser(StatusRecord.HAPUS,u));
+        model.addAttribute("datamahasiswa", mahasiswaDao.findByStatusNotInAndUser(StatusRecord.HAPUS,u));
         model.addAttribute("prodi",prodiDao.findByStatusNotIn(StatusRecord.HAPUS));
         model.addAttribute("jurusan",jurusanDao.findByStatusNotIn(StatusRecord.HAPUS));
         model.addAttribute("fakultas",fakultasDao.findByStatusNotIn(StatusRecord.HAPUS));

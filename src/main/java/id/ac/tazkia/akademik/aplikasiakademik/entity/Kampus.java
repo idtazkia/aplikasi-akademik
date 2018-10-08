@@ -25,15 +25,9 @@ public class Kampus {
     private String alamat;
 
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "propinsi")
-    private Provinsi propinsi;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "kokab")
-    private KabupatenKota kabupatenKota;
+
+
 
     @Column(nullable = false)
     private String keterangan;

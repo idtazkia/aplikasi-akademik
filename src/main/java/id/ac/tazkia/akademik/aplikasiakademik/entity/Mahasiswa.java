@@ -1,5 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,6 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -30,10 +35,8 @@ public class Mahasiswa {
         @JoinColumn(name = "id_konsentrasi")
     private  Konsentrasi idKonsentrasi;
 
-    @NotNull
     private String nim;
 
-    @NotNull
     private String nama;
 
     @NotNull
@@ -74,19 +77,36 @@ public class Mahasiswa {
     private String rt;
     private String rw;
     private String namaDusun;
+
+
     private String kodepos;
     private String jenisTinggal;
     private String alatTransportasi;
     private String teleponRumah;
     private String teleponSeluler;
     private String emailPribadi;
+    private String emailTazkia;
     private String statusAktif;
 
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "id_user")
-    private  User idUser;
+    private  User user;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_ayah")
+    private  Ayah ayah;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_ibu")
+    private  Ibu ibu;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_wali")
+    private  Wali wali ;
 }

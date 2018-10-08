@@ -11,9 +11,7 @@ import java.util.List;
 
 public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,String> {
     Page<Mahasiswa> findByStatusNotInAndNamaContainingIgnoreCaseOrNimContainingIgnoreCaseOrderByNama(StatusRecord statusRecord, String status,String nim, Pageable page);
-
     Page<Mahasiswa> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
-
-    List<Mahasiswa> findByStatusNotInAndIdUser(StatusRecord statusRecord, User idUser);
-
+    List<Mahasiswa> findByStatusNotInAndUser(StatusRecord statusRecord, User user);
+    Mahasiswa findByUser(User user);
 }
