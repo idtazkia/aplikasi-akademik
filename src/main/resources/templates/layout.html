@@ -53,8 +53,8 @@
                     </div>
                     <div class="profile_info">
                         <span>Welcome,</span>
-                            <h2 th:if="${currentUser.get('mahasiswa')}" th:text="${(currentUser.get('mahasiswa').nim) + ' - ' +(currentUser.get('mahasiswa').nama})">Superadmin</h2>
-                        <h2 th:if="${currentUser.get('karyawan')}" th:text="${currentUser.get('karyawan').nama}">Superadmin</h2>
+                            <h2 th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">Superadmin</h2>
+                        <!--<h2 th:if="${currentUser.get('karyawan')}" th:text="${currentUser.get('karyawan').nama}">Superadmin</h2>-->
                     </div>
                 </div>
                 <!-- /menu profile quick info -->
@@ -224,12 +224,12 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="">
                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <img src="production/images/img.jpg" alt="" sec:authentication="name">
+                                <img src="production/images/img.jpg" alt="" th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
                                 <li>
-                                    <a th:href="@{/user/list}">
+                                    <a th:href="@{/user/data    }">
                                         <span>Profile</span>
                                     </a>
                                 </li>
@@ -252,70 +252,7 @@
                             </ul>
                         </li>
 
-                        <li role="presentation" class="dropdown">
-                            <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="badge bg-green">6</span>
-                            </a>
-                            <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                <li>
-                                    <a>
-                                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <div class="text-center">
-                                        <a>
-                                            <strong>See All Alerts</strong>
-                                            <i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
+
                     </ul>
                 </nav>
             </div>
