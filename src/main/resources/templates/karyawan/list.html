@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
 
 <section layout:fragment="main" class="container">
@@ -44,7 +45,7 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Na</th>
+                            <th scope="col">Employee Number</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Degree</th>
                             <th scope="col">Gender</th>
@@ -52,15 +53,13 @@
                             <th scope="col" width="40px"></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>
-                        <span style="color: #4fa9e8; font-size: 16px;">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                        </span>
 
-                            </td>
+                        <tbody>
+
+
+                        <tr class="even pointer" th:each="karyawan,row : ${daftarKaryawan}" >
+                            <td >1</td>
+                            <td th:text="${karyawan.nik}"></td>
                             <td>ono</td>
                             <td>sarjana</td>
                             <td>cowo</td>
@@ -78,6 +77,8 @@
                         </tr>
 
                         </tbody>
+
+
                     </table>
                 </div>
                 <br>
@@ -104,7 +105,8 @@
 
                 </div>
             </div>
-
+        </div>
+    </div>
 </section>
 
 </body>

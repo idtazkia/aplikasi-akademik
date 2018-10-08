@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+
+<body class="nav-md">
+<section layout:fragment="main" class="container">
+
+
+
+        <!-- page content -->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>User Profile</h3>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>[Nama User]'s Profile <small>Detail</small></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+                                    <div class="profile_img">
+                                        <div id="crop-avatar">
+                                            <!-- Current avatar -->
+                                            <img class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
+
+                                        </div>
+                                    </div>
+
+                                    <!--NAMA-->
+                                    <span>
+                                        <h3>Samuel Rajendra</h3>
+                                    </span>
+                                    <span>
+                                        <h4>11404344</h4>
+                                    </span>
+
+                                    <ul class="list-unstyled user_data">
+
+                                        <li>
+                                            <i class="fa fa-book user-profile-icon"></i> Prodi
+                                        </li>
+
+
+                                        <li class="m-top-xs">
+                                            <i class="fa fa-external-link user-profile-icon"></i> Email Tazkia
+                                        </li>
+
+                                    </ul>
+
+                                    <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                        <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                    </a>
+
+                                    <br />
+                                </div>
+
+
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+
+                                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Personal Data</a>
+                                            </li>
+                                            <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Academic</a>
+                                            </li>
+                                            <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Parent</a>
+                                            </li>
+                                        </ul>
+
+                                        <div id="myTabContent" class="tab-content">
+
+
+                                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="x_panel">
+                                                            <div class="x_title">
+                                                                <h2>Student Data </h2>
+
+                                                                <div class="clearfix"></div>
+                                                            </div>
+                                                            <div class="x_content">
+                                                                <br />
+                                                                <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+                                                                    <div class="row">
+
+
+
+                                                                        <div class="row col-sm-offset-1 ">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Name
+                                                                                        &nbsp&nbsp
+                                                                                        <small class="text-danger">
+                                                                                            * Fill in the name according to the diploma
+                                                                                        </small>
+                                                                                    </label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Student Identification Number (NIM)</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Username</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Password</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                        </div>
+
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Religion</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Place of birth</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Date of birth</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>  Status</label><br>
+                                                                                    <label>
+                                                                                        <br>
+
+                                                                                        <span>
+
+                                                                                        </span>
+
+
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-12">
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-group">
+                                                                                        <label class="control-label">Matriculation Status</label><br>
+                                                                                        <br>
+
+                                                                                        <span>
+
+                                                                                        </span>
+
+
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-group">
+                                                                                        <label class="control-label">Gender</label><br>
+                                                                                        <br>
+
+                                                                                        <span>
+
+                                                                                        </span>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                        </div>
+
+                                                                        <hr>
+
+                                                                        <div class="row col-sm-offset-1 ">
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>NIK</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>NISN</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Area</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Street Name</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Country</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Country of origin</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>RT</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>RW</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Hamlet Name</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Postal code</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <hr>
+                                                                        <div class="row col-sm-offset-1 ">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Live Type</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Transportation</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Telephone</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Cellphone</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Personal Email</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Email Tazkia</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="ln_solid"></div>
+
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="x_panel">
+                                                            <div class="x_title">
+                                                                <h2>Academic Data</h2>
+
+                                                                <div class="clearfix"></div>
+                                                            </div>
+                                                            <div class="x_content">
+                                                                <br />
+                                                                <form id="demo-form3" data-parsley-validate class="form-horizontal form-label-left">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <br>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Generation</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Program</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Study Programs</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Concentration</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+
+
+
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div class="ln_solid"></div>
+
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="x_panel">
+                                                            <div class="x_title">
+                                                                <h2>Parents Data</h2>
+
+                                                                <div class="clearfix"></div>
+                                                            </div>
+                                                            <div class="x_content">
+                                                                <br />
+                                                                <form id="demo-form4" data-parsley-validate class="form-horizontal form-label-left">
+
+                                                                    <div class="row">
+
+
+
+                                                                        <div class="row col-sm-offset-1 ">
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Father's Name
+                                                                                        &nbsp&nbsp
+                                                                                    </label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Education Level</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Place of birth</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Date of birth</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Job</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Revenue</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Religion</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Live Type</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Special Needs</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="hidden" name="id" >
+                                                                            <input type="hidden" name="idUser" >
+                                                                            <input type="hidden" name="ayah" >
+                                                                            <input type="hidden" name="ibu" >
+                                                                            <input type="hidden" name="wali" >
+
+                                                                        </div>
+
+
+
+
+
+                                                                        <hr>
+
+
+
+
+
+                                                                        <div class="row col-sm-offset-1 ">
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Mother's Name
+                                                                                        &nbsp&nbsp
+                                                                                    </label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Education Level</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Place of birth</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Date of birth</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Job</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Revenue</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Religion</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Live Status</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Special Needs</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <hr>
+
+                                                                        <div class="row col-sm-offset-1 ">
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Student Guardian
+                                                                                        &nbsp&nbsp
+                                                                                    </label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Education Level</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Place of birth</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Date of birth</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Job</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Revenue</label><br>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Religion</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Special Needs</label>
+                                                                                    <br>
+
+                                                                                    <span>
+
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+
+
+                                                                    </div>
+
+
+                                                                    <div class="ln_solid"></div>
+
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+
+</section>
+</body>
+</html>
