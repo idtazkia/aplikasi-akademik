@@ -49,7 +49,10 @@ public class Mahasiswa {
 
     private  String jenisKelamin;
 
-    private String idAgama;
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_agama")
+    private Agama idAgama;
 
     private  String tempatLahir;
 
@@ -80,7 +83,10 @@ public class Mahasiswa {
 
 
     private String kodepos;
-    private String jenisTinggal;
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "jenis_tinggal")
+    private JenisTinggal jenisTinggal;
     private String alatTransportasi;
     private String teleponRumah;
     private String teleponSeluler;
