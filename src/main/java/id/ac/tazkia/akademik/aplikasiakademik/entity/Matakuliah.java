@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class MataKuliah {
+public class Matakuliah {
 
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -24,7 +24,7 @@ public class MataKuliah {
 
     private String kodeMatakuliah;
 
-    private  String kamaMatakuliah;
+    private  String namaMatakuliah;
 
     private  String namaMatakuliahEnglish;
 

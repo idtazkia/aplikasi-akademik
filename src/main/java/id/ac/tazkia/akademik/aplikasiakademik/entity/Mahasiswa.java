@@ -49,10 +49,10 @@ public class Mahasiswa {
 
     private  String jenisKelamin;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_agama")
-    private Agama idAgama;
+//    @ManyToOne
+//    @NotNull
+//    @JoinColumn(name = "id_agama")
+    private String idAgama;
 
     private  String tempatLahir;
 
@@ -83,10 +83,10 @@ public class Mahasiswa {
 
 
     private String kodepos;
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "jenis_tinggal")
-    private JenisTinggal jenisTinggal;
+//    @ManyToOne
+//    @NotNull
+//    @JoinColumn(name = "jenis_tinggal")
+    private String jenisTinggal;
     private String alatTransportasi;
     private String teleponRumah;
     private String teleponSeluler;
@@ -115,4 +115,9 @@ public class Mahasiswa {
     @JsonBackReference
     @JoinColumn(name = "id_wali")
     private  Wali wali ;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_dosen_wali")
+    private  Dosen dosen ;
 }

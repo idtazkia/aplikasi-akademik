@@ -15,19 +15,13 @@ public class Karyawan {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @NotNull
     private String nik;
 
-    @Column(name = "nama_karyawan")
-    @NotNull
     private String namaKaryawan;
 
-    @NotNull
     private String gelar;
 
-    @Column(name = "jenis_kelamin")
-    @NotNull
-    private String jk;
+    private String jenisKelamin;
 
     @OneToOne
     @JoinColumn(name = "id_user")

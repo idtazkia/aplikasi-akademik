@@ -3,9 +3,11 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,33 +23,53 @@ public class TahunAkademikProdi {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik idTahunAkademik;
 
-    private Date mulaiKrs;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate mulaiKrs;
 
-    private Date selesaiKRS;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate selesaiKrs;
 
-    private Date mulaiKuliah;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate mulaiKuliah;
 
-    private Date selesaiKuliah;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate selesaiKuliah;
 
-    private Date mulaiUts;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate mulaiUts;
 
-    private Date selesaiUts;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate selesaiUts;
 
-    private Date mulaiUas;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate mulaiUas;
 
-    private Date selesaiUas;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate selesaiUas;
 
-    private Date mulaiNilai;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate mulaiNilai;
 
-    private Date selesaiNilai;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate selesaiNilai;
 
     @ManyToOne
     @JoinColumn(name = "id_prodi")
-    private Prodi idProdi;
+    private Prodi prodi;
 
-    @ManyToOne
-    @JoinColumn(name = "id_kurikulum")
-    private Kurikulum idKurikulum;
+//    @ManyToOne
+//    @JoinColumn(name = "id_kurikulum")
+    private String kurikulum;
 
     @NotNull
     @Enumerated(EnumType.STRING)

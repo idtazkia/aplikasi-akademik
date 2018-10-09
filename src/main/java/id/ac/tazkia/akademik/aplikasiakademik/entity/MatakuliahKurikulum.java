@@ -18,13 +18,13 @@ public class MatakuliahKurikulum {
 
     @ManyToOne
     @JoinColumn(name = "id_kurikulum")
-    private Kurikulum idkurikulum;
+    private Kurikulum kurikulum;
 
     @ManyToOne
     @JoinColumn(name = "id_matakuliah")
-    private MataKuliah idMatakuliah;
+    private Matakuliah matakuliah;
 
-    private Integer noUrut;
+    private Integer nomorUrut;
 
     private String wajib;
 
