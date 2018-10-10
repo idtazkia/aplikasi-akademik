@@ -49,10 +49,10 @@ public class Mahasiswa {
 
     private  String jenisKelamin;
 
-//    @ManyToOne
-//    @NotNull
-//    @JoinColumn(name = "id_agama")
-    private String idAgama;
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_agama")
+    private Agama idAgama;
 
     private  String tempatLahir;
 
