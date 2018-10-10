@@ -118,7 +118,7 @@ public class MahasiswaController {
             mahasiswaDto.setRw(mahasiswa.getRw());
             mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
             mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal().getId());
+            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
             mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
             mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
             mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
@@ -187,7 +187,7 @@ public class MahasiswaController {
             mahasiswaDto.setRw(mahasiswa.getRw());
             mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
             mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal().getId());
+            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
             mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
             mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
             mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
