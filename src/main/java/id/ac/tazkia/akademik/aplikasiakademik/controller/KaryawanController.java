@@ -19,16 +19,7 @@ public class KaryawanController {
     private KaryawanDao karyawanDao;
 
     @GetMapping("/karyawan/list")
-    public void daftarKaryawan(Model model, @PageableDefault(size = 10) Pageable page, String search){
-
-        if (StringUtils.hasText(search)) {
-            model.addAttribute("search", search);
-            model.addAttribute("daftarKaryawan", karyawanDao.findByStatusAndNamaKaryawanContainingIgnoreCaseOrderByNamaKaryawan(StatusRecord.AKTIF, search, page));
-        } else {
-            model.addAttribute("daftarkaryawan", karyawanDao.findByStatus(StatusRecord.AKTIF,page));
-
-        }
-
+    public void daftarKaryawan(){
 
     }
 
