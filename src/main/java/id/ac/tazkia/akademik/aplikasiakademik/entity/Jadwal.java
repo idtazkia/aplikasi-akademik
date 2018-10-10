@@ -42,9 +42,9 @@ public class Jadwal {
     @JoinColumn(name = "id_prodi")
     private Prodi idProdi;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_dosen_pengampu")
-    private String idDosenPengampu;
+    @ManyToOne
+    @JoinColumn(name = "id_dosen_pengampu")
+    private Dosen dosen;
 
     private BigDecimal bobotUts;
 
@@ -56,7 +56,7 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_ruangan")
-    private Ruangan idRuangan;
+    private Ruangan ruangan;
 
 //    @ManyToOne
 //    @JoinColumn(name = "id_kelas")

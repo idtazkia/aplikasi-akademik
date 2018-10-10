@@ -69,7 +69,7 @@ public class TahunAkademikProdi {
 
 //    @ManyToOne
 //    @JoinColumn(name = "id_kurikulum")
-    private String kurikulum;
+    private String idKurikulum  ;
 
     @NotNull
     @Enumerated(EnumType.STRING)

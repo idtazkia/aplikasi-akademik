@@ -27,15 +27,25 @@
                             </div>
                         </form>
 <br>
-
+            <div>
+                <Center>
+                    <H2 th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
+                </Center>
+            </div>
             <table class="table table-striped jambo_table bulk_action" width="100%">
                 <tr>
-                    <td>Nama : Fulan</td>
-                    <td>Pemb Akd : Andang Heryahya</td>
+                    <td>Nama : <span th:text="${mahasiswa.nama}"></span></td>
+                    <td th:if="${mahasiswa.dosen != null}">
+                        Pemb Akd : <span th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></span>
+                    </td>
+                    <td th:if="${mahasiswa.dosen == null}">
+                        Pemb Akd : </td>
                 </tr>
                 <tr>
-                    <td>NIM : 1519001</td>
-                    <td>Studi : Andang Heryahya</td>
+                    <td>NIM &nbsp;&nbsp; : <span th:text="${mahasiswa.nim}"></span></td>
+                    <td>Studi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                        <span th:text="${mahasiswa.idProdi.namaProdi + ' , ' + mahasiswa.idProdi.idJurusan.namaJurusan + ' , ' + mahasiswa.idProdi.idJurusan.idFakultas.namaFakultas}"></span>
+                    </td>
                 </tr>
             </table>
 
@@ -90,23 +100,23 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${minggu}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
                                             onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                 ' to recover this imaginary file!')">
+                                                                     ' to recover this imaginary file!')">
                                         <i class="ti-eraser"></i> Delete
                                     </button>
                                 </form>
@@ -138,18 +148,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${senin}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -186,18 +196,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${selasa}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -234,18 +244,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${rabu}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -282,18 +292,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${kamis}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -330,18 +340,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${jumat}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
@@ -378,18 +388,18 @@
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer">
+                        <tr class="even pointer" th:each="data,row : ${sabtu}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td>1</td>
-                            <td>1519001</td>
-                            <td>07:00 - 09:30</td>
-                            <td>Pengantar Akuntansi 1</td>
-                            <td>3</td>
-                            <td >AI-A-15</td>
-                            <td >1.6</td>
-                            <td >Dewi Febriani</td>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
                                 <form method="post">
                                     <button type="submit" class="btn btn-danger btn-xs"
