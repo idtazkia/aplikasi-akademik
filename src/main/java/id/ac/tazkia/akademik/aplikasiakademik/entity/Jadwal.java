@@ -20,7 +20,7 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_matakuliah_kurikulum")
-    private MatakuliahKurikulum idMatakuliahkurikulum;
+    private MatakuliahKurikulum matakuliahKurikulum;
 
     @ManyToOne
     @JoinColumn(name = "id_hari")
@@ -32,15 +32,15 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
-    private TahunAkademik idTahunAkademik;
+    private TahunAkademik tahunAkademik;
 
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik_prodi")
-    private TahunAkademikProdi idTahunAkademikProdi;
+    private TahunAkademikProdi tahunAkademikProdi;
 
     @ManyToOne
     @JoinColumn(name = "id_prodi")
-    private Prodi idProdi;
+    private Prodi prodi;
 
     @ManyToOne
     @JoinColumn(name = "id_dosen_pengampu")

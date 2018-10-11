@@ -21,7 +21,7 @@ public class TahunAkademikProdi {
 
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
-    private TahunAkademik idTahunAkademik;
+    private TahunAkademik tahunAkademik;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

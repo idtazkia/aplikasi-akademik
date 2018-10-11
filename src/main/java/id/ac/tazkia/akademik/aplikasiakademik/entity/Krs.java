@@ -27,7 +27,7 @@ public class Krs {
 
     @ManyToOne
     @JoinColumn(name = "id_prodi")
-    private Prodi idProdi;
+    private Prodi prodi;
 
     @ManyToOne
     @JoinColumn(name = "id_mahasiswa")
