@@ -75,7 +75,7 @@ public class DashboardController {
         List<TahunAkademikProdi> tap=tahunAkademikProdiDao.findByStatusNotInAndTahunAkademikAndProdi(StatusRecord.HAPUS,ta,pi);
 
         Krs k=krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,ta);
-        model.addAttribute("krsdetail",krsDetailDao.findByKrsAndMahasiswa(k,mahasiswa));
+        model.addAttribute("krsdetail",krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF));
 
         //System.out.println("data jadwal : " + krsDetailDao.findByKrsAndMahasiswa(k,mahasiswa));
     }
