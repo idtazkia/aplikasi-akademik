@@ -14,30 +14,58 @@
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="x_panel tile fixed_height_320">
                 <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
                     <h2>Personal Data</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content" th:each="data,row :${datamahasiswa}">
-                    <div class="widget_summary">
-                        <div class="w_left w_25">
-                            <span>Nama : </span>
-                        </div>
-                        <div class="w_left w_75">
-                            <span th:text="${data.nama}">-</span>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="widget_summary">
-                        <div class="w_left w_25">
-                            <span>Prodi : </span>
-                        </div>
-                        <div class="w_left w_75">
-                            <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
+
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="profile_img">
+                                    <div id="crop-avatar">
+                                        <!-- Current avatar -->
+                                        <img th:if="${data.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
+                                        <img th:if="${data.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                    <span>
+                                        <h3 th:text="${data.nama}">Samuel Rajendra</h3>
+                                    </span>
+                                <span>
+                                        <h4 th:text="${data.nim}">11404344</h4>
+                                    </span>
+                            </div>
+                        </div>
 
-                        <div class="clearfix"></div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                    <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
+
+                    <hr>
+                    <div class="form-group" style="text-align: center">
+                        <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
+                    </div>
+
+
                 </div>
             </div>
 
