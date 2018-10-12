@@ -3,6 +3,8 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -60,7 +62,7 @@ public class DashboardController {
     private MataKuliahDao mataKuliahDao;
 
     @GetMapping("/dashboardmahasiswa")
-    public void dashboardMahasiswa(Model model, Authentication currentUser){
+    public void dashboardMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, Authentication currentUser){
         String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
         User u=userDao.findByUsername(username);
         Mahasiswa mahasiswa=mahasiswaDao.findByUser(u);
@@ -75,7 +77,11 @@ public class DashboardController {
         List<TahunAkademikProdi> tap=tahunAkademikProdiDao.findByStatusNotInAndTahunAkademikAndProdi(StatusRecord.HAPUS,ta,pi);
 
         Krs k=krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,ta);
+        List<KrsDetail> krsd=krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF);
+        model.addAttribute("presensimahasiswa",presensiMahasiswaDao.findByKrsDetailIdKrsIdAndStatus(k,StatusRecord.AKTIF,page));
         model.addAttribute("krsdetail",krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF));
+
+
 
         //System.out.println("data jadwal : " + krsDetailDao.findByKrsAndMahasiswa(k,mahasiswa));
     }

@@ -25,44 +25,47 @@
                 </div>
                 <div class="x_content" th:each="data,row :${datamahasiswa}">
 
-                    <div class="row col-sm-offset-1 ">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="profile_img">
-                                    <div id="crop-avatar">
-                                        <!-- Current avatar -->
-                                        <img th:if="${data.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
-                                        <img th:if="${data.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+                    <div class="col-md-12">
 
+                        <div class="row col-sm-offset-1 ">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="profile_img">
+                                        <div id="crop-avatar" style="height: 50%;">
+                                            <!-- Current avatar -->
+                                            <img th:if="${data.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
+                                            <img th:if="${data.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                        <span>
+                                            <h3 th:text="${data.nama}">Samuel Rajendra</h3>
+                                        </span>
                                     <span>
-                                        <h3 th:text="${data.nama}">Samuel Rajendra</h3>
-                                    </span>
-                                <span>
-                                        <h4 th:text="${data.nim}">11404344</h4>
-                                    </span>
+                                            <h4 th:text="${data.nim}">11404344</h4>
+                                        </span>
+                                </div>
                             </div>
+
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                        <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                    </a>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <a class="btn btn-success" th:href="@{/user/form}" target="output">
-                                    <i class="fa fa-edit m-right-xs"></i>Edit Profile
-                                </a>
-                            </div>
+                        <hr>
+                        <div class="form-group" style="text-align: center">
+                            <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
                         </div>
-
-                    </div>
-
-                    <hr>
-                    <div class="form-group" style="text-align: center">
-                        <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
                     </div>
 
 
@@ -83,20 +86,20 @@
                     </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content" th:each="data2,row :${presensimahasiswa}">
+                <div class="x_content" th:each="data,row : ${presensimahasiswa}">
                     <div class="widget_summary">
-                        <div class="w_left w_25">
-                            <span th:text="${data2.nama_Matakuliah}"></span>
+                        <div class="w_left w_30">
+                            <span th:text="${data.krsDetail.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span>
                         </div>
-                        <div class="w_center w_55">
+                        <div class="w_center w_15">
                             <div class="progress">
                                 <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 66%;">
                                     <span class="sr-only">60% Complete</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="w_right w_20">
-                            <span>123k</span>
+                        <div class="w_right w_55">
+                            <span style="font-size: smaller" th:text="${totalRecords}">123</span>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -256,7 +259,7 @@
                 <div class="x_content">
                     <div class="dashboard-widget-content">
 
-                        <ul class="list-unstyled timeline widget">
+                        <ul class="list-unstyled timeline widget" th:each="data,row : ${presensimahasiswa}">>
                             <li>
                                 <div class="block">
                                     <div class="block_content">
@@ -266,7 +269,7 @@
                                         <div class="byline">
                                             <span>13 hours ago</span> by <a>Jane Smith</a>
                                         </div>
-                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        <p class="excerpt" th:text="${data}">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
                                         </p>
                                     </div>
                                 </div>

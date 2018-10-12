@@ -19,15 +19,15 @@ public class PresensiMahasiswa {
 
     @ManyToOne
     @JoinColumn(name = "id_krs_detail")
-    private KrsDetail idKrsDetail;
+    private KrsDetail krsDetail;
 
     @ManyToOne
     @JoinColumn(name = "id_presensi_dosen")
-    private PresensiDosen idPresensiDosen;
+    private PresensiDosen presensiDosen;
 
     @ManyToOne
     @JoinColumn(name = "id_mahasiswa")
-    private Mahasiswa idMahasiswa;
+    private Mahasiswa mahasiswa;
 
     private Date tanggalMasuk;
 
