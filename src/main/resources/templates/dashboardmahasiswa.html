@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Mahasiswa</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard/missattendance.js}"></script>
 </head>
 <body>
 
@@ -74,35 +76,17 @@
 
         </div>
 
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12" onload="getMissAttendance()">
             <div class="x_panel tile fixed_height_320">
                 <div class="x_title">
                     <h2>Miss Attendance</h2>
                     <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a>
-                        </li>
+                       <button class="btn btn-primary" onclick="getMissAttendance()">ada</button>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content" th:each="data,row : ${presensimahasiswa}">
-                    <div class="widget_summary">
-                        <div class="w_left w_30">
-                            <span th:text="${data.krsDetail.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span>
-                        </div>
-                        <div class="w_center w_15">
-                            <div class="progress">
-                                <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 66%;">
-                                    <span class="sr-only">60% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w_right w_55">
-                            <span style="font-size: smaller" th:text="${totalRecords}">123</span>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
+                <div class="x_content" id="getResult1" >
+
 
 
                 </div>
@@ -174,9 +158,9 @@
                         <tbody>
                        <tr>
                            <th>1</th>
-                            <td >Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td >Coming Soon</td>
+                            <td>Coming Soon</td>
+                            <td>Coming Soon</td>
                         </tr>
                         </tbody>
                     </table>
@@ -259,7 +243,7 @@
                 <div class="x_content">
                     <div class="dashboard-widget-content">
 
-                        <ul class="list-unstyled timeline widget" th:each="data,row : ${presensimahasiswa}">>
+                        <ul class="list-unstyled timeline widget">
                             <li>
                                 <div class="block">
                                     <div class="block_content">
@@ -269,7 +253,7 @@
                                         <div class="byline">
                                             <span>13 hours ago</span> by <a>Jane Smith</a>
                                         </div>
-                                        <p class="excerpt" th:text="${data}">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
                                         </p>
                                     </div>
                                 </div>
@@ -324,5 +308,9 @@
     </div>
 </section>
 
+
+
+
 </body>
 </html>
+
