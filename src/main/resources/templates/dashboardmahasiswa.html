@@ -2,18 +2,22 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
-    <meta charset="UTF-8">
     <title>Dashboard Mahasiswa</title>
-
 </head>
 <body>
 
 <section layout:fragment="main" class="content">
     <!-- /top tiles -->
     <div class="row">
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+
+
+        <div class="col-md-4 col-sm-4 col-xs-12 " >
+            <div class="x_panel">
+
+
+
                 <div class="x_title">
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -24,12 +28,15 @@
                     <h2>Personal Data</h2>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content" th:each="data,row :${datamahasiswa}">
 
-                    <div class="col-md-12">
+                <div class="x_content " th:each="data,row :${datamahasiswa}" >
 
-                        <div class="row col-sm-offset-1 ">
-                            <div class="col-md-4">
+
+                    <div class="col-md-12" >
+
+                        <div class="row col-sm-offset-1 " >
+
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="profile_img">
                                         <div id="crop-avatar" style="height: 50%;">
@@ -42,22 +49,19 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                         <span>
-                                            <h3 th:text="${data.nama}">Samuel Rajendra</h3>
+                                            <h4 th:text="${data.nama}" style="font-weight: bold">Samuel Rajendra</h4>
                                         </span>
-                                    <span>
-                                            <h4 th:text="${data.nim}">11404344</h4>
+                                        <span>
+                                            <h5 th:text="${data.nim}">11404344</h5>
                                         </span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <a class="btn btn-success" th:href="@{/user/form}" target="output">
-                                        <i class="fa fa-edit m-right-xs"></i>Edit Profile
-                                    </a>
+                                        <span>
+                                            <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                                <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                            </a>
+                                        </span>
                                 </div>
                             </div>
 
@@ -67,30 +71,40 @@
                         <div class="form-group" style="text-align: center">
                             <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
                         </div>
+
                     </div>
 
 
                 </div>
-            </div>
 
+
+
+
+            </div>
         </div>
 
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel">
                 <div class="x_title">
                     <h2>Miss Attendance</h2>
                     <ul class="nav navbar-right panel_toolbox">
-
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
+
                 <div class="x_content" id="getResult1">
+
                 </div>
+
             </div>
         </div>
 
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel">
                 <div class="x_title">
                     <h2>Your Performance</h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -136,7 +150,7 @@
 
     <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel">
                 <div class="x_title">
                     <h2>Your Must be Pay</h2>
                     <div class="clearfix"></div>
@@ -166,7 +180,7 @@
         </div>
 
         <div class="col-md-8 col-sm-8 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel">
                 <div class="x_title">
                     <h2>Schedule</h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -236,6 +250,7 @@
                     </ul>
                     <div class="clearfix"></div>
                 </div>
+
                 <div class="x_content">
                     <div class="dashboard-widget-content">
 
