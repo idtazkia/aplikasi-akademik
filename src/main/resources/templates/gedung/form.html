@@ -19,42 +19,45 @@
 
             <div class="x_content">
 
-                <form method="post" th:action="@{/gedung/form}">
+                <form method="post" th:action="@{/gedung/form}" th:object="${gedung}">
 
                     <div class="form-group">
                         <label>Select Institution</label>
-                        <select style="width:100%!important;" name="idKampus"
+                        <select style="width:100%!important;" name="kampus" th:field="*{kampus}"
                                 class="form-control js-example-placeholder-single">
                             <option value=""></option>
-                            <option value="">STEI TAZKIA</option>
+                            <option th:each="data : ${kampus}"
+                                    th:text="${data.namaKampus}"
+                                    th:value="${data.id}">STEI TAZKIA</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label>Building Code</label>
                         <input type="text" name="kodeGedung" class="form-control"
-                               placeholder="Building Code">
+                               placeholder="Building Code" th:field="*{kodeGedung}">
                     </div>
 
                     <div class="form-group">
                         <label>Building Name</label>
-                        <input type="text" name="namagedung" class="form-control"
-                               placeholder="Building Code">
+                        <input type="text" name="namaGedung" class="form-control"
+                               placeholder="Building Code" th:field="*{namaGedung}">
                     </div>
 
                     <div class="form-group">
                         <label>Description</label>
-                        <input type="text" name="keterangan" class="form-control" placeholder="Description">
+                        <input type="text" name="keterangan" th:field="*{keterangan}"
+                               class="form-control" placeholder="Description">
                     </div>
 
                     <div class="form-group">
                         <label>Status</label><br>
                         <label>
-                            <input name="status" type="checkbox" value="AKTIF" class="js-switch" />
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
                         </label >
                     </div>
+                    <input type="hidden" name="id" th:field="*{id}">
 
-                    <input type="hidden" name="id">
                     <div class="form-group">
                         <input class="btn btn-primary" type="submit" value="Save">
                         <a th:href="@{/kampus/list}" class="btn btn-primary" role="button">
