@@ -228,8 +228,8 @@
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                <li>
-                                    <a th:href="@{/user/data    }">
+                                <li sec:authorize="hasAuthority('VIEW_MAHASISWA')">
+                                    <a th:href="@{/user/data}">
                                         <span>Profile</span>
                                     </a>
                                 </li>
