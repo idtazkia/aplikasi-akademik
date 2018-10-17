@@ -25,14 +25,21 @@
                         <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
                             <form method="get">
                                 <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           placeholder="Search for..." class="form-control" name="search">
+                                    <input type="text" autocomplete="off" name="search"
+                                           th:value="${search}"
+                                           placeholder="Search by name" class="form-control">
                                     <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit">Go!</button>
+                                                <button class="btn btn-default"
+                                                        type="submit">Search</button>
                                     </span>
                                 </div>
                             </form>
                         </td>
+                        <tr>
+                    <td>
+                        Show <span sd:page-size-selector="javascript"></span> entries
+                    </td>
+                </tr>
                     </tr>
                 </table>
 
@@ -41,31 +48,31 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Status</th>
-                            <th>Building Name</th>
                             <th>Building Code</th>
+                            <th>Building Name</th>
                             <th>Description</th>
                             <th width="30px"></th>
-                            <th width="40px"></th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr >
-                            <td>1</td>
+                        <tr th:each="data,row : ${list}">
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
+                            <td th:text="${data.kodeGedung}">PATRICK STAR</td>
                             <td>
-                                <span style="color: #4fa9e8; font-size: 16px;">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                            </td>
-                            <td>PATRICK STAR</td>
-                            <td>17</td>
-                            <td>BANGUN DAN SEMANGAT</td>
-                            <td>
-                                <a href="form">
-                                    <button type="button" class="btn btn-primary btn-xs">Edit</button>
+                                <a type="button" class="btn btn-success btn-xs" href="form"
+                                   th:if="${data.status.AKTIF} == ${data.status}"
+                                   th:text="${data.namaGedung}"
+                                   th:href="@{/gedung/form(id = ${data.id})}">
+                                </a>
+
+                                <a type="button" class="btn btn-danger btn-xs" href="form"
+                                   th:if="${data.status.NONAKTIF} == ${data.status}"
+                                   th:text="${data.namaGedung}"
+                                   th:href="@{/gedung/form(id = ${data.id})}">
                                 </a>
                             </td>
+                            <td th:text="${data.keterangan}">BANGUN DAN SEMANGAT</td>
                             <td>
                                 <button type="submit" class="btn btn-danger btn-xs"
                                         onclick="return confirm('Are you sure? Once deleted, you will not be able' +
@@ -77,27 +84,22 @@
                         </tbody>
 
                     </table>
-                    <div align="right">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-left">
 
+
+
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
