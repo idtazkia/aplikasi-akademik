@@ -13,7 +13,7 @@
     <!-- /top tiles -->
     <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -29,7 +29,7 @@
                     <div class="col-md-12">
 
                         <div class="row col-sm-offset-1 ">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="profile_img">
                                         <div id="crop-avatar" style="height: 50%;">
@@ -42,22 +42,17 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                         <span>
                                             <h3 th:text="${data.nama}">Samuel Rajendra</h3>
                                         </span>
-                                    <span>
+                                        <span>
                                             <h4 th:text="${data.nim}">11404344</h4>
                                         </span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <a class="btn btn-success" th:href="@{/user/form}" target="output">
-                                        <i class="fa fa-edit m-right-xs"></i>Edit Profile
-                                    </a>
+                                        <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                            <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                        </a>
                                 </div>
                             </div>
 
@@ -76,7 +71,7 @@
         </div>
 
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <h2>Miss Attendance</h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -90,7 +85,7 @@
         </div>
 
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <h2>Your Performance</h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -136,7 +131,7 @@
 
     <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <h2>Your Must be Pay</h2>
                     <div class="clearfix"></div>
@@ -166,7 +161,7 @@
         </div>
 
         <div class="col-md-8 col-sm-8 col-xs-12">
-            <div class="x_panel tile fixed_height_320">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <h2>Schedule</h2>
                     <ul class="nav navbar-right panel_toolbox">
@@ -216,7 +211,7 @@
 
     <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="x_panel">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
                 <div class="x_title">
                     <h2>Anouncement <small>Sessions</small></h2>
                     <ul class="nav navbar-right panel_toolbox">
