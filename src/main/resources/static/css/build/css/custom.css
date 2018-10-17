@@ -1059,6 +1059,8 @@ h2 {
 .x_panel {
     position: relative;
     width: 100%;
+    height:350px;
+    overflow-x: auto;
     margin-bottom: 10px;
     padding: 10px 17px;
     display: inline-block;
