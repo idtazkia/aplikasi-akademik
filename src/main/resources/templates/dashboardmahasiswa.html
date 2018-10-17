@@ -5,8 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Mahasiswa</title>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/dashboard/missattendance.js}"></script>
+
 </head>
 <body>
 
@@ -76,19 +75,16 @@
 
         </div>
 
-        <div class="col-md-4 col-sm-4 col-xs-12" onload="getMissAttendance()">
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="x_panel tile fixed_height_320">
                 <div class="x_title">
                     <h2>Miss Attendance</h2>
                     <ul class="nav navbar-right panel_toolbox">
-                       <button class="btn btn-primary" onclick="getMissAttendance()">ada</button>
+
                     </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content" id="getResult1" >
-
-
-
+                <div class="x_content" id="getResult1">
                 </div>
             </div>
         </div>
@@ -309,7 +305,17 @@
 </section>
 
 
+<th:block layout:fragment="script">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard/missattendance.js}"></script>
 
+    <script>
+        window.addEventListener('load', function () {
+            console.log("Page selesai load");
+            getMissAttendance();
+        }, false);
+    </script>
+</th:block>
 
 </body>
 </html>
