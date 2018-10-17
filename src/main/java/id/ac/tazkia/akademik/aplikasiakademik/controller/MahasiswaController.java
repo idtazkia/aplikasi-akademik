@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -102,7 +103,7 @@ public class MahasiswaController {
             mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
             mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
             mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setIdAgama(mahasiswa.getIdAgama().getIdAgama());
+            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
             mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
             mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
             mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
@@ -171,7 +172,7 @@ public class MahasiswaController {
             mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
             mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
             mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setIdAgama(mahasiswa.getIdAgama().getIdAgama());
+            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
             mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
             mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
             mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
@@ -219,165 +220,20 @@ public class MahasiswaController {
             mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
-
-//
-//                if (mahasiswa.getIbu()!= null && mahasiswa.getAyah() == null && mahasiswa.getWali() == null){
-//                    mahasiswaDto.setIbu(ibu.getId());
-//                    mahasiswaDto.setNamaIbuKandung(ibu.getNamaIbuKandung());
-//                    mahasiswaDto.setKebutuhanKhususIbu(ibu.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirIbu(ibu.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirIbu(ibu.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanIbu(ibu.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanIbu(ibu.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilanIbu(ibu.getPenghasilan());
-//                    mahasiswaDto.setAgamaIbu(ibu.getAgama());
-//                    mahasiswaDto.setStatusHidupIbu(ibu.getStatusHidup());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
-//
-//                if (mahasiswa.getIbu()!= null && ayah == null && wali != null){
-//                    mahasiswaDto.setIbu(ibu.getId());
-//                    mahasiswaDto.setNamaIbuKandung(ibu.getNamaIbuKandung());
-//                    mahasiswaDto.setKebutuhanKhususIbu(ibu.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirIbu(ibu.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirIbu(ibu.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanIbu(ibu.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanIbu(ibu.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilanIbu(ibu.getPenghasilan());
-//                    mahasiswaDto.setAgamaIbu(ibu.getAgama());
-//                    mahasiswaDto.setStatusHidupIbu(ibu.getStatusHidup());
-//
-//                    mahasiswaDto.setWali(wali.getId());
-//                    mahasiswaDto.setNamaWali(wali.getNamaWali());
-//                    mahasiswaDto.setKebutuhanKhususWali(wali.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirWali(wali.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirWali(wali.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanWali(wali.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanWali(wali.getIdPekerjaan());
-//                    mahasiswaDto.setIdPenghasilanWali(wali.getIdPenghasilan());
-//                    mahasiswaDto.setAgamaWali(wali.getAgama());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
-//
-//                if (ibu== null && ayah != null && wali != null){
-//                    mahasiswaDto.setWali(wali.getId());
-//                    mahasiswaDto.setNamaWali(wali.getNamaWali());
-//                    mahasiswaDto.setKebutuhanKhususWali(wali.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirWali(wali.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirWali(wali.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanWali(wali.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanWali(wali.getIdPekerjaan());
-//                    mahasiswaDto.setIdPenghasilanWali(wali.getIdPenghasilan());
-//                    mahasiswaDto.setAgamaWali(wali.getAgama());
-//
-//                    mahasiswaDto.setAyah(ayah.getId());
-//                    mahasiswaDto.setNamaAyah(ayah.getNamaAyah());
-//                    mahasiswaDto.setKebutuhanKhusus(ayah.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirAyah(ayah.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirAyah(ayah.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikan(ayah.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaan(ayah.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilan(ayah.getPenghasilan());
-//                    mahasiswaDto.setAgama(ayah.getAgama());
-//                    mahasiswaDto.setHidup(ayah.getStatusHidup());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//
-//                }
-//
-//                if (ibu== null && ayah == null && wali != null){
-//                    mahasiswaDto.setWali(wali.getId());
-//                    mahasiswaDto.setNamaWali(wali.getNamaWali());
-//                    mahasiswaDto.setKebutuhanKhususWali(wali.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirWali(wali.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirWali(wali.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanWali(wali.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanWali(wali.getIdPekerjaan());
-//                    mahasiswaDto.setIdPenghasilanWali(wali.getIdPenghasilan());
-//                    mahasiswaDto.setAgamaWali(wali.getAgama());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
-//
-//                if (ibu== null && ayah != null && wali == null){
-//                    mahasiswaDto.setAyah(ayah.getId());
-//                    mahasiswaDto.setNamaAyah(ayah.getNamaAyah());
-//                    mahasiswaDto.setKebutuhanKhusus(ayah.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirAyah(ayah.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirAyah(ayah.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikan(ayah.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaan(ayah.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilan(ayah.getPenghasilan());
-//                    mahasiswaDto.setAgama(ayah.getAgama());
-//                    mahasiswaDto.setHidup(ayah.getStatusHidup());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
-//
-//                if (ibu!= null && ayah != null && wali == null){
-//                    mahasiswaDto.setIbu(ibu.getId());
-//                    mahasiswaDto.setNamaIbuKandung(ibu.getNamaIbuKandung());
-//                    mahasiswaDto.setKebutuhanKhususIbu(ibu.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirIbu(ibu.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirIbu(ibu.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanIbu(ibu.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanIbu(ibu.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilanIbu(ibu.getPenghasilan());
-//                    mahasiswaDto.setAgamaIbu(ibu.getAgama());
-//                    mahasiswaDto.setStatusHidupIbu(ibu.getStatusHidup());
-//
-//                    mahasiswaDto.setAyah(ayah.getId());
-//                    mahasiswaDto.setNamaAyah(ayah.getNamaAyah());
-//                    mahasiswaDto.setKebutuhanKhusus(ayah.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirAyah(ayah.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirAyah(ayah.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikan(ayah.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaan(ayah.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilan(ayah.getPenghasilan());
-//                    mahasiswaDto.setAgama(ayah.getAgama());
-//                    mahasiswaDto.setHidup(ayah.getStatusHidup());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
-//                if (ibu != null && ayah != null && wali != null) {
-//                    mahasiswaDto.setIbu(ibu.getId());
-//                    mahasiswaDto.setNamaIbuKandung(ibu.getNamaIbuKandung());
-//                    mahasiswaDto.setKebutuhanKhususIbu(ibu.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirIbu(ibu.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirIbu(ibu.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanIbu(ibu.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanIbu(ibu.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilanIbu(ibu.getPenghasilan());
-//                    mahasiswaDto.setAgamaIbu(ibu.getAgama());
-//                    mahasiswaDto.setStatusHidupIbu(ibu.getStatusHidup());
-//
-//                    mahasiswaDto.setAyah(ayah.getId());
-//                    mahasiswaDto.setNamaAyah(ayah.getNamaAyah());
-//                    mahasiswaDto.setKebutuhanKhusus(ayah.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirAyah(ayah.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirAyah(ayah.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikan(ayah.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaan(ayah.getIdPekerjaan());
-//                    mahasiswaDto.setPenghasilan(ayah.getPenghasilan());
-//                    mahasiswaDto.setAgama(ayah.getAgama());
-//                    mahasiswaDto.setHidup(ayah.getStatusHidup());
-//
-//                    mahasiswaDto.setWali(wali.getId());
-//                    mahasiswaDto.setNamaWali(wali.getNamaWali());
-//                    mahasiswaDto.setKebutuhanKhususWali(wali.getKebutuhanKhusus());
-//                    mahasiswaDto.setTempatLahirWali(wali.getTempatLahir());
-//                    mahasiswaDto.setTanggalLahirWali(wali.getTanggalLahir());
-//                    mahasiswaDto.setIdJenjangPendidikanWali(wali.getIdJenjangPendidikan());
-//                    mahasiswaDto.setIdPekerjaanWali(wali.getIdPekerjaan());
-//                    mahasiswaDto.setIdPenghasilanWali(wali.getIdPenghasilan());
-//                    mahasiswaDto.setAgamaWali(wali.getAgama());
-//                    model.addAttribute("mahasiswa", mahasiswaDto);
-//                }
                 model.addAttribute("mahasiswa", mahasiswaDto);
 
     }
 
     @PostMapping("/mahasiswa/form")
-    public String prosesForm(@RequestParam Mahasiswa mahasiswa,@ModelAttribute @Valid MahasiswaDto mahasiswaDto){
+    public String prosesForm(@RequestParam Mahasiswa mahasiswa, @ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult errors){
+
+        if(errors.hasErrors()){
+            return "form";
+        }
 
         BeanUtils.copyProperties(mahasiswaDto,mahasiswa);
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
+        mahasiswa.setIdAgama(mahasiswaDto.getReligion());
         mahasiswaDao.save(mahasiswa);
 
         if (mahasiswa.getUser() != null) {
@@ -415,9 +271,23 @@ public class MahasiswaController {
         }
         mahasiswaService.prosesAyah(mahasiswaDto,mahasiswa);
         mahasiswaService.prosesIbu(mahasiswaDto,mahasiswa);
-        if (mahasiswaDto.getNamaAyah() != null) {
+        if (mahasiswaDto.getNamaWali() != null) {
             mahasiswaService.prosesWali(mahasiswaDto, mahasiswa);
         }
+        return "redirect:list";
+    }
+
+    @PostMapping("/mahasiswa/aktif")
+    public String aktifkanAkun(Mahasiswa mahasiswa){
+        mahasiswa.setStatus(StatusRecord.AKTIF);
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list";
+    }
+
+    @PostMapping("/mahasiswa/nonaktif")
+    public String nonaktifkanAkun(Mahasiswa mahasiswa){
+        mahasiswa.setStatus(StatusRecord.NONAKTIF);
+        mahasiswaDao.save(mahasiswa);
         return "redirect:list";
     }
 

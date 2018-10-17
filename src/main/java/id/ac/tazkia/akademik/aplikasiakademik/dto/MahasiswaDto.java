@@ -22,7 +22,7 @@ public class MahasiswaDto {
     private String statusMatrikulasi;
     private Program idProgram;
     private String jenisKelamin;
-    private String idAgama;
+    private Agama religion;
     private String tempat;
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -51,6 +51,8 @@ public class MahasiswaDto {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
     private User idUser;
+    private UserPassword userPassword;
+    private String password;
 
     private String ayah;
     private String namaAyah;

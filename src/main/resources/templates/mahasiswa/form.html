@@ -42,14 +42,6 @@
                                           </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#step-4">
-                            <span class="step_no">4</span>
-                            <span class="step_descr">
-                                              The origin of the school<br />
-                                          </span>
-                        </a>
-                    </li>
                 </ul>
 
 
@@ -93,8 +85,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Religion</label>
-                                            <select name="idAgama" style="width: 100%!important;"
-                                                    th:field="*{idAgama}"
+                                            <select name="religion" style="width: 100%!important;"
+                                                    th:field="*{religion}" required
                                                     class="form-control js-select2">
                                                 <option value=""></option>
                                                 <option th:each="data : ${agama}"
@@ -492,7 +484,7 @@
                                         <div class="form-group">
                                             <label>Religion</label>
                                             <select name="agama" th:field="*{agama}"
-                                                    class="form-control js-select2">
+                                                    class="form-control js-select2" required>
                                                 <option value=""></option>
                                                 <option th:each="data : ${agama}"
                                                         th:value="${data.idAgama}"
@@ -603,7 +595,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Religion</label>
-                                            <select name="agamaIbu" style="width: 100%!important;"
+                                            <select name="agamaIbu" required style="width: 100%!important;"
                                                     class="form-control js-select2"
                                                     th:field="*{agamaIbu}">
                                                 <option value=""></option>
@@ -642,92 +634,92 @@
 
                                 <hr>
 
-                                <div class="row col-sm-offset-1 ">
+                                <!--<div class="row col-sm-offset-1 ">-->
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Student Guardian
-                                                &nbsp&nbsp
-                                            </label>
-                                            <input type="text" th:field="*{namaWali}" name="namaWali" class="form-control"
-                                                   placeholder="Student Guardian">
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Student Guardian-->
+                                                <!--&nbsp&nbsp-->
+                                            <!--</label>-->
+                                            <!--<input type="text" th:field="*{namaWali}" name="namaWali" class="form-control"-->
+                                                   <!--placeholder="Student Guardian">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Education Level</label>
-                                            <input type="text" name="idJenjangPendidikanWali"
-                                                   class="form-control"
-                                                   th:field="*{idJenjangPendidikanWali}"
-                                                   placeholder="Education Level">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Place of birth</label><br>
-                                            <input type="text" name="tempatLahirWali"
-                                                   class="form-control" th:field="*{tempatLahirWali}"
-                                                   placeholder="Place of birth">
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Education Level</label>-->
+                                            <!--<input type="text" name="idJenjangPendidikanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--th:field="*{idJenjangPendidikanWali}"-->
+                                                   <!--placeholder="Education Level">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Date of birth</label>
-                                            <input type="date" name="tempatLahirWali"
-                                                   class="form-control" th:field="*{tanggalLahirWali}">
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Place of birth</label><br>-->
+                                            <!--<input type="text" name="tempatLahirWali"-->
+                                                   <!--class="form-control" th:field="*{tempatLahirWali}"-->
+                                                   <!--placeholder="Place of birth">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Job</label><br>
-                                            <input type="text" name="idPekerjaanWali"
-                                                   class="form-control"
-                                                   placeholder="Job" th:field="*{idPekerjaanWali}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Revenue</label><br>
-                                            <input type="text" name="idPenghasilanWali"
-                                                   class="form-control"
-                                                   placeholder="Revenue" th:field="*{idPenghasilanWali}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Religion</label>
-                                            <select name="agamaWali" th:field="*{agamaWali}"
-                                                    class="form-control js-select2">
-                                                <option value=""></option>
-                                                <option th:each="data : ${agama}"
-                                                        th:value="${data.idAgama}"
-                                                        th:text="${data.agama}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Date of birth</label>-->
+                                            <!--<input type="date" name="tempatLahirWali"-->
+                                                   <!--class="form-control" th:field="*{tanggalLahirWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
 
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Job</label><br>-->
+                                            <!--<input type="text" name="idPekerjaanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--placeholder="Job" th:field="*{idPekerjaanWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Special Needs</label>
-                                            <input type="text" name="kebutuhanKhususWali"
-                                                   class="form-control" th:field="*{kebutuhanKhususWali}"
-                                                   placeholder="Special Needs">
-                                        </div>
-                                    </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Revenue</label><br>-->
+                                            <!--<input type="text" name="idPenghasilanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--placeholder="Revenue" th:field="*{idPenghasilanWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
-                                </div>
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                             <!--<label>Religion</label>-->
+                                            <!--<select name="agamaWali" th:field="*{agamaWali}"-->
+                                                    <!--class="form-control js-select2">-->
+                                                <!--<option value=""></option>-->
+                                                <!--<option th:each="data : ${agama}"-->
+                                                        <!--th:value="${data.idAgama}"-->
+                                                        <!--th:text="${data.agama}">-->
+                                                <!--</option>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Special Needs</label>-->
+                                            <!--<input type="text" name="kebutuhanKhususWali"-->
+                                                   <!--class="form-control" th:field="*{kebutuhanKhususWali}"-->
+                                                   <!--placeholder="Special Needs">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                <!--</div>-->
 
 
 
@@ -738,9 +730,6 @@
 
                 </div>
 
-
-                <div id="step-4">
-                </div>
 
             </div>
 

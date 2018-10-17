@@ -19,9 +19,6 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <table width="100%">
             <tr>
-                <td>
-                    <a th:href="@{/mahasiswa/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-                </td>
                 <div class="title_right">
                     <form method="get">
                     <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
@@ -73,12 +70,29 @@
                     <td th:text="${data.idKonsentrasi.namaKonsentrasi}">Good Job</td>
                     <td th:text="${data.idProgram.namaProgram}">S2</td>
                     <td align="center">
-                        <form method="post">
+
+                        <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.id})}" method="post">
                             <button type="submit" class="btn btn-danger btn-xs"
-                                    onclick="return confirm('Are you sure want to delete this?')">
-                                <i class="ti-eraser"></i>  Delete
+                                    th:if="${data.status.AKTIF} == ${data.status}">
+                                Disable Student
                             </button>
                         </form>
+
+                        <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.id})}" method="post">
+                            <button type="submit" class="btn btn-success         btn-xs"
+                                    th:if="${data.status.NONAKTIF} == ${data.status}">
+                                Enable Student
+                            </button>
+                        </form>
+
+                        <!--<form method="post">-->
+                            <!--<button type="submit" th:if="${data.status.AKTIF} == ${data.status}"-->
+                                    <!--class="btn btn-danger btn-xs"-->
+                                    <!--th:action="@{/mahasiswa/aktif(mahasiswa = ${data.id})}"-->
+                                    <!--onclick="return confirm('Are you sure want to delete this?')">-->
+                                <!--<i class="ti-eraser"></i>  Enable Student-->
+                            <!--</button>-->
+                        <!--</form>-->
                     </td>
                 </tr>
                 </tbody>
