@@ -12,4 +12,5 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
     Page<TahunAkademik> findByStatusNotInOrderByKodeTahunAkademikDesc(StatusRecord status, Pageable page);
     TahunAkademik findByStatus(StatusRecord status);
     Page<TahunAkademik> findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(StatusRecord status,String search, Pageable page);
+    Iterable<TahunAkademik> findByStatusNotIn(StatusRecord statusRecord);
 }

@@ -29,7 +29,7 @@
 <br>
             <div>
                 <Center>
-                    <H2 th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
+                    <H2 th:if="${krs != null}" th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
                 </Center>
             </div>
             <table class="table table-striped jambo_table bulk_action" width="100%">
@@ -49,38 +49,34 @@
                 </tr>
             </table>
 
-            <table width="100%">
-                <tr>
-                    <td>
-                        <a th:href="@{/menumahasiswa/krs/form}" class="btn btn-primary">Add</a>
-                    </td>
-                    <td>
+            <!--<table width="100%">-->
+                <!--<tr>-->
+                    <!--<td>-->
+                        <!--<a th:href="@{/menumahasiswa/krs/form}" class="btn btn-primary">Add</a>-->
+                    <!--</td>-->
+                    <!--<td>-->
 
-                    </td>
-                    <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                        <form method="get">
-                            <div class="input-group">
-                                <input type="text" id="keyresult" autocomplete="off"
-                                       class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                                          <button class="btn btn-default" type="submit">Go!</button>
-                                                        </span>
-                            </div>
-                        </form>
-                    </td>
+                    <!--</td>-->
+                    <!--<td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">-->
+                        <!--<form method="get">-->
+                            <!--<div class="input-group">-->
+                                <!--<input type="text" id="keyresult" autocomplete="off"-->
+                                       <!--class="form-control" placeholder="Search for...">-->
+                                <!--<span class="input-group-btn">-->
+                                                          <!--<button class="btn btn-default" type="submit">Go!</button>-->
+                                                        <!--</span>-->
+                            <!--</div>-->
+                        <!--</form>-->
+                    <!--</td>-->
 
 
 
-                </tr>
+                <!--</tr>-->
 
-            </table>
+            <!--</table>-->
 
             <div class="x_content">
                 <div class="table-responsive">
-                    <div class="x_title">
-                        <h2>Sunday</h2>
-                        <div class="clearfix"></div>
-                    </div>
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
                         <tr class="headings">
@@ -89,329 +85,321 @@
                             </th>
                             <th class="column-title">#</th>
                             <th class="column-title">Code</th>
+                            <th class="column-title">Day</th>
                             <th class="column-title">Time</th>
                             <th class="column-title">Subject</th>
                             <th class="column-title">SKS</th>
                             <th class="column-title">Class</th>
                             <th class="column-title">Room</th>
                             <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer" th:each="data,row : ${minggu}">
+                        <tr class="even pointer" th:each="data,row : ${data}">
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
                             <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
+                            <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
+                            <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
                             <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
                             <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
                             <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
                             <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
                             <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
                         </tr>
                         </tbody>
                     </table>
 
-                    <div class="x_title">
-                        <h2>Monday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Monday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${senin}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${senin}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
-                    <div class="x_title">
-                        <h2>Tuesday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Tuesday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${selasa}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${selasa}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
-                    <div class="x_title">
-                        <h2>Wednesday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Wednesday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${rabu}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${rabu}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
-                    <div class="x_title">
-                        <h2>Thursday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Thursday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${kamis}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${kamis}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
-                    <div class="x_title">
-                        <h2>Friday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Friday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${jumat}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${jumat}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
-                    <div class="x_title">
-                        <h2>Saturday</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                        <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
-                            <th class="column-title">Time</th>
-                            <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Room</th>
-                            <th class="column-title">Lecture</th>
-                            <th class="column-title" colspan="2">Action</th>
-                        </tr>
-                        </thead>
+                    <!--<div class="x_title">-->
+                        <!--<h2>Saturday</h2>-->
+                        <!--<div class="clearfix"></div>-->
+                    <!--</div>-->
+                    <!--<table class="table table-striped jambo_table bulk_action">-->
+                        <!--<thead>-->
+                        <!--<tr class="headings">-->
+                            <!--<th>-->
+                                <!--<input type="checkbox" id="check-all" class="flat">-->
+                            <!--</th>-->
+                            <!--<th class="column-title">#</th>-->
+                            <!--<th class="column-title">Code</th>-->
+                            <!--<th class="column-title">Time</th>-->
+                            <!--<th class="column-title">Subject</th>-->
+                            <!--<th class="column-title">SKS</th>-->
+                            <!--<th class="column-title">Class</th>-->
+                            <!--<th class="column-title">Room</th>-->
+                            <!--<th class="column-title">Lecture</th>-->
+                            <!--<th class="column-title" colspan="2">Action</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
 
-                        <tbody>
-                        <tr class="even pointer" th:each="data,row : ${sabtu}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>
-                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
-                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
-                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas}">AI-A-15</td>
-                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
-                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
-                            <td>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-danger btn-xs"
-                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">
-                                        <i class="ti-eraser"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <!--<tbody>-->
+                        <!--<tr class="even pointer" th:each="data,row : ${sabtu}">-->
+                            <!--<td class="a-center ">-->
+                                <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td th:text="${(row.index + 1)}">1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.kodeMatakuliah}">1519001</td>-->
+                            <!--<td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>-->
+                            <!--<td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>-->
+                            <!--<td th:text="${data.jadwal.idKelas}">AI-A-15</td>-->
+                            <!--<td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>-->
+                            <!--<td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>-->
+                            <!--<td>-->
+                                <!--<form method="post">-->
+                                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                                            <!--onclick="return confirm('Are you sure? Once deleted, you will not be able' +-->
+                                                                     <!--' to recover this imaginary file!')">-->
+                                        <!--<i class="ti-eraser"></i> Delete-->
+                                    <!--</button>-->
+                                <!--</form>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
 
                     <div class="row">
                         <div class="col-sm-8">
