@@ -37,15 +37,15 @@ public class KrsDetail {
     private MatakuliahKurikulum matakuliahKurikulum;
 
     @NotNull
-    private String nilaiPresensi;
+    private BigDecimal nilaiPresensi;
 
-    @NotNull @Min(0)
+    @NotNull
     private BigDecimal nilaiUts;
 
-    @NotNull @Min(0)
+    @NotNull
     private BigDecimal nilaiUas;
 
-    @NotNull @Min(0)
+    @NotNull
     private BigDecimal nilaiTugas;
 
     @NotNull
