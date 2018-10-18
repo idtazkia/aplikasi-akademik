@@ -26,8 +26,10 @@ public class Ruangan {
     @NotNull
     private String kodeRuangan;
 
+    @ManyToOne
     @NotNull
-    private String idJenisRuangan;
+    @JoinColumn(name = "id_jenis_ruangan")
+    private RuanganJenis jenisRuangan;
 
     @NotNull
     private String namaRuangan;
@@ -38,10 +40,9 @@ public class Ruangan {
     @NotNull
     private BigInteger kapasitas;
 
-    @NotNull
     private String keterangan;
 
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
 }
