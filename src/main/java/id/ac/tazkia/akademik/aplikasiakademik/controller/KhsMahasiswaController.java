@@ -13,13 +13,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +94,28 @@ public class KhsMahasiswaController {
             }
             model.addAttribute("khs",khsDtos);
         } else {
-            model.addAttribute("data",krsDetailDao.findByKrsAndMahasiswa(krs,mahasiswa,page));
+            List<KhsDto> khsDtos = new ArrayList<>();
+            Page<KrsDetail> krsDetail = krsDetailDao.findByKrsAndMahasiswa(krs,mahasiswa,page);
+            for (KrsDetail kd: krsDetail) {
+                KhsDto khsDto = new KhsDto();
+                khsDto.setKode(kd.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+                khsDto.setId(kd);
+                khsDto.setMapel(kd.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliahEnglish());
+                khsDto.setPresensi(kd.getNilaiPresensi());
+                khsDto.setUas(kd.getNilaiUas());
+                khsDto.setTugas(kd.getNilaiTugas());
+                khsDto.setSks(kd.getMatakuliahKurikulum().getJumlahSks());
+                khsDto.setUts(kd.getNilaiUts());
+
+                BigDecimal tugas = khsDto.getTugas().multiply(kd.getJadwal().getBobotTugas().divide(new BigDecimal(100)));
+                BigDecimal uas = khsDto.getUas().multiply(kd.getJadwal().getBobotUas().divide(new BigDecimal(100)));
+                BigDecimal uts =khsDto.getUts().multiply(kd.getJadwal().getBobotUts().divide(new BigDecimal(100)));
+                BigDecimal presensi = khsDto.getPresensi().multiply(kd.getJadwal().getBobotPresensi().divide(new BigDecimal(100)));
+//
+                khsDto.setTotal(tugas.add(uas).add(uts).add(presensi));
+                khsDtos.add(khsDto);
+            }
+            model.addAttribute("khs",khsDtos);
         }
 
     }
