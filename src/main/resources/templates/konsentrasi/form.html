@@ -11,24 +11,24 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
                 <h2>Input Concentration</h2>
                 <div class="clearfix"></div>
             </div>
-    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+
+      <div class="x_content">
+            <div class="my-3 p-3 bg-white rounded box-shadow">
         <form method="post" th:action="@{/konsentrasi/form}" th:object="${konsentrasi}">
 
             <div class="form-group">
-                <div class="col-sm-12">
                 <label>Concentration Code</label>
                 <input type="text" th:field="*{kodeKonsentrasi}"name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
-                </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12">
                 <label>Program Study</label>
                 <select name="idProdi"  class="form-control js-example-placeholder-single" th:field="*{idProdi}">
                     <option value=""></option>
@@ -36,25 +36,19 @@
                             th:text="${data.namaProdi}"
                             th:value="${data.id}">P</option>
                 </select>
-                </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12">
                 <label>Concentration</label>
                 <input type="text" th:field="*{namaKonsentrasi}" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
-                </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12">
-                    <label>Information</label>
-                    <input type="text"  th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Keterangan">
-                </div>
+                    <label>Description</label>
+                    <input type="text"  th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Description">
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12">
                     <table class="table table-responsive">
                         <tr>
                             <div class="form-group">
@@ -66,7 +60,6 @@
                             </div>
                         </tr>
                     </table>
-                </div>
             </div>
             <button class="btn btn-primary" type="submit">Save</button>
             <a class="btn btn-primary" th:href="@{/konsentrasi/list}" role="button">
@@ -74,6 +67,10 @@
             </a>
         </form>
     </div>
+
+    </div>
+   </div>
+ </div>
 
 </section>
 
