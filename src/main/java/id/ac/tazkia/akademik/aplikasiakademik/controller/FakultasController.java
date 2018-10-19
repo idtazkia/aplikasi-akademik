@@ -31,9 +31,9 @@ public class FakultasController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", fakultasDao.findByStatusNotInAndAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(StatusRecord.HAPUS, search, page));
+            model.addAttribute("listFakultas", fakultasDao.findByStatusNotInAndAndNamaFakultasContainingIgnoreCaseOrderByNamaFakultas(StatusRecord.HAPUS, search, page));
         } else {
-            model.addAttribute("list",fakultasDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+            model.addAttribute("listFakultas",fakultasDao.findByStatusNotIn(StatusRecord.HAPUS,page));
 
         }
     }
