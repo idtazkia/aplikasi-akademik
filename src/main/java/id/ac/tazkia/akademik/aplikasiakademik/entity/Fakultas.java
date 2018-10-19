@@ -28,6 +28,6 @@ public class Fakultas {
 
     private String keterangan;
 
-    @NotNull @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 }

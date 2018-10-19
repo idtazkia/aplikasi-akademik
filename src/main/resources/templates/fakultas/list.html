@@ -48,38 +48,40 @@
                     <table class="table table-striped jambo_table bulk-action">
                         <thead>
                         <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">NA</th>
                             <th class="column-title">Institution</th>
                             <th class="column-title">Faculty Code</th>
                             <th class="column-title">Faculty Name</th>
-                            <th scope="col" width="30px"></th>
-                            <th scope="col" width="40px"></th>
+                            <th class="column-title">Description</th>
+                            <th class="column-title" colspan="2">Action</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr class="even pointer" th:each="data,row : ${list}">
-                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
-                            <td>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.AKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                                </span>
-                                <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.status.NONAKTIF} == ${data.status}">
-                                    <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-                                </span>
+                        <tr class="even pointer" th:each="dataFakultas,row : ${listFakultas}">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <td th:text="${data.idLembaga.namaLembaga}">STEI TAZKIA</td>
-                            <td th:text="${data.kodeFakultas}">1</td>
-                            <td th:text="${data.namaFakultas}">Fakultas Ekonomi</td>
-                            <td class="last">
-                                <a th:href="@{/fakultas/form(id = ${data.id})}" class="btn btn-success btn-xs" title="Edit">Edit</a>
+                            <td th:text="${(row.index + 1) + (listFakultas.number * listFakultas.size)}">1</td>
+                            <td th:text="${dataFakultas.idLembaga.namaLembaga}">STEI TAZKIA</td>
+                            <td th:text="${dataFakultas.kodeFakultas}">1</td>
+                            <td >
+
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${dataFakultas.status.AKTIF} == ${dataFakultas.status}" th:text="${dataFakultas.namaFakultas}"  th:href="@{/fakultas/form(id = ${dataFakultas.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${dataFakultas.status.NONAKTIF} == ${dataFakultas.status}" th:text="${dataFakultas.namaFakultas}"  th:href="@{/fakultas/form(id = ${dataFakultas.id})}">
+                                </a>
+
                             </td>
+                            <td th:text="${dataFakultas.keterangan}">Keterangan</td>
+
                             <td>
-                                <form method="post" th:action="@{/fakultas/delete(fakultas = ${data.id})}">
+                                <form method="post" th:action="@{/fakultas/delete(fakultas = ${dataFakultas.id})}">
                                 <button type="submit" class="btn btn-danger btn-xs"
-                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
-                                                                     ' to recover this imaginary file!')">Delete
+                                        onclick="return confirm('Are you sure?')">Delete
                                 </button>
                                 </form>
                             </td>
