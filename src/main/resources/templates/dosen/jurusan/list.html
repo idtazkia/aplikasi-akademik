@@ -10,36 +10,45 @@
 
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Program Studi Dosen</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Lecturer Study Program</h2>
+                <div class="clearfix"></div>
+            </div>
 
 
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Program studi Dosen</center></h6>
+
         <br>
 
         <div class="box-body table-responsive no-padding">
-            <form>
-                    <table width="100%">
+            <form th:action="@{/dosen/jurusan/list}" method="post">
+                <input type="hidden" hidden name="idDosen" th:value="${dosen.idDosen}">
+                <table width="100%">
                         <tr>
                             <td>
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Program Studi</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
-                                                        name="provinsi">
+                                                <label>Lecturer Name:</label> <br>
+                                                <h3><span th:text="${dosen.nama}"></span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Study Program :</label>
+                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="prodi"
+                                                        name="idProdi">
                                                     <option></option>
-                                                    <option>Akuntasi Islam</option>
-                                                    <option>Ekonomi Islam</option>
-                                                    <option>Bisnis Manajemen Islam</option>
+                                                    <option th:each="ins : ${daftarProdi}"
+                                                            th:value="${ins.idProdi}"
+                                                            th:text="${ins.namaProdi}">Asrama</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -50,39 +59,38 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <input class="btn btn-primary" type="submit" value="Simpan">
-                                <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">
-                                    <span aria-hidden="true"></span>Batal
+                                <input class="btn btn-primary" type="submit" value="Save">
+                                <a th:href="@{/dosen/list}" class="btn btn-primary" role="button">
+                                    <span aria-hidden="true"></span>Cancel
                                 </a>
 
                             </td>
                         </tr>
                     </table>
             </form>
-
-
         <br>
-
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Singkatan</th>
-                            <th>SKS</th>
-                            <th>Pras</th>
+                            <th>NO</th>
+                            <th>Code</th>
+                            <th>Program Study Name</th>
+                            <th width="30px"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">5454</th>
-                            <td rowspan="2">Pengantar Akutansi II</td>
-                            <td rowspan="2">PA2</td>
-                            <td>4</td>
-                            <td>
-                                <a th:href="@{/prasyarat/form}" class="btn btn-primary" role="button" aria-pressed="true">+</a>
+                        <tr th:each="data, row : ${listDosenProdi}">
+                            <th  th:text="${(row.index + 1)}">1</th>
+                            <th  th:text="${data.idProdi.kodeProdi}">5454</th>
+                            <td  th:text="${data.idProdi.namaProdi}">Akuntansi Islam</td>
+                            <td align="center">
+                                <form method="post" th:action="@{/delete/jurusan/dosenProdi(dosenProdi=${data.id})}">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                        <i class="ti-eraser"></i> Delete
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>
@@ -117,9 +125,9 @@
             </nav>
 
         </div>
-
     </div>
-
+    </div>
+    </div>
 </section>
 
 </body>

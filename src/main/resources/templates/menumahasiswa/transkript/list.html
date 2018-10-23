@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahasiswa</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Transcripts List<small><b th:text="${mahasiswa.nama + ' (' + mahasiswa.nim + ') '}">Gifar Haidar (11404344)</b></small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div th:each="krs : ${krs}" class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2 th:text="${krs.tahunAkademik.namaTahunAkademik}">2018/2019 Semester Ganjil <small><b>Gifar Haidar (11404344)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th class="column-title">Code</th>
+                                    <th class="column-title">Subject</th>
+                                    <th class="column-title">Sks</th>
+                                    <th class="column-title">Grade</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="data: ${transkript}" th:if="${data.tahunAkademik == krs.tahunAkademik.namaTahunAkademik}">
+                                        <td th:text="${data.kode}">2018/2019 Semester Genap</td>
+                                        <td th:text="${data.mapel}">121000040</td>
+                                        <td th:text="${data.sks}">May 23, 2014 11:47:56 PM </td>
+                                        <td th:if="${data.total} > ${gradeA.bawah}">A</td>
+                                        <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}">A-</td>
+                                        <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}">B+</td>
+                                        <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}">B</td>
+                                        <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}">B-</td>
+                                        <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}">C+</td>
+                                        <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}">C</td>
+                                        <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}">D</td>
+                                        <td th:if="${data.total < gradeE.atas}">E</td>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>

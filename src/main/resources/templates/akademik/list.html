@@ -4,136 +4,130 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Academic Years</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Tahun Akademik</h6>
-        </div>
-    </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Accademic Years <small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Setup Akademik Per-Program Studi</center></h6>
-        <br>
-        <form method="get" th:action="@{/akademik/list}">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Program Studi</label>
-                            <select onchange="" class="form-control js-example-placeholder-single" id="provinsi"
-                                    name="provinsi">
-                                <option></option>
-                                <option>Akuntasi Islam</option>
-                                <option>Ekonomi Islam</option>
-                                <option>Bisnis Manajemen Islam</option>
-                            </select>
+            <div class="x_content">
+
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/akademik/form}" class="btn btn-primary"
+                               role="button" aria-pressed="true">Add</a>
+                        </td>
+                        <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                            <form method="get">
+                                <div class="input-group">
+                                    <input type="text" name="search"
+                                           placeholder="Search for..." class="form-control">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Search</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Show <span sd:page-size-selector="javascript"></span> entries
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk-action">
+                        <thead>
+                        <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Academic Year Code</th>
+                            <th class="column-title">Academic Year Name</th>
+                            <th class="column-title">Year</th>
+                            <th scope="col" width="30px">Active</th>
+                            <th scope="col" width="30px">Detail</th>
+                            <th scope="col" width="30px"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${list}">
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
+                            <td th:text="${data.kodeTahunAkademik}">nama</td>
+                            <td>
+                                <a type="button" class="btn btn-success btn-xs"
+                                   th:if="${data.status.AKTIF} == ${data.status}"
+                                   th:text="${data.namaTahunAkademik }"
+                                   th:href="@{/akademik/form(id = ${data.id})}">
+                                </a>
+
+                                <a type="button" class="btn btn-danger btn-xs"
+                                   th:if="${data.status.NONAKTIF} == ${data.status}"
+                                   th:text="${data.namaTahunAkademik}"
+                                   th:href="@{/akademik/form(id = ${data.id})}">
+                                </a>
+                            </td>
+                            <td th:text="${data.tahun}">1</td>
+
+                            <td>
+                                <form method="post" th:if="${data.status.NONAKTIF} == ${data.status}"
+                                      th:action="@{/akademik/aktif(tahunAkademik = ${data.id})}">
+                                    <button type="submit" class="btn btn-primary btn-xs">Activate
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td>
+                                <a th:href="@{/akademik/detail(id = ${data.id})}" target="output"
+                                   class="btn btn-info btn-xs">See Detail</a>
+                            </td>
+
+                            <td>
+                                <form method="post"
+                                      th:action="@{/akademik/delete(tahunAkademik = ${data.id})}">
+                                    <button type="submit" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure? Once deleted, ' +
+                                             'you will not be able' + ' to recover this imaginary ' +
+                                              'file!')">Delete
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-right">
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
 
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Program</label>
-                            <select onchange="" class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>S1 Reguler</option>
-                                <option>S2</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
 
             </div>
-
-        </form>
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-
-
-        <table width="100%">
-            <tr>
-                <td>
-                    <a th:href="@{/akademik/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Kode</th>
-                    <th>Nama Tahun</th>
-                    <th>Perkuliahan</th>
-                    <th>Pembayaran</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
-                    <th>Penilaian</th>
-                    <th>Catatan</th>
-                    <th>Aktif</th>
-                    <th>Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th rowspan="2">1</th>
-                    <td rowspan="2">43464</td>
-                    <td rowspan="2">2017/2018 Genap</td>
-                    <td>19-02-2017 - 19-02-2018</td>
-                    <td>19-02-2017 - 19-02-2018</td>
-                    <td>19-02-2017</td>
-                    <td>19-02-2017</td>
-                    <td></td>
-                    <td></td>
-                    <td>v</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm"  title="edit">Edit</a></td>
-                </tr>
-                </tbody>
-            </table>
         </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-
     </div>
 
 </section>
 
-
 </body>
 </html>
-<script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Pilih Salah Satu",
-        allowClear: true
-    });
-</script>

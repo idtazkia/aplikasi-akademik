@@ -11,36 +11,54 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Input Jenjang</h6>
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Jenjang Form<small>Insert & Update Jenjang
+                </small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+                <form method="post" th:action="@{/jenjang/form}" th:object="${jenjang}">
+
+                    <div class="form-group">
+                        <label>Code</label>
+                        <input type="text" th:field="*{kodeJenjang}" class="form-control" name="kodeJenjang" placeholder="Code">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenjang Name</label>
+                        <input type="text" th:field="*{namaJenjang}" class="form-control" name="namaJenjang" placeholder="Jenjang Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" th:field="*{keterangan}" name="keterangan" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label><br>
+                        <label>
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
+                    </div>
+
+                    <input type="hidden" name="id" th:field="*{id}">
+
+                    <div class="form-group">
+
+                    <input class="btn btn-primary" type="submit" value="Save">
+                    <a th:href="@{/jenjang/list}" class="btn btn-primary" role="button">
+                        <span aria-hidden="true"></span>Cancel
+                    </a>
+                    </div>
+                </form>
+
+            </div>
         </div>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form>
-
-            <div class="form-group">
-                <label>Kode</label>
-                <input type="text" class="form-control" placeholder="Kode">
-            </div>
-
-            <div class="form-group">
-                <label>Nama</label>
-                <input type="text" class="form-control" placeholder="Nama">
-            </div>
-
-            <div class="form-group">
-                <label>Keterangan</label>
-                <input type="text" class="form-control" placeholder="Keterangan">
-            </div>
-            
-            <input class="btn btn-primary" type="submit" value="Simpan">
-            <a th:href="@{/jenjang/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Batal
-            </a>
-        </form>
     </div>
 
 </section>

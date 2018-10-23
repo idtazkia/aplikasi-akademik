@@ -11,59 +11,61 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Program Studi</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Study Program List</h2>
+                <div class="clearfix"></div>
+            </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <form>
+        <form method="post" th:action="@{/programstudi/form}" th:object="${programStudy}">
 
             <div class="form-group">
-                <label>Fakultas</label>
-                <select class="form-control js-example-placeholder-single" id="fakultas"
-                        name="provinsi">
-                    <option></option>
-                    <option>Fakultas Tehknik</option>
-                    <option>Fakultas Pendidikan</option>
-                    <option>Fakultas Ekonomi</option>
+                <label>Code</label>
+                <input type="text" class="form-control" th:field="*{kodeProdi}" name="kodeProdi" placeholder="Kode">
+            </div>
+
+            <div class="form-group">
+                <label>Major</label>
+                <select name="idJurusan" style="width:100%!important;" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option th:each="data : ${jurusan}"
+                            th:text="${data.namaJurusan}" th:value="${data.id}">Department ID</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Jurusan</label>
-                <select class="form-control js-example-placeholder-single" id="jurusan"
-                        name="provinsi">
-                    <option></option>
-                    <option>Pendidikan Islam</option>
-                    <option>Ekonomi Syariah</option>
+                <label>Level</label>
+                <select name="idJurusan" style="width:100%!important;" th:field="*{idJenjang}" class="form-control js-example-placeholder-single">
+                    <option value=""></option>
+                    <option th:each="data : ${jenjang}"
+                            th:text="${data.namaJenjang}" th:value="${data.id}">Department ID</option>
                 </select>
             </div>
 
+
             <div class="form-group">
-                <label>Kode Program Studi</label>
-                <input type="text" class="form-control" placeholder="Kode">
+                <label>Study Program</label>
+                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Study Program" name="namaProdi">
             </div>
 
             <div class="form-group">
-                <label>Nama Program Studi</label>
-                <input type="text" class="form-control" placeholder="Nama">
-            </div>
+                <label>Status</label><br>
+                <label>
+                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                </label>
+                <input type="hidden" name="id" th:field="*{id}">
 
-            <div class="form-group">
-                <label>Pejabat</label>
-                <input type="text" class="form-control" placeholder="Pejabat">
             </div>
-
-            <input class="btn btn-primary" type="submit" value="Simpan">
+            <input class="btn btn-primary" type="submit" value="Save">
             <a th:href="@{/programstudi/list}" class="btn btn-primary" role="button">
-                <span aria-hidden="true"></span>Batal
+                <span aria-hidden="true"></span>Cancel
             </a>
         </form>
     </div>
-
+        </div>
+    </div>
 </section>
 
 </body>

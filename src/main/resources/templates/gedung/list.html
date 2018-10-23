@@ -9,173 +9,101 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Kampus dan Gedung</h6>
-        </div>
-    </div>
-
-
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Daftar Kampus Dan Gedung</center></h6>
-        <br>
-
-        <div class="box-body table-responsive no-padding">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kampus" role="tab">Kampus</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#gedung" role="tab">Gedung</a>
-                </li>
-            </ul>
-            <br>
-            <div class="tab-content">
-                <!--Tab Kurilulum-->
-                <div class="tab-pane active" id="kampus" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <a th:href="@{/gedung/kampus/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Kampus</a>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </tr>
-                    </table>
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama Kampus</th>
-                            <th>Alamat</th>
-                            <th>Keterangan</th>
-                            <th>NA</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>K0001</td>
-                            <td>STEI TAZKIA SENTUL</td>
-                            <td>Jl. Ir. H. Juanda no 78 Sentul City, Citaringgul, Bogor</td>
-                            <td>-</td>
-                            <td>v</td>
-                        </tr>
-
-                        <tr>
-                            <th>1</th>
-                            <td>K0002</td>
-                            <td>STEI TAZKIA MATRIKULASI</td>
-                            <td>Dramaga</td>
-                            <td>-</td>
-                            <td>v</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!---->
-                <!--Tab Mata Kuliah-->
-                <div class="tab-pane" id="gedung" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Pilih Kampus</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>STEI TAZKIA SENTUL</option>
-                                                    <option>STEI TAZKIA MATRIKULASI</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Gedung</a>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Lokasi</th>
-                            <th>Keterangan</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">S0001</th>
-                            <td rowspan="2">Granada</td>
-                            <td rowspan="2">STEI TAZKIA SENTUL</td>
-                            <td>Gedung Kembar Sebelah Barat</td>
-
-                            <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-                    <br>
-
-                </div>
+    <div class="col-md-12 col-sm-12 col-md-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Gedung<small>List</small></h2>
+                <div class="clearfix"></div>
             </div>
 
-        </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <div class="x_content">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                        </td>
+                        <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                            <form method="get">
+                                <div class="input-group">
+                                    <input type="text" autocomplete="off" name="search"
+                                           th:value="${search}"
+                                           placeholder="Search by name" class="form-control">
+                                    <span class="input-group-btn">
+                                                <button class="btn btn-default"
+                                                        type="submit">Search</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </td>
+                        <tr>
+                    <td>
+                        Show <span sd:page-size-selector="javascript"></span> entries
+                    </td>
+                </tr>
+                    </tr>
+                </table>
 
-        </div>
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk-action">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Building Code</th>
+                            <th>Building Name</th>
+                            <th>Description</th>
+                            <th width="30px"></th>
+                        </tr>
+                        </thead>
 
+                        <tbody>
+                        <tr th:each="data,row : ${list}">
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
+                            <td th:text="${data.kodeGedung}">PATRICK STAR</td>
+                            <td>
+                                <a type="button" class="btn btn-success btn-xs" href="form"
+                                   th:if="${data.status.AKTIF} == ${data.status}"
+                                   th:text="${data.namaGedung}"
+                                   th:href="@{/gedung/form(id = ${data.id})}">
+                                </a>
+
+                                <a type="button" class="btn btn-danger btn-xs" href="form"
+                                   th:if="${data.status.NONAKTIF} == ${data.status}"
+                                   th:text="${data.namaGedung}"
+                                   th:href="@{/gedung/form(id = ${data.id})}">
+                                </a>
+                            </td>
+                            <td th:text="${data.keterangan}">BANGUN DAN SEMANGAT</td>
+                            <td>
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('Are you sure? Once deleted, you will not be able' +
+                                                                 ' to recover this imaginary file!')">
+                                    <i class="ti-eraser"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-left">
+
+
+
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </section>

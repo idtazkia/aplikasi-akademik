@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Mahasiswa</title>
+
+</head>
+<body>
+
+<section layout:fragment="main" class="content">
+    <!-- /top tiles -->
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <h2>Personal Data</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" th:each="data,row :${datamahasiswa}">
+
+                    <div class="col-md-12">
+
+                        <div class="row col-sm-offset-1 ">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="profile_img">
+                                        <div id="crop-avatar" style="height: 50%;">
+                                            <!-- Current avatar -->
+                                            <img th:if="${data.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
+                                            <img th:if="${data.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                        <span>
+                                            <h3 th:text="${data.nama}">Samuel Rajendra</h3>
+                                        </span>
+                                        <span>
+                                            <h4 th:text="${data.nim}">11404344</h4>
+                                        </span>
+                                        <a class="btn btn-success" th:href="@{/user/form}" target="output">
+                                            <i class="fa fa-edit m-right-xs"></i>Edit Profile
+                                        </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <hr>
+                        <div class="form-group" style="text-align: center">
+                            <span th:text="${data.idProdi.namaProdi +' - '+ data.idProdi.idJurusan.namaJurusan +' - '+ data.idProdi.idJurusan.idFakultas.namaFakultas}">-</span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <h2>Miss Attendance</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" id="getResult1">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <h2>Your Performance</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="dashboard-widget-content">
+                        <ul class="quick-list">
+                            <li><i class="fa fa-calendar-o"></i><a href="#">Attendance</a>
+                            </li>
+                            <li><i class="fa fa-bars"></i><a href="#">Attitude</a>
+                            </li>
+                            <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
+                            <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
+                            </li>
+                            <li><i class="fa fa-bar-chart"></i><a href="#">Auto Renewal</a> </li>
+                            <li><i class="fa fa-line-chart"></i><a href="#">Achievements</a>
+                            </li>
+                            <li><i class="fa fa-area-chart"></i><a href="#">Logout</a>
+                            </li>
+                        </ul>
+
+                        <div class="sidebar-widget">
+                            <h4>Performance</h4>
+                            <canvas width="150" height="80" id="chart_gauge_01" class="" style="width: 160px; height: 100px;"></canvas>
+                            <div class="goal-wrapper">
+                                <span id="gauge-text" class="gauge-value pull-left">0</span>
+                                <span class="gauge-value pull-left">%</span>
+                                <span id="goal-text" class="goal-value pull-right">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <h2>Your Must be Pay</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                       <tr>
+                           <th>1</th>
+                            <td >Coming Soon</td>
+                            <td>Coming Soon</td>
+                            <td>Coming Soon</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <h2>Schedule</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="row">Time</th>
+                            <td>Subject</td>
+                            <td>Lecture</td>
+                            <td>Room</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="data,row : ${krsdetail}">
+                            <th th:text="${data.jadwal.idHari.namaHari+' - '+ data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">#</th>
+                            <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Mark</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Mark</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">Mark</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel" style="overflow-x: auto; height: 330px">
+                <div class="x_title">
+                    <h2>Anouncement <small>Sessions</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="dashboard-widget-content">
+
+                        <ul class="list-unstyled timeline widget">
+                            <li>
+                                <div class="block">
+                                    <div class="block_content">
+                                        <h2 class="title">
+                                            <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                        </h2>
+                                        <div class="byline">
+                                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                                        </div>
+                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="block">
+                                    <div class="block_content">
+                                        <h2 class="title">
+                                            <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                        </h2>
+                                        <div class="byline">
+                                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                                        </div>
+                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="block">
+                                    <div class="block_content">
+                                        <h2 class="title">
+                                            <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                        </h2>
+                                        <div class="byline">
+                                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                                        </div>
+                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="block">
+                                    <div class="block_content">
+                                        <h2 class="title">
+                                            <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                        </h2>
+                                        <div class="byline">
+                                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                                        </div>
+                                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<th:block layout:fragment="script">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/dashboard/missattendance.js}"></script>
+
+    <script>
+        window.addEventListener('load', function () {
+            console.log("Page selesai load");
+            getMissAttendance();
+        }, false);
+    </script>
+</th:block>
+
+</body>
+</html>
+

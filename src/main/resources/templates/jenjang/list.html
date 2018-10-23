@@ -9,104 +9,108 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Jenjang</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Jenjang
+                    <small>List</small>
+                </h2>
+                <div class="clearfix"></div>
+            </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-        <table width="100%">
-            <tr>
-                <td>
-                    <a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah</a>
-                </td>
-                <td align="right">
-                    <form method="get" th:action="@{/jenjang/list}">
-                        <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pencarian Berdasarkan Nama">
-                            <input type="hidden" name="mode" id="mode"/>
+            <div class="x_content">
+
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <a th:href="@{/jenjang/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                        </td>
+                        <td align="right">
+                            <div class="title_right">
+                                <form method="get">
+                                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" th:value="${search}" name="search" placeholder="Search by Jenjang Name">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Search</button>
+                                         </span>
+                                    </div>
+                                    <div>
+                                        Show <span sd:page-size-selector="javascript"></span> entries
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Name</th>
+                            <th class="column-title">Description</th>
+                            <th class="column-title">Action</th>
+                            <th scope="col" width="30px"></th>
+                            <th class="bulk-actions" colspan="7">
+                                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${list}">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
+                            <td th:text="${data.kodeJenjang}">May 23, 2014 11:47:56 PM </td>
+                            <td>
+                                <a type="button" class="btn btn-success btn-xs" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaJenjang}"  th:href="@{/jenjang/form(id = ${data.id})}">
+                                </a>
+                                <a type="button" class="btn btn-danger btn-xs" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaJenjang}"  th:href="@{/jenjang/form(id = ${data.id})}">
+                                </a>
+                            </td>
+                            <td th:text="${data.keterangan}">121000210 <i class="success fa fa-long-arrow-up"></i></td>
+
+                            <td>
+                            <form method="post" th:action="@{/jenjang/delete(jenjang=${data.id})}">
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                    onclick="return confirm('Are you sure want to delete this?')">
+                                    <i class="ti-eraser"></i>  Delete
+                                </button>
+                            </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-right">
+                                <ul class="pagination" sd:pagination="full">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                    </form>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Kode</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Keterangan</th>
-                    <th scope="col" width="30px"></th>
-                    <th scope="col" width="40px"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>E001</td>
-                    <td>S1</td>
-                    <td>Sarjana</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>P001</td>
-                    <td>S2</td>
-                    <td>Pasca Sarjana</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>T001</td>
-                    <td>S3</td>
-                    <td>Doktoral</td>
-                    <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/jenjang/form}" title="edit">Edit</a></td>
-                    <td align="center">
-                        <a href="#" class="btn btn-danger btn-sm" th:href="@{/jenjang/list}" title="Delete">Delete</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                    </div>
+                </div>
 
+
+            </div>
         </div>
     </div>
-
 </section>
 
 </body>

@@ -1,133 +1,340 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="/stei-tazkia.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" th:href="@{/images/tazkia.ico}" type="image/ico" />
 
-    <title>SIMAK STEI TAZKIA</title>
+    <title>SIMAK | STEI TAZKIA</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap -->
+    <link th:href="@{/css/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/css/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/css/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/css/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
 
+    <link th:href="@{/css/vendors/switchery/dist/switchery.min.css}" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link th:href="@{/css/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css}" rel="stylesheet">
+    <!-- JQVMap -->
+    <link th:href="@{/css/vendors/jqvmap/dist/jqvmap.min.css}" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link th:href="@{/css/vendors/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
 
-    <link th:href="@{/dist/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/dist/css/select2.min.css}" rel="stylesheet" />
-    <link th:href="@{/dist/css/select2.css}" />
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
-
-    <!-- Custom styles for this template -->
-    <link href="/offcanvas.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link th:href="@{/css/build/css/custom.min.css}" rel="stylesheet">
+    <link th:href="@{/css/select2/css/select2.css}" rel="stylesheet">
 </head>
 
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">STEI TAZKIA</a>
-    <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-
-            <!-- <li class="nav-item">
-                 <a class="nav-link"th:href="@{/menu/master}">Master</a>
-             </li> -->
-
-             <li class="nav-item dropdown">
-                 <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
-                 <div class="dropdown-menu" aria-labelledby="dropdown01">
-                     <a class="dropdown-item" th:href="@{/lembaga/list}">Lembaga</a>
-                     <a class="dropdown-item" th:href="@{/gedung/list}">Gedung Kampus</a>
-                     <a class="dropdown-item" th:href="@{/ruang/list}">Ruang Kelas</a>
-                     <a class="dropdown-item" th:href="@{/program/list}">Program</a>
-                     <a class="dropdown-item" th:href="@{/jenjang/list}">Jenjang</a>
-                     <a class="dropdown-item" href="#">-----------------</a>
-                     <a class="dropdown-item" th:href="@{/fakultas/list}">Fakultas</a>
-                     <a class="dropdown-item" th:href="@{/jurusan/list}">Jurusan</a>
-                     <a class="dropdown-item" th:href="@{/programstudi/list}">Program Studi</a>
-                     <a class="dropdown-item" th:href="@{/konsentrasi/list}">Konsentrasi</a>
-                     <a class="dropdown-item" href="#">-----------------</a>
-                     <a class="dropdown-item" th:href="@{/dosen/list}">Dosen</a>
-                     <a class="dropdown-item" th:href="@{/mahasiswa/list}">Mahasiswa</a>
-
-
-                 </div>
-
-             </li>
-
-             <li class="nav-item">
-                 <a class="nav-link" href="#">Matrikulasi</a>
-             </li>
-
-            <!--  <li class="nav-item">
-                 <a class="nav-link"th:href="@{/menu/kbm}">KBM</a>
-             </li> -->
-
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">KBM</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" th:href="@{/akademik/list}">Tahun Akademik</a>
-                    <a class="dropdown-item" th:href="@{/matakuliah/list}">Kurikulum</a>
-                    <a class="dropdown-item" th:href="@{/jadwalkuliah/list}">Penjadwalan Kuliah</a>
-                    <a class="dropdown-item" href="#">Penjadwalan Ujian</a>
-                    <a class="dropdown-item" href="#">-----------------</a>
-                    <a class="dropdown-item" th:href="@{/krs/list}">Kartu Rencana Studi</a>
-                    <a class="dropdown-item" th:href="@{/kebijakanpresensi/list}">Presensi</a>
-                    <a class="dropdown-item" th:href="@{/penilaian/list}">Penilaian</a>
-                    <a class="dropdown-item" href="#">-----------------</a>
-                    <a class="dropdown-item" th:href="@{/dosen/list}">Magang</a>
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="index.html" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
                 </div>
-            </li>
 
-             <li class="nav-item">
-                 <a class="nav-link" href="#">Tugas Akhir</a>
-             </li>
+                <div class="clearfix"></div>
 
-             <li class="nav-item">
-                 <a class="nav-link" href="#">kelulusan</a>
-             </li>
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_pic">
+                        <img th:src="@{/images/jaisul.jpg}" alt="..." class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                            <h2 th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">Superadmin</h2>
+                        <!--<h2 th:if="${currentUser.get('karyawan')}" th:text="${currentUser.get('karyawan').nama}">Superadmin</h2>-->
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
 
-             <li class="nav-item">
-                 <a class="nav-link" href="#">Alumni</a>
-             </li>
+                <br />
 
-             <li class="nav-item">
-                 <a class="nav-link"th:href="@{/menu/keuangan}">Keuangan</a>
-             </li>
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-gear"></i> Administrator <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Equipment<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/lembaga/list}">Institution</a></li>
+                                            <li><a th:href="@{/kampus/list}">Campus</a></li>
+                                            <li><a th:href="@{/gedung/list}">Building</a></li>
+                                            <li><a th:href="@{/ruang/list}">Class Room</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/program/list}">Program</a></li>
+                                            <li><a th:href="@{/jenjang/list}">Level</a></li>
+                                            <li><a th:href="@{/fakultas/list}">Faculty</a></li>
+                                            <li><a th:href="@{/jurusan/list}">Jurusan</a></li>
+                                            <li><a th:href="@{/programstudi/list}">Program Studi</a></li>
+                                            <li><a th:href="@{/konsentrasi/list}">Konsentrasi</a></li>
+                                        </ul>
+                                    </li>
 
-         </ul>
-         <form class="form-inline my-2 my-lg-0">
-          </form>
-      </div>
-  </nav>
+                                </ul>
+                            </li>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Pembianaan<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="sub_menu"><a href="level2.html">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_1">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_2">Level Two</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Akademik<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="sub_menu"><a href="level2.html">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_1">Level Two</a>
+                                            </li>
+                                            <li><a href="#level2_2">Level Two</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/akademik/list}">Academic Years</a></li>
+                                            <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
+                                            <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
+                                            <li><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/krs/list}">K R S</a></li>
+                                            <li><a th:href="@{/attendance/list}">Attendance</a></li>
+                                            <li><a th:href="@{/assesment/list}">Assesment</a></li>
+                                            <li><a th:href="@{/khs/list}">K H S</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>Graduations<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/intership/list}">Internship</a></li>
+                                            <li><a th:href="@{/conceptnote/list}">Concept Note</a></li>
+                                            <li><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                            <li><a th:href="@{/thesis/list}">Thesis</a></li>
+                                            <li><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                            <li><a th:href="@{/skpi/list}">S K P I</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="general_elements.html">General Elements</a></li>
+                                </ul>
+                            </li>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/bipot/list}">Biaya dan Potongan</a></li>
+                                            <li><a th:href="@{/tagihanmhs/list}">Tagihan Mahasiswa</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a>HR Setting<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/departemen/list}">Biaya dan Potongan</a></li>
+                                            <li><a th:href="@{/golongan/list}">Golongan</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="general_elements.html">General Elements</a></li>
+                                </ul>
+                            </li>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-male"></i> Human Resources <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a>Master<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/departemen/list}">Department</a></li>
+                                            <li><a th:href="@{/golongan/list}">Golongan</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a th:href="@{/karyawan/list}">Employee</a></li>
+                                    <li><a th:href="@{/dosen/list}">Lecture</a></li>
+                                    <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
+                                    <li><a>Payroll<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/salary/list}">Salary</a></li>
+                                            <li><a th:href="@{/loan/list}">Loan</a></li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>
+                                    <li><a th:href="@{/menumahasiswa/krs/list}">K R S</a></li>
+                                    <li><a th:href="@{/menumahasiswa/absensi/list}">Attendance</a></li>
+                                    <li><a th:href="@{/menumahasiswa/khs/list}">K H S</a></li>
+                                    <li><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
+                                </ul>
+                            </li>
 
 
- <main layout:fragment="main" class="container">
-     <!-- Content here -->
-</main>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
+                                    <li><a href="fixed_footer.html">Fixed Footer</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-<script th:src="@{/assets/js/vendor/popper.min.js}"></script>
-<script th:src="@{/dist/js/bootstrap.min.js}"></script>
-<script th:src="@{/assets/js/vendor/holder.min.js}"></script>
-<script th:src="@{/assets/js/jquery-1.12.4.js}"></script>
-<script th:src="@{/offcanvas.js}"></script>
-<script th:src="@{/dist/js/select2.js}"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <img src="production/images/img.jpg" alt="" th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li sec:authorize="hasAuthority('VIEW_MAHASISWA')">
+                                    <a th:href="@{/user/data}">
+                                        <span>Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <span>Settings</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr>
+                                    <form name="f" th:action="@{/logout}" method="post">
+                                        <center><button class="btn btn-danger">
+                                            <span class="fa fa-sign-out pull-right"></span>
+                                            Logout</button>
+                                        </center>
+                                    </form>
+                                    <hr>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <!-- top tiles -->
+            <section class="content-header" layout:fragment="breadcrumb"></section>
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content" layout:fragment="main">Di sini content utama</section>
+
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Copyright &copy; 2018 - SIMAK STEI TAZKIA <a href="https://colorlib.com"></a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+
+<script th:src="@{/css/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/css/vendors/bootstrap/dist/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/css/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/css/vendors/nprogress/nprogress.js}"></script>
+<!-- Chart.js -->
+<script th:src="@{/css/vendors/Chart.js/dist/Chart.min.js}"></script>
+<!-- gauge.js -->
+<script th:src="@{/css/vendors/gauge.js/dist/gauge.min.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/css/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- iCheck -->
+<script th:src="@{/css/vendors/iCheck/icheck.min.js}"></script>
+<!-- Skycons -->
+<script th:src="@{/css/vendors/skycons/skycons.js}"></script>
+<!-- Flot -->
+<script th:src="@{/css/vendors/Flot/jquery.flot.js}"></script>
+<script th:src="@{/css/vendors/Flot/jquery.flot.pie.js}"></script>
+<script th:src="@{/css/vendors/Flot/jquery.flot.time.js}"></script>
+<script th:src="@{/css/vendors/Flot/jquery.flot.stack.js}"></script>
+<script th:src="@{/css/vendors/Flot/jquery.flot.resize.js}"></script>
+<!-- Flot plugins -->
+<script th:src="@{/css/vendors/flot.orderbars/js/jquery.flot.orderBars.js}"></script>
+<script th:src="@{/css/vendors/flot-spline/js/jquery.flot.spline.min.js}"></script>
+<script th:src="@{/css/vendors/flot.curvedlines/curvedLines.js}"></script>
+<!-- DateJS -->
+<script th:src="@{/css/vendors/DateJS/build/date.js}"></script>
+<!-- JQVMap -->
+<script th:src="@{/css/vendors/switchery/dist/switchery.min.js}"></script>
+
+<script th:src="@{/css/vendors/jqvmap/dist/jquery.vmap.js}"></script>
+<script th:src="@{/css/vendors/jqvmap/dist/maps/jquery.vmap.world.js}"></script>
+<script th:src="@{/css/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js}"></script>
+<!-- bootstrap-daterangepicker -->
+<script th:src="@{/css/vendors/moment/min/moment.min.js}"></script>
+<script th:src="@{/css/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js}"></script>
+<script th:src="@{/css/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+
+<!-- Custom Theme Scripts -->
+<script th:src="@{/css/build/js/custom.min.js}"></script>
+<script th:src="@{/css/select2/js/select2.min.js}"></script>
+<script th:src="@{/css/docs/js/aplikasi.js}"></script>
+<script src="https://cdn.rawgit.com/bassjobsen/Bootstrap-3-Typeahead/master/bootstrap3-typeahead.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+
+<th:block layout:fragment="script"></th:block>
 </body>
 </html>
+
+
 
 
 

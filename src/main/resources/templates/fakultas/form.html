@@ -4,64 +4,74 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
-
+    <title>Faculty</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Fakultas</h6>
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Faculty<small>form</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+                <form method="post" th:action="@{/fakultas/form}" th:object="${fakultas}">
+
+                    <div class="form-group">
+                        <label>Select Institution</label>
+                        <select style="width:100%!important;" name="idLembaga" th:field="*{idLembaga}" class="form-control js-example-placeholder-single">
+                            <option value=""></option>
+                            <option th:each="data : ${lembaga}"
+                                    th:text="${data.namaLembaga}" th:value="${data.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Faculty Code</label>
+                        <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Faculty Code">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Faculty Name</label>
+                        <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Faculty Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Faculty Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label><br>
+                        <label>
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
+                    </div>
+
+                    <input type="hidden" name="id" th:field="*{id}">
+                    <div class="form-group">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                        <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">
+                            <span aria-hidden="true"></span>Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
         </div>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-    <form>
-
-        <div class="form-group">
-            <label for="exampleFormControlSelect1">Lembaga</label>
-            <select class="form-control" id="exampleFormControlSelect1">
-                <option>STEI TAZKIA</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Kode Fakultas</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kode">
-        </div>
-
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Nama Fakultas</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nama">
-        </div>
-
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Pejabat</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Pejabat">
-        </div>
-
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Jabtan</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jabatan">
-        </div>
-
-
-        <div class="form-group">
-            <label for="exampleFormControlFile1">Pilih file logo Fakultas</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1">
-        </div>
-
-        <input class="btn btn-primary" type="submit" value="Simpan">
-        <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">
-            <span aria-hidden="true"></span>Batal
-        </a>
-    </form>
     </div>
 
 </section>
 
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>

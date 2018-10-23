@@ -4,904 +4,751 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Mahasiswa</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Data Mahasiswa</h6>
-        </div>
-    </div>
+    <form th:action="@{/mahasiswa/form (mahasiswa = ${mhsw.id})}" method="post" th:object="${mahasiswa}">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Student Data</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div id="wizard" class="form_wizard wizard_horizontal">
+                <ul class="wizard_steps">
+                    <li>
+                        <a href="#step-1">
+                            <span class="step_no">1</span>
+                            <span class="step_descr">
+                                             Personal data<br />
+                                          </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#step-2">
+                            <span class="step_no">2</span>
+                            <span class="step_descr">
+                                             Academic<br />
+                                          </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#step-3">
+                            <span class="step_no">3</span>
+                            <span class="step_descr">
+                                              Parents<br />
+                                          </span>
+                        </a>
+                    </li>
+                </ul>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" href="#pribadi" role="tab" data-toggle="tab">Data Pribadi</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#kost" role="tab" data-toggle="tab">Alamat Kost</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#akademik" role="tab" data-toggle="tab">Akademik</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#ortu" role="tab" data-toggle="tab">Orang tua</a>
-            </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#sekolah" role="tab" data-toggle="tab">Sekolah Asal</a>
-            </li>
-        </ul>
+                <div id="step-1">
+                    <h2 class="StepTitle">Personal Data Content</h2>
+                    <div class="form-horizontal form-label-left">
+                        <div class="col-md-12"><br>
+                            <div class="row">
 
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="pribadi">
 
-                <div class="col-md-12"><br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nama
-                                    &nbsp&nbsp
-                                    <small class="text-danger">* Isi nama sesuai dengan ijazah</small>
-                                </label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Nama">
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nomor Induk Mahasiswa (NIM)</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Nomor Induk Mahasiswa (NIM)">
-                            </div>
-                        </div>
-                    </div>
+                                <div class="row col-sm-offset-1 ">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Name
+                                                &nbsp&nbsp
+                                                <small class="text-danger">
+                                                    * Fill in the name according to the diploma
+                                                </small>
+                                            </label>
+                                            <input type="text" name="nama" th:field="*{nama}"
+                                                   class="form-control"
+                                                   placeholder="Name">
+                                        </div>
+                                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Tempat Lahir</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Tempat lahir">
-                            </div>
-                        </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Student Identification Number (NIM)</label>
+                                            <input type="text" name="nim" readonly
+                                                   class="form-control" th:field="*{nim}"
+                                                   placeholder="Student Identification Number (NIM)">
+                                        </div>
+                                    </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Tanggal Lahir</label>
-                                <input type="date" class="form-control">
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleRadios1">Jenis Kelamin</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                           id="exampleRadios1" value="option1" checked>
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        Laki-laki
-                                    </label>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                           id="exampleRadios1" value="option1">
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        Perempuan
-                                    </label>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Asal Negara</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Asal Negara">
-                            </div>
-                        </div>
-                    </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Religion</label>
+                                            <select name="religion" style="width: 100%!important;"
+                                                    th:field="*{religion}" required
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${agama}"
+                                                        th:value="${data.idAgama}"
+                                                        th:text="${data.agama}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Agama</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Islam</option>
-                                    <option>Kristen</option>
-                                    <option>Katholik</option>
-                                    <option>Hindu</option>
-                                    <option>Budha</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Status Sipil</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Belum Menikah</option>
-                                    <option>Manikah</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Place of birth</label><br>
+                                            <input type="text" name="tempat"
+                                                   class="form-control" th:field="*{tempat}"
+                                                   placeholder="Place of birth">
+                                        </div>
+                                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Alamat</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Alamat">
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="provinsi">Provinsi</label>
-                                <select class="form-control js-example-placeholder-single" id="provinsi"
-                                        name="provinsi">
-                                    <option></option>
-                                    <option>Jawa Barat</option>
-                                    <option>Jawa Tengah</option>
-                                    <option>Jawa Timur</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Date of birth</label>
+                                            <input type="date" th:field="*{tanggalLahir}"
+                                                   name="tanggalLahir"class="form-control">
+                                        </div>
+                                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Kabupaten/Kota</label>
-                                <select class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option>Kota Bogor</option>
-                                    <option>Kota Depok</option>
-                                </select>
-                            </div>
-                        </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>  Status</label><br>
+                                            <label>
+                                                <input name="status" th:field="*{status}" type="checkbox"
+                                                       value="AKTIF" class="js-switch" />
+                                            </label>
+                                        </div>
+                                    </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="kecamatan">Kecamatan</label>
-                                <select class="form-control js-example-placeholder-single" id="kecamatan"
-                                        name="kecamatan">
-                                    <option></option>
-                                    <option>Cisarua</option>
-                                    <option>Megamendung</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Matriculation Status</label><br>
+                                                <input type="radio" th:field="*{statusMatrikulasi}"
+                                                       value="Y"class="flat"
+                                                       name="statusMatrikulasi"> Yes
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input th:field="*{statusMatrikulasi}"
+                                                       type="radio" value="N"class="flat"
+                                                       name="statusMatrikulasi"> No
+                                            </div>
+                                        </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Kelurahan</label>
-                                <select class="form-control js-example-placeholder-single" name="kelurahan">
-                                    <option></option>
-                                    <option>Tugu Utara</option>
-                                    <option>Tugu Selatan</option>
-                                </select>
-                            </div>
-                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">Gender</label><br>
+                                                <input type="radio" class="flat"
+                                                       th:field="*{jenisKelamin}"
+                                                       name="jenisKelamin"value="L"> Male
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input type="radio" class="flat"
+                                                       th:field="*{jenisKelamin}"
+                                                       name="jenisKelamin"value="P"> Female
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="provinsi">Kode Pos</label>
-                                <select class="form-control js-example-tags" id="kodepos" name="Kode Pos">
-                                    <option></option>
-                                    <option></option>
-                                    <option></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Negara</label>
-                                <select class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option>Indonesia</option>
-                                    <option>Singapura</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Tempat Tinggal</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Asrama</option>
-                                    <option>Kost/Sewa</option>
-                                    <option>Sendiri/Keluarga</option>
-                                    <option>Lain-lain</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Pernah Kuliah</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                           id="exampleRadios1" value="option1" checked>
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        Tidak
-                                    </label>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input class="form-check-input" type="radio" name="exampleRadios"
-                                           id="exampleRadios1" value="option1">
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        Ya
-                                    </label>
                                 </div>
+
+                                <hr>
+
+                                <div class="row col-sm-offset-1 ">
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>NIK</label>
+                                            <input type="text" name="nik"  class="form-control"
+                                                   placeholder="NIK" th:field="*{nik}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>NISN</label>
+                                            <input type="text" name="nisn"
+                                                   class="form-control" th:field="*{nisn}"
+                                                   placeholder="NISN">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Area</label>
+                                            <input type="text" hidden="" th:field="*{idKelurahan}"
+                                                   name="idKelurahan">
+                                            <input type="text" hidden="" th:field="*{idKecamatan}"
+                                                   name="idKecamatan">
+                                            <input type="text" hidden="" th:field="*{idKotaKabupaten}"
+                                                   name="idKotaKabupaten">
+                                            <input type="text" hidden="" th:field="*{idProvinsi}"
+                                                   name="idProvinsi">
+                                            <input type="text" class="form-control"
+                                                   id="kelurahan" placeholder="Cari Kabupaten/Kota ..."
+                                                   data-provide="typeahead"
+                                                   th:value="${mahasiswa.idProvinsi  + '  ,  ' +
+                                                   mahasiswa.idKotaKabupaten + '  ,  ' +
+                                                   mahasiswa.idKecamatan + '  ,  ' +
+                                                   mahasiswa.idKelurahan}"
+                                                   autocomplete="off" required autofocus>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Street Name</label>
+                                            <input type="text"
+                                                   name="namaJalan" th:field="*{namaJalan}"
+                                                   class="form-control"
+                                                   placeholder="Street Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Country</label>
+                                            <input type="text" th:field="*{idNegara}"
+                                                   name="idNegara" class="form-control"
+                                                   placeholder="Country">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Country of origin</label>
+                                            <input type="text" th:field="*{kewarganegaraan}"
+                                                   name="kewarganegaraan" class="form-control"
+                                                   placeholder="Country of origin">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>RT</label>
+                                            <input type="text"name="rt" class="form-control"
+                                                   placeholder="RT" th:field="*{rt}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>RW</label>
+                                            <input type="text"name="rw" class="form-control"
+                                                   placeholder="RW" th:field="*{rw}">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Hamlet Name</label>
+                                            <input type="text"
+                                                   name="namaDusun" class="form-control"
+                                                   placeholder="Hamlet Name" th:field="*{namaDusun}">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Postal code</label>
+                                            <input type="text"
+                                                   name="kodepos" required readonly class="form-control"
+                                                   placeholder="Postal code" th:field="*{kodepos}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr>
+                                <div class="row col-sm-offset-1 ">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Live Type</label>
+                                            <select name="jenisTinggal" th:field="*{jenisTinggal}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${tinggal}"
+                                                        th:text="${data.jenisTinggal}"
+                                                        th:value="${data.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Transportation</label>
+                                            <select name="alatTransportasi"
+                                                    th:field="*{alatTransportasi}"
+                                                    class="form-control js-select2">
+                                                <option value="motor">Motor</option>
+                                                <option value="mobil">Mobil</option>
+                                                <option value="bus">Bus</option>
+                                                <option value="kereta">Kereta</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Telephone</label>
+                                            <input type="text" name="teleponRumah" class="form-control"
+                                                   placeholder="Telephone" th:field="*{teleponRumah}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Cellphone</label>
+                                            <input type="text" th:field="*{teleponSeluler}"
+                                                   name="teleponSeluler" class="form-control"
+                                                   placeholder="Cellphone">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Personal Email</label>
+                                            <input type="text" th:field="*{emailPribadi}"
+                                                   name="emailPribadi" class="form-control"
+                                                   placeholder="Personal Email">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Email Tazkia</label>
+                                            <input type="text" th:field="*{emailTazkia}"
+                                                   name="emailTazkia" class="form-control"
+                                                   placeholder="Email Tazkia">
+                                        </div>
+                                    </div>
+
+                                </div>
+
                             </div>
-                        </div>
 
-
-                        <div class="col-md-6">
 
                         </div>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Telepon</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Telepon">
+
+                <div id="step-2">
+                    <h2 class="StepTitle">Academic Content</h2>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <br>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Generation</label>
+                                        <input type="text" name="angkatan"
+                                               class="form-control" th:field="*{angkatan}"
+                                               placeholder="Generation">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Program</label>
+                                        <select name="idProgram" th:field="*{idProgram}"
+                                                class="form-control js-select2">
+                                            <option value=""></option>
+                                            <option th:each="data : ${program}"
+                                                    th:text="${data.namaProgram}"
+                                                    th:value="${data.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Study Programs</label>
+                                        <select name="idProdi" th:field="*{idProdi}"
+                                                class="form-control js-select2">
+                                            <option value=""></option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:text="${data.namaProdi}"
+                                                    th:value="${data.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Concentration</label>
+                                        <select name="idKonsentrasi" th:field="*{idKonsentrasi}"
+                                                class="form-control js-select2">
+                                            <option value=""></option>
+                                            <option th:each="data : ${konsentrasi}"
+                                                    th:text="${data.namaKonsentrasi}"
+                                                    th:value="${data.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+
+
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Ponsel</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Ponsel">
+
+
+                <div id="step-3">
+
+                    <h2 class="StepTitle">Parents Data Content</h2>
+                    <div class="form-horizontal form-label-left">
+                        <div class="col-md-12"><br>
+                            <div class="row">
+
+
+
+                                <div class="row col-sm-offset-1 ">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Father's Name
+                                                &nbsp&nbsp
+                                            </label>
+                                            <input type="text" th:field="*{namaAyah}" name="namaAyah" class="form-control"
+                                                   placeholder="Father's Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Education Level</label>
+                                            <input type="text" name="idJenjangPendidikan"
+                                                   class="form-control" th:field="*{idJenjangPendidikan}"
+                                                   placeholder="Education Level">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Place of birth</label><br>
+                                            <input type="text" name="tempatLahirAyah"
+                                                   class="form-control" th:field="*{tempatLahirAyah}"
+                                                   placeholder="Place of birth">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Date of birth</label>
+                                            <input type="date" name="tanggalLahirAyah"
+                                                   class="form-control" th:field="*{tanggalLahirAyah}">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Job</label><br>
+                                            <input type="text" name="idPekerjaan" class="form-control"
+                                                   placeholder="Job" th:field="*{idPekerjaan}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Revenue</label><br>
+                                            <input type="text" name="penghasilan" class="form-control"
+                                                   placeholder="Revenue" th:field="*{penghasilan}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Religion</label>
+                                            <select name="agama" th:field="*{agama}"
+                                                    class="form-control js-select2" required>
+                                                <option value=""></option>
+                                                <option th:each="data : ${agama}"
+                                                        th:value="${data.idAgama}"
+                                                        th:text="${data.agama}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Live Type</label><br>
+                                                <input type="radio" th:field="*{hidup}"
+                                                       value="H"class="flat"
+                                                       name="hidup"> Hidup
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input th:field="*{hidup}"
+                                                       type="radio" value="M"class="flat"
+                                                       name="hidup"> Meninggal
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Special Needs</label>
+                                            <input type="text" name="kebutuhanKhusus"
+                                                   class="form-control" th:field="*{kebutuhanKhusus}"
+                                                   placeholder="Special Needs">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <input type="hidden" name="idUser" th:field="*{idUser}">
+                                    <input type="hidden" name="ayah" th:field="*{ayah}">
+                                    <input type="hidden" name="ibu" th:field="*{ibu}">
+                                    <input type="hidden" name="wali" th:field="*{wali}">
+
+                                </div>
+
+
+
+
+
+                                <hr>
+
+
+
+
+
+                                <div class="row col-sm-offset-1 ">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Mother's Name
+                                                &nbsp&nbsp
+                                            </label>
+                                            <input type="text" name="namaIbuKandung" class="form-control"
+                                                   placeholder="Mother's Name"
+                                                   th:field="*{namaIbuKandung}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Education Level</label>
+                                            <input type="text" name="idJenjangPendidikanIbu"
+                                                   class="form-control"
+                                                   th:field="*{idJenjangPendidikanIbu}"
+                                                   placeholder="Education Level">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Place of birth</label><br>
+                                            <input type="text" class="form-control"
+                                                   th:field="*{tempatLahirIbu}"
+                                                   placeholder="Place of birth" name="tempatLahirIbu">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Date of birth</label>
+                                            <input type="date" name="tanggalLahirIbu"
+                                                   th:field="*{tanggalLahirIbu}" class="form-control">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Job</label><br>
+                                            <input type="text" name="idPekerjaanIbu" class="form-control"
+                                                   placeholder="Job" th:field="*{idPekerjaanIbu}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Revenue</label><br>
+                                            <input type="text" name="penghasilanIbu" class="form-control"
+                                                   placeholder="Revenue" th:field="*{penghasilanIbu}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Religion</label>
+                                            <select name="agamaIbu" required style="width: 100%!important;"
+                                                    class="form-control js-select2"
+                                                    th:field="*{agamaIbu}">
+                                                <option value=""></option>
+                                                <option th:each="data : ${agama}"
+                                                        th:value="${data.idAgama}"
+                                                        th:text="${data.agama}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Live Status</label><br>
+                                                <input type="radio" th:field="*{statusHidupIbu}"
+                                                       value="H"class="flat"
+                                                       name="statusHidupIbu"> Hidup
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input th:field="*{statusHidupIbu}"
+                                                       type="radio" value="M"class="flat"
+                                                       name="statusHidupIbu"> Meninggal
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Special Needs</label>
+                                            <input type="text" name="kebutuhanKhususIbu"
+                                                   class="form-control" th:field="*{kebutuhanKhususIbu}"
+                                                   placeholder="Special Needs">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <hr>
+
+                                <!--<div class="row col-sm-offset-1 ">-->
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Student Guardian-->
+                                                <!--&nbsp&nbsp-->
+                                            <!--</label>-->
+                                            <!--<input type="text" th:field="*{namaWali}" name="namaWali" class="form-control"-->
+                                                   <!--placeholder="Student Guardian">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Education Level</label>-->
+                                            <!--<input type="text" name="idJenjangPendidikanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--th:field="*{idJenjangPendidikanWali}"-->
+                                                   <!--placeholder="Education Level">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Place of birth</label><br>-->
+                                            <!--<input type="text" name="tempatLahirWali"-->
+                                                   <!--class="form-control" th:field="*{tempatLahirWali}"-->
+                                                   <!--placeholder="Place of birth">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Date of birth</label>-->
+                                            <!--<input type="date" name="tempatLahirWali"-->
+                                                   <!--class="form-control" th:field="*{tanggalLahirWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Job</label><br>-->
+                                            <!--<input type="text" name="idPekerjaanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--placeholder="Job" th:field="*{idPekerjaanWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Revenue</label><br>-->
+                                            <!--<input type="text" name="idPenghasilanWali"-->
+                                                   <!--class="form-control"-->
+                                                   <!--placeholder="Revenue" th:field="*{idPenghasilanWali}">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                             <!--<label>Religion</label>-->
+                                            <!--<select name="agamaWali" th:field="*{agamaWali}"-->
+                                                    <!--class="form-control js-select2">-->
+                                                <!--<option value=""></option>-->
+                                                <!--<option th:each="data : ${agama}"-->
+                                                        <!--th:value="${data.idAgama}"-->
+                                                        <!--th:text="${data.agama}">-->
+                                                <!--</option>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+
+
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div class="form-group">-->
+                                            <!--<label>Special Needs</label>-->
+                                            <!--<input type="text" name="kebutuhanKhususWali"-->
+                                                   <!--class="form-control" th:field="*{kebutuhanKhususWali}"-->
+                                                   <!--placeholder="Special Needs">-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                <!--</div>-->
+
+
+
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Email</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Email">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Prodi Hombase</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Prodi Hombase">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Akta Sertifikat Mengajar</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Akta Sertifikat Mengajar">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <table class="table table-responsive">
-                                    <tr>
-                                        <td>Tidak Aktif? (NA)</td>
-                                        <td><input type="checkbox" class="form-control"></td>
-                                        <td><small class="alert-danger">*) Beri centang jika tidak aktif</small></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
+
+
             </div>
 
+            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+            <br>
+            <center>
+                <input class="btn btn-primary" type="submit" value="Simpan">
+                <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                    <span aria-hidden="true"></span>Batal
+                </a>
+            </center>
 
-
-
-
-
-
-            <div role="tabpanel" class="tab-pane fade" id="kost">
-                <br>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Alamat Kost</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1"
-                                   placeholder="Alamat">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Provinsi</label>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" id="provinsi" name="provinsi">
-                                <option></option>
-                                <option>Jawa Barat</option>
-                                <option>Jawa Tengah</option>
-                                <option>Jawa Timur</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Kabupaten/Kota</label>
-                            <select class="form-control js-example-placeholder-single" name="kokab" style="width: 500px;">
-                                <option></option>
-                                <option>Bogor</option>
-                                <option>Depok</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kecamatan</label><br>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" name="kecamatan">
-                                <option></option>
-                                <option>Cisarua</option>
-                                <option>Megamendung</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kelurahan</label><br>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" name="kelurahab"
-                                    id="kabupaten">
-                                <option></option>
-                                <option>Tugu Utara</option>
-                                <option>Tugu Selatan</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Kode Pos</label>
-                            <select class="form-control js-example-tags" id="kodepos" style="width: 500px;" name="Kode Pos">
-                                <option></option>
-                                <option></option>
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Negara</label>
-                            <select style="width: 500px" class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Indonesia</option>
-                                <option>Singapura</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div role="tabpanel" class="tab-pane fade" id="akademik">
-
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <br>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Fakultas</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Ekonomi</option>
-                                    <option>Pendidikan</option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Jenjang</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Diploma</option>
-                                    <option>Sarjana</option>
-                                    <option>Pascasarjana</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Program Studi</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Akuntansi Syariah</option>
-                                    <option>Ekonomi Syariah</option>
-                                    <option>Bisnis Syariah</option>
-                                    <option>Muamalat</option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Konsentrasi</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>MKI</option>
-                                    <option>Audit</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Pendidikan sebelumnya</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Jenjang Pendidikan Sebelumnya">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Jenjang Pendidikan Sebelumnya</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>SMA</option>
-                                    <option>SMK</option>
-                                    <option>MA</option>
-                                    <option>lainnya</option>
-                                </select>
-                            </div>
-
-                        </div>
-                        <div class="col-md-6">
-                            <br>
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">NIRM</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="NIRM">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">NISN</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="NISN">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Tanggal Masuk</label>
-                                <input type="text" class="form-control" id="datepicker2">
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Status Keaktifan</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Aktif</option>
-                                    <option>Pasif</option>
-                                    <option>Keluar</option>
-                                    <option>Drop Out</option>
-                                    <option>Cuti</option>
-                                    <option>Lulus</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Tanggal Aktif</label>
-                                <input type="text" class="form-control" id="datepicker3">
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-            <div role="tabpanel" class="tab-pane fade" id="ortu">
-                <br>
-                <div class="col-md-12"><br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nama Ayah</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Pekerjaan Ayah">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Agama</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Islam</option>
-                                    <option>Kristen</option>
-                                    <option>Katholik</option>
-                                    <option>Hindu</option>
-                                    <option>Budha</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Pendidikan</label>
-                                <select class="form-control">
-                                    <option>Tidak Tamat SD</option>
-                                    <option>Tamat SD/MI</option>
-                                    <option>Tamat SMP/MTS</option>
-                                    <option>Tamat SMA/SMK/MA</option>
-                                    <option>Diploma 1</option>
-                                    <option>Diploma 2</option>
-                                    <option>Diploma 3</option>
-                                    <option>Diploma 4</option>
-                                    <option>Sarjana Muda</option>
-                                    <option>Sarjana</option>
-                                    <option>Pascasarjana</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Pekerjaan</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Pegawai Negeri</option>
-                                    <option>TNI</option>
-                                    <option>Polisi</option>
-                                    <option>Pegawai Swasta</option>
-                                    <option>Pengusaha</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Hidup</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Hidup</option>
-                                    <option>Sudah Meninggal</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Nama Ibu</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Nama Ibu">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Agama</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Islam</option>
-                                    <option>Kristen</option>
-                                    <option>Katholik</option>
-                                    <option>Hindu</option>
-                                    <option>Budha</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Pendidikan</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Tidak Tamat SD</option>
-                                    <option>Tamat SD/MI</option>
-                                    <option>Tamat SMP/MTS</option>
-                                    <option>Tamat SMA/SMK/MA</option>
-                                    <option>Diploma 1</option>
-                                    <option>Diploma 2</option>
-                                    <option>Diploma 3</option>
-                                    <option>Diploma 4</option>
-                                    <option>Sarjana Muda</option>
-                                    <option>Sarjana</option>
-                                    <option>Pascasarjana</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Pekerjaan</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Pegawai Negeri</option>
-                                    <option>TNI</option>
-                                    <option>Polisi</option>
-                                    <option>Pegawai Swasta</option>
-                                    <option>Pengusaha</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Hidup</label>
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                    <option>Hidup</option>
-                                    <option>Sudah Meninggal</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Penghasilan Orang Tua per bulan</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Penghasilan rata-rata per bulan">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Alamat Orang Tua</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Alamat">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Provinsi</label>
-                                <select class="form-control js-example-placeholder-single" style="width: 500px;"
-                                        name="provinsi">
-                                    <option></option>
-                                    <option>Jawa Barat</option>
-                                    <option>Jawa Tengah</option>
-                                    <option>Jawa Timur</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kabupaten/Kota</label><br>
-                                <select class="form-control js-example-placeholder-single" style="width: 500px;"
-                                        name="kokab">
-                                    <option></option>
-                                    <option>Bogor</option>
-                                    <option>Depok</option>
-                                    <option>Jakarta</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kecamatan</label><br>
-                                <select class="form-control js-example-placeholder-single" style="width: 500px;"
-                                        name="kecamatan">
-                                    <option></option>
-                                    <option>Cisarua</option>
-                                    <option>Megamendung</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kelurahan</label><br>
-                                <select class="form-control js-example-placeholder-single" style="width: 500px;"
-                                        name="kelurahab" id="kabupaten">
-                                    <option></option>
-                                    <option>Tugu Utara</option>
-                                    <option>Tugu Selatan</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Kode Pos</label>
-                                <select class="form-control js-example-tags" style="width: 500px;" name="Kode Pos">
-                                    <option></option>
-                                    <option>54124</option>
-                                    <option>5452</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Negara</label>
-                                <select style="width: 500px" class="form-control js-example-placeholder-single">
-                                    <option></option>
-                                    <option>Indonesia</option>
-                                    <option>Singapura</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Telepon Orang Tua</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Telepon Orang Tua">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Handphone Orang Tua</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Handphone Orang Tua">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exampleFormControlInput1">Email</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                       placeholder="Email">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div role="tabpanel" class="tab-pane fade" id="sekolah">
-                <br>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Alamat Kost</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1"
-                                   placeholder="Alamat">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Provinsi</label>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" id="provinsi" name="provinsi">
-                                <option></option>
-                                <option>Jawa Barat</option>
-                                <option>Jawa Tengah</option>
-                                <option>Jawa Timur</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Kabupaten/Kota</label>
-                            <select class="form-control js-example-placeholder-single" name="kokab" style="width: 500px;">
-                                <option></option>
-                                <option>Bogor</option>
-                                <option>Depok</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kecamatan</label><br>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" name="kecamatan">
-                                <option></option>
-                                <option>Cisarua</option>
-                                <option>Megamendung</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kelurahan</label><br>
-                            <select class="form-control js-example-placeholder-single" style="width: 500px;" name="kelurahab"
-                                    id="kabupaten">
-                                <option></option>
-                                <option>Tugu Utara</option>
-                                <option>Tugu Selatan</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="provinsi">Kode Pos</label>
-                            <select class="form-control js-example-tags" id="kodepos" style="width: 500px;" name="Kode Pos">
-                                <option></option>
-                                <option></option>
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Negara</label>
-                            <select style="width: 500px" class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Indonesia</option>
-                                <option>Singapura</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-        <input class="btn btn-primary" type="submit" value="Simpan">
-        <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
-            <span aria-hidden="true"></span>Batal
-        </a>
-    </div>
 
 
     </div>
 
-
+    </form>
 </section>
 
 </body>

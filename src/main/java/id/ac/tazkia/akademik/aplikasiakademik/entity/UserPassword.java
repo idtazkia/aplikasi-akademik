@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "tb_user_password")
+@Table(name = "s_user_password")
 @Data
 public class UserPassword {
     @Id

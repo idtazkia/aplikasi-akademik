@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Campus<small>form</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+                <form method="post" th:action="@{/kampus/form}" th:object="${kampus}">
+
+                    <div class="form-group">
+                        <label>Campus Code</label>
+                        <input type="text" th:field="*{kodeKampus}" name="kodeKampus" class="form-control" placeholder="Campus Code">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Campus Name</label>
+                        <input type="text" th:field="*{namaKampus}" name="namaKampus" class="form-control" placeholder="Campus Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Description">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Status</label><br>
+                        <label>
+                            <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                        </label >
+                    </div>
+
+                    <input type="hidden" name="id" th:field="*{id}">
+
+                    <div class="form-group">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                        <a th:href="@{/kampus/list}" class="btn btn-primary" role="button">
+                            <span aria-hidden="true"></span>Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
