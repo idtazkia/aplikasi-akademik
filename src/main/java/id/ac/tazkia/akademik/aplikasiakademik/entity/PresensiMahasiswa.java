@@ -35,7 +35,9 @@ public class PresensiMahasiswa {
 
     private Time jamKeluar;
 
-    private String statusPresensi;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private StatusPresensi statusPresensi;
 
     private String catatan;
 
