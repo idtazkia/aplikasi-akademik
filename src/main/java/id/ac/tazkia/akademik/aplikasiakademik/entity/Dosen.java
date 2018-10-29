@@ -19,7 +19,8 @@ public class Dosen {
     @JoinColumn(name = "id_prodi_utama")
     private Prodi prodi;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.Y;
 
     @ManyToOne
     @NotNull
