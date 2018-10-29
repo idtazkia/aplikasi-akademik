@@ -32,7 +32,8 @@ public class SesiKuliah {
     @NotNull private LocalDateTime waktuMulai = LocalDateTime.now();
     @NotNull private LocalDateTime waktuSelesai = LocalDateTime.now();
 
-    @ManyToOne @NotNull
+    @ManyToOne @JoinColumn(name = "id_presensi_dosen")
+    @NotNull
     private PresensiDosen presensiDosen;
 
     @OneToMany

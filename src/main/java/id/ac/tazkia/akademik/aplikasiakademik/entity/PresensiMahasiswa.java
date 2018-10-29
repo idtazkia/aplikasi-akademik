@@ -24,8 +24,6 @@ public class PresensiMahasiswa {
     @JoinColumn(name = "id_krs_detail")
     private KrsDetail krsDetail;
 
-    @ManyToOne @JoinColumn(name = "id_presensi_dosen")
-    private PresensiDosen presensiDosen;
 
     @ManyToOne @JoinColumn(name = "id_sesi_kuliah")
     private SesiKuliah sesiKuliah;

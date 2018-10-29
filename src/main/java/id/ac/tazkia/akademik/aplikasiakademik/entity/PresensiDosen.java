@@ -22,8 +22,6 @@ public class PresensiDosen {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik idTahunAkademik;
 
-    @ManyToOne @JoinColumn(name = "id_sesi_kuliah")
-    private SesiKuliah sesiKuliah;
 
     @ManyToOne
     @JoinColumn(name = "id_jadwal")

@@ -35,7 +35,7 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 		LocalDate tanggalAkhir = LocalDate.now();
 
 		while(i.isBefore(tanggalAkhir)) {
-			rekapPresensiService.isiRekap(i);
+			//rekapPresensiService.isiRekap(i);
 			i = i.plusDays(1);
 		}
 
