@@ -1,5 +1,5 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 public enum StatusRecord {
-    AKTIF, NONAKTIF, HAPUS
+    AKTIF, NONAKTIF, HAPUS, Y, N
 }
