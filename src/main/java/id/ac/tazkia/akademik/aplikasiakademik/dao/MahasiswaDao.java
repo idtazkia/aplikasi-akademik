@@ -14,5 +14,6 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     Page<Mahasiswa> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
     List<Mahasiswa> findByStatusNotInAndUser(StatusRecord statusRecord, User user);
     Mahasiswa findByUser(User user);
+    Mahasiswa findByNim(String nim);
 
 }
