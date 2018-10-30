@@ -41,7 +41,8 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <a href="index.html" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
+                    <a sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:href="@{/dashboard}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
+                    <a sec:authorize="hasAuthority('VIEW_MAHASISWA')" th:href="@{/dashboardmahasiswa}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -197,6 +198,7 @@
                                     <li><a th:href="@{/menumahasiswa/absensi/list}">Attendance</a></li>
                                     <li><a th:href="@{/menumahasiswa/khs/list}">K H S</a></li>
                                     <li><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
+                                    <li><a>Setup Wifi</a></li>
                                 </ul>
                             </li>
 
