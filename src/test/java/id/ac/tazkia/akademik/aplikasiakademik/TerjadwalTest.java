@@ -18,7 +18,7 @@ public class TerjadwalTest {
 
     @Test
     public void testIsiRekapAbsen() {
-        rekapPresensiService.isiRekap(LocalDate.of(2018,10,23));
+        rekapPresensiService.isiRekap(LocalDate.of(2018,9,4));
     }
 
 }

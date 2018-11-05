@@ -22,7 +22,7 @@ public class SesiKuliah {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_jadwal")
     private Jadwal jadwal;
 
@@ -32,10 +32,8 @@ public class SesiKuliah {
     @NotNull private LocalDateTime waktuMulai = LocalDateTime.now();
     @NotNull private LocalDateTime waktuSelesai = LocalDateTime.now();
 
-    @ManyToOne @JoinColumn(name = "id_presensi_dosen")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_presensi_dosen")
     @NotNull
     private PresensiDosen presensiDosen;
-
-    @OneToMany
-    Set<PresensiMahasiswa> daftarPresensiMahasiswa = new HashSet<>();
 }

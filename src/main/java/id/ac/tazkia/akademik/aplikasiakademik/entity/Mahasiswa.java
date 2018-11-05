@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,34 +26,24 @@ public class Mahasiswa {
     @NotNull
     private String angkatan;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_prodi")
-    private  Prodi idProdi;
-
-    @ManyToOne
-    @NotNull
-        @JoinColumn(name = "id_konsentrasi")
-    private  Konsentrasi idKonsentrasi;
-
+    @NotBlank
     private String nim;
 
+    @NotBlank
     private String nama;
 
-    @NotNull
-    private String statusMatrikulasi;
-
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_program")
-    private  Program idProgram;
-
-    private  String jenisKelamin;
+    @Enumerated(EnumType.STRING)
+    private  JenisKelamin jenisKelamin;
 
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_agama")
     private Agama idAgama;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_prodi")
+    private Prodi idProdi;
 
     private  String tempatLahir;
 
@@ -83,9 +74,6 @@ public class Mahasiswa {
 
 
     private String kodepos;
-//    @ManyToOne
-//    @NotNull
-//    @JoinColumn(name = "jenis_tinggal")
     private String jenisTinggal;
     private String alatTransportasi;
     private String teleponRumah;
@@ -101,23 +89,4 @@ public class Mahasiswa {
     @JoinColumn(name = "id_user")
     private  User user;
 
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_ayah")
-    private  Ayah ayah;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_ibu")
-    private  Ibu ibu;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_wali")
-    private  Wali wali ;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_dosen_wali")
-    private  Dosen dosen ;
 }

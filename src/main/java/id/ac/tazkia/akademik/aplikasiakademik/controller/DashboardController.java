@@ -116,8 +116,8 @@ public class DashboardController {
 
         model.addAttribute("JmlKar",karyawanDao.countKaryawanByStatus(StatusRecord.AKTIF));
         model.addAttribute("jmlDosen",dosenDao.countDosenByStatus(StatusRecord.Y));
-        model.addAttribute("jmlL",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,"L"));
-        model.addAttribute("jmlP",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,"P"));
+        model.addAttribute("jmlL",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.PRIA));
+        model.addAttribute("jmlP",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.WANITA));
         model.addAttribute("jmlMhsInA",krsDao.countKrsByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa));
         model.addAttribute("jmlMhsA" ,krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik,StatusRecord.AKTIF));
 

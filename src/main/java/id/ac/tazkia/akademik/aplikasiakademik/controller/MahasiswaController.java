@@ -92,7 +92,7 @@ public class MahasiswaController {
         model.addAttribute("mhsw",mahasiswa);
 
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
-
+/*
         if (mahasiswa.getWali() != null) {
             mahasiswaDto.setId(mahasiswa.getId());
             mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
@@ -221,7 +221,7 @@ public class MahasiswaController {
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
                 model.addAttribute("mahasiswa", mahasiswaDto);
-
+*/
     }
 
     @PostMapping("/mahasiswa/form")
