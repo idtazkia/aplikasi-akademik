@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
     Page<TahunAkademik> findByStatusNotInOrderByKodeTahunAkademikDesc(StatusRecord status, Pageable page);
+    Iterable<TahunAkademik> findByStatusNotInOrderByKodeTahunAkademikDesc(StatusRecord status);
     TahunAkademik findByStatus(StatusRecord status);
     Page<TahunAkademik> findByStatusNotInAndNamaTahunAkademikContainingIgnoreCaseOrderByKodeTahunAkademikDesc(StatusRecord status,String search, Pageable page);
     Iterable<TahunAkademik> findByStatusNotIn(StatusRecord statusRecord);
