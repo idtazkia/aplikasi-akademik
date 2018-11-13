@@ -18,14 +18,25 @@
             </div>
 
 
-                        <form method="get">
-                            <div class="form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Academic Years</label>
-                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" name="tahun" id="autocomplete-custom-append" class="form-control col-md-10"/>
-                                </div>
-                            </div>
-                        </form>
+            <form method="get">
+                <div class="form-group">
+                    <center>
+                        <label>Academic Years :</label>
+                        <select class="form-control js-example-placeholder-single"
+                                style="width: 100%!important;" name="tahunAkademik"
+                                th:value="${search}">
+                            <option></option>
+                            <option th:each="data : ${tahunAkademik}"
+                                    th:text="${data.namaTahunAkademik}"
+                                    th:value="${data.id}">sdasd</option>
+                            <option selected th:if="${search} != null" th:each="data : ${search}"
+                                    th:value="${data.id}"
+                                    th:text="${data.namaTahunAkademik}">Akuntasi Islam</option>
+                        </select><br><br>
+                        <button type="submit" class="btn btn-info">Search</button>
+                    </center>
+                </div>
+            </form>
 <br>
             <div>
                 <Center>
