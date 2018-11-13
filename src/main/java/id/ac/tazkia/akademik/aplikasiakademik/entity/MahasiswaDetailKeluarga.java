@@ -16,6 +16,11 @@ public class MahasiswaDetailKeluarga {
 
     @ManyToOne
     @JsonBackReference
+    @JoinColumn(name = "id_mahasiswa")
+    private  Mahasiswa mahasiswa;
+
+    @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_ayah")
     private  Ayah ayah;
 

@@ -29,6 +29,11 @@ public class Mahasiswa {
     @NotBlank
     private String nim;
 
+//253939947088-qcpk7cs6pc3eeso2v9l900o4kdf06a95.apps.googleusercontent.com idclien
+//
+//    yTTQ1Klaj_94hlv7J9njo8DS rahasiaklien
+
+
     @NotBlank
     private String nama;
 
@@ -45,7 +50,20 @@ public class Mahasiswa {
     @JoinColumn(name = "id_prodi")
     private Prodi idProdi;
 
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_konsentrasi")
+    private  Konsentrasi idKonsentrasi;
+
     private  String tempatLahir;
+
+    @NotNull
+    private String statusMatrikulasi;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_program")
+    private  Program idProgram;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -88,5 +106,10 @@ public class Mahasiswa {
     @ManyToOne
     @JoinColumn(name = "id_user")
     private  User user;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_dosen_wali")
+    private  Dosen dosen ;
 
 }
