@@ -4,266 +4,124 @@
       layout:decorate="~{layout}" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>KRS</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
+
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>STUDY PLAN CARD</h2>
+                <h2>Study Card Plan<small>List</small></h2>
                 <div class="clearfix"></div>
             </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
 
-        <h6 class="border-bottom border-gray pb-2 mb-0"><b><center>KRS STUDENTS</center></b></h6>
-        <br>
-        <form method="get">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="input-group input-group-sm" style="....">
-                                <center>
-                                <table border="0" cellpadding="20" cellspacing="10" align="center">
-                                    <td>
-                                    <div class="form-group">
-                                        <center>
-                                        <label for="exampleFormControlSelect1">Semester Code:</label>
-                                        <select class="form-control js-example-placeholder-single"
-                                                name="provinsi">
-                                            <option></option>
-                                            <option>Semester Ganjil</option>
-                                            <option>Semester genap</option>
-                                            <option>Semester Pendek</option>
-                                        </select>
-                                        </center>
-                                    </div>
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>NIM :</label>
+                                    <input type="text" name="nim"
+                                           class="form-control" required
+                                           placeholder="NIM" th:value="${nim}">
+                                </div>
                             </div>
-                            </td>
-                                    <td>&nbsp;&nbsp;</td>
-                            <td>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label>Academic Years :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="tahunAkademik" required>
+                                    <option></option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:selected="(${data} == *{tahun})"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
+                                </div>
+                            </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <center>
-                                <label>Nim:</label>
-                                <input type="text" class="form-control js-example-placeholder-singel">
-                                </center>
+                                <button type="submit" class="btn btn-info">Search</button>
                             </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+
+            <hr>
+
+            <div th:if="${detail != null}">
+                <Center>
+                    <H2 th:if="${krs != null}" th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
+                </Center>
+            </div>
+            <table class="table table-striped jambo_table bulk_action" width="100%" th:if="${detail != null}">
+                <tr>
+                    <td>Nama : <span th:text="${mahasiswa.nama}"></span></td>
+                    <td th:if="${mahasiswa.dosen != null}">
+                        Pemb Akd : <span th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></span>
+                    </td>
+                    <td th:if="${mahasiswa.dosen == null}">
+                        Pemb Akd : </td>
+                </tr>
+                <tr>
+                    <td>NIM &nbsp;&nbsp; : <span th:text="${mahasiswa.nim}"></span></td>
+                    <td>Studi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                        <span th:text="${mahasiswa.idProdi.namaProdi + ' , ' + mahasiswa.idProdi.idJurusan.namaJurusan + ' , ' + mahasiswa.idProdi.idJurusan.idFakultas.namaFakultas}"></span>
+                    </td>
+                </tr>
+            </table>
+
+
+            <div class="x_content" th:if="${detail != null}">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Day</th>
+                            <th class="column-title">Time</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Class</th>
+                            <th class="column-title">Room</th>
+                            <th class="column-title">Lecture</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${detail}">
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
                             </td>
-                                </table>
-                            &nbsp;&nbsp;
-                            <div><center><button type="button" class="btn btn-primary">Activate</button></center></div>
-                            </div>
-                        </div>
-                    </div>
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
+                            <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
+                            <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
+                            <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
+                            <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                            <td th:text="${data.jadwal.idKelas.namaKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
+                            <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
-        </form>
 
-        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="lh-100">
-                            <h6 class="mb-0 text-white lh-100" align="center">The Limit on the KRS Retrieval / Modification is Complete. KRS Can't Be Changed</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-
-        <form method="get">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add</button>
-                                </div>
-                                <table border="0" cellpadding="9" cellspacing="10">
-                                    <td>
-                                        <select class="form-control js-example-placeholder-single"
-                                            name="provinsi">
-                                            <option></option>
-                                            <option>Aspek Hukum Dalam Ekonomi</option>
-                                            <option>Etika Bisnis Islam</option>
-                                        </select>
-                                    </td>
-                                    <td>&#9654</td>
-                                    <td>List of subjects taken by students:</td>
-                                    <td><button class="btn btn-primary">Print UAS Card</button></td>
-                                    <td><button class="btn btn-primary">Print UTS Card</button></td>
-                                </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <label><b>Monday</b></label>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Lecture Hours</th>
-                    <th>Courses</th>
-                    <th>SKS</th>
-                    <th>Class</th>
-                    <th>Room</th>
-                    <th>Lecturer</th>
-                    <th colspan="2">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>AEM2305</td>
-                    <td>09:31 - 11:10 </td>
-                    <td>Aspek Hukum Dalam Ekonomi</td>
-                    <td>2</td>
-                    <td>BMI-C-16</td>
-                    <td>1.5</td>
-                    <td>Ramawansyah</td>
-                    <td><button class="btn btn-danger">Delete</button></td>
-                </tr>
-                </tbody>
-            </table>
-            <br>
-
-            <label><b>Tuesday</b></label>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Lecture Hours</th>
-                    <th>Courses</th>
-                    <th>SKS</th>
-                    <th>Class</th>
-                    <th>Room</th>
-                    <th>Lecturer</th>
-                    <th colspan="2">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>2</td>
-                    <td>ACC2701</td>
-                    <td>07:50 - 09:30 </td>
-                    <td>Etika Bisnis Islam</td>
-                    <td>2</td>
-                    <td>BMI-C-16</td>
-                    <td>3.1</td>
-                    <td>Neti Dewi Hartati,STP,M.E.Sy</td>
-                    <td><button class="btn btn-danger">Delete</button></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
-
-    <!-- Modal -->
-        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <center><u><b><h5 class="modal-title" id="exampleModalLongTitle">Schedules that can be taken</h5></u></b></center>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group input-group-sm" style="width:90%;">
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-left top_search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search for...">
-                                    <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Go!</button>
-                          </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box-body table-responsive no-padding">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Lecturer</th>
-                                    <th>Class</th>
-                                    <th colspan="2">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>AEM2305</td>
-                                    <td>Ramawansyah</td>
-                                    <td>Aspek Hukum Dalam Ekonomi</td>
-                                    <td>2</td>
-                                    <td><center><div class="col-md-9 col-sm-9 col-xs-12">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" class="flat" checked="checked">
-                                            </label>
-                                        </div></center></td>
-                                </tr>
-                                <tr>
-                                    <td>ACC2701</td>
-                                    <td>Neti Dewi Hartati,STP,M.E.Sy</td>
-                                    <td>Etika Bisnis Islam</td>
-                                    <td>32</td>
-                                    <td><center> <div class="col-md-9 col-sm-9 col-xs-12">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" class="flat" checked="checked">
-                                            </label>
-                                        </div></center></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-success">Save</button>
-                            </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!--End Modal-->
-
 </section>
 </body>
 </html>

@@ -38,7 +38,6 @@ public class Ibu {
     @NotNull
     private String penghasilan;
 
-
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_agama")

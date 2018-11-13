@@ -6,12 +6,12 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
 public class PresensiDosen {
-
 
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -22,21 +22,16 @@ public class PresensiDosen {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik idTahunAkademik;
 
-    private String idJadwalDosen;
 
     @ManyToOne
     @JoinColumn(name = "id_jadwal")
     private Jadwal idJadwal;
 
-    private Date tanggalMasuk;
+    private LocalDateTime waktuMasuk;
+    private LocalDateTime waktuSelesai;
 
-    private Time jamMulai;
-
-    private Time jamSelesai;
-
-    private String beritaAcara;
-
-    private String statusPresensi;
+    @Enumerated(EnumType.STRING) @NotNull
+    private StatusPresensi statusPresensi;
 
     @NotNull
     @Enumerated(EnumType.STRING)

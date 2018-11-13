@@ -24,7 +24,9 @@ function generateRowPersentase(data) {
     matkul = data.matakuliah;
     persentase = data.persentase;
     absen = data.absen;
-    if(persentase < 60){
+    if(persentase < 30) {
+        warna = 'bg-green';
+    }else if(persentase < 60){
         warna='bg-orange';
     }else{
         warna='bg-red';

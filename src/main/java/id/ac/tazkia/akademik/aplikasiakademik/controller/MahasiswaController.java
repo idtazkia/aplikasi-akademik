@@ -47,7 +47,7 @@ public class MahasiswaController {
     private AyahDao ayahDao;
 
     @Autowired
-    private WaliDao waliDao;
+    private MahasiswaDetailKeluargaDao mahasiswaDetailKeluargaDao;
 
     @Autowired
     private IbuDao ibuDao;
@@ -74,9 +74,9 @@ public class MahasiswaController {
     public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimContainingIgnoreCaseOrderByNama(StatusRecord.HAPUS, search,search, page));
+            model.addAttribute("list", mahasiswaDetailKeluargaDao.findByMahasiswaStatusNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByMahasiswaNama(StatusRecord.HAPUS, search,search, page));
         } else {
-            model.addAttribute("list",mahasiswaDao.findByStatusNotIn(StatusRecord.HAPUS,page));
+            model.addAttribute("list",mahasiswaDetailKeluargaDao.findByMahasiswaStatusNotIn(StatusRecord.HAPUS,page));
 
         }
     }
@@ -90,138 +90,136 @@ public class MahasiswaController {
         model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
-
+        MahasiswaDetailKeluarga mahasiswaDetailKeluarga = mahasiswaDetailKeluargaDao.findByMahasiswa(mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
+        if (mahasiswaDetailKeluarga.getWali() != null) {
+            mahasiswaDto.setId(mahasiswaDetailKeluarga.getMahasiswa().getId());
+            mahasiswaDto.setAngkatan(mahasiswaDetailKeluarga.getMahasiswa().getAngkatan());
+            mahasiswaDto.setIdProdi(mahasiswaDetailKeluarga.getMahasiswa().getIdProdi());
+            mahasiswaDto.setIdKonsentrasi(mahasiswaDetailKeluarga.getMahasiswa().getIdKonsentrasi());
+            mahasiswaDto.setNim(mahasiswaDetailKeluarga.getMahasiswa().getNim());
+            mahasiswaDto.setNama(mahasiswaDetailKeluarga.getMahasiswa().getNama());
+            mahasiswaDto.setStatusMatrikulasi(mahasiswaDetailKeluarga.getMahasiswa().getStatusMatrikulasi());
+            mahasiswaDto.setIdProgram(mahasiswaDetailKeluarga.getMahasiswa().getIdProgram());
+            mahasiswaDto.setJenisKelamin(mahasiswaDetailKeluarga.getMahasiswa().getJenisKelamin().name());
+            mahasiswaDto.setReligion(mahasiswaDetailKeluarga.getMahasiswa().getIdAgama());
+            mahasiswaDto.setTempat(mahasiswaDetailKeluarga.getMahasiswa().getTempatLahir());
+            mahasiswaDto.setTanggalLahir(mahasiswaDetailKeluarga.getMahasiswa().getTanggalLahir());
+            mahasiswaDto.setIdKelurahan(mahasiswaDetailKeluarga.getMahasiswa().getIdKelurahan());
+            mahasiswaDto.setIdKecamatan(mahasiswaDetailKeluarga.getMahasiswa().getIdKecamatan());
+            mahasiswaDto.setIdKotaKabupaten(mahasiswaDetailKeluarga.getMahasiswa().getIdKotaKabupaten());
+            mahasiswaDto.setIdProvinsi(mahasiswaDetailKeluarga.getMahasiswa().getIdProvinsi());
+            mahasiswaDto.setIdNegara(mahasiswaDetailKeluarga.getMahasiswa().getIdNegara());
+            mahasiswaDto.setKewarganegaraan(mahasiswaDetailKeluarga.getMahasiswa().getKewarganegaraan());
+            mahasiswaDto.setNik(mahasiswaDetailKeluarga.getMahasiswa().getNik());
+            mahasiswaDto.setNisn(mahasiswaDetailKeluarga.getMahasiswa().getNisn());
+            mahasiswaDto.setNamaJalan(mahasiswaDetailKeluarga.getMahasiswa().getNamaJalan());
+            mahasiswaDto.setRt(mahasiswaDetailKeluarga.getMahasiswa().getRt());
+            mahasiswaDto.setRw(mahasiswaDetailKeluarga.getMahasiswa().getRw());
+            mahasiswaDto.setNamaDusun(mahasiswaDetailKeluarga.getMahasiswa().getNamaDusun());
+            mahasiswaDto.setKodepos(mahasiswaDetailKeluarga.getMahasiswa().getKodepos());
+            mahasiswaDto.setJenisTinggal(mahasiswaDetailKeluarga.getMahasiswa().getJenisTinggal());
+            mahasiswaDto.setAlatTransportasi(mahasiswaDetailKeluarga.getMahasiswa().getAlatTransportasi());
+            mahasiswaDto.setTeleponRumah(mahasiswaDetailKeluarga.getMahasiswa().getTeleponRumah());
+            mahasiswaDto.setTeleponSeluler(mahasiswaDetailKeluarga.getMahasiswa().getTeleponSeluler());
+            mahasiswaDto.setEmailPribadi(mahasiswaDetailKeluarga.getMahasiswa().getEmailPribadi());
+            mahasiswaDto.setEmailTazkia(mahasiswaDetailKeluarga.getMahasiswa().getEmailTazkia());
+            mahasiswaDto.setStatusAktif(mahasiswaDetailKeluarga.getMahasiswa().getStatusAktif());
+            mahasiswaDto.setIdUser(mahasiswaDetailKeluarga.getMahasiswa().getUser());
 
-        if (mahasiswa.getWali() != null) {
-            mahasiswaDto.setId(mahasiswa.getId());
-            mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
-            mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
-            mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
-            mahasiswaDto.setNim(mahasiswa.getNim());
-            mahasiswaDto.setNama(mahasiswa.getNama());
-            mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
-            mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
-            mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
-            mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
-            mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
-            mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
-            mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
-            mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
-            mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
-            mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
-            mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
-            mahasiswaDto.setNik(mahasiswa.getNik());
-            mahasiswaDto.setNisn(mahasiswa.getNisn());
-            mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
-            mahasiswaDto.setRt(mahasiswa.getRt());
-            mahasiswaDto.setRw(mahasiswa.getRw());
-            mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
-            mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
-            mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
-            mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
-            mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
-            mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
-            mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
-            mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
-            mahasiswaDto.setIdUser(mahasiswa.getUser());
+            mahasiswaDto.setIbu(mahasiswaDetailKeluarga.getIbu().getId());
+            mahasiswaDto.setNamaIbuKandung(mahasiswaDetailKeluarga.getIbu().getNamaIbuKandung());
+            mahasiswaDto.setKebutuhanKhususIbu(mahasiswaDetailKeluarga.getIbu().getKebutuhanKhusus());
+            mahasiswaDto.setTempatLahirIbu(mahasiswaDetailKeluarga.getIbu().getTempatLahir());
+            mahasiswaDto.setTanggalLahirIbu(mahasiswaDetailKeluarga.getIbu().getTanggalLahir());
+            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswaDetailKeluarga.getIbu().getIdJenjangPendidikan());
+            mahasiswaDto.setIdPekerjaanIbu(mahasiswaDetailKeluarga.getIbu().getIdPekerjaan());
+            mahasiswaDto.setPenghasilanIbu(mahasiswaDetailKeluarga.getIbu().getPenghasilan());
+            mahasiswaDto.setAgamaIbu(mahasiswaDetailKeluarga.getIbu().getAgama());
+            mahasiswaDto.setStatusHidupIbu(mahasiswaDetailKeluarga.getIbu().getStatusHidup());
 
-            mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
-            mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
-            mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
-            mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
-            mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
-            mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
-            mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+            mahasiswaDto.setAyah(mahasiswaDetailKeluarga.getAyah().getId());
+            mahasiswaDto.setNamaAyah(mahasiswaDetailKeluarga.getAyah().getNamaAyah());
+            mahasiswaDto.setKebutuhanKhusus(mahasiswaDetailKeluarga.getAyah().getKebutuhanKhusus());
+            mahasiswaDto.setTempatLahirAyah(mahasiswaDetailKeluarga.getAyah().getTempatLahir());
+            mahasiswaDto.setTanggalLahirAyah(mahasiswaDetailKeluarga.getAyah().getTanggalLahir());
+            mahasiswaDto.setIdJenjangPendidikan(mahasiswaDetailKeluarga.getAyah().getIdJenjangPendidikan());
+            mahasiswaDto.setIdPekerjaan(mahasiswaDetailKeluarga.getAyah().getIdPekerjaan());
+            mahasiswaDto.setPenghasilan(mahasiswaDetailKeluarga.getAyah().getPenghasilan());
+            mahasiswaDto.setAgama(mahasiswaDetailKeluarga.getAyah().getAgama());
+            mahasiswaDto.setHidup(mahasiswaDetailKeluarga.getAyah().getStatusHidup());
 
-            mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
-            mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
-            mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
-            mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
-            mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
-            mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
-            mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
-
-            mahasiswaDto.setWali(mahasiswa.getWali().getId());
-            mahasiswaDto.setNamaWali(mahasiswa.getWali().getNamaWali());
-            mahasiswaDto.setKebutuhanKhususWali(mahasiswa.getWali().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirWali(mahasiswa.getWali().getTempatLahir());
-            mahasiswaDto.setTanggalLahirWali(mahasiswa.getWali().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanWali(mahasiswa.getWali().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanWali(mahasiswa.getWali().getIdPekerjaan());
-            mahasiswaDto.setIdPenghasilanWali(mahasiswa.getWali().getIdPenghasilan());
-            mahasiswaDto.setAgamaWali(mahasiswa.getWali().getAgama());
+            mahasiswaDto.setWali(mahasiswaDetailKeluarga.getWali().getId());
+            mahasiswaDto.setNamaWali(mahasiswaDetailKeluarga.getWali().getNamaWali());
+            mahasiswaDto.setKebutuhanKhususWali(mahasiswaDetailKeluarga.getWali().getKebutuhanKhusus());
+            mahasiswaDto.setTempatLahirWali(mahasiswaDetailKeluarga.getWali().getTempatLahir());
+            mahasiswaDto.setTanggalLahirWali(mahasiswaDetailKeluarga.getWali().getTanggalLahir());
+            mahasiswaDto.setIdJenjangPendidikanWali(mahasiswaDetailKeluarga.getWali().getIdJenjangPendidikan());
+            mahasiswaDto.setIdPekerjaanWali(mahasiswaDetailKeluarga.getWali().getIdPekerjaan());
+            mahasiswaDto.setIdPenghasilanWali(mahasiswaDetailKeluarga.getWali().getIdPenghasilan());
+            mahasiswaDto.setAgamaWali(mahasiswaDetailKeluarga.getWali().getAgama());
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
 
-        if (mahasiswa.getWali() == null){
-            mahasiswaDto.setId(mahasiswa.getId());
-            mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
-            mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
-            mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
-            mahasiswaDto.setNim(mahasiswa.getNim());
-            mahasiswaDto.setNama(mahasiswa.getNama());
-            mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
-            mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
-            mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
-            mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
-            mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
-            mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
-            mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
-            mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
-            mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
-            mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
-            mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
-            mahasiswaDto.setNik(mahasiswa.getNik());
-            mahasiswaDto.setNisn(mahasiswa.getNisn());
-            mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
-            mahasiswaDto.setRt(mahasiswa.getRt());
-            mahasiswaDto.setRw(mahasiswa.getRw());
-            mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
-            mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
-            mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
-            mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
-            mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
-            mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
-            mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
-            mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
-            mahasiswaDto.setIdUser(mahasiswa.getUser());
+        if (mahasiswaDetailKeluarga.getWali() == null){
+            mahasiswaDto.setId(mahasiswaDetailKeluarga.getMahasiswa().getId());
+            mahasiswaDto.setAngkatan(mahasiswaDetailKeluarga.getMahasiswa().getAngkatan());
+            mahasiswaDto.setIdProdi(mahasiswaDetailKeluarga.getMahasiswa().getIdProdi());
+            mahasiswaDto.setIdKonsentrasi(mahasiswaDetailKeluarga.getMahasiswa().getIdKonsentrasi());
+            mahasiswaDto.setNim(mahasiswaDetailKeluarga.getMahasiswa().getNim());
+            mahasiswaDto.setNama(mahasiswaDetailKeluarga.getMahasiswa().getNama());
+            mahasiswaDto.setStatusMatrikulasi(mahasiswaDetailKeluarga.getMahasiswa().getStatusMatrikulasi());
+            mahasiswaDto.setIdProgram(mahasiswaDetailKeluarga.getMahasiswa().getIdProgram());
+            mahasiswaDto.setJenisKelamin(mahasiswaDetailKeluarga.getMahasiswa().getJenisKelamin().name());
+            mahasiswaDto.setReligion(mahasiswaDetailKeluarga.getMahasiswa().getIdAgama());
+            mahasiswaDto.setTempat(mahasiswaDetailKeluarga.getMahasiswa().getTempatLahir());
+            mahasiswaDto.setTanggalLahir(mahasiswaDetailKeluarga.getMahasiswa().getTanggalLahir());
+            mahasiswaDto.setIdKelurahan(mahasiswaDetailKeluarga.getMahasiswa().getIdKelurahan());
+            mahasiswaDto.setIdKecamatan(mahasiswaDetailKeluarga.getMahasiswa().getIdKecamatan());
+            mahasiswaDto.setIdKotaKabupaten(mahasiswaDetailKeluarga.getMahasiswa().getIdKotaKabupaten());
+            mahasiswaDto.setIdProvinsi(mahasiswaDetailKeluarga.getMahasiswa().getIdProvinsi());
+            mahasiswaDto.setIdNegara(mahasiswaDetailKeluarga.getMahasiswa().getIdNegara());
+            mahasiswaDto.setKewarganegaraan(mahasiswaDetailKeluarga.getMahasiswa().getKewarganegaraan());
+            mahasiswaDto.setNik(mahasiswaDetailKeluarga.getMahasiswa().getNik());
+            mahasiswaDto.setNisn(mahasiswaDetailKeluarga.getMahasiswa().getNisn());
+            mahasiswaDto.setNamaJalan(mahasiswaDetailKeluarga.getMahasiswa().getNamaJalan());
+            mahasiswaDto.setRt(mahasiswaDetailKeluarga.getMahasiswa().getRt());
+            mahasiswaDto.setRw(mahasiswaDetailKeluarga.getMahasiswa().getRw());
+            mahasiswaDto.setNamaDusun(mahasiswaDetailKeluarga.getMahasiswa().getNamaDusun());
+            mahasiswaDto.setKodepos(mahasiswaDetailKeluarga.getMahasiswa().getKodepos());
+            mahasiswaDto.setJenisTinggal(mahasiswaDetailKeluarga.getMahasiswa().getJenisTinggal());
+            mahasiswaDto.setAlatTransportasi(mahasiswaDetailKeluarga.getMahasiswa().getAlatTransportasi());
+            mahasiswaDto.setTeleponRumah(mahasiswaDetailKeluarga.getMahasiswa().getTeleponRumah());
+            mahasiswaDto.setTeleponSeluler(mahasiswaDetailKeluarga.getMahasiswa().getTeleponSeluler());
+            mahasiswaDto.setEmailPribadi(mahasiswaDetailKeluarga.getMahasiswa().getEmailPribadi());
+            mahasiswaDto.setEmailTazkia(mahasiswaDetailKeluarga.getMahasiswa().getEmailTazkia());
+            mahasiswaDto.setStatusAktif(mahasiswaDetailKeluarga.getMahasiswa().getStatusAktif());
+            mahasiswaDto.setIdUser(mahasiswaDetailKeluarga.getMahasiswa().getUser());
 
-            mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
-            mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
-            mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
-            mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
-            mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
-            mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
-            mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+            mahasiswaDto.setIbu(mahasiswaDetailKeluarga.getIbu().getId());
+            mahasiswaDto.setNamaIbuKandung(mahasiswaDetailKeluarga.getIbu().getNamaIbuKandung());
+            mahasiswaDto.setKebutuhanKhususIbu(mahasiswaDetailKeluarga.getIbu().getKebutuhanKhusus());
+            mahasiswaDto.setTempatLahirIbu(mahasiswaDetailKeluarga.getIbu().getTempatLahir());
+            mahasiswaDto.setTanggalLahirIbu(mahasiswaDetailKeluarga.getIbu().getTanggalLahir());
+            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswaDetailKeluarga.getIbu().getIdJenjangPendidikan());
+            mahasiswaDto.setIdPekerjaanIbu(mahasiswaDetailKeluarga.getIbu().getIdPekerjaan());
+            mahasiswaDto.setPenghasilanIbu(mahasiswaDetailKeluarga.getIbu().getPenghasilan());
+            mahasiswaDto.setAgamaIbu(mahasiswaDetailKeluarga.getIbu().getAgama());
+            mahasiswaDto.setStatusHidupIbu(mahasiswaDetailKeluarga.getIbu().getStatusHidup());
 
-            mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
-            mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
-            mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
-            mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
-            mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
-            mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
-            mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
+            mahasiswaDto.setAyah(mahasiswaDetailKeluarga.getAyah().getId());
+            mahasiswaDto.setNamaAyah(mahasiswaDetailKeluarga.getAyah().getNamaAyah());
+            mahasiswaDto.setKebutuhanKhusus(mahasiswaDetailKeluarga.getAyah().getKebutuhanKhusus());
+            mahasiswaDto.setTempatLahirAyah(mahasiswaDetailKeluarga.getAyah().getTempatLahir());
+            mahasiswaDto.setTanggalLahirAyah(mahasiswaDetailKeluarga.getAyah().getTanggalLahir());
+            mahasiswaDto.setIdJenjangPendidikan(mahasiswaDetailKeluarga.getAyah().getIdJenjangPendidikan());
+            mahasiswaDto.setIdPekerjaan(mahasiswaDetailKeluarga.getAyah().getIdPekerjaan());
+            mahasiswaDto.setPenghasilan(mahasiswaDetailKeluarga.getAyah().getPenghasilan());
+            mahasiswaDto.setAgama(mahasiswaDetailKeluarga.getAyah().getAgama());
+            mahasiswaDto.setHidup(mahasiswaDetailKeluarga.getAyah().getStatusHidup());
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
                 model.addAttribute("mahasiswa", mahasiswaDto);
-
     }
 
     @PostMapping("/mahasiswa/form")

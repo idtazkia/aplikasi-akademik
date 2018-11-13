@@ -58,9 +58,9 @@ public class Jadwal {
     @JoinColumn(name = "id_ruangan")
     private Ruangan ruangan;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_kelas")
-    private String idKelas;
+  @ManyToOne
+@JoinColumn(name = "id_kelas")
+    private Kelas idKelas;
 
     private Integer jumlahSesi;
 

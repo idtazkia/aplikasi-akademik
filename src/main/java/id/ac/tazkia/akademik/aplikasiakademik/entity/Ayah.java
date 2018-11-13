@@ -43,7 +43,6 @@ public class Ayah {
     @JoinColumn(name = "id_agama")
     private  Agama agama;
 
-    @NotNull
     private String statusHidup;
 
     @NotNull @Enumerated(EnumType.STRING)

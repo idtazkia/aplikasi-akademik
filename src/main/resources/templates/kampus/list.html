@@ -58,7 +58,7 @@
 
                         <tbody>
                         <tr th:each="dataKampus,row : ${listKampus}" >
-                            <td>1</td>
+                            <td th:text="${(row.count ) + (listKampus.number * listKampus.size)}">1</td>
                             <td th:text="${dataKampus.kodeKampus}"></td>
                             <td>
                                 <a type="button" class="btn btn-success btn-xs" href="form" th:if="${dataKampus.status.AKTIF} == ${dataKampus.status}" th:text="${dataKampus.namaKampus}"  th:href="@{/kampus/form(id = ${dataKampus.id})}">

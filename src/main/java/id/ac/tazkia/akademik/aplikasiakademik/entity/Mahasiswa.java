@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,19 +26,36 @@ public class Mahasiswa {
     @NotNull
     private String angkatan;
 
+    @NotBlank
+    private String nim;
+
+//253939947088-qcpk7cs6pc3eeso2v9l900o4kdf06a95.apps.googleusercontent.com idclien
+//
+//    yTTQ1Klaj_94hlv7J9njo8DS rahasiaklien
+
+
+    @NotBlank
+    private String nama;
+
+    @Enumerated(EnumType.STRING)
+    private  JenisKelamin jenisKelamin;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_agama")
+    private Agama idAgama;
+
     @ManyToOne
     @NotNull
     @JoinColumn(name = "id_prodi")
-    private  Prodi idProdi;
+    private Prodi idProdi;
 
     @ManyToOne
     @NotNull
-        @JoinColumn(name = "id_konsentrasi")
+    @JoinColumn(name = "id_konsentrasi")
     private  Konsentrasi idKonsentrasi;
 
-    private String nim;
-
-    private String nama;
+    private  String tempatLahir;
 
     @NotNull
     private String statusMatrikulasi;
@@ -46,15 +64,6 @@ public class Mahasiswa {
     @NotNull
     @JoinColumn(name = "id_program")
     private  Program idProgram;
-
-    private  String jenisKelamin;
-
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "id_agama")
-    private Agama idAgama;
-
-    private  String tempatLahir;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -83,9 +92,6 @@ public class Mahasiswa {
 
 
     private String kodepos;
-//    @ManyToOne
-//    @NotNull
-//    @JoinColumn(name = "jenis_tinggal")
     private String jenisTinggal;
     private String alatTransportasi;
     private String teleponRumah;
@@ -103,21 +109,7 @@ public class Mahasiswa {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "id_ayah")
-    private  Ayah ayah;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_ibu")
-    private  Ibu ibu;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "id_wali")
-    private  Wali wali ;
-
-    @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "id_dosen_wali")
     private  Dosen dosen ;
+
 }

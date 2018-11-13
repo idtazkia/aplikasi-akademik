@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>KHS</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Study Card Result<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>NIM :</label>
+                                <input type="text" name="nim"
+                                       class="form-control"
+                                       placeholder="NIM" th:value="${nim}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Academic Years :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="tahunAkademik"0>
+                                    <option></option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:selected="(${data} == *{tahun})"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+
+            <hr>
+
+            <table class="table table-striped jambo_table bulk_action" width="100%" th:if="${khs != null}">
+                <tr>
+                    <td>Nama : <span th:text="${mahasiswa.nama}">Gifar Haidar</span></td>
+                    <td>
+                        Pemb Akd : <span th:text="${mahasiswa.dosen}" }>Lebron</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>NIM &nbsp;&nbsp; : <span th:text="${mahasiswa.nim}">11404344</span></td>
+                    <td>Studi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                        <span th:text="${mahasiswa.idProdi.namaProdi}">Akuntansi Islam</span>
+                    </td>
+                </tr>
+            </table>
+
+
+            <div class="x_content" th:if="${khs != null}">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>
+                                <input type="checkbox" id="check-all" class="flat">
+                            </th>
+                            <th class="column-title">#</th>
+                            <th class="column-title">Code</th>
+                            <th class="column-title">Subject</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Presensi</th>
+                            <th class="column-title">Task</th>
+                            <th class="column-title">Mid Semester Exam</th>
+                            <th class="column-title">End Semester Exam</th>
+                            <th class="column-title">Weight</th>
+                            <th class="column-title">Grade</th>
+                            <th class="column-title">Total</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${khs}" >
+                            <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                            </td>
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td th:text="${data.kode}"></td>
+                            <td th:text="${data.mapel}"></td>
+                            <td th:text="${data.sks}"></td>
+                            <td th:text="${data.presensi}"></td>
+                            <td th:text="${data.tugas}"></td>
+                            <td th:text="${data.uts}"></td>
+                            <td th:text="${data.uas}"></td>
+                            <td th:if="${data.total} > ${gradeA.bawah}" th:text="${gradeA.bobot}"></td>
+                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}" th:text="${grademinA.bobot}">A-</td>
+                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}" th:text="${gradeplusB.bobot}">B+</td>
+                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}" th:text="${gradeB.bobot}">B</td>
+                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}" th:text="${grademinB.bobot}">B-</td>
+                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}" th:text="${gradeplusC.bobot}">C+</td>
+                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}" th:text="${gradeC.bobot}">C</td>
+                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}" th:text="${gradeD.bobot}">D</td>
+                            <td th:if="${data.total < gradeE.atas}" th:text="${gradeE.bobot}">E</td>
+
+
+                            <td th:if="${data.total} > ${gradeA.bawah}">A</td>
+                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}">A-</td>
+                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}">B+</td>
+                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}">B</td>
+                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}">B-</td>
+                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}">C+</td>
+                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}">C</td>
+                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}">D</td>
+                            <td th:if="${data.total < gradeE.atas}">E</td>
+
+                            <td th:text="${data.total}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>

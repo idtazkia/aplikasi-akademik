@@ -43,7 +43,6 @@
                     <th scope="col">#</th>
                     <th scope="col">NIM</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Status Matrikulasi</th>
                     <th scope="col">Program Study</th>
                     <th scope="col">Konsentrasi</th>
                     <th scope="col">Program</th>
@@ -53,46 +52,36 @@
                 <tbody>
                 <tr th:each="data,row : ${list}">
                     <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
-                    <td th:text="${data.nim}">1519001</td>
+                    <td th:text="${data.mahasiswa.nim}">1519001</td>
                     <td>
                         <a type="button" class="btn btn-success btn-xs"
-                           th:if="${data.status.AKTIF} == ${data.status}"
-                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
+                           th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}"
+                           th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
                         </a>
 
                         <a type="button" class="btn btn-danger btn-xs"
-                           th:if="${data.status.NONAKTIF} == ${data.status}"
-                           th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
+                           th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}"
+                           th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
                         </a>
                     </td>
-                    <td th:text="${data.statusMatrikulasi}">Ekonomi</td>
-                    <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>
-                    <td th:text="${data.idKonsentrasi.namaKonsentrasi}">Good Job</td>
-                    <td th:text="${data.idProgram.namaProgram}">S2</td>
+                    <td th:text="${data.mahasiswa.idProdi.namaProdi}">Akuntansi Syariah</td>
+                    <td th:text="${data.mahasiswa.idKonsentrasi.namaKonsentrasi}">Good Job</td>
+                    <td th:text="${data.mahasiswa.idProgram.namaProgram}">S2</td>
                     <td align="center">
 
-                        <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.id})}" method="post">
+                        <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.mahasiswa.id})}" method="post">
                             <button type="submit" class="btn btn-danger btn-xs"
-                                    th:if="${data.status.AKTIF} == ${data.status}">
+                                    th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}">
                                 Disable Student
                             </button>
                         </form>
 
-                        <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.id})}" method="post">
+                        <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.mahasiswa.id})}" method="post">
                             <button type="submit" class="btn btn-success         btn-xs"
-                                    th:if="${data.status.NONAKTIF} == ${data.status}">
+                                    th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}">
                                 Enable Student
                             </button>
                         </form>
-
-                        <!--<form method="post">-->
-                            <!--<button type="submit" th:if="${data.status.AKTIF} == ${data.status}"-->
-                                    <!--class="btn btn-danger btn-xs"-->
-                                    <!--th:action="@{/mahasiswa/aktif(mahasiswa = ${data.id})}"-->
-                                    <!--onclick="return confirm('Are you sure want to delete this?')">-->
-                                <!--<i class="ti-eraser"></i>  Enable Student-->
-                            <!--</button>-->
-                        <!--</form>-->
                     </td>
                 </tr>
                 </tbody>

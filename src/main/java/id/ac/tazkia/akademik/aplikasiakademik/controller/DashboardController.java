@@ -30,6 +30,9 @@ public class DashboardController {
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
     private ProdiDao prodiDao;
 
     @Autowired
@@ -103,13 +106,34 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public String daftarDashboard(Model model, Authentication currentUser){
         String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User u=userDao.findByUsername(username);
+        User u =userDao.findByUsername(username);
+        Mahasiswa mahasiswa =mahasiswaDao.findByUser(u);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+
+//        Long krs = krsDao.findByTahunAkademik(tahunAkademik);
+
+
+        model.addAttribute("JmlKar",karyawanDao.countKaryawanByStatus(StatusRecord.AKTIF));
+        model.addAttribute("jmlDosen",dosenDao.countDosenByStatus(StatusRecord.Y));
+        model.addAttribute("jmlL",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.PRIA));
+        model.addAttribute("jmlP",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.WANITA));
+        model.addAttribute("jmlMhsInA",krsDao.countKrsByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa));
+        model.addAttribute("jmlMhsA" ,krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik,StatusRecord.AKTIF));
+
+//        model.addAttribute("jmlMahasiswa",krsDao.countKrsByTahunAkademik(tahunAkademik));
+
+
+
         if (Objects.equals(u.getRole().getId(), "mahasiswa")){
             return "redirect:dashboardmahasiswa";
         }else{
             return "dashboard";
         }
+
     }
+
+
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
