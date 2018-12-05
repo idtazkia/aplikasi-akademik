@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>SIMAK | TAZKIA</title>
+    <title>SMILE STEI TAZKIA</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" th:href="@{/css/vendors/bootstrap/dist/css/bootstrap.min.css}" />
@@ -18,86 +18,69 @@
     <!-- Animate.css -->
     <link th:href="@{/css/vendors/animate.css/animate.min.css}" rel="stylesheet" />
     <!-- Custom Theme Style -->
-    <link th:href="@{/css/build/css/custom.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/build/css/custom.css}" rel="stylesheet" />
 
+    <style>
+        .bg {
+            /* The image used */
+            background-image: url("https://tazkia.ac.id/wp-content/uploads/revslider/tazkia-funtastique/slider-4.jpg");
+            /*background-image: url("/images/back.jpg");*/
+            /* Add the blur effect */
+            filter: blur(4px);
+            -webkit-filter: blur(4px);
+            /* Full height */
+            opacity: 0.7;
+            height: 100%;
 
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .float{
+            margin-left: -450px;
+            margin-top: 30px;
+        }
+    </style>
 
 </head>
 
-<body class="login" style="background-color: #002558">
-<div>
-    <a class="hiddenanchor" id="signup"></a>
-    <a class="hiddenanchor" id="signin"></a>
+<body>
+<div class="login_wrapper">
+    <div class="animate form login_form">
+        <div class="float">
+            <img style="width: 10%; margin-top: -20px" th:src="@{images/logo.png}" />
+        </div>
+        <section class="login_content" style="margin-top: -100px;">
+            <img style="width: 60%; margin-top: 10%;"th:src="@{images/smile.png}" />
+            <form id="sign_in" method="POST" th:action="@{/login}">
+                <h1><img style="width: 55%; margin-top: -15px" th:src="@{images/mele1.png}" /></h1><br>
+                <div>
+                    <!--<img style=" margin-top: -55px" th:src="@{images/mele1.png}" />-->
+                </div>
+                <div style="margin-top: -40px;"><br>
+                    <a th:href="@{/oauth2/authorization/google}" type="button" style="width: 50%;" class="btn btn-round btn-primary btn-lg"><i class="fa fa-google"></i> Sign In</a>
+                </div>
 
-    <div class="login_wrapper">
-        <div class="animate form login_form">
-            <section class="login_content">
-                <img th:src="@{/images/tazkia_VCw_icon.ico}" />
-                <form id="sign_in" method="POST" th:action="@{/login}">
-                    <h1><font color="#f8f8ff">LOGIN SIMAK</font></h1>
-                    <div>
-                        <input type="text" name='username' class="form-control" placeholder="Username" required="" />
-                    </div>
-                    <div>
-                        <input type="password" name='password' class="form-control" placeholder="Password" required="" />
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-default submit">Log in</button>
-                        <a class="reset_pass" href="#"><font color="#f8f8ff">Lost your password?</font></a>
-                    </div>
+
+                <div class="clearfix"></div>
+
+                <div class="separator">
 
                     <div class="clearfix"></div>
+                    <br />
 
-                    <div class="separator">
-
-                        <div class="clearfix"></div>
-                        <br />
-
-                        <div>
-                            <h1><font color="#f8f8ff">STEI TAZKIA</font></h1>
-                            <p><font color="#f8f8ff">©2018 All Rights Reserved. Sistem Informasi Akademik STEI TAZKIA</font></p>
-                        </div>
-                    </div>
-                </form>
-            </section>
-        </div>
-
-        <div id="register" class="animate form registration_form">
-            <section class="login_content">
-                <form>
-                    <h1>Create Account</h1>
                     <div>
-                        <input type="text" class="form-control" placeholder="Username" required="" />
+                        <p><font color="#f8f8ff">©2018 All Rights Reserved. Sistem Informasi Akademik <br>
+                            STEI TAZKIA</font></p>
                     </div>
-                    <div>
-                        <input type="email" class="form-control" placeholder="Email" required="" />
-                    </div>
-                    <div>
-                        <input type="password" class="form-control" placeholder="Password" required="" />
-                    </div>
-                    <div>
-                        <a class="btn btn-default submit" href="index.html">Submit</a>
-                    </div>
-
-                    <div class="clearfix"></div>
-
-                    <div class="separator">
-                        <p class="change_link">Already a member ?
-                            <a href="#signin" class="to_register"> Log in </a>
-                        </p>
-
-                        <div class="clearfix"></div>
-                        <br />
-
-                        <div>
-                            <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                            <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
-                        </div>
-                    </div>
-                </form>
-            </section>
-        </div>
+                </div>
+            </form>
+        </section>
     </div>
 </div>
+
 </body>
+<div class="bg">
+</div>
 </html>
