@@ -30,9 +30,6 @@ public class MahasiswaService {
     private UserPasswordDao userPasswordDao;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private IbuDao ibuDao;
 
     @Autowired
@@ -68,7 +65,7 @@ public class MahasiswaService {
 
         UserPassword up = new UserPassword();
         up.setUser(user);
-        up.setPassword(passwordEncoder.encode(mahasiswa.getNim()));
+        up.setPassword(mahasiswa.getNim());
         userPasswordDao.save(up);
 
         mahasiswa.setUser(user);

@@ -3,6 +3,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.KhsDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +38,16 @@ public class KhsMahasiswaController {
     private TahunAkademikDao tahunAkademikDao;
     @Autowired
     private GradeDao gradeDao;
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @ModelAttribute("listTahunAkademik")
     public Iterable<TahunAkademik> daftarKonfig() {
-        return tahunAkademikDao.findByStatusNotIn(StatusRecord.HAPUS);
+        return tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(StatusRecord.HAPUS);
     }
 
     @GetMapping("/menumahasiswa/khs/list")
-    public void daftarKhs(Model model, Authentication currentUser, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void daftarKhs(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
         model.addAttribute("gradeA", gradeDao.findById("1").get());
         model.addAttribute("grademinA", gradeDao.findById("2").get());
         model.addAttribute("gradeplusB", gradeDao.findById("3").get());
@@ -55,14 +58,13 @@ public class KhsMahasiswaController {
         model.addAttribute("gradeD", gradeDao.findById("8").get());
         model.addAttribute("gradeE", gradeDao.findById("9").get());
 
-        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+        LOGGER.debug("Authentication class : {}", authentication.getClass().getName());
 
-        if (currentUser == null) {
-            LOGGER.warn("user tidak ditemukan");
+        if (authentication == null) {
+            LOGGER.warn("Current user is null");
         }
 
-        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User user = userDao.findByUsername(username);
+        User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa",mahasiswa);

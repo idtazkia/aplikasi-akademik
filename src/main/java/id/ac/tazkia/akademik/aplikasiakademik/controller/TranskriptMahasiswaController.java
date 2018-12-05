@@ -6,6 +6,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.KrsDetail;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Mahasiswa;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
+import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,12 @@ public class TranskriptMahasiswaController {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private TahunAkademikDao tahunAkademikDao;
+    private CurrentUserService currentUserService;
     @Autowired
     private GradeDao gradeDao;
 
     @GetMapping("/menumahasiswa/transkript/list")
-    public void daftarTranskript(Model model, Authentication currentUser){
+    public void daftarTranskript(Model model, Authentication authentication){
         model.addAttribute("gradeA", gradeDao.findById("1").get());
         model.addAttribute("grademinA", gradeDao.findById("2").get());
         model.addAttribute("gradeplusB", gradeDao.findById("3").get());
@@ -48,14 +49,13 @@ public class TranskriptMahasiswaController {
         model.addAttribute("gradeD", gradeDao.findById("8").get());
         model.addAttribute("gradeE", gradeDao.findById("9").get());
 
-        LOGGER.debug("Authentication class : {}", currentUser.getClass().getName());
+        LOGGER.debug("Authentication class : {}", authentication.getClass().getName());
 
-        if (currentUser == null) {
-            LOGGER.warn("user tidak ditemukan");
+        if (authentication == null) {
+            LOGGER.warn("Current user is null");
         }
 
-        String username = ((UserDetails) currentUser.getPrincipal()).getUsername();
-        User user = userDao.findByUsername(username);
+        User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa",mahasiswa);
