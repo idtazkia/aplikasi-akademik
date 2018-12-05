@@ -35,9 +35,6 @@ public class MahasiswaService {
     @Autowired
     private WaliDao waliDao;
 
-    @Autowired
-    private RegistrasiService registrasiService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MahasiswaService.class);
 
     public Mahasiswa prosesMahasiswa(MahasiswaDto mahasiswaDto){
@@ -62,11 +59,6 @@ public class MahasiswaService {
         user.setActive(false);
         user.setRole(rolePendaftar);
         userDao.save(user);
-
-        UserPassword up = new UserPassword();
-        up.setUser(user);
-        up.setPassword(mahasiswa.getNim());
-        userPasswordDao.save(up);
 
         mahasiswa.setUser(user);
     }
