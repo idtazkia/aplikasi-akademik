@@ -50,12 +50,11 @@
                 <!-- menu profile quick info -->
                 <div class="profile clearfix">
                     <div class="profile_pic">
-                        <img th:src="@{/images/jaisul.jpg}" alt="..." class="img-circle profile_img">
+                        <img th:src="${#authentication.principal.picture}" alt="..." class="img-circle profile_img">
                     </div>
                     <div class="profile_info">
                         <span>Welcome,</span>
-                            <h2 th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">Superadmin</h2>
-                        <!--<h2 th:if="${currentUser.get('karyawan')}" th:text="${currentUser.get('karyawan').nama}">Superadmin</h2>-->
+                        <h2 th:text="${#authentication.principal.fullName}">Nama User</h2>
                     </div>
                 </div>
                 <!-- /menu profile quick info -->
@@ -227,7 +226,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="">
                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <img src="production/images/img.jpg" alt="" th:if="${currentUser.get('mahasiswa')}" th:text="${currentUser.get('mahasiswa').nama}">
+                                <img th:src="${#authentication.principal.picture}" alt="" th:text="${#authentication.principal.fullName}">
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -236,12 +235,6 @@
                                         <span>Profile</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <span>Change Password</span>
-                                    </a>
-                                </li>
-
                                 <li>
                                     <hr>
                                     <form name="f" th:action="@{/logout}" method="post">
@@ -283,7 +276,6 @@
         <!-- /footer content -->
     </div>
 </div>
-
 
 
 <script th:src="@{/css/vendors/jquery/dist/jquery.min.js}"></script>
