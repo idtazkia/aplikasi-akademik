@@ -1,47 +1,30 @@
 package id.ac.tazkia.akademik.aplikasiakademik.config;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dao.UserDao;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Permission;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
-    private static final String SQL_LOGIN
-            = "select u.username as username,p.password as password, active\n"
-            + "FROM s_user u\n"
-            + "inner join s_user_password p on p.id_user = u.id\n"
-            + "WHERE u.username = ?";
 
-    private static final String SQL_PERMISSION
-            = "select u.username, p.permission_value as authority "
-            + "from s_user u "
-            + "inner join s_role r on u.id_role = r.id "
-            + "inner join s_role_permission rp on rp.id_role = r.id "
-            + "inner join s_permission p on rp.id_permission = p.id "
-            + "where u.username = ?";
-
-    @Autowired
-    private DataSource ds;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-        auth
-                .jdbcAuthentication()
-                .dataSource(ds)
-                .usersByUsernameQuery(SQL_LOGIN)
-                .authoritiesByUsernameQuery(SQL_PERMISSION)
-                .passwordEncoder(passwordEncoder());
-    }
+    @Autowired private UserDao userDao;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,17 +32,53 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().logout().permitAll()
-                .and().formLogin().defaultSuccessUrl("/dashboard")
-                .loginPage("/login")
-                .permitAll();
+                .and().oauth2Login().loginPage("/login").permitAll()
+                .userInfoEndpoint()
+                .userAuthoritiesMapper(authoritiesMapper())
+                .and().defaultSuccessUrl("/dashboard");
+    }
 
+    private GrantedAuthoritiesMapper authoritiesMapper(){
+        return (authorities) -> {
+            String emailAttrName = "email";
+            String email = authorities.stream()
+                    .filter(OAuth2UserAuthority.class::isInstance)
+                    .map(OAuth2UserAuthority.class::cast)
+                    .filter(userAuthority -> userAuthority.getAttributes().containsKey(emailAttrName))
+                    .map(userAuthority -> userAuthority.getAttributes().get(emailAttrName).toString())
+                    .findFirst()
+                    .orElse(null);
+
+            if (email == null) {
+                return authorities;     // data email tidak ada di userInfo dari Google
+            }
+
+            User user = userDao.findByUsername(email);
+            if(user == null) {
+                return authorities;     // email user ini belum terdaftar di database
+            }
+
+            Set<Permission> userAuthorities = user.getRole().getPermissions();
+            if (userAuthorities.isEmpty()) {
+                return authorities;     // authorities defaultnya ROLE_USER
+            }
+
+            return Stream.concat(
+                    authorities.stream(),
+                    userAuthorities.stream()
+                            .map(Permission::getValue)
+                            .map(SimpleGrantedAuthority::new)
+            ).collect(Collectors.toCollection(ArrayList::new));
+        };
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
+                .antMatchers("/login")
                 .antMatchers("/css/**")
                 .antMatchers("/api/jenjang")
+                .antMatchers("/404")
                 .antMatchers("/images/**");
 
 
@@ -67,8 +86,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(4);
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
     }
-
 }
