@@ -6,13 +6,13 @@ services:
   - mysql:5
 
 variables:
-  MYSQL_RANDOM_ROOT_PASSWORD: yes
-  MYSQL_DATABASE: db_simak
-  MYSQL_USER: tazkia
-  MYSQL_PASSWORD: 12345
-  SPRING_DATASOURCE_URL: jdbc:mysql://mysql/db_simak?useSSL=false
-  SPRING_DATASOURCE_USER: tazkia
-  SPRING_DATASOURCE_PASSWORD: 12345
+  MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+  MYSQL_DATABASE: "db_simak"
+  MYSQL_USER: "tazkia"
+  MYSQL_PASSWORD: "12345"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql/db_simak?useSSL=false"
+  SPRING_DATASOURCE_USER: "tazkia"
+  SPRING_DATASOURCE_PASSWORD: "12345"
 
 stages:
  - build
