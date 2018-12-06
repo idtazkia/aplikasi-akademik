@@ -5,6 +5,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.Program;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.TahunAkademik;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class TahunAkademikDaoTests {
     @Autowired private ProdiDao prodiDao;
     @Autowired private ProgramDao programDao;
 
-    @Test
+    @Test @Ignore
     public void testCariByProdiDanProgram(){
         Prodi prodi = prodiDao.findById("6ef2895b-10b1-472c-8608-e94564f073a0").get();
         Assert.assertNotNull(prodi);
