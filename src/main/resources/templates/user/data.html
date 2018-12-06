@@ -27,7 +27,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2><span th:text="${mahasiswa.nama}"></span> Profile <small>Detail</small></h2>
+                                <h2><span th:text="${mahasiswa.mahasiswa.nama}"></span> Profile <small>Detail</small></h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
@@ -39,31 +39,31 @@
                                     <div class="profile_img">
                                         <div id="crop-avatar">
                                             <!-- Current avatar -->
-                                            <img th:if="${mahasiswa.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
-                                            <img th:if="${mahasiswa.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+                                            <img th:if="${mahasiswa.mahasiswa.jenisKelamin == 'L'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
+                                            <img th:if="${mahasiswa.mahasiswa.jenisKelamin == 'P'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
 
                                         </div>
                                     </div>
 
                                     <!--NAMA-->
                                     <span>
-                                        <h3 th:text="${mahasiswa.nama}">Samuel Rajendra</h3>
+                                        <h3 th:text="${mahasiswa.mahasiswa.nama}">Samuel Rajendra</h3>
                                     </span>
                                     <span>
-                                        <h4 th:text="${mahasiswa.nim}">11404344</h4>
+                                        <h4 th:text="${mahasiswa.mahasiswa.nim}">11404344</h4>
                                     </span>
 
                                     <ul class="list-unstyled user_data">
 
                                         <li>
                                             <i class="fa fa-book user-profile-icon"></i>
-                                            <span th:text="${mahasiswa.idProdi.namaProdi}"></span>
+                                            <span th:text="${mahasiswa.mahasiswa.idProdi.namaProdi}"></span>
                                         </li>
 
 
                                         <li class="m-top-xs">
                                             <i class="fa fa-envelope user-profile-icon"></i>
-                                            <span th:text="${mahasiswa.emailTazkia}"></span>
+                                            <span th:text="${mahasiswa.mahasiswa.emailTazkia}"></span>
                                         </li>
 
                                     </ul>
@@ -118,7 +118,7 @@
                                                                                     </label>
                                                                                     <br>
 
-                                                                                    <span th:text="${mahasiswa.nama}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.nama}">
                                                                                     </span>
 
                                                                                 </div>
@@ -128,7 +128,7 @@
                                                                                     <label>Student Identification Number (NIM)</label>
                                                                                     <br>
 
-                                                                                    <span th:text="${mahasiswa.nim}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.nim}">
                                                                                     </span>
 
                                                                                 </div>
@@ -142,7 +142,7 @@
                                                                                     <label>Religion</label>
                                                                                     <br>
 
-                                                                                    <span th:text="${mahasiswa.idAgama.agama}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idAgama.agama}">
                                                                                     </span>
 
                                                                                 </div>
@@ -153,7 +153,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Place of birth</label><br>
 
-                                                                                    <span th:text="${mahasiswa.tempatLahir}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.tempatLahir}">
                                                                                     </span>
 
 
@@ -166,7 +166,7 @@
                                                                                     <label>Date of birth</label>
                                                                                     <br>
 
-                                                                                    <span th:text="${mahasiswa.tanggalLahir}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.tanggalLahir}">
                                                                                     </span>
 
 
@@ -176,9 +176,7 @@
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
                                                                                     <label class="control-label">Gender</label><br>
-                                                                                    <span th:if="${mahasiswa.jenisKelamin == 'P'}">Perempuan
-                                                                                    </span>
-                                                                                    <span th:if="${mahasiswa.jenisKelamin == 'L'}">Laki-Laki
+                                                                                    <span th:text="${mahasiswa.mahasiswa.jenisKelamin}">
                                                                                     </span>
 
                                                                                 </div>
@@ -195,7 +193,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>NIK</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.nik}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.nik}">
                                                                                     </span>
 
 
@@ -206,7 +204,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>NISN</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.nisn}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.nisn}">
                                                                                     </span>
 
 
@@ -217,7 +215,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Area</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.idProvinsi + '  ,  ' + mahasiswa.idKotaKabupaten + '  ,  ' + mahasiswa.idKecamatan + '  ,  ' + mahasiswa.idKelurahan}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idProvinsi + '  ,  ' + mahasiswa.mahasiswa.idKotaKabupaten + '  ,  ' + mahasiswa.mahasiswa.idKecamatan + '  ,  ' + mahasiswa.mahasiswa.idKelurahan}">
                                                                                     </span>
 
 
@@ -228,7 +226,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Street Name</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.namaJalan}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.namaJalan}">
                                                                                     </span>
 
 
@@ -239,7 +237,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Country</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.idNegara}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idNegara}">
                                                                                     </span>
 
 
@@ -251,7 +249,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Country of origin</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.kewarganegaraan}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.kewarganegaraan}">
                                                                                     </span>
 
 
@@ -263,7 +261,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>RT</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.rt}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.rt}">
                                                                                     </span>
 
 
@@ -275,7 +273,7 @@
                                                                                     <label>RW</label>
                                                                                     <br>
 
-                                                                                    <span th:text="${mahasiswa.rw}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.rw}">
                                                                                     </span>
 
 
@@ -287,7 +285,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Hamlet Name</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.namaDusun}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.namaDusun}">
                                                                                     </span>
 
 
@@ -299,7 +297,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Postal code</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.kodepos}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.kodepos}">
                                                                                     </span>
 
 
@@ -311,8 +309,8 @@
                                                                         <div class="row col-sm-offset-1 ">
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
-                                                                                    <label>Live Type</label>
-                                                                                    <span th:text="${mahasiswa.jenisTinggal}">
+                                                                                    <label>Live Type</label><br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.jenisTinggal}">
                                                                                     </span>
                                                                                     <br>
 
@@ -324,7 +322,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Transportation</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.alatTransportasi}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.alatTransportasi}">
                                                                                     </span>
 
 
@@ -335,7 +333,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Telephone</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.teleponRumah}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.teleponRumah}">
                                                                                     </span>
 
 
@@ -346,7 +344,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Cellphone</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.teleponSeluler}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.teleponSeluler}">
                                                                                     </span>
 
 
@@ -357,7 +355,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Personal Email</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.emailPribadi}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.emailPribadi}">
                                                                                     </span>
 
 
@@ -404,7 +402,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Generation</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.angkatan}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.angkatan}">
                                                                                     </span>
 
                                                                                 </div>
@@ -414,7 +412,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Program</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.idProgram.namaProgram}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idProgram.namaProgram}">
                                                                                     </span>
 
 
@@ -427,7 +425,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Study Programs</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.idProdi.namaProdi}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idProdi.namaProdi}">
                                                                                     </span>
 
 
@@ -439,7 +437,7 @@
                                                                                 <div class="form-group">
                                                                                     <label>Concentration</label>
                                                                                     <br>
-                                                                                    <span th:text="${mahasiswa.idKonsentrasi.namaKonsentrasi}">
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idKonsentrasi.namaKonsentrasi}">
                                                                                     </span>
 
 

@@ -21,7 +21,7 @@ public class MahasiswaDto {
     private String nama;
     private String statusMatrikulasi;
     private Program idProgram;
-    private String jenisKelamin;
+    private JenisKelamin jenisKelamin;
     private Agama religion;
     private String tempat;
     @Column(columnDefinition = "DATE")
@@ -53,6 +53,7 @@ public class MahasiswaDto {
     private User idUser;
     private UserPassword userPassword;
     private String password;
+    private String oldPassword;
 
     private String ayah;
     private String namaAyah;

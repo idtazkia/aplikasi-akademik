@@ -40,11 +40,7 @@
                                 <input type="checkbox" id="check-all" class="flat">
                             </th>
                             <th class="column-title">#</th>
-                            <th class="column-title">Code</th>
                             <th class="column-title">Subject</th>
-                            <th class="column-title">SKS</th>
-                            <th class="column-title">Class</th>
-                            <th class="column-title">Lecture</th>
                             <th class="column-title">Attd</th>
                             <th class="column-title">Miss Attd</th>
                             <th class="column-title">Permit</th>
@@ -57,14 +53,9 @@
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
                             <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.id}"></td>
-                            <td th:text="${data}"></td>
-                            <td th:text="${data}"></td>
-                            <td th:text="${data}"></td>
-                            <td th:text="${data}">3</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td th:text="${data.matakuliah}"></td>
+                            <td th:text="${data.mangkir}"></td>
+                            <td th:text="${data.izin}"></td>
                         </tr>
                         </tbody>
                     </table>

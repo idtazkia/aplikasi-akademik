@@ -29,11 +29,6 @@ public class Mahasiswa {
     @NotBlank
     private String nim;
 
-//253939947088-qcpk7cs6pc3eeso2v9l900o4kdf06a95.apps.googleusercontent.com idclien
-//
-//    yTTQ1Klaj_94hlv7J9njo8DS rahasiaklien
-
-
     @NotBlank
     private String nama;
 

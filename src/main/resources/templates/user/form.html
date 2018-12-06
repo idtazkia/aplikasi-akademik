@@ -9,7 +9,7 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <form>
+    <form method="post" th:action="@{/user/form}" th:object="${mahasiswa}">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
@@ -42,14 +42,6 @@
                                           </span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#step-4">
-                                <span class="step_no">4</span>
-                                <span class="step_descr">
-                                              The origin of the school<br />
-                                          </span>
-                            </a>
-                        </li>
                     </ul>
 
 
@@ -71,33 +63,18 @@
                                                         * Fill in the name according to the diploma
                                                     </small>
                                                 </label>
-                                                <input type="text" name="nama"
+                                                <input type="text" name="nama" th:field="*{nama}"
                                                        class="form-control"
                                                        placeholder="Name">
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Student Identification Number (NIM)</label>
                                                 <input type="text" name="nim" readonly
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{nim}"
                                                        placeholder="Student Identification Number (NIM)">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Username</label>
-                                                <input type="text" name="username" readonly
-                                                       class="form-control"
-                                                       placeholder="Username">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Password</label>
-                                                <input type="text" name="password"
-                                                       class="form-control"
-                                                       placeholder="Password">
                                             </div>
                                         </div>
 
@@ -108,10 +85,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Religion</label>
-                                                <select name="idAgama" style="width: 100%!important;"
+                                                <select name="religion" style="width: 100%!important;"
+                                                        th:field="*{religion}" required
                                                         class="form-control js-select2">
                                                     <option value=""></option>
-                                                    <option>
+                                                    <option th:each="data : ${agama}"
+                                                            th:value="${data.idAgama}"
+                                                            th:text="${data.agama}">
                                                     </option>
                                                 </select>
                                             </div>
@@ -122,7 +102,7 @@
                                             <div class="form-group">
                                                 <label>Place of birth</label><br>
                                                 <input type="text" name="tempat"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{tempat}"
                                                        placeholder="Place of birth">
                                             </div>
                                         </div>
@@ -131,7 +111,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Date of birth</label>
-                                                <input type="date"
+                                                <input type="date" th:field="*{tanggalLahir}"
                                                        name="tanggalLahir"class="form-control">
                                             </div>
                                         </div>
@@ -140,7 +120,7 @@
                                             <div class="form-group">
                                                 <label>  Status</label><br>
                                                 <label>
-                                                    <input name="status"  type="checkbox"
+                                                    <input name="status" th:field="*{status}" type="checkbox"
                                                            value="AKTIF" class="js-switch" />
                                                 </label>
                                             </div>
@@ -150,11 +130,11 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="control-label">Matriculation Status</label><br>
-                                                    <input type="radio"
+                                                    <input type="radio" th:field="*{statusMatrikulasi}"
                                                            value="Y"class="flat"
                                                            name="statusMatrikulasi"> Yes
                                                     &nbsp;&nbsp;&nbsp;
-                                                    <input
+                                                    <input th:field="*{statusMatrikulasi}"
                                                            type="radio" value="N"class="flat"
                                                            name="statusMatrikulasi"> No
                                                 </div>
@@ -164,10 +144,12 @@
                                                 <div class="form-group">
                                                     <label class="control-label">Gender</label><br>
                                                     <input type="radio" class="flat"
-                                                           name="jenisKelamin"value="L"> Male
+                                                           th:field="*{jenisKelamin}"
+                                                           name="jenisKelamin" value="PRIA"> Male
                                                     &nbsp;&nbsp;&nbsp;
                                                     <input type="radio" class="flat"
-                                                           name="jenisKelamin"value="P"> Female
+                                                           th:field="*{jenisKelamin}"
+                                                           name="jenisKelamin" value="WANITA"> Female
                                                 </div>
                                             </div>
                                         </div>
@@ -184,7 +166,7 @@
                                             <div class="form-group">
                                                 <label>NIK</label>
                                                 <input type="text" name="nik"  class="form-control"
-                                                       placeholder="NIK" >
+                                                       placeholder="NIK" th:field="*{nik}">
                                             </div>
                                         </div>
 
@@ -192,7 +174,7 @@
                                             <div class="form-group">
                                                 <label>NISN</label>
                                                 <input type="text" name="nisn"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{nisn}"
                                                        placeholder="NISN">
                                             </div>
                                         </div>
@@ -200,17 +182,21 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Area</label>
-                                                <input type="text" hidden=""
+                                                <input type="text" hidden="" th:field="*{idKelurahan}"
                                                        name="idKelurahan">
-                                                <input type="text" hidden=""
+                                                <input type="text" hidden="" th:field="*{idKecamatan}"
                                                        name="idKecamatan">
-                                                <input type="text" hidden=""
+                                                <input type="text" hidden="" th:field="*{idKotaKabupaten}"
                                                        name="idKotaKabupaten">
-                                                <input type="text" hidden=""
+                                                <input type="text" hidden="" th:field="*{idProvinsi}"
                                                        name="idProvinsi">
                                                 <input type="text" class="form-control"
                                                        id="kelurahan" placeholder="Cari Kabupaten/Kota ..."
                                                        data-provide="typeahead"
+                                                       th:value="${mahasiswa.idProvinsi  + '  ,  ' +
+                                                   mahasiswa.idKotaKabupaten + '  ,  ' +
+                                                   mahasiswa.idKecamatan + '  ,  ' +
+                                                   mahasiswa.idKelurahan}"
                                                        autocomplete="off" required autofocus>
                                             </div>
                                         </div>
@@ -219,7 +205,7 @@
                                             <div class="form-group">
                                                 <label>Street Name</label>
                                                 <input type="text"
-                                                       name="namaJalan"
+                                                       name="namaJalan" th:field="*{namaJalan}"
                                                        class="form-control"
                                                        placeholder="Street Name">
                                             </div>
@@ -228,7 +214,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Country</label>
-                                                <input type="text"
+                                                <input type="text" th:field="*{idNegara}"
                                                        name="idNegara" class="form-control"
                                                        placeholder="Country">
                                             </div>
@@ -238,7 +224,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Country of origin</label>
-                                                <input type="text"
+                                                <input type="text" th:field="*{kewarganegaraan}"
                                                        name="kewarganegaraan" class="form-control"
                                                        placeholder="Country of origin">
                                             </div>
@@ -249,7 +235,7 @@
                                             <div class="form-group">
                                                 <label>RT</label>
                                                 <input type="text"name="rt" class="form-control"
-                                                       placeholder="RT">
+                                                       placeholder="RT" th:field="*{rt}">
                                             </div>
                                         </div>
 
@@ -257,7 +243,7 @@
                                             <div class="form-group">
                                                 <label>RW</label>
                                                 <input type="text"name="rw" class="form-control"
-                                                       placeholder="RW">
+                                                       placeholder="RW" th:field="*{rw}">
                                             </div>
                                         </div>
 
@@ -267,7 +253,7 @@
                                                 <label>Hamlet Name</label>
                                                 <input type="text"
                                                        name="namaDusun" class="form-control"
-                                                       placeholder="Hamlet Name">
+                                                       placeholder="Hamlet Name" th:field="*{namaDusun}">
                                             </div>
                                         </div>
 
@@ -277,7 +263,7 @@
                                                 <label>Postal code</label>
                                                 <input type="text"
                                                        name="kodepos" required readonly class="form-control"
-                                                       placeholder="Postal code">
+                                                       placeholder="Postal code" th:field="*{kodepos}">
                                             </div>
                                         </div>
                                     </div>
@@ -287,10 +273,12 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Live Type</label>
-                                                <select name="jenisTinggal"
+                                                <select name="jenisTinggal" th:field="*{jenisTinggal}"
                                                         class="form-control js-select2">
                                                     <option value=""></option>
-                                                    <option></option>
+                                                    <option th:each="data : ${tinggal}"
+                                                            th:text="${data.jenisTinggal}"
+                                                            th:value="${data.id}"></option>
                                                 </select>
                                             </div>
                                         </div>
@@ -299,6 +287,7 @@
                                             <div class="form-group">
                                                 <label>Transportation</label>
                                                 <select name="alatTransportasi"
+                                                        th:field="*{alatTransportasi}"
                                                         class="form-control js-select2">
                                                     <option value="motor">Motor</option>
                                                     <option value="mobil">Mobil</option>
@@ -312,14 +301,14 @@
                                             <div class="form-group">
                                                 <label>Telephone</label>
                                                 <input type="text" name="teleponRumah" class="form-control"
-                                                       placeholder="Telephone">
+                                                       placeholder="Telephone" th:field="*{teleponRumah}">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Cellphone</label>
-                                                <input type="text"
+                                                <input type="text" th:field="*{teleponSeluler}"
                                                        name="teleponSeluler" class="form-control"
                                                        placeholder="Cellphone">
                                             </div>
@@ -328,7 +317,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Personal Email</label>
-                                                <input type="text"
+                                                <input type="text" th:field="*{emailPribadi}"
                                                        name="emailPribadi" class="form-control"
                                                        placeholder="Personal Email">
                                             </div>
@@ -337,7 +326,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Email Tazkia</label>
-                                                <input type="text"
+                                                <input type="text" th:field="*{emailTazkia}"
                                                        name="emailTazkia" class="form-control"
                                                        placeholder="Email Tazkia">
                                             </div>
@@ -364,18 +353,20 @@
                                         <div class="form-group">
                                             <label>Generation</label>
                                             <input type="text" name="angkatan"
-                                                   class="form-control"
-                                                   placeholder="Generation">
+                                                   class="form-control" th:field="*{angkatan}"
+                                                   placeholder="Generation" readonly>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Program</label>
-                                            <select name="idProgram"
-                                                    class="form-control js-select2">
+                                            <select name="idProgram" th:field="*{idProgram}"
+                                                    class="form-control js-select2" readonly="">
                                                 <option value=""></option>
-                                                <option>
+                                                <option th:each="data : ${program}"
+                                                        th:text="${data.namaProgram}"
+                                                        th:value="${data.id}">
                                                 </option>
                                             </select>
                                         </div>
@@ -386,10 +377,12 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Study Programs</label>
-                                            <select name="idProdi"
-                                                    class="form-control js-select2">
+                                            <select name="idProdi" th:field="*{idProdi}"
+                                                    class="form-control js-select2" readonly="">
                                                 <option value=""></option>
-                                                <option>
+                                                <option th:each="data : ${prodi}"
+                                                        th:text="${data.namaProdi}"
+                                                        th:value="${data.id}">
                                                 </option>
                                             </select>
                                         </div>
@@ -399,10 +392,12 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Concentration</label>
-                                            <select name="idKonsentrasi"
-                                                    class="form-control js-select2">
+                                            <select name="idKonsentrasi" th:field="*{idKonsentrasi}"
+                                                    class="form-control js-select2" readonly="">
                                                 <option value=""></option>
-                                                <option >
+                                                <option th:each="data : ${konsentrasi}"
+                                                        th:text="${data.namaKonsentrasi}"
+                                                        th:value="${data.id}">
                                                 </option>
                                             </select>
                                         </div>
@@ -435,7 +430,7 @@
                                                 <label>Father's Name
                                                     &nbsp&nbsp
                                                 </label>
-                                                <input type="text" name="namaAyah" class="form-control"
+                                                <input type="text" th:field="*{namaAyah}" name="namaAyah" class="form-control"
                                                        placeholder="Father's Name">
                                             </div>
                                         </div>
@@ -444,7 +439,7 @@
                                             <div class="form-group">
                                                 <label>Education Level</label>
                                                 <input type="text" name="idJenjangPendidikan"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{idJenjangPendidikan}"
                                                        placeholder="Education Level">
                                             </div>
                                         </div>
@@ -454,7 +449,7 @@
                                             <div class="form-group">
                                                 <label>Place of birth</label><br>
                                                 <input type="text" name="tempatLahirAyah"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{tempatLahirAyah}"
                                                        placeholder="Place of birth">
                                             </div>
                                         </div>
@@ -464,7 +459,7 @@
                                             <div class="form-group">
                                                 <label>Date of birth</label>
                                                 <input type="date" name="tanggalLahirAyah"
-                                                       class="form-control" >
+                                                       class="form-control" th:field="*{tanggalLahirAyah}">
                                             </div>
                                         </div>
 
@@ -473,7 +468,7 @@
                                             <div class="form-group">
                                                 <label>Job</label><br>
                                                 <input type="text" name="idPekerjaan" class="form-control"
-                                                       placeholder="Job" >
+                                                       placeholder="Job" th:field="*{idPekerjaan}">
                                             </div>
                                         </div>
 
@@ -481,17 +476,19 @@
                                             <div class="form-group">
                                                 <label>Revenue</label><br>
                                                 <input type="text" name="penghasilan" class="form-control"
-                                                       placeholder="Revenue" >
+                                                       placeholder="Revenue" th:field="*{penghasilan}">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Religion</label>
-                                                <select name="agama"
+                                                <select name="agama" th:field="*{agama}" required
                                                         class="form-control js-select2">
                                                     <option value=""></option>
-                                                    <option >
+                                                    <option th:each="data : ${agama}"
+                                                            th:value="${data.idAgama}"
+                                                            th:text="${data.agama}">
                                                     </option>
                                                 </select>
                                             </div>
@@ -501,11 +498,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Live Type</label><br>
-                                                <input type="radio"
+                                                <input type="radio" th:field="*{hidup}"
                                                        value="H"class="flat"
                                                        name="hidup"> Hidup
                                                 &nbsp;&nbsp;&nbsp;
-                                                <input
+                                                <input th:field="*{hidup}"
                                                        type="radio" value="M"class="flat"
                                                        name="hidup"> Meninggal
                                             </div>
@@ -515,15 +512,16 @@
                                             <div class="form-group">
                                                 <label>Special Needs</label>
                                                 <input type="text" name="kebutuhanKhusus"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{kebutuhanKhusus}"
                                                        placeholder="Special Needs">
                                             </div>
                                         </div>
-                                        <input type="hidden" name="id" >
-                                        <input type="hidden" name="idUser" >
-                                        <input type="hidden" name="ayah" >
-                                        <input type="hidden" name="ibu" >
-                                        <input type="hidden" name="wali" >
+                                        <input type="hidden" name="id" th:field="*{id}">
+                                        <input type="hidden" name="idUser" th:field="*{idUser}">
+                                        <input type="hidden" name="ayah" th:field="*{ayah}">
+                                        <input type="hidden" name="ibu" th:field="*{ibu}">
+                                        <input type="hidden" name="wali" th:field="*{wali}">
+                                        <input type="hidden" name="userPassword" th:field="*{userPassword}">
 
                                     </div>
 
@@ -546,7 +544,7 @@
                                                 </label>
                                                 <input type="text" name="namaIbuKandung" class="form-control"
                                                        placeholder="Mother's Name"
-                                                       >
+                                                       th:field="*{namaIbuKandung}">
                                             </div>
                                         </div>
 
@@ -555,6 +553,7 @@
                                                 <label>Education Level</label>
                                                 <input type="text" name="idJenjangPendidikanIbu"
                                                        class="form-control"
+                                                       th:field="*{idJenjangPendidikanIbu}"
                                                        placeholder="Education Level">
                                             </div>
                                         </div>
@@ -563,7 +562,7 @@
                                             <div class="form-group">
                                                 <label>Place of birth</label><br>
                                                 <input type="text" class="form-control"
-
+                                                       th:field="*{tempatLahirIbu}"
                                                        placeholder="Place of birth" name="tempatLahirIbu">
                                             </div>
                                         </div>
@@ -573,7 +572,7 @@
                                             <div class="form-group">
                                                 <label>Date of birth</label>
                                                 <input type="date" name="tanggalLahirIbu"
-                                                       class="form-control">
+                                                       th:field="*{tanggalLahirIbu}" class="form-control">
                                             </div>
                                         </div>
 
@@ -582,7 +581,7 @@
                                             <div class="form-group">
                                                 <label>Job</label><br>
                                                 <input type="text" name="idPekerjaanIbu" class="form-control"
-                                                       placeholder="Job" >
+                                                       placeholder="Job" th:field="*{idPekerjaanIbu}">
                                             </div>
                                         </div>
 
@@ -590,18 +589,20 @@
                                             <div class="form-group">
                                                 <label>Revenue</label><br>
                                                 <input type="text" name="penghasilanIbu" class="form-control"
-                                                       placeholder="Revenue" >
+                                                       placeholder="Revenue" th:field="*{penghasilanIbu}">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Religion</label>
-                                                <select name="agamaIbu" style="width: 100%!important;"
+                                                <select name="agamaIbu" style="width: 100%!important;" required
                                                         class="form-control js-select2"
-                                                       >
+                                                        th:field="*{agamaIbu}">
                                                     <option value=""></option>
-                                                    <option>
+                                                    <option th:each="data : ${agama}"
+                                                            th:value="${data.idAgama}"
+                                                            th:text="${data.agama}">
                                                     </option>
                                                 </select>
                                             </div>
@@ -611,11 +612,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Live Status</label><br>
-                                                <input type="radio"
+                                                <input type="radio" th:field="*{statusHidupIbu}"
                                                        value="H"class="flat"
                                                        name="statusHidupIbu"> Hidup
                                                 &nbsp;&nbsp;&nbsp;
-                                                <input
+                                                <input th:field="*{statusHidupIbu}"
                                                        type="radio" value="M"class="flat"
                                                        name="statusHidupIbu"> Meninggal
                                             </div>
@@ -625,7 +626,7 @@
                                             <div class="form-group">
                                                 <label>Special Needs</label>
                                                 <input type="text" name="kebutuhanKhususIbu"
-                                                       class="form-control"
+                                                       class="form-control" th:field="*{kebutuhanKhususIbu}"
                                                        placeholder="Special Needs">
                                             </div>
                                         </div>
@@ -634,92 +635,6 @@
 
                                     <hr>
 
-                                    <div class="row col-sm-offset-1 ">
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Student Guardian
-                                                    &nbsp&nbsp
-                                                </label>
-                                                <input type="text"  name="namaWali" class="form-control"
-                                                       placeholder="Student Guardian">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Education Level</label>
-                                                <input type="text" name="idJenjangPendidikanWali"
-                                                       class="form-control"
-
-                                                       placeholder="Education Level">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Place of birth</label><br>
-                                                <input type="text" name="tempatLahirWali"
-                                                       class="form-control"
-                                                       placeholder="Place of birth">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date of birth</label>
-                                                <input type="date" name="tempatLahirWali"
-                                                       class="form-control" >
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Job</label><br>
-                                                <input type="text" name="idPekerjaanWali"
-                                                       class="form-control"
-                                                       placeholder="Job" >
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Revenue</label><br>
-                                                <input type="text" name="idPenghasilanWali"
-                                                       class="form-control"
-                                                       placeholder="Revenue" >
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Religion</label>
-                                                <select name="agamaWali"
-                                                        class="form-control js-select2">
-                                                    <option value=""></option>
-                                                    <option >
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Special Needs</label>
-                                                <input type="text" name="kebutuhanKhususWali"
-                                                       class="form-control"
-                                                       placeholder="Special Needs">
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
 
                                 </div>
                             </div>
@@ -727,11 +642,6 @@
 
 
                     </div>
-
-
-                    <div id="step-4">
-                    </div>
-
                 </div>
 
                 <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
@@ -757,12 +667,6 @@
 <script>
     $(".js-example-placeholder-single").select2({
         placeholder: "Pilih Salah Satu",
-        allowClear: true
-    });
-
-    $(".js-example-tags").select2({
-        tags: true,
-        placeholder: "Pilih Kode Pos",
         allowClear: true
     });
 

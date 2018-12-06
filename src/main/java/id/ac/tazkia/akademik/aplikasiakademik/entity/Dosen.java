@@ -27,5 +27,5 @@ public class Dosen {
     @JoinColumn(name = "id_karyawan")
     private Karyawan karyawan;
 
-    private String absen;
+    private Integer absen;
 }
