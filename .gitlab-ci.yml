@@ -11,7 +11,7 @@ variables:
   MYSQL_USER: "tazkia"
   MYSQL_PASSWORD: "12345"
   SPRING_DATASOURCE_URL: "jdbc:mysql://mysql/db_simak?useSSL=false"
-  SPRING_DATASOURCE_USER: "tazkia"
+  SPRING_DATASOURCE_USERNAME: "tazkia"
   SPRING_DATASOURCE_PASSWORD: "12345"
 
 stages:
