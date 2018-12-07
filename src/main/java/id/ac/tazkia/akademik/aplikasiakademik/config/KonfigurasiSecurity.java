@@ -35,7 +35,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .and().oauth2Login().loginPage("/login").permitAll()
                 .userInfoEndpoint()
                 .userAuthoritiesMapper(authoritiesMapper())
-                .and().defaultSuccessUrl("/dashboard");
+                .and().defaultSuccessUrl("/dashboard",true);
     }
 
     private GrantedAuthoritiesMapper authoritiesMapper(){

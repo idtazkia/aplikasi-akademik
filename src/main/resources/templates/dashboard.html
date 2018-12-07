@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,7 @@
 </head>
 <body>
 
-<section layout:fragment="main" class="content">
+<section layout:fragment="main" class="content" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
     <div class="row tile_count">
         <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
             <span class="count_top"><i class="fa fa-user"></i> Total Employee</span>
