@@ -76,7 +76,7 @@ public class DashboardController {
         User user = currentUserService.currentUser(authentication);
 
         if (user == null){
-            return "/dashboard";
+            return "dashboard";
         }
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
