@@ -30,7 +30,7 @@ public class RekapPresensiService {
     @Autowired private RekapKehadiranMahasiswaDao rekapKehadiranMahasiswaDao;
 
     // tiap jam 1 malam
-    @Scheduled(cron = "* * 10 * * *")
+    @Scheduled(cron = "* * 1 * * *")
     public void isiRekap(){
         isiRekap(LocalDate.now().minusDays(1));
     }
