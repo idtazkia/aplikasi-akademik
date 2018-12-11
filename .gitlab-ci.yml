@@ -28,6 +28,8 @@ maven-build:
 deploy-to-production:
  image: debian:latest
  stage: deploy
+ only:
+    - /-RELEASE$/
  script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
