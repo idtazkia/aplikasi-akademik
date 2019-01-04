@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface KurikulumDao extends PagingAndSortingRepository<Kurikulum, String> {
 
-    Page<Kurikulum> findByStatusNotIn(StatusRecord status, Pageable page);
+    Page<Kurikulum> findByStatusNotInAndProdi(StatusRecord status,Prodi prodi, Pageable page);
+    Kurikulum findByProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
 
 }

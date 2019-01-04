@@ -3,11 +3,9 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -20,7 +18,7 @@ public class Kurikulum {
 
     @ManyToOne
     @JoinColumn(name = "id_prodi")
-    private Prodi idProdi;
+    private Prodi prodi;
 
     private String tahunKurikulum;
 
