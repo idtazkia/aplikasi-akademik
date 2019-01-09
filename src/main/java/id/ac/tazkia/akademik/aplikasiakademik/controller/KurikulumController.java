@@ -11,9 +11,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
 
 @Controller
 public class KurikulumController {
@@ -36,7 +40,28 @@ public class KurikulumController {
     }
 
     @GetMapping("/kurikulum/form")
-    public void  formKurikulum(){
+    public void  formKurikulum(Model model,@RequestParam(required = false, name = "id")
+            Kurikulum kurikulum){
+        model.addAttribute("prodi",prodiDao.findByStatusNotIn(StatusRecord.HAPUS));
+        model.addAttribute("kurikulum", new Kurikulum());
+
+        if (kurikulum != null){
+            model.addAttribute("kurikulum",kurikulum);
+        }
+    }
+
+    @PostMapping("/kurikulum/form")
+    public String prosesKurikulum(@ModelAttribute @Valid Kurikulum kurikulum, BindingResult errors){
+
+        if(errors.hasErrors()){
+            return "form";
+        }
+
+        kurikulum.setJumlahSesi(2);
+        kurikulum.setSesi("semester");
+        kurikulumDao.save(kurikulum);
+
+        return "redirect:list";
     }
 
     @PostMapping("/kurikulum/aktif")
