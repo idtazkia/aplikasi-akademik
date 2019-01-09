@@ -34,6 +34,12 @@
     <link th:href="@{/css/build/css/custom.min.css}" rel="stylesheet">
     <link th:href="@{/css/select2/css/select2.css}" rel="stylesheet">
 
+    <link th:href="@{/css/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css}" rel="stylesheet">
+
     <!--404-->
     <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
 
@@ -72,7 +78,7 @@
                     <div class="menu_section">
                         <h3>General</h3>
                         <ul class="nav side-menu">
-                            <li><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
+                            <li sec:authorize="hasAuthority('ROLE_USER')"><a th:href="@{/dashboard}"><i class="fa fa-home"></i> Home </a></li>
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-gear"></i> Administrator <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Equipment<span class="fa fa-chevron-down"></span></a>
@@ -127,6 +133,7 @@
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/akademik/list}">Academic Years</a></li>
                                             <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
+                                            <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
                                             <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
                                             <li><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
                                         </ul>
@@ -328,6 +335,21 @@
 <script th:src="@{/css/build/js/custom.min.js}"></script>
 <script th:src="@{/css/select2/js/select2.min.js}"></script>
 <script th:src="@{/css/docs/js/aplikasi.js}"></script>
+
+<script th:src="@{/css/vendors/datatables.net/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-buttons/js/dataTables.buttons.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-buttons/js/buttons.flash.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-buttons/js/buttons.html5.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-buttons/js/buttons.print.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-responsive/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js}"></script>
+<script th:src="@{/css/vendors/datatables.net-scroller/js/dataTables.scroller.min.js}"></script>
+
+
 <script src="https://cdn.rawgit.com/bassjobsen/Bootstrap-3-Typeahead/master/bootstrap3-typeahead.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
 
