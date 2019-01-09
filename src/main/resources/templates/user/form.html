@@ -27,16 +27,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#step-2">
-                                <span class="step_no">2</span>
-                                <span class="step_descr">
-                                             Academic<br />
-                                          </span>
-                            </a>
-                        </li>
-                        <li>
                             <a href="#step-3">
-                                <span class="step_no">3</span>
+                                <span class="step_no">2</span>
                                 <span class="step_descr">
                                               Parents<br />
                                           </span>
@@ -60,7 +52,7 @@
                                                 <label>Name
                                                     &nbsp&nbsp
                                                     <small class="text-danger">
-                                                        * Fill in the name according to the diploma
+                                                        * Fill in the name according to the last certificate (Ijazah terakhir)
                                                     </small>
                                                 </label>
                                                 <input type="text" name="nama" th:field="*{nama}"
@@ -118,39 +110,14 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>  Status</label><br>
-                                                <label>
-                                                    <input name="status" th:field="*{status}" type="checkbox"
-                                                           value="AKTIF" class="js-switch" />
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="control-label">Matriculation Status</label><br>
-                                                    <input type="radio" th:field="*{statusMatrikulasi}"
-                                                           value="Y"class="flat"
-                                                           name="statusMatrikulasi"> Yes
-                                                    &nbsp;&nbsp;&nbsp;
-                                                    <input th:field="*{statusMatrikulasi}"
-                                                           type="radio" value="N"class="flat"
-                                                           name="statusMatrikulasi"> No
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="control-label">Gender</label><br>
-                                                    <input type="radio" class="flat"
-                                                           th:field="*{jenisKelamin}"
-                                                           name="jenisKelamin" value="PRIA"> Male
-                                                    &nbsp;&nbsp;&nbsp;
-                                                    <input type="radio" class="flat"
-                                                           th:field="*{jenisKelamin}"
-                                                           name="jenisKelamin" value="WANITA"> Female
-                                                </div>
+                                                <label class="control-label">Gender</label><br>
+                                                <input type="radio" class="flat"
+                                                       th:field="*{jenisKelamin}"
+                                                       name="jenisKelamin" value="PRIA"> Male
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input type="radio" class="flat"
+                                                       th:field="*{jenisKelamin}"
+                                                       name="jenisKelamin" value="WANITA"> Female
                                             </div>
                                         </div>
 
@@ -164,7 +131,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>NIK</label>
+                                                <label>ID Number</label>
                                                 <input type="text" name="nik"  class="form-control"
                                                        placeholder="NIK" th:field="*{nik}">
                                             </div>
@@ -172,10 +139,10 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>NISN</label>
+                                                <label>NIRM</label>
                                                 <input type="text" name="nisn"
                                                        class="form-control" th:field="*{nisn}"
-                                                       placeholder="NISN">
+                                                       placeholder="NIRM">
                                             </div>
                                         </div>
 
@@ -203,7 +170,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Street Name</label>
+                                                <label>Address</label>
                                                 <input type="text"
                                                        name="namaJalan" th:field="*{namaJalan}"
                                                        class="form-control"
@@ -250,7 +217,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Hamlet Name</label>
+                                                <label>Hamlet Name (Dusun)</label>
                                                 <input type="text"
                                                        name="namaDusun" class="form-control"
                                                        placeholder="Hamlet Name" th:field="*{namaDusun}">
@@ -341,78 +308,11 @@
                         </div>
                     </div>
 
-
-                    <div id="step-2">
-                        <h2 class="StepTitle">Academic Content</h2>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <br>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Generation</label>
-                                            <input type="text" name="angkatan"
-                                                   class="form-control" th:field="*{angkatan}"
-                                                   placeholder="Generation" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Program</label>
-                                            <select name="idProgram" th:field="*{idProgram}"
-                                                    class="form-control js-select2" readonly="">
-                                                <option value=""></option>
-                                                <option th:each="data : ${program}"
-                                                        th:text="${data.namaProgram}"
-                                                        th:value="${data.id}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Study Programs</label>
-                                            <select name="idProdi" th:field="*{idProdi}"
-                                                    class="form-control js-select2" readonly="">
-                                                <option value=""></option>
-                                                <option th:each="data : ${prodi}"
-                                                        th:text="${data.namaProdi}"
-                                                        th:value="${data.id}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Concentration</label>
-                                            <select name="idKonsentrasi" th:field="*{idKonsentrasi}"
-                                                    class="form-control js-select2" readonly="">
-                                                <option value=""></option>
-                                                <option th:each="data : ${konsentrasi}"
-                                                        th:text="${data.namaKonsentrasi}"
-                                                        th:value="${data.id}">
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
+                    <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
+                    <input type="hidden" name="idProdi" th:field="*{idProdi}">
+                    <input type="hidden" name="idProgram" th:field="*{idProgram}">
+                    <input type="hidden" name="angkatan" th:field="*{angkatan}">
+                    <input type="hidden" name="statusMatrikulasi" th:field="*{statusMatrikulasi}">
 
                     <div id="step-3">
 

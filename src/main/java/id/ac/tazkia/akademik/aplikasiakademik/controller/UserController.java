@@ -240,6 +240,8 @@ public class UserController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
         BeanUtils.copyProperties(mahasiswaDto,mahasiswa);
+        mahasiswa.setStatus(mahasiswa.getStatus());
+        mahasiswa.setStatusAktif("A");
         mahasiswa.setIdAgama(mahasiswaDto.getReligion());
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswaDao.save(mahasiswa);
