@@ -34,8 +34,7 @@
                                     <div class="profile_img">
                                         <div id="crop-avatar" style="height: 50%;">
                                             <!-- Current avatar -->
-                                            <img th:if="${data.jenisKelamin == 'PRIA'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/men.png" alt="Avatar" title="Change the avatar">
-                                            <img th:if="${data.jenisKelamin == 'WANITA'}" class="img-responsive avatar-view" src="https://www.acpce.org/wp-content/uploads/2017/06/women.png" alt="Avatar" title="Change the avatar">
+                                            <img th:src="${#authentication.principal.picture}">
 
                                         </div>
                                     </div>
