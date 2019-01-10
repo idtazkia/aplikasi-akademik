@@ -8,5 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
 
     Long countDosenByStatus(StatusRecord statusRecord);
+    Iterable<Dosen> findByStatusNotIn(StatusRecord statusRecord);
 
 }

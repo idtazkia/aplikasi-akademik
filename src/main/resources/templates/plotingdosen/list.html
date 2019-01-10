@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ploting Dosen</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Ploting Dosen<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>Prodi/Semester</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="tahunAkademik">
+                                        <option></option>
+                                        <option th:each="data : ${tahunAkademik}"
+                                                th:selected="(${data} == *{selectedTahun})"
+                                                th:text="${'('+ data.prodi.namaProdi +')'  + '       -       ' +  data.tahunAkademik.namaTahunAkademik}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>Program Pendidikan</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="program">
+                                        <option></option>
+                                        <option th:each="data : ${program}"
+                                                th:selected="(${data} == *{selectedProgram})"
+                                                th:text="${data.namaProgram}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <br>
+            <hr>
+
+            <span th:if="${selectedTahun != null && selectedProgram != null}">
+            <div class="col-md-12">
+                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Buat Ploting</a><br>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2 th:if="${selectedTahun != null}" th:text="${selectedTahun.prodi.namaProdi}">Prodi<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <div>
+                                Show <span sd:page-size-selector="javascript"></span> entries
+                            </div>
+                            <br>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Matakuliah</th>
+                                    <th>Kelas</th>
+                                    <th>SKS</th>
+                                    <th>Dosen</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${jadwal}">
+                                    <td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}">1</td>
+                                    <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.idKelas.namaKelas}">BMI 14</td>
+                                    <td th:text="${data.matakuliahKurikulum.jumlahSks}">6</td>
+                                    <td th:text="${data.dosen.karyawan.namaKaryawan}">Gifar Haidar</td>
+                                    <td><button type="submit" class="btn btn-danger btn-xs"
+                                                onclick="return confirm('Are you sure want to delete this?')">
+                                        <i class="ti-eraser"></i>  Delete
+                                    </button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <nav class="pull-right">
+                                        <ul class="pagination" sd:pagination="full">
+                                            <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                            <li class="disabled"><a href="#" aria-label="Previous"><span
+                                                    aria-hidden="true">&laquo;</span></a>
+                                            </li>
+                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            </span>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" th:action="@{/plotingdosen/list}">
+                        <div class="col-md-12" th:if="${selectedTahun != null}">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Prodi :</label>
+                                    <input type="text" readonly th:value="${selectedTahun.prodi.namaProdi}" class="form-control">
+                                    <input type="hidden" name="prodi" th:value="${selectedTahun.prodi.id}">
+                                    <input type="hidden" name="program" th:value="${selectedProgram.id}">
+                                    <input type="hidden" name="tahunAkademikProdi" th:value="${selectedTahun.id}">
+                                    <input type="hidden" name="tahunAkademik" th:value="${selectedTahun.tahunAkademik.id}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">program :</label>
+                                    <input type="text" readonly th:value="${selectedProgram.namaProgram}" class="form-control">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Matakuliah :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="matakuliahKurikulum">
+                                        <option></option>
+                                        <option th:each="data: ${matakuliah}"
+                                                th:text="${data.matakuliah.namaMatakuliah}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Dosen Pengampu :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="dosen">
+                                        <option></option>
+                                        <option th:each="data: ${dosen}"
+                                                th:text="${data.karyawan.namaKaryawan}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Kelas :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="idKelas">
+                                        <option></option>
+                                        <option th:each="data: ${kelas}"
+                                                th:text="${data.namaKelas}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Jenis:</label>
+                                    <select class="form-control"
+                                            style="width: 100%!important;" name="finalStatus">
+                                        <option></option>
+                                        <option value="Y">Kuliah</option>
+                                        <option value="N">responsi</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Send message</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+</script>

@@ -67,9 +67,9 @@ public class TahunAkademikProdi {
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_kurikulum")
-    private String idKurikulum  ;
+    @ManyToOne
+    @JoinColumn(name = "id_kurikulum")
+    private Kurikulum idKurikulum  ;
 
     @NotNull
     @Enumerated(EnumType.STRING)

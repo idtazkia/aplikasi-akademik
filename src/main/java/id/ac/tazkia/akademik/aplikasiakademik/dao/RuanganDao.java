@@ -10,4 +10,5 @@ public interface RuanganDao extends PagingAndSortingRepository<Ruangan, String> 
     Page<Ruangan> findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(StatusRecord statusRecord,String search,Pageable page);
 
     Page<Ruangan> findByStatusNotIn(StatusRecord hapus, Pageable page);
+    Iterable<Ruangan> findByStatusNotIn(StatusRecord hapus);
 }
