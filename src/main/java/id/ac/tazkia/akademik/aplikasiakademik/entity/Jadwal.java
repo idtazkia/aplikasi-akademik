@@ -58,8 +58,8 @@ public class Jadwal {
     @JoinColumn(name = "id_ruangan")
     private Ruangan ruangan;
 
-  @ManyToOne
-@JoinColumn(name = "id_kelas")
+    @ManyToOne
+    @JoinColumn(name = "id_kelas")
     private Kelas idKelas;
 
     private Integer jumlahSesi;
@@ -69,6 +69,11 @@ public class Jadwal {
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @ManyToOne
+    @JoinColumn(name = "id_program")
+    @NotNull
+    private Program program;
 
 
 }
