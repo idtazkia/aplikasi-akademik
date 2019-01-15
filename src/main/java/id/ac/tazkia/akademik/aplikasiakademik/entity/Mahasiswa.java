@@ -87,8 +87,14 @@ public class Mahasiswa {
 
 
     private String kodepos;
-    private String jenisTinggal;
-    private String alatTransportasi;
+    @ManyToOne
+    @JoinColumn(name = "jenis_tinggal")
+    private JenisTinggal jenisTinggal;
+
+    @ManyToOne
+    @JoinColumn(name = "alat_transportasi")
+    private Transportasi alatTransportasi;
+
     private String teleponRumah;
     private String teleponSeluler;
     private String emailPribadi;

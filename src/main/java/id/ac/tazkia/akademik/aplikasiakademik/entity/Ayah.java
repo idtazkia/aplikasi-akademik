@@ -29,14 +29,17 @@ public class Ayah {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahir;
 
-    @NotNull
-    private String idJenjangPendidikan;
+    @ManyToOne
+    @JoinColumn(name = "id_jenjang_pendidikan")
+    private Pendidikan idJenjangPendidikan;
 
-    @NotNull
-    private String idPekerjaan;
+    @ManyToOne
+    @JoinColumn(name = "id_pekerjaan")
+    private Pekerjaan idPekerjaan;
 
-    @NotNull
-    private String penghasilan;
+    @ManyToOne
+    @JoinColumn(name = "penghasilan")
+    private Penghasilan penghasilan;
 
 
     @ManyToOne

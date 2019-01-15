@@ -4,14 +4,11 @@ import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.MahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
-import id.ac.tazkia.akademik.aplikasiakademik.service.MahasiswaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,13 +25,9 @@ public class UserController {
 
 
     @Autowired
-    private UserDao userDao;
-    @Autowired
     private UserPasswordDao userPasswordDao;
     @Autowired
     private MahasiswaDao mahasiswaDao;
-    @Autowired
-    private RoleDao roleDao;
     @Autowired
     private MahasiswaDetailKeluargaDao mahasiswaDetailKeluargaDao;
     @Autowired
@@ -53,6 +46,36 @@ public class UserController {
     private IbuDao ibuDao;
     @Autowired
     private CurrentUserService currentUserService;
+
+    @Autowired
+    private PendidikanDao pendidikanDao;
+
+    @Autowired
+    private PekerjaanDao pekerjaanDao;
+
+    @Autowired
+    private PenghasilanDao penghasilanDao;
+
+    @Autowired
+    private KebutuhanKhususDao kebutuhanKhususDao;
+
+    @Autowired
+    private TransportasiDao transportasiDao;
+
+    @ModelAttribute("penghasilan")
+    public Iterable<Penghasilan> penghasilan() {
+        return penghasilanDao.findAll();
+    }
+
+    @ModelAttribute("pekerjaan")
+    public Iterable<Pekerjaan> pekerjaan() {
+        return pekerjaanDao.findAll();
+    }
+
+    @ModelAttribute("pendidikan")
+    public Iterable<Pendidikan> pendidikan() {
+        return pendidikanDao.findAll();
+    }
 
     @GetMapping("/user/data")
     public void dataUser(Model model, Authentication authentication) {
@@ -85,11 +108,13 @@ public class UserController {
         Mahasiswa m = mahasiswaDao.findByUser(u);
 
 
+        model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
         model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("tinggal",jenisTinggalDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("program",programDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("prodi",prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("transportasi", transportasiDao.findAll());
 
         model.addAttribute("mhsw",m);
 

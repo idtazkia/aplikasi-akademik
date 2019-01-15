@@ -10,553 +10,627 @@
 
 <section layout:fragment="main" class="container">
     <form method="post" th:action="@{/user/form}" th:object="${mahasiswa}">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>Student Data</h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div id="wizard" class="form_wizard wizard_horizontal">
-                    <ul class="wizard_steps">
-                        <li>
-                            <a href="#step-1">
-                                <span class="step_no">1</span>
-                                <span class="step_descr">
-                                             Personal data<br />
+        <div class="col-md-12" role="main">
+            <div class="">
+                <div class="clearfix"></div>
+
+                <div class="row">
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>User <small>Form</small></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+
+                                <!-- Smart Wizard -->
+                                <div id="wizard" class="form_wizard wizard_horizontal">
+                                    <ul class="wizard_steps">
+                                        <li>
+                                            <a href="#step-1">
+                                                <span class="step_no">1</span>
+                                                <span class="step_descr">
+                                              Step 1<br />
+                                              <small>Step 1 Personal data</small>
                                           </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#step-3">
-                                <span class="step_no">2</span>
-                                <span class="step_descr">
-                                              Parents<br />
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-2">
+                                                <span class="step_no">2</span>
+                                                <span class="step_descr">
+                                              Step 2<br />
+                                              <small>Step 2 Address</small>
                                           </span>
-                            </a>
-                        </li>
-                    </ul>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-3">
+                                                <span class="step_no">3</span>
+                                                <span class="step_descr">
+                                              Step 3<br />
+                                              <small>Step 3 Parents</small>
+                                          </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div id="step-1">
+                                        <h2 class="StepTitle">Personal Data Content</h2>
+                                        <div class="form-horizontal form-label-left">
+                                            <div class="col-md-12"><br>
+                                                <div class="row">
 
 
 
-                    <div id="step-1">
-                        <h2 class="StepTitle">Personal Data Content</h2>
-                        <div class="form-horizontal form-label-left">
-                            <div class="col-md-12"><br>
-                                <div class="row">
+                                                    <div class="row col-sm-offset-1 ">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Name
+                                                                    &nbsp&nbsp
+                                                                    <small class="text-danger">
+                                                                        * Fill in the name according to the last certificate (Ijazah terakhir)
+                                                                    </small>
+                                                                </label>
+                                                                <input type="text" name="nama" th:field="*{nama}"
+                                                                       class="form-control"
+                                                                       placeholder="Name" required>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Student Identification Number (NIM)</label>
+                                                                <input type="text" name="nim" readonly
+                                                                       class="form-control" th:field="*{nim}"
+                                                                       placeholder="Student Identification Number (NIM)">
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Religion</label>
+                                                                <select name="religion" style="width: 100%!important;"
+                                                                        th:field="*{religion}" required
+                                                                        class="form-control js-select2">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${agama}"
+                                                                            th:value="${data.idAgama}"
+                                                                            th:text="${data.agama}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Place of birth</label><br>
+                                                                <input type="text" name="tempat" required
+                                                                       class="form-control" th:field="*{tempat}"
+                                                                       placeholder="Place of birth">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Date of birth</label>
+                                                                <input type="date" th:field="*{tanggalLahir}" required
+                                                                       name="tanggalLahir"class="form-control">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label>Gender</label>
+                                                            <select th:field="*{jenisKelamin}"
+                                                                    name="jenisKelamin" class="form-control" required>
+                                                                <option value=""></option>
+                                                                <option value="PRIA">Male</option>
+                                                                <option value="WANITA">Female</option>
+                                                            </select>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <hr>
+
+                                                    <div class="row col-sm-offset-1 ">
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>ID Number</label>
+                                                                <input type="text" name="nik"  class="form-control"
+                                                                       placeholder="ID Number" required th:field="*{nik}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>NISN</label>
+                                                                <input type="text" name="nisn"
+                                                                       class="form-control" th:field="*{nisn}"
+                                                                       placeholder="NISN" required>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Citizen</label>
+                                                                <select th:field="*{kewarganegaraan}"
+                                                                        name="kewarganegaraan" required class="form-control">
+                                                                    <option value=""></option>
+                                                                    <option value="WNI">WNI</option>
+                                                                    <option value="WNA">WNA</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Transportation</label>
+                                                                <select name="alatTransportasi" required
+                                                                        th:field="*{alatTransportasi}"
+                                                                        class="form-control js-select2">
+                                                                    <option value=""></option>
+                                                                    <option th:each="transport : ${transportasi}"
+                                                                            th:text="${transport.nama}"
+                                                                            th:value="${transport.id}">Mobil</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <hr>
+                                                    <div class="row col-sm-offset-1 ">
 
 
 
-                                    <div class="row col-sm-offset-1 ">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Name
-                                                    &nbsp&nbsp
-                                                    <small class="text-danger">
-                                                        * Fill in the name according to the last certificate (Ijazah terakhir)
-                                                    </small>
-                                                </label>
-                                                <input type="text" name="nama" th:field="*{nama}"
-                                                       class="form-control"
-                                                       placeholder="Name">
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Telephone</label>
+                                                                <input type="text" required name="teleponRumah" class="form-control"
+                                                                       placeholder="Telephone" th:field="*{teleponRumah}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Phone</label>
+                                                                <input type="text" required th:field="*{teleponSeluler}"
+                                                                       name="teleponSeluler" class="form-control"
+                                                                       placeholder="Cellphone">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Personal Email</label>
+                                                                <input type="text" required th:field="*{emailPribadi}"
+                                                                       name="emailPribadi" class="form-control"
+                                                                       placeholder="Personal Email">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Email Tazkia</label>
+                                                                <input type="text" required th:field="*{emailTazkia}"
+                                                                       name="emailTazkia" class="form-control"
+                                                                       placeholder="Email Tazkia">
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
                                             </div>
                                         </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Student Identification Number (NIM)</label>
-                                                <input type="text" name="nim" readonly
-                                                       class="form-control" th:field="*{nim}"
-                                                       placeholder="Student Identification Number (NIM)">
-                                            </div>
-                                        </div>
-
-
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Religion</label>
-                                                <select name="religion" style="width: 100%!important;"
-                                                        th:field="*{religion}" required
-                                                        class="form-control js-select2">
-                                                    <option value=""></option>
-                                                    <option th:each="data : ${agama}"
-                                                            th:value="${data.idAgama}"
-                                                            th:text="${data.agama}">
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                    <div id="step-2">
+                                        <h2 class="StepTitle">Address</h2>
+                                        <div class="form-horizontal form-label-left">
+                                            <div class="col-md-12"><br>
+                                                <div class="row">
 
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Place of birth</label><br>
-                                                <input type="text" name="tempat"
-                                                       class="form-control" th:field="*{tempat}"
-                                                       placeholder="Place of birth">
-                                            </div>
-                                        </div>
+                                                    <div class="row col-sm-offset-1 ">
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Country</label>
+                                                                <input type="text" th:field="*{idNegara}"
+                                                                       name="idNegara" required class="form-control"
+                                                                       placeholder="Country">
+                                                            </div>
+                                                        </div>
 
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date of birth</label>
-                                                <input type="date" th:field="*{tanggalLahir}"
-                                                       name="tanggalLahir"class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="control-label">Gender</label><br>
-                                                <input type="radio" class="flat"
-                                                       th:field="*{jenisKelamin}"
-                                                       name="jenisKelamin" value="PRIA"> Male
-                                                &nbsp;&nbsp;&nbsp;
-                                                <input type="radio" class="flat"
-                                                       th:field="*{jenisKelamin}"
-                                                       name="jenisKelamin" value="WANITA"> Female
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-
-                                    <hr>
-
-                                    <div class="row col-sm-offset-1 ">
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>ID Number</label>
-                                                <input type="text" name="nik"  class="form-control"
-                                                       placeholder="NIK" th:field="*{nik}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>NIRM</label>
-                                                <input type="text" name="nisn"
-                                                       class="form-control" th:field="*{nisn}"
-                                                       placeholder="NIRM">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Area</label>
-                                                <input type="text" hidden="" th:field="*{idKelurahan}"
-                                                       name="idKelurahan">
-                                                <input type="text" hidden="" th:field="*{idKecamatan}"
-                                                       name="idKecamatan">
-                                                <input type="text" hidden="" th:field="*{idKotaKabupaten}"
-                                                       name="idKotaKabupaten">
-                                                <input type="text" hidden="" th:field="*{idProvinsi}"
-                                                       name="idProvinsi">
-                                                <input type="text" class="form-control"
-                                                       id="kelurahan" placeholder="Cari Kabupaten/Kota ..."
-                                                       data-provide="typeahead"
-                                                       th:value="${mahasiswa.idProvinsi  + '  ,  ' +
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Area</label>
+                                                                <input type="text" hidden="" th:field="*{idKelurahan}"
+                                                                       name="idKelurahan">
+                                                                <input type="text" hidden="" th:field="*{idKecamatan}"
+                                                                       name="idKecamatan">
+                                                                <input type="text" hidden="" th:field="*{idKotaKabupaten}"
+                                                                       name="idKotaKabupaten">
+                                                                <input type="text" hidden="" th:field="*{idProvinsi}"
+                                                                       name="idProvinsi">
+                                                                <input type="text" class="form-control"
+                                                                       id="kelurahan" placeholder="Cari Kabupaten/Kota ..."
+                                                                       data-provide="typeahead"
+                                                                       th:value="${mahasiswa.idProvinsi  + '  ,  ' +
                                                    mahasiswa.idKotaKabupaten + '  ,  ' +
                                                    mahasiswa.idKecamatan + '  ,  ' +
                                                    mahasiswa.idKelurahan}"
-                                                       autocomplete="off" required autofocus>
-                                            </div>
-                                        </div>
+                                                                       autocomplete="off" required autofocus>
+                                                            </div>
+                                                        </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Address</label>
-                                                <input type="text"
-                                                       name="namaJalan" th:field="*{namaJalan}"
-                                                       class="form-control"
-                                                       placeholder="Street Name">
-                                            </div>
-                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Address</label>
+                                                                <input type="text"
+                                                                       name="namaJalan" th:field="*{namaJalan}"
+                                                                       class="form-control" required
+                                                                       placeholder="Street Name">
+                                                            </div>
+                                                        </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Country</label>
-                                                <input type="text" th:field="*{idNegara}"
-                                                       name="idNegara" class="form-control"
-                                                       placeholder="Country">
-                                            </div>
-                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Hamlet Name (Dusun)</label>
+                                                                <input type="text" required
+                                                                       name="namaDusun" class="form-control"
+                                                                       placeholder="Hamlet Name" th:field="*{namaDusun}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>RT</label>
+                                                                <input type="text"name="rt" class="form-control"
+                                                                       placeholder="RT" required th:field="*{rt}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>RW</label>
+                                                                <input type="text"name="rw" class="form-control"
+                                                                       placeholder="RW" required th:field="*{rw}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Postal code</label>
+                                                                <input type="text"
+                                                                       name="kodepos" required readonly class="form-control"
+                                                                       placeholder="Postal code" th:field="*{kodepos}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Live Type</label>
+                                                                <select name="jenisTinggal" th:field="*{jenisTinggal}"
+                                                                        class="form-control js-select2" required>
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${tinggal}"
+                                                                            th:text="${data.jenisTinggal}"
+                                                                            th:value="${data.id}"></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Country of origin</label>
-                                                <input type="text" th:field="*{kewarganegaraan}"
-                                                       name="kewarganegaraan" class="form-control"
-                                                       placeholder="Country of origin">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>RT</label>
-                                                <input type="text"name="rt" class="form-control"
-                                                       placeholder="RT" th:field="*{rt}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>RW</label>
-                                                <input type="text"name="rw" class="form-control"
-                                                       placeholder="RW" th:field="*{rw}">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Hamlet Name (Dusun)</label>
-                                                <input type="text"
-                                                       name="namaDusun" class="form-control"
-                                                       placeholder="Hamlet Name" th:field="*{namaDusun}">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal code</label>
-                                                <input type="text"
-                                                       name="kodepos" required readonly class="form-control"
-                                                       placeholder="Postal code" th:field="*{kodepos}">
                                             </div>
                                         </div>
                                     </div>
 
-                                    <hr>
-                                    <div class="row col-sm-offset-1 ">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Live Type</label>
-                                                <select name="jenisTinggal" th:field="*{jenisTinggal}"
-                                                        class="form-control js-select2">
-                                                    <option value=""></option>
-                                                    <option th:each="data : ${tinggal}"
-                                                            th:text="${data.jenisTinggal}"
-                                                            th:value="${data.id}"></option>
-                                                </select>
+                                    <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
+                                    <input type="hidden" name="idProdi" th:field="*{idProdi}">
+                                    <input type="hidden" name="idProgram" th:field="*{idProgram}">
+                                    <input type="hidden" name="angkatan" th:field="*{angkatan}">
+                                    <input type="hidden" name="statusMatrikulasi" th:field="*{statusMatrikulasi}">
+
+
+                                    <div id="step-3">
+
+                                        <h2 class="StepTitle">Parents Data Content</h2>
+                                        <div class="form-horizontal form-label-left">
+                                            <div class="col-md-12"><br>
+                                                <div class="row">
+                                                    <div class="row col-sm-offset-1 ">
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Father's Name
+                                                                    &nbsp&nbsp
+                                                                </label>
+                                                                <input type="text" required th:field="*{namaAyah}" name="namaAyah" class="form-control"
+                                                                       placeholder="Father's Name">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Education Level</label>
+                                                                <select name="idJenjangPendidikan   " th:field="*{idJenjangPendidikan}"
+                                                                        class="form-control js-select2" required>
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${pendidikan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Place of birth</label><br>
+                                                                <input type="text" name="tempatLahirAyah"
+                                                                       class="form-control" th:field="*{tempatLahirAyah}"
+                                                                       placeholder="Place of birth" required>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Date of birth</label>
+                                                                <input type="date" name="tanggalLahirAyah" required
+                                                                       class="form-control" th:field="*{tanggalLahirAyah}">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Job</label><br>
+                                                                <select name="idPekerjaan" th:field="*{idPekerjaan}" required
+                                                                        class="form-control js-select2">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${pekerjaan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Revenue</label><br>
+                                                                <select name="penghasilan" th:field="*{penghasilan}" required
+                                                                        class="form-control js-select2">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${penghasilan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Religion</label>
+                                                                <select name="agama" th:field="*{agama}" required
+                                                                        class="form-control js-select2">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${agama}"
+                                                                            th:value="${data.idAgama}"
+                                                                            th:text="${data.agama}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Live Status</label><br>
+                                                                <select name="hidup" required class="form-control" th:field="*{hidup}">
+                                                                    <option value=""></option>
+                                                                    <option value="H">Hidup</option>
+                                                                    <option value="M">Meninggal</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Special Needs</label>
+                                                                <select name="kebutuhanKhusus" style="width: 100%!important;" th:field="*{kebutuhanKhusus}"
+                                                                        class="form-control js-example-placeholder-single">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${kebutuhan}"
+                                                                            th:text="${data.kode + '  -  ' + data.nama}"
+                                                                            th:value="${data.id}"></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" name="id" th:field="*{id}">
+                                                        <input type="hidden" name="idUser" th:field="*{idUser}">
+                                                        <input type="hidden" name="ayah" th:field="*{ayah}">
+                                                        <input type="hidden" name="ibu" th:field="*{ibu}">
+                                                        <input type="hidden" name="wali" th:field="*{wali}">
+                                                        <input type="hidden" name="userPassword" th:field="*{userPassword}">
+
+                                                    </div>
+                                                    <hr>
+
+                                                    <div class="row col-sm-offset-1 ">
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Mother's Name
+                                                                    &nbsp&nbsp
+                                                                </label>
+                                                                <input type="text" required name="namaIbuKandung" class="form-control"
+                                                                       placeholder="Mother's Name"
+                                                                       th:field="*{namaIbuKandung}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Education Level</label>
+                                                                <select name="idJenjangPendidikanIbu" th:field="*{idJenjangPendidikanIbu}"
+                                                                        class="form-control js-select2" required>
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${pendidikan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Place of birth</label><br>
+                                                                <input type="text" class="form-control"
+                                                                       th:field="*{tempatLahirIbu}" required
+                                                                       placeholder="Place of birth" name="tempatLahirIbu">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Date of birth</label>
+                                                                <input type="date" name="tanggalLahirIbu" required
+                                                                       th:field="*{tanggalLahirIbu}" class="form-control">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Job</label><br>
+                                                                <select name="idPekerjaanIbu" th:field="*{idPekerjaanIbu}"
+                                                                        class="form-control js-select2" required>
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${pekerjaan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Revenue</label><br>
+                                                                <select name="penghasilanIbu" th:field="*{penghasilanIbu}"
+                                                                        class="form-control js-select2" required>
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${penghasilan}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Religion</label>
+                                                                <select name="agamaIbu" style="width: 100%!important;" required
+                                                                        class="form-control js-select2"
+                                                                        th:field="*{agamaIbu}">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${agama}"
+                                                                            th:value="${data.idAgama}"
+                                                                            th:text="${data.agama}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Live Status</label><br>
+                                                                <select name="statusHidupIbu" class="form-control"
+                                                                        th:field="*{statusHidupIbu}" required>
+                                                                    <option value=""></option>
+                                                                    <option value="H">Hidup</option>
+                                                                    <option value="M">Meninggal</option>
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Special Needs</label>
+                                                                <select name="kebutuhanKhususIbu"
+                                                                        style="width: 100%!important;" th:field="*{kebutuhanKhususIbu}"
+                                                                        class="form-control js-example-placeholder-single">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${kebutuhan}"
+                                                                            th:value="${data.id}"
+                                                                            th:text="${data.kode + '  -  ' + data.nama}">
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Transportation</label>
-                                                <select name="alatTransportasi"
-                                                        th:field="*{alatTransportasi}"
-                                                        class="form-control js-select2">
-                                                    <option value="motor">Motor</option>
-                                                    <option value="mobil">Mobil</option>
-                                                    <option value="bus">Bus</option>
-                                                    <option value="kereta">Kereta</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Telephone</label>
-                                                <input type="text" name="teleponRumah" class="form-control"
-                                                       placeholder="Telephone" th:field="*{teleponRumah}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Cellphone</label>
-                                                <input type="text" th:field="*{teleponSeluler}"
-                                                       name="teleponSeluler" class="form-control"
-                                                       placeholder="Cellphone">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Personal Email</label>
-                                                <input type="text" th:field="*{emailPribadi}"
-                                                       name="emailPribadi" class="form-control"
-                                                       placeholder="Personal Email">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Email Tazkia</label>
-                                                <input type="text" th:field="*{emailTazkia}"
-                                                       name="emailTazkia" class="form-control"
-                                                       placeholder="Email Tazkia">
-                                            </div>
-                                        </div>
 
                                     </div>
 
-                                </div>
-
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="idKonsentrasi" th:field="*{idKonsentrasi}">
-                    <input type="hidden" name="idProdi" th:field="*{idProdi}">
-                    <input type="hidden" name="idProgram" th:field="*{idProgram}">
-                    <input type="hidden" name="angkatan" th:field="*{angkatan}">
-                    <input type="hidden" name="statusMatrikulasi" th:field="*{statusMatrikulasi}">
-
-                    <div id="step-3">
-
-                        <h2 class="StepTitle">Parents Data Content</h2>
-                        <div class="form-horizontal form-label-left">
-                            <div class="col-md-12"><br>
-                                <div class="row">
-
-
-
-                                    <div class="row col-sm-offset-1 ">
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Father's Name
-                                                    &nbsp&nbsp
-                                                </label>
-                                                <input type="text" th:field="*{namaAyah}" name="namaAyah" class="form-control"
-                                                       placeholder="Father's Name">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Education Level</label>
-                                                <input type="text" name="idJenjangPendidikan"
-                                                       class="form-control" th:field="*{idJenjangPendidikan}"
-                                                       placeholder="Education Level">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Place of birth</label><br>
-                                                <input type="text" name="tempatLahirAyah"
-                                                       class="form-control" th:field="*{tempatLahirAyah}"
-                                                       placeholder="Place of birth">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date of birth</label>
-                                                <input type="date" name="tanggalLahirAyah"
-                                                       class="form-control" th:field="*{tanggalLahirAyah}">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Job</label><br>
-                                                <input type="text" name="idPekerjaan" class="form-control"
-                                                       placeholder="Job" th:field="*{idPekerjaan}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Revenue</label><br>
-                                                <input type="text" name="penghasilan" class="form-control"
-                                                       placeholder="Revenue" th:field="*{penghasilan}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Religion</label>
-                                                <select name="agama" th:field="*{agama}" required
-                                                        class="form-control js-select2">
-                                                    <option value=""></option>
-                                                    <option th:each="data : ${agama}"
-                                                            th:value="${data.idAgama}"
-                                                            th:text="${data.agama}">
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Live Type</label><br>
-                                                <input type="radio" th:field="*{hidup}"
-                                                       value="H"class="flat"
-                                                       name="hidup"> Hidup
-                                                &nbsp;&nbsp;&nbsp;
-                                                <input th:field="*{hidup}"
-                                                       type="radio" value="M"class="flat"
-                                                       name="hidup"> Meninggal
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Special Needs</label>
-                                                <input type="text" name="kebutuhanKhusus"
-                                                       class="form-control" th:field="*{kebutuhanKhusus}"
-                                                       placeholder="Special Needs">
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="id" th:field="*{id}">
-                                        <input type="hidden" name="idUser" th:field="*{idUser}">
-                                        <input type="hidden" name="ayah" th:field="*{ayah}">
-                                        <input type="hidden" name="ibu" th:field="*{ibu}">
-                                        <input type="hidden" name="wali" th:field="*{wali}">
-                                        <input type="hidden" name="userPassword" th:field="*{userPassword}">
-
-                                    </div>
-
-
-
-
-
-                                    <hr>
-
-
-
-
-
-                                    <div class="row col-sm-offset-1 ">
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Mother's Name
-                                                    &nbsp&nbsp
-                                                </label>
-                                                <input type="text" name="namaIbuKandung" class="form-control"
-                                                       placeholder="Mother's Name"
-                                                       th:field="*{namaIbuKandung}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Education Level</label>
-                                                <input type="text" name="idJenjangPendidikanIbu"
-                                                       class="form-control"
-                                                       th:field="*{idJenjangPendidikanIbu}"
-                                                       placeholder="Education Level">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Place of birth</label><br>
-                                                <input type="text" class="form-control"
-                                                       th:field="*{tempatLahirIbu}"
-                                                       placeholder="Place of birth" name="tempatLahirIbu">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Date of birth</label>
-                                                <input type="date" name="tanggalLahirIbu"
-                                                       th:field="*{tanggalLahirIbu}" class="form-control">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Job</label><br>
-                                                <input type="text" name="idPekerjaanIbu" class="form-control"
-                                                       placeholder="Job" th:field="*{idPekerjaanIbu}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Revenue</label><br>
-                                                <input type="text" name="penghasilanIbu" class="form-control"
-                                                       placeholder="Revenue" th:field="*{penghasilanIbu}">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Religion</label>
-                                                <select name="agamaIbu" style="width: 100%!important;" required
-                                                        class="form-control js-select2"
-                                                        th:field="*{agamaIbu}">
-                                                    <option value=""></option>
-                                                    <option th:each="data : ${agama}"
-                                                            th:value="${data.idAgama}"
-                                                            th:text="${data.agama}">
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Live Status</label><br>
-                                                <input type="radio" th:field="*{statusHidupIbu}"
-                                                       value="H"class="flat"
-                                                       name="statusHidupIbu"> Hidup
-                                                &nbsp;&nbsp;&nbsp;
-                                                <input th:field="*{statusHidupIbu}"
-                                                       type="radio" value="M"class="flat"
-                                                       name="statusHidupIbu"> Meninggal
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Special Needs</label>
-                                                <input type="text" name="kebutuhanKhususIbu"
-                                                       class="form-control" th:field="*{kebutuhanKhususIbu}"
-                                                       placeholder="Special Needs">
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <hr>
 
 
                                 </div>
+                                <!-- End SmartWizard Content -->
+                                <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+                                <br>
+                                <center>
+                                    <input class="btn btn-primary" type="submit" value="Simpan">
+                                    <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                                        <span aria-hidden="true"></span>Batal
+                                    </a>
+                                </center>
+
                             </div>
                         </div>
-
-
                     </div>
                 </div>
-
-                <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-                <br>
-                <center>
-                    <input class="btn btn-primary" type="submit" value="Simpan">
-                    <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
-                        <span aria-hidden="true"></span>Batal
-                    </a>
-                </center>
-
-
             </div>
-
-
         </div>
 
     </form>
