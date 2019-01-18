@@ -30,7 +30,7 @@
 
             <div class="form-group">
                 <label>Program Study</label>
-                <select name="idProdi"  class="form-control js-example-placeholder-single" th:field="*{idProdi}">
+                <select name="idProdi"  class="form-control js-example-placeholder-single" th:field="*{idProdi}" style="width: 100%!important;">
                     <option value=""></option>
                     <option th:each="data : ${prodi}"
                             th:text="${data.namaProdi}"
