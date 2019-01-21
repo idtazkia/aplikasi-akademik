@@ -3,11 +3,13 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -26,9 +28,13 @@ public class Jadwal {
     @JoinColumn(name = "id_hari")
     private Hari idHari;
 
-    private Time jamMulai;
+    @Column(columnDefinition = "TIME")
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamMulai;
 
-    private Time jamSelesai;
+    @Column(columnDefinition = "TIME")
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamSelesai;
 
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
@@ -72,8 +78,11 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_program")
-    @NotNull
     private Program program;
+
+    @ManyToOne
+    @JoinColumn(name = "sesi")
+    private Sesi sesi;
 
 
 }

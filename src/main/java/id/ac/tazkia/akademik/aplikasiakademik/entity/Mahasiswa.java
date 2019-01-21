@@ -113,4 +113,8 @@ public class Mahasiswa {
     @JoinColumn(name = "id_dosen_wali")
     private  Dosen dosen ;
 
+    private String ukuranBaju;
+    private String kps;
+    private String nomorKps = "Tidak";
+
 }
