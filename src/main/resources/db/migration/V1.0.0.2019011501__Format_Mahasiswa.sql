@@ -115,3 +115,17 @@ jam_masuk time,
 jam_keluar time,
 primary key(id)
 );
+
+insert into sesi_jadwal values ('1','Sesi 1','07:00:00','09:30:00');
+insert into sesi_jadwal values ('2','Sesi 2','09:31:00','12:00:00');
+insert into sesi_jadwal values ('3','Sesi 3','13:00:00','15:30:00');
+insert into sesi_jadwal values ('4','Sesi 4','15:31:00','18:00:00');
+
+alter table mahasiswa
+add column kps varchar(5)
+
+alter table mahasiswa
+add column nomor_kps varchar(255)
+
+alter table mahasiswa
+add column ukuran_baju varchar(5)
