@@ -50,17 +50,17 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                     .orElse(null);
 
             if (email == null) {
-                return authorities;     // data email tidak ada di userInfo dari Google
+//                return authorities;     // data email tidak ada di userInfo dari Google
             }
 
             User user = userDao.findByUsername(email);
             if(user == null) {
-                return authorities;     // email user ini belum terdaftar di database
+//                return authorities;     // email user ini belum terdaftar di database
             }
 
             Set<Permission> userAuthorities = user.getRole().getPermissions();
             if (userAuthorities.isEmpty()) {
-                return authorities;     // authorities defaultnya ROLE_USER
+//                return authorities;     // authorities defaultnya ROLE_USER
             }
 
             return Stream.concat(
