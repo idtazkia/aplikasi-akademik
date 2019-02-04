@@ -108,7 +108,7 @@ public class DashboardController {
 
     @GetMapping("/")
     public String formAwal(){
-        return "redirect:/login";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/404")
