@@ -108,24 +108,18 @@ insert into penghasilan values ('4','Rp.2.000.000 - Rp.4.999.999');
 insert into penghasilan values ('5','Rp.5.000.000 - Rp.20.000.000');
 insert into penghasilan values ('6','Lebih dari Rp.20.000.000');
 
-create table sesi_jadwal(
-id varchar(255),
-nama varchar(255),
-jam_masuk time,
-jam_keluar time,
-primary key(id)
-);
-
-insert into sesi_jadwal values ('1','Sesi 1','07:00:00','09:30:00');
-insert into sesi_jadwal values ('2','Sesi 2','09:31:00','12:00:00');
-insert into sesi_jadwal values ('3','Sesi 3','13:00:00','15:30:00');
-insert into sesi_jadwal values ('4','Sesi 4','15:31:00','18:00:00');
+alter table mahasiswa
+add column kps varchar(5);
 
 alter table mahasiswa
-add column kps varchar(5)
+add column nomor_kps varchar(255);
 
 alter table mahasiswa
-add column nomor_kps varchar(255)
+add column ukuran_baju varchar(5);
 
-alter table mahasiswa
-add column ukuran_baju varchar(5)
+
+alter table ayah
+add column nik varchar(36);
+
+alter table ibu
+add column nik varchar(36);

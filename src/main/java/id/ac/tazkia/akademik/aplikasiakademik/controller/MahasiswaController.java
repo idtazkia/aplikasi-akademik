@@ -58,6 +58,30 @@ public class MahasiswaController {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private PendidikanDao pendidikanDao;
+
+    @Autowired
+    private PekerjaanDao pekerjaanDao;
+
+    @Autowired
+    private PenghasilanDao penghasilanDao;
+
+    @ModelAttribute("penghasilan")
+    public Iterable<Penghasilan> penghasilan() {
+        return penghasilanDao.findAll();
+    }
+
+    @ModelAttribute("pekerjaan")
+    public Iterable<Pekerjaan> pekerjaan() {
+        return pekerjaanDao.findAll();
+    }
+
+    @ModelAttribute("pendidikan")
+    public Iterable<Pendidikan> pendidikan() {
+        return pendidikanDao.findAll();
+    }
+
 
 
     @GetMapping("/api/kelurahan")
@@ -158,6 +182,9 @@ public class MahasiswaController {
             mahasiswaDto.setIdPekerjaanWali(mahasiswaDetailKeluarga.getWali().getIdPekerjaan());
             mahasiswaDto.setIdPenghasilanWali(mahasiswaDetailKeluarga.getWali().getIdPenghasilan());
             mahasiswaDto.setAgamaWali(mahasiswaDetailKeluarga.getWali().getAgama());
+            mahasiswaDto.setUkuranBaju(mahasiswaDetailKeluarga.getMahasiswa().getUkuranBaju());
+            mahasiswaDto.setKps(mahasiswaDetailKeluarga.getMahasiswa().getKps());
+            mahasiswaDto.setNomorKps(mahasiswaDetailKeluarga.getMahasiswa().getNomorKps());
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
 
@@ -169,6 +196,9 @@ public class MahasiswaController {
             mahasiswaDto.setNim(mahasiswaDetailKeluarga.getMahasiswa().getNim());
             mahasiswaDto.setNama(mahasiswaDetailKeluarga.getMahasiswa().getNama());
             mahasiswaDto.setStatusMatrikulasi(mahasiswaDetailKeluarga.getMahasiswa().getStatusMatrikulasi());
+            mahasiswaDto.setUkuranBaju(mahasiswaDetailKeluarga.getMahasiswa().getUkuranBaju());
+            mahasiswaDto.setKps(mahasiswaDetailKeluarga.getMahasiswa().getKps());
+            mahasiswaDto.setNomorKps(mahasiswaDetailKeluarga.getMahasiswa().getNomorKps());
             mahasiswaDto.setIdProgram(mahasiswaDetailKeluarga.getMahasiswa().getIdProgram());
             mahasiswaDto.setJenisKelamin(mahasiswaDetailKeluarga.getMahasiswa().getJenisKelamin());
             mahasiswaDto.setReligion(mahasiswaDetailKeluarga.getMahasiswa().getIdAgama());

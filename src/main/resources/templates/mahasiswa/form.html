@@ -438,9 +438,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Education Level</label>
-                                            <input type="text" name="idJenjangPendidikan"
-                                                   class="form-control" th:field="*{idJenjangPendidikan}"
-                                                   placeholder="Education Level">
+                                            <select name="idJenjangPendidikan   " th:field="*{idJenjangPendidikan}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${pendidikan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -467,16 +472,28 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Job</label><br>
-                                            <input type="text" name="idPekerjaan" class="form-control"
-                                                   placeholder="Job" th:field="*{idPekerjaan}">
+                                            <select name="idPekerjaan" th:field="*{idPekerjaan}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${pekerjaan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Revenue</label><br>
-                                            <input type="text" name="penghasilan" class="form-control"
-                                                   placeholder="Revenue" th:field="*{penghasilan}">
+                                            <select name="penghasilan" th:field="*{penghasilan}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${penghasilan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -550,10 +567,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Education Level</label>
-                                            <input type="text" name="idJenjangPendidikanIbu"
-                                                   class="form-control"
-                                                   th:field="*{idJenjangPendidikanIbu}"
-                                                   placeholder="Education Level">
+                                            <select name="idJenjangPendidikanIbu" th:field="*{idJenjangPendidikanIbu}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${pendidikan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -579,16 +600,28 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Job</label><br>
-                                            <input type="text" name="idPekerjaanIbu" class="form-control"
-                                                   placeholder="Job" th:field="*{idPekerjaanIbu}">
+                                            <select name="idPekerjaanIbu" th:field="*{idPekerjaanIbu}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${pekerjaan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Revenue</label><br>
-                                            <input type="text" name="penghasilanIbu" class="form-control"
-                                                   placeholder="Revenue" th:field="*{penghasilanIbu}">
+                                            <select name="penghasilanIbu" th:field="*{penghasilanIbu}"
+                                                    class="form-control js-select2">
+                                                <option value=""></option>
+                                                <option th:each="data : ${penghasilan}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 

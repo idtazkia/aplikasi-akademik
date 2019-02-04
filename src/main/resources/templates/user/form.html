@@ -193,6 +193,26 @@
                                                             </div>
                                                         </div>
 
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">KPS</label><br>
+                                                                <input type="radio" onclick="javascript:yesnoCheck();"
+                                                                       th:field="*{kps}" name="kps" value="Iya" id="yesCheck">Yes
+                                                                &nbsp;&nbsp;&nbsp;
+                                                                <input type="radio" onclick="javascript:yesnoCheck();"
+                                                                       th:field="*{kps}" name="kps" value="Tidak"  id="noCheck"> No
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6"  id="ifYes" style="display:none">
+                                                            <div class="form-group">
+                                                                <label class="control-label">KPS Number</label><br>
+                                                                <input type="text" name="nomorKps"
+                                                                       class="form-control" th:field="*{nomorKps}"
+                                                                       placeholder="NISN">
+                                                            </div>
+                                                        </div>
+
 
                                                     </div>
 
@@ -234,6 +254,21 @@
                                                                 <input type="text" required th:field="*{emailTazkia}"
                                                                        name="emailTazkia" class="form-control"
                                                                        placeholder="Email Tazkia">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Cloth Size (Toga)</label>
+                                                                <select th:field="*{ukuranBaju}"
+                                                                        name="ukuranBaju" required class="form-control">
+                                                                    <option value=""></option>
+                                                                    <option value="S">S</option>
+                                                                    <option value="M">M</option>
+                                                                    <option value="L">L</option>
+                                                                    <option value="XL">XL</option>
+                                                                    <option value="XXL">XXL</option>
+                                                                </select>
                                                             </div>
                                                         </div>
 
@@ -298,10 +333,10 @@
 
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Hamlet Name (Dusun)</label>
-                                                                <input type="text" required
+                                                                <label>Dusun</label>
+                                                                <input type="text"
                                                                        name="namaDusun" class="form-control"
-                                                                       placeholder="Hamlet Name" th:field="*{namaDusun}">
+                                                                       placeholder="Dusun" th:field="*{namaDusun}">
                                                             </div>
                                                         </div>
 
@@ -367,11 +402,21 @@
 
                                                         <div class="col-md-6">
                                                             <div class="form-group">
+                                                                <label>ID Number
+                                                                    &nbsp&nbsp
+                                                                </label>
+                                                                <input type="text" required th:field="*{nikAyah}" name="nikAyah" class="form-control"
+                                                                       placeholder="ID Number">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
                                                                 <label>Father's Name
                                                                     &nbsp&nbsp
                                                                 </label>
                                                                 <input type="text" required th:field="*{namaAyah}" name="namaAyah" class="form-control"
-                                                                       placeholder="Father's Name">
+                                                                       placeholder="Father Name">
                                                             </div>
                                                         </div>
 
@@ -466,7 +511,8 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Special Needs</label>
-                                                                <select name="kebutuhanKhusus" style="width: 100%!important;" th:field="*{kebutuhanKhusus}"
+                                                                <select name="kebutuhanKhusus" style="width: 100%!important;"
+                                                                        th:field="*{kebutuhanKhusus}"
                                                                         class="form-control js-example-placeholder-single">
                                                                     <option value=""></option>
                                                                     <option th:each="data : ${kebutuhan}"
@@ -489,11 +535,22 @@
 
                                                         <div class="col-md-6">
                                                             <div class="form-group">
+                                                                <label>ID Number
+                                                                    &nbsp&nbsp
+                                                                </label>
+                                                                <input type="text" required name="nikIbu" class="form-control"
+                                                                       placeholder="ID Number"
+                                                                       th:field="*{nikIbu}">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
                                                                 <label>Mother's Name
                                                                     &nbsp&nbsp
                                                                 </label>
                                                                 <input type="text" required name="namaIbuKandung" class="form-control"
-                                                                       placeholder="Mother's Name"
+                                                                       placeholder="Mother Name"
                                                                        th:field="*{namaIbuKandung}">
                                                             </div>
                                                         </div>
@@ -617,12 +674,23 @@
 
                                 </div>
                                 <!-- End SmartWizard Content -->
-                                <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+                                <h5 class="col-md-12">
+                                    <div class="checkbox col-md-12">
+                                        <label>
+                                            <p>
+                                                <input type="checkbox" class="flat" required>
+                                                I hereby certify that the profile data that I have completed in the form above is appropriate and correct with my legality documents. Therefore, my data can be used for academic administration purposes such as
+                                                <strong>Certificate, Transcript, Correspondence and Academic Reporting to government agencies.</strong>
+                                            </p>
+
+                                        </label>
+                                    </div>
+                                </h5>
                                 <br>
                                 <center>
-                                    <input class="btn btn-primary" type="submit" value="Simpan">
+                                    <input class="btn btn-primary" type="submit" value="Save">
                                     <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
-                                        <span aria-hidden="true"></span>Batal
+                                        <span aria-hidden="true"></span>Cancel
                                     </a>
                                 </center>
 
@@ -640,9 +708,17 @@
 </html>
 <script>
     $(".js-example-placeholder-single").select2({
-        placeholder: "Pilih Salah Satu",
+        placeholder: "Select One",
         allowClear: true
     });
+
+    function yesnoCheck() {
+        if (document.getElementById('yesCheck').checked) {
+            document.getElementById('ifYes').style.display = 'block';
+        }
+        else document.getElementById('ifYes').style.display = 'none';
+
+    }
 
 </script>
 

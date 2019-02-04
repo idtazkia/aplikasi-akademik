@@ -114,7 +114,7 @@ public class Mahasiswa {
     private  Dosen dosen ;
 
     private String ukuranBaju;
-    private String kps;
-    private String nomorKps = "Tidak";
+    private String kps = "Tidak";
+    private String nomorKps;
 
 }

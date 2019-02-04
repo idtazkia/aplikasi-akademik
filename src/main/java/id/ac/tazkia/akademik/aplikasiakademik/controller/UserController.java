@@ -157,6 +157,9 @@ public class UserController {
             mahasiswaDto.setEmailTazkia(mahasiswa.getMahasiswa().getEmailTazkia());
             mahasiswaDto.setStatusAktif(mahasiswa.getMahasiswa().getStatusAktif());
             mahasiswaDto.setIdUser(mahasiswa.getMahasiswa().getUser());
+            mahasiswaDto.setUkuranBaju(mahasiswa.getMahasiswa().getUkuranBaju());
+            mahasiswaDto.setKps(mahasiswa.getMahasiswa().getKps());
+            mahasiswaDto.setNomorKps(mahasiswa.getMahasiswa().getNomorKps());
 
             mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
             mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
@@ -168,6 +171,7 @@ public class UserController {
             mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
             mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
             mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+            mahasiswaDto.setNikIbu(mahasiswa.getIbu().getNik());
 
             mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
             mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
@@ -179,6 +183,7 @@ public class UserController {
             mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
             mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
             mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
+            mahasiswaDto.setNikAyah(mahasiswa.getAyah().getNik());
 
             mahasiswaDto.setWali(mahasiswa.getWali().getId());
             mahasiswaDto.setNamaWali(mahasiswa.getWali().getNamaWali());
@@ -228,6 +233,9 @@ public class UserController {
             mahasiswaDto.setEmailTazkia(mahasiswa.getMahasiswa().getEmailTazkia());
             mahasiswaDto.setStatusAktif(mahasiswa.getMahasiswa().getStatusAktif());
             mahasiswaDto.setIdUser(mahasiswa.getMahasiswa().getUser());
+            mahasiswaDto.setUkuranBaju(mahasiswa.getMahasiswa().getUkuranBaju());
+            mahasiswaDto.setKps(mahasiswa.getMahasiswa().getKps());
+            mahasiswaDto.setNomorKps(mahasiswa.getMahasiswa().getNomorKps());
 
             mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
             mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
@@ -239,6 +247,7 @@ public class UserController {
             mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
             mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
             mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+            mahasiswaDto.setNikIbu(mahasiswa.getIbu().getNik());
 
             mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
             mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
@@ -250,6 +259,8 @@ public class UserController {
             mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
             mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
             mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
+            mahasiswaDto.setNikAyah(mahasiswa.getAyah().getNik());
+
             model.addAttribute("mahasiswa", mahasiswaDto);
         }
 
@@ -282,6 +293,7 @@ public class UserController {
         ibu.setPenghasilan(mahasiswaDto.getPenghasilanIbu());
         ibu.setAgama(mahasiswaDto.getAgamaIbu());
         ibu.setStatusHidup(mahasiswaDto.getStatusHidupIbu());
+        ibu.setNik(mahasiswaDto.getNikIbu());
         ibuDao.save(ibu);
 
         Ayah ayah = ayahDao.findById(mahasiswaDto.getAyah()).get();
@@ -290,6 +302,7 @@ public class UserController {
         ayah.setTanggalLahir(mahasiswaDto.getTanggalLahirAyah());
         ayah.setTempatLahir(mahasiswaDto.getTempatLahirAyah());
         ayah.setStatusHidup(mahasiswaDto.getHidup());
+        ayah.setNik(mahasiswaDto.getNikAyah());
         ayahDao.save(ayah);
 
         return "redirect:data";

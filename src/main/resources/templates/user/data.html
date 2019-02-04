@@ -83,6 +83,8 @@
                                         <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                                             <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Personal Data</a>
                                             </li>
+                                            <li role="presentation"><a href="#tab_content4" id="address-tab" role="tab" data-toggle="tab" aria-expanded="false">Address</a>
+                                            </li>
                                             <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Academic</a>
                                             </li>
                                             <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Parent</a>
@@ -211,108 +213,13 @@
                                                                                 </div>
                                                                             </div>
 
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Area</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.idProvinsi + '  ,  ' + mahasiswa.mahasiswa.idKotaKabupaten + '  ,  ' + mahasiswa.mahasiswa.idKecamatan + '  ,  ' + mahasiswa.mahasiswa.idKelurahan}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
 
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
-                                                                                    <label>Street Name</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.namaJalan}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Country</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.idNegara}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Country of origin</label>
+                                                                                    <label>Citizen</label>
                                                                                     <br>
                                                                                     <span th:text="${mahasiswa.mahasiswa.kewarganegaraan}">
                                                                                     </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>RT</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.rt}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>RW</label>
-                                                                                    <br>
-
-                                                                                    <span th:text="${mahasiswa.mahasiswa.rw}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Hamlet Name</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.namaDusun}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-
-
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Postal code</label>
-                                                                                    <br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.kodepos}">
-                                                                                    </span>
-
-
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <hr>
-                                                                        <div class="row col-sm-offset-1 ">
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>Live Type</label><br>
-                                                                                    <span th:text="${mahasiswa.mahasiswa.jenisTinggal}">
-                                                                                    </span>
-                                                                                    <br>
 
 
                                                                                 </div>
@@ -328,6 +235,12 @@
 
                                                                                 </div>
                                                                             </div>
+
+
+                                                                        </div>
+
+                                                                        <hr>
+                                                                        <div class="row col-sm-offset-1 ">
 
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
@@ -362,10 +275,145 @@
                                                                                 </div>
                                                                             </div>
 
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Cloth Size (Toga)</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.ukuranBaju}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
 
                                                                         </div>
 
                                                                     </div>
+
+                                                                    <div class="ln_solid"></div>
+
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="profile-tab">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="x_panel">
+                                                            <div class="x_title">
+                                                                <h2>Address Data</h2>
+
+                                                                <div class="clearfix"></div>
+                                                            </div>
+                                                            <div class="x_content">
+                                                                <br />
+                                                                <form data-parsley-validate class="form-horizontal form-label-left">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <br>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Live Type</label><br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.jenisTinggal.jenisTinggal}">
+                                                                                    </span>
+                                                                                    <br>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Area</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idProvinsi + '  ,  ' + mahasiswa.mahasiswa.idKotaKabupaten + '  ,  ' + mahasiswa.mahasiswa.idKecamatan + '  ,  ' + mahasiswa.mahasiswa.idKelurahan}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Street Name</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.namaJalan}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Country</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.idNegara}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>RT</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.rt}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>RW</label>
+                                                                                    <br>
+
+                                                                                    <span th:text="${mahasiswa.mahasiswa.rw}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Dusun</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.namaDusun}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Postal code</label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.mahasiswa.kodepos}">
+                                                                                    </span>
+
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+
 
                                                                     <div class="ln_solid"></div>
 
@@ -487,7 +535,19 @@
 
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
-                                                                                    <label>Mother's Name
+                                                                                    <label>ID Number
+                                                                                        &nbsp&nbsp
+                                                                                    </label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.ibu.nik}">
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Mother Name
                                                                                         &nbsp&nbsp
                                                                                     </label>
                                                                                     <br>
@@ -586,7 +646,19 @@
 
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">
-                                                                                    <label>Father's Name
+                                                                                    <label>ID Number
+                                                                                        &nbsp&nbsp
+                                                                                    </label>
+                                                                                    <br>
+                                                                                    <span th:text="${mahasiswa.ayah.nik}">
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label>Father Name
                                                                                         &nbsp&nbsp
                                                                                     </label>
                                                                                     <br>
