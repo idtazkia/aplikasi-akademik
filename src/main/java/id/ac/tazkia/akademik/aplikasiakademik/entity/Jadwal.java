@@ -80,9 +80,4 @@ public class Jadwal {
     @JoinColumn(name = "id_program")
     private Program program;
 
-    @ManyToOne
-    @JoinColumn(name = "sesi")
-    private Sesi sesi;
-
-
 }
