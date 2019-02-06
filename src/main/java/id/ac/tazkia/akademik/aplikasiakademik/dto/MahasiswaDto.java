@@ -4,9 +4,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -40,8 +38,8 @@ public class MahasiswaDto {
     private String rw;
     private String namaDusun;
     private String kodepos;
-    private String jenisTinggal;
-    private String alatTransportasi;
+    private JenisTinggal jenisTinggal;
+    private Transportasi alatTransportasi;
     private String teleponRumah;
     private String teleponSeluler;
     private String emailPribadi;
@@ -52,8 +50,9 @@ public class MahasiswaDto {
     private StatusRecord status = StatusRecord.AKTIF;
     private User idUser;
     private UserPassword userPassword;
-    private String password;
-    private String oldPassword;
+    private String kps;
+    private String nomorKps;
+    private String ukuranBaju;
 
     private String ayah;
     private String namaAyah;
@@ -62,11 +61,12 @@ public class MahasiswaDto {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahirAyah;
-    private String idJenjangPendidikan;
-    private String idPekerjaan;
-    private String penghasilan;
+    private Pendidikan idJenjangPendidikan;
+    private Pekerjaan idPekerjaan;
+    private Penghasilan penghasilan;
     private  Agama agama;
     private String hidup;
+    private String nikAyah;
 
     private String ibu;
     private String namaIbuKandung;
@@ -75,11 +75,12 @@ public class MahasiswaDto {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahirIbu;
-    private String idJenjangPendidikanIbu;
-    private String idPekerjaanIbu;
-    private String penghasilanIbu;
+    private Pendidikan idJenjangPendidikanIbu;
+    private Pekerjaan idPekerjaanIbu;
+    private Penghasilan penghasilanIbu;
     private  Agama agamaIbu;
     private String statusHidupIbu;
+    private String nikIbu;
 
     private String wali;
     private String namaWali;
