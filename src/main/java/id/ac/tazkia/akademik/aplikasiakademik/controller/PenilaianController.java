@@ -9,8 +9,8 @@ public class PenilaianController {
     public void listPenilaian(){
     }
 
-    @GetMapping("/penilaian/form")
-    public void formPenilaian(){
+    @GetMapping("/penilaian/bobot")
+    public void bobotPenilaian(){
     }
 
 

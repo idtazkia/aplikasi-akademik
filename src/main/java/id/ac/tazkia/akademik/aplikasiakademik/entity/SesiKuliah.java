@@ -26,7 +26,7 @@ public class SesiKuliah {
     @JoinColumn(name = "id_jadwal")
     private Jadwal jadwal;
 
-    @Column(columnDefinition = "LONGTEXT") @Lob
+//    @Column(columnDefinition = "LONGTEXT") @Lob
     private String beritaAcara;
 
     @NotNull private LocalDateTime waktuMulai = LocalDateTime.now();

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        form{
+            margin: 20px 0;
+        }
+        form input, button{
+            padding: 5px;
+        }
+        table{
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid #cdcdcd;
+        }
+        table th, table td{
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Assesment <small>bobot</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <table class="x_content">
+                    <p class="text-muted font-13 m-b-30">
+                    <div class="form-group">
+                        <div class="row col-sm-offset-1 ">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center>
+                                        <div class="btn-group">
+                                            <a th:href="@{/penilaian/bobot}">
+                                                <button class="btn btn-primary"  type="button">Bobot Penilaian</button>
+                                            </a>
+                                            <a th:href="@{/penilaian/nilai}">
+                                                <button class="btn btn-default" type="button">Nilai Mahasiswa</button>
+                                            </a>
+                                            <a th:href="@{/penilaian/list}">
+                                                <button class="btn btn-default" type="button">Kembali</button>
+                                            </a>
+                                        </div>
+                                    </center>
+                                </div>
+                            </div>
+
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Tahun Akademik</td>
+                                    <td>:</td>
+                                    <td>20191</td>
+                                    <td>&nbsp;</td>
+                                    <td>Program Studi</td>
+                                    <td>:</td>
+                                    <td>Manajemen Bisnis Syariah <small style="font-size: 8px">01</small></td>
+                                </tr>
+                                <tr>
+                                    <td>Mata Kuliah</td>
+                                    <td>:</td>
+                                    <td>Student Dynamic Session <small style="font-size: 8px">SDS20192</small></td>
+                                    <td>&nbsp;</td>
+                                    <td>Dosen</td>
+                                    <td>:</td>
+                                    <td>Afif Zaerofi <small style="font-size: 8px">M.M</small></td>
+                                </tr>
+                                <tr>
+                                    <td>SKS</td>
+                                    <td>:</td>
+                                    <td>0 <small>,</small> <span>Peserta : 23</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>Kelas</td>
+                                    <td>:</td>
+                                    <td>K <small style="font-size: 8px">R</small></td>
+                                </tr>
+                                <tr>
+                                    <td>Jadwal Kuliah</td>
+                                    <td>:</td>
+                                    <td>Selasa <small style="font-size: 8px">13.00-15.00</small>,Presensi 4</td>
+                                    <td>&nbsp;</td>
+                                    <td>Jadwal Ujian</td>
+                                    <td>:</td>
+                                    <td>01-01-2019, Rabu <small style="font-size: 8px">14.00-15.30</small></td>
+                                </tr>
+                            </table>
+
+
+                            <center>
+                                <div class="clearfix">
+                                    <h2>Bobot Penilaian</h2>
+                                    <div class="x_title"></div>
+                                </div>
+                            </center>
+                            <table>
+                                <tr>
+                                    <td style="width: 20%"><label>Presensi</label></td>
+                                    <td>&nbsp; : &nbsp;</td>
+                                    <td><input type="text" class="form-control" style="width: 20%;" placeholder="Presensi (%)"></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 5%"><label>Tugas Mandiri</label></td>
+                                    <td style="width: 3%">&nbsp; : &nbsp;</td>
+                                    <td>*)Terdiri dari 1-14. <br>
+                                        Anda dapat mengisi tugas sebanyak 14 kali pertemuan dengan total presentase 100% tidak boleh lebih atau kurang.
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            <table id="myTable" class="table table-striped">
+                                    <tr>
+                                        <td width="10%"><label>Tugas</label></td>
+                                        <td width="3%">&nbsp; : &nbsp;</td>
+                                        <td><input type="text" class="form-control" style="width: 20%;" placeholder="%"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="10%"><label>Ujian Tengah Semester</label></td>
+                                        <td width="3%">&nbsp; : &nbsp;</td>
+                                        <td><input type="text" class="form-control" style="width: 20%;" placeholder="%"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="10%"><label>Ujian Akhir Semester</label></td>
+                                        <td width="3%">&nbsp; : &nbsp;</td>
+                                        <td><input type="text" class="form-control" style="width: 20%;" placeholder="%"></td>
+                                    </tr>
+
+                                <br>
+                                <button type="button" class="btn btn-round btn-primary" onclick="myFunction()">Tambah Tugas</button>
+                                <button type="button" class="btn btn-round btn-danger" onclick="myFunctionDelete()">Hapus Tugas</button>
+                            </table>
+                            <center>
+                                <button type="button" class="btn btn-success">Simpan Perubahan</button>
+                            </center>
+                        </div>
+                    </div>
+                    </p>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</section>
+
+</body>
+</html>
+<script>
+    function myFunctionDelete() {
+        document.getElementById("myTable").deleteRow(0);
+    }
+</script>
+<script>
+    function myFunction() {
+        var table = document.getElementById("myTable");
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = "<label>Tugas</label>";
+        cell2.innerHTML = ":";
+        cell3.innerHTML = "<input type=\"text\" class=\"form-control\" style=\"width: 20%;\" placeholder=\"%\">";
+    }
+</script>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
