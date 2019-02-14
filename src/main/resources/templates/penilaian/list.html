@@ -9,541 +9,150 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">PENILAIAN</h6>
-        </div>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h3 class="border-bottom border-gray pb-2 mb-0"><center>Penilaian</center></h3>
-        <br>
-
-        <form method="get" th:action="@{/penilaian/list}">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="input-group input-group-sm" style="....">
-                                <table border="0" cellpadding="9" cellspacing="10" align="center">
-                                    <td>Kode Semester:</td>
-                                    <td>
-                                        <select class="form-control js-example-placeholder-single">
-                                            <option></option>
-                                            <option>2017/2018 Semester Ganjil</option>
-                                            <option>2017/2018 Semester genap</option>
-                                            <option>2017/2018 Semester Pendek</option>
-                                        </select>
-                                    </td>
-                                    <td>Program Studi:</td>
-                                    <td>
-                                        <select class="form-control js-example-placeholder-single">
-                                            <option></option>
-                                            <option>Ekonomi Islam</option>
-                                            <option>Akuntansi Islam</option>
-                                        </select>
-                                    </td>
-                                    <td><button type="button" class="btn btn-primary">Tampilkan</button></td>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Assesment <small>main</small></h2>
+                    <div class="clearfix"></div>
                 </div>
-            </div>
-        </form>
+                <div class="x_content">
+                    <p class="text-muted font-13 m-b-30">
+                    <div class="form-group">
+                        <div class="row col-sm-offset-1 ">
 
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-
-
-        <table border="0">
-            <tr>
-                <td>
-                    <button type="button" class="btn btn-primary">Form Validasi</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary">Cover Ujian UTS</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary">Cover Ujian UAS</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary">Jadwal Ujian Blank</button>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Kode MK</th>
-                    <th>Matakuliah</th>
-                    <th>Kelas</th>
-                    <th>Jadwal</th>
-                    <th>Jam</th>
-                    <th>Σ Mhsw</th>
-                    <th>Σ Hadir</th>
-                    <th>Isi Nilai</th>
-                    <th>Daf.Hadir UTS</th>
-                    <th>Daf.Hadir UAS</th>
-                    <th>Form REKAP</th>
-                    <th>Status</th>
-                    <th>Cetak</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td colspan="14">Afif Zaerofi</td>
-                </tr>
-                <tr>
-                    <td>1 #5896</td>
-                    <td>SDS20172</td>
-                    <td>Student Dynamic Session</td>
-                    <td>K</td>
-                    <td>Selasa</td>
-                    <td>13:00 - 15:00</td>
-                    <td>23</td>
-                    <td>4</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Andang Heryahya</td>
-                </tr>
-                <tr>
-                    <td>2 #5897</td>
-                    <td>SDS20172</td>
-                    <td>Student Dynamic Session</td>
-                    <td>L</td>
-                    <td>Selasa</td>
-                    <td>13:00 - 15:00</td>
-                    <td>21</td>
-                    <td>7</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Bazari Azhar</td>
-                </tr>
-                <tr>
-                    <td>3 #5678</td>
-                    <td>FIN3302</td>
-                    <td>Manajemen Keuangan Lanjutan</td>
-                    <td>MKI-B-15</td>
-                    <td>Sabtu</td>
-                    <td>07:00 - 09:30</td>
-                    <td>48</td>
-                    <td>15</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4 #5681</td>
-                    <td>FIN3302</td>
-                    <td>Manajemen Keuangan Lanjutan</td>
-                    <td>MKI-A-15</td>
-                    <td>Sabtu</td>
-                    <td>09:31 - 12:00</td>
-                    <td>33</td>
-                    <td>15</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Dara Dewisinta Anggraini</td>
-                </tr>
-                <tr>
-                    <td>5 #5677</td>
-                    <td>IFI3403</td>
-                    <td>Manajemen Keuangan Islam</td>
-                    <td>MKI-A-15</td>
-                    <td>Sabtu</td>
-                    <td>07:00 - 09:30</td>
-                    <td>29</td>
-                    <td>16</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>6 #5685</td>
-                    <td>IFI3403</td>
-                    <td>Manajemen Keuangan Islam</td>
-                    <td>MKI-A-15</td>
-                    <td>Sabtu</td>
-                    <td>09:31 - 12:00</td>
-                    <td>47</td>
-                    <td>16</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Dewi Febriani</td>
-                </tr>
-                <tr>
-                    <td>7 #5689</td>
-                    <td>ACC 3203</td>
-                    <td>Cost & Management Accounting</td>
-                    <td>MKI-B-15</td>
-                    <td>Kamis</td>
-                    <td>09:31 - 12:00</td>
-                    <td>51</td>
-                    <td>16  </td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Dewi Febriani</td>
-                </tr>
-                <tr>
-                    <td>8 #5700</td>
-                    <td>ACC 3203</td>
-                    <td>Cost & Management Accounting</td>
-                    <td>MKI-B-15</td>
-                    <td>Jumat</td>
-                    <td>13:00 - 15:30</td>
-                    <td>49</td>
-                    <td>16</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Dodi Yarli R</td>
-                </tr>
-                <tr>
-                    <td>9 #5661</td>
-                    <td>AEM2107</td>
-                    <td>Ushul Fiqh ||</td>
-                    <td>MKI-C-16</td>
-                    <td>Jumat</td>
-                    <td>09:31 - 12:00</td>
-                    <td>41</td>
-                    <td>14</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td colspan="2">
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="14">Dr. (C) Nur Hendrasto</td>
-                </tr>
-                <tr>
-                    <td>10 #5656</td>
-                    <td>BIS3204</td>
-                    <td>Perilaku Organisasi</td>
-                    <td>MKI-B-16</td>
-                    <td>Jumat</td>
-                    <td>13:00 - 15:30</td>
-                    <td>43</td>
-                    <td>14</td>
-                    <td><a th:href="@{/penilaian/form}" class="btn btn-primary" role="button" aria-pressed="true">Nilai</a></td>
-                    <td colspan="3">
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                        <button type="button" class="btn btn-success">EXCEL</button>
-                    </td>
-                    <td>Draf</td>
-                    <td>
-                        <a th:href="@{/penilaian/form}" class="button" >Nilai</a>
-                        <a th:href="@{/penilaian/form}" class="button" >Detail</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-
-
-            <div class="my-3 p-3 bg-white rounded box-shadow">
-
-                <h3 class="border-bottom border-gray pb-2 mb-0"><center>Penilaian</center></h3>
-                <!--<h6 align="center">2017</h6>-->
-                <br>
-
-
-                <div id="page" class="container-fluid">
-                                <ul id="block-myoverview-view-choices-5b515e643e85b5b515e643e8981" class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="#myoverview_bobot_view" role="tab" data-toggle="tab" data-tabname="bobot">
-                                            Bobot Penilaian
-                                        </a>
-                                    </li>
-                                    <li class="nav-item active">
-                                        <a class="nav-link" href="#myoverview_nilai_view" role="tab" data-toggle="tab" data-tabname="nilai">
-                                            Nilai Mahasiswa
-                                        </a>
-                                    </li>
-                                    <table border="0" cellspacing="6" cellpadding="2">
-                                    <tr>
-                                        <td><button type="button" class="btn btn-primary">Kembali</button></td>
-                                    </tr>
-                                    </table>
-                                </ul>
-
-                            </div>
-            </div>
-
-
-            <div role="tabpanel" class="tab-pane fade in active" id="myoverview_nilai_view">
-                <div id="courses-view-5b515e643e85b5b515e643e8981" data-region="nilai-view">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="input-group input-group-sm" style="....">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Thn Akademik:</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Matakuliah</label>
-                                    <input type="text" class="form-control">
+                                    <label>Code Semester :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="kodeSemester" required>
+                                        <option></option>
+                                        <option>001</option>
+                                        <option>002</option>
+
+                                    </select>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Program Studi :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="programStudi" required>
+                                        <option></option>
+                                        <option>MBS</option>
+                                        <option>EI</option>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program Studi</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Dosen</label>
-                                    <input type="text" class="form-control">
+                                    </select>
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
+                            <div class="col-md-2">
+                                <label>&nbsp;</label>
                                 <div class="form-group">
-                                    <label>SKS</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Kelas</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Jadwal Kuliah</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label>Jadwal Ujian</label>
-                                    <input type="text" class="form-control">
+                                    <button type="submit" class="btn btn-info">Search</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            <div class="border-bottom border-gray pb-2 mb-0"></div>
-            <br>
+                    </p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>Kode MK</th>
+                            <th>Mata Kuliah <small style="font-size: 8px;">SKS</small></th>
+                            <th>Kelas <small style="font-size: 8px;">KRS</small></th>
+                            <th>Jadwal</th>
+                            <th>Jam</th>
+                            <th>Σ Mhsw</th>
+                            <th>Σ Hadir</th>
+                            <th>Nilai</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td colspan="8">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
+                                <tr>
+                                    <td>#5463</td>
+                                    <td>SDS2019</td>
+                                    <td>Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
+                                    <td>K <small style="font-size: 8px;">R-10</small></td>
+                                    <td>Selasa</td>
+                                    <td>13.00-15.00</td>
+                                    <td>28</td>
+                                    <td>4x</td>
+                                    <td>
+                                        <a th:href="@{/penilaian/bobot}">
+                                        <button type="submit" class="fa fa-edit"></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                        </tr>
 
-            <form method="get">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-primary">Simpan Semua</button>
-                                    <button type="button" class="btn btn-primary">Refresh</button>
-                                    <button type="button" class="btn btn-primary">Finalisasi</button>
-                                    <button type="button" class="btn btn-primary">Gagal Penilaian</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </form><br>
-
-
-                    <div class="box-body table-responsive no-padding">
-                        <table class="table table-striped">
-                            <tr>
-                                <td rowspan="2" align="center">NIM</td>
-                                <td rowspan="2" align="center">Mahasiswa</td>
-                                <td rowspan="2" align="center">Σ PRS</td>
-                                <td rowspan="2" align="center">PRS 0.00%</td>
-                                <td colspan="42" align="center">Tugas Mandiri ⚡ 0.00%</td>
-                                <td rowspan="2" align="center">UTS 0.00%</td>
-                                <td rowspan="2" align="center">UAS 0.00%</td>
-                                <td rowspan="2" align="center">Nilai Akhir</td>
-                                <td rowspan="2" align="center">Grade ⚡</td>
-                            </tr>
-                            <tr>
-                                <th colspan="3">Tgs 1 0.00%</th>
-                                <th colspan="3">Tgs 2 0.00%</th>
-                                <th colspan="3">Tgs 3 0.00%</th>
-                                <th colspan="3">Tgs 4 0.00%</th>
-                                <th colspan="3">Tgs 5 0.00%</th>
-                                <th colspan="3">Tgs 6 0.00%</th>
-                                <th colspan="3">Tgs 7 0.00%</th>
-                                <th colspan="3">Tgs 8 0.00%</th>
-                                <th colspan="3">Tgs 9 0.00%</th>
-                                <th colspan="3">Tgs 10 0.00%</th>
-                                <th colspan="3">Tgs 11 0.00%</th>
-                                <th colspan="3">Tgs 12 0.00%</th>
-                                <th colspan="3">Tgs 13 0.00%</th>
-                                <th colspan="3">Tgs 14 0.00%</th>
-                            </tr>
-                            <tbody>
-                            <tr>
-                                <td>1-1519005-216647</td>
-                                <td>Rani Sry</td>
-                                <td>4<sup>x</sup></td>
-                                <td>0</td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="1"><input type="text" class="form-control"></td>
-                                <td colspan="1"><input type="text" class="form-control"></td>
-                                <td>0.00</td>
-                                <td>-<sup>0.00</sup></td>
-                            </tr>
-                            </tbody>
-                            <tbody>
-                            <tr>
-                                <td>2-1519008-216648</td>
-                                <td>Ismi Dinda</td>
-                                <td>5<sup>x</sup></td>
-                                <td>0</td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="3"><input type="text" class="form-control"></td>
-                                <td colspan="1"><input type="text" class="form-control"></td>
-                                <td colspan="1"><input type="text" class="form-control"></td>
-                                <td>0.00</td>
-                                <td>-<sup>0.00</sup></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        <tr>
+                            <td>2</td>
+                            <td colspan="8">Andang Heryahya <small style="font-size: 8px;">M.Pd.I, M.pd</small></td>
+                                <tr>
+                                    <td>#1213</td>
+                                    <td>SDS20192</td>
+                                    <td>Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
+                                    <td>L <small style="font-size: 8px;">R-10</small></td>
+                                    <td>Selasa</td>
+                                    <td>13.00-15.00</td>
+                                    <td>28</td>
+                                    <td>4x</td>
+                                    <td>
+                                        <a th:href="@{/penilaian/bobot}">
+                                            <button type="submit" class="fa fa-edit"></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td colspan="8">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
+                                <tr>
+                                    <td>#5463</td>
+                                    <td>SDS2019</td>
+                                    <td>Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
+                                    <td>K <small style="font-size: 8px;">R-10</small></td>
+                                    <td>Selasa</td>
+                                    <td>13.00-15.00</td>
+                                    <td>28</td>
+                                    <td>4x</td>
+                                    <td>
+                                        <a th:href="@{/penilaian/bobot}">
+                                            <button type="submit" class="fa fa-edit"></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td colspan="8">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
+                                <tr>
+                                    <td>#5463</td>
+                                    <td>SDS2019</td>
+                                    <td>Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
+                                    <td>K <small style="font-size: 8px;">R-10</small></td>
+                                    <td>Selasa</td>
+                                    <td>13.00-15.00</td>
+                                    <td>28</td>
+                                    <td>4x</td>
+                                    <td>
+                                        <a th:href="@{/penilaian/bobot}">
+                                            <button type="submit" class="fa fa-edit"></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
 </section>
 
 </body>
