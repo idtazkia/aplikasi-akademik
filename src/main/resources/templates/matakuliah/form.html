@@ -9,179 +9,156 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Daftar Tahun Akademik</h6>
-        </div>
-    </div>
-
-    <form method="get" th:action="@{/akademik/list}">
-        <div class="my-3 p-3 bg-white rounded box-shadow">
-
-            <h6 class="border-bottom border-gray pb-2 mb-0"><center><b>Tambah Matakuliah</b></center></h6>
-            <br>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Kode Matakuliah</label>
-                            <input type="text" class="form-control">
+    <div class="col-md-12" role="main">
+        <form th:action="@{/matakuliah/form}" th:object="${matkul}" method="post">
+        <div class="">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Matakuliah <small>Form</small></h2>
+                            <div class="clearfix"></div>
                         </div>
+                        <div class="x_content">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Matakuliah</label>
+                                        <input type="text" name="namaMatakuliah" class="form-control"
+                                               id="matakuliah" placeholder="Search ..."
+                                               data-provide="typeahead"
+                                               autocomplete="off" required autofocus>
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label>Nama (Inggris)</label>
-                            <input type="text" class="form-control">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Kode Matakuliah</label>
+                                        <input type="text"
+                                               name=kodeMatakuliah class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="idMat">
+                            <input type="hidden" name="prodi" th:value="${prodi.id}">
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Matakuliah(inggris)</label>
+                                        <input type="text"
+                                               name=namaMatakuliahEnglish class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Singkatan</label>
+                                        <input type="text"
+                                               name=singkatan class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Punya Responsi/Lab</label><br>
+                                        <label>
+                                            <input name="responsi" value="Y" maxlength="1" type="checkbox" class="js-switch" />
+                                        </label >
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>No. Urut</label>
+                                        <input type="text"
+                                               name=nourut class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Wajib</label>
+                                        <input type="text" name="wajib" maxlength="1" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pilihan Kurikulum</label>
+                                        <select name="kurikulum" style="width: 100%!important;"
+                                                class="form-control js-select2">
+                                            <option th:each="kurikulum : ${listKurikulum}"
+                                                    th:text="${kurikulum.namaKurikulum}"
+                                                    th:value="${kurikulum.id}"></option>
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Matakuliah Kurikulum Semester</label>
+                                        <input type="text" name="matakuliahKurikulumSemester" class="form-control">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label>Semester</label>
+                                            <input type="text" name="semester" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Syarat Tugas Akhir</label>
+                                        <input type="text" maxlength="1" name="syaratTugas" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Jumlah SKS</label>
+                                        <input type="number"
+                                               name="sks" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+                            <br>
+                            <center>
+                                <input class="btn btn-primary" type="submit" value="Simpan">
+                                <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                                    <span aria-hidden="true"></span>Batal
+                                </a>
+                            </center>
                         </div>
-
-                        <div class="form-group">
-                            <label>Punya Responsi/Lab?</label><br>
-                            <input type="checkbox">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Pilihan Wajib</label>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Akuntansi</option>
-                                <option>Ekonomi</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Matakuliah Wajib</label><br>
-                            <input type="checkbox">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Semester</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKS Tatap Muka</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKS Praktek Lapangan</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>IPK Minimal</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Penanggung Jawab</label>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Asep Sunandar</option>
-                                <option>James</option>
-                                <option>Bryant</option>
-                            </select>
-                        </div>
-
-
                     </div>
-
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nama Matakuliah</label>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Singkatan</label>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Jenis</label>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Jenis 1</option>
-                                <option>Jenis 2</option>
-                                <option>Jenis 3</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Pilihan Kurikulum</label>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Kurikulum 1</option>
-                                <option>Kurikulum 2</option>
-                                <option>Kurikulum 3</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Konsentrasi</label>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>S1</option>
-                                <option>S2</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKS</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKS Praktikum</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKS Minimal</label>
-                            <input type="number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Tugas Akhir</label><br>
-                            <input type="checkbox"><small>&nbsp&nbsp *) Jika dicentang maka mahasiswa harus mengambil MK ini untuk dapat lulus</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Tidak Aktif?</label><br>
-                            <input type="checkbox">
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-12">
-                        <label>Keterangan</label>
-                        <textarea class="form-control"></textarea>
-                    </div>
-
                 </div>
-
             </div>
-
-            <br>
-            <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-            <br>
-
-            <div class="align-content-md-center">
-                <button class="btn btn-success">Simpan</button>
-                <a th:href="@{/matakuliah/list}" class="btn btn-danger">Batal</a>
-            </div>
-
         </div>
-    </form>
-
+        </form>
+    </div>
 </section>
 
 
 </body>
 </html>
 <script>
-    $(".js-example-placeholder-single").select2({
+    $(".js-select2").select2({
         placeholder: "Pilih Salah Satu",
         allowClear: true
     });

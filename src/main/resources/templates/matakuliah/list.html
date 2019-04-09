@@ -9,225 +9,462 @@
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Mata Kuliah</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Matakuliah<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
 
-
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h6 class="border-bottom border-gray pb-2 mb-0"><center>Administrasi Mata Kuliah</center></h6>
-        <br>
-
-        <div class="box-body table-responsive no-padding">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kurikulum" role="tab">Kurikulum</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#mataKuliah" role="tab">Mata Kuliah</a>
-                </li>
-            </ul>
-            <br>
-            <div class="tab-content">
-                <!--Tab Kurilulum-->
-                <div class="tab-pane active" id="kurikulum" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Program Studi</label>
-                                            <select onchange="" class="form-control js-example-placeholder-single" id="provinsi"
-                                                    name="provinsi">
-                                                <option></option>
-                                                <option>Akuntasi Islam</option>
-                                                <option>Ekonomi Islam</option>
-                                                <option>Bisnis Manajemen Islam</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </tr>
-                        <tr>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <a th:href="@{/kurikulum/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Kurikulum</a>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </tr>
-                    </table>
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Kurikulum</th>
-                            <th>Sesi</th>
-                            <th>jumal Pertahun</th>
-                            <th>NA</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <td rowspan="2">2012</td>
-                            <td rowspan="2">kurikulum 2015</td>
-                            <td>Semester</td>
-                            <td>9</td>
-                            <td>v</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="title_right">
+                <div class="input-group">
+                    <a th:if="${selected != null}" th:href="@{/matakuliah/form(prodi = ${selected.id})}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </div>
-                <!---->
-                <!--Tab Mata Kuliah-->
-                <div class="tab-pane" id="mataKuliah" role="tabpanel">
-                    <table width="100%">
-                        <tr>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Program Studi</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>Akuntasi Islam</option>
-                                                    <option>Ekonomi Islam</option>
-                                                    <option>Bisnis Manajemen Islam</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Kurikulum</label>
-                                                <select onchange="" style="width: 500px;" class="form-control js-example-placeholder-single" id="provinsi"
-                                                        name="provinsi">
-                                                    <option></option>
-                                                    <option>Kurikulum Tahun 2019</option>
-                                                    <option>Kurikulum Tahun 2009</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <a th:href="@{/matakuliah/form}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Mata Kuliah</a>
+            </div>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
 
-                    <label>Sesi 1 (Semester)</label>
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Singkatan</th>
-                            <th>SKS</th>
-                            <th>Pras</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">5454</th>
-                            <td rowspan="2">Pengantar Akutansi II</td>
-                            <td rowspan="2">PA2</td>
-                            <td>4</td>
-                            <td>
-                                <a th:href="@{/prasyarat/form}" class="btn btn-primary" role="button" aria-pressed="true">+</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <br>
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
 
-                    <label>Sesi 2 (Semester)</label>
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Singkatan</th>
-                            <th>SKS</th>
-                            <th>pras</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th rowspan="2">1</th>
-                            <th rowspan="2">1487</th>
-                            <td rowspan="2">Sejarah Peradaban Islam</td>
-                            <td rowspan="2">PA2</td>
-                            <td>4</td>
-                            <td>
-                                <a th:href="@{/prasyarat/form}" class="btn btn-primary" role="button" aria-pressed="true">+</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Prodi :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="prodi" required>
+                                    <option></option>
+                                    <option th:each="prodi : ${listProdi}"
+                                            th:selected="(${prodi} == *{selected})"
+                                            th:text="${prodi.namaProdi}"
+                                            th:value="${prodi.id}">sdasd</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Curriculum :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="kurikulum" required>
+                                    <option></option>
+                                    <option th:each="kurikulum : ${listKurikulum}"
+                                            th:selected="(${kurikulum} == *{kurikulumSelected})"
+                                            th:text="${kurikulum.namaKurikulum}"
+                                            th:value="${kurikulum.id}">sdasd</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <hr>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(satu)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 1 <small><b th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}">Prodi </b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${satu}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(dua)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 2 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${dua}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(tiga)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 3 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${tiga}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(empat)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 4 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${empat}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(lima)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 5 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${lima}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(enam)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 6 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${enam}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(tujuh)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 7 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${tujuh}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(delapan)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 8 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${delapan}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div>
+
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(sembilan)}">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Semester 9 <small><b>Prodi (Nama Kurikulum)</b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Singkatan</th>
+                                    <th>SKS</th>
+                                    <th>Pras</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${sembilan}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data.matakuliah.kodeMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                    <td th:text="${data.jumlahSks}"></td>
+                                    <!--<td th:text="${data.}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
 
         </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-
     </div>
 
 </section>
