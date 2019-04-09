@@ -2,6 +2,8 @@ package id.ac.tazkia.akademik.aplikasiakademik;
 
 import id.ac.tazkia.akademik.aplikasiakademik.service.RekapPresensiService;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,13 +14,17 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableScheduling
 public class AplikasiAkademikApplication implements CommandLineRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AplikasiAkademikApplication.class);
 
 	public static void main(String[] args) {
+        LOGGER.debug("Mulai menjalankan aplikasinya");
 		SpringApplication.run(AplikasiAkademikApplication.class, args);
 	}
 
@@ -44,6 +50,11 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 			i = i.plusDays(1);
 		}
 
+	}
+
+	@PostConstruct
+	void setUTCTimeZone(){
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 }
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 public class JadwalKuliahController {
@@ -40,6 +41,9 @@ public class JadwalKuliahController {
     @Autowired
     private RuanganDao ruanganDao;
 
+    @Autowired
+    private HariDao hariDao;
+
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
         return dosenDao.findByStatusNotIn(StatusRecord.HAPUS);
@@ -58,6 +62,11 @@ public class JadwalKuliahController {
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademikProdi> tahunAkademik() {
         return tahunAkademikProdiDao.findByStatusNotInOrderByTahunAkademikDesc(StatusRecord.HAPUS);
+    }
+
+    @ModelAttribute("hari")
+    public Iterable<Hari> hari() {
+        return hariDao.findAll();
     }
 
     @ModelAttribute("program")
@@ -93,5 +102,56 @@ public class JadwalKuliahController {
     }
 
     @GetMapping("/jadwalkuliah/list")
-    public void jadwalList(){}
+    public void jadwalList(Model model, @RequestParam(required = false) Program program,
+                           @RequestParam(required = false) TahunAkademikProdi tahunAkademik,
+                           @RequestParam(required = false) Hari hari){
+        model.addAttribute("selectedTahun",tahunAkademik);
+        model.addAttribute("selectedHari", hari);
+        model.addAttribute("selectedProgram",program);
+
+        if (program != null && tahunAkademik != null && hari != null){
+            model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,hari,program));
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+        }
+
+
+        if (program != null && tahunAkademik != null && hari == null){
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+            model.addAttribute("minggu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"0",program));
+            model.addAttribute("senin", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"1",program));
+            model.addAttribute("selasa", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"2",program));
+            model.addAttribute("rabu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"3",program));
+            model.addAttribute("kamis", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"4",program));
+            model.addAttribute("jumat", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"5",program));
+            model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"6",program));
+        }
+
+    }
+
+    @GetMapping("/jadwalkuliah/form")
+    public void formJadwal(Model model,@RequestParam(required = false) Jadwal jadwal){
+
+        model.addAttribute("matakuliah",matakuliahKurikulumDao.findByStatusNotInAndKurikulum(StatusRecord.HAPUS,jadwal.getMatakuliahKurikulum().getKurikulum()));
+        model.addAttribute("jadwal",jadwal);
+    }
+
+    @PostMapping("/jadwalkuliah/form")
+    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal){
+        
+
+        List<Jadwal> jdwl = jadwalDao.cariJadwal(jadwal.getDosen(), jadwal.getId(),jadwal.getTahunAkademikProdi(),jadwal.getIdHari(),jadwal.getRuangan(),jadwal.getJamMulai(),jadwal.getJamSelesai(),jadwal.getJamMulai());
+
+
+        if (jdwl == null || jdwl.isEmpty()) {
+            jadwal.setJamMulai(jadwal.getJamMulai());
+            jadwal.setJamSelesai(jadwal.getJamSelesai());
+            jadwalDao.save(jadwal);
+        }else {
+
+            System.out.println("gabisa");
+            return "redirect:form?jadwal=" + jadwal.getId();
+        }
+
+        return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademikProdi().getId() +"&program="+jadwal.getProgram().getId();
+    }
 }

@@ -1,9 +1,11 @@
 $(document).ready(function(){
     var urlKelurahan = "/api/kelurahan";
+    var urlMatkul = "/api/matakuliah";
 
     var kelurahan = null;
+    var matakuliah = null;
 
-
+    var inputMatakuliah = $("#matakuliah");
     var inputKelurahan = $("#kelurahan");
     //uploadSmartTest
     var inputHiddenIdKelurahan= $("input[name=idKelurahan]");
@@ -11,6 +13,10 @@ $(document).ready(function(){
     var inputHiddenIdKotakabupaten = $("input[name=idKotaKabupaten]");
     var inputHiddenIdprovinsi = $("input[name=idProvinsi]");
     var inputKodepos = $("input[name=kodepos]");
+    var inputKodeMatakuliah= $("input[name=kodeMatakuliah]");
+    var inputNamaMatakuliahEnglish = $("input[name=namaMatakuliahEnglish]");
+    var inputSingkatan = $("input[name=singkatan]");
+    var inputIdMatkul = $("input[name=idMat]");
 
 
     var resetInput = function(inputField){
@@ -45,19 +51,21 @@ $(document).ready(function(){
 
 
 
-    inputCariKokab.typeahead({
-        displayText: function(item){ return item.nama;},
+    inputMatakuliah.typeahead({
+        displayText: function(item){ return item.namaMatakuliah;},
         source: _.debounce(function(cari, process){
-            sekolah = null;
-            $.get(urlCariKokab, {nama: cari}, function(hasil){
+            matakuliah = null;
+            $.get(urlMatkul, {search: cari}, function(hasil){
                 process(hasil.content);
             }, "json");
         }, 500),
         afterSelect: function(pilihan) {
-            inputHiddenIdKotakabupaten.val(pilihan.id);
-            console.log( pilihan.id);
-
-    }
+            inputNamaMatakuliahEnglish.val(pilihan.namaMatakuliahEnglish);
+            inputKodeMatakuliah.val(pilihan.kodeMatakuliah);
+            inputSingkatan.val(pilihan.singkatan);
+            inputIdMatkul.val(pilihan.id);
+            console.log( pilihan.namaMatakuliahEnglish);
+        }
 
     });
 

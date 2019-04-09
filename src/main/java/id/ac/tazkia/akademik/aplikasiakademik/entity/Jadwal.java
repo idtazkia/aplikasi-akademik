@@ -8,8 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,11 +29,9 @@ public class Jadwal {
     @JoinColumn(name = "id_hari")
     private Hari idHari;
 
-    @Column(columnDefinition = "TIME")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime jamMulai;
 
-    @Column(columnDefinition = "TIME")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime jamSelesai;
 
@@ -79,5 +78,12 @@ public class Jadwal {
     @ManyToOne
     @JoinColumn(name = "id_program")
     private Program program;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "jadwal_dosen",
+            joinColumns=@JoinColumn(name = "id_jadwal"),
+            inverseJoinColumns = @JoinColumn(name = "id_dosen"))
+    private Set<Dosen> dosens = new HashSet<>();
+
 
 }
