@@ -18,36 +18,37 @@
         <br>
 
         <div class="table-responsive">
-
             <table width="100%">
                 <tr>
                     <td>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                    <label>Select Campus</label>
-                                    <select name="provinsi" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>STEI TAZKIA SENTUL</option>
-                                        <option>STEI TAZKIA MATRIKULASI</option>
-                                    </select>
-                                </div>
-                                </div>
-                              </div>
-                        </div>
+                        <a th:href="@{/gedung/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                    </td>
+                    <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" autocomplete="off" name="search"
+                                       th:value="${search}"
+                                       placeholder="Search by name" class="form-control">
+                                <span class="input-group-btn">
+                                                <button class="btn btn-default"
+                                                        type="submit">Search</button>
+                                    </span>
+                            </div>
+                        </form>
+                    </td>
+                <tr>
+                    <td>
+                        Show <span sd:page-size-selector="javascript"></span> entries
                     </td>
                 </tr>
+                </tr>
             </table>
+
             <table width="100%">
                 <tr>
                     <td>
                         <td>
                             <a th:href="@{/ruang/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-                        </td>
-
-                        <td>
-                            Show <span sd:page-size-selector="javascript"></span> entries
                         </td>
                             <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
                             <form method="get">
@@ -61,6 +62,12 @@
                                 </div>
                             </form>
                             </td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Show <span sd:page-size-selector="javascript"></span> entries
+
                     </td>
                 </tr>
             </table>

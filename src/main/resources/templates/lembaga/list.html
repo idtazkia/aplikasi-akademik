@@ -18,31 +18,42 @@
 
             <div class="x_content">
 
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <a th:href="@{/lembaga/form}" class="btn btn-primary">Add</a>
-                        </td>
-                        <td>
-                            Show <span sd:page-size-selector="javascript"></span> entries
-                        </td>
-                        <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                            <form method="get">
-                                <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           class="form-control" placeholder="Search for...">
-                                    <span class="input-group-btn">
-                                                          <button class="btn btn-default" type="submit">Go!</button>
-                                                        </span>
-                                </div>
-                            </form>
-                        </td>
+                <!--<table width="100%">-->
+                    <!--<tr>-->
+                        <!--<td>-->
+                            <!--<a th:href="@{/lembaga/form}" class="btn btn-primary">Add</a>-->
+                        <!--</td>-->
+                        <!--<td>-->
+                            <!--Show <span sd:page-size-selector="javascript"></span> entries-->
+                        <!--</td>-->
+                        <!--<td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">-->
+                            <!--<form method="get">-->
+                                <!--<div class="input-group">-->
+                                    <!--<input type="text" id="keyresult" autocomplete="off"-->
+                                           <!--class="form-control" placeholder="Search for...">-->
+                                    <!--<span class="input-group-btn">-->
+                                                          <!--<button class="btn btn-default" type="submit">Go!</button>-->
+                                                        <!--</span>-->
+                                <!--</div>-->
+                            <!--</form>-->
+                        <!--</td>-->
 
 
 
-                    </tr>
+                    <!--</tr>-->
 
-                </table>
+                <!--</table>-->
+                <div>
+                    <form method="get">
+                        <div class="input-group ">
+                            <input type="text" id="keyresult" autocomplete="off"
+                                   class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">Go!</button>
+                                </span>
+                        </div>
+                    </form>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped jambo_table bulk_action">
