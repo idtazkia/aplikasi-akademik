@@ -11,4 +11,6 @@ public interface KrsDao extends PagingAndSortingRepository<Krs,String> {
     Long countKrsByTahunAkademikAndMahasiswa(TahunAkademik tahunAkademik,Mahasiswa mahasiswa);
     Long countKrsByTahunAkademikAndMahasiswaStatus(TahunAkademik tahunAkademik,StatusRecord statusRecord);
     Long countKrsByTahunAkademikAndMahasiswaJenisKelamin (TahunAkademik tahunAkademik, JenisKelamin jenisKelamin);
+    Krs findByMahasiswaAndTahunAkademikStatus(Mahasiswa mahasiswa, StatusRecord aktif);
+
 }

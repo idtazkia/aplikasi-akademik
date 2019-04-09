@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Curriculum <small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="col-md-12" role="main">
+                <div class="">
+                    <div class="clearfix"></div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Presensi Dosen & Mahasiswa<small>Dosen</small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    <section class="content invoice">
+                                        <!-- title row -->
+                                        <div class="row">
+                                            <div class="col-xs-12 invoice-header">
+                                                <h1>
+                                                    <i class="fa fa-globe"></i> <span th:text="${jadwal.prodi.namaProdi}">Management Bisnis Syariah</span>
+                                                </h1>
+                                                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah Presensi</a><br>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <br>
+                                        <!-- info row -->
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Matakuliah</strong>
+                                                    <br th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong th:text="${jadwal.idKelas.namaKelas}">BMI-C</strong>
+                                                    <br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong>Jadwal Kuliah :</strong> <span th:text="${jadwal.idHari.namaHariEng +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}"></span>
+                                                    <br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-xs-12 table">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr class="headings">
+                                                        <th class="column-title">#</th>
+                                                        <th class="column-title">Jam Masuk</th>
+                                                        <th class="column-title">Jam Keluar</th>
+                                                        <th class="column-title">Dosen</th>
+                                                        <th class="column-title">Catatan</th>
+                                                        <th class="column-title">Siswa Hadir</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr class="headings" th:each="data,row : ${detail}">
+                                                        <td th:text="${(row.index + 1)}">#</td>
+                                                        <td th:text="${data.waktuMulai}">Jam</td>
+                                                        <td th:text="${data.waktuSelesai}">Jam</td>
+                                                        <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
+                                                        <td th:text="${data.beritaAcara}">Dosen</td>
+                                                        <td><a th:href="@{/kebijakanpresensi/mahasiswa(id = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                                            <i class="fa fa-edit"> Kehadiran Mahasiswa</i>
+                                                        </a></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" th:action="@{/kebijakanpresensi/detail}">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Pertemuan Ke :</label>
+                                    <input type="text" name="pertemuan" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Tanggal :</label>
+                                    <input type="date" name="tanggal" class="form-control date">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Jam Masuk :</label>
+                                    <input type="text" name="jamMulai" class="form-control number">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Jam Selesai :</label>
+                                    <input type="text" name="jamSelesai" class="form-control number">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Pemberi Kuliah :</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="dosen">
+                                        <option></option>
+                                        <option th:text="${dosenUtama.karyawan.namaKaryawan}" th:value="${dosenUtama.id}"></option>
+                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.karyawan.namaKaryawan}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Catatan :</label>
+                                    <textarea name="beritaAcara" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                            <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

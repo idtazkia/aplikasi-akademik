@@ -54,4 +54,8 @@ public class KrsDetail {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private BigDecimal nilaiAkhir;
+    private BigDecimal bobot;
+    private String grade;
+
 }

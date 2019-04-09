@@ -7,9 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.sql.Time;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Data

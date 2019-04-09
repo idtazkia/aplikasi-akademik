@@ -4,418 +4,463 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Studies Schedule</title>
 </head>
 <body>
 
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">Kebijakan Presensi</h6>
-        </div>
-    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Presensi Dosen & Mahasiswa<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
 
-    <div class="my-3 p-3 bg-white rounded box-shadow">
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Prodi/Semester</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="tahunAkademik">
+                                        <option></option>
+                                        <option th:each="data : ${tahunAkademik}"
+                                                th:selected="(${data} == *{selectedTahun})"
+                                                th:text="${'('+ data.prodi.namaProdi +')'  + '       -       ' +  data.tahunAkademik.namaTahunAkademik}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
 
-        <h3 class="border-bottom border-gray pb-2 mb-0"><center>Presensi Dosen & Mahasiswa</center></h3>
-        <br>
-        <form method="get">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Semester :</label><br>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>2017/2018 Semester Ganjil</option>
-                                <option>2017/2018 Semester genap</option>
-                                <option>2017/2018 Semester Pendek</option>
-                            </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Program Pendidikan</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="program">
+                                        <option></option>
+                                        <option th:each="data : ${program}"
+                                                th:selected="(${data} == *{selectedProgram})"
+                                                th:text="${data.namaProgram}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                            <label>Hari :</label><br>
-                            <select onchange="" style="width: 235px;" class="js-example-placeholder-single">
-                                <option></option>
-                                <option>Senin</option>
-                                <option>Selasa</option>
-                                <option>Rabu</option>
-                                <option>Kamis</option>
-                                <option>Jumat</option>
-                                <option>Sabtu</option>
-                                <option>Minggu</option>
-                            </select>
-
-                            <label>&nbsp;&nbsp;Kelas :</label>
-                            <input type="text" onchange="" style="width:207px;">
-                    </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-
-                            <label>Program Studi :</label><br>
-                            <select class="form-control js-example-placeholder-single">
-                                <option></option>
-                                <option>Ekonomi Islam</option>
-                                <option>Akuntansi Islam</option>
-                            </select>
-
-                            <label>Prg Pendidikan :</label><br>
-                            <selectonchange="" style="width: 510px;" class="js-example-placeholder-single">
-                                <option></option>
-                                <option>semester</option>
-                            </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Hari</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="hari">
+                                        <option></option>
+                                        <option th:each="data : ${hari}"
+                                                th:selected="(${data} == *{selectedHari})"
+                                                th:text="${data.namaHariEng}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
                 </div>
-                <div>
-                    <center><button class="btn btn-primary">Tampilkan Jadwal</button></center>
-                </div><br>
-                <button class="btn btn-primary">Cetak Rekap</button>
-                <button class="btn btn-primary">Cetak Detail Presensi</button>
-                <button class="btn btn-primary">Cetak Presensi Mhsw</button>
-                <button class="btn btn-primary">Cetak Berita Acara</button>
-
-            </div>
-
-        </form>
-        <br>
-        <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
-        <br>
-
-        <h3><center><b>Manajemen Bisnis Syariah</b></center></h3>
-        <br>
-        <div class="box-body table-responsive no-padding">
-            <label><b>Minggu</b></label>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Jam</th>
-                    <th>Ruangan</th>
-                    <th>Kode MK</th>
-                    <th>Matahuliah</th>
-                    <th>SKS</th>
-                    <th>Kelas</th>
-                    <th>Dosen</th>
-                    <th>Team Teaching</th>
-                    <th>Mhsw</th>
-                    <th>DHK</th>
-                    <th>DHI</th>
-                    <th>BA</th>
-                    <th>DET</th>
-                    <th colspan="2">Presensi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>07:00 - 09:30 </td>
-                    <td>Executive Class 1</td>
-                    <td>MGT4107</td>
-                    <td>Skripsi</td>
-                    <td>6</td>
-                    <td>BMI-14-R</td>
-                    <td>Thuba Jazil M.Sc(Fin)</td>
-                    <td></td>
-                    <td>158</td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><a th:href="@{/kebijakanpresensi/dosen}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
-                </tr>
-                </tbody>
-                <tbody>
-                <tr>
-                    <td>2</td>
-                    <td>13:00 - 14:00 </td>
-                    <td>Executive Class 1</td>
-                    <td>BIS3201</td>
-                    <td>Magang</td>
-                    <td>3</td>
-                    <td>BMI-15-R</td>
-                    <td>Thuba Jazil M.Sc(Fin)</td>
-                    <td></td>
-                    <td>2</td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><a th:href="@{/kebijakanpresensi/dosen}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
-                </tr>
-                </tbody>
-            </table>
+            </form>
             <br>
+            <hr>
 
-            <label><b>Senin</b></label>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Jam</th>
-                    <th>Ruangan</th>
-                    <th>Kode MK</th>
-                    <th>Matahuliah</th>
-                    <th>SKS</th>
-                    <th>Kelas</th>
-                    <th>Dosen</th>
-                    <th>Team Teaching</th>
-                    <th>Mhsw</th>
-                    <th>DHK</th>
-                    <th>DHI</th>
-                    <th>BA</th>
-                    <th>DET</th>
-                    <th colspan="2">Presensi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>3</td>
-                    <td>07:00 - 09:30 </td>
-                    <td>Ruang 1.4</td>
-                    <td>ECO2203</td>
-                    <td>Teori Ekonomi Mikro 1</td>
-                    <td>3</td>
-                    <td>BMI-C-16</td>
-                    <td>Nurul Anisak M.Sc</td>
-                    <td>Anita Priantina</td>
-                    <td>41</td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><a th:href="@{/kebijakanpresensi/dosen}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
-                </tr>
-                </tbody>
-                <tbody>
-                <tr>
-                    <td>4</td>
-                    <td>07:00 - 09:30</td>
-                    <td>Ruang 1.10</td>
-                    <td>ENT3601</td>
-                    <td>Kewirausahaan 1</td>
-                    <td>3</td>
-                    <td>BMI-D-16</td>
-                    <td>Dr.Ir.Elang llik Martawijaya MM</td>
-                    <td>Dr.Mukhamad Yasid,M.Si</td>
-                    <td>2</td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><button class="btn btn-primary">print</button></td>
-                    <td><a th:href="@{/kebijakanpresensi/dosen}" class="btn btn-primary" role="button" aria-pressed="true">Detail</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <span th:if="${selectedHari != null}">
+            <div class="col-md-12 col-sm-12 col-xs-12" >
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2 th:text="${selectedTahun.prodi.namaProdi}">Prodi<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
 
-        </div>
+                    <div class="x_content">
 
-    </div>
+                        <div class="table-responsive">
+                            <span><strong th:text="${selectedHari.namaHariEng}">Minggu</strong></span>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Ruangan</th>
+                                    <th>Jam</th>
+                                    <th>Matakuliah</th>
+                                    <th>Kelas</th>
+                                    <th>SKS</th>
+                                    <th>Dosen</th>
+                                    <th>Team Teaching</th>
+                                    <th>Presensi</th>
+                                </tr>
+                                </thead>
 
-    <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-md-12"><br>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program StudiStudi</label><br>
-                                    <label><b>Manajemen Bisnis Syariah</b></label>
-                                </div>
-                            </div>
+                                <tbody>
+                                <tr th:each="jadwal,row : ${jadwal}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                    <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                            <i class="fa fa-edit"></i> Tambah Presensi
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Program</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single" >
-                                        <option></option>
-                                        <option>Reguler</option>
-                                        <option>FTUI</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Hari</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>Senin</option>
-                                        <option>Selasa</option>
-                                        <option>Rabu</option>
-                                        <option>Kamis</option>
-                                        <option>Jumat</option>
-                                        <option>Sabtu</option>
-                                        <option>Minggu</option>
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <Label>Jam Kuliah</Label>
-                                    <table class="table-responsive">
-                                        <tr>
-                                            <td><input type="time" class="form-control"></td>
-                                            <td>-</td>
-                                            <td><input type="time" class="form-control"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Ruangan</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>Eksekutif 1</option>
-                                        <option>2.1</option>
-                                        <option>Eksekutif 2</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Kapasitas</label>
-                                    <input type="text" class="form-control" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Matakuliah</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>Pengantar Akuntansi</option>
-                                        <option>Bank & Lembaga Keuangan</option>
-                                        <option>Pengantar Akuntansi II</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Dosen Pengampu</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>James</option>
-                                        <option>Bryant</option>
-                                        <option>Curry</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Kelas</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label >Jenis</label><br>
-                                    <select style="width: 100%;" class="form-control js-example-placeholder-single">
-                                        <option></option>
-                                        <option>Kuliah</option>
-                                        <option>Seminar</option>
-                                        <option>Praktek</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Rencana Kehadiran</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Minimal Kehadiran</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>tanggal UAS</label>
-                                    <input type="date" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Jam UAS</label>
-                                    <table class="table-responsive">
-                                        <tr>
-                                            <td><input type="time" class="form-control"></td>
-                                            <td>-</td>
-                                            <td><input type="time" class="form-control"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="butt  Fon" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success">Save</button>
+            </div>
+            </span>
+
+
+            <span th:if="${selectedHari == null && selectedTahun != null}">
+            <div class="col-md-12">
+                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a><br>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12" >
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2 th:text="${selectedTahun.prodi.namaProdi}">Prodi<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <span th:if="${not #lists.isEmpty(minggu)}">
+                            <span><strong >Minggu</strong></span>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Ruangan</th>
+                                    <th>Jam</th>
+                                    <th>Matakuliah</th>
+                                    <th>Kelas</th>
+                                    <th>SKS</th>
+                                    <th>Dosen</th>
+                                    <th>Team Teaching</th>
+                                    <th>Presensi</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="jadwal,row : ${minggu}">
+                                   <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                    <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                            <i class="fa fa-edit"></i> Tambah Presensi
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(senin)}">
+                                <span><strong >Senin</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>Team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${senin}">
+                                        <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                    <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td>
+                                        <ul>
+                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                            <i class="fa fa-edit"></i> Tambah Presensi
+                                        </a>
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(selasa)}">
+                                <span><strong >Selasa</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>Team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${selasa}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                                <i class="fa fa-edit"></i> Tambah Presensi
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(rabu)}">
+                                <span><strong >Rabu</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>Team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${rabu}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                                <i class="fa fa-edit"></i> Tambah Presensi
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(kamis)}">
+                                <span><strong >Kamis</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${kamis}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                                <i class="fa fa-edit"></i> Tambah Presensi
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(jumat)}">
+                                <span><strong >Jumat</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>Team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${jumat}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                                <i class="fa fa-edit"></i> Tambah Presensi
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                            <span th:if="${not #lists.isEmpty(sabtu)}">
+                            <span><strong >Sabtu</strong></span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Ruangan</th>
+                                        <th>Jam</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>SKS</th>
+                                        <th>Dosen</th>
+                                        <th>Team Teaching</th>
+                                        <th>Presensi</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${sabtu}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                                <i class="fa fa-edit"></i> Tambah Presensi
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
+            </span>
         </div>
     </div>
-
-    <!--End Modal-->
-
 </section>
 
 
@@ -426,4 +471,5 @@
         placeholder: "Pilih Salah Satu",
         allowClear: true
     });
+
 </script>
