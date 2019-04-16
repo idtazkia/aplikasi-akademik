@@ -22,6 +22,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     KrsDetail findByJadwalAndMahasiswaAndKrs(Jadwal jadwal,Mahasiswa mahasiswa,Krs krs);
     List<KrsDetail> findByJadwalAndStatusOrderByMahasiswaNamaAsc(Jadwal jadwal,StatusRecord statusRecord);
-    KrsDetail findByIdAndMahasiswa(String id, Mahasiswa mahasiswa);
+    List<KrsDetail> findByJadwalAndStatus(Jadwal jadwal,StatusRecord statusRecord);
 
 }

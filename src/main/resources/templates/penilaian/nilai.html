@@ -5,194 +5,312 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style type="text/css">
+        form{
+            margin: 20px 0;
+        }
+        form input, button{
+            padding: 5px;
+        }
+        table{
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid #cdcdcd;
+        }
+        table th, table td{
+            padding: 10px;
+            text-align: left;
+        }
+
+        ::placeholder {
+            color: black;
+            opacity: 1; /* Firefox */
+        }
+
+        :-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: black;
+        }
+
+        ::-ms-input-placeholder { /* Microsoft Edge */
+            color: black;
+        }
+    </style>
 </head>
 <body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
 
+        $('.filterme').keypress(function(eve) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        });
+
+
+        var delay = (function () {
+            var timer = 0;
+            return function (callback, ms) {
+                clearTimeout(timer);
+                timer = setTimeout(callback, ms);
+            };
+        })();
+
+
+        function keyUpFunction(arg) {
+            var id = arg.getAttribute('id');
+            var value = arg.value;
+
+            // var idKrs = evt.getAttribute('id');
+            // var valueKrs = evt.value;
+            console.log(id);
+            $(document).keyup(function (e) {
+                delay(function () {
+                    console.log(id);
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        url: url,
+                        data: JSON.stringify({
+                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
+                            "uts" : "",
+                            "uas" : value,
+                            "nilai": "",
+                            "tugas": ""
+                        })
+                    }, 500);
+
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        // console.log(data);
+                    });
+                }, 1000);
+            });
+        }
+
+
+        function myFunction(arg) {
+            var id = arg.getAttribute('id');
+            var value = arg.value;
+
+            // var idKrs = evt.getAttribute('id');
+            // var valueKrs = evt.value;
+            console.log(id);
+            console.log(value);
+            console.log($("input[name='" + id + '-' + 'krs' + "']").val());
+
+            $(document).keyup(function (e) {
+                delay(function () {
+                    console.log(id);
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        url: url,
+                        data: JSON.stringify({
+                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
+                            "uts" : value,
+                            "nilai": "",
+                            "tugas": "",
+                            "uas" : ""
+                        })
+                    }, 500);
+
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        // console.log(data);
+                    });
+
+                }, 1000);
+            });
+        }
+
+        function lookup(arg) {
+                var id = arg.getAttribute('id');
+                var value = arg.value;
+
+            var mahasiswa = /*[[${jsMahasiswa}]]*/["001", "002"];
+            var i;
+
+            console.log(id);
+
+                $(document).keyup(function (e) {
+                    delay(function () {
+
+                        var url = "/penilaian/nilai";
+                        var token = $("input[name='_csrf']").val();
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            contentType: "application/json;charset=UTF-8",
+                            headers: {"X-CSRF-TOKEN": token},
+                            data: JSON.stringify({
+
+                                "nilai": $("input[name='" + id + "']").val(),
+                                "tugas": $("input[name='" + id + '-' + 'id' + "']").val(),
+                                "krs": $("input[name='" + id + '-' + 'krs' + "']").val()
+                            }),
+                            url: url
+                        }, 500);
+
+                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                                document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                            // console.log(data);
+                        });
+
+
+                    }, 1000);
+                });
+        }
+
+    </script>
+</th:block>
 <section layout:fragment="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-        <img class="mr-3" src="/stei-tazkia.png" alt="" width="48" height="48">
-        <div class="lh-100">
-            <h6 class="mb-0 text-white lh-100">PENILAIAN</h6>
-        </div>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-
-        <h3 class="border-bottom border-gray pb-2 mb-0"><center>Penilaian</center></h3>
-        <!--<h6 align="center">2017</h6>-->
-        <br>
-
-
-        <div id="page" class="container-fluid">
-            <ul id="block-myoverview-view-choices-5b515e643e85b5b515e643e8981" class="nav nav-tabs" role="tablist">
-                <li class="nav-item ">
-                    <a class="nav-link" href="#myoverview_bobot_view" role="tab" data-toggle="tab" data-tabname="bobot">
-                        Bobot Penilaian
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="#myoverview_nilai_view" role="tab" data-toggle="tab" data-tabname="nilai">
-                        Nilai Mahasiswa
-                    </a>
-                </li>
-                <table border="0" cellspacing="6" cellpadding="2">
-                    <tr>
-                        <td><button type="button" class="btn btn-primary">Kembali</button></td>
-                    </tr>
-                </table>
-            </ul>
-
-        </div>
-    </div>
-
-
-    <div role="tabpanel" class="tab-pane fade in active" id="myoverview_nilai_view">
-        <div id="courses-view-5b515e643e85b5b515e643e8981" data-region="nilai-view">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="input-group input-group-sm" style="....">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Thn Akademik: 20172</label>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Assesment <small>nilai</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <table class="x_content">
+                    <p class="text-muted font-13 m-b-30">
+                    <div class="form-group">
+                        <div class="row col-sm-offset-1 ">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center>
+                                        <div class="btn-group">
+                                            <a th:href="@{/penilaian/bobot(jadwal = ${jadwal.id})}">
+                                                <button class="btn btn-default"  type="button">Bobot Penilaian</button>
+                                            <!--</a>-->
+                                            <a th:href="@{/penilaian/nilai}">
+                                                <button class="btn btn-primary" type="button">Nilai Mahasiswa</button>
+                                            </a>
+                                            <a th:href="@{/penilaian/list}">
+                                                <button class="btn btn-default" type="button">Kembali</button>
+                                            </a>
+                                        </div>
+                                    </center>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Matakuliah: Student Dynamic Session</label>
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Program Studi: Manajemen Bisnis Syariah</label>
-                            </div>
-                            <div class="form-group">
-                                <label>Dosen: Afif Zaerofi</label>
-                            </div>
-                        </div>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Tahun Akademik</td>
+                                    <td>:</td>
+                                    <td th:text="${jadwal.tahunAkademik.namaTahunAkademik}">20191</td>
+                                    <td>&nbsp;</td>
+                                    <td>Program Studi</td>
+                                    <td>:</td>
+                                    <td th:text="${jadwal.prodi.namaProdi}">Manajemen Bisnis Syariah <small style="font-size: 8px">01</small></td>
+                                </tr>
+                                <tr>
+                                    <td>Mata Kuliah</td>
+                                    <td>:</td>
+                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px">SDS20192</small></td>
+                                    <td>&nbsp;</td>
+                                    <td>Dosen</td>
+                                    <td>:</td>
+                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px">M.M</small></td>
+                                </tr>
+                                <tr>
+                                    <td>SKS</td>
+                                    <td>:</td>
+                                    <td><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> <small>,</small> <span>Peserta :
+                                        <span th:text="${jumlahMahasiswa}"></span></span> , <span>Absensi Dosen : </span><span th:text="${absensi}"></span>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td>Kelas</td>
+                                    <td>:</td>
+                                    <td th:text="${jadwal.idKelas.namaKelas}">K</td>
+                                </tr>
+                                <tr>
+                                    <td>Jadwal Kuliah</td>
+                                    <td>:</td>
+                                    <td><span th:text="${jadwal.idHari.namaHariEng}"></span>
+                                        <small style="font-size: 8px" th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td>Jadwal Ujian</td>
+                                    <td>:</td>
+                                    <td>01-01-2019, Rabu <small style="font-size: 8px">14.00-15.30</small></td>
+                                </tr>
+                            </table>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>SKS: 0, Peserta: 23</label>
-                            </div>
-                            <div class="form-group">
-                                <label>Kelas: K</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Jadwal Kuliah: Selasa 13:00-15:00, Presensi: 4</label>
-                            </div>
-                            <div class="form-group">
-                                <label>Jadwal Ujian: 01-01-1930, Rabu, 00:00-00:00</label>
-                            </div>
+
+                            <center>
+                                <div class="clearfix">
+                                    <h2>Penilaian</h2>
+                                    <div class="x_title"></div>
+                                </div>
+                            </center>
+                            <span>
+                                <span th:each="a : ${nim}" th:text="${a}"></span>
+                                <form th:action="@{/penilaian/nilai}" enctype="application/json" id="employeeForm" method="post">
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td align="center">NIM</td>
+                                                <td align="center">Mahasiswa</td>
+                                                <td align="center">Σ PRS</td>
+                                                <td align="center">PRS <br>0.00%</td>
+                                                <td th:each="tugas :${bobotTugas}" align="center"><span th:text="${tugas.namaTugas}"></span><br><span th:text="${tugas.bobot +'%'}"></span></td>
+                                                <td align="center">UTS <br th:text="${jadwal.bobotUts + '%'}"></td>
+                                                <td align="center">UAS <br th:text="${jadwal.bobotUas + '%'}"></td>
+                                                <td align="center">Nilai Akhir</td>
+                                                <td align="center">Grade ⚡</td>
+                                            </tr>
+                                            <tbody th:each="data,row : ${mahasiswa}">
+                                            <tr>
+                                                <td><span th:text="${row.index + 1 + '  -  ' + data.krsDetail.mahasiswa.nim}"></span></td>
+                                                <td th:text="${data.krsDetail.mahasiswa.nama}">Rani Sry</td>
+                                                <td><span th:text="${data.absensiMahasiswa}"></span><sup>x</sup></td>
+                                                <td>0</td>
+                                                <td th:each="tugas :${bobotTugas}"><center>
+                                                    <input class="filterme" type="text" maxlength="3" th:name="${tugas.id + '-' + data.krsDetail.mahasiswa.nim}" onkeyup="lookup(this);" th:id="${tugas.id + '-' + data.krsDetail.mahasiswa.nim}" style="width: 80%;">
+                                                    <input type="hidden" th:value="${tugas.id}" th:name="${tugas.id + '-' + data.krsDetail.mahasiswa.nim + '-' + 'id'}">
+                                                    <input type="hidden" th:value="${data.id}" th:name="${tugas.id + '-' + data.krsDetail.mahasiswa.nim + '-' + 'krs'}">
+                                                </center></td>
+                                                <td><center>
+                                                    <input class="filterme" type="text" maxlength="3" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uts'}" th:name="${data.krsDetail.mahasiswa.nim + 'uts'}"  onkeyup="myFunction(this);" style="width: 80%;"></center>
+                                                    <input type="hidden" th:name="${data.krsDetail.mahasiswa.nim + '-' + 'uts' + '-' + 'krs'}" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uts' + 'krs'}" th:value="${data.id}">
+                                                </td>
+                                                <td><center>
+                                                    <input class="filterme" type="text" maxlength="3" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uas'}" th:name="${data.krsDetail.mahasiswa.nim + 'uas'}" onkeyup="keyUpFunction(this);" style="width: 80%;">
+                                                    <input type="hidden" th:name="${data.krsDetail.mahasiswa.nim + '-' + 'uas' + '-' + 'krs'}" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uas' + 'krs'}" th:value="${data.id}">
+                                                </center></td>
+
+                                                <td><span th:id="${data.krsDetail.mahasiswa.nim}"></span></td>
+                                                <td>-<sup>0.00</sup></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                </form>
+                            </span>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="border-bottom border-gray pb-2 mb-0"></div>
-            <br>
-
-            <form method="get">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-primary">Simpan Semua</button>
-                                <button type="button" class="btn btn-primary">Refresh</button>
-                                <button type="button" class="btn btn-primary">Finalisasi</button>
-                                <button type="button" class="btn btn-primary">Gagal Penilaian</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form><br>
-
-
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-striped">
-                    <tr>
-                        <td rowspan="2" align="center">NIM</td>
-                        <td rowspan="2" align="center">Mahasiswa</td>
-                        <td rowspan="2" align="center">Σ PRS</td>
-                        <td rowspan="2" align="center">PRS 0.00%</td>
-                        <td colspan="42" align="center">Tugas Mandiri ⚡ 0.00%</td>
-                        <td rowspan="2" align="center">UTS 0.00%</td>
-                        <td rowspan="2" align="center">UAS 0.00%</td>
-                        <td rowspan="2" align="center">Nilai Akhir</td>
-                        <td rowspan="2" align="center">Grade ⚡</td>
-                    </tr>
-                    <tr>
-                        <th colspan="3">Tgs 1 0.00%</th>
-                        <th colspan="3">Tgs 2 0.00%</th>
-                        <th colspan="3">Tgs 3 0.00%</th>
-                        <th colspan="3">Tgs 4 0.00%</th>
-                        <th colspan="3">Tgs 5 0.00%</th>
-                        <th colspan="3">Tgs 6 0.00%</th>
-                        <th colspan="3">Tgs 7 0.00%</th>
-                        <th colspan="3">Tgs 8 0.00%</th>
-                        <th colspan="3">Tgs 9 0.00%</th>
-                        <th colspan="3">Tgs 10 0.00%</th>
-                        <th colspan="3">Tgs 11 0.00%</th>
-                        <th colspan="3">Tgs 12 0.00%</th>
-                        <th colspan="3">Tgs 13 0.00%</th>
-                        <th colspan="3">Tgs 14 0.00%</th>
-                    </tr>
-                    <tbody>
-                    <tr>
-                        <td>1-1519005-216647</td>
-                        <td>Rani Sry</td>
-                        <td>4<sup>x</sup></td>
-                        <td>0</td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="1"><input type="text" class="form-control"></td>
-                        <td colspan="1"><input type="text" class="form-control"></td>
-                        <td>0.00</td>
-                        <td>-<sup>0.00</sup></td>
-                    </tr>
-                    </tbody>
-                    <tbody>
-                    <tr>
-                        <td>2-1519008-216648</td>
-                        <td>Ismi Dinda</td>
-                        <td>5<sup>x</sup></td>
-                        <td>0</td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="3"><input type="text" class="form-control"></td>
-                        <td colspan="1"><input type="text" class="form-control"></td>
-                        <td colspan="1"><input type="text" class="form-control"></td>
-                        <td>0.00</td>
-                        <td>-<sup>0.00</sup></td>
-                    </tr>
-                    </tbody>
+                    </p>
                 </table>
             </div>
         </div>
     </div>
     </div>
+
 </section>
+
 </body>
 </html>
