@@ -44,34 +44,6 @@
                 </tr>
             </table>
 
-            <table width="100%">
-                <tr>
-                    <td>
-                        <td>
-                            <a th:href="@{/ruang/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
-                        </td>
-                            <td class="col-md-5 col-sm-5 col-xs-8 form-group pull-right top_search">
-                            <form method="get">
-                                <div class="input-group">
-                                    <input type="text" id="keyresult" autocomplete="off"
-                                           class="form-control" placeholder="Search for..." name="search"
-                                           th:value="${search}">
-                                    <span class="input-group-btn">
-                                     <button class="btn btn-default" type="submit">Go!</button>
-                                </span>
-                                </div>
-                            </form>
-                            </td>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Show <span sd:page-size-selector="javascript"></span> entries
-
-                    </td>
-                </tr>
-            </table>
-
             <table class="table table-striped jambo_table bulk_action">
                 <thead>
                 <tr class="headings">
