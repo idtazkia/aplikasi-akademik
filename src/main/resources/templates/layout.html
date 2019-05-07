@@ -164,7 +164,7 @@
                                     <li><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptProfiles('production')}"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
