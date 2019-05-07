@@ -102,9 +102,9 @@
 
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-institution"></i> Matriculations <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Pembianaan<span class="fa fa-chevron-down"></span></a>
+                                    <li><a>Pembinaan<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="sub_menu"><a href="level2.html">Level Two</a>
                                             </li>
@@ -147,7 +147,7 @@
                                             <li><a th:href="@{/khs/list}">K H S</a></li>
                                         </ul>
                                     </li>
-                                    <li><a>Graduations<span class="fa fa-chevron-down"></span></a>
+                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Graduations<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/intership/list}">Internship</a></li>
                                             <li><a th:href="@{/conceptnote/list}">Concept Note</a></li>
@@ -159,18 +159,18 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptProfiles('production')}"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"  th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
+                                    <li ><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li><a th:href="@{/bipotnama/list}">Master Nama Bipot</a></li>
-                                            <li><a th:href="@{/settingbipot/list}">Setting Bipot</a></li>
-                                            <li><a th:href="@{/prosesbipot/list}">Proses Bipot</a></li>
+                                            <li><a th:href="@{/finance/tagihan/jenistagihan/list}">Jenis Tagihan</a></li>
+                                            <li><a th:href="@{/finance/komponenbiaya/list}">Komponen Biaya</a></li>
+                                            <li><a th:href="@{/finance/komponenbiaya/nilai/list}">Komponen Nilai Biaya</a></li>
                                             <li><a th:href="@{/tagihanmhs/list}">Tagihan Mahasiswa</a></li>
                                         </ul>
                                     </li>
@@ -185,16 +185,16 @@
                             </li>
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-male"></i> Human Resources <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Master<span class="fa fa-chevron-down"></span></a>
+                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Master<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/departemen/list}">Department</a></li>
                                             <li><a th:href="@{/golongan/list}">Golongan</a></li>
                                         </ul>
                                     </li>
-                                    <li><a th:href="@{/karyawan/list}">Employee</a></li>
-                                    <li><a th:href="@{/dosen/list}">Lecture</a></li>
+                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/karyawan/list}">Employee</a></li>
+                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/dosen/list}">Lecture</a></li>
                                     <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
-                                    <li><a>Payroll<span class="fa fa-chevron-down"></span></a>
+                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Payroll<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/salary/list}">Salary</a></li>
                                             <li><a th:href="@{/loan/list}">Loan</a></li>
@@ -204,7 +204,7 @@
                                 </ul>
                             </li>
 
-                                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
                                     <li><a th:href="@{/menumahasiswa/krs/list}">K R S</a></li>
@@ -215,7 +215,7 @@
                             </li>
 
 
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"  th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
                                     <li><a href="fixed_footer.html">Fixed Footer</a></li>
