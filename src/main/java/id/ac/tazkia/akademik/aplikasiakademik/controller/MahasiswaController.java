@@ -82,7 +82,15 @@ public class MahasiswaController {
         return pendidikanDao.findAll();
     }
 
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
+    }
 
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findByStatusNotIn(StatusRecord.HAPUS);
+    }
 
     @GetMapping("/api/kelurahan")
     @ResponseBody
@@ -319,5 +327,48 @@ public class MahasiswaController {
         return "redirect:list";
     }
 
+    @GetMapping("/mahasiswa/kurikulum")
+    public void mahasiswaKurikulum(Model model,@RequestParam(required = false) String angkatan,
+                                   @RequestParam(required = false) Kurikulum kurikulum,
+                                   @RequestParam(required = false) Prodi prodi, Pageable page){
+        model.addAttribute("kurikulum", kurikulum);
+        if (prodi != null){
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("selectedAngkatan", angkatan);
+            Page<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi,page);
+            model.addAttribute("mahasiswaList", mahasiswa);
+            model.addAttribute("selected",prodi);
+            model.addAttribute("kurikulumSelected",kurikulum);
+        }else {
+            model.addAttribute("selectedAngkatan", angkatan);
+            Page<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF,angkatan,page);
+            model.addAttribute("mahasiswaList", mahasiswa);
+            model.addAttribute("kurikulumSelected",kurikulum);
+        }
+
+    }
+
+    @PostMapping("/mahasiswa/prosesKurikulum")
+    public String generateMahasiswaKurikulum(@RequestParam String angkatan, @RequestParam Kurikulum kurikulum,
+                                             @RequestParam(required = false) Prodi prodi){
+        if (prodi != null){
+            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi);
+            for (Mahasiswa mhsw : mahasiswa){
+                mhsw.setKurikulum(kurikulum);
+                mahasiswaDao.save(mhsw);
+            }
+
+            return "redirect:kurikulum?angkatan="+angkatan+"&prodi="+prodi.getId()+"&kurikulum="+kurikulum.getId();
+
+        } else {
+            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF,angkatan);
+            for (Mahasiswa mhsw : mahasiswa){
+                mhsw.setKurikulum(kurikulum);
+                mahasiswaDao.save(mhsw);
+            }
+            return "redirect:kurikulum?angkatan="+angkatan+"&kurikulum="+kurikulum.getId();
+        }
+
+    }
 
 }

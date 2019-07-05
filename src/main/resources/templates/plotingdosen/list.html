@@ -171,14 +171,35 @@
                         <div class="col-md-12">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-form-label">Matakuliah :</label>
-                                    <select class="form-control js-example-placeholder-single"
-                                            style="width: 100%!important;" name="matakuliahKurikulum">
+                                    <label class="col-form-label">Kelas :</label>
+                                    <input type="text" class="form-control" id="plotKelas"
+                                           placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Jenis:</label>
+                                    <select class="form-control"
+                                            style="width: 100%!important;" name="finalStatus">
                                         <option></option>
-                                        <option th:each="data: ${matakuliah}"
-                                                th:text="${data.matakuliah.namaMatakuliah}"
-                                                th:value="${data.id}">sdasd</option>
+                                        <option value="Y">Kuliah</option>
+                                        <option value="N">responsi</option>
                                     </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Matakuliah :</label>
+                                    <input type="text" class="form-control" id="plotmatakuliah"
+                                           placeholder="Cari Matakuliah ..." data-provide="typeahead" autocomplete="off" required>
+                                    <input type="hidden" id="isiPlotKelas" name="idKelas">
+                                    <input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum">
+
                                 </div>
                             </div>
 
@@ -197,33 +218,7 @@
 
                         </div>
 
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Kelas :</label>
-                                    <select class="form-control js-example-placeholder-single"
-                                            style="width: 100%!important;" name="idKelas">
-                                        <option></option>
-                                        <option th:each="data: ${kelas}"
-                                                th:text="${data.namaKelas}"
-                                                th:value="${data.id}">sdasd</option>
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-form-label">Jenis:</label>
-                                    <select class="form-control"
-                                            style="width: 100%!important;" name="finalStatus">
-                                        <option></option>
-                                        <option value="Y">Kuliah</option>
-                                        <option value="N">responsi</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

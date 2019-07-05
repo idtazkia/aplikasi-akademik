@@ -13,7 +13,10 @@ import java.util.List;
 public interface KurikulumDao extends PagingAndSortingRepository<Kurikulum, String> {
 
     Page<Kurikulum> findByStatusNotInAndProdi(StatusRecord status,Prodi prodi, Pageable page);
+    Page<Kurikulum> findByStatus(StatusRecord status,Pageable page);
+    Page<Kurikulum> findByStatusAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(StatusRecord status,String search, Pageable page);
     Kurikulum findByProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
     List<Kurikulum> findByStatusNotIn(StatusRecord statusRecord);
+    List<Kurikulum> findByProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(Prodi prodi, String search);
 
 }
