@@ -54,6 +54,7 @@
                             <th class="column-title">Year</th>
                             <th scope="col" width="30px">Active</th>
                             <th scope="col" width="30px">Detail</th>
+                            <th scope="col" width="150px">Generate Tahun Prodi</th>
                             <th scope="col" width="30px"></th>
                         </tr>
                         </thead>
@@ -88,6 +89,13 @@
                             <td>
                                 <a th:href="@{/akademik/detail(id = ${data.id})}" target="output"
                                    class="btn btn-info btn-xs">See Detail</a>
+                            </td>
+
+                            <td>
+                                <form method="post" th:action="@{/akademik/generateTahun(tahunAkademik = ${data.id})}">
+                                    <button type="submit" class="btn btn-danger btn-xs">Generate Tahun Prodi
+                                    </button>
+                                </form>
                             </td>
 
                             <td>

@@ -16,6 +16,7 @@ public class KhsDto {
     private BigDecimal tugas;
     private BigDecimal uts;
     private BigDecimal uas;
-    private String bobot;
+    private BigDecimal bobot;
     private BigDecimal total;
+    private BigDecimal totalBobot;
 }

@@ -13,4 +13,6 @@ public interface ProdiDao extends PagingAndSortingRepository<Prodi, String> {
     List<Prodi> findByStatus(StatusRecord status);
     Page<Prodi> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
     List<Prodi> findByStatusNotIn(StatusRecord status);
+    Page<Prodi> findByStatus(StatusRecord status,Pageable page);
+    Page<Prodi> findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord statusRecord, String nama, Pageable page);
 }

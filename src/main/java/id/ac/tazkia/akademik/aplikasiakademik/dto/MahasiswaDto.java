@@ -45,6 +45,9 @@ public class MahasiswaDto {
     private String emailPribadi;
     private String emailTazkia;
     private String statusAktif;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate terakhirUpdate;
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
