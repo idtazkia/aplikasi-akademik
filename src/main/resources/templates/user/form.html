@@ -81,7 +81,7 @@
                                                                 </label>
                                                                 <input type="text" name="nama" th:field="*{nama}"
                                                                        class="form-control"
-                                                                       placeholder="Name" required>
+                                                                       placeholder="Name  * Fill in the name according to the last certificate (Ijazah terakhir)" required>
                                                             </div>
                                                         </div>
 
@@ -116,17 +116,26 @@
 
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Place of birth</label><br>
+                                                                <label>Place of Birth</label>
+                                                                        &nbsp&nbsp
+                                                                <small class="text-danger">
+                                                                    * Fill in the Place of Birth according to the last certificate (Ijazah terakhir)
+                                                                </small>
+                                                                <br>
                                                                 <input type="text" name="tempat" required
                                                                        class="form-control" th:field="*{tempat}"
-                                                                       placeholder="Place of birth">
+                                                                       placeholder="* Fill in the Place of Birth according to the last certificate (Ijazah terakhir)">
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Date of birth</label>
+                                                                <label>Date of Birth</label>
+                                                                &nbsp&nbsp
+                                                                <small class="text-danger">
+                                                                    * Fill in the Date of Birth according to the last certificate (Ijazah terakhir)
+                                                                </small>
                                                                 <input type="date" th:field="*{tanggalLahir}" required
                                                                        name="tanggalLahir"class="form-control">
                                                             </div>
@@ -225,7 +234,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Telephone</label>
-                                                                <input type="text" required name="teleponRumah" class="form-control"
+                                                                <input type="number" required name="teleponRumah" class="form-control"
                                                                        placeholder="Telephone" th:field="*{teleponRumah}">
                                                             </div>
                                                         </div>
@@ -233,7 +242,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Phone</label>
-                                                                <input type="text" required th:field="*{teleponSeluler}"
+                                                                <input type="number" required th:field="*{teleponSeluler}"
                                                                        name="teleponSeluler" class="form-control"
                                                                        placeholder="Cellphone">
                                                             </div>

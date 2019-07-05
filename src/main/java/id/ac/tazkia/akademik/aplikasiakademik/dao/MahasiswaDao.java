@@ -1,19 +1,26 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Mahasiswa;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
 public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,String> {
-    Page<Mahasiswa> findByStatusNotInAndNamaContainingIgnoreCaseOrNimContainingIgnoreCaseOrderByNama(StatusRecord statusRecord, String status,String nim, Pageable page);
+    Page<Mahasiswa> findByStatusAndAngkatanAndIdProdi(StatusRecord statusRecord, String status,Prodi prodi, Pageable page);
+    Iterable<Mahasiswa> findByStatusAndAngkatanAndIdProdi(StatusRecord statusRecord, String status,Prodi prodi);
+    Page<Mahasiswa> findByStatusAndAngkatan(StatusRecord statusRecord, String status, Pageable page);
+    Iterable<Mahasiswa> findByStatusAndAngkatan(StatusRecord statusRecord, String status);
     Page<Mahasiswa> findByStatusNotIn(StatusRecord statusRecord,Pageable page);
     List<Mahasiswa> findByStatusNotInAndUser(StatusRecord statusRecord, User user);
     Mahasiswa findByUser(User user);
     Mahasiswa findByNim(String nim);
+    List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord status, String angkatan, Prodi prodi, Program program);
+
+    @Query("select distinct m.angkatan from Mahasiswa m order by m.angkatan asc")
+    Iterable<Mahasiswa> cariAngkatan();
+
 
 }

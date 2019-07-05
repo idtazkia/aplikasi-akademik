@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,10 +45,14 @@ public class DashboardController {
     private CurrentUserService currentUserService;
 
     @GetMapping("/dashboardmahasiswa")
-    public void dashboardMahasiswa(Model model, Authentication authentication) {
+    public String dashboardMahasiswa(Model model, Authentication authentication, RedirectAttributes attributes) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        if (mahasiswa.getTerakhirUpdate() == null){
+            attributes.addFlashAttribute("profil","lengkapi profil");
+            return "redirect:user/form";
+        }
         model.addAttribute("datamahasiswa", mahasiswaDao.findByStatusNotInAndUser(StatusRecord.HAPUS, user));
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -55,6 +60,8 @@ public class DashboardController {
         Krs k = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa, ta);
 
         model.addAttribute("krsdetail", krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa, k, StatusRecord.AKTIF));
+
+        return "dashboardmahasiswa";
 
     }
 
