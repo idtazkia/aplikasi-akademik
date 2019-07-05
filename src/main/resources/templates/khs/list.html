@@ -128,7 +128,32 @@
                             <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}">D</td>
                             <td th:if="${data.total < gradeE.atas}">E</td>
 
-                            <td th:text="${data.total}"></td>
+                            <td th:text="${data.bobot}"></td>
+                        </tr>
+                        <tr th:if="${khs != null}">
+                            <td colspan="4">Total SKS : </td>
+                            <td th:text="${jumlahSks}"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td th:text="${totalBobot}"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr th:if="${khs != null}">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>IP Semester : </td>
+                            <td th:text="${ip}">450</td>
+                            <td>IP Komulatif :</td>
+                            <td>254</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         </tbody>
                     </table>
