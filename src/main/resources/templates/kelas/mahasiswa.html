@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahasiswa Kelas</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Mahasiswa Kelas<small></small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-12">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Angkatan</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="angkatan" required>
+                                        <option value=""></option>
+                                        <option th:each="angkat : ${angkatan}" th:text="${angkat}"
+                                                th:selected="(${angkat} == *{selectedAngkatan})" th:value="${angkat}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Prodi</b></label></center>
+                                    <input type="text" th:if="${selected != null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                           data-provide="typeahead" autocomplete="off" required th:value="${selected.namaProdi}">
+                                    <input type="text" th:if="${selected == null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                           data-provide="typeahead" autocomplete="off" required>
+                                    <input type="hidden" th:if="${selected != null}" id="isiProdi" name="prodi" th:value="${selected.id}">
+                                    <input type="hidden" th:if="${selected == null}" id="isiProdi" name="prodi">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Kelas</b></label></center>
+                                    <input type="text" th:if="${selectedKelas != null}" class="form-control" id="kelas" placeholder="Cari Kelas ..."
+                                           data-provide="typeahead" autocomplete="off" required th:value="${selectedKelas.namaKelas}">
+                                    <input type="text" th:if="${selectedKelas == null}" class="form-control" id="kelas" placeholder="Cari Kelas ..."
+                                           data-provide="typeahead" autocomplete="off" required>
+                                    <input type="hidden" th:if="${selectedKelas != null}" id="isiKelas" name="kelas" th:value="${selectedKelas.id}">
+                                    <input type="hidden" th:if="${selected == null}" id="isiKelas" name="kelas">
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <br>
+            <hr>
+
+            <span th:if="${selected != null}">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Mahasiwa<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <form  method="post" th:action="@{/kelas/mahasiswa}">
+                            <div class="table-responsive">
+                                <div>
+                                   <button class="btn btn-success">Generate Mahasiswa Kelas</button>
+                                </div>
+                                <br>.
+                                <table id="datatable" class="table table-striped table-bordered jambo_table bulk_action">
+                                  <thead>
+                                    <tr class="heading">
+                                        <th></th>
+                                        <th>#</th>
+                                        <th>NIM</th>
+                                        <th>Name</th>
+                                        <th>Curriculum</th>
+                                    </tr>
+                                  </thead>
+                                    <input type="hidden" name="kelas" th:value="${selectedKelas.id}">
+                                  <tbody>
+                                    <tr th:each="data,row : ${mahasiswaList}">
+                                      <td class="a-center ">
+                                        <input type="checkbox" th:value="${data.id}" class="flat" name="data">
+                                      </td>
+                                      <td></td>
+                                      <td th:text="${data.nim}">Edinburgh</td>
+                                      <td th:text="${data.nama}">61</td>
+                                      <td th:if="${data.kurikulum != null}" th:text="${data.kurikulum.namaKurikulum}">2011/04/25</td>
+                                      <td th:if="${data.kurikulum == null}"></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            </span>
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+</script>

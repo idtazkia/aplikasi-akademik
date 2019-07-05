@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Room</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_title">
+            <h2>Class Room <small>List</small></h2>
+            <div class="clearfix"></div>
+        </div>
+        <br>
+
+        <div class="table-responsive">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <a th:href="@{/kelas/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                    </td>
+                    <td class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search title_right ">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" autocomplete="off" name="search"
+                                       th:value="${search}"
+                                       placeholder="Search by name" class="form-control">
+                                <span class="input-group-btn">
+                                                <button class="btn btn-default"
+                                                        type="submit">Search</button>
+                                    </span>
+                            </div>
+                        </form>
+                    </td>
+                <tr>
+                    <td>
+                        <!--Show <span sd:page-size-selector="javascript"></span> entries-->
+                    </td>
+                </tr>
+                </tr>
+            </table>
+
+            <table class="table table-striped jambo_table bulk_action">
+                <thead>
+                <tr class="headings">
+                    <th scope="col">#</th>
+                    <th scope="col">Nama Kelas</th>
+                    <th scope="col">Prodi</th>
+                    <th scope="col">Keterangan</th>
+                    <!--<th scope="col">Total Mahasiswa</th>-->
+                    <th style="width: 30px;"></th>
+                    <th style="width: 30px;"></th>
+                    <th style="width: 30px;"></th>
+                </thead>
+                <tbody>
+                    <tr th:each="data,row : ${listKelas}">
+                        <td></td>
+                        <td>
+                            <a type="button" class="btn btn-success btn-xs" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/kelas/form(id = ${data.id})}">
+                            </a>
+                            <a type="button" class="btn btn-danger btn-xs" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/kelas/form(id = ${data.id})}">
+                            </a>
+                        </td>
+                        <td th:text="${data.idProdi.namaProdi}"></td>
+                        <td th:text="${data.keterangan}"></td>
+                        <!--<td th:text="${#lists.size(data.mahasiswas)}"></td>-->
+                        <td>
+                            <a type="button" class="btn btn-info btn-xs" th:href="@{/kelas/view(kelas = ${data.id})}">Lihat Mahasiswa
+                            </a>
+                        </td>
+                        <td>
+                            <a type="button" class="btn btn-primary btn-xs" th:href="@{/kelas/mahasiswa(kelas = ${data.id})}">Tambah Mahasiswa
+                            </a>
+                        </td>
+                        <td>
+                            <form method="post" th:action="@{/kelas/delete(kelas = ${data.id})}">
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('Are you sure?')">
+                                    <i class="ti-eraser"></i> Hapus Kelas
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <center>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <nav class="pull-right">
+
+
+
+                            <ul class="pagination" sd:pagination="full">
+                                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </center>
+            <br>
+        </div>
+        <br>
+
+
+    </div>
+
+</section>
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select one",
+        allowClear: true
+    });
+
+</script>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Mahasiswa Kelas</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Mahasiswa Kelas<small></small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <span>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Mahasiwa<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                            <div class="table-responsive">
+                                <br>.
+                                <table id="datatable" class="table table-striped table-bordered jambo_table bulk_action">
+                                  <thead>
+                                    <tr class="heading">
+                                        <th>#</th>
+                                        <th>NIM</th>
+                                        <th>Name</th>
+                                        <th>Class</th>
+                                        <th>Curriculum</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr th:each="data,row : ${kelasMahasiswa}">
+                                      <td></td>
+                                      <td th:text="${data.mahasiswa.nim}">Edinburgh</td>
+                                      <td th:text="${data.mahasiswa.nama}">61</td>
+                                      <td th:text="${data.kelas.namaKelas}">61</td>
+                                      <td th:if="${data.mahasiswa.kurikulum != null}" th:text="${data.mahasiswa.kurikulum.namaKurikulum}">2011/04/25</td>
+                                      <td th:if="${data.mahasiswa.kurikulum == null}"></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+            </span>
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>
