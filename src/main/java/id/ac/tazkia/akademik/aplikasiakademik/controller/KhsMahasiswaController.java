@@ -47,7 +47,7 @@ public class KhsMahasiswaController {
     }
 
     @GetMapping("/menumahasiswa/khs/list")
-    public void daftarKhs(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
+    public String daftarKhs(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) TahunAkademik tahunAkademik){
         model.addAttribute("gradeA", gradeDao.findById("1").get());
         model.addAttribute("grademinA", gradeDao.findById("2").get());
         model.addAttribute("gradeplusB", gradeDao.findById("3").get());
@@ -68,6 +68,10 @@ public class KhsMahasiswaController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa",mahasiswa);
+
+        if (mahasiswa.getTerakhirUpdate() == null){
+            return "redirect:user/form";
+        }
 
         Krs krs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF,mahasiswa);
 
@@ -119,7 +123,7 @@ public class KhsMahasiswaController {
             }
             model.addAttribute("khs",khsDtos);
         }
-
+        return "/menumahasiswa/khs/list";
     }
 
     @GetMapping("/menumahasiswa/khs/form")
