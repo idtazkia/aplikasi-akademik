@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Controller
 public class UserController {
@@ -280,6 +281,7 @@ public class UserController {
         mahasiswa.setStatusAktif("A");
         mahasiswa.setIdAgama(mahasiswaDto.getReligion());
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
+        mahasiswa.setTerakhirUpdate(LocalDate.now());
         mahasiswaDao.save(mahasiswa);
 
         Ibu ibu = ibuDao.findById(mahasiswaDto.getIbu()).get();
