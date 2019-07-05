@@ -73,28 +73,56 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Hari :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="idHari" th:field="*{idHari}">
-                                    <option value=""></option>
-                                    <option th:each="data : ${hari}"
-                                            th:text="${data.namaHariEng}"
-                                            th:value="${data.id}">sdasd</option>
-                                </select>
+                                <input th:if="${jadwal.idHari != null}" type="text" class="form-control" id="hari"
+                                       th:value="${jadwal.idHari.namaHariEng}" placeholder="Cari Hari ..." data-provide="typeahead"
+                                       autocomplete="off" required>
+                                <input type="text" class="form-control" id="hari" th:if="${jadwal.idHari == null}"
+                                       placeholder="Cari Hari ..." data-provide="typeahead" autocomplete="off" required>
+                                <input type="hidden" id="isiHari" name="idHari" th:field="*{idHari}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Matakuliah :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="matakuliahKurikulum" th:field="*{matakuliahKurikulum}">
-                                    <option value=""></option>
-                                    <option th:each="data: ${matakuliah}"
-                                            th:text="${data.matakuliah.namaMatakuliah}"
-                                            th:value="${data.id}">sdasd</option>
-                                </select>
+                                <input type="text" class="form-control" id="plotmatakuliah" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + '  -  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}" readonly
+                                       placeholder="Cari Matakuliah ..." data-provide="typeahead" autocomplete="off" required>
                             </div>
                         </div>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Ruangan :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
+                                    <option value=""></option>
+                                    <option th:each="data: ${ruangan}"
+                                            th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
+                                <!--<input type="text" class="form-control" th:if="${jadwal.ruangan != null}" id="ruangan"-->
+                                       <!--th:value="${jadwal.ruangan.namaRuangan}" placeholder="Cari Ruangan ..." data-provide="typeahead"-->
+                                       <!--autocomplete="off" required>-->
+                                <!--<input type="text" class="form-control" id="ruangan" th:if="${jadwal.ruangan == null}"-->
+                                       <!--placeholder="Cari Ruangan ..." data-provide="typeahead" autocomplete="off" required>-->
+                                <input type="hidden" id="isiRuangan" name="ruangan" th:field="*{ruangan}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Sesi :</label>
+                                <input type="text" class="form-control" id="sesi"
+                                       placeholder="Cari Sesi ..." data-provide="typeahead" autocomplete="off" required>
+                                <input type="hidden" id="isiSesi" name="sesi">
+                                <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
+                            </div>
+                        </div>
+
 
                     </div>
 
@@ -102,71 +130,42 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Jam Mulai :</label>
-                                <input type="text" th:field="*{jamMulai}" name="jamMulai" placeholder="13:37" class="form-control">
+                                <input type="text" th:field="*{jamMulai}" readonly maxlength="5" max="5" name="jamMulai" id="jamMulai" class="form-control">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Jam Selesai :</label>
-                                <input type="text" name="jamSelesai" th:field="*{jamSelesai}" placeholder="14:37" class="form-control">
+                                <input type="text" name="jamSelesai" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
 
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="col-md-12">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-form-label">Dosen :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}">
-                                    <option value=""></option>
-                                    <option th:each="data: ${dosen}"
-                                            th:text="${data.karyawan.namaKaryawan}"
-                                            th:value="${data.id}">sdasd</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-form-label">Ruangan :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="ruangan" th:field="*{ruangan}">
-                                    <option value=""></option>
-                                    <option th:each="data: ${ruangan}"
-                                            th:text="${data.namaRuangan}"
-                                            th:value="${data.id}">sdasd</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
 
                     <div class="col-md-12">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Kelas :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="idKelas" th:field="*{idKelas}">
-                                    <option value=""></option>
-                                    <option th:each="data: ${kelas}"
-                                            th:text="${data.namaKelas}"
-                                            th:value="${data.id}">sdasd</option>
-                                </select>
+                                <input type="text" class="form-control" id="plotKelas" th:value="${jadwal.idKelas.namaKelas}"
+                                       placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" readonly required>
+                                <input type="hidden" id="isiPlotKelas" name="idKelas" th:field="*{idKelas}">
+                                <input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum" th:field="*{matakuliahKurikulum}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="col-form-label">Jenis :</label>
-                                <select class="form-control" th:field="*{finalStatus}"
-                                        style="width: 100%!important;" name="finalStatus">
+                                <label class="col-form-label">Dosen :</label>
+                                <input type="hidden" id="idDosen" th:field="*{dosen}">
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}" readonly>
                                     <option value=""></option>
-                                    <option value="Y">Kuliah</option>
-                                    <option value="N">responsi</option>
+                                    <option th:each="data: ${dosen}"
+                                            th:text="${data.karyawan.namaKaryawan}"
+                                            th:value="${data.id}">sdasd</option>
                                 </select>
                             </div>
                         </div>
@@ -185,11 +184,23 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Jenis :</label>
+                                <select class="form-control" th:field="*{finalStatus}"
+                                        style="width: 100%!important;" name="finalStatus">
+                                    <option value=""></option>
+                                    <option value="Y">Kuliah</option>
+                                    <option value="N">responsi</option>
+                                </select>
+                            </div>
+                        </div>
                         <input name="status" th:field="*{status}" type="hidden"/>
 
                     </div>
 
-                    <input type="hidden" name="id" th:field="*{id}">
+                    <input type="hidden" name="id" id="id" th:field="*{id}">
                     <div class="form-group">
                         <center>
                             <input class="btn btn-primary" type="submit" value="Save">
@@ -213,4 +224,13 @@
         placeholder: "Pilih Salah Satu",
         allowClear: true
     });
+
+    (function($){
+        $('#select2-ruangan').select2();
+
+        $('#select2-ruangan').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiRuangan').val(e.params.args.data.id);
+        });
+    })(jQuery);
 </script>

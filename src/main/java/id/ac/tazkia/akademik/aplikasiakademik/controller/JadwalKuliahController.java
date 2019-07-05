@@ -3,19 +3,21 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class JadwalKuliahController {
@@ -43,6 +45,87 @@ public class JadwalKuliahController {
 
     @Autowired
     private HariDao hariDao;
+
+    @Autowired
+    private SesiDao sesiDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    private KelasMahasiswaDao kelasMahasiswaDao;
+
+    @GetMapping("/api/plotKelas")
+    @ResponseBody
+    public Page<Kelas> cariDataKelas(@RequestParam(required = false) String search, Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return kelasDao.findAll(page);
+        }
+        return kelasDao.findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord.AKTIF,search, page);
+
+    }
+
+    @GetMapping("/api/hari")
+    @ResponseBody
+    public Iterable<Hari> cariHari(@RequestParam(required = false) String search, Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return hariDao.findAll();
+        }
+        return hariDao.findByNamaHariContainingIgnoreCaseOrNamaHariEngContainingIgnoreCase(search,search);
+
+    }
+
+    @GetMapping("/api/ruangan")
+    @ResponseBody
+    public Iterable<Ruangan> cariRuangan(@RequestParam(required = false) String search, Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return ruanganDao.findAll();
+        }
+        return ruanganDao.findByStatusAndNamaRuanganContainingIgnoreCase(StatusRecord.AKTIF,search);
+
+    }
+
+    @GetMapping("/api/sesi")
+    @ResponseBody
+    public List<Sesi> cariSesi(@RequestParam(required = false) String idHari,@RequestParam(required = false) String kelas,
+                               @RequestParam(required = false) String idRuangan, @RequestParam(required = false) Integer sks,
+                               @RequestParam(required = false) String search, @RequestParam(required = false) String dosen){
+        Ruangan ruangan = ruanganDao.findById(idRuangan).get();
+        Kelas k = kelasDao.findById(kelas).get();
+        Hari hari = hariDao.findById(idHari).get();
+        Dosen d = dosenDao.findById(dosen).get();
+        List<Jadwal> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan);
+        List<Jadwal> cariKelas = jadwalDao.cariKelas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,k);
+        List<Jadwal> validasiDosen = jadwalDao.validasiDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,d);
+        List<Jadwal> stringList = new ArrayList<>();
+        stringList.addAll(jadwal);
+        stringList.addAll(cariKelas);
+        stringList.addAll(validasiDosen);
+
+        List<Jadwal> newList = stringList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        System.out.println(newList);
+        System.out.println(validasiDosen);
+
+
+        if (newList == null || newList.isEmpty()){
+            return sesiDao.findBySks(sks);
+        }else {
+            return sesiDao.findBySesiNotInAndSks(newList, sks);
+        }
+    }
+
+    @GetMapping("/api/plotMatakuliah")
+    @ResponseBody
+    public Page<MatakuliahKurikulum> cariMatakuliah(@RequestParam(required = false) String id,@RequestParam(required = false) String search, Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return matakuliahKurikulumDao.findAll(page);
+        }
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findFirstByKelasAndStatus(kelasDao.findById(id).get(),StatusRecord.AKTIF);
+        return matakuliahKurikulumDao.findByStatusAndKurikulumAndMatakuliahNamaMatakuliahOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCase(StatusRecord.AKTIF,kelasMahasiswa.getMahasiswa().getKurikulum(),search,search,page);
+
+    }
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {

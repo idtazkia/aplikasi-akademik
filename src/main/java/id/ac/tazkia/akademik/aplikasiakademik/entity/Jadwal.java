@@ -29,10 +29,10 @@ public class Jadwal {
     @JoinColumn(name = "id_hari")
     private Hari idHari;
 
-    @DateTimeFormat(pattern = "HH:mm")
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamMulai;
 
-    @DateTimeFormat(pattern = "HH:mm")
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamSelesai;
 
     @ManyToOne
@@ -84,6 +84,6 @@ public class Jadwal {
             joinColumns=@JoinColumn(name = "id_jadwal"),
             inverseJoinColumns = @JoinColumn(name = "id_dosen"))
     private Set<Dosen> dosens = new HashSet<>();
-
+    private String sesi;
 
 }

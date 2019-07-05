@@ -24,7 +24,7 @@
                                 <div class="form-group">
                                     <center><label><b>Prodi/Semester</b></label></center>
                                     <select class="form-control js-example-placeholder-single"
-                                            style="width: 100%!important;" name="tahunAkademik">
+                                            style="width: 100%!important;" name="tahunAkademik" required>
                                         <option></option>
                                         <option th:each="data : ${tahunAkademik}"
                                                 th:selected="(${data} == *{selectedTahun})"
@@ -38,7 +38,7 @@
                                 <div class="form-group">
                                     <center><label><b>Program Pendidikan</b></label></center>
                                     <select class="form-control js-example-placeholder-single"
-                                            style="width: 100%!important;" name="program">
+                                            style="width: 100%!important;" name="program" required>
                                         <option></option>
                                         <option th:each="data : ${program}"
                                                 th:selected="(${data} == *{selectedProgram})"
@@ -119,7 +119,7 @@
                                     <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                     <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td></td>
+                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -177,7 +177,7 @@
                                     <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                     <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td></td>
+                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -209,7 +209,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -227,7 +227,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </thead>
 
@@ -241,7 +241,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -259,7 +259,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </thead>
 
@@ -273,7 +273,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -291,7 +291,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </thead>
 
@@ -305,7 +305,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -323,7 +323,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </thead>
 
@@ -337,7 +337,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -369,7 +369,7 @@
                                         <td th:text="${jadwal.idKelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td></td>
+                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
 
                                     </tr>
                                     </tbody>
