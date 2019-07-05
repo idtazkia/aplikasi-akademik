@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Tagihan Mahasiswa<small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tahun Akademik :</label>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="tahunAkademik">
+                                    <option></option>
+                                    <option th:each="tahun : ${tahun}" th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>NIM :</label>
+                                <input type="text" name="nim" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <hr>
+
+            <div class="col-md-12" role="main" th:if="${tahunAkademik != null && nim != null}">
+                <div class="">
+                    <div class="clearfix"></div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Tagihan Mahasiswa</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    <section class="content invoice">
+                                        <!-- title row -->
+                                        <div class="row">
+                                            <div class="col-xs-12 invoice-header">
+                                                <h1>
+                                                    <i class="fa fa-user"></i> <span>Irma Rahmani</span>
+                                                </h1>
+                                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Tambah Potongan Biaya</button>
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#penangguhan">Tangguhkan Biaya</button>
+                                                <a class="btn btn-warning" th:href="@{/finance/tagihan/mahasiswa/diskon/form}">Pembayaran</a>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <br>
+                                        <!-- info row -->
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong>Manajemen Bisnis Syariah.</strong>
+                                                    <br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong>Reguler</strong>
+                                                    <br>23 SKS
+                                                </address>
+                                            </div>
+                                        </div>
+                                        <!-- Table row -->
+                                        <br>
+                                        <div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12 table">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr class="headings">
+                                                        <th class="column-title">#</th>
+                                                        <th class="column-title">Total Biaya</th>
+                                                        <th scope="col">Total Potongan</th>
+                                                        <th class="column-title">Total Tagihan <small>(Total Biaya - Total Potongan)</small></th>
+                                                        <th scope="col">Total Bayar</th>
+                                                        <th class="column-title">Sisa Bayar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td th:text="${tagihan}">-</td>
+                                                        <td th:text="${diskon}">-</td>
+                                                        <td th:text="${total}">-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                        </div>
+
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="x_panel">
+                                                    <div class="x_title">
+                                                        <h2>Daftar Tagihan & Potongan<small><b ></b></small></h2>
+                                                        <ul class="nav navbar-right panel_toolbox">
+                                                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+
+                                                    <div class="x_content">
+
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped jambo_table bulk_action">
+                                                                <thead>
+                                                                <tr class="headings">
+                                                                    <th></th>
+                                                                    <th class="column-title">Komponen Biaya / Potongan</th>
+                                                                    <th class="column-title">Total</th>
+                                                                    <th class="column-title">Status</th>
+                                                                </tr>
+                                                                </thead>
+
+                                                                <tbody>
+                                                                <tr th:each="detail,row : ${detail}">
+                                                                    <td><strong>+</strong></td>
+                                                                    <td th:text="${detail.komponenBiaya.nama}">2343234</td>
+                                                                    <td th:text="${detail.amount}">23423434</td>
+                                                                    <td th:text="${detail.amount}">23423434</td>
+                                                                </tr>
+                                                                <tr th:each="diskon : ${potongan}">
+                                                                    <td><strong>-</strong></td>
+                                                                    <td th:text="${diskon.jenisDiskon.nama}"></td>
+                                                                    <td th:text="${diskon.amount}"></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td><b>Total  :  <span th:text="${total}"></span></b></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="x_panel">
+                                                    <div class="x_title">
+                                                        <h2>Daftar Pembayaran<small><b>Gifar Haidar (11404344)</b></small></h2>
+                                                        <ul class="nav navbar-right panel_toolbox">
+                                                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+
+                                                    <div class="x_content">
+
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped jambo_table bulk_action">
+                                                                <thead>
+                                                                <tr class="headings">
+                                                                    <th class="column-title">#</th>
+                                                                    <th class="column-title">Total</th>
+                                                                    <th class="column-title">Dibayar</th>
+                                                                    <th class="column-title">Catatan</th>
+                                                                </tr>
+                                                                </thead>
+
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>1</td>
+                                                                    <td>asdasd</td>
+                                                                    <td>asdasd</td>
+                                                                    <td>asdasd</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><b>Total  :  25000000</b></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td><b>Sisa Bayar : 450000</b></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <!-- /.row -->
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog" th:if="${tahun != null && nim != null}">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" th:action="@{/finance/tagihan/mahasiswa/tambahdiskon(mahasiswa=${mahasiswa.id},tahunAkademik= ${tahunAkademik.id})}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"><strong>Tambah Potongan Biaya</strong></h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Jenis Diskon :</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="jenisDiskon">
+                                            <option></option>
+                                            <option th:each="jenis : ${jenisDiskon}" th:text="${jenis.nama}" th:value="${jenis.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Amount :</label>
+                                        <input type="number" class="form-control" name="amount">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="penangguhan" class="modal fade" role="dialog" th:if="${tahun != null && nim != null}">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" th:action="@{/finance/tagihan/mahasiswa/penangguhan(mahasiswa=${mahasiswa.id},tahunAkademik= ${tahunAkademik.id})}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel"><strong>Tangguhkan Biaya</strong></h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Tagihan :</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="komponen">
+                                            <option></option>
+                                            <option th:each="komponen : ${detail}" th:text="${komponen.komponenBiaya.nama}" th:value="${komponen.komponenBiaya.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Amount :</label>
+                                        <input type="number" class="form-control" name="amount">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    function myFunction() {
+        confirm("Are You Sure?");
+    }
+</script>
