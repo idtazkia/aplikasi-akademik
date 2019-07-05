@@ -25,7 +25,11 @@
                                         <center><label><b>Prodi/Semester</b></label></center>
                                         <select class="form-control js-example-placeholder-single"
                                                 style="width: 100%!important;" name="tahunAkademik">
-                                            <option></option>
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:text="${'('+ data.prodi.namaProdi +')'  + '       -       ' +  data.tahunAkademik.namaTahunAkademik}"
+                                                    th:value="${data.id}">sdasd</option>
                                         </select>
                                     </div>
                                 </div>
@@ -35,7 +39,11 @@
                                         <center><label><b>Program Pendidikan</b></label></center>
                                         <select class="form-control js-example-placeholder-single"
                                                 style="width: 100%!important;" name="program">
-                                            <option></option>
+                                            <option value=""></option>
+                                            <option th:each="data : ${program}"
+                                                    th:selected="(${data} == *{selectedProgram})"
+                                                    th:text="${data.namaProgram}"
+                                                    th:value="${data.id}">sdasd</option>
                                         </select>
                                     </div>
                                 </div>
@@ -63,13 +71,13 @@
                             <th>Kelas <small style="font-size: 8px;">KRS</small></th>
                             <th>Jadwal</th>
                             <th>Jam</th>
-                            <th colspan="2"></th>
+                            <th colspan="3"></th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody th:if="${dosen != null}">
                         <span th:each="dosen,row : ${dosen}">
                             <tr>
-                                <td th:text="${row.index + 1}">1</td>
+                                <td  th:text="${row.index + 1}">1</td>
                                 <td colspan="8" th:text="${dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
                             <tr th:each="jadwal : ${jadwal}" th:if="${jadwal.dosen.id == dosen.id   }">
                                 <td th:text="${jadwal.id}">#5463</td>
@@ -81,12 +89,19 @@
                                 <td th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</td>
                                 <td>
                                     <a th:href="@{/penilaian/bobot (jadwal = ${jadwal.id})}">
-                                        <button type="submit" class="fa fa-edit"></button>
+                                        <button type="submit" class="fa fa-edit btn btn-primary"> Edit</button>
                                     </a>
                                 </td>
 
                                 <td>
-                                    <a th:href="@{/nilai/excel (id = ${jadwal.id})}">Upload Excel</a>
+                                    <a class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>
+                                </td>
+
+                                <td>
+                                    <!--<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">-->
+                                        <!--<input type="file" name="file">-->
+                                        <!--<button type="submit">pusing</button>-->
+                                    <!--</form>-->
                                 </td>
                             </tr>
                             </tr>

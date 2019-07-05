@@ -1,4 +1,4 @@
-package id.ac.tazkia.akademik.aplikasiakademik.dto;
+package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.repository.PagingAndSortingRepository;

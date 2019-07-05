@@ -61,42 +61,10 @@
         })();
 
 
-        function keyUpFunction(arg) {
-            var id = arg.getAttribute('id');
-            var value = arg.value;
-
-            // var idKrs = evt.getAttribute('id');
-            // var valueKrs = evt.value;
-            console.log(id);
-            $(document).keyup(function (e) {
-                delay(function () {
-                    console.log(id);
-                    var url = "/penilaian/nilai";
-                    var token = $("input[name='_csrf']").val();
-                    $.ajax({
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json;charset=UTF-8",
-                        headers: {"X-CSRF-TOKEN": token},
-                        url: url,
-                        data: JSON.stringify({
-                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
-                            "uts" : "",
-                            "uas" : value,
-                            "nilai": "",
-                            "tugas": ""
-                        })
-                    }, 500);
-
-                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
-                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                        // console.log(data);
-                    });
-                }, 1000);
-            });
-        }
 
 
+
+        //function uas
         function myFunction(arg) {
             var id = arg.getAttribute('id');
             var value = arg.value;
@@ -136,6 +104,9 @@
             });
         }
 
+
+
+        //function tugas
         function lookup(arg) {
                 var id = arg.getAttribute('id');
                 var value = arg.value;
@@ -172,6 +143,40 @@
 
                     }, 1000);
                 });
+        }
+
+
+        function hitungUas(arg) {
+            var id = arg.getAttribute('id');
+            var value = arg.value;
+
+            $(document).keyup(function (e) {
+                delay(function () {
+                    console.log(id);
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        url: url,
+                        data: JSON.stringify({
+                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
+                            "uts" : "",
+                            "nilai": "",
+                            "tugas": "",
+                            "uas" : value
+                        })
+                    }, 500);
+
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        // console.log(data);
+                    });
+
+                }, 1000);
+            });
         }
 
     </script>
@@ -288,7 +293,7 @@
                                                     <input type="hidden" th:name="${data.krsDetail.mahasiswa.nim + '-' + 'uts' + '-' + 'krs'}" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uts' + 'krs'}" th:value="${data.id}">
                                                 </td>
                                                 <td><center>
-                                                    <input class="filterme" type="text" maxlength="3" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uas'}" th:name="${data.krsDetail.mahasiswa.nim + 'uas'}" onkeyup="keyUpFunction(this);" style="width: 80%;">
+                                                    <input class="filterme" type="text" maxlength="3" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uas'}" th:name="${data.krsDetail.mahasiswa.nim + 'uas'}" onkeyup="hitungUas(this);" style="width: 80%;">
                                                     <input type="hidden" th:name="${data.krsDetail.mahasiswa.nim + '-' + 'uas' + '-' + 'krs'}" th:id="${data.krsDetail.mahasiswa.nim + '-' + 'uas' + 'krs'}" th:value="${data.id}">
                                                 </center></td>
 

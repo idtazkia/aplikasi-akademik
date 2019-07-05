@@ -108,6 +108,18 @@
                                     <div class="x_title"></div>
                                 </div>
                             </center>
+
+                            <div class="alert alert-danger fade in" th th:if="${lebih != null}">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4>OOPS!!!</h4>
+                                    <p>Data bobot yang Anda masukan melebihin 100%, Silahkan Coba Lagi!</p>
+                            </div>
+
+                            <div class="alert alert-danger fade in" th th:if="${tidakvalid != null}">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4>OOPS!!!</h4>
+                                    <p>Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!</p>
+                            </div>
                             <form th:action="@{/penilaian/bobot}" method="post" th:object="${jadwal}">
                                 <table>
                                     <tr>
@@ -134,8 +146,8 @@
                                 <input type="hidden" name="id" th:value="${jadwal.id}">
                                 <input type="hidden" name="matakuliahKurikulum" th:value="${jadwal.matakuliahKurikulum.id}">
                                 <input type="hidden" name="idHari" th:value="${jadwal.idHari.id}">
-                                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai}">
-                                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai}">
+                                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai+''}">
+                                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai+''}">
                                 <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
                                 <input type="hidden" name="tahunAkademikProdi" th:value="${jadwal.tahunAkademikProdi.id}">
                                 <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
@@ -146,6 +158,7 @@
                                 <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
                                 <input type="hidden" name="program" th:value="${jadwal.program.id}">
                                 <input type="hidden" name="status" th:value="${jadwal.status}">
+                                <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
                                 <input type="hidden" name="dosens" th:value="${jadwal.dosens}">
                                 <br>
                                 <div class="table-responsive">
@@ -180,7 +193,7 @@
 
                                 </div>
                                 <center>
-                                    <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                                    <button type="submit" class="btn btn-success simpan">Simpan Perubahan</button>
                                 </center>
                             </form>
                         </div>
@@ -269,5 +282,14 @@
     $(".js-example-placeholder-single").select2({
         placeholder: "Pilih Salah Satu",
         allowClear: true
+    });
+
+    $('.simpan').click(function () {
+        Swal.fire({
+            position: 'top-end',
+            type: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false
+        })
     });
 </script>
