@@ -23,46 +23,43 @@
             </div>
 
 
-            <form method="get">
+
                 <div class="form-group">
                     <div class="row col-sm-offset-1 ">
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Prodi :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="prodi" required>
-                                    <option></option>
-                                    <option th:each="prodi : ${listProdi}"
-                                            th:selected="(${prodi} == *{selected})"
-                                            th:text="${prodi.namaProdi}"
-                                            th:value="${prodi.id}">sdasd</option>
-                                </select>
+                                <input type="text" th:if="${selected != null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                       data-provide="typeahead" autocomplete="off" required th:value="${selected.namaProdi}">
+                                <input type="text" th:if="${selected == null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                       data-provide="typeahead" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Curriculum :</label>
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="kurikulum" required>
-                                    <option></option>
-                                    <option th:each="kurikulum : ${listKurikulum}"
-                                            th:selected="(${kurikulum} == *{kurikulumSelected})"
-                                            th:text="${kurikulum.namaKurikulum}"
-                                            th:value="${kurikulum.id}">sdasd</option>
-                                </select>
+                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected != null}" th:value="${kurikulumSelected.namaKurikulum}"
+                                       placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
+                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected == null}"
+                                       placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
                             </div>
                         </div>
                     </div>
-                    <center>
+                    <form method="get">
+                        <input type="hidden" th:if="${selected != null}" id="isiProdi" name="prodi" th:value="${selected.id}">
+                        <input type="hidden" th:if="${kurikulumSelected != null}" id="isiKurikulum" name="kurikulum" th:value="${kurikulumSelected.id}">
+                        <input type="hidden" th:if="${selected == null}" id="isiProdi" name="prodi">
+                        <input type="hidden" th:if="${kurikulumSelected == null}" id="isiKurikulum" name="kurikulum">
+                        <center>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-info">Search</button>
                             </div>
                         </div>
                     </center>
+                    </form>
                 </div>
-            </form>
             <hr>
 
             <div class="col-md-12 col-sm-12 col-xs-12" th:if="${not #lists.isEmpty(satu)}">

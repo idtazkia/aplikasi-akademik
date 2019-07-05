@@ -1,9 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.dao.KurikulumDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.MataKuliahDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.MatakuliahKurikulumDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.ProdiDao;
+import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.MatkulDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class MataKuliahController {
@@ -33,6 +31,9 @@ public class MataKuliahController {
     @Autowired
     private MatakuliahKurikulumDao matakuliahKurikulumDao;
 
+    @Autowired
+    private KelasDao kelasDao;
+
     @GetMapping("/api/matakuliah")
     @ResponseBody
     public Page<Matakuliah> cariData(@RequestParam(required = false) String search, Pageable page){
@@ -40,6 +41,35 @@ public class MataKuliahController {
             return mataKuliahDao.findAll(page);
         }
         return mataKuliahDao.findByNamaMatakuliahContainingIgnoreCase(search, page);
+
+    }
+
+    @GetMapping("/api/prodi")
+    @ResponseBody
+    public Page<Prodi> cariProdi(@RequestParam(required = false) String search, Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return prodiDao.findByStatus(StatusRecord.AKTIF,page);
+        }
+        return prodiDao.findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF,search, page);
+
+    }
+
+    @GetMapping({"/api/kurikulum"})
+    @ResponseBody
+    public List<Kurikulum> findByProdiAndName(@RequestParam(required = false) String namaProdi, @RequestParam String search,Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return null;
+        }
+        return kurikulumDao.findByProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(prodiDao.findById(namaProdi).get(), search);
+    }
+
+    @GetMapping({"/api/kelas"})
+    @ResponseBody
+    public Page<Kelas> cariKelas(@RequestParam(required = false) String idProdi, @RequestParam String search,Pageable page){
+        if(!StringUtils.hasText(search)) {
+            return null;
+        }
+        return kelasDao.findByStatusAndIdProdiAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord.AKTIF,prodiDao.findById(idProdi).get(),search,page);
 
     }
 
