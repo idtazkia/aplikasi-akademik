@@ -223,7 +223,6 @@ $(document).ready(function(){
 
 
 
-
     inputMatakuliah.typeahead({
         displayText: function(item){ return item.namaMatakuliah;},
         source: _.debounce(function(cari, process){

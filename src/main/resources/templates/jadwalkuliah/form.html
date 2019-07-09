@@ -73,11 +73,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Hari :</label>
-                                <input th:if="${jadwal.idHari != null}" type="text" class="form-control" id="hari"
-                                       th:value="${jadwal.idHari.namaHariEng}" placeholder="Cari Hari ..." data-provide="typeahead"
-                                       autocomplete="off" required>
-                                <input type="text" class="form-control" id="hari" th:if="${jadwal.idHari == null}"
-                                       placeholder="Cari Hari ..." data-provide="typeahead" autocomplete="off" required>
+                                <select class="form-control js-example-placeholder-single" onchange="mySesi()"
+                                        style="width: 100%!important;" id="select2-hari" th:field="*{idHari}">
+                                    <option value=""></option>
+                                    <option th:each="data: ${hari}"
+                                            th:text="${data.namaHari + '  -  ' + data.namaHariEng}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
+                                <!--<input th:if="${jadwal.idHari != null}" type="text" class="form-control" id="hari"-->
+                                       <!--th:value="${jadwal.idHari.namaHariEng}" placeholder="Cari Hari ..." data-provide="typeahead"-->
+                                       <!--autocomplete="off" required>-->
+                                <!--<input type="text" class="form-control" id="hari" th:if="${jadwal.idHari == null}"-->
+                                       <!--placeholder="Cari Hari ..." data-provide="typeahead" autocomplete="off" required>-->
                                 <input type="hidden" id="isiHari" name="idHari" th:field="*{idHari}">
                             </div>
                         </div>
@@ -97,7 +104,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Ruangan :</label>
-                                <select class="form-control js-example-placeholder-single"
+                                <select class="form-control js-example-placeholder-single" onchange="mySesi()"
                                         style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
                                     <option value=""></option>
                                     <option th:each="data: ${ruangan}"
@@ -116,9 +123,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Sesi :</label>
-                                <input type="text" class="form-control" id="sesi"
-                                       placeholder="Cari Sesi ..." data-provide="typeahead" autocomplete="off" required>
-                                <input type="hidden" id="isiSesi" name="sesi">
+                                <select id="locality-dropdown" class="form-control" name="sesi" th:field="*{sesi}" onchange="waktu()">
+                                </select>
+                                <!--<input type="hidden" id="isiSesi" name="sesi">-->
                                 <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
                             </div>
                         </div>
@@ -201,6 +208,7 @@
                     </div>
 
                     <input type="hidden" name="id" id="id" th:field="*{id}">
+
                     <div class="form-group">
                         <center>
                             <input class="btn btn-primary" type="submit" value="Save">
@@ -220,6 +228,8 @@
 </body>
 </html>
 <script>
+
+
     $(".js-example-placeholder-single").select2({
         placeholder: "Pilih Salah Satu",
         allowClear: true
@@ -232,5 +242,43 @@
             console.log('Selecting: ' , e.params.args.data.id);
             $('#isiRuangan').val(e.params.args.data.id);
         });
+
+        $('#select2-hari').select2();
+
+        $('#select2-hari').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiHari').val(e.params.args.data.id);
+        });
     })(jQuery);
+
+    function mySesi() {
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiRuangan').val())
+        const url = '/api/sesi?idHari='+$('#isiHari').val()+'&idRuangan='+$('#isiRuangan').val()+'&sks='+$('#sks').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+
+        // Populate dropdown with list of provinces
+        $.getJSON(url, function (data) {
+
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.sesi).text(entry.namaSesi));
+            })
+        });
+    }
+
+    function waktu() {
+        var x = document.getElementById("locality-dropdown").value;
+        console.log(x);
+        const url = '/api/waktu?id='+x;
+        $.getJSON(url, function (data) {
+
+            $('#jamMulai').val(data.jamMulai);
+            $('#jamSelesai').val(data.jamSelesai);
+        });
+
+    }
 </script>

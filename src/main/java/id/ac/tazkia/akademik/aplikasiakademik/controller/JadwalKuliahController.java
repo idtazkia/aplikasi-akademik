@@ -75,6 +75,15 @@ public class JadwalKuliahController {
 
     }
 
+    @GetMapping("/api/waktu")
+    @ResponseBody
+    public Sesi sesi(@RequestParam(required = false) String id){
+
+
+        return sesiDao.findById(id).get();
+
+    }
+
     @GetMapping("/api/ruangan")
     @ResponseBody
     public Iterable<Ruangan> cariRuangan(@RequestParam(required = false) String search, Pageable page){
@@ -216,6 +225,7 @@ public class JadwalKuliahController {
 
         model.addAttribute("matakuliah",matakuliahKurikulumDao.findByStatusNotInAndKurikulum(StatusRecord.HAPUS,jadwal.getMatakuliahKurikulum().getKurikulum()));
         model.addAttribute("jadwal",jadwal);
+        model.addAttribute("hari", hariDao.findAll());
     }
 
     @PostMapping("/jadwalkuliah/form")
