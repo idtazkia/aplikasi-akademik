@@ -18,7 +18,7 @@
 
             <div class="title_right">
                 <div class="input-group">
-                    <a th:if="${selected != null}" th:href="@{/matakuliah/form(prodi = ${selected.id})}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                    <a th:if="${selected != null}" th:href="@{/matakuliah/form(prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                 </div>
             </div>
 

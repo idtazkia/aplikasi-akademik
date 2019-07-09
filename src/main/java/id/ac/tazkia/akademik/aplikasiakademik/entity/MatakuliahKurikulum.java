@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -41,5 +42,16 @@ public class MatakuliahKurikulum {
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    private Integer sksMinimal;
+    private BigDecimal ipkMinimal;
+
+    @ManyToOne
+    @JoinColumn(name = "id_konsentrasi")
+    private Konsentrasi konsentrasi;
+
+    private String silabus;
+
+
 
 }

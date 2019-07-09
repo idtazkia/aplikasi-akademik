@@ -5,6 +5,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.dto.MatkulDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -12,9 +13,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class MataKuliahController {
@@ -29,10 +34,16 @@ public class MataKuliahController {
     private MataKuliahDao mataKuliahDao;
 
     @Autowired
+    private KonsentrasiDao konsentrasiDao;
+
+    @Autowired
     private MatakuliahKurikulumDao matakuliahKurikulumDao;
 
     @Autowired
     private KelasDao kelasDao;
+
+    @Value("${upload.silabus}")
+    private String uploadFolder;
 
     @GetMapping("/api/matakuliah")
     @ResponseBody
@@ -41,6 +52,17 @@ public class MataKuliahController {
             return mataKuliahDao.findAll(page);
         }
         return mataKuliahDao.findByNamaMatakuliahContainingIgnoreCase(search, page);
+
+    }
+
+    @GetMapping("/api/matkul")
+    @ResponseBody
+    public Matakuliah cariMatkul(@RequestParam(required = false) String id){
+        if (id == null || id.isEmpty()){
+            System.out.println("gaada");
+        }
+
+        return mataKuliahDao.findById(id).get();
 
     }
 
@@ -95,10 +117,17 @@ public class MataKuliahController {
     }
 
     @GetMapping("/matakuliah/form")
-    public void  formMataKuliah(@RequestParam(required = false) String prodi,
-                                @RequestParam(required = false)String id,Model model){
+    public void  formMataKuliah(@RequestParam(required = false) String prodi,@RequestParam(required = false) String kurikulum,
+                                Pageable pageable, @RequestParam(required = false)String id,Model model){
         model.addAttribute("prodi",prodiDao.findById(prodi).get());
+        model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(StatusRecord.HAPUS));
+
+        Iterable<Konsentrasi> konsentrasi = konsentrasiDao.findByIdProdiAndStatus(prodiDao.findById(prodi).get(),StatusRecord.AKTIF);
+        model.addAttribute("konsentrasi", konsentrasi);
+        System.out.println(konsentrasi);
+        Page<Matakuliah> matakuliah = mataKuliahDao.findByStatus(StatusRecord.AKTIF,pageable);
+        model.addAttribute("listMatkul", matakuliah);
 
         model.addAttribute("matkul", new MatkulDto());
 
@@ -123,6 +152,9 @@ public class MataKuliahController {
                 matkulDto.setSemester(matakuliahKurikulum.getSemester());
                 matkulDto.setSyaratTugas(matakuliahKurikulum.getSyaratTugasAkhir());
                 matkulDto.setSks(matakuliahKurikulum.getJumlahSks());
+                matkulDto.setIpkMinimal(matakuliahKurikulum.getIpkMinimal());
+                matkulDto.setKonsentrasi(matakuliahKurikulum.getKonsentrasi());
+                matkulDto.setNamaFile(matakuliahKurikulum.getSilabus());
                 model.addAttribute("matkul",matkulDto);
 
             }
@@ -132,8 +164,29 @@ public class MataKuliahController {
     }
 
     @PostMapping("/matakuliah/form")
-    public String prosesMatkul(@ModelAttribute @Valid MatkulDto matkulDto, BindingResult errors){
+    public String prosesMatkul(@ModelAttribute @Valid MatkulDto matkulDto, MultipartFile silabus, BindingResult errors) throws Exception {
         System.out.println(matkulDto.getIdMat());
+        String namaFile = silabus.getName();
+        String jenisFile = silabus.getContentType();
+        String namaAsli = silabus.getOriginalFilename();
+        Long ukuran = silabus.getSize();
+
+        String extension = "";
+
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = namaAsli.substring(i + 1);
+        }
+
+        String idFile = UUID.randomUUID().toString();
+        String lokasiUpload = uploadFolder;
+        new File(lokasiUpload).mkdirs();
+        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+        silabus.transferTo(tujuan);
+
+
         if (matkulDto.getIdMat() == null || matkulDto.getIdMat().isEmpty()){
             Matakuliah matakuliah = new Matakuliah();
             matakuliah.setIdProdi(matkulDto.getProdi());
@@ -145,10 +198,18 @@ public class MataKuliahController {
 
             MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
             BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
+            if (matkulDto.getResponsi() == null){
+                matakuliahKurikulum.setResponsi("N");
+            }
+
+            if (matkulDto.getWajib() == null){
+                matakuliahKurikulum.setResponsi("N");
+            }
             matakuliahKurikulum.setMatakuliah(matakuliah);
             matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
             matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
             matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+            matakuliahKurikulum.setSilabus(idFile + "." + extension);
             matakuliahKurikulumDao.save(matakuliahKurikulum);
             System.out.println(matakuliahKurikulum);
         }
@@ -156,19 +217,54 @@ public class MataKuliahController {
         if (matkulDto.getIdMat() != null || !matkulDto.getIdMat().isEmpty()){
             Matakuliah matakuliah = mataKuliahDao.findById(matkulDto.getIdMat()).get();
 
-            MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
-            BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
-            matakuliahKurikulum.setMatakuliah(matakuliah);
-            matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
-            matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
-            matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
-            matakuliahKurikulumDao.save(matakuliahKurikulum);
-            System.out.println(matakuliahKurikulum);
+            if (matakuliah.getNamaMatakuliah().equals(matkulDto.getNamaMatakuliah())){
+                MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
+                BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
+                matakuliahKurikulum.setMatakuliah(matakuliah);
+                if (matkulDto.getResponsi() == null){
+                    matakuliahKurikulum.setResponsi("N");
+                }
+                if (matkulDto.getWajib() == null){
+                    matakuliahKurikulum.setResponsi("N");
+                }
+                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                matakuliahKurikulumDao.save(matakuliahKurikulum);
+                System.out.println(matakuliahKurikulum);
+            }else {
+                Matakuliah m = new Matakuliah();
+                m.setIdProdi(matkulDto.getProdi());
+                m.setKodeMatakuliah(matkulDto.getKodeMatakuliah());
+                m.setNamaMatakuliahEnglish(matkulDto.getNamaMatakuliahEnglish());
+                m.setNamaMatakuliah(matkulDto.getNamaMatakuliah());
+                m.setSingkatan(matkulDto.getSingkatan());
+                mataKuliahDao.save(m);
+
+                MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
+                BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
+                matakuliahKurikulum.setMatakuliah(m);
+                if (matkulDto.getResponsi() == null){
+                    matakuliahKurikulum.setResponsi("N");
+                }
+
+                if (matkulDto.getWajib() == null){
+                    matakuliahKurikulum.setResponsi("N");
+                }
+                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                matakuliahKurikulumDao.save(matakuliahKurikulum);
+                System.out.println(matakuliahKurikulum);
+            }
+
 
         }
 
 
 
-        return "redirect:list";
+        return "redirect:list?prodi="+matkulDto.getProdi().getId()+"&kurikulum="+matkulDto.getKurikulum().getId();
     }
 }

@@ -10,7 +10,7 @@
 
 <section layout:fragment="main" class="container">
     <div class="col-md-12" role="main">
-        <form th:action="@{/matakuliah/form}" th:object="${matkul}" method="post">
+        <form th:action="@{/matakuliah/form}" th:object="${matkul}" method="post" enctype="multipart/form-data">
         <div class="">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -24,6 +24,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Matakuliah</label>
+                                        <!---->
                                         <input type="text" name="namaMatakuliah" class="form-control"
                                                id="matakuliah" placeholder="Search ..."
                                                data-provide="typeahead"
@@ -34,19 +35,20 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Kode Matakuliah</label>
-                                        <input type="text"
+                                        <input type="text" id="kodeMatkul"
                                                name=kodeMatakuliah class="form-control">
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="idMat">
+                            <input type="hidden" id="idMat" name="idMat" th:field="*{idMat}">
                             <input type="hidden" name="prodi" th:value="${prodi.id}">
+                            <input type="hidden" name="kurikulum" th:value="${kurikulum.id}">
 
                             <div class="col-md-12">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Matakuliah(inggris)</label>
-                                        <input type="text"
+                                        <input type="text" id="matkulEng"
                                                name=namaMatakuliahEnglish class="form-control">
                                     </div>
                                 </div>
@@ -82,22 +84,24 @@
                             <div class="col-md-12">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Wajib</label>
-                                        <input type="text" name="wajib" maxlength="1" class="form-control">
+                                        <label>Wajib</label><br>
+                                        <label>
+                                            <input name="wajib" value="Y" maxlength="1" type="checkbox" class="js-switch" />
+                                        </label >
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Pilihan Kurikulum</label>
-                                        <select name="kurikulum" style="width: 100%!important;"
-                                                class="form-control js-select2">
-                                            <option th:each="kurikulum : ${listKurikulum}"
-                                                    th:text="${kurikulum.namaKurikulum}"
-                                                    th:value="${kurikulum.id}"></option>
-                                            <option></option>
-                                        </select>
-                                    </div>
+                                    <label>Jumlah SKS</label>
+                                    <select name="sks" class="form-control">
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -114,7 +118,17 @@
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label>Semester</label>
-                                            <input type="text" name="semester" class="form-control">
+                                            <select name="semester" class="form-control">
+                                                <option value=""></option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -124,17 +138,50 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Syarat Tugas Akhir</label>
-                                        <input type="text" maxlength="1" name="syaratTugas" class="form-control">
+                                        <select name="syaratTugas" class="form-control">
+                                            <option value=""></option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Jumlah SKS</label>
-                                        <input type="number"
-                                               name="sks" class="form-control">
+                                        <label>Konsentrasi</label>
+                                        <select name="konsentrasi" class="form-control js-select2">
+                                            <option value=""></option>
+                                            <option th:each="data : ${konsentrasi}"
+                                                    th:text="${data.namaKonsentrasi}" th:value="${data.id}"></option>
+                                        </select>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>IPK Minimal</label>
+                                        <input type="text" name="ipkMinimal" placeholder="0.00" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>SKS Minimal</label>
+                                        <input type="text" name="sksMinimal" onkeypress="return hanyaAngka(event)" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Upload Silabus</label>
+                                        <input type="file" name="silabus" class="form-control"/>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
@@ -162,4 +209,17 @@
         placeholder: "Pilih Salah Satu",
         allowClear: true
     });
+
+    $(".js-example-tags").select2({
+        placeholder: "Pilih Salah Satu",
+        tags: true
+    });
+
+    function hanyaAngka(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+
+            return false;
+        return true;
+    }
 </script>

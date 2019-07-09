@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface MataKuliahDao extends PagingAndSortingRepository<Matakuliah, String> {
     Page<Matakuliah> findByStatusNotIn(StatusRecord status, Pageable page);
+    Page<Matakuliah> findByStatus(StatusRecord status, Pageable page);
 
     Page<Matakuliah> findByNamaMatakuliahContainingIgnoreCase(String nama,Pageable page);
 }

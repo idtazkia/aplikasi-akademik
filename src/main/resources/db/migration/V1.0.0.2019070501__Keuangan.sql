@@ -16,7 +16,7 @@ id_prodi varchar(255),
 id_program varchar(255),
 status varchar(255),
 amount NUMERIC (19,2),
-dikali_sks tinyint(1),
+dikali_sks varchar(255),
 primary key(id)
 );
 
@@ -139,7 +139,7 @@ add column id_kurikulum varchar(255);
 alter table mahasiswa
 add column terakhir_update DATE;
 alter table jadwal
-add column id_sesi varchar(255);
+add column sesi varchar(255);
 
 
 create table prasyarat (
@@ -147,8 +147,24 @@ id varchar (255),
 id_matakuliah_kurikulum varchar (255),
 id_matakuliah varchar (255),
 id_matakuliah_kurikulum_pras varchar(255),
-id_matakuliah varchar(255),
+id_matakuliah_pras varchar(255),
 nilai decimal(10,0) DEFAULT NULL,
 status varchar(255),
 primary key(id)
 );
+
+alter table prodi
+add column kode_matakuliah varchar(255);
+alter table prodi
+add column id_program varchar(255);
+alter table fakultas
+add column kode_matakuliah varchar(255);
+
+alter table matakuliah_kurikulum
+add column id_konsentrasi varchar(255);
+alter table matakuliah_kurikulum
+add column sks_minimal int(3);
+alter table matakuliah_kurikulum
+add column ipk_minimal decimal(10,0) DEFAULT NULL;
+alter table matakuliah_kurikulum
+add column silabus varchar(255);
