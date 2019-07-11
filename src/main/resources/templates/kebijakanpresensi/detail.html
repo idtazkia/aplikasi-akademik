@@ -147,14 +147,25 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Masuk :</label>
-                                    <input type="text" name="jamMulai" class="form-control number">
+                                    <div class='input-group date' id='datetimepicker3'>
+                                        <input type='text' class="form-control" name="jamMulai"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-time"></span>
+                                            </span>
+                                    </div>
+
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Selesai :</label>
-                                    <input type="text" name="jamSelesai" class="form-control number">
+                                    <div class='input-group date' id='datetimepicker2'>
+                                        <input type='text' class="form-control" name="jamSelesai"/>
+                                        <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-time"></span>
+                                            </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -198,3 +209,16 @@
 </section>
 </body>
 </html>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker3').datetimepicker({
+            format: 'HH:mm'
+        });
+    });
+
+    $(function () {
+        $('#datetimepicker2').datetimepicker({
+            format: 'HH:mm'
+        });
+    });
+</script>

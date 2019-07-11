@@ -3,16 +3,11 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
@@ -26,10 +21,13 @@ public class SesiKuliah {
     @JoinColumn(name = "id_jadwal")
     private Jadwal jadwal;
 
-    @Column(columnDefinition = "LONGTEXT") @Lob
+    @Lob @Column(columnDefinition = "LONGTEXT")
     private String beritaAcara;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull private LocalDateTime waktuMulai = LocalDateTime.now();
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull private LocalDateTime waktuSelesai = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)

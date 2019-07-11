@@ -2,6 +2,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -30,7 +31,9 @@ public class PresensiMahasiswa {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime waktuMasuk;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime waktuKeluar;
 
     @NotNull

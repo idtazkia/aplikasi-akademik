@@ -173,7 +173,7 @@ public class KebijakanPresensiController {
             model.addAttribute("sesi",sesiKuliah.getId());
             model.addAttribute("statusPresensi", StatusPresensi.values());
 
-            return null;
+            return "kebijakanpresensi/mahasiswa";
         }else {
             return "redirect:presensi?id=" + sesiKuliah.getId();
         }
@@ -184,8 +184,9 @@ public class KebijakanPresensiController {
         Jadwal j = jadwalDao.findById(jadwal).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
         for (KrsDetail krsDetail : krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF)){
-            String pilihan = request.getParameter(krsDetail.getMahasiswa().getNim() + "nim");
+            String pilihan = request.getParameter(krsDetail.getMahasiswa().getNim()+"nim");
             if (pilihan == null){
+                System.out.println("tidak ada");
             }else {
                 PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
                 presensiMahasiswa.setMahasiswa(krsDetail.getMahasiswa());
@@ -196,12 +197,13 @@ public class KebijakanPresensiController {
                 presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
+                presensiMahasiswaDao.save(presensiMahasiswa);
                 System.out.println(presensiMahasiswa.getId());
 
             }
 
         }
-        return null;
+        return "redirect:detail?jadwal="+j.getId();
     }
 
     @GetMapping("/kebijakanpresensi/presensi")
@@ -239,11 +241,12 @@ public class KebijakanPresensiController {
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
                 presensiMahasiswaDao.save(presensiMahasiswa);
+                System.out.println(presensiMahasiswa.getId());
             }
 
         }
 
-        return null;
+        return "redirect:detail?jadwal="+j.getId();
     }
 
     @PostMapping("/presensi/save")
@@ -254,7 +257,7 @@ public class KebijakanPresensiController {
             pm.setStatusPresensi(statusPresensi);
             presensiMahasiswaDao.save(pm);
         }
-        return "redirect:/kebijakanpresensi/list";
+        return "redirect:/kebijakanpresensi/detail?jadwal="+sesiKuliah.getJadwal().getId();
     }
 
     @PostMapping("/mahasiswa/save")
@@ -272,6 +275,6 @@ public class KebijakanPresensiController {
             presensiMahasiswa.setSesiKuliah(sesiKuliah);
             presensiMahasiswaDao.save(presensiMahasiswa);
         }
-        return "redirect:/kebijakanpresensi/list";
+        return "redirect:/kebijakanpresensi/detail?jadwal="+sesiKuliah.getJadwal().getId();
     }
 }
