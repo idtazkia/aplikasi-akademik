@@ -10,6 +10,28 @@
 </head>
 <body>
 
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        var dosenSekarang = /*[[${dosenSekarang}]]*/ ["001", "002"];
+        $(document).ready(function () {
+            $('#pilihanDosen').select2();
+            console.log("Role sekarang : " + dosenSekarang);
+
+            var dosenSekarangId = [];
+            for (var i = 0; i < dosenSekarang.length; i++) {
+                dosenSekarangId.push(dosenSekarang[i].id);
+            }
+
+            console.log("ID Role sekarang : " + dosenSekarangId);
+
+            $('#pilihanRole').val(dosenSekarangId);
+            $('#pilihanRole').trigger("change");
+        });
+
+    </script>
+</th:block>
+
 <section layout:fragment="main" class="container">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
@@ -27,7 +49,12 @@
             </div>
 
             <div class="form-group">
-                <label>Major</label>
+                <label>Nama Prodi</label>
+                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Study Program" name="namaProdi">
+            </div>
+
+            <div class="form-group">
+                <label>Jurusan</label>
                 <select name="idJurusan" style="width:100%!important;" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
                     <option value=""></option>
                     <option th:each="data : ${jurusan}"
@@ -36,7 +63,7 @@
             </div>
 
             <div class="form-group">
-                <label>Level</label>
+                <label>Jenjang</label>
                 <select name="idJurusan" style="width:100%!important;" th:field="*{idJenjang}" class="form-control js-example-placeholder-single">
                     <option value=""></option>
                     <option th:each="data : ${jenjang}"
@@ -45,9 +72,15 @@
             </div>
 
 
+
             <div class="form-group">
-                <label>Study Program</label>
-                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Study Program" name="namaProdi">
+                <label>Program</label>
+                <select name="programs" th:field="*{programs}" class="form-control js-example-placeholder-single"
+                        multiple="multiple" style="width: 100%!important;">
+                    <option th:each="data : ${program}"
+                            th:text="${data.namaProgram}"
+                            th:value="${data.id}"></option>
+                </select>
             </div>
 
             <div class="form-group">

@@ -3,6 +3,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.JenjangDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.JurusanDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.ProdiDao;
+import id.ac.tazkia.akademik.aplikasiakademik.dao.ProgramDao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jenjang;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Prodi;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
@@ -26,6 +27,8 @@ public class ProgramStudiController {
     private JurusanDao jurusanDao;
     @Autowired
     private JenjangDao jenjangDao;
+    @Autowired
+    private ProgramDao programDao;
 
     @GetMapping("/programstudi/list")
     public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable page, String search){
@@ -44,6 +47,7 @@ public class ProgramStudiController {
         model.addAttribute("programStudy", new Prodi());
         model.addAttribute("jurusan",jurusanDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("jenjang",jenjangDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
 
         if (id != null && !id.isEmpty()) {
             Prodi prodi = prodiDao.findById(id).get();
