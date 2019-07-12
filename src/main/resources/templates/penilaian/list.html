@@ -94,7 +94,7 @@
                                 </td>
 
                                 <td>
-                                    <a class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>
+                                    <a th:if="${not @environment.acceptsProfiles('production')}" class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>
                                 </td>
 
                                 <td>

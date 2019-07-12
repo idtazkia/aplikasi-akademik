@@ -97,7 +97,7 @@
 
                               <tbody>
                                 <tr th:each="data,row : ${mahasiswaList}">
-                                    <td th:text="${(row.index + 1) + (mahasiswaList.number * mahasiswaList.size)}"></td>
+                                    <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.nim}"></td>
                                     <td th:text="${data.nama}"></td>
                                     <td th:text="${data.kurikulum.namaKurikulum}"></td>

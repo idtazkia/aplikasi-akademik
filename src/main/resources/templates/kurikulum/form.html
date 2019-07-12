@@ -35,9 +35,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Curriculum</label>
+                        <label>Prodi</label>
                         <select style="width: 100%!important;" class="form-control js-example-placeholder-single" name="prodi" th:field="*{prodi}">
                         <option value=""></option>
+                        <option value="all">Semua Prodi</option>
                         <option th:each="data : ${prodi}"
                                 th:text="${data.namaProdi}"
                                 th:value="${data.id}">sdasd</option>

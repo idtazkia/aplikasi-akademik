@@ -84,6 +84,16 @@
                                                    class="form-control">
                                         </div>
 
+                                        <div class="form-group">
+                                            <label>Academic Type</label>
+                                            <select name="jenis" th:field="*{jenis}" class="form-control">
+                                                <option value=""></option>
+                                                <option value="PENDEK">PENDEK</option>
+                                                <option value="GANJIL">GANJIL</option>
+                                                <option value="GENAP">GENAP</option>
+                                            </select>
+                                        </div>
+
                                     </div>
 
 
@@ -137,14 +147,12 @@
                                                    class="form-control">
                                         </div>
 
+                                        <div class="form-group">
+                                            <label>Year</label>
+                                            <input type="text" maxlength="4" name="tahun"
+                                                   class="form-control" th:field="*{tahun}">
+                                        </div>
                                     </div>
-                                    <center>
-                                            <div style="margin-left: 25%" class="form-group col-md-6">
-                                                <label>Year</label>
-                                                <input type="text" maxlength="4" name="tahun"
-                                                       class="form-control">
-                                            </div>
-                                    </center>
 
                                     <input type="hidden" name="id" th:field="*{id}">
                                     <input type="hidden" name="status" th:field="*{status}">

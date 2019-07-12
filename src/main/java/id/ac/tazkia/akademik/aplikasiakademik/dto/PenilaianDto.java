@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class PenilaianDto {
     private Integer absensiMahasiswa;
+    private Integer presensiDosen;
     private KrsDetail krsDetail;
     private String id;
 

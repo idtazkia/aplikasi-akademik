@@ -197,9 +197,11 @@ public class PenilaianController {
         model.addAttribute("pres", presensiMahasiswaDao.findByKrsDetailJadwalAndStatus(jadwal,StatusRecord.AKTIF));
         for (KrsDetail krsDetail : krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF)){
             int presensiMahasiswa = presensiMahasiswaDao.findByKrsDetailAndStatus(krsDetail,StatusRecord.AKTIF).size();
+            int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
             PenilaianDto penilaianDto = new PenilaianDto();
             penilaianDto.setKrsDetail(krsDetail);
             penilaianDto.setId(krsDetail.getId());
+            penilaianDto.setPresensiDosen(presensiDosen);
             penilaianDto.setAbsensiMahasiswa(presensiMahasiswa);
             penilaianDtos.add(penilaianDto);
         }
