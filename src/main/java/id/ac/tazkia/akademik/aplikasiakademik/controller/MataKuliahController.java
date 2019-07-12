@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Controller
@@ -41,6 +42,9 @@ public class MataKuliahController {
 
     @Autowired
     private KelasDao kelasDao;
+
+    @Autowired
+    private ProgramDao programDao;
 
     @Value("${upload.silabus}")
     private String uploadFolder;
@@ -82,7 +86,7 @@ public class MataKuliahController {
         if(!StringUtils.hasText(search)) {
             return null;
         }
-        return kurikulumDao.findByProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(prodiDao.findById(namaProdi).get(), search);
+        return kurikulumDao.findByStatusNotInAndProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(StatusRecord.HAPUS,prodiDao.findById(namaProdi).get(), search);
     }
 
     @GetMapping({"/api/kelas"})
@@ -102,6 +106,8 @@ public class MataKuliahController {
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(StatusRecord.HAPUS));
 
         if (prodi != null && kurikulum != null){
+            List<Kurikulum> k = kurikulumDao.findByProdiAndStatusNotInAndIdNotIn(prodi,StatusRecord.HAPUS,kurikulum.getId());
+            model.addAttribute("kurikulum", k);
             model.addAttribute("selected",prodi);
             model.addAttribute("kurikulumSelected",kurikulum);
             model.addAttribute("satu",matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(StatusRecord.HAPUS,kurikulum,prodi,1));
@@ -122,6 +128,8 @@ public class MataKuliahController {
         model.addAttribute("prodi",prodiDao.findById(prodi).get());
         model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(StatusRecord.HAPUS));
+        model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
+
 
         Iterable<Konsentrasi> konsentrasi = konsentrasiDao.findByIdProdiAndStatus(prodiDao.findById(prodi).get(),StatusRecord.AKTIF);
         model.addAttribute("konsentrasi", konsentrasi);
@@ -140,6 +148,7 @@ public class MataKuliahController {
                 }
                 MatkulDto matkulDto = new MatkulDto();
                 matkulDto.setIdMat(matakuliahKurikulum.getMatakuliah().getId());
+                matkulDto.setId(matakuliahKurikulum.getId());
                 matkulDto.setNamaMatakuliah(matakuliahKurikulum.getMatakuliah().getNamaMatakuliah());
                 matkulDto.setKodeMatakuliah(matakuliahKurikulum.getMatakuliah().getKodeMatakuliah());
                 matkulDto.setNamaMatakuliahEnglish(matakuliahKurikulum.getMatakuliah().getNamaMatakuliahEnglish());
@@ -155,6 +164,9 @@ public class MataKuliahController {
                 matkulDto.setIpkMinimal(matakuliahKurikulum.getIpkMinimal());
                 matkulDto.setKonsentrasi(matakuliahKurikulum.getKonsentrasi());
                 matkulDto.setNamaFile(matakuliahKurikulum.getSilabus());
+                matkulDto.setProdi(matakuliahKurikulum.getKurikulum().getProdi());
+                matkulDto.setPrograms(matakuliahKurikulum.getPrograms());
+                matkulDto.setAkses(matakuliahKurikulum.getAkses());
                 model.addAttribute("matkul",matkulDto);
 
             }
@@ -196,43 +208,81 @@ public class MataKuliahController {
             matakuliah.setSingkatan(matkulDto.getSingkatan());
             mataKuliahDao.save(matakuliah);
 
-            MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
-            BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
-            if (matkulDto.getResponsi() == null){
-                matakuliahKurikulum.setResponsi("N");
-            }
+            if (matkulDto.getId() == null || matkulDto.getId().isEmpty()) {
+                MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
+                BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                if (matkulDto.getResponsi() == null) {
+                    matakuliahKurikulum.setResponsi("N");
+                }
 
-            if (matkulDto.getWajib() == null){
-                matakuliahKurikulum.setResponsi("N");
+                if (matkulDto.getWajib() == null) {
+                    matakuliahKurikulum.setResponsi("N");
+                }
+                matakuliahKurikulum.setMatakuliah(matakuliah);
+                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                matakuliahKurikulumDao.save(matakuliahKurikulum);
+            }else {
+                MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(matkulDto.getId()).get();
+                BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                if (matkulDto.getResponsi() == null) {
+                    matakuliahKurikulum.setResponsi("N");
+                }
+
+                if (matkulDto.getWajib() == null) {
+                    matakuliahKurikulum.setResponsi("N");
+                }
+                matakuliahKurikulum.setMatakuliah(matakuliah);
+                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                matakuliahKurikulumDao.save(matakuliahKurikulum);
             }
-            matakuliahKurikulum.setMatakuliah(matakuliah);
-            matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
-            matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
-            matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
-            matakuliahKurikulum.setSilabus(idFile + "." + extension);
-            matakuliahKurikulumDao.save(matakuliahKurikulum);
-            System.out.println(matakuliahKurikulum);
         }
 
         if (matkulDto.getIdMat() != null || !matkulDto.getIdMat().isEmpty()){
             Matakuliah matakuliah = mataKuliahDao.findById(matkulDto.getIdMat()).get();
 
             if (matakuliah.getNamaMatakuliah().equals(matkulDto.getNamaMatakuliah())){
-                MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
-                BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
-                matakuliahKurikulum.setMatakuliah(matakuliah);
-                if (matkulDto.getResponsi() == null){
-                    matakuliahKurikulum.setResponsi("N");
+                if (matkulDto.getId() == null || matkulDto.getId().isEmpty()) {
+                    MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
+                    BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                    matakuliahKurikulum.setMatakuliah(matakuliah);
+                    if (matkulDto.getResponsi() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+                    if (matkulDto.getWajib() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+                    matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                    matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                    matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                    matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                    matakuliahKurikulumDao.save(matakuliahKurikulum);
+                }else {
+                    MatakuliahKurikulum matakuliahKurikulum =matakuliahKurikulumDao.findById(matkulDto.getId()).get();
+                    BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                    if (matkulDto.getResponsi() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+
+                    if (matkulDto.getWajib() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+                    matakuliahKurikulum.setMatakuliah(matakuliah);
+                    matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                    matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                    matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                    matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                    matakuliahKurikulumDao.save(matakuliahKurikulum);
                 }
-                if (matkulDto.getWajib() == null){
-                    matakuliahKurikulum.setResponsi("N");
-                }
-                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
-                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
-                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
-                matakuliahKurikulum.setSilabus(idFile + "." + extension);
-                matakuliahKurikulumDao.save(matakuliahKurikulum);
-                System.out.println(matakuliahKurikulum);
             }else {
                 Matakuliah m = new Matakuliah();
                 m.setIdProdi(matkulDto.getProdi());
@@ -242,22 +292,42 @@ public class MataKuliahController {
                 m.setSingkatan(matkulDto.getSingkatan());
                 mataKuliahDao.save(m);
 
-                MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
-                BeanUtils.copyProperties(matkulDto,matakuliahKurikulum);
-                matakuliahKurikulum.setMatakuliah(m);
-                if (matkulDto.getResponsi() == null){
-                    matakuliahKurikulum.setResponsi("N");
-                }
+                if (matkulDto.getId() == null || matkulDto.getId().isEmpty()) {
 
-                if (matkulDto.getWajib() == null){
-                    matakuliahKurikulum.setResponsi("N");
+                    MatakuliahKurikulum matakuliahKurikulum = new MatakuliahKurikulum();
+                    BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                    matakuliahKurikulum.setMatakuliah(m);
+                    if (matkulDto.getResponsi() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+
+                    if (matkulDto.getWajib() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+                    matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                    matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                    matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                    matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                    matakuliahKurikulumDao.save(matakuliahKurikulum);
+                }else{
+                    MatakuliahKurikulum matakuliahKurikulum =matakuliahKurikulumDao.findById(matkulDto.getId()).get();
+                    BeanUtils.copyProperties(matkulDto, matakuliahKurikulum);
+                    if (matkulDto.getResponsi() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+
+                    if (matkulDto.getWajib() == null) {
+                        matakuliahKurikulum.setResponsi("N");
+                    }
+                    matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
+                    matakuliahKurikulum.setMatakuliah(matakuliah);
+                    matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
+                    matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                    matakuliahKurikulum.setSilabus(idFile + "." + extension);
+                    matakuliahKurikulumDao.save(matakuliahKurikulum);
                 }
-                matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
-                matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
-                matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
-                matakuliahKurikulum.setSilabus(idFile + "." + extension);
-                matakuliahKurikulumDao.save(matakuliahKurikulum);
-                System.out.println(matakuliahKurikulum);
             }
 
 
@@ -266,5 +336,45 @@ public class MataKuliahController {
 
 
         return "redirect:list?prodi="+matkulDto.getProdi().getId()+"&kurikulum="+matkulDto.getKurikulum().getId();
+    }
+
+    @PostMapping("/matakuliah/delete")
+    public String deleteMatkul(@RequestParam(value = "id", name = "id") MatakuliahKurikulum matakuliahKurikulum){
+
+        matakuliahKurikulum.setStatus(StatusRecord.HAPUS);
+        matakuliahKurikulumDao.save(matakuliahKurikulum);
+        return "redirect:list?prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId();
+    }
+
+    @PostMapping("/matakuliah/copy")
+    public String copyMatakuliah(@RequestParam(value = "id", name = "id") Kurikulum selectedKurikulum,
+                                 @RequestParam(value = "prodi", name = "prodi") Prodi prodi,
+                                 @RequestParam(value = "kurikulum", name = "kurikulum") Kurikulum kurikulum){
+        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao.findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF,selectedKurikulum);
+        System.out.println(mk.size());
+        for (MatakuliahKurikulum k : mk){
+            Set<Program> programs = new HashSet<>();
+            MatakuliahKurikulum mkKurikulum = new MatakuliahKurikulum();
+            mkKurikulum.setSyaratTugasAkhir(k.getSyaratTugasAkhir());
+            mkKurikulum.setNomorUrut(k.getNomorUrut());
+            mkKurikulum.setJumlahSks(k.getJumlahSks());
+            mkKurikulum.setStatus(k.getStatus());
+            mkKurikulum.setMatakuliah(k.getMatakuliah());
+            mkKurikulum.setResponsi(k.getResponsi());
+            mkKurikulum.setSilabus(k.getSilabus());
+            mkKurikulum.setIpkMinimal(k.getIpkMinimal());
+            mkKurikulum.setKonsentrasi(k.getKonsentrasi());
+            mkKurikulum.setMatakuliahKurikulumSemester(k.getMatakuliahKurikulumSemester());
+            mkKurikulum.setSemester(k.getSemester());
+            mkKurikulum.setSksMinimal(k.getSksMinimal());
+            mkKurikulum.setWajib(k.getWajib());
+            mkKurikulum.setKurikulum(kurikulum);
+            for (Program program : k.getPrograms()){
+                programs.add(program);
+            }
+            mkKurikulum.setPrograms(programs);
+            matakuliahKurikulumDao.save(mkKurikulum);
+        }
+        return "redirect:list?prodi="+prodi.getId()+"&kurikulum="+kurikulum.getId();
     }
 }

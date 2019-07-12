@@ -53,6 +53,9 @@ public class JadwalKuliahController {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
+    KurikulumDao kurikulumDao;
+
+    @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @GetMapping("/api/plotKelas")
@@ -131,8 +134,9 @@ public class JadwalKuliahController {
         if(!StringUtils.hasText(search)) {
             return matakuliahKurikulumDao.findAll(page);
         }
-        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findFirstByKelasAndStatus(kelasDao.findById(id).get(),StatusRecord.AKTIF);
-        return matakuliahKurikulumDao.findByStatusAndKurikulumAndMatakuliahNamaMatakuliahOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCase(StatusRecord.AKTIF,kelasMahasiswa.getMahasiswa().getKurikulum(),search,search,page);
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findFirstByKelasAndStatusAndMahasiswaKurikulumNotNull(kelasDao.findById(id).get(),StatusRecord.AKTIF);
+        Kurikulum kurikulum = kurikulumDao.findByIdAndStatus(kelasMahasiswa.getMahasiswa().getKurikulum().getId(),StatusRecord.AKTIF);
+        return matakuliahKurikulumDao.findByMatakuliahNamaMatakuliahContainingIgnoreCaseAndKurikulumAndStatusOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCaseAndKurikulumAndStatus(search,kurikulum,StatusRecord.AKTIF,search,kurikulum,StatusRecord.AKTIF,page);
 
     }
 
@@ -180,6 +184,12 @@ public class JadwalKuliahController {
         }
     }
 
+    @PostMapping("/plotingdosen/delete")
+    public String deleteJadwal(@RequestParam Jadwal jadwal){
+        jadwal.setStatus(StatusRecord.HAPUS);
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
+    }
+
     @PostMapping("/plotingdosen/list")
     public String buatPlot(@ModelAttribute @Valid Jadwal jadwal){
         jadwal.setJumlahSesi(1);
@@ -221,7 +231,10 @@ public class JadwalKuliahController {
     }
 
     @GetMapping("/jadwalkuliah/form")
-    public void formJadwal(Model model,@RequestParam(required = false) Jadwal jadwal){
+    public void formJadwal(Model model,@RequestParam(required = false) Jadwal jadwal,@RequestParam(required = false) String plot){
+        if (plot != null){
+            model.addAttribute("plot",plot);
+        }
 
         model.addAttribute("matakuliah",matakuliahKurikulumDao.findByStatusNotInAndKurikulum(StatusRecord.HAPUS,jadwal.getMatakuliahKurikulum().getKurikulum()));
         model.addAttribute("jadwal",jadwal);
@@ -229,7 +242,7 @@ public class JadwalKuliahController {
     }
 
     @PostMapping("/jadwalkuliah/form")
-    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal){
+    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal,@RequestParam(required = false) String plot){
         
 
         List<Jadwal> jdwl = jadwalDao.cariJadwal(jadwal.getDosen(), jadwal.getId(),jadwal.getTahunAkademikProdi(),jadwal.getIdHari(),jadwal.getRuangan(),jadwal.getJamMulai(),jadwal.getJamSelesai(),jadwal.getJamMulai());
@@ -243,6 +256,10 @@ public class JadwalKuliahController {
 
             System.out.println("gabisa");
             return "redirect:form?jadwal=" + jadwal.getId();
+        }
+
+        if (plot != null){
+            return "redirect:/plotingdosen/list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
         }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademikProdi().getId() +"&program="+jadwal.getProgram().getId();

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class KurikulumController {
@@ -57,9 +58,25 @@ public class KurikulumController {
             return "form";
         }
 
-        kurikulum.setJumlahSesi(2);
-        kurikulum.setSesi("semester");
-        kurikulumDao.save(kurikulum);
+        if (kurikulum.getProdi() == null){
+            List<Prodi> prodi = prodiDao.findByStatus(StatusRecord.AKTIF);
+            for (Prodi p : prodi){
+                Kurikulum k = new Kurikulum();
+                k.setNamaKurikulum(kurikulum.getNamaKurikulum());
+                k.setNomorSkRektor(kurikulum.getNomorSkRektor());
+                k.setProdi(p);
+                k.setTahunKurikulum(kurikulum.getTahunKurikulum());
+                k.setJumlahSesi(2);
+                k.setSesi("semester");
+                kurikulumDao.save(k);
+            }
+        }
+
+        if (kurikulum != null) {
+            kurikulum.setJumlahSesi(2);
+            kurikulum.setSesi("semester");
+            kurikulumDao.save(kurikulum);
+        }
 
         return "redirect:list";
     }

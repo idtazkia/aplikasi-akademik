@@ -51,7 +51,6 @@ public class Ayah {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
-    @NotNull
     private String nik;
 
 

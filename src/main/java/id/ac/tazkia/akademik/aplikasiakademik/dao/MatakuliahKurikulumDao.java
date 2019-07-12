@@ -13,5 +13,7 @@ import java.util.List;
 public interface MatakuliahKurikulumDao extends PagingAndSortingRepository<MatakuliahKurikulum, String> {
      List<MatakuliahKurikulum> findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(StatusRecord statusRecord, Kurikulum kurikulum, Prodi prodi, Integer sesi);
      List<MatakuliahKurikulum> findByStatusNotInAndKurikulum(StatusRecord statusRecord, Kurikulum kurikulum);
-     Page<MatakuliahKurikulum> findByStatusAndKurikulumAndMatakuliahNamaMatakuliahOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCase(StatusRecord statusRecord, Kurikulum kurikulum, String nama, String name, Pageable page);
+     Page<MatakuliahKurikulum> findByStatusNotInAndKurikulumAndMatakuliahNamaMatakuliahOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCase(StatusRecord statusRecord, Kurikulum kurikulum, String nama, String name, Pageable page);
+     List<MatakuliahKurikulum> findByStatusAndKurikulumAndSemesterNotNull(StatusRecord statusRecord, Kurikulum kurikulum);
+     Page<MatakuliahKurikulum> findByMatakuliahNamaMatakuliahContainingIgnoreCaseAndKurikulumAndStatusOrMatakuliahNamaMatakuliahEnglishContainingIgnoreCaseAndKurikulumAndStatus(String nama,Kurikulum kurikulum, StatusRecord status,String name,Kurikulum k, StatusRecord statusRecord, Pageable page);
 }

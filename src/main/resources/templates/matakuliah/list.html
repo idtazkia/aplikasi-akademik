@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Matakuliah | SMILE</title>
 </head>
 <body>
 
@@ -18,7 +18,8 @@
 
             <div class="title_right">
                 <div class="input-group">
-                    <a th:if="${selected != null}" th:href="@{/matakuliah/form(prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                    <a th:if="${selected != null}" th:href="@{/matakuliah/form(prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn btn-primary" role="button" aria-pressed="true">Tambah Matakuliah</a>
+                    <a class="btn btn-success" th:if="${selected != null && kurikulumSelected != null}" role="button" data-toggle="modal" data-target="#exampleModal">Copy Matakuliah Kurikulum</a>
                 </div>
             </div>
 
@@ -84,7 +85,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -95,7 +98,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -128,7 +148,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -139,7 +161,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -172,7 +211,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -183,7 +224,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -216,7 +274,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -227,7 +287,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -260,7 +337,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -271,7 +350,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -304,7 +400,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -315,7 +413,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -348,7 +463,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -359,7 +476,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -392,7 +526,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -403,7 +539,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                        <!--<i class="fa fa-plus"></i>-->
+                                        <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -439,7 +592,9 @@
                                     <th>Name</th>
                                     <th>Singkatan</th>
                                     <th>SKS</th>
-                                    <th>Pras</th>
+                                    <th style="width: 170px">Pras</th>
+                                    <th style="width: 30px"></th>
+                                    <th style="width: 30px"></th>
                                 </tr>
                                 </thead>
 
@@ -450,7 +605,24 @@
                                     <td th:text="${data.matakuliah.namaMatakuliah}"></td>
                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                     <td th:text="${data.jumlahSks}"></td>
-                                    <!--<td th:text="${data.}"></td>-->
+                                    <td>
+                                        <a th:href="@{/prasyarat/form (id = ${data.id})}" class="btn-info btn-sm"><i class="fa fa-plus"></i>Tambah Prasyarat</a>
+                                        <!--<a  class="btn-sm btn-info">-->
+                                            <!--<i class="fa fa-plus"></i>-->
+                                            <!--<span>Tambah Prasyarat</span>-->
+                                        <!--</a>-->
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/matakuliah/form (id = ${data.id},prodi = ${selected.id}, kurikulum = ${kurikulumSelected.id})}" class="btn-warning btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <form method="post" th:action="@{/matakuliah/delete (id = ${data.id})}">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -461,6 +633,47 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div th:if="${selected != null && kurikulumSelected != null}" class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Copy Matakuliah Kurikulum</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" th:action="@{/matakuliah/copy}">
+
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-form-label">Pilih Kurikulum</label>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="id">
+                                        <option value=""></option>
+                                        <option th:each="data : ${kurikulum}"
+                                                th:text="${data.namaKurikulum}" th:value="${data.id}"></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="kurikulum" th:value="${kurikulumSelected.id}">
+                        <input type="hidden" name="prodi" th:value="${selected.id}">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
         </div>
     </div>
 

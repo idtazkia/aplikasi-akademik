@@ -1,16 +1,17 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dto;
 
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Konsentrasi;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Kurikulum;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Prodi;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class MatkulDto {
     private String idMat;
+    private String id;
     private String namaMatakuliah;
     private String kodeMatakuliah;
     private String namaMatakuliahEnglish;
@@ -28,5 +29,7 @@ public class MatkulDto {
     private Integer sksMinimal;
     private BigDecimal ipkMinimal;
     private MultipartFile silabus;
+    private Set<Program> programs = new HashSet<>();
     private String namaFile;
+    private Akses akses;
 }

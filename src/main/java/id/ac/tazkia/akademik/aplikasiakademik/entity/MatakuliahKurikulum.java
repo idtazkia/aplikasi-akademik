@@ -7,6 +7,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -52,6 +54,14 @@ public class MatakuliahKurikulum {
 
     private String silabus;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "matakuliah_kurikulum_program",
+            joinColumns=@JoinColumn(name = "id_matakuliah_kurikulum"),
+            inverseJoinColumns = @JoinColumn(name = "id_program"))
+    private Set<Program> programs = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private Akses akses;
 
 
 }

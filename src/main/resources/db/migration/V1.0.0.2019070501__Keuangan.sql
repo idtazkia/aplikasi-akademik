@@ -148,7 +148,7 @@ id_matakuliah_kurikulum varchar (255),
 id_matakuliah varchar (255),
 id_matakuliah_kurikulum_pras varchar(255),
 id_matakuliah_pras varchar(255),
-nilai decimal(10,0) DEFAULT NULL,
+nilai decimal(10,2) DEFAULT NULL,
 status varchar(255),
 primary key(id)
 );
@@ -165,6 +165,27 @@ add column id_konsentrasi varchar(255);
 alter table matakuliah_kurikulum
 add column sks_minimal int(3);
 alter table matakuliah_kurikulum
-add column ipk_minimal decimal(10,0) DEFAULT NULL;
+add column ipk_minimal decimal(10,2) DEFAULT NULL;
 alter table matakuliah_kurikulum
 add column silabus varchar(255);
+alter table tahun_akademik
+add column jenis varchar(255);
+
+create table matakuliah_kurikulum_program (
+  id_matakuliah_kurikulum VARCHAR (255)NOT NULL ,
+  id_program VARCHAR (255)NOT NULL ,
+  PRIMARY KEY (id_matakuliah_kurikulum, id_program)
+);
+
+create table prodi_program (
+  id_prodi VARCHAR (255)NOT NULL ,
+  id_program VARCHAR (255)NOT NULL ,
+  PRIMARY KEY (id_prodi, id_program),
+  FOREIGN KEY (id_prodi) REFERENCES prodi(id),
+  FOREIGN KEY (id_program) REFERENCES program(id)
+);
+
+alter table jadwal
+add column akses varchar(255);
+alter table matakuliah_kurikulum
+add column akses varchar(255);

@@ -92,6 +92,10 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
+                                    <th>Jam Mulai</th>
+                                    <th>Jam Selesai</th>
+                                    <th>Akses</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -99,14 +103,21 @@
                                 <tbody>
                                 <tr th:each="data,row : ${jadwal}">
                                     <td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}">1</td>
-                                    <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                    <td><b  th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></b></td>
                                     <td th:text="${data.idKelas.namaKelas}">BMI 14</td>
                                     <td th:text="${data.matakuliahKurikulum.jumlahSks}">6</td>
                                     <td th:text="${data.dosen.karyawan.namaKaryawan}">Gifar Haidar</td>
-                                    <td><button type="submit" class="btn btn-danger btn-xs"
+                                    <td th:text="${data.jamMulai}">Gifar Haidar</td>
+                                    <td th:text="${data.jamSelesai}">Gifar Haidar</td>
+                                    <td><b th:text="${data.Akses}"></b></td>
+                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${data.id}, plot='plot')}" class="btn-info btn-sm">Edit</a></td>
+                                    <td>
+                                        <form th:action="@{/plotingdosen/delete (jadwal = ${data.id})}" method="post"></form>
+                                        <button type="submit" class="btn btn-danger btn-xs"
                                                 onclick="return confirm('Are you sure want to delete this?')">
-                                        <i class="ti-eraser"></i>  Delete
-                                    </button></td>
+                                             <i class="ti-eraser"></i>  Delete
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -165,6 +176,29 @@
                                     <input type="text" readonly th:value="${selectedProgram.namaProgram}" class="form-control">
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Tahun Akademik:</label>
+                                    <input type="text" readonly th:value="${selectedTahun.tahunAkademik.namaTahunAkademik}" class="form-control">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-form-label">Akses :</label>
+                                    <select name="akses" class="form-control">
+                                        <option value="TERTUTUP">Tertutup</option>
+                                        <option value="PRODI" th:text="${selectedTahun.prodi.namaProdi}">PRODI</option>
+                                        <option value="UMUM">Semua Prodi</option>
+                                    </select>
+                                </div>
+                            </div>
+
 
                         </div>
 

@@ -41,7 +41,7 @@
 
             <div class="x_content">
 
-                <form method="post" th:action="@{/jadwalkuliah/form}" th:object="${jadwal}">
+                <form method="post" th:action="@{/jadwalkuliah/form (plot = ${plot})}" th:object="${jadwal}">
 
                     <div class="col-md-12">
                         <div class="col-md-6">
@@ -123,9 +123,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Sesi :</label>
-                                <select id="locality-dropdown" class="form-control" name="sesi" th:field="*{sesi}" onchange="waktu()">
+                                <select id="locality-dropdown" class="form-control" onchange="waktu()">
                                 </select>
-                                <!--<input type="hidden" id="isiSesi" name="sesi">-->
+                                <input type="hidden" id="isiSesi" name="sesi" th:field="*{sesi}">
                                 <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
                             </div>
                         </div>
@@ -207,6 +207,21 @@
 
                     </div>
 
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Akses :</label>
+                                <select name="akses" class="form-control" th:field="*{akses}">
+                                    <option value="TERTUTUP">Tertutup</option>
+                                    <option value="PRODI" th:text="${jadwal.prodi.namaProdi}">PRODI</option>
+                                    <option value="UMUM">Semua Prodi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
                     <input type="hidden" name="id" id="id" th:field="*{id}">
 
                     <div class="form-group">
@@ -265,7 +280,7 @@
         $.getJSON(url, function (data) {
 
             $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.sesi).text(entry.namaSesi));
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
             })
         });
     }
@@ -278,6 +293,7 @@
 
             $('#jamMulai').val(data.jamMulai);
             $('#jamSelesai').val(data.jamSelesai);
+            $('#isiSesi').val(data.sesi);
         });
 
     }

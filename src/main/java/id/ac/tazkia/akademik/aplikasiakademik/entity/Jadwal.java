@@ -86,4 +86,8 @@ public class Jadwal {
     private Set<Dosen> dosens = new HashSet<>();
     private String sesi;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Akses akses = Akses.TERTUTUP;
+
 }
