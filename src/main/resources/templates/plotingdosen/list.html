@@ -147,7 +147,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" th:if="${selectedTahun != null}">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -183,7 +183,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Tahun Akademik:</label>
-                                    <input type="text" readonly th:value="${selectedTahun.tahunAkademik.namaTahunAkademik}" class="form-control">
+                                    <input th:if="${selectedTahun != null}" type="text" readonly th:value="${selectedTahun.tahunAkademik.namaTahunAkademik}" class="form-control">
                                 </div>
                             </div>
 
