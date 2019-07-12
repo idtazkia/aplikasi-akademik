@@ -9,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -39,5 +41,11 @@ import java.time.LocalDateTime;
 
         @Enumerated(EnumType.STRING)
         private StatusRecord status = StatusRecord.AKTIF;
+
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(name = "prodi_program",
+                joinColumns=@JoinColumn(name = "id_prodi"),
+                inverseJoinColumns = @JoinColumn(name = "id_program"))
+        private Set<Program> programs= new HashSet<>();
 
 }

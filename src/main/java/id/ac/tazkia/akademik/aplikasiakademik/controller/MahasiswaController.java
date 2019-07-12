@@ -335,13 +335,13 @@ public class MahasiswaController {
         if (prodi != null){
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
-            Page<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi,page);
+            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi);
             model.addAttribute("mahasiswaList", mahasiswa);
             model.addAttribute("selected",prodi);
             model.addAttribute("kurikulumSelected",kurikulum);
         }else {
             model.addAttribute("selectedAngkatan", angkatan);
-            Page<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatan(StatusRecord.AKTIF,angkatan,page);
+            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi);
             model.addAttribute("mahasiswaList", mahasiswa);
             model.addAttribute("kurikulumSelected",kurikulum);
         }

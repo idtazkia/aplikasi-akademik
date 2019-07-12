@@ -79,4 +79,7 @@ public class TahunAkademik {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.NONAKTIF;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord jenis;
+
 }

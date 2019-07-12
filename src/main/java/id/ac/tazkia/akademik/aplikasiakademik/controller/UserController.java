@@ -85,9 +85,9 @@ public class UserController {
         if (authentication == null) {
             LOGGER.warn("Current user is null");
         }
-
+//
         User user = currentUserService.currentUser(authentication);
-
+//
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         MahasiswaDetailKeluarga detail = mahasiswaDetailKeluargaDao.findByMahasiswa(mahasiswa);
         model.addAttribute("mahasiswa",detail);

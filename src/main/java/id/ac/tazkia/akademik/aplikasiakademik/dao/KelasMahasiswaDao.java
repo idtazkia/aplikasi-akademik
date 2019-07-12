@@ -10,7 +10,7 @@ public interface KelasMahasiswaDao extends PagingAndSortingRepository <KelasMaha
     KelasMahasiswa findByMahasiswaAndKelas(Mahasiswa mahasiswa, Kelas kelas);
     Iterable<KelasMahasiswa> findByKelasAndStatus(Kelas kelas, StatusRecord statusRecord    );
     KelasMahasiswa findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusRecord statusRecord);
-    KelasMahasiswa findFirstByKelasAndStatus(Kelas kelas, StatusRecord statusRecord);
+    KelasMahasiswa findFirstByKelasAndStatusAndMahasiswaKurikulumNotNull(Kelas kelas, StatusRecord statusRecord);
 
 
 }
