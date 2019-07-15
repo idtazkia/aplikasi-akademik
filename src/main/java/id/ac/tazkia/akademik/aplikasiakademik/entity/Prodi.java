@@ -42,10 +42,10 @@ import java.util.Set;
         @Enumerated(EnumType.STRING)
         private StatusRecord status = StatusRecord.AKTIF;
 
-        @ManyToMany(fetch = FetchType.EAGER)
-        @JoinTable(name = "prodi_program",
-                joinColumns=@JoinColumn(name = "id_prodi"),
-                inverseJoinColumns = @JoinColumn(name = "id_program"))
-        private Set<Program> programs= new HashSet<>();
+//        @ManyToMany(fetch = FetchType.EAGER)
+//        @JoinTable(name = "prodi_program",
+//                joinColumns=@JoinColumn(name = "id_prodi"),
+//                inverseJoinColumns = @JoinColumn(name = "id_program"))
+//        private Set<Program> programs= new HashSet<>();
 
 }
