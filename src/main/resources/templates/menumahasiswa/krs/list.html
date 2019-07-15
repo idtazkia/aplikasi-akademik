@@ -167,7 +167,9 @@
                                 <tbody>
                                 <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
                                     <td class="a-center ">
-                                        <input type="checkbox" th:value="${jadwal.id}" class="flat" name="data">
+                                        <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data" th:if="${tahun.jenis.PENDEK} == ${tahun.jenis}">
+                                        <input type="checkbox" th:value="${jadwal.id}" class="flat" name="data" th:if="${tahun.jenis.GANJIL} == ${tahun.jenis}">
+                                        <input type="checkbox" th:value="${jadwal.id}" class="flat" name="data" th:if="${tahun.jenis.GENAP} == ${tahun.jenis}">
                                     </td>
                                     <td class="column-title" th:text="${row.index + 1}">#</td>
                                     <td class="column-title" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Subject</td>
@@ -197,5 +199,11 @@
     $(".js-example-placeholder-single").select2({
         placeholder: "Pilih Salah Satu",
         allowClear: true
+    });
+
+    $('.single-checkbox').on('change', function() {
+        if($('.single-checkbox:checked').length > 2) {
+            this.checked = false;
+        }
     });
 </script>

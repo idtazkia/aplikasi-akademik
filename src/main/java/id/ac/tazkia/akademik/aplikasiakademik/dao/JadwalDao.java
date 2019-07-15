@@ -14,7 +14,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
 {
     List<Jadwal>findByStatusNotIn(StatusRecord statusRecord);
     List<Jadwal>findByTahunAkademikProdiAndIdHariNotNull(TahunAkademikProdi tahunAkademikProdi);
-    List<Jadwal>findByTahunAkademikProdiAndAksesAndStatusAndIdHariNotNull(TahunAkademikProdi tahunAkademikProdi,Akses akses, StatusRecord statusRecord);
+    List<Jadwal>findByTahunAkademikProdiAndIdKelasAndAksesAndStatusAndIdHariNotNull(TahunAkademikProdi tahunAkademikProdi,Kelas kelas,Akses akses, StatusRecord statusRecord);
+    List<Jadwal> findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(TahunAkademik tahunAkademik,Kelas kelas,StatusRecord statusRecord);
+    List<Jadwal>findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(TahunAkademik tahunAkademik,Akses akses, StatusRecord statusRecord);
+    List<Jadwal>findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(TahunAkademik tahunAkademik,Prodi prodi,Akses akses, StatusRecord statusRecord);
     Page<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdi(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Pageable page);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Hari hari,Program program);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, String hari,Program program);
@@ -39,7 +42,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     @Query("select j.sesi from Jadwal j where j.tahunAkademik = :tahun and j.idHari = :hari and j.dosen = :dosen")
     List<Jadwal> validasiDosen(@Param("tahun")TahunAkademik t, @Param("hari")Hari h, @Param("dosen")Dosen dosen);
 
+    List<Jadwal> findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesi(StatusRecord statusRecord, TahunAkademik tahunAkademik, Ruangan ruangan, Hari hari, String s);
+
 
 }
-
 
