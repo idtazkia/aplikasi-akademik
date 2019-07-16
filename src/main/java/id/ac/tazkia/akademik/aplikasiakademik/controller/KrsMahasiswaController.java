@@ -284,7 +284,7 @@ public class KrsMahasiswaController {
                         System.out.println(krs.size() +  "   jumlaaah");
                         if (krsDetail == null) {
                             if (total <= 2) {
-                                if (46 + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
+                                if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
                                     KrsDetail kd = new KrsDetail();
                                     kd.setJadwal(jadwal);
                                     kd.setKrs(cariKrs);
