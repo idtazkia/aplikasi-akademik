@@ -41,6 +41,13 @@
 
             <div class="x_content">
 
+                <div class="alert alert-danger fade in" th:if="${validJadwal != null}">
+                    <button type= "button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><b>Maaf</b></h4>
+                    <p><b>Jadwal yang Anda pilih sudah terpakai, silahkan cari jadwal lain</b></p>
+                </div>
+
+
                 <form method="post" th:action="@{/jadwalkuliah/form (plot = ${plot})}" th:object="${jadwal}">
 
                     <div class="col-md-12">

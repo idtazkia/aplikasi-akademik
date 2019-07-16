@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -242,10 +243,10 @@ public class JadwalKuliahController {
     }
 
     @PostMapping("/jadwalkuliah/form")
-    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal,@RequestParam(required = false) String plot){
+    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal, @RequestParam(required = false) String plot, RedirectAttributes attributes){
         
 
-        List<Jadwal> jdwl = jadwalDao.cariJadwal(jadwal.getDosen(), jadwal.getId(),jadwal.getTahunAkademikProdi(),jadwal.getIdHari(),jadwal.getRuangan(),jadwal.getJamMulai(),jadwal.getJamSelesai(),jadwal.getJamMulai());
+        List<Jadwal> jdwl = jadwalDao.findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesi(StatusRecord.AKTIF,jadwal.getTahunAkademik(),jadwal.getRuangan(),jadwal.getIdHari(),jadwal.getSesi());
 
 
         if (jdwl == null || jdwl.isEmpty()) {
@@ -254,7 +255,7 @@ public class JadwalKuliahController {
             jadwalDao.save(jadwal);
         }else {
 
-            System.out.println("gabisa");
+            attributes.addFlashAttribute("validJadwal", jdwl);
             return "redirect:form?jadwal=" + jadwal.getId();
         }
 

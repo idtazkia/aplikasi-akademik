@@ -173,11 +173,13 @@ public class PenilaianController {
                 .map(BobotTugas::getBobot)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         System.out.println(sum.toBigInteger().intValueExact());
+        if (bobot.size() != 0 || !bobot.isEmpty()) {
             if (sum.toBigInteger().intValueExact() < 100) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 System.out.println("gabisa");
-                return "redirect:bobot?jadwal="+jadwal.getId();
+                return "redirect:bobot?jadwal=" + jadwal.getId();
             }
+        }
 
         if (totalBobot.toBigInteger().intValueExact() < 100) {
             attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
