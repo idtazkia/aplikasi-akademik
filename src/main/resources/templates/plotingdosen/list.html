@@ -112,11 +112,12 @@
                                     <td><b th:text="${data.Akses}"></b></td>
                                     <td><a th:href="@{/jadwalkuliah/form (jadwal = ${data.id}, plot='plot')}" class="btn-info btn-sm">Edit</a></td>
                                     <td>
-                                        <form th:action="@{/plotingdosen/delete (jadwal = ${data.id})}" method="post"></form>
-                                        <button type="submit" class="btn btn-danger btn-xs"
-                                                onclick="return confirm('Are you sure want to delete this?')">
-                                             <i class="ti-eraser"></i>  Delete
-                                        </button>
+                                        <form th:action="@{/plotingdosen/delete (jadwal = ${data.id})}" method="post">
+                                            <button type="submit" class="btn btn-danger btn-xs"
+                                                    onclick="return confirm('Are you sure want to delete this?')">
+                                                 <i class="ti-eraser"></i>  Delete
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 </tbody>

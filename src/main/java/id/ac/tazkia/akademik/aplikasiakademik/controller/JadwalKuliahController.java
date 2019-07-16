@@ -188,6 +188,7 @@ public class JadwalKuliahController {
     @PostMapping("/plotingdosen/delete")
     public String deleteJadwal(@RequestParam Jadwal jadwal){
         jadwal.setStatus(StatusRecord.HAPUS);
+        jadwalDao.save(jadwal);
         return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
     }
 
