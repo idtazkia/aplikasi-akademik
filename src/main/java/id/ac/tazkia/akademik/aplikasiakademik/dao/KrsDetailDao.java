@@ -21,13 +21,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     List<KrsDetail> findByMahasiswaAndStatusOrderByKrsTahunAkademikDesc(Mahasiswa mahasiswa,StatusRecord statusRecord);
 
-    KrsDetail findByJadwalAndMahasiswaAndKrsAndStatus(Jadwal jadwal,Mahasiswa mahasiswa,Krs krs,StatusRecord statusRecord);
     List<KrsDetail> findByJadwalAndStatusOrderByMahasiswaNamaAsc(Jadwal jadwal,StatusRecord statusRecord);
-    KrsDetail findByJadwalAndStatusAndMahasiswa(Jadwal jadwal,StatusRecord statusRecord,Mahasiswa mahasiswa);
-    KrsDetail findByJadwalAndStatusAndMahasiswaAndKrsTahunAkademikNotIn(Jadwal jadwal,StatusRecord statusRecord,Mahasiswa mahasiswa,TahunAkademik tahunAkademik);
 
-    List<KrsDetail> findByKrsAndStatus(Krs k,StatusRecord statusRecord);
-    KrsDetail findByMatakuliahKurikulumAndGradeNotIn(MatakuliahKurikulum matakuliahKurikulum, List<Grade> grades);
     KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatus(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda);
-    KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsTahunAkademikNotIn(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda,TahunAkademik tahunAkademik);
+    KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda,Krs krs);
+    List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademik(Jadwal jadwal, StatusRecord statusRecord, TahunAkademik tahunAkademik);
 }
