@@ -66,8 +66,8 @@ public class KrsMahasiswaController {
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
 
-        if (k!= null && LocalDate.now().compareTo(ta.getTanggalMulaiKrs()) >= 0 == true && LocalDate.now().compareTo(ta.getTanggalSelesaiKrs()) <= 0 == true) {
-            model.addAttribute("krsAktif", k);
+            if (k!= null && LocalDate.now().compareTo(ta.getTanggalMulaiKrs()) >= 0 == true && LocalDate.now().compareTo(ta.getTanggalSelesaiKrs()) <= 0 == true) {
+                model.addAttribute("krsAktif", k);
 
 
             List<Jadwal> jadwalUmum = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
@@ -324,7 +324,8 @@ public class KrsMahasiswaController {
 
     @PostMapping("/krs/delete")
     public String deleteKrs (@RequestParam KrsDetail id){
-        krsDetailDao.delete(id);
+        id.setStatus(StatusRecord.HAPUS);
+        krsDetailDao.save(id);
 
         return "redirect:/menumahasiswa/krs/list";
     }

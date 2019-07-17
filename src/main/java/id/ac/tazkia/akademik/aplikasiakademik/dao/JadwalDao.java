@@ -13,7 +13,7 @@ import java.util.List;
 public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
 {
     List<Jadwal>findByStatusNotIn(StatusRecord statusRecord);
-    List<Jadwal>findByTahunAkademikProdiAndIdHariNotNull(TahunAkademikProdi tahunAkademikProdi);
+    List<Jadwal>findByTahunAkademikAndIdHariNotNull(TahunAkademik tahunAkademikProdi);
     List<Jadwal>findByTahunAkademikProdiAndIdKelasAndAksesAndStatusAndIdHariNotNull(TahunAkademikProdi tahunAkademikProdi,Kelas kelas,Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(TahunAkademik tahunAkademik,Kelas kelas,StatusRecord statusRecord);
     List<Jadwal>findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(TahunAkademik tahunAkademik,Akses akses, StatusRecord statusRecord);
