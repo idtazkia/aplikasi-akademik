@@ -22,6 +22,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
     Iterable<PresensiMahasiswa> findByTanggal(@Param("mulai") LocalDateTime mulai, @Param("sampai") LocalDateTime sampai);
 
     List<PresensiMahasiswa> findBySesiKuliah(SesiKuliah sesiKuliah);
+    List<PresensiMahasiswa> findBySesiKuliahAndStatus(SesiKuliah sesiKuliah,StatusRecord statusRecord);
 
     List<PresensiMahasiswa> findByKrsDetailAndStatus(KrsDetail krsDetail, StatusRecord status);
 

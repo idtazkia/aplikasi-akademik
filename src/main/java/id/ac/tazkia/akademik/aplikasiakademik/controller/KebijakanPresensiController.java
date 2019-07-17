@@ -239,7 +239,7 @@ public class KebijakanPresensiController {
 
     @GetMapping("/kebijakanpresensi/presensi")
     public void dosenKebijakanPresensi(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
 
         Map<String, String> statusPresensi = new HashMap<>();
         for(PresensiMahasiswa pm : presensiMahasiswa){
@@ -258,7 +258,7 @@ public class KebijakanPresensiController {
         Jadwal j = jadwalDao.findById(jadwal).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
 
-        for (PresensiMahasiswa presensiMahasiswa : presensiMahasiswaDao.findBySesiKuliah(sesiKuliah)){
+        for (PresensiMahasiswa presensiMahasiswa : presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF)){
             String pilihan = request.getParameter(presensiMahasiswa.getMahasiswa().getNim() + "nim");
             if (pilihan == null || pilihan.isEmpty()){
                 System.out.println("gaada");
@@ -283,7 +283,7 @@ public class KebijakanPresensiController {
     @PostMapping("/presensi/save")
     public String savePresensi(@RequestParam(required = false) String sesi, @RequestParam(required = false) StatusPresensi statusPresensi){
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
         for (PresensiMahasiswa pm : presensiMahasiswa){
             pm.setStatusPresensi(statusPresensi);
             presensiMahasiswaDao.save(pm);
