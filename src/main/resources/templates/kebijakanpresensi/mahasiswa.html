@@ -51,8 +51,7 @@
                                 <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
                                 <select th:name="${data.mahasiswa.nim+'nim'}">
                                     <option th:each="sp : ${statusPresensi}"
-                                            th:text="${sp}" th:value="${sp}"
-                                            th:selected="${sp == data.statusPresensi}"></option>
+                                            th:text="${sp}" th:value="${sp}"></option>
                                 </select>
                             </td>
                         </tr>

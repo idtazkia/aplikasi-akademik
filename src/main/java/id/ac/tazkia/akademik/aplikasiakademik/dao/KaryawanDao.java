@@ -8,5 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface KaryawanDao extends PagingAndSortingRepository<Karyawan,String> {
 
     Long countKaryawanByStatus (StatusRecord statusRecord);
+    Karyawan findByIdUser(User user);
 
 }

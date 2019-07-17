@@ -3,9 +3,11 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +60,15 @@ public class KebijakanPresensiController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    CurrentUserService currentUserService;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -114,6 +125,26 @@ public class KebijakanPresensiController {
             model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"6",program));
             model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
         }
+
+    }
+
+    @GetMapping("/kebijakanpresensi/listdosen")
+    public void daftarKebijakanPresensi(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+            model.addAttribute("minggu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"0",dosen,tahunAkademik));
+            model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
+            model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
+            model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
+            model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
+            model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
+            model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
+
 
     }
 

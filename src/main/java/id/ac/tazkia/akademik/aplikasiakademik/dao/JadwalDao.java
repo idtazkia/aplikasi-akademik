@@ -21,6 +21,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     Page<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdi(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Pageable page);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Hari hari,Program program);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, String hari,Program program);
+    List<Jadwal> findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord statusRecord,String hari,Dosen dosen,TahunAkademik tahunAkademik);
     Iterable<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi);
 
     @Query("select j from Jadwal j where j.dosen = :dosen and j.id not in (:id) and j.tahunAkademikProdi = :tahun and j.idHari = :hari and j.ruangan = :ruangan and (j.jamMulai between :mulai and :selesai or j.jamSelesai between :mulai and :selesai or :jamInput between j.jamMulai and j.jamSelesai)")
@@ -30,6 +31,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     Page<Jadwal> cariDosen(@Param("status") StatusRecord status,@Param("tahunAktif")TahunAkademik tahunAkademik,Pageable page);
 
     List<Jadwal>findByStatusAndTahunAkademik(StatusRecord statusRecord,TahunAkademik tahunAkademik);
+    List<Jadwal>findByStatusAndTahunAkademikAndDosenAndIdHariNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,Dosen dosen);
 
     List<Jadwal> findByStatusAndTahunAkademikAndProdiAndProgram(StatusRecord status, TahunAkademik tahunAkademik,Prodi prodi,Program program);
 

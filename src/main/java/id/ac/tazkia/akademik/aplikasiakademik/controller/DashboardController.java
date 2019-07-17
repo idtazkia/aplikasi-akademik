@@ -86,6 +86,8 @@ public class DashboardController {
             return "dashboard";
         }
 
+        System.out.println(user.getRole().getName());
+
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
