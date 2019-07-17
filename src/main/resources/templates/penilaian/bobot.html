@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
@@ -50,7 +51,7 @@
                                             <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
                                                 <button class="btn btn-default" type="button">Nilai Mahasiswa</button>
                                             </a>
-                                            <a th:href="@{/penilaian/list}">
+                                            <a th:href="@{/penilaian/list}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                                 <button class="btn btn-default" type="button">Kembali</button>
                                             </a>
                                         </div>

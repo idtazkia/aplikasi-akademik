@@ -78,6 +78,12 @@ public class PenilaianController {
     @Autowired
     private CurrentUserService currentUserService;
 
+    @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
     @Value("${upload.excel}")
     private String uploadFolder;
 
@@ -120,6 +126,22 @@ public class PenilaianController {
                 model.addAttribute("dosen", jadwal);
             }
         }
+    }
+
+    @GetMapping("/penilaian/listdosen")
+    public void listPenilaianDosen(Model model,@PageableDefault(size = 5) Pageable page,Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Page<Jadwal> jadwal = jadwalDao.cariDosen(StatusRecord.AKTIF, tahun, page);
+        model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenAndIdHariNotNull(StatusRecord.AKTIF, tahun,dosen));
+        if (jadwal != null || jadwal.isEmpty()) {
+            model.addAttribute("dosen", jadwal);
+        }
+
     }
 
     @GetMapping("/penilaian/bobot")
