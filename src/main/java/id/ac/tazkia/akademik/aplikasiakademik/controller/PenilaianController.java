@@ -246,7 +246,7 @@ public class PenilaianController {
         model.addAttribute("jsMahasiswa", nim);
         model.addAttribute("bobot", id);
 
-        return "/penilaian/nilai";
+        return null;
     }
 
     @GetMapping("/penilaian/edit")

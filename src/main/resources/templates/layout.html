@@ -181,23 +181,23 @@
                                     <li><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"  th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAuthority('VIEW_FINANCE')" ><a><i class="fa fa-money"></i> Finances <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li ><a>Academic Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li><a th:href="@{/finance/komponenbiaya/list}">Komponen Biaya</a></li>
-                                            <li><a th:href="@{/finance/komponenbiaya/nilai/list}">Komponen Nilai Biaya</a></li>
-                                            <li><a th:href="@{/finance/tagihan/mahasiswa/list}">Tagihan Mahasiswa</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/finance/komponenbiaya/list}">Komponen Biaya</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/finance/komponenbiaya/nilai/list}">Komponen Nilai Biaya</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/finance/tagihan/mahasiswa/list}">Tagihan Mahasiswa</a></li>
                                             <li><a th:href="@{/krs/aktifasi}">Aktifasi KRS</a></li>
                                         </ul>
                                     </li>
-                                    <li><a>HR Setting<span class="fa fa-chevron-down"></span></a>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a>HR Setting<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/departemen/list}">Biaya dan Potongan</a></li>
                                             <li><a th:href="@{/golongan/list}">Golongan</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="general_elements.html">General Elements</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a href="general_elements.html">General Elements</a></li>
                                 </ul>
                             </li>
 
