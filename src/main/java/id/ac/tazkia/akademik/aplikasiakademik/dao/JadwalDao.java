@@ -44,7 +44,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     @Query("select j.sesi from Jadwal j where j.tahunAkademik = :tahun and j.idHari = :hari and j.dosen = :dosen")
     List<Jadwal> validasiDosen(@Param("tahun")TahunAkademik t, @Param("hari")Hari h, @Param("dosen")Dosen dosen);
 
-    List<Jadwal> findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesi(StatusRecord statusRecord, TahunAkademik tahunAkademik, Ruangan ruangan, Hari hari, String s);
+    List<Jadwal> findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesiAndIdNotIn(StatusRecord statusRecord, TahunAkademik tahunAkademik, Ruangan ruangan, Hari hari, String s,String id);
 
 
 }

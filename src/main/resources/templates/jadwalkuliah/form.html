@@ -112,7 +112,7 @@
                             <div class="form-group">
                                 <label class="col-form-label">Ruangan :</label>
                                 <select class="form-control js-example-placeholder-single" onchange="mySesi()"
-                                        style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
+                                        style="width: 100%!important;" id="select2-ruangan">
                                     <option value=""></option>
                                     <option th:each="data: ${ruangan}"
                                             th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
@@ -234,7 +234,10 @@
                     <div class="form-group">
                         <center>
                             <input class="btn btn-primary" type="submit" value="Save">
-                            <a th:href="@{/fakultas/list}" class="btn btn-primary" role="button">
+                            <a th:href="@{/plotingdosen/list (tahunAkademik = ${jadwal.tahunAkademikProdi.id}, program = ${jadwal.program.id})}" class="btn btn-primary" role="button" th:if="${plot != null}">
+                                <span aria-hidden="true"></span>Cancel
+                            </a>
+                            <a th:href="@{/jadwalkuliah/list (tahunAkademik = ${jadwal.tahunAkademikProdi.id}, program = ${jadwal.program.id})}" class="btn btn-primary" role="button" th:if="${plot == null}">
                                 <span aria-hidden="true"></span>Cancel
                             </a>
                         </center>

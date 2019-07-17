@@ -148,7 +148,7 @@ public class JadwalKuliahController {
 
     @ModelAttribute("ruangan")
     public Iterable<Ruangan> ruangan() {
-        return ruanganDao.findByStatusNotIn(StatusRecord.HAPUS);
+        return ruanganDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @ModelAttribute("kelas")
@@ -247,7 +247,7 @@ public class JadwalKuliahController {
     public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal, @RequestParam(required = false) String plot, RedirectAttributes attributes){
         
 
-        List<Jadwal> jdwl = jadwalDao.findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesi(StatusRecord.AKTIF,jadwal.getTahunAkademik(),jadwal.getRuangan(),jadwal.getIdHari(),jadwal.getSesi());
+        List<Jadwal> jdwl = jadwalDao.findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesiAndIdNotIn(StatusRecord.AKTIF,jadwal.getTahunAkademik(),jadwal.getRuangan(),jadwal.getIdHari(),jadwal.getSesi(),jadwal.getId());
 
 
         if (jdwl == null || jdwl.isEmpty()) {
