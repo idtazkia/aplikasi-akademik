@@ -69,166 +69,171 @@ public class KrsMahasiswaController {
             if (k!= null && LocalDate.now().compareTo(ta.getTanggalMulaiKrs()) >= 0 == true && LocalDate.now().compareTo(ta.getTanggalSelesaiKrs()) <= 0 == true) {
                 model.addAttribute("krsAktif", k);
 
-
-            List<Jadwal> jadwalUmum = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
-            if (jadwalUmum != null){
-                if (kelasMahasiswa != null){
-                    for (Jadwal jadwal : jadwalUmum){
-                        if (jadwal.getIdKelas() != kelasMahasiswa.getKelas()) {
-                                KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
-                            if (kd == null){
-                                List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                                if (prasyarat.isEmpty()) {
-                                    System.out.printf("gaada pras");
-                                    rekap.add(jadwal);
-                                } else {
-                                    for (Prasyarat pras : prasyarat) {
-                                        System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
-                                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                        if (krsDetail != null) {
-                                            if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                rekap.add(jadwal);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (kd != null){
-                                if (kd.getBobot() != null){
-                                    if (kd.getBobot().compareTo(grade.getBobot()) < 0){
-                                        List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                                        if (prasyarat.isEmpty()) {
-                                            System.out.printf("gaada pras");
-                                            rekap.add(jadwal);
-                                        } else {
-                                            for (Prasyarat pras : prasyarat) {
-                                                KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                                System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
-                                                if (krsDetail != null) {
-                                                    if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                        rekap.add(jadwal);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            List<Jadwal> JadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
-            if (JadwalProdi != null){
-                if (kelasMahasiswa != null){
-                    for (Jadwal jadwal : JadwalProdi){
-                        if (jadwal.getIdKelas() != kelasMahasiswa.getKelas()) {
-                            KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
-                            if (kd == null){
-                                List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                                if (prasyarat.isEmpty()) {
-                                    System.out.printf("gaada pras");
-                                    rekap.add(jadwal);
-                                } else {
-                                    for (Prasyarat pras : prasyarat) {
-                                        System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
-                                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                        if (krsDetail != null) {
-                                            if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                rekap.add(jadwal);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (kd != null){
-                                if (kd.getBobot() != null){
-                                    if (kd.getBobot().compareTo(grade.getBobot()) < 0){
-                                        List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                                        if (prasyarat.isEmpty()) {
-                                            rekap.add(jadwal);
-                                        } else {
-                                            for (Prasyarat pras : prasyarat) {
-                                                KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                                if (krsDetail != null) {
-                                                    if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                        rekap.add(jadwal);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (kelasMahasiswa != null) {
-                List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(ta, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
-
-                if (jadwal != null){
-                    for (Jadwal j : jadwal){
-                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(j.getMatakuliahKurikulum(),mahasiswa,StatusRecord.AKTIF);
-                        if (krsDetail == null){
-                            List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                            if (prasyarat.isEmpty()) {
-                                System.out.printf("gaada pras");
-                                rekap.add(j);
-                            }
-
-                            if (!prasyarat.isEmpty()){
-                                for (Prasyarat pras : prasyarat) {
-                                    KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                    if (kd != null) {
-                                        if (kd.getBobot().compareTo(pras.getNilai()) > 0) {
-                                            rekap.add(j);
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (krsDetail != null){
-                            if (krsDetail.getBobot() != null){
-                                if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
-                                    List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-                                    if (prasyarat.isEmpty()) {
-                                        System.out.printf("gaada pras");
-                                        rekap.add(j);
-                                    } else {
-                                        for (Prasyarat pras : prasyarat) {
-                                            KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
-                                            if (kd != null) {
-                                                if (kd.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                    System.out.printf("bisa mengambil matkul");
-                                                    rekap.add(j);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-
-                    }
+                List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
+                for (Jadwal j : jadwal){
+                    rekap.add(j);
                 }
 
-                System.out.println("jadwal size   :  "  + jadwal.size());
-            }
+
+//            List<Jadwal> jadwalUmum = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
+//            if (jadwalUmum != null){
+//                if (kelasMahasiswa != null){
+//                    for (Jadwal jadwal : jadwalUmum){
+//                        if (jadwal.getIdKelas() != kelasMahasiswa.getKelas()) {
+//                                KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
+//                            if (kd == null){
+//                                List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                                if (prasyarat.isEmpty()) {
+//                                    System.out.printf("gaada pras");
+//                                    rekap.add(jadwal);
+//                                } else {
+//                                    for (Prasyarat pras : prasyarat) {
+//                                        System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
+//                                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                        if (krsDetail != null) {
+//                                            if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                                rekap.add(jadwal);
+//                                                break;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            if (kd != null){
+//                                if (kd.getBobot() != null){
+//                                    if (kd.getBobot().compareTo(grade.getBobot()) < 0){
+//                                        List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                                        if (prasyarat.isEmpty()) {
+//                                            System.out.printf("gaada pras");
+//                                            rekap.add(jadwal);
+//                                        } else {
+//                                            for (Prasyarat pras : prasyarat) {
+//                                                KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                                System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
+//                                                if (krsDetail != null) {
+//                                                    if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                                        rekap.add(jadwal);
+//                                                        break;
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            List<Jadwal> JadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
+//            if (JadwalProdi != null){
+//                if (kelasMahasiswa != null){
+//                    for (Jadwal jadwal : JadwalProdi){
+//                        if (jadwal.getIdKelas() != kelasMahasiswa.getKelas()) {
+//                            KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
+//                            if (kd == null){
+//                                List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                                if (prasyarat.isEmpty()) {
+//                                    System.out.printf("gaada pras");
+//                                    rekap.add(jadwal);
+//                                } else {
+//                                    for (Prasyarat pras : prasyarat) {
+//                                        System.out.println(pras.getMatakuliahPras().getNamaMatakuliah());
+//                                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                        if (krsDetail != null) {
+//                                            if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                                rekap.add(jadwal);
+//                                                break;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            if (kd != null){
+//                                if (kd.getBobot() != null){
+//                                    if (kd.getBobot().compareTo(grade.getBobot()) < 0){
+//                                        List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(jadwal.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                                        if (prasyarat.isEmpty()) {
+//                                            rekap.add(jadwal);
+//                                        } else {
+//                                            for (Prasyarat pras : prasyarat) {
+//                                                KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                                if (krsDetail != null) {
+//                                                    if (krsDetail.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                                        rekap.add(jadwal);
+//                                                        break;
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (kelasMahasiswa != null) {
+//                List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(ta, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
+//
+//                if (jadwal != null){
+//                    for (Jadwal j : jadwal){
+//                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(j.getMatakuliahKurikulum(),mahasiswa,StatusRecord.AKTIF);
+//                        if (krsDetail == null){
+//                            List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                            if (prasyarat.isEmpty()) {
+//                                System.out.printf("gaada pras");
+//                                rekap.add(j);
+//                            }
+//
+//                            if (!prasyarat.isEmpty()){
+//                                for (Prasyarat pras : prasyarat) {
+//                                    KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                    if (kd != null) {
+//                                        if (kd.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                            rekap.add(j);
+//                                            break;
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        if (krsDetail != null){
+//                            if (krsDetail.getBobot() != null){
+//                                if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
+//                                    List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+//                                    if (prasyarat.isEmpty()) {
+//                                        System.out.printf("gaada pras");
+//                                        rekap.add(j);
+//                                    } else {
+//                                        for (Prasyarat pras : prasyarat) {
+//                                            KrsDetail kd = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+//                                            if (kd != null) {
+//                                                if (kd.getBobot().compareTo(pras.getNilai()) > 0) {
+//                                                    System.out.printf("bisa mengambil matkul");
+//                                                    rekap.add(j);
+//                                                    break;
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
+//                System.out.println("jadwal size   :  "  + jadwal.size());
+//            }
 
 
 
