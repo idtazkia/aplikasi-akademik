@@ -99,7 +99,7 @@
                                     <select name="tahunAkademik" required
                                             class="form-control js-example-placeholder-single" style="width: 100%!important;">
                                         <option value=""></option>
-                                        <option th:each="tahun : ${tahun}" th:selected="(${tahun} == *{tahunAkademik})"
+                                        <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahunAkademik})"
                                                 th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
                                     </select>
                                 </div>
@@ -108,7 +108,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <center><label><b>NIM</b></label></center>
-                                    <input type="text" class="form-control" name="nim">
+                                    <input type="text" th:value="${selectedNim}" class="form-control" name="nim">
                                 </div>
                             </div>
 

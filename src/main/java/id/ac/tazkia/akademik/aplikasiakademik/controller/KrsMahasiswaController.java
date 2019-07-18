@@ -273,6 +273,8 @@ public class KrsMahasiswaController {
 
         Krs cariKrs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
         List<KrsDetail> krsDetails = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, cariKrs, mahasiswa);
+        Grade grade = gradeDao.findById("8").get();
+
 
 //        Buat Semester Pendek
         if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {
@@ -287,7 +289,6 @@ public class KrsMahasiswaController {
                         List<KrsDetail> krs = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(jadwal,StatusRecord.AKTIF,tahunAkademik);
                         System.out.println("kapasitas ruang  : "  +jadwal.getRuangan().getKapasitas().intValue());
                         System.out.println(krs.size() +  "   jumlaaah");
-                        if (krsDetail == null) {
                             if (total <= 2) {
                                 if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
                                     KrsDetail kd = new KrsDetail();
@@ -307,9 +308,7 @@ public class KrsMahasiswaController {
                             } else {
                                 System.out.println("batasnya 2");
                             }
-                        } else {
-                            System.out.println("sudah ada");
-                        }
+
 
                     }
                 }
