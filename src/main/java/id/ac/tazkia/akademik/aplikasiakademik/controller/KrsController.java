@@ -52,7 +52,7 @@ public class KrsController {
 
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
-        return tahunAkademikDao.findByStatusNotIn(StatusRecord.HAPUS);
+        return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(StatusRecord.HAPUS);
     }
 
     @ModelAttribute("prodi")
