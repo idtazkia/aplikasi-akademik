@@ -104,6 +104,7 @@
                                     <th>Dosen</th>
                                     <th>Team Teaching</th>
                                     <th>Presensi</th>
+                                    <th>Absen Manual</th>
                                 </tr>
                                 </thead>
 
@@ -127,6 +128,10 @@
                                             <i class="fa fa-edit"></i> Tambah Presensi
                                         </a>
                                     </td>
+                                    <td>
+                                      <a class="btn btn-info" th:href="@{/data/absen (jadwal = ${jadwal.id})}">Download Absen Manual</a>
+                                    </td>
+
                                 </tr>
                                 </tbody>
                             </table>

@@ -13,10 +13,12 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,10 +33,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -70,6 +71,13 @@ public class PenilaianController {
     private NilaiTugasDao nilaiTugasDao;
 
     @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+
+    @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @Autowired
@@ -77,12 +85,6 @@ public class PenilaianController {
 
     @Autowired
     private CurrentUserService currentUserService;
-
-    @Autowired
-    private DosenDao dosenDao;
-
-    @Autowired
-    private KaryawanDao karyawanDao;
 
     @Value("${upload.excel}")
     private String uploadFolder;
@@ -95,6 +97,12 @@ public class PenilaianController {
 
     @Value("${spring.datasource.password}")
     private String passwordDb;
+
+    @Value("classpath:tazkia-logo-excel.png")
+    private Resource logoTazkia;
+
+
+
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademikProdi> tahunAkademik() {
@@ -493,6 +501,56 @@ public class PenilaianController {
         sheet.autoSizeColumn(9);
 
 
+
+
+        //Input Gambar---
+        //FileInputStream obtains input bytes from the image file
+        InputStream inputStream = logoTazkia.getInputStream();
+        //Get the contents of an InputStream as a byte[].
+        byte[] bytes = IOUtils.toByteArray(inputStream);
+        //Adds a picture to the workbook
+        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+        //close the input stream
+        inputStream.close();
+
+        //Returns an object that handles instantiating concrete classes
+        CreationHelper helper = workbook.getCreationHelper();
+
+        //Create an anchor that is attached to the worksheet
+        ClientAnchor anchor = helper.createClientAnchor();
+
+        //Creates the top-level drawing patriarch.
+        Drawing drawing = sheet.createDrawingPatriarch();
+
+        //create an anchor with upper left cell _and_ bottom right cell
+        anchor.setCol1(0); //Column a
+        anchor.setRow1(0); //Row 1
+        anchor.setCol2(1); //Column B
+        anchor.setRow2(2); //Row 3
+
+        //Creates a picture
+        Picture pict = drawing.createPicture(anchor, pictureIdx);
+
+        //Reset the image to the original size
+        pict.resize();
+
+        //Create the Cell B3
+        Cell cellimg = sheet.createRow(2).createCell(1);
+
+
+        //set width to n character widths = count characters * 256
+        int widthUnits = 10;
+        sheet.setColumnWidth(1, widthUnits);
+
+        //set height to n points in twips = n * 20
+        short heightUnits = 20;
+        cellimg.getRow().setHeight(heightUnits);
+        //---
+
+
+
+
+
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         headerFont.setFontHeightInPoints((short) 12);
@@ -502,7 +560,43 @@ public class PenilaianController {
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
 
-        Row headerRow = sheet.createRow(0);
+
+        sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
+        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2017/2018");
+
+        int rowInfo = 5 ;
+        Row rowi1 = sheet.createRow(rowInfo);
+        rowi1.createCell(2).setCellValue("Subject :");
+        rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        rowi1.createCell(5).setCellValue("Course :");
+        rowi1.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+
+
+
+        int rowInfo2 = 6 ;
+        Row rowi2 = sheet.createRow(rowInfo2);
+        rowi2.createCell(2).setCellValue("Day/date :");
+        rowi2.createCell(3).setCellValue(jadwal.getIdHari().getNamaHari());
+        rowi2.createCell(5).setCellValue("Semester :");
+        rowi2.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getSemester());
+
+
+        int rowInfo3 = 7 ;
+        Row rowi3 = sheet.createRow(rowInfo3);
+        rowi3.createCell(2).setCellValue("Room No/Time :");
+        rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
+        rowi3.createCell(5).setCellValue("Lecturer :");
+        rowi3.createCell(6).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+
+
+
+
+
+
+
+
+        Row headerRow = sheet.createRow(10);
 
         Integer cellNum = 0;
 
@@ -531,7 +625,9 @@ public class PenilaianController {
         }
 
 
-        int rowNum = 1 ;
+
+
+        int rowNum = 11 ;
         for (KrsDetail kd : krsDetail) {
             int kolom = 0 ;
 
@@ -546,7 +642,7 @@ public class PenilaianController {
                 Cell cellNilaiBobot = row.createCell(kolom);
                 cellNilaiBobot.setCellType(CellType.FORMULA);
                 cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom - 1]+(rowNum+1)
-                +"*"+bt.getBobot().toPlainString()+"/"+new Integer(100)+"*"+kd.getJadwal().getBobotTugas()+"/"+new Integer(100));
+                        +"*"+bt.getBobot().toPlainString()+"/"+new Integer(100)+"*"+kd.getJadwal().getBobotTugas()+"/"+new Integer(100));
                 kolom++;
             }
 
@@ -575,15 +671,23 @@ public class PenilaianController {
             for (String s : total){
                 Cell cellNilaiBobot = row.createCell(kolom);
                 cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()]+(rowNum+1)+":" + ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()+totalColumn-1]+(rowNum+1)+")");
+                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()]+(rowNum+1)+":"
+                        + ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()+totalColumn-1]+(rowNum+1)+")");
                 kolom++;
             }
 
-            row.createCell(kolom++).setCellFormula("IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(85) + ",\"A\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(80) + ",\"A-\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(75) + ",\"B+\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(70) + ",\"B\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(65) + ",\"B-\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(60) + ",\"C+\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(55) + ",\"C\"" + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(0).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(50) + ",\"D\""+",\"E\""+")"+")" +")"+")" +")"+")" +")"+")") ;
+            row.createCell(kolom++).setCellFormula("IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(85) + ",\"A\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(80) + ",\"A-\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(75) + ",\"B+\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(70) + ",\"B\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(65) + ",\"B-\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(60) + ",\"C+\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(55) + ",\"C\""
+                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(50) + ",\"D\""+",\"E\""+")"+")" +")"+")" +")"+")" +")"+")") ;
 
 
 
-            for (int i = 4; i<sheet.getRow(0).getLastCellNum()-2; i+= 2){
+            for (int i = 4; i<sheet.getRow(10).getLastCellNum()-2; i+= 2){
 
                 Cell cellNilaiBobot = row.createCell(kolom);
                 cellNilaiBobot.setCellType(CellType.FORMULA);
@@ -605,4 +709,16 @@ public class PenilaianController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+//    @PostMapping("/upload/assesment")
+//    public String processFormUpload(@RequestParam(required = false) Boolean pakaiHeader,
+//                                    MultipartFile ,
+//                                    RedirectAttributes redirectAttrs, @RequestParam   ) {
+//
+//
+//
+//
+//
+//        return "redirect:";
+//    }
 }
