@@ -1,9 +1,12 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
+import id.ac.tazkia.akademik.aplikasiakademik.constants.ExcelFileConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,6 +54,15 @@ public class KebijakanPresensiController {
     private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
+
+    @Autowired
+    CurrentUserService currentUserService;
+
+    @Autowired
     private RuanganDao ruanganDao;
 
     @Autowired
@@ -60,15 +73,6 @@ public class KebijakanPresensiController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
-
-    @Autowired
-    private KaryawanDao karyawanDao;
-
-    @Autowired
-    private TahunAkademikDao tahunAkademikDao;
-
-    @Autowired
-    CurrentUserService currentUserService;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -137,13 +141,13 @@ public class KebijakanPresensiController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-            model.addAttribute("minggu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"0",dosen,tahunAkademik));
-            model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
-            model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
-            model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
-            model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
-            model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
-            model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
+        model.addAttribute("minggu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"0",dosen,tahunAkademik));
+        model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
+        model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
+        model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
+        model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
+        model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
+        model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
 
 
     }
@@ -239,7 +243,7 @@ public class KebijakanPresensiController {
 
     @GetMapping("/kebijakanpresensi/presensi")
     public void dosenKebijakanPresensi(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
 
         Map<String, String> statusPresensi = new HashMap<>();
         for(PresensiMahasiswa pm : presensiMahasiswa){
@@ -306,6 +310,82 @@ public class KebijakanPresensiController {
             presensiMahasiswa.setSesiKuliah(sesiKuliah);
             presensiMahasiswaDao.save(presensiMahasiswa);
         }
-        return "redirect:/kebijakanpresensi/detail?jadwal="+sesiKuliah.getJadwal().getId();
+        return "redirect:/kebijakanpresensi/list";
+    }
+
+
+    @GetMapping("/data/absen")
+    public void dataAbsen(HttpServletResponse response,String jadwal) throws Exception {
+
+        String[] columns = {"No","NIM", "Nama                                        ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Data-Absen");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(11);
+
+        for (int i = 0; i < columns.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        Jadwal j = jadwalDao.findById(jadwal).get();
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(j,StatusRecord.AKTIF);
+
+
+        sheet.createRow(0).createCell(3).setCellValue("            ATTENDANCE LIST OF SECOND SEMESTER");
+        sheet.createRow(1).createCell(3).setCellValue("    TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS");
+        sheet.createRow(2).createCell(3).setCellValue("                    ACADEMIC YEAR 2018/2019");
+
+        int rowInfo = 5 ;
+        Row rowi1 = sheet.createRow(rowInfo);
+        rowi1.createCell(0).setCellValue("Departement/ Group : ");
+        rowi1.createCell(1).setCellValue(j.getProdi().getNamaProdi());
+
+
+
+        int rowInfo2 = 6 ;
+        Row rowi2 = sheet.createRow(rowInfo2);
+        rowi2.createCell(0).setCellValue("Subject : ");
+        rowi2.createCell(1).setCellValue(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+
+
+        int rowInfo3 = 7 ;
+        Row rowi3 = sheet.createRow(rowInfo3);
+        rowi3.createCell(0).setCellValue("Lecture : ");
+        rowi3.createCell(1).setCellValue(j.getDosen().getKaryawan().getNamaKaryawan());
+
+
+
+
+        int rowNum = 12 ;
+        for (KrsDetail kd : krsDetail) {
+            int kolom = 0 ;
+            Row row = sheet.createRow(rowNum);
+            row.createCell(kolom++).setCellValue(kolom);
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+
+            rowNum++;
+
+
+        }
+
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "attachment; filename=Data-Absen.xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+
     }
 }
