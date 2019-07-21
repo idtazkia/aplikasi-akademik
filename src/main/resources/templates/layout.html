@@ -222,6 +222,13 @@
                                 </ul>
                             </li>
 
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-book"></i>Rekap <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
+                                    <li><a th:href="@{/rekap/aktifasi}">KRS</a></li>
+                                </ul>
+                            </li>
+
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a><i class="fa fa-user"></i>Students <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->

@@ -98,8 +98,8 @@ public class PenilaianController {
     @Value("${spring.datasource.password}")
     private String passwordDb;
 
-    @Value("classpath:tazkia-logo-excel.png")
-    private Resource logoTazkia;
+//    @Value("classpath:tazkia-logo-excel.png")
+//    private Resource logoTazkia;
 
 
 
@@ -505,13 +505,13 @@ public class PenilaianController {
 
         //Input Gambar---
         //FileInputStream obtains input bytes from the image file
-        InputStream inputStream = logoTazkia.getInputStream();
+//        InputStream inputStream = logoTazkia.getInputStream();
         //Get the contents of an InputStream as a byte[].
-        byte[] bytes = IOUtils.toByteArray(inputStream);
+//        byte[] bytes = IOUtils.toByteArray(inputStream);
         //Adds a picture to the workbook
-        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+//        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
         //close the input stream
-        inputStream.close();
+//        inputStream.close();
 
         //Returns an object that handles instantiating concrete classes
         CreationHelper helper = workbook.getCreationHelper();
@@ -529,10 +529,10 @@ public class PenilaianController {
         anchor.setRow2(2); //Row 3
 
         //Creates a picture
-        Picture pict = drawing.createPicture(anchor, pictureIdx);
+//        Picture pict = drawing.createPicture(anchor, pictureIdx);
 
         //Reset the image to the original size
-        pict.resize();
+//        pict.resize();
 
         //Create the Cell B3
         Cell cellimg = sheet.createRow(2).createCell(1);

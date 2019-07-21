@@ -4,6 +4,8 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.Kelas;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.KelasMahasiswa;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Mahasiswa;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface KelasMahasiswaDao extends PagingAndSortingRepository <KelasMahasiswa, String> {
@@ -11,6 +13,8 @@ public interface KelasMahasiswaDao extends PagingAndSortingRepository <KelasMaha
     Iterable<KelasMahasiswa> findByKelasAndStatus(Kelas kelas, StatusRecord statusRecord    );
     KelasMahasiswa findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusRecord statusRecord);
     KelasMahasiswa findFirstByKelasAndStatusAndMahasiswaKurikulumNotNull(Kelas kelas, StatusRecord statusRecord);
+    Page<KelasMahasiswa> findDistinctByKelasNamaKelasContainingIgnoreCase(String s, Pageable page);
+    Page<KelasMahasiswa> findDistinctByKelas(Pageable page);
 
 
 }

@@ -3,7 +3,11 @@ package id.ac.tazkia.akademik.aplikasiakademik.dao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface KrsDao extends PagingAndSortingRepository<Krs,String> {
     Krs findByTahunAkademikStatusAndMahasiswa(StatusRecord statusRecord, Mahasiswa mahasiswa);
@@ -14,5 +18,15 @@ public interface KrsDao extends PagingAndSortingRepository<Krs,String> {
     Long countKrsByTahunAkademikAndMahasiswaStatus(TahunAkademik tahunAkademik,StatusRecord statusRecord);
     Long countKrsByTahunAkademikAndMahasiswaJenisKelamin (TahunAkademik tahunAkademik, JenisKelamin jenisKelamin);
     Page<Krs> findByTahunAkademikAndProdiAndMahasiswaIdProgramAndMahasiswaAngkatan(TahunAkademik tahunAkademik, Prodi prodi, Program program, String angkatan, Pageable pageable);
+    List<Krs> findByTahunAkademikAndStatus(TahunAkademik tahunAkademik,StatusRecord statusRecord);
+    Page<Krs> findByTahunAkademikAndStatus(TahunAkademik tahunAkademik,StatusRecord statusRecord,Pageable pageable);
+
+    Page<Krs> findByTahunAkademikAndStatusAndKrsDetailsNotNull(TahunAkademik tahunAkademik,StatusRecord statusRecord,Pageable page);
+    List<Krs> findByTahunAkademikAndStatusAndKrsDetailsNotNull(TahunAkademik tahunAkademik,StatusRecord statusRecord);
+    List<Krs> findByTahunAkademikAndStatusAndMahasiswaAngkatanAndKrsDetailsNotNull(TahunAkademik tahunAkademik,StatusRecord statusRecord,String angkatan);
+    List<Krs> findKrsByTahunAkademikAndMahasiswaAngkatanAndStatusAndKrsDetailsNotNull(TahunAkademik tahunAkademik,String angkatan,StatusRecord statusRecord);
+
+    @Query("select k.id.id from Krs k where k.tahunAkademik= :tahun and k.status = :status")
+    List<Krs> cariMahasiswa(@Param("tahun")TahunAkademik t, @Param("status")StatusRecord status);
 
 }

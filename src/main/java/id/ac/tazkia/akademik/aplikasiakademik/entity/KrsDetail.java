@@ -1,6 +1,8 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,6 +15,9 @@ import java.util.List;
 
 @Entity
 @Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class KrsDetail {
 
     @Id

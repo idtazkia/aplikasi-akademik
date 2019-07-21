@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -26,4 +27,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatus(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda);
     KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda,Krs krs);
     List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademik(Jadwal jadwal, StatusRecord statusRecord, TahunAkademik tahunAkademik);
+    Page<KrsDetail> findByKrs(List<Krs> krs,Pageable page);
+    Page<KrsDetail> findDistinctByKrsTahunAkademik(TahunAkademik tahunAkademik,Pageable page);
+
+    @Query("select k.mahasiswa.id from KrsDetail k where k.status = :status and k.krs= :krs")
+    List<KrsDetail> cariKrs(@Param("status")StatusRecord status, @Param("krs")List<Krs> krs);
+
+
 }

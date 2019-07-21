@@ -1,15 +1,25 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
+@Getter @Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Krs {
 
     @Id
@@ -44,5 +54,9 @@ public class Krs {
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @OneToMany(mappedBy = "krs")
+    @JsonBackReference
+    private List<KrsDetail> krsDetails= new ArrayList<>();
 
 }

@@ -99,7 +99,7 @@
                                     <select name="tahunAkademik" required
                                             class="form-control js-example-placeholder-single" style="width: 100%!important;">
                                         <option value=""></option>
-                                        <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahunAkademik})"
+                                        <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahun})"
                                                 th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
                                     </select>
                                 </div>
