@@ -284,7 +284,6 @@ public class KrsMahasiswaController {
                         System.out.println(idJadwal);
                         int total = data.length + krsDetails.size();
                         Jadwal jadwal = jadwalDao.findById(idJadwal).get();
-                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
                         System.out.println("total :  " + total);
                         List<KrsDetail> krs = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(jadwal,StatusRecord.AKTIF,tahunAkademik);
                         System.out.println("kapasitas ruang  : "  +jadwal.getRuangan().getKapasitas().intValue());
