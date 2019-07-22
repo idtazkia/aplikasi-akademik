@@ -17,7 +17,7 @@
         </div>
         <br>
 
-        <form method="get">
+        <form method="get" th:if="${selectedTahun == null}">
             <div class="form-group">
                 <div class="row col-sm-offset-1 ">
                     <div class="col-md-12">
@@ -56,6 +56,46 @@
                 </center>
             </div>
         </form>
+
+        <form method="get" th:if="${selectedTahun != null}">
+            <div class="form-group">
+                <div class="row col-sm-offset-1 ">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <center><label><b>tahun Akademik</b></label></center>
+                                <select class="form-control js-example-placeholder-single"
+                                        style="width: 100%!important;" name="tahunAkademik" required>
+                                    <option></option>
+                                    <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahun})"
+                                            th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                        <div class="form-group">
+                            <center><label><b>Matakuliah</b></label></center>
+                            <select class="form-control js-example-placeholder-single"
+                                    style="width: 100%!important;" name="matkul">
+                                <option></option>
+                                <option th:each="matkul : ${matkul}" th:selected="(${selected} == *{matkul})"
+                                        th:value="${matkul.id}" th:text="${matkul.matakuliahKurikulum.matakuliah.namaMatakuliah}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                <center>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-info">Search</button>
+                        </div>
+                    </div>
+                </center>
+            </div>
+        </form>
         <br>
         <div class="table-responsive" th:if="${selectedTahun != null}">
             <div>
@@ -69,17 +109,15 @@
                     <th scope="col">NIM</th>
                     <th>Nama</th>
                     <th scope="col">Nomor Telpon</th>
-                    <th scope="col">Angkatan</th>
 
                 </thead>
                 <tbody>
 
                 <tr class="even pointer" th:each="data,row : ${krs}">
-                    <td th:text="${(row.index + 1) + (krs.number * krs.size)}"></td>
+                    <td th:text="${(row.index + 1)}"></td>
                     <td th:text="${data.mahasiswa.nim}"></td>
                     <td th:text="${data.mahasiswa.nama}"></td>
                     <td th:text="${data.mahasiswa.teleponSeluler}"></td>
-                    <td th:text="${data.mahasiswa.angkatan}"></td>
                 </tr>
 
                 </tbody>

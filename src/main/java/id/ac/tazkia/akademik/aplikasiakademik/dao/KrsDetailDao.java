@@ -33,5 +33,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     @Query("select k.mahasiswa.id from KrsDetail k where k.status = :status and k.krs= :krs")
     List<KrsDetail> cariKrs(@Param("status")StatusRecord status, @Param("krs")List<Krs> krs);
 
+    Page<KrsDetail> findByJadwalAndStatus(Jadwal jadwal,StatusRecord statusRecord,Pageable page);
+
 
 }

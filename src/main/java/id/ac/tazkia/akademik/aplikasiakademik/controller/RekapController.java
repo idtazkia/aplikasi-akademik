@@ -1,13 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.dao.KrsDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.KrsDetailDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.MahasiswaDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.TahunAkademikDao;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Krs;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.Mahasiswa;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.TahunAkademik;
+import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +27,8 @@ public class RekapController {
     private TahunAkademikDao tahunAkademikDao;
     @Autowired
     private MahasiswaDao mahasiswaDao;
+    @Autowired
+    private JadwalDao jadwalDao;
 
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -46,13 +42,15 @@ public class RekapController {
 
     @GetMapping("/rekap/aktifasi")
     public void rekapAktifasi(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                              @RequestParam(required = false) String angkatan,@PageableDefault(size = 10) Pageable pageable) {
+                              @RequestParam(required = false) Jadwal matkul,@PageableDefault(size = 10) Pageable pageable) {
 
 
 
 
         if (tahunAkademik != null) {
             List<Krs> krs = krsDao.findByTahunAkademikAndStatusAndKrsDetailsNotNull(tahunAkademik,StatusRecord.AKTIF);
+            List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndIdHariNotNull(tahunAkademik);
+            model.addAttribute("matkul", jadwal);
 
             List<Krs> krsWithoutDuplicates = krs.stream()
                     .distinct()
@@ -66,12 +64,16 @@ public class RekapController {
             Page<Krs> pages = new PageImpl<Krs>(krsWithoutDuplicates.subList(mulai,selesai), pageable, krs.size());
 
 //            Page<Krs> krsPage = new PageImpl<>(krsWithoutDuplicates, pageable, krs.size());
-            System.out.println(tahunAkademik);
-            System.out.println(angkatan);
 
 
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("krs",pages);
+            if (matkul != null){
+                Page<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(matkul,StatusRecord.AKTIF,pageable);
+                model.addAttribute("selectedTahun", tahunAkademik);
+                model.addAttribute("krs",krsDetail);
+                model.addAttribute("selected",matkul);
+            }
 
         }
 
