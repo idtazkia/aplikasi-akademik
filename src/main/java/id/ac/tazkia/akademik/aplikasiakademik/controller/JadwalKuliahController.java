@@ -211,7 +211,6 @@ public class JadwalKuliahController {
         jadwal.setBobotPresensi(BigDecimal.ZERO);
         jadwal.setBobotTugas(BigDecimal.ZERO);
         jadwalDao.save(jadwal);
-        System.out.println(jadwal.getId());
 
         return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
     }
@@ -257,7 +256,7 @@ public class JadwalKuliahController {
     public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal, @RequestParam(required = false) String plot, RedirectAttributes attributes){
         
 
-        List<Jadwal> jdwl = jadwalDao.findByStatusAndTahunAkademikAndRuanganAndIdHariAndSesiAndIdNotIn(StatusRecord.AKTIF,jadwal.getTahunAkademik(),jadwal.getRuangan(),jadwal.getIdHari(),jadwal.getSesi(),jadwal.getId());
+        List<Jadwal> jdwl = jadwalDao.cariJadwal(jadwal.getId(),jadwal.getTahunAkademik(),jadwal.getIdHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
 
 
         if (jdwl == null || jdwl.isEmpty()) {

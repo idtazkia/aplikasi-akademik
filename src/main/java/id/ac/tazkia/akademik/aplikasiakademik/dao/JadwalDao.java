@@ -26,8 +26,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.idKelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses, '')from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademikProdi = :tahun")
     List<Jadwal> ploting(@Param("prodi") Prodi prodi,@Param("id") StatusRecord statusRecord, @Param("tahun")TahunAkademikProdi t);
 
-    @Query("select j from Jadwal j where j.dosen = :dosen and j.id not in (:id) and j.tahunAkademikProdi = :tahun and j.idHari = :hari and j.ruangan = :ruangan and (j.jamMulai between :mulai and :selesai or j.jamSelesai between :mulai and :selesai or :jamInput between j.jamMulai and j.jamSelesai)")
-    List<Jadwal> cariJadwal(@Param("dosen") Dosen dosen,@Param("id") String id, @Param("tahun")TahunAkademikProdi t, @Param("hari")Hari h, @Param("ruangan")Ruangan r, @Param("mulai")LocalTime mulai, @Param("selesai")LocalTime selesai, @Param("jamInput") LocalTime jamInput);
+    @Query("select j from Jadwal j where j.id not in (:id) and j.tahunAkademik = :tahun and j.idHari = :hari and j.ruangan = :ruangan and j.sesi= :sesi and j.status= :status")
+    List<Jadwal> cariJadwal(@Param("id") String id, @Param("tahun")TahunAkademik t, @Param("hari")Hari h, @Param("ruangan")Ruangan r, @Param("sesi")String sesi,@Param("status")StatusRecord statusRecord);
 
     @Query("select distinct j.dosen from Jadwal j where j.status =:status and j.tahunAkademik = :tahunAktif")
     Page<Jadwal> cariDosen(@Param("status") StatusRecord status,@Param("tahunAktif")TahunAkademik tahunAkademik,Pageable page);
