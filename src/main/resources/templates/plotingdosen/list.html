@@ -81,7 +81,7 @@
 
                         <div class="table-responsive">
                             <div>
-                                Show <span sd:page-size-selector="javascript"></span> entries
+                                <!--Show <span sd:page-size-selector="javascript"></span> entries-->
                             </div>
                             <br>
                             <table class="table table-striped jambo_table bulk_action">
@@ -102,11 +102,12 @@
 
                                 <tbody>
                                 <tr th:each="data,row : ${jadwal}">
-                                    <td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}">1</td>
-                                    <td><b  th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></b></td>
-                                    <td th:text="${data.idKelas.namaKelas}">BMI 14</td>
-                                    <td th:text="${data.matakuliahKurikulum.jumlahSks}">6</td>
-                                    <td th:text="${data.dosen.karyawan.namaKaryawan}">Gifar Haidar</td>
+                                    <!--<td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}">1</td>-->
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td><b  th:text="${data.namaMatkuliah}"></b></td>
+                                    <td th:text="${data.namaKelas}">BMI 14</td>
+                                    <td th:text="${data.jumlahSks}">6</td>
+                                    <td th:text="${data.namaDosen}">Gifar Haidar</td>
                                     <td th:text="${data.jamMulai}">Gifar Haidar</td>
                                     <td th:text="${data.jamSelesai}">Gifar Haidar</td>
                                     <td><b th:text="${data.Akses}"></b></td>
@@ -123,20 +124,20 @@
                                 </tbody>
                             </table>
 
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <nav class="pull-right">
-                                        <ul class="pagination" sd:pagination="full">
-                                            <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                                            <li class="disabled"><a href="#" aria-label="Previous"><span
-                                                    aria-hidden="true">&laquo;</span></a>
-                                            </li>
-                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-8">-->
+                                    <!--<nav class="pull-right">-->
+                                        <!--<ul class="pagination" sd:pagination="full">-->
+                                            <!--&lt;!&ndash; Pagination created by SpringDataDialect, this content is just for mockup &ndash;&gt;-->
+                                            <!--<li class="disabled"><a href="#" aria-label="Previous"><span-->
+                                                    <!--aria-hidden="true">&laquo;</span></a>-->
+                                            <!--</li>-->
+                                            <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+                                            <!--</li>-->
+                                        <!--</ul>-->
+                                    <!--</nav>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
                         </div>
 
@@ -207,8 +208,15 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Kelas :</label>
-                                    <input type="text" class="form-control" id="plotKelas"
-                                           placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" required>
+                                    <select class="form-control js-example-placeholder-single" onchange="myKelas()"
+                                            style="width: 100%!important;" id="select2-kelas">
+                                        <option value=""></option>
+                                        <option th:each="data: ${kelas}"
+                                                th:text="${data.namaKelas}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                    <!--<input type="text" class="form-control" id="plotKelas"-->
+                                           <!--placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" required>-->
                                 </div>
                             </div>
 
@@ -230,10 +238,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-form-label">Matakuliah :</label>
-                                    <input type="text" class="form-control" id="plotmatakuliah"
-                                           placeholder="Cari Matakuliah ..." data-provide="typeahead" autocomplete="off" required>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" id="locality-dropdown" name="matakuliahKurikulum">
+                                        <option value=""></option>
+                                    </select>
+                                    <!--<input type="text" class="form-control" id="plotmatakuliah"-->
+                                           <!--placeholder="Cari Matakuliah ..." data-provide="typeahead" autocomplete="off" required>-->
                                     <input type="hidden" id="isiPlotKelas" name="idKelas">
-                                    <input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum">
+                                    <!--<input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum">-->
 
                                 </div>
                             </div>
@@ -277,4 +289,31 @@
         allowClear: true
     });
 
+    (function($){
+        $('#select2-kelas').select2();
+
+        $('#select2-kelas').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiPlotKelas').val(e.params.args.data.id);
+        });
+    })(jQuery);
+
+    function myKelas() {
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiKelas').val())
+        const url = '/api/plotingMatkul?id='+$('#isiPlotKelas').val();
+
+        // Populate dropdown with list of provinces
+        $.getJSON(url, function (data) {
+
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliah));
+            })
+        });
+    }
 </script>
