@@ -81,8 +81,10 @@
                                 <td colspan="8" th:text="${dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
                             <tr th:each="jadwal : ${jadwal}" th:if="${jadwal.dosen.id == dosen.id   }">
                                 <td th:text="${jadwal.id}">#5463</td>
-                                <td th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}">SDS2019</td>
-                                <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
+                                <td th:if="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah != null}" th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}">SDS2019</td>
+                                 <td th:if="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah == null}"></td>
+                                <td th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">SDS2019</td>
+                            <td th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"></td>
                                 <td th:text="${jadwal.idKelas.namaKelas}">K <small style="font-size: 8px;">R-10</small></td>
                                 <td th:if="${jadwal.idHari != null}" th:text="${jadwal.idHari.namaHariEng}">Selasa</td>
                                 <td th:if="${jadwal.idHari == null}"></td>
