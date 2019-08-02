@@ -167,14 +167,10 @@
 
                             <li sec:authorize="hasAuthority('VIEW_DOSEN')"><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
                                             <li><a th:href="@{/kebijakanpresensi/listdosen}">Attendance</a></li>
                                             <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
                                         </ul>
                                     </li>
-                                </ul>
-                            </li>
 
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
