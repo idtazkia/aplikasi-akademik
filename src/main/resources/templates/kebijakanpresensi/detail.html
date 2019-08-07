@@ -78,8 +78,8 @@
                                                         <th class="column-title">Jam Masuk</th>
                                                         <th class="column-title">Jam Keluar</th>
                                                         <th class="column-title">Dosen</th>
-                                                        <th class="column-title">Catatan</th>
-                                                        <th class="column-title">Siswa Hadir</th>
+                                                        <th class="column-title">Berita Acara</th>
+                                                        <th></th>
                                                         <th></th>
                                                     </tr>
                                                     </thead>
@@ -90,6 +90,9 @@
                                                         <td th:text="${data.waktuSelesai}">Jam</td>
                                                         <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
                                                         <td th:text="${data.beritaAcara}">Dosen</td>
+                                                        <td><a th:href="@{/kebijakanpresensi/mahasiswa(id = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                                            <i class="fa fa-edit"> Kehadiran Mahasiswa</i>
+                                                        </a></td>
                                                         <td><a th:href="@{/kebijakanpresensi/mahasiswa(id = ${data.id})}" type="button" class="btn btn-primary btn-xs">
                                                             <i class="fa fa-edit"> Kehadiran Mahasiswa</i>
                                                         </a></td>
@@ -185,7 +188,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-form-label">Catatan :</label>
+                                    <label class="col-form-label">Berita Acara :</label>
                                     <textarea name="beritaAcara" class="form-control"></textarea>
                                 </div>
                             </div>

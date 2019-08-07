@@ -22,6 +22,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String>
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Hari hari,Program program);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, String hari,Program program);
     List<Jadwal> findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord statusRecord,String hari,Dosen dosen,TahunAkademik tahunAkademik);
+    List<Jadwal> findByStatusNotInAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord statusRecord,Dosen dosen,TahunAkademik tahunAkademik);
     Iterable<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi);
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.idKelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses, '')from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademikProdi = :tahun")
     List<Jadwal> ploting(@Param("prodi") Prodi prodi,@Param("id") StatusRecord statusRecord, @Param("tahun")TahunAkademikProdi t);
