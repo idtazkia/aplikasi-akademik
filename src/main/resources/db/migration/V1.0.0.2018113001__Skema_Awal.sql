@@ -1,12 +1,12 @@
 CREATE TABLE agama (
-  id_agama varchar(255) NOT NULL,
+  id varchar(36) NOT NULL,
   agama varchar(255) DEFAULT NULL,
   status varchar(15) DEFAULT NULL,
   PRIMARY KEY (id_agama)
 );
 
 CREATE TABLE lembaga (
-  id varchar(255) NOT NULL,
+  id varchar(36) NOT NULL,
   kode_lembaga varchar(10) DEFAULT NULL,
   nama_lembaga varchar(255) DEFAULT NULL,
   status varchar(10) DEFAULT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE lembaga (
 );
 
 CREATE TABLE fakultas (
-  id varchar(255) NOT NULL,
+  id varchar(36) NOT NULL,
   id_lembaga varchar(255) DEFAULT NULL,
   kode_fakultas varchar(10) DEFAULT NULL,
   nama_fakultas varchar(255) DEFAULT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE fakultas (
 );
 
 CREATE TABLE jurusan (
-  id varchar(255) NOT NULL,
+  id varchar(36) NOT NULL,
   id_fakultas varchar(255) DEFAULT NULL,
   kode_jurusan varchar(10) DEFAULT NULL,
   nama_jurusan varchar(255) DEFAULT NULL,
@@ -201,6 +201,9 @@ CREATE TABLE karyawan (
   jenis_kelamin varchar(10) DEFAULT NULL,
   status varchar(10) DEFAULT NULL,
   id_user varchar(255) DEFAULT NULL,
+  nidn varchar(255) DEFAULT NULL,
+  email varchar(255) DEFAULT NULL,
+  tanggal_lahir date DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -267,6 +270,7 @@ CREATE TABLE krs_nilai_tugas (
   id_bobot_tugas varchar(255) DEFAULT NULL,
   nilai float DEFAULT NULL,
   status varchar(10) DEFAULT NULL,
+  nilai_akhir decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -375,6 +379,7 @@ CREATE TABLE presensi_dosen (
   waktu_selesai datetime DEFAULT NULL,
   status_presensi varchar(255) DEFAULT NULL,
   status varchar(10) DEFAULT NULL,
+  id_dosen varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
