@@ -443,8 +443,8 @@ CREATE TABLE ruangan_jenis (
 
 CREATE TABLE s_permission (
   id varchar(36) NOT NULL,
-  permission_label varchar(255) NOT NULL,
-  permission_value varchar(255) NOT NULL,
+  permission_label varchar(36) NOT NULL,
+  permission_value varchar(36) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY permission_value (permission_value)
 );
