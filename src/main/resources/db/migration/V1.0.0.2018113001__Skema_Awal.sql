@@ -452,7 +452,7 @@ CREATE TABLE s_permission (
 CREATE TABLE s_role (
   id varchar(36) NOT NULL,
   description varchar(36) DEFAULT NULL,
-  name varchar(255) NOT NULL,
+  name varchar(36) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY name (name)
 );
@@ -468,7 +468,7 @@ CREATE TABLE s_role_permission (
 
 CREATE TABLE s_user (
   id varchar(36) NOT NULL,
-  username varchar(255) NOT NULL,
+  username varchar(50) NOT NULL,
   active tinyint(1) NOT NULL,
   id_role varchar(36) NOT NULL,
   PRIMARY KEY (id),
@@ -480,7 +480,7 @@ CREATE TABLE s_user (
 CREATE TABLE s_user_password (
   id varchar(36) NOT NULL,
   id_user varchar(36) NOT NULL,
-  password varchar(255) NOT NULL,
+  password varchar(36) NOT NULL,
   PRIMARY KEY (id),
   KEY id_user (id_user),
   FOREIGN KEY (id_user) REFERENCES s_user (id)
