@@ -2,7 +2,7 @@ CREATE TABLE agama (
   id varchar(36) NOT NULL,
   agama varchar(255) DEFAULT NULL,
   status varchar(15) DEFAULT NULL,
-  PRIMARY KEY (id_agama)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE lembaga (
