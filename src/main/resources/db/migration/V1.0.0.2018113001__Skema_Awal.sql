@@ -158,7 +158,7 @@ CREATE TABLE jadwal (
 );
 
 CREATE TABLE jadwal_bobot_tugas (
-  id varchar (36) NOT NULL AUTO_INCREMENT,
+  id varchar (36) NOT NULL,
   id_jadwal varchar(255) DEFAULT NULL,
   nama_tugas varchar(255) DEFAULT NULL,
   bobot float DEFAULT NULL,
