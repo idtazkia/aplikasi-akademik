@@ -1,5 +1,5 @@
 create table transportasi (
-id varchar(255),
+id varchar(36),
 nama varchar(255),
 primary key(id)
 );
@@ -18,7 +18,7 @@ insert into transportasi values('11','mobil Pribadi');
 insert into transportasi values('12','Lainnya');
 
 create table kebutuhan_khusus (
-id varchar(255),
+id varchar(36),
 kode varchar(5),
 nama varchar(36),
 PRIMARY KEY (id)

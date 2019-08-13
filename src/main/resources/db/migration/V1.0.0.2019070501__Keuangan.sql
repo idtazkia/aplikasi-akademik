@@ -1,5 +1,5 @@
 create table komponen_biaya (
-id varchar(255),
+id varchar(36),
 nama varchar(255),
 keterangan varchar(255),
 status varchar(255),
@@ -8,7 +8,7 @@ primary key(id)
 );
 
 create table nilai_komponen_biaya (
-id varchar(255),
+id varchar(36),
 id_komponen_biaya varchar(255),
 id_tahun_akademik varchar(255),
 id_angkatan_mahasiswa varchar(255),
@@ -21,7 +21,7 @@ primary key(id)
 );
 
 create table tagihan_mahasiswa (
-id varchar(255),
+id varchar(36),
 tanggal_tagih DATE,
 batas_waktu DATE,
 id_komponen_biaya varchar(255),
@@ -35,14 +35,14 @@ primary key(id)
 
 
 create table jenis_diskon (
-id varchar(255),
+id varchar(36),
 nama varchar(255),
 keterangan varchar(255),
 primary key(id)
 );
 
 create table diskon (
-id varchar(255),
+id varchar(36),
 id_tagihan varchar(255),
 id_jenis_diskon varchar(255),
 amount NUMERIC (19,2),
@@ -50,7 +50,7 @@ primary key(id)
 );
 
 create table rencana_pembayaran (
-id varchar(255),
+id varchar(36),
 id_tagihan varchar (255),
 tanggal_jatuh_tempo DATE,
 amount NUMERIC (19,2),
@@ -59,7 +59,7 @@ primary key(id)
 );
 
 create table rencana_pembayaran_detail (
-id varchar(255),
+id varchar(36),
 id_rencana_pembayaran varchar (255),
 pembayaran_ke varchar (25),
 id_tagihan varchar(255),
@@ -71,7 +71,7 @@ primary key(id)
 );
 
 create table pembayaran_mahasiswa (
-id varchar(255),
+id varchar(36),
 id_tagihan varchar(255),
 waktu_bayar DATE,
 jenis_bayar varchar(255),
@@ -83,7 +83,7 @@ primary key(id)
 );
 
 create table histori_tagihan (
-id varchar(255),
+id varchar(36),
 id_tagihan varchar(255),
 id_user varchar(255),
 tindakan varchar(255),
@@ -94,7 +94,7 @@ primary key(id)
 );
 
 create table histori_rencana_detail (
-id varchar(255),
+id varchar(36),
 id_rencana_detail varchar(255),
 id_user varchar(255),
 amount NUMERIC (19,2),
@@ -103,7 +103,7 @@ primary key(id)
 );
 
 create table kelas_mahasiswa (
-id varchar (255),
+id varchar (36),
 id_mahasiswa varchar (255),
 id_kelas varchar(255),
 status varchar (25),
@@ -111,7 +111,7 @@ primary key(id)
 );
 
 create table sesi (
-id varchar (255),
+id varchar (36),
 sesi varchar (255),
 nama_sesi varchar (255),
 id_jenjang varchar(255),
@@ -143,7 +143,7 @@ add column sesi varchar(255);
 
 
 create table prasyarat (
-id varchar (255),
+id varchar (36),
 id_matakuliah_kurikulum varchar (255),
 id_matakuliah varchar (255),
 id_matakuliah_kurikulum_pras varchar(255),
