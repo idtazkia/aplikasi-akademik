@@ -487,7 +487,7 @@ CREATE TABLE s_user_password (
 );
 
 CREATE TABLE sesi_kuliah (
-  id varchar(36 NOT NULL,
+  id varchar(36) NOT NULL,
   id_jadwal varchar(36) DEFAULT NULL,
   berita_acara varchar(255),
   waktu_mulai datetime DEFAULT NULL,
