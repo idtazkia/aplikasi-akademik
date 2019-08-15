@@ -82,7 +82,7 @@ public class KrsMahasiswaController {
                                     }else {
 
                                         for (Prasyarat pras : prasyarat) {
-                                            KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                            KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(),pras.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                             if (cariPras != null) {
                                                 System.out.println("prasayarat umum krs null kelas null");
@@ -108,7 +108,7 @@ public class KrsMahasiswaController {
                                                 }else {
 
                                                     for (Prasyarat pras : prasyarat) {
-                                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), pras.getMatakuliah().getKodeMatakuliah(),mahasiswa, StatusRecord.AKTIF, k);
 
                                                         if (cariPras != null) {
                                                             System.out.println("prasayarat umum kelas null");
@@ -141,7 +141,7 @@ public class KrsMahasiswaController {
                                     }else {
 
                                         for (Prasyarat prasProdi : prasyarat) {
-                                            KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                            KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(),prasProdi.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                             if (cariPras != null) {
                                                 System.out.println("prasayarat prodi krs null kelas null");
@@ -167,7 +167,7 @@ public class KrsMahasiswaController {
                                                 }else {
 
                                                     for (Prasyarat prasProdi : prasyarat) {
-                                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(),prasProdi.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                                         if (cariPras != null) {
                                                             System.out.println("prasayarat prodi kelas null");
@@ -208,7 +208,7 @@ public class KrsMahasiswaController {
                                 }else {
 
                                     for (Prasyarat pras : prasyarat) {
-                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(),pras.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                         if (cariPras != null) {
                                             System.out.println("prasayarat umum krs null");
@@ -234,7 +234,7 @@ public class KrsMahasiswaController {
                                             }else {
 
                                                 for (Prasyarat pras : prasyarat) {
-                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahKurikulumPras(),pras.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                                     if (cariPras != null) {
                                                         System.out.println("prasayarat umum");
@@ -273,7 +273,7 @@ public class KrsMahasiswaController {
                                 }else {
 
                                     for (Prasyarat prasProdi : prasyarat) {
-                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(),prasProdi.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                         if (cariPras != null) {
                                             System.out.println("prasayarat prodi krs null");
@@ -299,7 +299,7 @@ public class KrsMahasiswaController {
                                             }else {
 
                                                 for (Prasyarat prasProdi : prasyarat) {
-                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasProdi.getMatakuliahKurikulumPras(),prasProdi.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                                     if (cariPras != null) {
                                                         System.out.println("prasayarat prodi");
@@ -335,7 +335,7 @@ public class KrsMahasiswaController {
                                 } else {
 
                                     for (Prasyarat prasKelas : prasyarat) {
-                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasKelas.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                        KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasKelas.getMatakuliahKurikulumPras(),prasKelas.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                         if (cariPras != null) {
                                             System.out.println("prasayarat kelas krs null");
@@ -361,7 +361,7 @@ public class KrsMahasiswaController {
                                             } else {
 
                                                 for (Prasyarat prasKelas : prasyarat) {
-                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(prasKelas.getMatakuliahKurikulumPras(), mahasiswa, StatusRecord.AKTIF, k);
+                                                    KrsDetail cariPras = krsDetailDao.findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(prasKelas.getMatakuliahKurikulumPras(),prasKelas.getMatakuliah().getKodeMatakuliah(), mahasiswa, StatusRecord.AKTIF, k);
 
                                                     if (cariPras != null) {
                                                         System.out.println("prasayarat kelas");
