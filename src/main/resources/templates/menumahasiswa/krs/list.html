@@ -44,7 +44,7 @@
                     <H2 th:if="${krs != null}" th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
                 </Center>
                 <br>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" th:if="${krsAktif != null }">
+                <button type="button" class="btn btn-primary" data-toggle="modal" onclick="loadContent()" data-target="#exampleModal" th:if="${krsAktif != null }">
                     Add KRS
                 </button>
             </div>
@@ -217,4 +217,20 @@
             this.checked = false;
         }
     });
+
+    // function loadContent(){
+    //     var url = "http://crud.tazkia.ac.id/listdata.php";
+    //     console.log("test")
+    //     console.log(url)
+    // }
+
+    // function loadContent(){
+    //     var xhr = new XMLHttpRequest({mozSystem: true});
+    //
+    //     console.log("aflsjf");
+    //         $.get("http://crud.tazkia.ac.id/listdata.php", function(data, status){
+    //         //     alert("Data: " + data + "\nStatus: " + status);
+    //             console.log("aaaaaa")
+    //         });
+    // };
 </script>
