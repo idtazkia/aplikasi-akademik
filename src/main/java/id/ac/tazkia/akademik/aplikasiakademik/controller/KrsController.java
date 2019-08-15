@@ -507,34 +507,30 @@ public class KrsController {
                         System.out.println(idJadwal);
                         int total = data.length + krsDetails.size();
                         Jadwal jadwal = jadwalDao.findById(idJadwal).get();
-                        KrsDetail krsDetail = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatus(jadwal.getMatakuliahKurikulum(), mahasiswa, StatusRecord.AKTIF);
                         System.out.println("total :  " + total);
                         List<KrsDetail> krs = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(jadwal,StatusRecord.AKTIF,tahunAkademik);
                         System.out.println("kapasitas ruang  : "  +jadwal.getRuangan().getKapasitas().intValue());
                         System.out.println(krs.size() +  "   jumlaaah");
-                        if (krsDetail == null) {
-                            if (total <= 2) {
-                                if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                    KrsDetail kd = new KrsDetail();
-                                    kd.setJadwal(jadwal);
-                                    kd.setKrs(cariKrs);
-                                    kd.setMahasiswa(mahasiswa);
-                                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                                    kd.setNilaiPresensi(BigDecimal.ZERO);
-                                    kd.setNilaiTugas(BigDecimal.ZERO);
-                                    kd.setNilaiUas(BigDecimal.ZERO);
-                                    kd.setNilaiUts(BigDecimal.ZERO);
-                                    kd.setFinalisasi("N");
-                                    krsDetailDao.save(kd);
-                                }else {
-                                    attributes.addFlashAttribute("batasRuang", jadwal);
-                                }
-                            } else {
-                                System.out.println("batasnya 2");
+                        if (total <= 2) {
+                            if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
+                                KrsDetail kd = new KrsDetail();
+                                kd.setJadwal(jadwal);
+                                kd.setKrs(cariKrs);
+                                kd.setMahasiswa(mahasiswa);
+                                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                kd.setNilaiPresensi(BigDecimal.ZERO);
+                                kd.setNilaiTugas(BigDecimal.ZERO);
+                                kd.setNilaiUas(BigDecimal.ZERO);
+                                kd.setNilaiUts(BigDecimal.ZERO);
+                                kd.setFinalisasi("N");
+                                krsDetailDao.save(kd);
+                            }else {
+                                attributes.addFlashAttribute("batasRuang", jadwal);
                             }
                         } else {
-                            System.out.println("sudah ada");
+                            System.out.println("batasnya 2");
                         }
+
 
                     }
                 }
