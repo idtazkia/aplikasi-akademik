@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface PrasyaratDao extends PagingAndSortingRepository<Prasyarat,String> {
     List<Prasyarat> findByMatakuliahKurikulumAndStatus(MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
+    List<Prasyarat> findByMatakuliahKurikulumOrMatakuliahPrasKodeMatakuliahAndStatus(MatakuliahKurikulum matakuliahKurikulum,String kode, StatusRecord statusRecord);
 }
