@@ -2,6 +2,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,8 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Jadwal {
 
     @Id
@@ -95,8 +95,5 @@ public class Jadwal {
     @Enumerated(EnumType.STRING)
     private Akses akses = Akses.TERTUTUP;
 
-    @OneToMany(mappedBy = "jadwal")
-    @JsonBackReference
-    private List<SesiKuliah> sesiKuliahs = new ArrayList<>();
 
 }
