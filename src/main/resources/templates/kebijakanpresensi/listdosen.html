@@ -43,7 +43,6 @@
                                     <th>SKS</th>
                                     <th>Dosen</th>
                                     <th>Team Teaching</th>
-                                    <th>Jumlah Presensi</th>
                                     <th>Presensi</th>
                                 </tr>
                                 </thead>
@@ -64,7 +63,6 @@
                                             <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
                                         </ul>
                                     </td>
-                                    <td><b th:text="${#lists.size(jadwal.sesiKuliahs)}"></b></td>
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                             <i class="fa fa-edit"></i> Tambah Presensi
@@ -86,7 +84,6 @@
                                             <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
                                         </ul>
                                     </td>
-                                    <td><b th:text="${#lists.size(jadwal.sesiKuliahs)}"></b></td>
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                             <i class="fa fa-edit"></i> Tambah Presensi
