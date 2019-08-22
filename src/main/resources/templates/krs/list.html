@@ -52,7 +52,7 @@
                         </div>
                     </center>
                     <br>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" th:if="${krsAktif != null }">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" onclick="loadContent()" data-target="#exampleModal" th:if="${krsAktif != null }">
                         Add KRS
                     </button>
                 </div>
@@ -109,6 +109,8 @@
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
+                            <input type="hidden" name="validasiNim" id="validasiNim" th:value="${nim}">
+                            <input type="hidden" name="validasiTahun" id="validasiTahun" th:value="${tahun.id}">
                             <td th:text="${(row.index + 1)}">1</td>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
                             <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
@@ -161,19 +163,22 @@
                                         <th>#</th>
                                         <th>Subject</th>
                                         <th>Lecture</th>
+                                        <th>Day</th>
+                                        <th>Check In - Check Out</th>
                                         <th>Class</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
                                         <td class="a-center ">
-                                            <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data" th:if="${tahun.jenis.PENDEK} == ${tahun.jenis}">
-                                            <input type="checkbox" th:value="${jadwal.id}" class="flat" name="data" th:if="${tahun.jenis.GANJIL} == ${tahun.jenis}">
-                                            <input type="checkbox" th:value="${jadwal.id}" class="flat" name="data" th:if="${tahun.jenis.GENAP} == ${tahun.jenis}">
+                                            <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data">
                                         </td>
+                                        <input type="hidden" name="hidden" id="hidden">
                                         <td class="column-title" th:text="${row.index + 1}">#</td>
                                         <td class="column-title" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Subject</td>
                                         <td class="column-title" th:text="${jadwal.dosen.karyawan.namaKaryawan}">Lecture</td>
+                                        <td class="column-title" th:text="${jadwal.IdHari.namaHariEng}">Lecture</td>
+                                        <td class="column-title" th:text="${jadwal.jamMulai + '  -  ' + jadwal.jamSelesai}">Lecture</td>
                                         <td class="column-title" th:text="${jadwal.idKelas.namaKelas}">Lecture</td>
                                     </tr>
                                     </tbody>
@@ -205,4 +210,31 @@
         placeholder: "Pilih Salah Satu",
         allowClear: true
     });
+
+    $('.single-checkbox').on('change', function() {
+        var inputHidden= $("input[name=hidden]");
+        console.log(inputHidden.val())
+        if($('.single-checkbox:checked').length > inputHidden.val()) {
+            this.checked = false;
+        }
+    });
+
+    function loadContent(){
+        var url = "/api/validasiKrs?nim=";
+        console.log(url)
+    }
+
+    function loadContent(){
+
+        var nim= $("input[name=validasiNim]");
+        var tahun= $("input[name=validasiTahun]");
+
+        $.get("/api/validasiKrs",{nim: nim.val(),tahun: tahun.val()}, function(data, status){
+
+            console.log(data);
+            var inputHidden= $("input[name=hidden]");
+            inputHidden.val(data);
+
+        });
+    };
 </script>

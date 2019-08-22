@@ -7,14 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -49,10 +44,49 @@ public class KrsController {
     private PrasyaratDao prasyaratDao;
     @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
+    @Autowired
+    private IpkDao ipkDao;
 
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(StatusRecord.HAPUS);
+    }
+
+    @GetMapping("/api/validasiKrs")
+    @ResponseBody
+    public Integer ipk(String nim,String tahun){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        System.out.println(tahunAkademik.getNamaTahunAkademik());
+        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatus(mahasiswa,tahunAkademik,StatusRecord.AKTIF);
+        System.out.println(krsDetail.size());
+
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+
+            if (krsDetail.isEmpty()) {
+                return new Integer(2);
+            }else {
+                return new Integer(2) - krsDetail.size();
+            }
+
+        }else {
+            Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
+            if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
+                if (krsDetail.isEmpty()) {
+                    return new Integer(25);
+                }else {
+                    return new Integer(25) - krsDetail.size();
+                }
+            }
+
+            if (krsDetail.isEmpty()) {
+                return new Integer(23);
+            }else {
+                return new Integer(23) - krsDetail.size();
+            }
+        }
+
     }
 
     @ModelAttribute("prodi")
@@ -553,17 +587,22 @@ public class KrsController {
                         System.out.println(krs.size() +  "   jumlaaah");
                         if (total <= 2) {
                             if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                KrsDetail kd = new KrsDetail();
-                                kd.setJadwal(jadwal);
-                                kd.setKrs(cariKrs);
-                                kd.setMahasiswa(mahasiswa);
-                                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                                kd.setNilaiPresensi(BigDecimal.ZERO);
-                                kd.setNilaiTugas(BigDecimal.ZERO);
-                                kd.setNilaiUas(BigDecimal.ZERO);
-                                kd.setNilaiUts(BigDecimal.ZERO);
-                                kd.setFinalisasi("N");
-                                krsDetailDao.save(kd);
+                                KrsDetail detail = krsDetailDao.findByJadwalSesiAndJadwalIdHariAndStatus(jadwal.getSesi(),jadwal.getIdHari(),StatusRecord.AKTIF);
+                                if (detail == null) {
+                                    KrsDetail kd = new KrsDetail();
+                                    kd.setJadwal(jadwal);
+                                    kd.setKrs(cariKrs);
+                                    kd.setMahasiswa(mahasiswa);
+                                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                    kd.setNilaiPresensi(BigDecimal.ZERO);
+                                    kd.setNilaiTugas(BigDecimal.ZERO);
+                                    kd.setNilaiUas(BigDecimal.ZERO);
+                                    kd.setNilaiUts(BigDecimal.ZERO);
+                                    kd.setFinalisasi("N");
+                                    krsDetailDao.save(kd);
+                                }else {
+                                    System.out.printf("jadwal bentrok");
+                                }
                             }else {
                                 attributes.addFlashAttribute("batasRuang", jadwal);
                             }
@@ -583,6 +622,109 @@ public class KrsController {
 
 
             }
+//            Semeseter Genap/Ganjil
+        }else {
+            Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
+            if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
+
+                if (data != null){
+                    if (krsDetails.size() < 25) {
+                        for (String idJadwal : data) {
+                            System.out.println(idJadwal);
+                            int total = data.length + krsDetails.size();
+                            Jadwal jadwal = jadwalDao.findById(idJadwal).get();
+                            System.out.println("total :  " + total);
+                            List<KrsDetail> krs = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(jadwal,StatusRecord.AKTIF,tahunAkademik);
+                            System.out.println("kapasitas ruang  : "  +jadwal.getRuangan().getKapasitas().intValue());
+                            System.out.println(krs.size() +  "   jumlaaah");
+                            if (total <= 25) {
+                                if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
+                                    KrsDetail detail = krsDetailDao.findByJadwalSesiAndJadwalIdHariAndStatus(jadwal.getSesi(),jadwal.getIdHari(),StatusRecord.AKTIF);
+                                    if (detail == null) {
+                                        KrsDetail kd = new KrsDetail();
+                                        kd.setJadwal(jadwal);
+                                        kd.setKrs(cariKrs);
+                                        kd.setMahasiswa(mahasiswa);
+                                        kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                        kd.setNilaiPresensi(BigDecimal.ZERO);
+                                        kd.setNilaiTugas(BigDecimal.ZERO);
+                                        kd.setNilaiUas(BigDecimal.ZERO);
+                                        kd.setNilaiUts(BigDecimal.ZERO);
+                                        kd.setFinalisasi("N");
+                                        krsDetailDao.save(kd);
+                                    }else {
+
+                                    }
+                                }else {
+                                    attributes.addFlashAttribute("batasRuang", jadwal);
+                                }
+                            } else {
+                                System.out.println("batasnya 25");
+                            }
+
+
+                        }
+                    }
+
+                    if (krsDetails.size() == 25 || krsDetails.size() > 25) {
+                        System.out.printf("Anda tidak bisa mengambil lagi matakuliah");
+                    }
+
+                } else {
+
+
+                }
+
+            }else {
+                if (data != null){
+                    if (krsDetails.size() < 23) {
+                        for (String idJadwal : data) {
+                            System.out.println(idJadwal);
+                            int total = data.length + krsDetails.size();
+                            Jadwal jadwal = jadwalDao.findById(idJadwal).get();
+                            System.out.println("total :  " + total);
+                            List<KrsDetail> krs = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(jadwal,StatusRecord.AKTIF,tahunAkademik);
+                            System.out.println("kapasitas ruang  : "  +jadwal.getRuangan().getKapasitas().intValue());
+                            System.out.println(krs.size() +  "   jumlaaah");
+                            if (total <= 23) {
+                                if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
+                                    KrsDetail detail = krsDetailDao.findByJadwalSesiAndJadwalIdHariAndStatus(jadwal.getSesi(),jadwal.getIdHari(),StatusRecord.AKTIF);
+                                    if (detail == null) {
+                                        KrsDetail kd = new KrsDetail();
+                                        kd.setJadwal(jadwal);
+                                        kd.setKrs(cariKrs);
+                                        kd.setMahasiswa(mahasiswa);
+                                        kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                        kd.setNilaiPresensi(BigDecimal.ZERO);
+                                        kd.setNilaiTugas(BigDecimal.ZERO);
+                                        kd.setNilaiUas(BigDecimal.ZERO);
+                                        kd.setNilaiUts(BigDecimal.ZERO);
+                                        kd.setFinalisasi("N");
+                                        krsDetailDao.save(kd);
+                                    }else {
+
+                                    }
+                                }else {
+                                    attributes.addFlashAttribute("batasRuang", jadwal);
+                                }
+                            } else {
+                                System.out.println("batasnya 23 ");
+                            }
+
+
+                        }
+                    }
+
+                    if (krsDetails.size() == 2 || krsDetails.size() > 2) {
+                        System.out.printf("Anda tidak bisa mengambil lagi matakuliah");
+                    }
+
+                } else {
+
+
+                }
+            }
+
         }
 
         return "redirect:list?nim="+mahasiswa.getId()+"&tahunAkademik="+tahunAkademik.getId();
