@@ -206,7 +206,7 @@ public class PenilaianController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         System.out.println(sum.toBigInteger().intValueExact());
         if (bobot.size() != 0 || !bobot.isEmpty()) {
-            if (sum.toBigInteger().intValueExact() < 100) {
+            if (sum.toBigInteger().intValueExact() < jadwal.getBobotTugas().toBigInteger().intValue() || sum.toBigInteger().intValueExact() > jadwal.getBobotTugas().toBigInteger().intValue()) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 System.out.println("gabisa");
                 return "redirect:bobot?jadwal=" + jadwal.getId();
@@ -463,7 +463,7 @@ public class PenilaianController {
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     System.out.println(sum);
                     KrsDetail kd = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
-                    kd.setNilaiTugas(sum.multiply(kd.getJadwal().getBobotTugas()).divide(new BigDecimal(100)));
+                    kd.setNilaiTugas(sum);
                     kd.setNilaiPresensi(new BigDecimal(totalPresensi));
                     kd.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
 
@@ -541,7 +541,7 @@ public class PenilaianController {
                     int nilaiPresensi = presensiMahasiswa / presensiDosen * 100;
                     int totalPresensi = nilaiPresensi * krsDetail.getJadwal().getBobotPresensi().toBigInteger().intValue() / 100;
                     kd.setNilaiPresensi(new BigDecimal(totalPresensi));
-                    kd.setNilaiTugas(sum.multiply(kd.getJadwal().getBobotTugas()).divide(new BigDecimal(100)));
+                    kd.setNilaiTugas(sum);
                     kd.setNilaiAkhir(kd.getNilaiTugas().add(kd.getNilaiUts()).add(kd.getNilaiPresensi()).add(kd.getNilaiUas()));
 
 

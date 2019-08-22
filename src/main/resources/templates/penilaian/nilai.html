@@ -61,6 +61,18 @@
             };
         })();
 
+        $(document).ready(
+            function() {
+                setInterval(function() {
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                        // console.log(data);
+                    });
+
+                }, 5000);  //Delay here = 5 seconds
+            });
+
 
 
 
