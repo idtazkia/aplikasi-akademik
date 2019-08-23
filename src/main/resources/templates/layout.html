@@ -59,6 +59,9 @@
                 <div class="navbar nav_title" style="border: 0;">
                     <a sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:href="@{/dashboard}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
                     <a sec:authorize="hasAuthority('VIEW_MAHASISWA')" th:href="@{/dashboardmahasiswa}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
+                    <a sec:authorize="hasAuthority('VIEW_DOSEN')" th:href="@{/dashboard}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
+                    <a sec:authorize="hasAuthority('VIEW_KPS')" th:href="@{/dashboard}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
+                    <a sec:authorize="hasAuthority('VIEW_FINANCE')" th:href="@{/dashboard}" class="site_title"> <img th:src="@{/images/tazkia_2qB_icon.ico}" /> <span>SIMAK TAZKIA</span></a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -141,7 +144,7 @@
                                             <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
                                             <li><a th:href="@{/plotingdosen/list}">Ploting Dosen</a></li>
                                             <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
-                                            <li><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
                                         </ul>
                                     </li>
                                     <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
@@ -165,15 +168,29 @@
                                 </ul>
                             </li>
 
-                            <li sec:authorize="hasAuthority('VIEW_DOSEN')"><a><i class="fa fa-edit"></i>Activities<span class="fa fa-chevron-down"></span></a>
+                            <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a><i class="fa fa-gear"></i>Setting<Activities></Activities><span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/akademik/list}">Academic Years</a></li>
+                                    <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
+                                    <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
+                                    <li><a th:href="@{/plotingdosen/list}">Ploting Dosen</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a><i class="fa fa-edit"></i>Studies Activities <Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{/kebijakanpresensi/listdosen}">Attendance</a></li>
+                                    <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_DOSEN')"><a><i class="fa fa-edit"></i>Studies Activities<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
                                             <li><a th:href="@{/kebijakanpresensi/listdosen}">Attendance</a></li>
                                             <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
                                         </ul>
-                                    </li>
-                                </ul>
                             </li>
 
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-desktop"></i> T L C <span class="fa fa-chevron-down"></span></a>
@@ -210,7 +227,7 @@
                                         </ul>
                                     </li>
                                     <li  th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/karyawan/list}">Employee</a></li>
-                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/dosen/list}">Lecture</a></li>
+                                    <li><a th:href="@{/dosen/list}">Lecture</a></li>
                                     <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
                                     <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Payroll<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">

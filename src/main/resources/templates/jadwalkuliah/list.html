@@ -112,13 +112,13 @@
                                 <tbody>
                                 <tr th:each="jadwal,row : ${jadwal}">
                                     <td th:text="${row.index + 1}"></td>
-                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                    <td th:text="${jadwal.ruangan}"></td>
                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                    <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.namaMatkuliah}"></td>
+                                    <td th:text="${jadwal.namaKelas}"></td>
+                                    <td th:text="${jadwal.jumlahSks}"></td>
+                                    <td th:text="${jadwal.namaDosen}"></td>
                                     <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                 </tr>
                                 </tbody>
@@ -170,13 +170,13 @@
                                 <tbody>
                                 <tr th:each="jadwal,row : ${minggu}">
                                    <td th:text="${row.index + 1}"></td>
-                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                    <td th:text="${jadwal.ruangan}"></td>
                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                    <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.namaMatkuliah}"></td>
+                                    <td th:text="${jadwal.namaKelas}"></td>
+                                    <td th:text="${jadwal.jumlahSks}"></td>
+                                    <td th:text="${jadwal.namaDosen}"></td>
                                     <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                 </tr>
                                 </tbody>
@@ -202,13 +202,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${senin}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
-                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
-                                            <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.ruangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.namaMatkuliah}"></td>
+                                    <td th:text="${jadwal.namaKelas}"></td>
+                                    <td th:text="${jadwal.jumlahSks}"></td>
+                                    <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
@@ -234,13 +234,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${selasa}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
-                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
-                                            <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.ruangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.namaMatkuliah}"></td>
+                                    <td th:text="${jadwal.namaKelas}"></td>
+                                    <td th:text="${jadwal.jumlahSks}"></td>
+                                    <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
@@ -266,13 +266,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${rabu}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
-                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
-                                            <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.ruangan}"></td>
+                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.namaMatkuliah}"></td>
+                                    <td th:text="${jadwal.namaKelas}"></td>
+                                    <td th:text="${jadwal.jumlahSks}"></td>
+                                    <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
@@ -298,13 +298,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${kamis}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td th:text="${jadwal.ruangan}"></td>
                                         <td><span  th:text="${jadwal.jamMulai}"></span> -
                                             <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td th:text="${jadwal.namaMatkuliah}"></td>
+                                        <td th:text="${jadwal.namaKelas}"></td>
+                                        <td th:text="${jadwal.jumlahSks}"></td>
+                                        <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
@@ -330,13 +330,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${jumat}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td th:text="${jadwal.ruangan}"></td>
                                         <td><span  th:text="${jadwal.jamMulai}"></span> -
                                             <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td th:text="${jadwal.namaMatkuliah}"></td>
+                                        <td th:text="${jadwal.namaKelas}"></td>
+                                        <td th:text="${jadwal.jumlahSks}"></td>
+                                        <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
                                     </tr>
                                     </tbody>
@@ -362,13 +362,13 @@
                                     <tbody>
                                     <tr th:each="jadwal,row : ${sabtu}">
                                         <td th:text="${row.index + 1}"></td>
-                                        <td th:text="${jadwal.ruangan.namaRuangan}"></td>
+                                        <td th:text="${jadwal.ruangan}"></td>
                                         <td><span  th:text="${jadwal.jamMulai}"></span> -
                                             <span th:text="${jadwal.jamSelesai}"></span></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                        <td th:text="${jadwal.idKelas.namaKelas}"></td>
-                                        <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                        <td th:text="${jadwal.namaMatkuliah}"></td>
+                                        <td th:text="${jadwal.namaKelas}"></td>
+                                        <td th:text="${jadwal.jumlahSks}"></td>
+                                        <td th:text="${jadwal.namaDosen}"></td>
                                         <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
 
                                     </tr>

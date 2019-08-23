@@ -114,7 +114,6 @@ public class KebijakanPresensiController {
         model.addAttribute("selectedProgram",program);
 
         if (program != null && tahunAkademik != null && hari != null){
-            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
             model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,hari,program));
         }
 
@@ -137,24 +136,38 @@ public class KebijakanPresensiController {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-
+        List<Jadwal> jadwalList = new ArrayList<>();
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        List<Jadwal> jadwal = jadwalDao.findByStatusNotInAndTahunAkademik(StatusRecord.HAPUS,tahunAkademik);
+        for (Jadwal j : jadwal){
+            for (Dosen d : j.getDosens()){
+                if (d.getId() == dosen.getId()){
+                    jadwalList.add(j);
+                }
+            }
+        }
 
-        model.addAttribute("minggu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"0",dosen,tahunAkademik));
-        model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
-        model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
-        model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
-        model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
-        model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
-        model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
+
+
+
+
+
+        model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,dosen,tahunAkademik));
+        model.addAttribute("teamTeaching", jadwalList);
+//        model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
+//        model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
+//        model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
+//        model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
+//        model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
+//        model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
 
 
     }
 
     @GetMapping("/kebijakanpresensi/detail")
     public void  formKebijakanPresensi(Model model, @RequestParam Jadwal jadwal, Pageable page){
-        Page<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwal(jadwal,page);
+        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwal(jadwal);
         List<JadwalDto> detail = new ArrayList<>();
         for (SesiKuliah sk : sesiKuliah){
             JadwalDto jadwalDto = new JadwalDto();
@@ -172,7 +185,7 @@ public class KebijakanPresensiController {
         }
         model.addAttribute("detail",detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
-        model.addAttribute("teamTeaching", jadwal.getDosens());
+//        model.addAttribute("teamTeaching", jadwal.getDosens());
         model.addAttribute("jadwal", jadwal);
     }
 

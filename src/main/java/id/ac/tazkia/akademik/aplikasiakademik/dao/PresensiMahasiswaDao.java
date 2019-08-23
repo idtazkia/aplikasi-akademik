@@ -24,7 +24,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
     List<PresensiMahasiswa> findBySesiKuliah(SesiKuliah sesiKuliah);
     List<PresensiMahasiswa> findBySesiKuliahAndStatus(SesiKuliah sesiKuliah,StatusRecord statusRecord);
 
-    List<PresensiMahasiswa> findByKrsDetailAndStatus(KrsDetail krsDetail, StatusRecord status);
+    List<PresensiMahasiswa> findByKrsDetailAndStatusAndStatusPresensi(KrsDetail krsDetail, StatusRecord status,StatusPresensi statusPresensi);
 
     List<PresensiMahasiswa> findByKrsDetailJadwalAndStatus(Jadwal jadwal, StatusRecord statusRecord);
 

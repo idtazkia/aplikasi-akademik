@@ -61,6 +61,18 @@
             };
         })();
 
+        $(document).ready(
+            function() {
+                setInterval(function() {
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                        // console.log(data);
+                    });
+
+                }, 5000);  //Delay here = 5 seconds
+            });
+
 
 
 
@@ -98,6 +110,7 @@
 
                     $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
                         document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
                         // console.log(data);
                     });
 
@@ -138,6 +151,7 @@
 
                         $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
                                 document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
                             // console.log(data);
                         });
 
@@ -173,7 +187,8 @@
 
                     $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
                         document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                        // console.log(data);
+                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                        console.log(data);
                     });
 
                 }, 1000);
@@ -204,7 +219,7 @@
                                             <a th:href="@{/penilaian/nilai}">
                                                 <button class="btn btn-primary" type="button">Nilai Mahasiswa</button>
                                             </a>
-                                            <a th:href="@{/penilaian/list}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                            <a th:href="@{/penilaian/list}">
                                                 <button class="btn btn-default" type="button">Kembali</button>
                                             </a>
                                         </div>
@@ -299,7 +314,7 @@
                                                 </center></td>
 
                                                 <td><span th:id="${data.krsDetail.mahasiswa.nim}"></span></td>
-                                                <td>-<sup>0.00</sup></td>
+                                                <td><span th:id="${data.krsDetail.mahasiswa.nim+'grade'}">0.00</span></td>
                                             </tr>
                                             </tbody>
                                         </table>

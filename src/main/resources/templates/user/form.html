@@ -101,7 +101,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Religion</label>
-                                                                <select name="religion" style="width: 100%!important;"
+                                                                <select name="religion" style="width: 100%!important;" id="religion"
                                                                         th:field="*{religion}" required
                                                                         class="form-control js-select2">
                                                                     <option value=""></option>
@@ -122,7 +122,7 @@
                                                                     * Fill in the Place of Birth according to the last certificate (Ijazah terakhir)
                                                                 </small>
                                                                 <br>
-                                                                <input type="text" name="tempat" required
+                                                                <input type="text" name="tempat" required id="tempat"
                                                                        class="form-control" th:field="*{tempat}"
                                                                        placeholder="* Fill in the Place of Birth according to the last certificate (Ijazah terakhir)">
                                                             </div>
@@ -136,14 +136,14 @@
                                                                 <small class="text-danger">
                                                                     * Fill in the Date of Birth according to the last certificate (Ijazah terakhir)
                                                                 </small>
-                                                                <input type="date" th:field="*{tanggalLahir}" required
+                                                                <input type="date" id="tanggalLahir" th:field="*{tanggalLahir}" required
                                                                        name="tanggalLahir"class="form-control">
                                                             </div>
                                                         </div>
 
                                                         <div class="col-md-6">
                                                             <label>Gender</label>
-                                                            <select th:field="*{jenisKelamin}"
+                                                            <select th:field="*{jenisKelamin}" id="jenisKelamin"
                                                                     name="jenisKelamin" class="form-control" required>
                                                                 <option value=""></option>
                                                                 <option value="PRIA">Male</option>
@@ -698,7 +698,7 @@
                                 <br>
                                 <center>
                                     <input class="btn btn-primary" type="submit" value="Save">
-                                    <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                                    <a th:href="@{/user/data}" class="btn btn-primary" role="button">
                                         <span aria-hidden="true"></span>Cancel
                                     </a>
                                 </center>
@@ -728,6 +728,27 @@
         else document.getElementById('ifYes').style.display = 'none';
 
     }
+
+    $(document).ready(function() {
+        $(window).unload(saveSettings);
+        loadSettings();
+    });
+
+    function loadSettings() {
+        $('#religion').val(localStorage.religion);
+        $('#tempat').val(localStorage.tempat);
+        $('#tanggalLahir').val(localStorage.tanggalLahir);
+        $("#jenisKelamin").val(localStorage.jenisKelamin);
+    }
+
+    function saveSettings() {
+        localStorage.religion = $('#religion').val();
+        localStorage.tempat = $('#tempat').val();
+        localStorage.tanggalLahir = $('#tanggalLahir').val();
+        localStorage.jenisKelamin = $("#jenisKelamin").val();
+        localStorage.gender = $('input[type=radio]:checked').val();
+    }
+
 
 </script>
 

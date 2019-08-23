@@ -59,35 +59,21 @@
                 <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">NA</th>
                     <th scope="col">NIDN</th>
                     <th scope="col">Name</th>
-                    <th scope="col" width="40px">Department</th>
                     <th scope="col" width="30px"></th>
                     <th scope="col" width="40px"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="data, row : ${listDosen}">
-                    <th  th:text="${(row.index + 1)}">1</th>
-                    <td>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==1">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;"></i>
-                        </span>
-                        <span style="color: #4fa9e8; font-size: 16px;" th:if="${data.na}==0">
-                            <i class="fa fa-lightbulb-o" style="font-size:33px;color:black;"></i>
-
-                        </span>
-                    </td>
-                    <td th:text="${data.nidn}">D1223123</td>
-                    <td th:text="${data.nama}">Dosen 1</td>
-                    <td>
-                        <a href="#" class="btn btn-info btn-sm" th:href="@{/dosen/jurusan/list(id=${data.idDosen})}" title="edit">Departement</a></td>
-                    </td>
+                    <th th:text="${(row.index + 1) + (listDosen.number * listDosen.size)}">1</th>
+                    <td th:text="${data.karyawan.nidn}">D1223123</td>
+                    <td th:text="${data.karyawan.namaKaryawan}">Dosen 1</td>
                     <td align="center">
-                        <a href="#" class="btn btn-success btn-sm" th:href="@{/dosen/form(id=${data.idDosen})}" title="edit">Edit</a></td>
+                        <a href="#" class="btn btn-success btn-sm" th:href="@{/dosen/form(id=${data.karyawan.id})}" title="edit">Edit</a></td>
                     <td align="center">
-                        <form method="post" th:action="@{/delete/dosen(dosen=${data.idDosen})}">
+                        <form method="post" th:action="@{/dosen/delete(dosen=${data.id})}">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">

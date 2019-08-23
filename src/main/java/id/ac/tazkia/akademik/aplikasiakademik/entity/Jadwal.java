@@ -90,4 +90,5 @@ public class Jadwal {
     @Enumerated(EnumType.STRING)
     private Akses akses = Akses.TERTUTUP;
 
+
 }

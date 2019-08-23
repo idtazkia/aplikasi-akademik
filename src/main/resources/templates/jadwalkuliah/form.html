@@ -174,8 +174,8 @@
                             <div class="form-group">
                                 <label class="col-form-label">Dosen :</label>
                                 <input type="hidden" id="idDosen" th:field="*{dosen}">
-                                <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}" readonly>
+                                <select class="form-control js-example-placeholder-single" id="select2-dosen"
+                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}" onchange="mySesi()">
                                     <option value=""></option>
                                     <option th:each="data: ${dosen}"
                                             th:text="${data.karyawan.namaKaryawan}"
@@ -273,6 +273,13 @@
         $('#select2-hari').on('select2:selecting', function(e) {
             console.log('Selecting: ' , e.params.args.data.id);
             $('#isiHari').val(e.params.args.data.id);
+        });
+
+        $('#select2-dosen').select2();
+
+        $('#select2-dosen').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#idDosen').val(e.params.args.data.id);
         });
     })(jQuery);
 

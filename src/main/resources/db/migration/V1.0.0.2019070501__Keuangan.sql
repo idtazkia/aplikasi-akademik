@@ -1,5 +1,5 @@
 create table komponen_biaya (
-id varchar(255),
+id varchar(36),
 nama varchar(255),
 keterangan varchar(255),
 status varchar(255),
@@ -8,12 +8,12 @@ primary key(id)
 );
 
 create table nilai_komponen_biaya (
-id varchar(255),
-id_komponen_biaya varchar(255),
-id_tahun_akademik varchar(255),
-id_angkatan_mahasiswa varchar(255),
-id_prodi varchar(255),
-id_program varchar(255),
+id varchar(36),
+id_komponen_biaya varchar(36),
+id_tahun_akademik varchar(36),
+id_angkatan_mahasiswa varchar(36),
+id_prodi varchar(36),
+id_program varchar(36),
 status varchar(255),
 amount NUMERIC (19,2),
 dikali_sks varchar(255),
@@ -21,12 +21,12 @@ primary key(id)
 );
 
 create table tagihan_mahasiswa (
-id varchar(255),
+id varchar(36),
 tanggal_tagih DATE,
 batas_waktu DATE,
-id_komponen_biaya varchar(255),
-id_mahasiswa varchar(255),
-id_tahun_akademik varchar(255),
+id_komponen_biaya varchar(36),
+id_mahasiswa varchar(36),
+id_tahun_akademik varchar(36),
 lunas varchar(45),
 qty int(11),
 amount NUMERIC (19,2),
@@ -35,23 +35,23 @@ primary key(id)
 
 
 create table jenis_diskon (
-id varchar(255),
+id varchar(36),
 nama varchar(255),
 keterangan varchar(255),
 primary key(id)
 );
 
 create table diskon (
-id varchar(255),
-id_tagihan varchar(255),
-id_jenis_diskon varchar(255),
+id varchar(36),
+id_tagihan varchar(36),
+id_jenis_diskon varchar(36),
 amount NUMERIC (19,2),
 primary key(id)
 );
 
 create table rencana_pembayaran (
-id varchar(255),
-id_tagihan varchar (255),
+id varchar(36),
+id_tagihan varchar (36),
 tanggal_jatuh_tempo DATE,
 amount NUMERIC (19,2),
 lunas varchar (50),
@@ -59,10 +59,10 @@ primary key(id)
 );
 
 create table rencana_pembayaran_detail (
-id varchar(255),
-id_rencana_pembayaran varchar (255),
+id varchar(36),
+id_rencana_pembayaran varchar (36),
 pembayaran_ke varchar (25),
-id_tagihan varchar(255),
+id_tagihan varchar(36),
 amount NUMERIC (19,2),
 status_bayar varchar (25),
 lunas varchar (50),
@@ -71,21 +71,21 @@ primary key(id)
 );
 
 create table pembayaran_mahasiswa (
-id varchar(255),
-id_tagihan varchar(255),
+id varchar(36),
+id_tagihan varchar(36),
 waktu_bayar DATE,
 jenis_bayar varchar(255),
 nomor_rekening varchar(255),
 amount NUMERIC (19,2),
 referensi varchar(255),
-id_rencana_pembayaran varchar (255),
+id_rencana_pembayaran varchar (36),
 primary key(id)
 );
 
 create table histori_tagihan (
-id varchar(255),
-id_tagihan varchar(255),
-id_user varchar(255),
+id varchar(36),
+id_tagihan varchar(36),
+id_user varchar(36),
 tindakan varchar(255),
 nilai_lama NUMERIC (19,2),
 nilai_baru NUMERIC (19,2),
@@ -94,24 +94,24 @@ primary key(id)
 );
 
 create table histori_rencana_detail (
-id varchar(255),
-id_rencana_detail varchar(255),
-id_user varchar(255),
+id varchar(36),
+id_rencana_detail varchar(36),
+id_user varchar(36),
 amount NUMERIC (19,2),
 waktu_diubah DATE,
 primary key(id)
 );
 
 create table kelas_mahasiswa (
-id varchar (255),
-id_mahasiswa varchar (255),
-id_kelas varchar(255),
+id varchar (36),
+id_mahasiswa varchar (36),
+id_kelas varchar(36),
 status varchar (25),
 primary key(id)
 );
 
 create table sesi (
-id varchar (255),
+id varchar (36),
 sesi varchar (255),
 nama_sesi varchar (255),
 id_jenjang varchar(255),
@@ -135,7 +135,7 @@ insert into sesi values('11','4', 'Sesi 4 (2 SKS Alternative 1)','01','2','16:30
 insert into sesi values('12','4', 'Sesi 4 (2 SKS Alternative 2)','01','2','15:31:00','17:10:00');
 
 alter table mahasiswa
-add column id_kurikulum varchar(255);
+add column id_kurikulum varchar(36);
 alter table mahasiswa
 add column terakhir_update DATE;
 alter table jadwal
@@ -143,11 +143,11 @@ add column sesi varchar(255);
 
 
 create table prasyarat (
-id varchar (255),
-id_matakuliah_kurikulum varchar (255),
-id_matakuliah varchar (255),
-id_matakuliah_kurikulum_pras varchar(255),
-id_matakuliah_pras varchar(255),
+id varchar (36),
+id_matakuliah_kurikulum varchar (36),
+id_matakuliah varchar (36),
+id_matakuliah_kurikulum_pras varchar(36),
+id_matakuliah_pras varchar(36),
 nilai decimal(10,2) DEFAULT NULL,
 status varchar(255),
 primary key(id)
@@ -156,12 +156,12 @@ primary key(id)
 alter table prodi
 add column kode_matakuliah varchar(255);
 alter table prodi
-add column id_program varchar(255);
+add column id_program varchar(36);
 alter table fakultas
 add column kode_matakuliah varchar(255);
 
 alter table matakuliah_kurikulum
-add column id_konsentrasi varchar(255);
+add column id_konsentrasi varchar(36);
 alter table matakuliah_kurikulum
 add column sks_minimal int(3);
 alter table matakuliah_kurikulum
@@ -172,14 +172,14 @@ alter table tahun_akademik
 add column jenis varchar(255);
 
 create table matakuliah_kurikulum_program (
-  id_matakuliah_kurikulum VARCHAR (255)NOT NULL ,
-  id_program VARCHAR (255)NOT NULL ,
+  id_matakuliah_kurikulum VARCHAR (36)NOT NULL ,
+  id_program VARCHAR (36)NOT NULL ,
   PRIMARY KEY (id_matakuliah_kurikulum, id_program)
 );
 
 create table prodi_program (
-  id_prodi VARCHAR (255)NOT NULL ,
-  id_program VARCHAR (255)NOT NULL ,
+  id_prodi VARCHAR (36)NOT NULL ,
+  id_program VARCHAR (36)NOT NULL ,
   PRIMARY KEY (id_prodi, id_program),
   FOREIGN KEY (id_prodi) REFERENCES prodi(id),
   FOREIGN KEY (id_program) REFERENCES program(id)

@@ -24,16 +24,21 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     List<KrsDetail> findByJadwalAndStatusOrderByMahasiswaNamaAsc(Jadwal jadwal,StatusRecord statusRecord);
 
-    KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatus(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda);
-    KrsDetail findByMatakuliahKurikulumAndMahasiswaAndStatusAndKrsNotIn(MatakuliahKurikulum matakuliahKurikulum,Mahasiswa mahasiswa,StatusRecord statusRecorda,Krs krs);
+    List<KrsDetail> findByMatakuliahKurikulumAndStatusAndMahasiswa(MatakuliahKurikulum matakuliahKurikulum,StatusRecord statusRecord,Mahasiswa mahasiswa);
+    List<KrsDetail> findByMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(String kode,Mahasiswa mahasiswa,StatusRecord statusRecorda,Krs krs);
+    KrsDetail findByMatakuliahKurikulumOrMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(MatakuliahKurikulum matakuliahKurikulum,String kode,Mahasiswa mahasiswa,StatusRecord statusRecorda,Krs krs);
     List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademik(Jadwal jadwal, StatusRecord statusRecord, TahunAkademik tahunAkademik);
     Page<KrsDetail> findByKrs(List<Krs> krs,Pageable page);
     Page<KrsDetail> findDistinctByKrsTahunAkademik(TahunAkademik tahunAkademik,Pageable page);
+
+    KrsDetail findByJadwalSesiAndJadwalIdHariAndStatus(String sesi, Hari hari,StatusRecord statusRecord);
 
     @Query("select k.mahasiswa.id from KrsDetail k where k.status = :status and k.krs= :krs")
     List<KrsDetail> cariKrs(@Param("status")StatusRecord status, @Param("krs")List<Krs> krs);
 
     Page<KrsDetail> findByJadwalAndStatus(Jadwal jadwal,StatusRecord statusRecord,Pageable page);
+
+    List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatus(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord);
 
 
 }

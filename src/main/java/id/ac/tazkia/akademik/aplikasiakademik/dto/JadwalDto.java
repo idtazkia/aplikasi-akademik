@@ -38,7 +38,9 @@ public class JadwalDto {
     private StatusPresensi statusPresensi;
     private String catatan;
     private Integer rating;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime jamMasuk;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime jamKeluar;
 
 }

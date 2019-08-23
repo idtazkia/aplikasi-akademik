@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, String> {
 
@@ -17,4 +18,5 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     Page<SesiKuliah> cariSesiKuliah(@Param("mulai") LocalDateTime mulai, @Param("sampai") LocalDateTime sampai, Pageable pageable);
 
     Page<SesiKuliah> findByJadwal(Jadwal jadwal,Pageable pageable);
+    List<SesiKuliah> findByJadwal(Jadwal jadwal);
 }

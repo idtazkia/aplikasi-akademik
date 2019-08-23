@@ -46,7 +46,6 @@ public class Mahasiswa {
     private Prodi idProdi;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "id_konsentrasi")
     private  Konsentrasi idKonsentrasi;
 

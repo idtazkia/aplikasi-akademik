@@ -199,7 +199,7 @@
                             <br>
                             <center>
                                 <input class="btn btn-primary" type="submit" value="Simpan">
-                                <a th:href="@{/mahasiswa/list}" class="btn btn-primary" role="button">
+                                <a th:href="@{/matakuliah/list(prodi = ${prodi.id},kurikulum = ${kurikulum.id})}" class="btn btn-primary" role="button">
                                     <span aria-hidden="true"></span>Batal
                                 </a>
                             </center>
