@@ -517,8 +517,6 @@ public class KrsMahasiswaController {
                         System.out.println(krs.size() +  "   jumlaaah");
                             if (total <= 2) {
                                 if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                    KrsDetail detail = krsDetailDao.findByJadwalSesiAndJadwalIdHariAndStatus(jadwal.getSesi(),jadwal.getIdHari(),StatusRecord.AKTIF);
-                                    if (detail == null) {
                                         KrsDetail kd = new KrsDetail();
                                         kd.setJadwal(jadwal);
                                         kd.setKrs(cariKrs);
@@ -530,9 +528,6 @@ public class KrsMahasiswaController {
                                         kd.setNilaiUts(BigDecimal.ZERO);
                                         kd.setFinalisasi("N");
                                         krsDetailDao.save(kd);
-                                    }else {
-                                        System.out.printf("jadwal bentrok");
-                                    }
                                  }else {
                                     attributes.addFlashAttribute("batasRuang", jadwal);
                                 }
