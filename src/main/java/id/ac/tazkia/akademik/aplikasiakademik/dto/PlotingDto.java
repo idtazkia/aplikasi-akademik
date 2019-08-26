@@ -24,6 +24,7 @@ public class PlotingDto {
     private LocalTime jamSelesai;
     private Akses akses;
     private String ruangan;
+    private String hari;
 
 
 
