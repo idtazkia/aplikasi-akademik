@@ -174,7 +174,7 @@ public class KrsMahasiswaController {
                                 }
                     }
 
-                    List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.PRODI,StatusRecord.AKTIF);
+                    List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
                     for (Jadwal j : jadwalProdi){
 
                                 List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
@@ -318,7 +318,7 @@ public class KrsMahasiswaController {
                     }
                 }
 
-                List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.PRODI,StatusRecord.AKTIF);
+                List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
                 for (Jadwal j : jadwalProdi){
 
                     if (kelasMahasiswa != null){

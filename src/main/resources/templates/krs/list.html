@@ -109,8 +109,6 @@
                             <td class="a-center ">
                                 <input type="checkbox" class="flat" name="table_records">
                             </td>
-                            <input type="hidden" name="validasiNim" id="validasiNim" th:value="${nim}">
-                            <input type="hidden" name="validasiTahun" id="validasiTahun" th:value="${tahun.id}">
                             <td th:text="${(row.index + 1)}">1</td>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
                             <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
@@ -169,6 +167,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <input type="hidden" name="validasiNim" id="validasiNim" th:value="${nim}">
+                                    <input type="hidden" name="validasiTahun" id="validasiTahun" th:value="${tahun.id}">
                                     <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
                                         <td class="a-center ">
                                             <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data">
