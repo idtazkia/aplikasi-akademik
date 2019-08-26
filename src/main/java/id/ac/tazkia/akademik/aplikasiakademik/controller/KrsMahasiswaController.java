@@ -390,6 +390,8 @@ public class KrsMahasiswaController {
                         }
                     }
                 }
+
+
                 if (kelasMahasiswa != null) {
                 List<Jadwal> jadwalKelas = jadwalDao.findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(ta, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
                 if (!jadwalKelas.isEmpty()) {
@@ -411,7 +413,7 @@ public class KrsMahasiswaController {
                                             for (KrsDetail prasList : cariPras) {
                                                 System.out.println("prasayarat kelas krs null");
                                                 if (prasList.getBobot() != null){
-                                                    if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                    if (prasList.getBobot().toBigInteger().intValue() >= pras.getNilai().toBigInteger().intValue()) {
                                                         rekap.add(j);
                                                         break;
                                                     }
@@ -428,7 +430,7 @@ public class KrsMahasiswaController {
                                 for (KrsDetail krsDetail : kd) {
                                     if (krsDetail.getBobot() != null) {
 
-                                        if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0) {
+                                        if (krsDetail.getBobot().toBigInteger().intValue() <= grade.getBobot().toBigInteger().intValue()) {
 
                                             if (prasyarat.isEmpty()) {
                                                 rekap.add(j);
@@ -441,7 +443,7 @@ public class KrsMahasiswaController {
                                                         for (KrsDetail prasList : cariPras) {
                                                             System.out.println("prasayarat kelas");
                                                             if (prasList.getBobot() != null){
-                                                                if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                                if (prasList.getBobot().toBigInteger().intValue() >= pras.getNilai().toBigInteger().intValue()) {
                                                                     rekap.add(j);
                                                                     break;
                                                                 }

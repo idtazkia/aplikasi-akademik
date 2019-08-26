@@ -162,7 +162,6 @@
                             <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th></th>
                                     <th>#</th>
                                     <th>Subject</th>
                                     <th>Lecture</th>
@@ -173,9 +172,6 @@
                                 </thead>
                                 <tbody>
                                 <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
-                                    <td class="a-center ">
-                                        <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data">
-                                    </td>
                                     <input type="hidden" name="hidden" id="hidden">
                                     <td class="column-title" th:text="${row.index + 1}">#</td>
                                     <td class="column-title" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Subject</td>
