@@ -71,9 +71,6 @@
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
                         <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
                             <th class="column-title">#</th>
                             <th class="column-title">Code</th>
                             <th class="column-title">Day</th>
@@ -89,9 +86,6 @@
 
                         <tbody>
                         <tr class="even pointer" th:each="data,row : ${data}">
-                            <td class="a-center ">
-                                <input type="checkbox" class="flat" name="table_records">
-                            </td>
                             <td th:text="${(row.index + 1)}">1</td>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
                             <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
@@ -162,6 +156,7 @@
                             <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Subject</th>
                                     <th>Lecture</th>
@@ -172,6 +167,9 @@
                                 </thead>
                                 <tbody>
                                 <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
+                                    <td class="a-center ">
+                                        <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data">
+                                    </td>
                                     <input type="hidden" name="hidden" id="hidden">
                                     <td class="column-title" th:text="${row.index + 1}">#</td>
                                     <td class="column-title" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Subject</td>
