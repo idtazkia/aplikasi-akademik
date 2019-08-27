@@ -15,7 +15,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class KrsMahasiswaController {
@@ -53,7 +56,12 @@ public class KrsMahasiswaController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs krs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa);
+        List<Integer> sksDiambil = new ArrayList<>();
         List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,krs,StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail){
+            sksDiambil.add(kd.getMatakuliahKurikulum().getJumlahSks());
+        }
+        int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
 
         if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
             System.out.println("pendek");
@@ -62,7 +70,7 @@ public class KrsMahasiswaController {
             if (krsDetail.isEmpty()) {
                 return new Integer(2);
             }else {
-                return new Integer(2) - krsDetail.size();
+                return new Integer(2) -sum;
             }
 
         }else {
@@ -72,14 +80,14 @@ public class KrsMahasiswaController {
                     return new Integer(25);
 
                 }else {
-                    return new Integer(25) - krsDetail.size();
+                    return new Integer(25) - sum;
                 }
             }
 
             if (krsDetail.isEmpty()) {
                 return new Integer(23);
             }else {
-                return new Integer(23) - krsDetail.size();
+                return new Integer(23) -sum;
             }
         }
 
@@ -98,7 +106,11 @@ public class KrsMahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,ta);
+        List<Integer> sksDiambil = new ArrayList<>();
         List<KrsDetail> terpilih = krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF);
+        for (KrsDetail kd : terpilih){
+            sksDiambil.add(kd.getMatakuliahKurikulum().getJumlahSks());
+        }
         Map<String, Jadwal> matkulYangBisaDipilih = new LinkedHashMap<>();
         Grade grade = gradeDao.findById("8").get();
         model.addAttribute("tahun", ta);
@@ -477,10 +489,12 @@ public class KrsMahasiswaController {
             Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
             if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
                 model.addAttribute("jumlah", 25);
-                model.addAttribute("diambil", terpilih.size());
+                int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
+                model.addAttribute("diambil", sum);
             }else {
                 model.addAttribute("jumlah", 23 );
-                model.addAttribute("diambil", terpilih.size());
+                int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
+                model.addAttribute("diambil", sum);
             }
         }
 
