@@ -15,8 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class KrsMahasiswaController {
@@ -48,7 +47,7 @@ public class KrsMahasiswaController {
 
     @GetMapping("/api/krs")
     @ResponseBody
-    public Integer ipk(Authentication authentication){
+    public Integer ipk(Authentication authentication,Model model){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -71,6 +70,7 @@ public class KrsMahasiswaController {
             if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
                 if (krsDetail.isEmpty()) {
                     return new Integer(25);
+
                 }else {
                     return new Integer(25) - krsDetail.size();
                 }
@@ -98,7 +98,8 @@ public class KrsMahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,ta);
-        List<Jadwal> rekap = new ArrayList<>();
+        List<KrsDetail> terpilih = krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF);
+        Map<String, Jadwal> matkulYangBisaDipilih = new LinkedHashMap<>();
         Grade grade = gradeDao.findById("8").get();
         model.addAttribute("tahun", ta);
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
@@ -116,7 +117,7 @@ public class KrsMahasiswaController {
                                 if (kd.isEmpty()){
 
                                     if (prasyarat.isEmpty()){
-                                        rekap.add(j);
+                                        matkulYangBisaDipilih.put(j.getId(), j);
                                     }else {
 
                                         for (Prasyarat pras : prasyarat) {
@@ -127,7 +128,7 @@ public class KrsMahasiswaController {
                                                     System.out.println("prasayarat umum krs null kelas null");
                                                     if (prasList.getBobot() != null){
                                                         if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                            rekap.add(j);
+                                                            matkulYangBisaDipilih.put(j.getId(), j);
                                                             break;
                                                         }
                                                    }
@@ -146,7 +147,7 @@ public class KrsMahasiswaController {
                                             if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
 
                                                 if (prasyarat.isEmpty()){
-                                                    rekap.add(j);
+                                                    matkulYangBisaDipilih.put(j.getId(), j);
                                                 }else {
 
                                                     for (Prasyarat pras : prasyarat) {
@@ -157,7 +158,7 @@ public class KrsMahasiswaController {
                                                                 System.out.println("prasayarat umum kelas null");
                                                                 if (prasList.getBobot() != null){
                                                                     if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                                        rekap.add(j);
+                                                                        matkulYangBisaDipilih.put(j.getId(), j);
                                                                         break;
                                                                     }
                                                                 }
@@ -183,7 +184,7 @@ public class KrsMahasiswaController {
                                 if (kd.isEmpty()){
 
                                     if (prasyarat.isEmpty()){
-                                        rekap.add(j);
+                                        matkulYangBisaDipilih.put(j.getId(), j);
                                     }else {
 
                                         for (Prasyarat pras : prasyarat) {
@@ -194,7 +195,7 @@ public class KrsMahasiswaController {
                                                     System.out.println("prasayarat prodi krs null kelas null");
                                                     if (prasList.getBobot() != null){
                                                         if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                            rekap.add(j);
+                                                            matkulYangBisaDipilih.put(j.getId(), j);
                                                             break;
                                                         }
                                                     }
@@ -213,7 +214,7 @@ public class KrsMahasiswaController {
                                             if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
 
                                                 if (prasyarat.isEmpty()){
-                                                    rekap.add(j);
+                                                    matkulYangBisaDipilih.put(j.getId(), j);
                                                 }else {
 
                                                     for (Prasyarat pras : prasyarat) {
@@ -224,7 +225,7 @@ public class KrsMahasiswaController {
                                                                 System.out.println("prasayarat prodi kelas null");
                                                                 if (prasList.getBobot() != null){
                                                                     if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                                        rekap.add(j);
+                                                                        matkulYangBisaDipilih.put(j.getId(), j);
                                                                         break;
                                                                     }
                                                                 }
@@ -258,7 +259,7 @@ public class KrsMahasiswaController {
                             if (kd.isEmpty()){
 
                                 if (prasyarat.isEmpty()){
-                                    rekap.add(j);
+                                    matkulYangBisaDipilih.put(j.getId(), j);
                                 }else {
 
                                     for (Prasyarat pras : prasyarat) {
@@ -269,7 +270,7 @@ public class KrsMahasiswaController {
                                                 System.out.println("prasayarat umum krs null");
                                                 if (prasList.getBobot() != null){
                                                     if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                        rekap.add(j);
+                                                        matkulYangBisaDipilih.put(j.getId(), j);
                                                         break;
                                                     }
                                                 }
@@ -288,7 +289,7 @@ public class KrsMahasiswaController {
                                         if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
 
                                             if (prasyarat.isEmpty()){
-                                                rekap.add(j);
+                                                matkulYangBisaDipilih.put(j.getId(), j);
                                             }else {
 
                                                 for (Prasyarat pras : prasyarat) {
@@ -299,7 +300,7 @@ public class KrsMahasiswaController {
                                                             System.out.println("prasayarat umum");
                                                             if (prasList.getBobot() != null){
                                                                 if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                                    rekap.add(j);
+                                                                    matkulYangBisaDipilih.put(j.getId(), j);
                                                                     break;
                                                                 }
                                                             }
@@ -331,7 +332,7 @@ public class KrsMahasiswaController {
                             if (kd.isEmpty()){
 
                                 if (prasyarat.isEmpty()){
-                                    rekap.add(j);
+                                    matkulYangBisaDipilih.put(j.getId(), j);
                                 }else {
 
                                     for (Prasyarat pras : prasyarat) {
@@ -342,7 +343,7 @@ public class KrsMahasiswaController {
                                                 System.out.println("prasayarat prodi krs null");
                                                 if (prasList.getBobot() != null){
                                                     if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                        rekap.add(j);
+                                                        matkulYangBisaDipilih.put(j.getId(), j);
                                                         break;
                                                     }
                                                 }
@@ -361,7 +362,7 @@ public class KrsMahasiswaController {
                                         if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
 
                                             if (prasyarat.isEmpty()){
-                                                rekap.add(j);
+                                                matkulYangBisaDipilih.put(j.getId(), j);
                                             }else {
 
                                                 for (Prasyarat pras : prasyarat) {
@@ -372,7 +373,7 @@ public class KrsMahasiswaController {
                                                             System.out.println("prasayarat prodi");
                                                             if (prasList.getBobot() != null){
                                                                 if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
-                                                                    rekap.add(j);
+                                                                    matkulYangBisaDipilih.put(j.getId(), j);
                                                                     break;
                                                                 }
                                                             }
@@ -403,7 +404,7 @@ public class KrsMahasiswaController {
                             if (kd.isEmpty()) {
 
                                 if (prasyarat.isEmpty()) {
-                                    rekap.add(j);
+                                    matkulYangBisaDipilih.put(j.getId(), j);
                                 } else {
 
                                     for (Prasyarat pras : prasyarat) {
@@ -414,7 +415,7 @@ public class KrsMahasiswaController {
                                                 System.out.println("prasayarat kelas krs null");
                                                 if (prasList.getBobot() != null){
                                                     if (prasList.getBobot().toBigInteger().intValue() >= pras.getNilai().toBigInteger().intValue()) {
-                                                        rekap.add(j);
+                                                        matkulYangBisaDipilih.put(j.getId(), j);
                                                         break;
                                                     }
                                                 }
@@ -433,18 +434,18 @@ public class KrsMahasiswaController {
                                         if (krsDetail.getBobot().toBigInteger().intValue() <= grade.getBobot().toBigInteger().intValue()) {
 
                                             if (prasyarat.isEmpty()) {
-                                                rekap.add(j);
+                                                matkulYangBisaDipilih.put(j.getId(), j);
                                             } else {
 
                                                 for (Prasyarat pras : prasyarat) {
-                                                    List<KrsDetail> cariPras = krsDetailDao.findByMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndKrsNotIn(pras.getMatakuliahPras().getKodeMatakuliah(),mahasiswa,StatusRecord.AKTIF,k);
+                                                    List<KrsDetail> cariPras = krsDetailDao.findByMatakuliahKurikulumMatakuliahKodeMatakuliahAndMahasiswaAndStatusAndBobotGreaterThanEqualAndKrsNotIn(pras.getMatakuliahPras().getKodeMatakuliah(),mahasiswa,StatusRecord.AKTIF,pras.getNilai().intValue(),k);
 
                                                     if (cariPras != null) {
                                                         for (KrsDetail prasList : cariPras) {
                                                             System.out.println("prasayarat kelas");
                                                             if (prasList.getBobot() != null){
                                                                 if (prasList.getBobot().toBigInteger().intValue() >= pras.getNilai().toBigInteger().intValue()) {
-                                                                    rekap.add(j);
+                                                                    matkulYangBisaDipilih.put(j.getId(), j);
                                                                     break;
                                                                 }
                                                             }
@@ -467,12 +468,27 @@ public class KrsMahasiswaController {
 
 
         }
+
+        if (ta.getJenis() == StatusRecord.PENDEK){
+                model.addAttribute("jumlah", 2);
+                model.addAttribute("diambil", terpilih.size());
+
+        }else{
+            Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
+            if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
+                model.addAttribute("jumlah", 25);
+                model.addAttribute("diambil", terpilih.size());
+            }else {
+                model.addAttribute("jumlah", 23 );
+                model.addAttribute("diambil", terpilih.size());
+            }
+        }
+
         model.addAttribute("mahasiswa",mahasiswa);
         TahunAkademikProdi tahunProdi = tahunAkademikProdiDao.findByTahunAkademikStatusAndProdi(StatusRecord.AKTIF,mahasiswa.getIdProdi());
 
 
-
-        model.addAttribute("jadwal",rekap);
+        model.addAttribute("jadwal",matkulYangBisaDipilih.values());
 
         if (tahunAkademik != null){
             model.addAttribute("search", tahunAkademik);

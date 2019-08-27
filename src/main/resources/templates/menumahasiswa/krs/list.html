@@ -57,12 +57,14 @@
                     </td>
                     <td th:if="${mahasiswa.dosen == null}">
                         Pemb Akd : </td>
+                    <td><b>Jumlah Batas Maksimal SKS : <span th:text="${jumlah}"></span></b></td>
                 </tr>
                 <tr>
                     <td>NIM &nbsp;&nbsp; : <span th:text="${mahasiswa.nim}"></span></td>
                     <td>Studi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
                         <span th:text="${mahasiswa.idProdi.namaProdi + ' , ' + mahasiswa.idProdi.idJurusan.namaJurusan + ' , ' + mahasiswa.idProdi.idJurusan.idFakultas.namaFakultas}"></span>
                     </td>
+                    <td><b>Jumlah SKS Sudah Diambil : <span th:text="${diambil}"></span></b></td>
                 </tr>
             </table>
 

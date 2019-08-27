@@ -22,16 +22,16 @@
                 <div class="form-group">
                     <div class="row col-sm-offset-1 ">
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>NIM :</label>
-                                    <input type="text" name="nim"
-                                           class="form-control" required
-                                           placeholder="NIM" th:value="${nim}">
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>NIM :</label>
+                                <input type="text" name="nim"
+                                       class="form-control" required
+                                       placeholder="NIM" th:value="${nim}">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label>Academic Years :</label>
                                 <select class="form-control js-example-placeholder-single"
                                         style="width: 100%!important;" name="tahunAkademik" required>
@@ -41,8 +41,9 @@
                                             th:text="${data.namaTahunAkademik}"
                                             th:value="${data.id}">sdasd</option>
                                 </select>
-                                </div>
+                                <input type="hidden" name="idTahun" th:value="${tahun.id}">
                             </div>
+                        </div>
                     </div>
                     <center>
                         <div class="col-md-12">
@@ -186,9 +187,9 @@
 
 
                                 <!--<div class="alert fade in" th:if="${batasRuang != null}">-->
-                                    <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
-                                    <!--<h4>Maaf</h4>-->
-                                    <!--<p th:text="${'Matakuliah ' + batasRuang.matakuliahKurikulum.matakuliah.namaMatakuliah + ' telah terisi penuh silah cari lagi matakuliah yang lain'}"></p>-->
+                                <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
+                                <!--<h4>Maaf</h4>-->
+                                <!--<p th:text="${'Matakuliah ' + batasRuang.matakuliahKurikulum.matakuliah.namaMatakuliah + ' telah terisi penuh silah cari lagi matakuliah yang lain'}"></p>-->
                                 <!--</div>-->
 
                             </div>
@@ -220,14 +221,16 @@
     });
 
     function loadContent(){
-        var url = "/api/validasiKrs?nim=";
+        var url = "/api/validasiKrs";
         console.log(url)
     }
 
     function loadContent(){
 
-        var nim= $("input[name=validasiNim]");
-        var tahun= $("input[name=validasiTahun]");
+        var nim= $("input[name=nim]");
+        var tahun= $("input[name=idTahun]");
+        console.log(nim.val());
+        console.log(tahun.val());
 
         $.get("/api/validasiKrs",{nim: nim.val(),tahun: tahun.val()}, function(data, status){
 
