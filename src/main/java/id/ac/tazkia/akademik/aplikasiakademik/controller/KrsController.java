@@ -550,23 +550,23 @@ public class KrsController {
                 return "redirect:list";
             }
             if (mahasiswa != null){
-            Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik, mahasiswa);
-            TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
-            if (cariKrs == null) {
-                Krs krs = new Krs();
-                krs.setTanggalTransaksi(LocalDateTime.now());
-                krs.setStatus(StatusRecord.AKTIF);
-                krs.setTahunAkademik(tahunAkademik);
-                krs.setNim(mahasiswa.getNim());
-                krs.setProdi(mahasiswa.getIdProdi());
-                krs.setMahasiswa(mahasiswa);
-                krs.setTahunAkademikProdi(tahunAkademikProdi);
-                krsDao.save(krs);
-            }else {
-                cariKrs.setStatus(StatusRecord.AKTIF);
-                krsDao.save(cariKrs);
+                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik, mahasiswa);
+                TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+                if (cariKrs == null) {
+                    Krs krs = new Krs();
+                    krs.setTanggalTransaksi(LocalDateTime.now());
+                    krs.setStatus(StatusRecord.AKTIF);
+                    krs.setTahunAkademik(tahunAkademik);
+                    krs.setNim(mahasiswa.getNim());
+                    krs.setProdi(mahasiswa.getIdProdi());
+                    krs.setMahasiswa(mahasiswa);
+                    krs.setTahunAkademikProdi(tahunAkademikProdi);
+                    krsDao.save(krs);
+                }else {
+                    cariKrs.setStatus(StatusRecord.AKTIF);
+                    krsDao.save(cariKrs);
+                }
             }
-        }
             return "redirect:aktifasi?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
         }
     }
@@ -592,17 +592,17 @@ public class KrsController {
                         System.out.println(krs.size() +  "   jumlaaah");
                         if (total <= 2) {
                             if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                    KrsDetail kd = new KrsDetail();
-                                    kd.setJadwal(jadwal);
-                                    kd.setKrs(cariKrs);
-                                    kd.setMahasiswa(mahasiswa);
-                                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                                    kd.setNilaiPresensi(BigDecimal.ZERO);
-                                    kd.setNilaiTugas(BigDecimal.ZERO);
-                                    kd.setNilaiUas(BigDecimal.ZERO);
-                                    kd.setNilaiUts(BigDecimal.ZERO);
-                                    kd.setFinalisasi("N");
-                                    krsDetailDao.save(kd);
+                                KrsDetail kd = new KrsDetail();
+                                kd.setJadwal(jadwal);
+                                kd.setKrs(cariKrs);
+                                kd.setMahasiswa(mahasiswa);
+                                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                kd.setNilaiPresensi(BigDecimal.ZERO);
+                                kd.setNilaiTugas(BigDecimal.ZERO);
+                                kd.setNilaiUas(BigDecimal.ZERO);
+                                kd.setNilaiUts(BigDecimal.ZERO);
+                                kd.setFinalisasi("N");
+                                krsDetailDao.save(kd);
                             }else {
                                 attributes.addFlashAttribute("batasRuang", jadwal);
                             }
@@ -639,17 +639,17 @@ public class KrsController {
                             System.out.println(krs.size() +  "   jumlaaah");
                             if (total <= 25) {
                                 if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                        KrsDetail kd = new KrsDetail();
-                                        kd.setJadwal(jadwal);
-                                        kd.setKrs(cariKrs);
-                                        kd.setMahasiswa(mahasiswa);
-                                        kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                                        kd.setNilaiPresensi(BigDecimal.ZERO);
-                                        kd.setNilaiTugas(BigDecimal.ZERO);
-                                        kd.setNilaiUas(BigDecimal.ZERO);
-                                        kd.setNilaiUts(BigDecimal.ZERO);
-                                        kd.setFinalisasi("N");
-                                        krsDetailDao.save(kd);
+                                    KrsDetail kd = new KrsDetail();
+                                    kd.setJadwal(jadwal);
+                                    kd.setKrs(cariKrs);
+                                    kd.setMahasiswa(mahasiswa);
+                                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                    kd.setNilaiPresensi(BigDecimal.ZERO);
+                                    kd.setNilaiTugas(BigDecimal.ZERO);
+                                    kd.setNilaiUas(BigDecimal.ZERO);
+                                    kd.setNilaiUts(BigDecimal.ZERO);
+                                    kd.setFinalisasi("N");
+                                    krsDetailDao.save(kd);
                                 }else {
                                     attributes.addFlashAttribute("batasRuang", jadwal);
                                 }
@@ -683,17 +683,17 @@ public class KrsController {
                             System.out.println(krs.size() +  "   jumlaaah");
                             if (total <= 23) {
                                 if (data.length + krs.size() < jadwal.getRuangan().getKapasitas().intValue()){
-                                        KrsDetail kd = new KrsDetail();
-                                        kd.setJadwal(jadwal);
-                                        kd.setKrs(cariKrs);
-                                        kd.setMahasiswa(mahasiswa);
-                                        kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                                        kd.setNilaiPresensi(BigDecimal.ZERO);
-                                        kd.setNilaiTugas(BigDecimal.ZERO);
-                                        kd.setNilaiUas(BigDecimal.ZERO);
-                                        kd.setNilaiUts(BigDecimal.ZERO);
-                                        kd.setFinalisasi("N");
-                                        krsDetailDao.save(kd);
+                                    KrsDetail kd = new KrsDetail();
+                                    kd.setJadwal(jadwal);
+                                    kd.setKrs(cariKrs);
+                                    kd.setMahasiswa(mahasiswa);
+                                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                                    kd.setNilaiPresensi(BigDecimal.ZERO);
+                                    kd.setNilaiTugas(BigDecimal.ZERO);
+                                    kd.setNilaiUas(BigDecimal.ZERO);
+                                    kd.setNilaiUts(BigDecimal.ZERO);
+                                    kd.setFinalisasi("N");
+                                    krsDetailDao.save(kd);
                                 }else {
                                     attributes.addFlashAttribute("batasRuang", jadwal);
                                 }

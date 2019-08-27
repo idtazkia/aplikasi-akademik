@@ -34,14 +34,13 @@
                             <div class="form-group">
                                 <label>Academic Years :</label>
                                 <select class="form-control js-example-placeholder-single"
-                                        style="width: 100%!important;" name="tahunAkademik" required>
+                                        style="width: 100%!important;" name="tahunAkademik" th:value="${tahun}" required>
                                     <option></option>
                                     <option th:each="data : ${tahunAkademik}"
                                             th:selected="(${data} == *{tahun})"
                                             th:text="${data.namaTahunAkademik}"
                                             th:value="${data.id}">sdasd</option>
                                 </select>
-                                <input type="hidden" name="idTahun" th:value="${tahun.id}">
                             </div>
                         </div>
                     </div>
@@ -64,6 +63,7 @@
             <div th:if="${detail != null}">
                 <Center>
                     <H2 th:if="${krs != null}" th:text="${krs.tahunAkademik.namaTahunAkademik}"></H2>
+                    <input type="hidden" name="tahun" th:value="${krs.tahunAkademik.id}">
                 </Center>
             </div>
             <table class="table table-striped jambo_table bulk_action" width="100%" th:if="${detail != null}">
@@ -221,16 +221,14 @@
     });
 
     function loadContent(){
-        var url = "/api/validasiKrs";
+        var url = "/api/validasiKrs?nim=";
         console.log(url)
     }
 
     function loadContent(){
 
         var nim= $("input[name=nim]");
-        var tahun= $("input[name=idTahun]");
-        console.log(nim.val());
-        console.log(tahun.val());
+        var tahun= $("input[name=tahun]");
 
         $.get("/api/validasiKrs",{nim: nim.val(),tahun: tahun.val()}, function(data, status){
 
