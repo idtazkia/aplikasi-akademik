@@ -13,16 +13,13 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -35,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -147,7 +143,7 @@ public class PenilaianController {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Page<Jadwal> jadwal = jadwalDao.cariDosen(StatusRecord.AKTIF, tahun, page);
-        model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenAndIdHariNotNull(StatusRecord.AKTIF, tahun,dosen));
+        model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord.AKTIF, tahun,dosen));
         if (jadwal != null || jadwal.isEmpty()) {
             model.addAttribute("dosen", jadwal);
         }
@@ -837,7 +833,7 @@ public class PenilaianController {
         int rowInfo2 = 6 ;
         Row rowi2 = sheet.createRow(rowInfo2);
         rowi2.createCell(2).setCellValue("Day/date :");
-        rowi2.createCell(3).setCellValue(jadwal.getIdHari().getNamaHari());
+        rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
         rowi2.createCell(5).setCellValue("Semester :");
         rowi2.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getSemester());
 

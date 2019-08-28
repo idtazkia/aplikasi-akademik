@@ -5,7 +5,6 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -49,7 +48,7 @@ public class RekapController {
 
         if (tahunAkademik != null) {
             List<Krs> krs = krsDao.findByTahunAkademikAndStatusAndKrsDetailsNotNull(tahunAkademik,StatusRecord.AKTIF);
-            List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndIdHariNotNull(tahunAkademik);
+            List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndHariNotNull(tahunAkademik);
             model.addAttribute("matkul", jadwal);
 
             List<Krs> krsWithoutDuplicates = krs.stream()
