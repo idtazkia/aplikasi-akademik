@@ -1,6 +1,5 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.constants.ExcelFileConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
@@ -8,12 +7,14 @@ import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,19 +115,19 @@ public class KebijakanPresensiController {
         model.addAttribute("selectedProgram",program);
 
         if (program != null && tahunAkademik != null && hari != null){
-            model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,hari,program));
+            model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,hari,program));
         }
 
 
         if (program != null && tahunAkademik != null && hari == null){
-            model.addAttribute("minggu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"0",program));
-            model.addAttribute("senin", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"1",program));
-            model.addAttribute("selasa", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"2",program));
-            model.addAttribute("rabu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"3",program));
-            model.addAttribute("kamis", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"4",program));
-            model.addAttribute("jumat", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"5",program));
-            model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariIdAndProgram(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"6",program));
-            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndIdHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+            model.addAttribute("minggu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"0",program));
+            model.addAttribute("senin", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"1",program));
+            model.addAttribute("selasa", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"2",program));
+            model.addAttribute("rabu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"3",program));
+            model.addAttribute("kamis", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"4",program));
+            model.addAttribute("jumat", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"5",program));
+            model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"6",program));
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
         }
 
     }
@@ -153,15 +154,8 @@ public class KebijakanPresensiController {
 
 
 
-        model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,dosen,tahunAkademik));
+        model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndDosenAndTahunAkademikAndHariNotNull(StatusRecord.HAPUS,dosen,tahunAkademik));
         model.addAttribute("teamTeaching", jadwalList);
-//        model.addAttribute("senin", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"1",dosen,tahunAkademik));
-//        model.addAttribute("selasa", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"2",dosen,tahunAkademik));
-//        model.addAttribute("rabu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"3",dosen,tahunAkademik));
-//        model.addAttribute("kamis", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"4",dosen,tahunAkademik));
-//        model.addAttribute("jumat", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"5",dosen,tahunAkademik));
-//        model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndIdHariIdAndDosenAndTahunAkademikAndIdHariNotNull(StatusRecord.HAPUS,"6",dosen,tahunAkademik));
-
 
     }
 
@@ -185,7 +179,7 @@ public class KebijakanPresensiController {
         }
         model.addAttribute("detail",detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
-//        model.addAttribute("teamTeaching", jadwal.getDosens());
+        model.addAttribute("teamTeaching", jadwal.getDosens());
         model.addAttribute("jadwal", jadwal);
     }
 
@@ -324,6 +318,41 @@ public class KebijakanPresensiController {
             presensiMahasiswaDao.save(presensiMahasiswa);
         }
         return "redirect:/kebijakanpresensi/list";
+    }
+
+    @GetMapping("/kebijakanpresensi/detailedit")
+    public void editDetail(Model model, @RequestParam String id){
+
+        SesiKuliah sk = sesiKuliahDao.findById(id).get();
+        JadwalDto jadwalDto = new JadwalDto();
+        jadwalDto.setId(sk.getId());
+        jadwalDto.setJadwal(sk.getJadwal());
+        jadwalDto.setBeritaAcara(sk.getBeritaAcara());
+        jadwalDto.setDosen(sk.getPresensiDosen().getDosen());
+        jadwalDto.setPresensiDosen(sk.getPresensiDosen());
+        jadwalDto.setTanggal(sk.getWaktuMulai().toLocalDate());
+        jadwalDto.setId(sk.getId());
+        jadwalDto.setJamMulai(sk.getWaktuMulai().toLocalTime());
+        jadwalDto.setJamSelesai(sk.getWaktuSelesai().toLocalTime());
+        jadwalDto.setDosens(sk.getJadwal().getDosens());
+        System.out.println(sk.getWaktuMulai());
+        System.out.println(sk.getWaktuSelesai());
+
+
+
+        model.addAttribute("sesi", jadwalDto);
+
+    }
+
+    @PostMapping("/kebijakanpresensi/detailedit")
+    public String updateDetail(@Valid @ModelAttribute JadwalDto jadwalDto){
+        SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
+        sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMasuk().toLocalTime()));
+        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamKeluar().toLocalTime()));
+        sesiKuliah.getPresensiDosen().setDosen(jadwalDto.getDosen());
+        sesiKuliahDao.save(sesiKuliah);
+        return "redirect:detail";
     }
 
 
