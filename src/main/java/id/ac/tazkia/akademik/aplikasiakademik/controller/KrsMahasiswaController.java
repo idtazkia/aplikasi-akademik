@@ -57,7 +57,7 @@ public class KrsMahasiswaController {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs krs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa);
         List<Integer> sksDiambil = new ArrayList<>();
-        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,krs,StatusRecord.AKTIF);
+        List<KrsDetail> krsDetail = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, krs, mahasiswa);
         for (KrsDetail kd : krsDetail){
             sksDiambil.add(kd.getMatakuliahKurikulum().getJumlahSks());
         }
@@ -77,17 +77,17 @@ public class KrsMahasiswaController {
             Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
             if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
                 if (krsDetail.isEmpty()) {
-                    return new Integer(25);
+                    return new Integer(24);
 
                 }else {
-                    return new Integer(25) - sum;
+                    return new Integer(24) - sum;
                 }
             }
 
             if (krsDetail.isEmpty()) {
-                return new Integer(23);
+                return new Integer(21);
             }else {
-                return new Integer(23) -sum;
+                return new Integer(21) -sum;
             }
         }
 
@@ -107,7 +107,7 @@ public class KrsMahasiswaController {
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,ta);
         List<Integer> sksDiambil = new ArrayList<>();
-        List<KrsDetail> terpilih = krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa,k,StatusRecord.AKTIF);
+        List<KrsDetail> terpilih = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa);
         for (KrsDetail kd : terpilih){
             sksDiambil.add(kd.getMatakuliahKurikulum().getJumlahSks());
         }
@@ -116,11 +116,13 @@ public class KrsMahasiswaController {
         model.addAttribute("tahun", ta);
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
+        System.out.println("jumlah krs" + terpilih.size());
+
         if (k!= null && LocalDate.now().compareTo(ta.getTanggalMulaiKrs()) >= 0 == true && LocalDate.now().compareTo(ta.getTanggalSelesaiKrs()) <= 0 == true) {
             model.addAttribute("krsAktif", k);
 
             if (kelasMahasiswa == null){
-                List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
+                List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
                 for (Jadwal j : jadwal){
 
                     List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
@@ -139,7 +141,7 @@ public class KrsMahasiswaController {
                                     for (KrsDetail prasList : cariPras) {
                                         System.out.println("prasayarat umum krs null kelas null");
                                         if (prasList.getBobot() != null){
-                                            if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                            if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                 matkulYangBisaDipilih.put(j.getId(), j);
                                                 break;
                                             }
@@ -156,7 +158,7 @@ public class KrsMahasiswaController {
                         for (KrsDetail krsDetail : kd) {
                             if (krsDetail.getBobot() != null){
 
-                                if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
+                                if (krsDetail.getBobot().compareTo(grade.getBobot()) <= 0){
 
                                     if (prasyarat.isEmpty()){
                                         matkulYangBisaDipilih.put(j.getId(), j);
@@ -169,7 +171,7 @@ public class KrsMahasiswaController {
                                                 for (KrsDetail prasList : cariPras) {
                                                     System.out.println("prasayarat umum kelas null");
                                                     if (prasList.getBobot() != null){
-                                                        if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                        if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                             matkulYangBisaDipilih.put(j.getId(), j);
                                                             break;
                                                         }
@@ -187,7 +189,7 @@ public class KrsMahasiswaController {
                     }
                 }
 
-                List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
+                List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
                 for (Jadwal j : jadwalProdi){
 
                     List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
@@ -206,7 +208,7 @@ public class KrsMahasiswaController {
                                     for (KrsDetail prasList : cariPras) {
                                         System.out.println("prasayarat prodi krs null kelas null");
                                         if (prasList.getBobot() != null){
-                                            if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                            if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                 matkulYangBisaDipilih.put(j.getId(), j);
                                                 break;
                                             }
@@ -223,7 +225,7 @@ public class KrsMahasiswaController {
                         for (KrsDetail krsDetail : kd) {
                             if (krsDetail.getBobot() != null){
 
-                                if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
+                                if (krsDetail.getBobot().compareTo(grade.getBobot()) <= 0){
 
                                     if (prasyarat.isEmpty()){
                                         matkulYangBisaDipilih.put(j.getId(), j);
@@ -236,7 +238,7 @@ public class KrsMahasiswaController {
                                                 for (KrsDetail prasList : cariPras) {
                                                     System.out.println("prasayarat prodi kelas null");
                                                     if (prasList.getBobot() != null){
-                                                        if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                        if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                             matkulYangBisaDipilih.put(j.getId(), j);
                                                             break;
                                                         }
@@ -258,12 +260,12 @@ public class KrsMahasiswaController {
 
 
 
-            List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
+            List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndHariNotNull(ta,Akses.UMUM,StatusRecord.AKTIF);
             for (Jadwal j : jadwal){
 
                 if (kelasMahasiswa != null){
 
-                    if (j.getIdKelas() != kelasMahasiswa.getKelas()){
+                    if (j.getKelas() != kelasMahasiswa.getKelas()){
 
                         List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
                         List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
@@ -281,7 +283,7 @@ public class KrsMahasiswaController {
                                         for (KrsDetail prasList : cariPras) {
                                             System.out.println("prasayarat umum krs null");
                                             if (prasList.getBobot() != null){
-                                                if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                     matkulYangBisaDipilih.put(j.getId(), j);
                                                     break;
                                                 }
@@ -298,7 +300,7 @@ public class KrsMahasiswaController {
                             for (KrsDetail krsDetail : kd) {
                                 if (krsDetail.getBobot() != null){
 
-                                    if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
+                                    if (krsDetail.getBobot().compareTo(grade.getBobot()) <= 0){
 
                                         if (prasyarat.isEmpty()){
                                             matkulYangBisaDipilih.put(j.getId(), j);
@@ -311,7 +313,7 @@ public class KrsMahasiswaController {
                                                     for (KrsDetail prasList : cariPras) {
                                                         System.out.println("prasayarat umum");
                                                         if (prasList.getBobot() != null){
-                                                            if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                            if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                                 matkulYangBisaDipilih.put(j.getId(), j);
                                                                 break;
                                                             }
@@ -331,12 +333,12 @@ public class KrsMahasiswaController {
                 }
             }
 
-            List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
+            List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(ta,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
             for (Jadwal j : jadwalProdi){
 
                 if (kelasMahasiswa != null){
 
-                    if (j.getIdKelas() != kelasMahasiswa.getKelas()){
+                    if (j.getKelas() != kelasMahasiswa.getKelas()){
 
                         List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
                         List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
@@ -354,7 +356,7 @@ public class KrsMahasiswaController {
                                         for (KrsDetail prasList : cariPras) {
                                             System.out.println("prasayarat prodi krs null");
                                             if (prasList.getBobot() != null){
-                                                if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                     matkulYangBisaDipilih.put(j.getId(), j);
                                                     break;
                                                 }
@@ -371,7 +373,7 @@ public class KrsMahasiswaController {
                             for (KrsDetail krsDetail : kd) {
                                 if (krsDetail.getBobot() != null){
 
-                                    if (krsDetail.getBobot().compareTo(grade.getBobot()) < 0){
+                                    if (krsDetail.getBobot().compareTo(grade.getBobot()) <= 0){
 
                                         if (prasyarat.isEmpty()){
                                             matkulYangBisaDipilih.put(j.getId(), j);
@@ -384,7 +386,7 @@ public class KrsMahasiswaController {
                                                     for (KrsDetail prasList : cariPras) {
                                                         System.out.println("prasayarat prodi");
                                                         if (prasList.getBobot() != null){
-                                                            if (prasList.getBobot().compareTo(pras.getNilai()) > 0) {
+                                                            if (prasList.getBobot().compareTo(pras.getNilai()) >= 0) {
                                                                 matkulYangBisaDipilih.put(j.getId(), j);
                                                                 break;
                                                             }
@@ -406,7 +408,7 @@ public class KrsMahasiswaController {
 
 
             if (kelasMahasiswa != null) {
-                List<Jadwal> jadwalKelas = jadwalDao.findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(ta, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
+                List<Jadwal> jadwalKelas = jadwalDao.findByTahunAkademikAndKelasAndStatusAndHariNotNull(ta, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
                 if (!jadwalKelas.isEmpty()) {
                     for (Jadwal j : jadwalKelas) {
 
@@ -488,11 +490,11 @@ public class KrsMahasiswaController {
         }else{
             Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
             if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
-                model.addAttribute("jumlah", 25);
+                model.addAttribute("jumlah", 24);
                 int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
                 model.addAttribute("diambil", sum);
             }else {
-                model.addAttribute("jumlah", 23 );
+                model.addAttribute("jumlah", 21 );
                 int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
                 model.addAttribute("diambil", sum);
             }
@@ -510,12 +512,12 @@ public class KrsMahasiswaController {
             model.addAttribute("krs",krs);
 
 
-            model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
+            model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
         }else {
             Krs krs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF,mahasiswa);
             model.addAttribute("krs",krs);
 
-            model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
+            model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
 
         }
 
@@ -531,8 +533,14 @@ public class KrsMahasiswaController {
         TahunAkademikProdi tahunProdi = tahunAkademikProdiDao.findByTahunAkademikStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
 
         Krs cariKrs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
-        List<KrsDetail> krsDetails = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, cariKrs, mahasiswa);
+        List<KrsDetail> krsDetails = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, cariKrs, mahasiswa);
         Grade grade = gradeDao.findById("8").get();
+
+        List<Integer> sksDiambil = new ArrayList<>();
+        for (KrsDetail kd : krsDetails){
+            sksDiambil.add(kd.getMatakuliahKurikulum().getJumlahSks());
+        }
+        int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
 
 
 //        Buat Semester Pendek
@@ -585,7 +593,7 @@ public class KrsMahasiswaController {
             if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
 
                 if (data != null){
-                    if (krsDetails.size() < 25) {
+                    if (sum < 24) {
                         for (String idJadwal : data) {
                             System.out.println(idJadwal);
                             int total = data.length + krsDetails.size();
@@ -620,7 +628,7 @@ public class KrsMahasiswaController {
                         }
                     }
 
-                    if (krsDetails.size() == 25 || krsDetails.size() > 25) {
+                    if (sum == 24 || sum > 24) {
                         System.out.printf("Anda tidak bisa mengambil lagi matakuliah");
                     }
 
@@ -631,7 +639,7 @@ public class KrsMahasiswaController {
 
             }else {
                 if (data != null){
-                    if (krsDetails.size() < 23) {
+                    if (sum < 21) {
                         for (String idJadwal : data) {
                             System.out.println(idJadwal);
                             int total = data.length + krsDetails.size();
@@ -666,7 +674,7 @@ public class KrsMahasiswaController {
                         }
                     }
 
-                    if (krsDetails.size() == 2 || krsDetails.size() > 2) {
+                    if (sum == 21 || sum > 21) {
                         System.out.printf("Anda tidak bisa mengambil lagi matakuliah");
                     }
 

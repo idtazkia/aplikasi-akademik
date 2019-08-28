@@ -81,18 +81,18 @@
                             <div class="form-group">
                                 <label class="col-form-label">Hari :</label>
                                 <select class="form-control js-example-placeholder-single" onchange="mySesi()"
-                                        style="width: 100%!important;" id="select2-hari" th:field="*{idHari}">
+                                        style="width: 100%!important;" id="select2-hari" th:field="*{hari}">
                                     <option value=""></option>
                                     <option th:each="data: ${hari}"
                                             th:text="${data.namaHari + '  -  ' + data.namaHariEng}"
                                             th:value="${data.id}">sdasd</option>
                                 </select>
-                                <!--<input th:if="${jadwal.idHari != null}" type="text" class="form-control" id="hari"-->
-                                <!--th:value="${jadwal.idHari.namaHariEng}" placeholder="Cari Hari ..." data-provide="typeahead"-->
+                                <!--<input th:if="${jadwal.hari != null}" type="text" class="form-control" id="hari"-->
+                                <!--th:value="${jadwal.hari.namaHariEng}" placeholder="Cari Hari ..." data-provide="typeahead"-->
                                 <!--autocomplete="off" required>-->
-                                <!--<input type="text" class="form-control" id="hari" th:if="${jadwal.idHari == null}"-->
+                                <!--<input type="text" class="form-control" id="hari" th:if="${jadwal.hari == null}"-->
                                 <!--placeholder="Cari Hari ..." data-provide="typeahead" autocomplete="off" required>-->
-                                <input type="hidden" id="isiHari" name="idHari" th:field="*{idHari}">
+                                <input type="hidden" id="isiHari" name="hari" th:field="*{hari}">
                             </div>
                         </div>
 
@@ -163,9 +163,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Kelas :</label>
-                                <input type="text" class="form-control" id="plotKelas" th:value="${jadwal.idKelas.namaKelas}"
+                                <input type="text" class="form-control" id="plotKelas" th:value="${jadwal.kelas.namaKelas}"
                                        placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" readonly required>
-                                <input type="hidden" id="isiPlotKelas" name="idKelas" th:field="*{idKelas}">
+                                <input type="hidden" id="isiPlotKelas" name="kelas" th:field="*{kelas}">
                                 <input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum" th:field="*{matakuliahKurikulum}">
                             </div>
                         </div>

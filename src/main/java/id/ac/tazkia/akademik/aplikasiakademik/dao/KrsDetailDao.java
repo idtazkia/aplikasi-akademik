@@ -10,10 +10,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,String> {
-    Page<KrsDetail> findByKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(Krs krs, Mahasiswa mahasiswa, Pageable page);
-    List<KrsDetail> findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord status,Krs krs, Mahasiswa mahasiswa);
+    Page<KrsDetail> findByKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(Krs krs, Mahasiswa mahasiswa, Pageable page);
+    List<KrsDetail> findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord status,Krs krs, Mahasiswa mahasiswa);
 
-    @Query("SELECT u FROM KrsDetail u WHERE u.mahasiswa = ?1 and u.krs = ?2 and u.status= ?3 and u.jadwal.idHari in(DAYOFWEEK(NOW())-1,DAYOFWEEK(NOW())) order by u.jadwal.idHari,u.jadwal.jamMulai")
+    @Query("SELECT u FROM KrsDetail u WHERE u.mahasiswa = ?1 and u.krs = ?2 and u.status= ?3 and u.jadwal.hari in(DAYOFWEEK(NOW())-1,DAYOFWEEK(NOW())) order by u.jadwal.hari,u.jadwal.jamMulai")
     List<KrsDetail> findByMahasiswaAndKrsAndStatus(Mahasiswa mahasiswa, Krs krs, StatusRecord statusRecord);
 
     Page<KrsDetail> findByMahasiswaAndKrsTahunAkademik(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, Pageable page);
@@ -30,8 +30,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     List<KrsDetail> findByJadwalAndStatusAndKrsTahunAkademik(Jadwal jadwal, StatusRecord statusRecord, TahunAkademik tahunAkademik);
     Page<KrsDetail> findByKrs(List<Krs> krs,Pageable page);
     Page<KrsDetail> findDistinctByKrsTahunAkademik(TahunAkademik tahunAkademik,Pageable page);
-
-    KrsDetail findByJadwalSesiAndJadwalIdHariAndStatus(String sesi, Hari hari,StatusRecord statusRecord);
 
     @Query("select k.mahasiswa.id from KrsDetail k where k.status = :status and k.krs= :krs")
     List<KrsDetail> cariKrs(@Param("status")StatusRecord status, @Param("krs")List<Krs> krs);

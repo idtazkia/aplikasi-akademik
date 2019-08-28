@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +127,7 @@ public class KrsController {
                     model.addAttribute("krsAktif", krs);
 
                     if (kelasMahasiswa == null){
-                        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(tahunAkademik,Akses.UMUM,StatusRecord.AKTIF);
+                        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndHariNotNull(tahunAkademik,Akses.UMUM,StatusRecord.AKTIF);
                         for (Jadwal j : jadwal){
 
                             List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
@@ -195,7 +194,7 @@ public class KrsController {
                             }
                         }
 
-                        List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(tahunAkademik,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
+                        List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(tahunAkademik,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
                         for (Jadwal j : jadwalProdi){
 
                             List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
@@ -266,12 +265,12 @@ public class KrsController {
 
 
 
-                    List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndIdHariNotNull(tahunAkademik,Akses.UMUM,StatusRecord.AKTIF);
+                    List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndAksesAndStatusAndHariNotNull(tahunAkademik,Akses.UMUM,StatusRecord.AKTIF);
                     for (Jadwal j : jadwal){
 
                         if (kelasMahasiswa != null){
 
-                            if (j.getIdKelas() != kelasMahasiswa.getKelas()){
+                            if (j.getKelas() != kelasMahasiswa.getKelas()){
 
                                 List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
                                 List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
@@ -339,12 +338,12 @@ public class KrsController {
                         }
                     }
 
-                    List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndIdHariNotNull(tahunAkademik,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
+                    List<Jadwal> jadwalProdi = jadwalDao.findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(tahunAkademik,mahasiswa.getIdProdi(),Akses.PRODI,StatusRecord.AKTIF);
                     for (Jadwal j : jadwalProdi){
 
                         if (kelasMahasiswa != null){
 
-                            if (j.getIdKelas() != kelasMahasiswa.getKelas()){
+                            if (j.getKelas() != kelasMahasiswa.getKelas()){
 
                                 List<KrsDetail> kd = krsDetailDao.findByMatakuliahKurikulumAndStatusAndMahasiswa(j.getMatakuliahKurikulum(),StatusRecord.AKTIF, mahasiswa);
                                 List<Prasyarat> prasyarat = prasyaratDao.findByMatakuliahKurikulumAndStatus(j.getMatakuliahKurikulum(), StatusRecord.AKTIF);
@@ -412,7 +411,7 @@ public class KrsController {
                         }
                     }
                     if (kelasMahasiswa != null) {
-                        List<Jadwal> jadwalKelas = jadwalDao.findByTahunAkademikAndIdKelasAndStatusAndIdHariNotNull(tahunAkademik, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
+                        List<Jadwal> jadwalKelas = jadwalDao.findByTahunAkademikAndKelasAndStatusAndHariNotNull(tahunAkademik, kelasMahasiswa.getKelas(), StatusRecord.AKTIF);
                         if (!jadwalKelas.isEmpty()) {
                             for (Jadwal j : jadwalKelas) {
 
@@ -491,7 +490,7 @@ public class KrsController {
                 model.addAttribute("jadwal",matkulYangBisaDipilih.values());
                 model.addAttribute("krs", krs);
 
-                model.addAttribute("detail", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs, mahasiswa));
+                model.addAttribute("detail", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs, mahasiswa));
             }
         }
 
@@ -576,7 +575,7 @@ public class KrsController {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         Krs cariKrs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
-        List<KrsDetail> krsDetails = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalIdHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, cariKrs, mahasiswa);
+        List<KrsDetail> krsDetails = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, cariKrs, mahasiswa);
 
 //        Buat Semester Pendek
         if (tahunAkademik.getJenis() == StatusRecord.PENDEK) {

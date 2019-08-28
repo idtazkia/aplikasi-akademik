@@ -34,6 +34,7 @@ public class Karyawan {
     private String nidn;
 
     private String email;
+    private String rfid;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

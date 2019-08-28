@@ -414,7 +414,7 @@
                             <tr th:each="data,row : ${ploting}">
                                 <td th:text="${(row.index + 1)}">1</td>
                                 <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
-                                <td th:text="${data.idKelas.namaKelas}">BMI 14</td>
+                                <td th:text="${data.kelas.namaKelas}">BMI 14</td>
                                 <td th:text="${data.matakuliahKurikulum.jumlahSks}">6</td>
                                 <td th:text="${data.dosen.karyawan.namaKaryawan}">Gifar Haidar</td>
                                 <td><a th:href="@{/jadwalkuliah/form (jadwal = ${data.id})}" class="btn btn-xs btn-primary">Buat Jadwal</a></td>

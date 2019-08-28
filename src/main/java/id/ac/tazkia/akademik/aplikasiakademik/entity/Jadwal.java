@@ -27,7 +27,7 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_hari")
-    private Hari idHari;
+    private Hari hari;
 
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamMulai;
@@ -65,7 +65,7 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "id_kelas")
-    private Kelas idKelas;
+    private Kelas kelas;
 
     private Integer jumlahSesi;
 
