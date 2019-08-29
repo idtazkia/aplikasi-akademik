@@ -112,11 +112,11 @@
                             </td>
                             <td th:text="${(row.index + 1)}">1</td>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}"></td>
-                            <td th:text="${data.jadwal.idHari.namaHariEng}"></td>
+                            <td th:text="${data.jadwal.hari.namaHariEng}"></td>
                             <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}"></td>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Pengantar Akuntansi 1</td>
                             <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
-                            <td th:text="${data.jadwal.idKelas.namaKelas}">AI-A-15</td>
+                            <td th:text="${data.jadwal.kelas.namaKelas}">AI-A-15</td>
                             <td th:text="${data.jadwal.ruangan.namaRuangan}">1.6</td>
                             <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Dewi Febriani</td>
                             <td>
@@ -178,9 +178,9 @@
                                         <td class="column-title" th:text="${row.index + 1}">#</td>
                                         <td class="column-title" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Subject</td>
                                         <td class="column-title" th:text="${jadwal.dosen.karyawan.namaKaryawan}">Lecture</td>
-                                        <td class="column-title" th:text="${jadwal.IdHari.namaHariEng}">Lecture</td>
+                                        <td class="column-title" th:text="${jadwal.hari.namaHariEng}">Lecture</td>
                                         <td class="column-title" th:text="${jadwal.jamMulai + '  -  ' + jadwal.jamSelesai}">Lecture</td>
-                                        <td class="column-title" th:text="${jadwal.idKelas.namaKelas}">Lecture</td>
+                                        <td class="column-title" th:text="${jadwal.kelas.namaKelas}">Lecture</td>
                                     </tr>
                                     </tbody>
                                 </table>
