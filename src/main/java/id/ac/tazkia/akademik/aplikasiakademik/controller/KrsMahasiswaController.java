@@ -48,6 +48,18 @@ public class KrsMahasiswaController {
     @Autowired
     private IpkDao ipkDao;
 
+    @GetMapping("/api/sum")
+    @ResponseBody
+    public void sum(@RequestParam String sks,@RequestParam String hasil){
+        int awal = Integer.parseInt(sks);
+        int result = Integer.parseInt(hasil);
+
+        System.out.println(awal+result);
+
+
+
+    }
+
     @GetMapping("/api/krs")
     @ResponseBody
     public Integer ipk(Authentication authentication,Model model){
@@ -75,7 +87,9 @@ public class KrsMahasiswaController {
 
         }else {
             Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
-            if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
+            System.out.println(ipk.getIpk().toBigInteger().intValue());
+            System.out.println(new BigDecimal(3.00).toBigInteger().intValue());
+            if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0){
                 if (krsDetail.isEmpty()) {
                     return new Integer(24);
 
@@ -489,7 +503,7 @@ public class KrsMahasiswaController {
 
         }else{
             Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
-            if (ipk.getIpk().toBigInteger().intValue() > new BigDecimal(3.00).toBigInteger().intValue()){
+            if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0){
                 model.addAttribute("jumlah", 24);
                 int sum = sksDiambil.stream().mapToInt(Integer::intValue).sum();
                 model.addAttribute("diambil", sum);

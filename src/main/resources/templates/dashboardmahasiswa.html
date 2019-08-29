@@ -199,7 +199,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="data,row : ${krsdetail}">
-                            <th th:text="${data.jadwal.idHari.namaHari+' - '+ data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">#</th>
+                            <th th:text="${data.jadwal.hari.namaHari+' - '+ data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">#</th>
                             <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Mark</td>
                             <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Mark</td>
                             <td th:text="${data.jadwal.ruangan.namaRuangan}">Mark</td>
