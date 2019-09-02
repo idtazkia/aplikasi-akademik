@@ -80,9 +80,9 @@
                                 <td th:text="${jadwal.id}">#5463</td>
                                 <td th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}">SDS2019</td>
                                 <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
-                                <td th:text="${jadwal.idKelas.namaKelas}">K <small style="font-size: 8px;">R-10</small></td>
-                                <td th:if="${jadwal.idHari != null}" th:text="${jadwal.idHari.namaHariEng}">Selasa</td>
-                                <td th:if="${jadwal.idHari == null}"></td>
+                                <td th:text="${jadwal.kelas.namaKelas}">K <small style="font-size: 8px;">R-10</small></td>
+                                <td th:if="${jadwal.hari != null}" th:text="${jadwal.hari.namaHariEng}">Selasa</td>
+                                <td th:if="${jadwal.hari == null}"></td>
                                 <td th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</td>
                                 <td>
                                     <a th:href="@{/penilaian/bobot (jadwal = ${jadwal.id})}">

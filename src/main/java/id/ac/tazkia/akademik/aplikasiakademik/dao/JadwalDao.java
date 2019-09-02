@@ -16,8 +16,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
     static final String QUERY_JADWAL_DOSEN_DTO =
             "select new id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto(" +
-            "j.dosen.absen, j.dosen.karyawan.namaKaryawan, j.dosen.karyawan.rfid, " +
-            "j.id, j.jamMulai, j.jamSelesai) " +
+            "j.dosen.id,j.dosen.absen, j.dosen.karyawan.namaKaryawan, j.dosen.karyawan.rfid, " +
+            "j.id, j.jamMulai, j.jamSelesai, 1) " +
             "from Jadwal j where j.ruangan = :ruangan " +
             "and j.tahunAkademik = :tahunAkademik " +
             "and j.hari = :hari " +
@@ -46,7 +46,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
     List<Jadwal>findByStatusAndTahunAkademik(StatusRecord statusRecord,TahunAkademik tahunAkademik);
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord statusRecord, TahunAkademik tahunAkademik, Dosen dosen);
 
-    List<Jadwal> findByStatusAndTahunAkademikAndProdiAndProgram(StatusRecord status, TahunAkademik tahunAkademik,Prodi prodi,Program program);
+    List<Jadwal> findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNull(StatusRecord status, TahunAkademik tahunAkademik,Prodi prodi,Program program);
 
     @Query("select j.sesi from Jadwal j where j.tahunAkademik = :tahun and j.hari = :hari and j.ruangan = :ruangan")
     List<Jadwal> cariSesi(@Param("tahun")TahunAkademik t, @Param("hari")Hari h, @Param("ruangan")Ruangan r);

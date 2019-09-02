@@ -127,7 +127,7 @@ public class PenilaianController {
             model.addAttribute("selectedTahun",tahunAkademik);
             model.addAttribute("selectedProgram",program);
             Page<Jadwal> jadwal = jadwalDao.cariDosen(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(), page);
-            model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndProdiAndProgram(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(),tahunAkademik.getProdi(),program));
+            model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNull(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(),tahunAkademik.getProdi(),program));
             if (jadwal != null || jadwal.isEmpty()) {
                 model.addAttribute("dosen", jadwal);
             }
