@@ -56,6 +56,9 @@ public class JadwalKuliahController {
     KurikulumDao kurikulumDao;
 
     @Autowired
+    JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @GetMapping("/api/plotKelas")
@@ -224,12 +227,12 @@ public class JadwalKuliahController {
 
         if (program != null && tahunAkademik != null && hari != null){
             model.addAttribute("jadwal", jadwalDao.schedule(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik,hari,program));
-            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNullAndKelasNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
         }
 
 
         if (program != null && tahunAkademik != null && hari == null){
-            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNullAndKelasNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
             model.addAttribute("minggu", jadwalDao.schedule(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik,hariDao.findById("0").get(),program));
             model.addAttribute("senin", jadwalDao.schedule(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik,hariDao.findById("1").get(),program));
             model.addAttribute("selasa", jadwalDao.schedule(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik,hariDao.findById("2").get(),program));
@@ -248,13 +251,13 @@ public class JadwalKuliahController {
         }
 
         model.addAttribute("jadwal",jadwal);
+        model.addAttribute("team",jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.TEAM));
         model.addAttribute("hari", hariDao.findAll());
     }
 
     @PostMapping("/jadwalkuliah/form")
-    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal, @RequestParam(required = false) String plot, RedirectAttributes attributes){
-        
-
+    public String prosesJadwal(@ModelAttribute @Valid Jadwal jadwal, @RequestParam(required = false) String plot,
+                               @RequestParam(required = false) String dosens[],RedirectAttributes attributes){
         List<Jadwal> jdwl = jadwalDao.cariJadwal(jadwal.getId(),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
 
 
@@ -262,6 +265,34 @@ public class JadwalKuliahController {
 //            jadwal.setJamMulai(jadwal.getJamMulai());
 //            jadwal.setJamSelesai(jadwal.getJamSelesai());
             jadwalDao.save(jadwal);
+
+            JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndDosenAndStatusJadwalDosen(jadwal,jadwal.getDosen(),StatusJadwalDosen.PENGAMPU);
+            if (jadwalDosen == null){
+                JadwalDosen jd = new JadwalDosen();
+                jd.setJadwal(jadwal);
+                jd.setDosen(jadwal.getDosen());
+                jd.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
+                jadwalDosenDao.save(jd);
+            }
+
+
+            if (dosens != null) {
+                for (String idDosen : dosens){
+                    Dosen dosen = dosenDao.findById(idDosen).get();
+                    JadwalDosen team = jadwalDosenDao.findByJadwalAndDosenAndStatusJadwalDosen(jadwal,dosen,StatusJadwalDosen.TEAM);
+                    if (team == null){
+                        JadwalDosen jd = new JadwalDosen();
+                        jd.setJadwal(jadwal);
+                        jd.setStatusJadwalDosen(StatusJadwalDosen.TEAM);
+                        jd.setDosen(dosen);
+                        jadwalDosenDao.save(jd);
+                    }
+                }
+
+            }else {
+
+
+            }
         }else {
 
             attributes.addFlashAttribute("validJadwal", jdwl);

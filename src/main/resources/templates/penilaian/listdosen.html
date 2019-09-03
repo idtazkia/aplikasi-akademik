@@ -16,49 +16,6 @@
                     <h2>Assesment <small>main</small></h2>
                     <div class="clearfix"></div>
                 </div>
-                <form method="get">
-                    <div class="form-group">
-                        <div class="row col-sm-offset-1 ">
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <center><label><b>Prodi/Semester</b></label></center>
-                                        <select class="form-control js-example-placeholder-single"
-                                                style="width: 100%!important;" name="tahunAkademik">
-                                            <option value=""></option>
-                                            <option th:each="data : ${tahunAkademik}"
-                                                    th:selected="(${data} == *{selectedTahun})"
-                                                    th:text="${'('+ data.prodi.namaProdi +')'  + '       -       ' +  data.tahunAkademik.namaTahunAkademik}"
-                                                    th:value="${data.id}">sdasd</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <center><label><b>Program Pendidikan</b></label></center>
-                                        <select class="form-control js-example-placeholder-single"
-                                                style="width: 100%!important;" name="program">
-                                            <option value=""></option>
-                                            <option th:each="data : ${program}"
-                                                    th:selected="(${data} == *{selectedProgram})"
-                                                    th:text="${data.namaProgram}"
-                                                    th:value="${data.id}">sdasd</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <center>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-info">Search</button>
-                                </div>
-                            </div>
-                        </center>
-                    </div>
-                </form>
                 <br>
                 <hr>
                 <div class="x_content">
@@ -71,13 +28,13 @@
                             <th>Kelas <small style="font-size: 8px;">KRS</small></th>
                             <th>Jadwal</th>
                             <th>Jam</th>
-                            <th colspan="3"></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <span>
-                            <tr th:each="jadwal : ${jadwal}">
-                                <td th:text="${jadwal.id}">#5463</td>
+                            <tr th:each="jadwal,row : ${jadwal}">
+                                <td th:text="${(row.index + 1)}">#5463</td>
                                 <td th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}">SDS2019</td>
                                 <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px;">0 sks</small> </td>
                                 <td th:text="${jadwal.kelas.namaKelas}">K <small style="font-size: 8px;">R-10</small></td>
@@ -90,35 +47,20 @@
                                     </a>
                                 </td>
 
-                                <td>
-                                    <!--<a th:if="${not @environment.acceptsProfiles('production')}" class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>-->
-                                </td>
+                                <!--<td>-->
+                                    <!--&lt;!&ndash;<a th:if="${not @environment.acceptsProfiles('production')}" class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>&ndash;&gt;-->
+                                <!--</td>-->
 
-                                <td>
-                                    <!--<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">-->
-                                    <!--<input type="file" name="file">-->
-                                    <!--<button type="submit">pusing</button>-->
-                                    <!--</form>-->
-                                </td>
+                                <!--<td>-->
+                                    <!--&lt;!&ndash;<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<input type="file" name="file">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button type="submit">pusing</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
+                                <!--</td>-->
                             </tr>
                         </span>
                         </tbody>
                     </table>
-
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <nav class="pull-right">
-                                <ul class="pagination" sd:pagination="full">
-                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
-                                    <li class="disabled"><a href="#" aria-label="Previous"><span
-                                            aria-hidden="true">&laquo;</span></a>
-                                    </li>
-                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

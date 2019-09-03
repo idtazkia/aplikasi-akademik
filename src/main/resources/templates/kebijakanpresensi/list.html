@@ -102,7 +102,6 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
-                                    <th>Team Teaching</th>
                                     <th>Presensi</th>
                                     <!--<th>Absen Manual</th>-->
                                 </tr>
@@ -118,11 +117,6 @@
                                     <td th:text="${jadwal.kelas.namaKelas}"></td>
                                     <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                        </ul>
-                                    </td>
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                             <i class="fa fa-edit"></i> Tambah Presensi
@@ -172,7 +166,6 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
-                                    <th>Team Teaching</th>
                                     <th>Presensi</th>
                                 </tr>
                                 </thead>
@@ -187,11 +180,6 @@
                                     <td th:text="${jadwal.kelas.namaKelas}"></td>
                                     <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                        </ul>
-                                    </td>
                                     <!--<td><b th:text="${#lists.size(jadwal.sesiKuliahs)}"></b></td>-->
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
@@ -215,7 +203,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>Team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -230,11 +217,6 @@
                                     <td th:text="${jadwal.kelas.namaKelas}"></td>
                                     <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                        </ul>
-                                    </td>
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                             <i class="fa fa-edit"></i> Tambah Presensi
@@ -257,7 +239,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>Team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -272,11 +253,6 @@
                                         <td th:text="${jadwal.kelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td>
-                                            <ul>
-                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                            </ul>
-                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                                 <i class="fa fa-edit"></i> Tambah Presensi
@@ -299,7 +275,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>Team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -314,11 +289,6 @@
                                         <td th:text="${jadwal.kelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td>
-                                            <ul>
-                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                            </ul>
-                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                                 <i class="fa fa-edit"></i> Tambah Presensi
@@ -341,7 +311,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -356,11 +325,6 @@
                                         <td th:text="${jadwal.kelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td>
-                                            <ul>
-                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                            </ul>
-                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                                 <i class="fa fa-edit"></i> Tambah Presensi
@@ -383,7 +347,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>Team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -398,11 +361,6 @@
                                         <td th:text="${jadwal.kelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td>
-                                            <ul>
-                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                            </ul>
-                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                                 <i class="fa fa-edit"></i> Tambah Presensi
@@ -425,7 +383,6 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th>Team Teaching</th>
                                         <th>Presensi</th>
                                     </tr>
                                     </thead>
@@ -440,11 +397,6 @@
                                         <td th:text="${jadwal.kelas.namaKelas}"></td>
                                         <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
                                         <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                        <td>
-                                            <ul>
-                                                <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                            </ul>
-                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
                                                 <i class="fa fa-edit"></i> Tambah Presensi

@@ -87,7 +87,7 @@
                                     <td>&nbsp;</td>
                                     <td>Kelas</td>
                                     <td>:</td>
-                                    <td th:text="${jadwal.idKelas.namaKelas}">K</td>
+                                    <td th:text="${jadwal.kelas.namaKelas}">K</td>
                                 </tr>
                                 <tr>
                                     <td>Jadwal Kuliah</td>
@@ -154,13 +154,16 @@
                                 <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
                                 <input type="hidden" name="dosen" th:value="${jadwal.dosen.id}">
                                 <input type="hidden" name="ruangan" th:value="${jadwal.ruangan.id}">
-                                <input type="hidden" name="idKelas" th:value="${jadwal.idKelas.id}">
+                                <input type="hidden" name="kelas" th:value="${jadwal.kelas.id}">
                                 <input type="hidden" name="jumlahSesi" th:value="${jadwal.jumlahSesi}">
                                 <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
                                 <input type="hidden" name="program" th:value="${jadwal.program.id}">
                                 <input type="hidden" name="status" th:value="${jadwal.status}">
                                 <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
-                                <input type="hidden" name="dosens" th:value="${jadwal.dosens}">
+                                <br>
+                                <center>
+                                    <button type="submit" class="btn btn-success simpan">Simpan Perubahan</button>
+                                </center>
                                 <br>
                                 <div class="table-responsive">
                                     <span><strong><button type="button" class="btn btn-round btn-primary" data-toggle="modal" data-target="#basicExampleModal" >Tambah Tugas</button></strong></span>
@@ -193,9 +196,6 @@
                                     </table>
 
                                 </div>
-                                <center>
-                                    <button type="submit" class="btn btn-success simpan">Simpan Perubahan</button>
-                                </center>
                             </form>
                         </div>
                     </div>

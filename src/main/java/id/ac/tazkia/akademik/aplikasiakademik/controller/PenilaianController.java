@@ -113,7 +113,7 @@ public class PenilaianController {
 
 
     @GetMapping("/penilaian/list")
-    public void listPenilaian(Model model,@PageableDefault(size = 5) Pageable page,@RequestParam(required = false) Program program,
+    public void listPenilaian(Model model,Pageable page,@RequestParam(required = false) Program program,
                               @RequestParam(required = false) TahunAkademikProdi tahunAkademik){
 
         if (tahunAkademik == null) {
@@ -126,27 +126,18 @@ public class PenilaianController {
         }else {
             model.addAttribute("selectedTahun",tahunAkademik);
             model.addAttribute("selectedProgram",program);
-            Page<Jadwal> jadwal = jadwalDao.cariDosen(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(), page);
-            model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNull(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(),tahunAkademik.getProdi(),program));
-            if (jadwal != null || jadwal.isEmpty()) {
-                model.addAttribute("dosen", jadwal);
-            }
+            model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNullOrderByDosenKaryawanNamaKaryawanAsc(StatusRecord.AKTIF, tahunAkademik.getTahunAkademik(),tahunAkademik.getProdi(),program,page));
         }
     }
 
     @GetMapping("/penilaian/listdosen")
-    public void listPenilaianDosen(Model model,@PageableDefault(size = 5) Pageable page,Authentication authentication){
-
+    public void listPenilaianDosen(Model model,Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        Page<Jadwal> jadwal = jadwalDao.cariDosen(StatusRecord.AKTIF, tahun, page);
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord.AKTIF, tahun,dosen));
-        if (jadwal != null || jadwal.isEmpty()) {
-            model.addAttribute("dosen", jadwal);
-        }
 
     }
 
@@ -173,7 +164,6 @@ public class PenilaianController {
             jadwal.setJamSelesai(mulai);
             jadwal.setJamMulai(selesai);
             jadwalDao.save(jadwal);
-            System.out.println("cukup");
         }
         return "redirect:bobot?jadwal="+jadwal.getId();
     }

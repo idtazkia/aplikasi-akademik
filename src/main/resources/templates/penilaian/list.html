@@ -65,26 +65,25 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th>NO</th>
-                            <th>Kode MK</th>
-                            <th>Mata Kuliah <small style="font-size: 8px;">SKS</small></th>
-                            <th>Kelas <small style="font-size: 8px;">KRS</small></th>
+                            <th>No</th>
+                            <th>Kode Matakuliah</th>
+                            <th>Nama MataKuliah <small style="font-size: 8px;"></small></th>
+                            <th>Nama Dosen</th>
+                            <th>Kelas<small style="font-size: 8px;"></small></th>
                             <th>Jadwal</th>
                             <th>Jam</th>
                             <th colspan="3"></th>
                         </tr>
                         </thead>
-                        <tbody th:if="${dosen != null}">
-                        <span th:each="dosen,row : ${dosen}">
-                            <tr>
-                                <td  th:text="${row.index + 1}">1</td>
-                                <td colspan="8" th:text="${dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px;">M.M</small></td>
-                            <tr th:each="jadwal : ${jadwal}" th:if="${jadwal.dosen.id == dosen.id   }">
-                                <td th:text="${jadwal.id}">#5463</td>
+                        <tbody>
+
+                            <tr th:each="jadwal,row : ${jadwal}">
+                                <td th:text="${(row.index + 1)}">#5463</td>
                                 <td th:if="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah != null}" th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah}">SDS2019</td>
                                  <td th:if="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah == null}"></td>
                                 <td th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">SDS2019</td>
                             <td th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"></td>
+                                <td><b th:text="${jadwal.dosen.karyawan.namaKaryawan}"></b></td>
                                 <td th:text="${jadwal.kelas.namaKelas}">K <small style="font-size: 8px;">R-10</small></td>
                                 <td th:if="${jadwal.hari != null}" th:text="${jadwal.hari.namaHariEng}">Selasa</td>
                                 <td th:if="${jadwal.hari == null}"></td>
@@ -106,8 +105,6 @@
                                     <!--</form>-->
                                 </td>
                             </tr>
-                            </tr>
-                        </span>
                         </tbody>
                     </table>
 

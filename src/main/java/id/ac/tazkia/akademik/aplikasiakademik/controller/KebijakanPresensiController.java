@@ -43,6 +43,9 @@ public class KebijakanPresensiController {
     private JadwalDao jadwalDao;
 
     @Autowired
+    private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
     private DosenDao dosenDao;
 
     @Autowired
@@ -127,7 +130,7 @@ public class KebijakanPresensiController {
             model.addAttribute("kamis", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"4",program));
             model.addAttribute("jumat", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"5",program));
             model.addAttribute("sabtu", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik,"6",program));
-            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
+            model.addAttribute("ploting", jadwalDao.findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNullAndKelasNotNull(StatusRecord.HAPUS,tahunAkademik.getProdi(),tahunAkademik));
         }
 
     }
@@ -137,25 +140,10 @@ public class KebijakanPresensiController {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        List<Jadwal> jadwalList = new ArrayList<>();
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        List<Jadwal> jadwal = jadwalDao.findByStatusNotInAndTahunAkademik(StatusRecord.HAPUS,tahunAkademik);
-        for (Jadwal j : jadwal){
-            for (Dosen d : j.getDosens()){
-                if (d.getId() == dosen.getId()){
-                    jadwalList.add(j);
-                }
-            }
-        }
-
-
-
-
-
-
-        model.addAttribute("jadwal", jadwalDao.findByStatusNotInAndDosenAndTahunAkademikAndHariNotNull(StatusRecord.HAPUS,dosen,tahunAkademik));
-        model.addAttribute("teamTeaching", jadwalList);
+        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord.HAPUS, tahunAkademik,dosen);
+model.addAttribute("jadwal", jadwal);
 
     }
 
@@ -179,7 +167,7 @@ public class KebijakanPresensiController {
         }
         model.addAttribute("detail",detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
-        model.addAttribute("teamTeaching", jadwal.getDosens());
+//        model.addAttribute("teamTeaching", jadwal.getDosens());
         model.addAttribute("jadwal", jadwal);
     }
 
@@ -334,9 +322,7 @@ public class KebijakanPresensiController {
         jadwalDto.setId(sk.getId());
         jadwalDto.setJamMulai(sk.getWaktuMulai().toLocalTime());
         jadwalDto.setJamSelesai(sk.getWaktuSelesai().toLocalTime());
-        jadwalDto.setDosens(sk.getJadwal().getDosens());
-        System.out.println(sk.getWaktuMulai());
-        System.out.println(sk.getWaktuSelesai());
+//        jadwalDto.setDosens(sk.getJadwal().getDosens());
 
 
 

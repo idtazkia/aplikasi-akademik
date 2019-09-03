@@ -79,11 +79,6 @@ public class Jadwal {
     @JoinColumn(name = "id_program")
     private Program program;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "jadwal_dosen",
-            joinColumns=@JoinColumn(name = "id_jadwal"),
-            inverseJoinColumns = @JoinColumn(name = "id_dosen"))
-    private Set<Dosen> dosens = new HashSet<>();
     private String sesi;
 
     @NotNull

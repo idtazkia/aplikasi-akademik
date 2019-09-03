@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
@@ -25,15 +24,13 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
     List<Jadwal>findByStatusNotIn(StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndHariNotNull(TahunAkademik tahunAkademik);
-    List<Jadwal> findByTahunAkademikProdiAndKelasAndAksesAndStatusAndHariNotNull(TahunAkademikProdi tahunAkademikProdi, Kelas kelas, Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndKelasAndStatusAndHariNotNull(TahunAkademik tahunAkademik, Kelas kelas, StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndAksesAndStatusAndHariNotNull(TahunAkademik tahunAkademik, Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(TahunAkademik tahunAkademik, Prodi prodi, Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByStatusNotInAndTahunAkademik(StatusRecord statusRecord,TahunAkademik tahunAkademik);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariAndProgramAndHariNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Hari hari, Program program);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, String hari, Program program);
-    List<Jadwal> findByStatusNotInAndDosenAndTahunAkademikAndHariNotNull(StatusRecord statusRecord, Dosen dosen, TahunAkademik tahunAkademik);
-    Iterable<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi);
+    Iterable<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNullAndKelasNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi);
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.kelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses, '', '')from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademikProdi = :tahun order by j.kelas.namaKelas asc ")
     List<Jadwal> ploting(@Param("prodi") Prodi prodi,@Param("id") StatusRecord statusRecord, @Param("tahun")TahunAkademikProdi t);
 
@@ -46,7 +43,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
     List<Jadwal>findByStatusAndTahunAkademik(StatusRecord statusRecord,TahunAkademik tahunAkademik);
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord statusRecord, TahunAkademik tahunAkademik, Dosen dosen);
 
-    List<Jadwal> findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNull(StatusRecord status, TahunAkademik tahunAkademik,Prodi prodi,Program program);
+    Page<Jadwal> findByStatusAndTahunAkademikAndProdiAndProgramAndKelasNotNullAndHariNotNullOrderByDosenKaryawanNamaKaryawanAsc(StatusRecord status, TahunAkademik tahunAkademik,Prodi prodi,Program program,Pageable pageable);
 
     @Query("select j.sesi from Jadwal j where j.tahunAkademik = :tahun and j.hari = :hari and j.ruangan = :ruangan")
     List<Jadwal> cariSesi(@Param("tahun")TahunAkademik t, @Param("hari")Hari h, @Param("ruangan")Ruangan r);
@@ -62,9 +59,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
     @Query(QUERY_JADWAL_DOSEN_DTO)
     JadwalDosenDto cariJadwalDosenPengampu(@Param("tahunAkademik") TahunAkademik ta, @Param("ruangan") Ruangan r, @Param("hari") Hari hari, @Param("mulai")LocalTime mulai, @Param("sampai") LocalTime sampai);
-
-    @Query("select j.dosens from Jadwal j where j.id = :id")
-    Set<Dosen> cariJadwalDosenTeamTeaching(@Param("id")String idJadwal);
 
 }
 

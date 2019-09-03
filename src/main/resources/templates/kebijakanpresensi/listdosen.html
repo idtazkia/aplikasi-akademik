@@ -42,7 +42,7 @@
                                     <th>Hari</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
-                                    <th>Team Teaching</th>
+                                    <th>Status</th>
                                     <th>Presensi</th>
                                 </tr>
                                 </thead>
@@ -50,42 +50,17 @@
                                 <tbody>
                                 <tr th:each="jadwal,row : ${jadwal}">
                                    <td th:text="${row.index + 1}"></td>
-                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
-                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
-                                        <span th:text="${jadwal.jamSelesai}"></span></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                    <td th:text="${jadwal.kelas.namaKelas}"></td>
-                                    <td><b th:text="${jadwal.hari.namaHari}"></b></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td th:text="${jadwal.jadwal.ruangan.namaRuangan}"></td>
+                                    <td><span  th:text="${jadwal.jadwal.jamMulai}"></span> -
+                                        <span th:text="${jadwal.jadwal.jamSelesai}"></span></td>
+                                    <td th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                    <td th:text="${jadwal.jadwal.kelas.namaKelas}"></td>
+                                    <td><b th:text="${jadwal.jadwal.hari.namaHari}"></b></td>
+                                    <td th:text="${jadwal.jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                    <td th:text="${jadwal.jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                    <td><b th:text="${jadwal.statusJadwalDosen}"></b></td>
                                     <td>
-                                        <ul>
-                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
-                                            <i class="fa fa-edit"></i> Tambah Presensi
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr th:each="jadwal,row : ${teamTeaching}">
-                                   <td th:text="${row.index + 1}"></td>
-                                    <td th:text="${jadwal.ruangan.namaRuangan}"></td>
-                                    <td><span  th:text="${jadwal.jamMulai}"></span> -
-                                        <span th:text="${jadwal.jamSelesai}"></span></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
-                                    <td th:text="${jadwal.kelas.namaKelas}"></td>
-                                    <td><b th:text="${jadwal.hari.namaHari}"></b></td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></td>
-                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="dosen : ${jadwal.dosens}" th:text="${dosen.karyawan.namaKaryawan}"></li>
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.id})}">
+                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.jadwal.id})}">
                                             <i class="fa fa-edit"></i> Tambah Presensi
                                         </a>
                                     </td>
