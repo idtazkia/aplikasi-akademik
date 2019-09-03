@@ -1,5 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Kelas;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.KelasMahasiswa;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Mahasiswa;
@@ -21,7 +22,7 @@ public interface KelasMahasiswaDao extends PagingAndSortingRepository <KelasMaha
     Page<KelasMahasiswa> findDistinctByKelas(Pageable page);
 
     @Query("select distinct new id.ac.tazkia.akademik.aplikasiakademik.dto.KelasDto(k.kelas.id,k.kelas.namaKelas,k.mahasiswa.kurikulum.id) from KelasMahasiswa k where k.status= :status")
-    List<KelasMahasiswa> cariKelas(@Param("status") StatusRecord statusRecord);
+    List<KelasDto> cariKelas(@Param("status") StatusRecord statusRecord);
 
 
 }

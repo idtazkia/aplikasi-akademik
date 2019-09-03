@@ -1,6 +1,9 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ public class JadwalDaoTests {
     @Autowired private JadwalDao jadwalDao;
     @Autowired private TahunAkademikProdiDao tahunAkademikProdiDao;
     @Autowired private ProgramDao programDao;
+    @Autowired private TahunAkademikDao tahunAkademikDao;
     @Autowired private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Test
@@ -31,11 +35,25 @@ public class JadwalDaoTests {
         System.out.println("Program : "+program.getNamaProgram());
 
         System.out.println("=====================");
-        List<Jadwal> hasil = jadwalDao.ploting(tap.getProdi(), StatusRecord.HAPUS, tap);
+
+        List<PlotingDto> hasil = jadwalDao.ploting(tap.getProdi(), StatusRecord.HAPUS, tap);
         System.out.println("Jumlah plotting : "+hasil.size());
 
         System.out.println("=====================");
-        List<KelasMahasiswa> daftarKelas = kelasMahasiswaDao.cariKelas(StatusRecord.AKTIF);
+        List<KelasDto> daftarKelas = kelasMahasiswaDao.cariKelas(StatusRecord.AKTIF);
         System.out.println("Jumlah kelas : " +daftarKelas.size());
+    }
+
+    @Test
+    public void testSchedule() {
+        TahunAkademikProdi ta = tahunAkademikProdiDao.findById("2019101").get();
+
+        Hari hari = new Hari();
+        hari.setId("1");
+        Program program = new Program();
+        program.setId("01");
+        List<PlotingDto> hasil = jadwalDao.schedule(ta.getProdi(), StatusRecord.HAPUS, ta, hari, program);
+        Assert.assertNotNull(hasil);
+
     }
 }
