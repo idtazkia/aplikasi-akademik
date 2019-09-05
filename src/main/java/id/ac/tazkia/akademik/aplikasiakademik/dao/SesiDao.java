@@ -7,6 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface SesiDao extends PagingAndSortingRepository<Sesi,String> {
-    List<Sesi> findBySesiNotInAndSks(List<Jadwal> jadwals,Integer sks);
+    List<Sesi> findBySesiNotInAndSks(List<String> jadwals,Integer sks);
     List<Sesi> findBySks(Integer sks);
 }

@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.MatakuliahKurikulumDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -109,15 +110,15 @@ public class JadwalKuliahController {
         Kelas k = kelasDao.findById(kelas).get();
         Hari hari = hariDao.findById(idHari).get();
         Dosen d = dosenDao.findById(dosen).get();
-        List<Jadwal> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan);
-        List<Jadwal> cariKelas = jadwalDao.cariKelas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,k);
-        List<Jadwal> validasiDosen = jadwalDao.validasiDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,d);
-        List<Jadwal> stringList = new ArrayList<>();
+        List<String> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan);
+        List<String> cariKelas = jadwalDao.cariKelas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,k);
+        List<String> validasiDosen = jadwalDao.validasiDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,d);
+        List<String> stringList = new ArrayList<>();
         stringList.addAll(jadwal);
         stringList.addAll(cariKelas);
         stringList.addAll(validasiDosen);
 
-        List<Jadwal> newList = stringList.stream()
+        List<String> newList = stringList.stream()
                 .distinct()
                 .collect(Collectors.toList());
         System.out.println(newList);
@@ -145,7 +146,7 @@ public class JadwalKuliahController {
 
     @GetMapping("/api/plotingMatkul")
     @ResponseBody
-    public List<MatakuliahKurikulum> cariMatakuliah(@RequestParam(required = false) String id){
+    public List<MatakuliahKurikulumDto> cariMatakuliah(@RequestParam(required = false) String id){
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findFirstByKelasAndStatusAndMahasiswaKurikulumNotNull(kelasDao.findById(id).get(),StatusRecord.AKTIF);
         Kurikulum kurikulum = kurikulumDao.findByIdAndStatus(kelasMahasiswa.getMahasiswa().getKurikulum().getId(),StatusRecord.AKTIF);
         System.out.println(matakuliahKurikulumDao.cariMk(StatusRecord.AKTIF,kurikulum));

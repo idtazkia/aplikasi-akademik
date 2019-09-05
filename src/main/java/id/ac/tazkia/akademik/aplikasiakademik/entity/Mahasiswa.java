@@ -124,4 +124,10 @@ public class Mahasiswa {
     @JoinColumn(name = "id_kurikulum")
     private  Kurikulum kurikulum;
 
+    @NotNull
+    private String rfid;
+
+    @NotNull
+    private Integer idAbsen;
+
 }

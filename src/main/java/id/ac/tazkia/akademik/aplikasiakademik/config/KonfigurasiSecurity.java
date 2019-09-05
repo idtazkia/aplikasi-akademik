@@ -5,6 +5,8 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.Permission;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -60,7 +62,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
 
             Set<Permission> userAuthorities = user.getRole().getPermissions();
             if (userAuthorities.isEmpty()) {
-//                return authorities;     // authorities defaultnya ROLE_USER
+                return authorities;     // authorities defaultnya ROLE_USER
             }
 
             return Stream.concat(
@@ -78,12 +80,34 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login")
                 .antMatchers("/css/**")
                 .antMatchers("/api/jenjang")
+                .antMatchers("/api/tarikData")
+                .antMatchers("/api/cekpresensi")
+                .antMatchers("/api/cekpresensi/mahasiswa")
+                .antMatchers("/api/presensimahasiswa")
+                .antMatchers("/api/uploadMesin")
+                .antMatchers("/api/inputpresensi")
+                .antMatchers("/api/deleteMesin")
+                .antMatchers("/api/akademikAktif")
                 .antMatchers("/404")
                 .antMatchers("/images/**");
 
 
 
     }
+
+
+//    @Configuration
+//    @Order(1)
+//    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+//        protected void configure(HttpSecurity http) throws Exception {
+//            http
+//                    .antMatcher("/api/**")
+//                    .authorizeRequests()
+//                    .anyRequest().hasAnyAuthority("VIEW_API")
+//                    .and()
+//                    .httpBasic();
+//        }
+//    }
 
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
