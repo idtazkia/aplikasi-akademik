@@ -174,7 +174,7 @@
                                     <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
                                     <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
                                     <li><a th:href="@{/plotingdosen/list}">Ploting Dosen</a></li>
-                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
+                                    <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
                                 </ul>
                             </li>
