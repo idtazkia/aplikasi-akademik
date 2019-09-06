@@ -277,5 +277,13 @@ public class ApiController {
 
     }
 
+    @GetMapping("/api/getruangan")
+    @ResponseBody
+    public Ruangan ruangan(@RequestParam Ruangan id){
+
+
+        return id;
+    }
+
 
 }

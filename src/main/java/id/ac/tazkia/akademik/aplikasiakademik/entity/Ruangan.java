@@ -45,4 +45,7 @@ public class Ruangan {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private String ipMesin;
+    private String port;
+
 }
