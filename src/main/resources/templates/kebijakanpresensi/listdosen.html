@@ -43,7 +43,7 @@
                                     <th>SKS</th>
                                     <th>Dosen</th>
                                     <th>Status</th>
-                                    <th>Presensi</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
 
@@ -61,7 +61,7 @@
                                     <td><b th:text="${jadwal.statusJadwalDosen}"></b></td>
                                     <td>
                                         <a type="button" class="btn btn-primary btn-xs" th:href="@{/kebijakanpresensi/detail (jadwal = ${jadwal.jadwal.id})}">
-                                            <i class="fa fa-edit"></i> Tambah Presensi
+                                            <i class="fa fa-edit"></i> Sesi Kuliah
                                         </a>
                                     </td>
                                 </tr>

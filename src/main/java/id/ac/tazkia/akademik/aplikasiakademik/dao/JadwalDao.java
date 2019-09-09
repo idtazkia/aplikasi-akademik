@@ -48,6 +48,5 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.kelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses,j.ruangan.namaRuangan, j.hari.namaHari)from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademikProdi = :tahun and j.hari= :hari and j.program= :program")
     List<PlotingDto> schedule(@Param("prodi") Prodi prodi, @Param("id") StatusRecord statusRecord, @Param("tahun")TahunAkademikProdi t, @Param("hari")Hari hari, @Param("program")Program program);
 
-
 }
 

@@ -109,6 +109,9 @@ public class DosenController {
             }
             if (dosenDto.getIdUser() != null){
                 karyawan.setIdUser(dosenDto.getIdUser());
+                User user = userDao.findById(dosenDto.getIdUser().getId()).get();
+                user.setUsername(dosenDto.getEmail());
+                userDao.save(user);
             }
             karyawan.setEmail(dosenDto.getEmail());
             karyawan.setGelar(dosenDto.getGelar());
