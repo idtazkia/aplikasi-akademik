@@ -253,6 +253,8 @@ public class ApiController {
     @ResponseBody
     public Iterable<ApiMahasiswaDto> mahasiswaDto (@RequestParam String jadwal){
 
+        LOGGER.info("Cek presensi mahasiswa by API : Jadwal : {}",jadwal);
+
         Optional<Jadwal> oj = jadwalDao.findById(jadwal);
 
         if (!oj.isPresent()) {
@@ -283,6 +285,8 @@ public class ApiController {
     @ResponseBody
     public String mahasiswa(@RequestParam String jadwal,@RequestParam String mahasiswa,
                           @RequestParam String sesi,@RequestParam String jam,@RequestParam StatusPresensi statusabsen){
+
+        LOGGER.info("Presensi Mahasiswa by API : Jadwal : {}, Mahasiswa : {}, Sesi : {}, Jam : {}, Status Absen : {}",jadwal, mahasiswa, sesi, jam, statusabsen);
 
         Optional<Jadwal> oj = jadwalDao.findById(jadwal);
 
