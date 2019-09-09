@@ -7,6 +7,8 @@ import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiPresensiDosenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.apache.commons.collections4.IterableUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +24,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ApiController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @Autowired
     private RuanganDao ruanganDao;
@@ -71,11 +76,7 @@ public class ApiController {
             jadwalDosenDto.setJumlah(jumlah);
             jadwalDosenDtos.add(jadwalDosenDto);
         }
-
-
         return jadwalDosenDtos;
-
-
     }
 
     @GetMapping("/api/uploadMesin")
@@ -136,10 +137,7 @@ public class ApiController {
             jadwalDosenDtos.add(jadwalDosenDto);
         }
 
-
         return jadwalDosenDtos;
-
-
     }
 
 
@@ -147,12 +145,8 @@ public class ApiController {
     @GetMapping("/api/akademikAktif")
     @ResponseBody
     public TahunAkademik tahunAkademik (){
-
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-
         return tahunAkademik;
-
-
     }
 
     @GetMapping("/api/cekpresensi")
@@ -167,7 +161,6 @@ public class ApiController {
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-
         PresensiDosen presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
 
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
@@ -180,9 +173,6 @@ public class ApiController {
         api.setJumlah(1);
 
         return api;
-
-
-
     }
 
 
@@ -190,12 +180,29 @@ public class ApiController {
     @PostMapping("/api/inputpresensi")
     @ResponseBody
     private ApiPresensiDosenDto input(@RequestParam String jadwal, @RequestParam String dosen,@RequestParam String hari,@RequestParam String jam){
-        System.out.println(LocalDateTime.now());
+
+        LOGGER.info("Input presensi by API : Jadwal : {}, Dosen : {}, Hari : {}, Jam : {}",jadwal, dosen, hari, jam);
+
         LocalDate localDate = LocalDate.parse(hari);
         LocalTime localTime = LocalTime.parse(jam);
         LocalDateTime dateTime = LocalDateTime.of(localDate,localTime);
-        Jadwal j = jadwalDao.findById(jadwal).get();
-        Dosen d = dosenDao.findById(dosen).get();
+        Optional<Jadwal> oj = jadwalDao.findById(jadwal);
+
+        if (!oj.isPresent()) {
+            recordTidakDitemukan("Jadwal", jadwal);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Jadwal j = oj.get();
+
+        Optional<Dosen> od = dosenDao.findById(dosen);
+
+        if (!od.isPresent()) {
+            recordTidakDitemukan("Dosen", dosen);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Dosen d = od.get();
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
@@ -285,5 +292,15 @@ public class ApiController {
         return id;
     }
 
+    private void recordTidakDitemukan(String entity, String id) {
+        LOGGER.warn("Data {} dengan id {} tidak ditemukan", entity, id);
+    }
+
+    private ApiPresensiDosenDto presensiError(String errorMessage) {
+        ApiPresensiDosenDto hasil = new ApiPresensiDosenDto();
+        hasil.setSukses(false);
+        hasil.setPesanError(errorMessage);
+        return hasil;
+    }
 
 }
