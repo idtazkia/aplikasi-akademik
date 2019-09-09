@@ -92,8 +92,10 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
+                                    <th>Hari</th>
                                     <th>Jam Mulai</th>
                                     <th>Jam Selesai</th>
+                                    <th>Ruangan</th>
                                     <th>Akses</th>
                                     <th></th>
                                     <th></th>
@@ -108,8 +110,10 @@
                                     <td th:text="${data.namaKelas}">BMI 14</td>
                                     <td th:text="${data.jumlahSks}">6</td>
                                     <td th:text="${data.namaDosen}">Gifar Haidar</td>
+                                    <td th:text="${data.hari}">Gifar Haidar</td>
                                     <td th:text="${data.jamMulai}">Gifar Haidar</td>
                                     <td th:text="${data.jamSelesai}">Gifar Haidar</td>
+                                    <td th:text="${data.ruangan}">Gifar Haidar</td>
                                     <td><b th:text="${data.Akses}"></b></td>
                                     <td><a th:href="@{/jadwalkuliah/form (jadwal = ${data.id}, plot='plot')}" class="btn-info btn-sm">Edit</a></td>
                                     <td>
