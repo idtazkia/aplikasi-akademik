@@ -170,7 +170,8 @@
                                 <tbody>
                                 <tr class="even pointer" th:each="jadwal,row : ${jadwal}">
                                     <td class="a-center ">
-                                        <input type="checkbox" th:value="${jadwal.id}" class="single-checkbox" name="data">
+                                        <input type="checkbox" th:id="${jadwal.id}" th:value="${jadwal.id}" onchange="myFunction(this);" class="single-checkbox" name="data">
+                                        <input type="hidden" th:name="${jadwal.id}" class="sks" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
                                     </td>
                                     <input type="hidden" name="hidden" id="hidden">
                                     <td class="column-title" th:text="${row.index + 1}">#</td>
@@ -180,6 +181,7 @@
                                     <td class="column-title" th:text="${jadwal.jamMulai + '  -  ' + jadwal.jamSelesai}">Lecture</td>
                                     <td class="column-title" th:text="${jadwal.kelas.namaKelas}">Lecture</td>
                                 </tr>
+                                <input type="hidden" name="result" id="result">
                                 </tbody>
                             </table>
 
@@ -221,7 +223,30 @@
 
     function loadContent(){
         var url = "/api/krs";
-        console.log(url)
+    }
+
+    function myFunction(arg) {
+        var id = arg.getAttribute('id');
+        var sum = 0;
+
+        var  sks = $("input[name='" + id + "']").val();
+        $('#result').val(sks);
+        var  jumlah= $("input[name=result]");
+        console.log("result  :  "  + jumlah.val());
+
+        $.get("/api/sum",{sks: sks}, function(data, status){
+
+
+
+
+        });
+
+        var result = (+sks) + (+jumlah);
+
+
+
+       console.log("jumlah sks :  " + sks);
+       console.log("hasil akhir :  " + result);
     }
 
     function loadContent(){

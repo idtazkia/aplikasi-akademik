@@ -112,7 +112,7 @@
                             <div class="form-group">
                                 <label class="col-form-label">Ruangan :</label>
                                 <select class="form-control js-example-placeholder-single" onchange="mySesi()"
-                                        style="width: 100%!important;" id="select2-ruangan">
+                                        style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
                                     <option value=""></option>
                                     <option th:each="data: ${ruangan}"
                                             th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
@@ -130,7 +130,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Sesi :</label>
-                                <select id="locality-dropdown" class="form-control" onchange="waktu()">
+                                <select id="locality-dropdown"  class="form-control" onchange="waktu()">
                                 </select>
                                 <input type="hidden" id="isiSesi" name="sesi" th:field="*{sesi}">
                                 <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">

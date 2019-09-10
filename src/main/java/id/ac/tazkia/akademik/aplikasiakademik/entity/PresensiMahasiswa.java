@@ -42,7 +42,7 @@ public class PresensiMahasiswa {
 
     private String catatan;
 
-    @Min(1) @Max(5)
+    @Min(0) @Max(5)
     private Integer rating = 3;
 
     @NotNull

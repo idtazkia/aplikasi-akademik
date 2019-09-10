@@ -1,5 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiMahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     Page<KrsDetail> findByJadwalAndStatus(Jadwal jadwal,StatusRecord statusRecord,Pageable page);
 
     List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatus(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord);
+
 
 
 }

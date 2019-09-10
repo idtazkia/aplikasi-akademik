@@ -15,5 +15,6 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Page<Dosen> findByStatusNotIn(StatusRecord statusRecord, Pageable page);
     Page<Dosen> findByStatusNotInAndKaryawanNamaKaryawanContainingIgnoreCaseOrKaryawanNikContainingIgnoreCase(StatusRecord statusRecord, String nama,String nip,Pageable page);
     Dosen findByKaryawan(Karyawan karyawan);
+    Dosen findByKaryawanRfid(String string);
 
 }

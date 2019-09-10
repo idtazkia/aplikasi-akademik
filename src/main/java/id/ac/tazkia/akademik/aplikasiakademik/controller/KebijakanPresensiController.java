@@ -150,22 +150,25 @@ model.addAttribute("jadwal", jadwal);
     @GetMapping("/kebijakanpresensi/detail")
     public void  formKebijakanPresensi(Model model, @RequestParam Jadwal jadwal, Pageable page){
         List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwal(jadwal);
-        List<JadwalDto> detail = new ArrayList<>();
-        for (SesiKuliah sk : sesiKuliah){
-            JadwalDto jadwalDto = new JadwalDto();
-            jadwalDto.setJadwal(sk.getJadwal());
-            jadwalDto.setBeritaAcara(sk.getBeritaAcara());
-            jadwalDto.setPresensiDosen(sk.getPresensiDosen());
-            jadwalDto.setId(sk.getId());
-            LocalDateTime jamMasuk = sk.getWaktuMulai();
-            LocalDateTime jamSelesai = sk.getWaktuSelesai();
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
-            jadwalDto.setWaktuMulai(jamMasuk.format(format));
-            jadwalDto.setWaktuSelesai(jamSelesai.format(format));
-            detail.add(jadwalDto);
 
+        if (sesiKuliah != null) {
+            List<JadwalDto> detail = new ArrayList<>();
+            for (SesiKuliah sk : sesiKuliah) {
+                JadwalDto jadwalDto = new JadwalDto();
+                jadwalDto.setJadwal(sk.getJadwal());
+                jadwalDto.setBeritaAcara(sk.getBeritaAcara());
+                jadwalDto.setPresensiDosen(sk.getPresensiDosen());
+                jadwalDto.setId(sk.getId());
+                LocalDateTime jamMasuk = sk.getWaktuMulai();
+                LocalDateTime jamSelesai = sk.getWaktuSelesai();
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+                jadwalDto.setWaktuMulai(jamMasuk.format(format));
+                jadwalDto.setWaktuSelesai(jamSelesai.format(format));
+                detail.add(jadwalDto);
+
+            }
+            model.addAttribute("detail", detail);
         }
-        model.addAttribute("detail",detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
 //        model.addAttribute("teamTeaching", jadwal.getDosens());
         model.addAttribute("jadwal", jadwal);

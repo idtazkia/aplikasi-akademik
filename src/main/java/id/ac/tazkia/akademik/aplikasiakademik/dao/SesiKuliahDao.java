@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jadwal;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.PresensiDosen;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.SesiKuliah;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,5 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
 
     Page<SesiKuliah> findByJadwal(Jadwal jadwal,Pageable pageable);
     List<SesiKuliah> findByJadwal(Jadwal jadwal);
+    SesiKuliah findByPresensiDosen(PresensiDosen presensiDosen);
 }
