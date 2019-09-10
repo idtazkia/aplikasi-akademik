@@ -17,21 +17,25 @@ public class PresensiDosen {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
 
-
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_jadwal")
     private Jadwal jadwal;
 
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime waktuMasuk;
 
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime waktuSelesai;
 
+    @NotNull
     @Enumerated(EnumType.STRING) @NotNull
     private StatusPresensi statusPresensi;
 
@@ -39,6 +43,7 @@ public class PresensiDosen {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_dosen")
     private Dosen dosen;
