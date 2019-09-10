@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -252,6 +253,11 @@ public class ApiController {
     @GetMapping("/api/cekpresensi/mahasiswa")
     @ResponseBody
     public Iterable<ApiMahasiswaDto> mahasiswaDto (@RequestParam String jadwal){
+
+        if (!StringUtils.hasText(jadwal)) {
+            LOGGER.debug("Cek presensi mahasiswa by API : Jadwal tidak diisi");
+            return Arrays.asList(apiMahasiswaError("Jadwal dengan id "+jadwal+" tidak ditemukan"));
+        }
 
         LOGGER.info("Cek presensi mahasiswa by API : Jadwal : {}",jadwal);
 
