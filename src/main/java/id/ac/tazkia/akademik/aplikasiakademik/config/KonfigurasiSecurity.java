@@ -52,11 +52,14 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                     .orElse(null);
 
             if (email == null) {
+                throw new IllegalStateException("Data email "+email+" tidak ada di google");
 //                return authorities;     // data email tidak ada di userInfo dari Google
             }
 
             User user = userDao.findByUsername(email);
             if(user == null) {
+                throw new IllegalStateException("Email "+email+" tidak ada dalam database");
+//                return null;
 //                return authorities;     // email user ini belum terdaftar di database
             }
 

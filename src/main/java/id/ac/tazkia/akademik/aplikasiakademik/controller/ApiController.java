@@ -7,9 +7,12 @@ import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiPresensiDosenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.apache.commons.collections4.IterableUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,13 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class ApiController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @Autowired
     private RuanganDao ruanganDao;
@@ -62,8 +64,8 @@ public class ApiController {
 
         LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(50);
         LocalTime sampai = LocalTime.now().plusHours(7).minusMinutes(5);
-        System.out.println(mulai);
-        System.out.println(sampai);
+        LOGGER.debug("Mulai : {}", mulai);
+        LOGGER.debug("Sampai : {}", sampai);
 
         Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
@@ -71,11 +73,7 @@ public class ApiController {
             jadwalDosenDto.setJumlah(jumlah);
             jadwalDosenDtos.add(jadwalDosenDto);
         }
-
-
         return jadwalDosenDtos;
-
-
     }
 
     @GetMapping("/api/uploadMesin")
@@ -91,8 +89,8 @@ public class ApiController {
 
         LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(5);
         LocalTime sampai = LocalTime.now().plusHours(7).plusMinutes(5);
-        System.out.println(mulai);
-        System.out.println(sampai);
+        LOGGER.debug("Mulai : {}", mulai);
+        LOGGER.debug("Sampai : {}", sampai);
 
         Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
@@ -126,8 +124,8 @@ public class ApiController {
 
         LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(50);
         LocalTime sampai = LocalTime.now().plusHours(7).minusMinutes(40);
-        System.out.println(mulai);
-        System.out.println(sampai);
+        LOGGER.debug("Mulai : {}", mulai);
+        LOGGER.debug("Sampai : {}", sampai);
 
         Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
@@ -136,37 +134,45 @@ public class ApiController {
             jadwalDosenDtos.add(jadwalDosenDto);
         }
 
-
         return jadwalDosenDtos;
-
-
     }
-
 
 
     @GetMapping("/api/akademikAktif")
     @ResponseBody
     public TahunAkademik tahunAkademik (){
-
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-
         return tahunAkademik;
-
-
     }
 
     @GetMapping("/api/cekpresensi")
     @ResponseBody
     public ApiPresensiDosenDto presensiDosen (@RequestParam String jadwal,@RequestParam(required = false) String dosen){
 
-        Jadwal j = jadwalDao.findById(jadwal).get();
-        Dosen d = dosenDao.findById(dosen).get();
+        LOGGER.info("Cek presensi by API : Jadwal : {}, Dosen : {}",jadwal, dosen);
+
+        Optional<Jadwal> oj = jadwalDao.findById(jadwal);
+
+        if (!oj.isPresent()) {
+            recordTidakDitemukan("Jadwal", jadwal);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Jadwal j = oj.get();
+
+        Optional<Dosen> od = dosenDao.findById(dosen);
+
+        if (!od.isPresent()) {
+            recordTidakDitemukan("Dosen", dosen);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Dosen d = od.get();
 
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-
 
         PresensiDosen presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
 
@@ -180,9 +186,6 @@ public class ApiController {
         api.setJumlah(1);
 
         return api;
-
-
-
     }
 
 
@@ -190,12 +193,29 @@ public class ApiController {
     @PostMapping("/api/inputpresensi")
     @ResponseBody
     private ApiPresensiDosenDto input(@RequestParam String jadwal, @RequestParam String dosen,@RequestParam String hari,@RequestParam String jam){
-        System.out.println(LocalDateTime.now());
+
+        LOGGER.info("Input presensi by API : Jadwal : {}, Dosen : {}, Hari : {}, Jam : {}",jadwal, dosen, hari, jam);
+
         LocalDate localDate = LocalDate.parse(hari);
         LocalTime localTime = LocalTime.parse(jam);
         LocalDateTime dateTime = LocalDateTime.of(localDate,localTime);
-        Jadwal j = jadwalDao.findById(jadwal).get();
-        Dosen d = dosenDao.findById(dosen).get();
+        Optional<Jadwal> oj = jadwalDao.findById(jadwal);
+
+        if (!oj.isPresent()) {
+            recordTidakDitemukan("Jadwal", jadwal);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Jadwal j = oj.get();
+
+        Optional<Dosen> od = dosenDao.findById(dosen);
+
+        if (!od.isPresent()) {
+            recordTidakDitemukan("Dosen", dosen);
+            return presensiError("Jadwal dengan id "+jadwal+" tidak ditemukan");
+        }
+
+        Dosen d = od.get();
 
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
@@ -226,9 +246,7 @@ public class ApiController {
             presensiMahasiswaDao.save(presensiMahasiswa);
         }
 
-
         return presensiDosen(j.getId(),d.getId());
-
 
     }
 
@@ -236,7 +254,20 @@ public class ApiController {
     @ResponseBody
     public Iterable<ApiMahasiswaDto> mahasiswaDto (@RequestParam String jadwal){
 
-        Jadwal j = jadwalDao.findById(jadwal).get();
+        if (!StringUtils.hasText(jadwal)) {
+            LOGGER.debug("Cek presensi mahasiswa by API : Jadwal tidak diisi");
+            return Arrays.asList(apiMahasiswaError("Jadwal dengan id "+jadwal+" tidak ditemukan"));
+        }
+
+        LOGGER.info("Cek presensi mahasiswa by API : Jadwal : {}",jadwal);
+
+        Optional<Jadwal> oj = jadwalDao.findById(jadwal);
+
+        if (!oj.isPresent()) {
+            recordTidakDitemukan("Jadwal", jadwal);
+            return Arrays.asList(apiMahasiswaError("Jadwal dengan id "+jadwal+" tidak ditemukan"));
+        }
+        Jadwal j = oj.get();
         List<ApiMahasiswaDto> apiMahasiswaDtos = new ArrayList<>();
 
         List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
@@ -254,8 +285,6 @@ public class ApiController {
 
         return apiMahasiswaDtos;
 
-
-
     }
 
     @PostMapping("/api/presensimahasiswa")
@@ -263,27 +292,63 @@ public class ApiController {
     public String mahasiswa(@RequestParam String jadwal,@RequestParam String mahasiswa,
                           @RequestParam String sesi,@RequestParam String jam,@RequestParam StatusPresensi statusabsen){
 
-            Jadwal j = jadwalDao.findById(jadwal).get();
-            Mahasiswa m = mahasiswaDao.findById(mahasiswa).get();
-            SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
+        LOGGER.info("Presensi Mahasiswa by API : Jadwal : {}, Mahasiswa : {}, Sesi : {}, Jam : {}, Status Absen : {}",jadwal, mahasiswa, sesi, jam, statusabsen);
 
-            PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(m,sesiKuliah,StatusRecord.AKTIF);
-            presensiMahasiswa.setWaktuMasuk(LocalDateTime.of(LocalDate.now(),LocalTime.parse(jam)));
-            presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
-            presensiMahasiswa.setStatusPresensi(statusabsen);
-            presensiMahasiswaDao.save(presensiMahasiswa);
+        Optional<Jadwal> oj = jadwalDao.findById(jadwal);
 
-            return "sukses";
+        if (!oj.isPresent()) {
+            recordTidakDitemukan("Jadwal", jadwal);
+            return "gagal";
+        }
+        Jadwal j = oj.get();
+
+        Optional<Mahasiswa> om = mahasiswaDao.findById(mahasiswa);
+        if (!om.isPresent()) {
+            recordTidakDitemukan("Mahasiswa", mahasiswa);
+            return "gagal";
+        }
+
+        Mahasiswa m = om.get();
+
+        Optional<SesiKuliah> osk = sesiKuliahDao.findById(sesi);
+        if (!osk.isPresent()) {
+            recordTidakDitemukan("Sesi Kuliah", sesi);
+            return "gagal";
+        }
+        SesiKuliah sesiKuliah = osk.get();
+
+        PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(m,sesiKuliah,StatusRecord.AKTIF);
+        presensiMahasiswa.setWaktuMasuk(LocalDateTime.of(LocalDate.now(),LocalTime.parse(jam)));
+        presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
+        presensiMahasiswa.setStatusPresensi(statusabsen);
+        presensiMahasiswaDao.save(presensiMahasiswa);
+
+        return "sukses";
 
     }
 
     @GetMapping("/api/getruangan")
     @ResponseBody
     public Ruangan ruangan(@RequestParam Ruangan id){
-
-
         return id;
     }
 
+    private void recordTidakDitemukan(String entity, String id) {
+        LOGGER.warn("Data {} dengan id {} tidak ditemukan", entity, id);
+    }
+
+    private ApiPresensiDosenDto presensiError(String errorMessage) {
+        ApiPresensiDosenDto hasil = new ApiPresensiDosenDto();
+        hasil.setSukses(false);
+        hasil.setPesanError(errorMessage);
+        return hasil;
+    }
+
+    private ApiMahasiswaDto apiMahasiswaError(String errorMessage) {
+        ApiMahasiswaDto hasil = new ApiMahasiswaDto();
+        hasil.setSukses(false);
+        hasil.setPesanError(errorMessage);
+        return hasil;
+    }
 
 }
