@@ -87,6 +87,8 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/cekpresensi")
                 .antMatchers("/api/cekpresensi/mahasiswa")
                 .antMatchers("/api/getruangan")
+                .antMatchers("/api/getrfid")
+                .antMatchers("/api/rfidkaryawan")
                 .antMatchers("/api/presensimahasiswa")
                 .antMatchers("/api/uploadMesin")
                 .antMatchers("/api/inputpresensi")

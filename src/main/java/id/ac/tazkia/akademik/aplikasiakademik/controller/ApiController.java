@@ -1,10 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiJadwalDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiMahasiswaDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiPresensiDosenDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
@@ -50,6 +47,8 @@ public class ApiController {
     private PresensiMahasiswaDao presensiMahasiswaDao;
     @Autowired
     private MahasiswaDao mahasiswaDao;
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @GetMapping("/api/tarikData")
     @ResponseBody
@@ -349,6 +348,38 @@ public class ApiController {
         hasil.setSukses(false);
         hasil.setPesanError(errorMessage);
         return hasil;
+    }
+
+    @GetMapping("/api/getrfid")
+    @ResponseBody
+    public List<ApiRfidDto> getRfid(){
+
+        List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
+        List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF);
+        for (ApiRfidDto api : mahasiswa){
+            api.setJumlah(mahasiswa.size());
+            apiRfidDtos.add(api);
+        }
+
+
+        return apiRfidDtos;
+
+    }
+
+    @GetMapping("/api/rfidkaryawan")
+    @ResponseBody
+    public List<ApiRfidDto> rfidKaryawan(){
+
+        List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
+        List<ApiRfidDto> karyawan = karyawanDao.rfidKaryawan(StatusRecord.AKTIF);
+        for (ApiRfidDto api : karyawan){
+            api.setJumlah(karyawan.size());
+            apiRfidDtos.add(api);
+        }
+
+
+        return apiRfidDtos;
+
     }
 
 }

@@ -110,9 +110,9 @@ public class JadwalKuliahController {
         Kelas k = kelasDao.findById(kelas).get();
         Hari hari = hariDao.findById(idHari).get();
         Dosen d = dosenDao.findById(dosen).get();
-        List<String> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan);
-        List<String> cariKelas = jadwalDao.cariKelas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,k);
-        List<String> validasiDosen = jadwalDao.validasiDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,d);
+        List<String> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan,StatusRecord.AKTIF);
+        List<String> cariKelas = jadwalDao.cariKelas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,k,StatusRecord.AKTIF);
+        List<String> validasiDosen = jadwalDao.validasiDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,d,StatusRecord.AKTIF);
         List<String> stringList = new ArrayList<>();
         stringList.addAll(jadwal);
         stringList.addAll(cariKelas);
@@ -263,6 +263,10 @@ public class JadwalKuliahController {
 
 
         if (jdwl == null || jdwl.isEmpty()) {
+            Sesi sesi = sesiDao.findById(jadwal.getSesi()).get();
+            jadwal.setSesi(sesi.getSesi());
+            jadwal.setJamMulai(sesi.getJamMulai());
+            jadwal.setJamSelesai(sesi.getJamSelesai());
 //            jadwal.setJamMulai(jadwal.getJamMulai());
 //            jadwal.setJamSelesai(jadwal.getJamSelesai());
             jadwalDao.save(jadwal);

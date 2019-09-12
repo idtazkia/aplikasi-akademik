@@ -144,14 +144,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Jam Mulai :</label>
-                                <input type="text" th:field="*{jamMulai}" readonly maxlength="5" max="5" name="jamMulai" id="jamMulai" class="form-control">
+                                <input type="text" th:field="*{jamMulai}" readonly maxlength="5" max="5"  id="jamMulai" class="form-control">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label">Jam Selesai :</label>
-                                <input type="text" name="jamSelesai" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
+                                <input type="text" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
 
                             </div>
                         </div>
@@ -310,7 +310,7 @@
 
             $('#jamMulai').val(data.jamMulai);
             $('#jamSelesai').val(data.jamSelesai);
-            $('#isiSesi').val(data.sesi);
+            $('#isiSesi').val(data.id);
         });
 
     }
