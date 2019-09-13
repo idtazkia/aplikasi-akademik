@@ -173,18 +173,31 @@ public class ApiController {
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        PresensiDosen presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
+        List<PresensiDosen> presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
-        ApiPresensiDosenDto api = new ApiPresensiDosenDto();
-        api.setPresensiDosen(presensiDosen.getId());
-        api.setSesiKuliah(sesiKuliah.getId());
-        api.setJamMulai(presensiDosen.getWaktuMasuk().toLocalTime());
-        api.setJadwal(presensiDosen.getJadwal().getId());
-        api.setJamSelesai(presensiDosen.getWaktuSelesai().toLocalTime() );
-        api.setJumlah(1);
+        for (PresensiDosen pd : presensiDosen){
+            LocalDate date = pd.getWaktuMasuk().toLocalDate();
+            LocalTime masuk = pd.getWaktuMasuk().toLocalTime();
+            LocalTime minus5 = pd.getJadwal().getJamMulai().minusMinutes(5);
+            if (date.isEqual(LocalDate.now())){
+                if (masuk.compareTo(minus5) >= 0 && masuk .compareTo(pd.getJadwal().getJamSelesai()) <= 0){
+                            SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(pd);
+                            ApiPresensiDosenDto api = new ApiPresensiDosenDto();
+                            api.setPresensiDosen(pd.getId());
+                            api.setSesiKuliah(sesiKuliah.getId());
+                            api.setJamMulai(pd.getWaktuMasuk().toLocalTime());
+                            api.setJadwal(pd.getJadwal().getId());
+                            api.setJamSelesai(pd.getWaktuSelesai().toLocalTime() );
+                            api.setJumlah(1);
+                            return api;
+                }
+            }
 
-        return api;
+        }
+
+
+
+        return result();
     }
 
 
@@ -343,6 +356,20 @@ public class ApiController {
         return hasil;
     }
 
+    private ApiPresensiDosenDto result() {
+        ApiPresensiDosenDto hasil = new ApiPresensiDosenDto();
+        hasil.setSukses(false);
+        hasil.setPesanError("data kosong");
+        return hasil;
+    }
+
+    private ApiJadwalDosen dataNull() {
+        ApiJadwalDosen hasil = new ApiJadwalDosen();
+        hasil.setSukses(false);
+        hasil.setPesanError("data kosong");
+        return hasil;
+    }
+
     private ApiMahasiswaDto apiMahasiswaError(String errorMessage) {
         ApiMahasiswaDto hasil = new ApiMahasiswaDto();
         hasil.setSukses(false);
@@ -379,6 +406,38 @@ public class ApiController {
 
 
         return apiRfidDtos;
+
+    }
+
+    @GetMapping("/api/getjadwal")
+    @ResponseBody()
+    public ApiJadwalDosen jadwalDosen(@RequestParam String ruangan,@RequestParam String rfid){
+
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
+
+        Dosen dosen = dosenDao.findByKaryawanRfid(rfid);
+
+
+        JadwalDosen jadwalDosen = jadwalDosenDao.cari(dosen,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruanganDao.findById(ruangan).get(),LocalTime.now().plusHours(7));
+
+        if (jadwalDosen != null) {
+
+
+            ApiJadwalDosen apiJadwalDosen = new ApiJadwalDosen();
+            apiJadwalDosen.setJadwal(jadwalDosen.getJadwal().getId());
+            apiJadwalDosen.setDosen(jadwalDosen.getDosen().getId());
+            apiJadwalDosen.setNamaDosen(jadwalDosen.getDosen().getKaryawan().getNamaKaryawan());
+            apiJadwalDosen.setNamaMatakuliah(jadwalDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            apiJadwalDosen.setNamaMatakuliahEng(jadwalDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliahEnglish());
+            apiJadwalDosen.setJamMulai(jadwalDosen.getJadwal().getJamMulai());
+            apiJadwalDosen.setJamSelesai(jadwalDosen.getJadwal().getJamSelesai());
+            apiJadwalDosen.setJumlah(1);
+            return apiJadwalDosen;
+        }
+
+        return dataNull();
 
     }
 
