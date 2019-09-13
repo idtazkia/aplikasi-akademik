@@ -263,21 +263,20 @@ public class JadwalKuliahController {
 
 
         if (jdwl == null || jdwl.isEmpty()) {
-            Sesi sesi = sesiDao.findById(jadwal.getSesi()).get();
-            jadwal.setSesi(sesi.getSesi());
-            jadwal.setJamMulai(sesi.getJamMulai());
-            jadwal.setJamSelesai(sesi.getJamSelesai());
 //            jadwal.setJamMulai(jadwal.getJamMulai());
 //            jadwal.setJamSelesai(jadwal.getJamSelesai());
             jadwalDao.save(jadwal);
 
-            JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndDosenAndStatusJadwalDosen(jadwal,jadwal.getDosen(),StatusJadwalDosen.PENGAMPU);
+            JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.PENGAMPU);
             if (jadwalDosen == null){
                 JadwalDosen jd = new JadwalDosen();
                 jd.setJadwal(jadwal);
                 jd.setDosen(jadwal.getDosen());
                 jd.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
                 jadwalDosenDao.save(jd);
+            }else {
+                jadwalDosen.setDosen(jadwal.getDosen());
+                jadwalDosenDao.save(jadwalDosen);
             }
 
 
