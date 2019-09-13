@@ -12,5 +12,4 @@ import java.util.List;
 public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDosen, String> {
     List<PresensiDosen> findByStatusAndJadwal(StatusRecord status, Jadwal jadwal);
     List<PresensiDosen> findByJadwalAndDosenAndTahunAkademikAndJadwalHari(Jadwal jadwal, Dosen dosen, TahunAkademik tahunAkademik, Hari hari);
-    PresensiDosen findByJadwalAndDosenAndTahunAkademikAndWaktuMasukBetween(Jadwal jadwal, Dosen dosen, TahunAkademik tahunAkademik,  LocalDateTime localDateTime,LocalDateTime jamSelesai);
 }
