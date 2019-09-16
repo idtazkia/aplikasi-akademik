@@ -46,6 +46,7 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen, 
     Iterable<JadwalDosen> findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord status, TahunAkademik tahunAkademik, Dosen dosen);
     JadwalDosen findByJadwalAndDosenAndStatusJadwalDosen(Jadwal jadwal,Dosen dosen,StatusJadwalDosen statusJadwalDosen);
     JadwalDosen findByJadwalAndStatusJadwalDosen(Jadwal jadwal,StatusJadwalDosen statusJadwalDosen);
+    List<JadwalDosen> findByJadwal(Jadwal jadwal);
 
     @Query(QUERY_JADWAL_DOSEN_DTO)
     Iterable<JadwalDosenDto> cariJadwal(@Param("tahunAkademik") TahunAkademik ta, @Param("ruangan") Ruangan r, @Param("hari") Hari hari, @Param("mulai")LocalTime mulai, @Param("sampai") LocalTime sampai);

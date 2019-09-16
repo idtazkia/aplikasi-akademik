@@ -168,7 +168,7 @@ model.addAttribute("jadwal", jadwal);
         }
         model.addAttribute("detail", detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
-//        model.addAttribute("teamTeaching", jadwal.getDosens());
+        model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwal", jadwal);
     }
 

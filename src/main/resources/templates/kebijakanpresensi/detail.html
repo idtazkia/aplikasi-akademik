@@ -189,8 +189,7 @@
                                     <select class="form-control js-example-placeholder-single"
                                             style="width: 100%!important;" name="dosen">
                                         <option></option>
-                                        <option th:text="${dosenUtama.karyawan.namaKaryawan}" th:value="${dosenUtama.id}"></option>
-                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.karyawan.namaKaryawan}">sdasd</option>
+                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}">sdasd</option>
                                     </select>
                                 </div>
                             </div>
