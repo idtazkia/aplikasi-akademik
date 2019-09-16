@@ -79,19 +79,25 @@
                                             <thead>
                                             <tr>
                                                 <th>Matakuliah</th>
-                                                <th>Kelas</th>
-                                                <th>Ruangan</th>
-                                                <th>Hari</th>
                                                 <th>SKS</th>
+                                                <th>Kelas</th>
+                                                <th>Hari</th>
+                                                <th>Sesi</th>
+                                                <th>Jam Mulai</th>
+                                                <th>Jam Selesai</th>
+                                                <th>Ruangan</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr th:each="jd : ${rekapJadwalPerDosen.get(rekap.key)}">
                                                 <td th:text="${jd.namaMatakuliah}">1</td>
-                                                <td th:text="${jd.namaKelas}">Call of Duty</td>
-                                                <td th:text="${jd.namaRuangan}">455-981-221</td>
-                                                <td th:text="${jd.namaHari}">455-981-221</td>
                                                 <td th:text="${jd.sks}">$64.50</td>
+                                                <td th:text="${jd.namaKelas}">Call of Duty</td>
+                                                <td th:text="${jd.namaHari}">455-981-221</td>
+                                                <td th:text="${jd.sesi}">455-981-221</td>
+                                                <td th:text="${jd.jamMulai}">455-981-221</td>
+                                                <td th:text="${jd.jamSelesai}">455-981-221</td>
+                                                <td th:text="${jd.namaRuangan}">455-981-221</td>
                                             </tr>
                                             </tbody>
                                         </table>

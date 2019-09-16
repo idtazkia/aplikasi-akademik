@@ -15,6 +15,7 @@ public class RekapJadwalDosenDto {
     private String namaProdi;
     private String namaKelas;
     private String namaHari;
+    private String sesi;
     private LocalTime jamMulai;
     private LocalTime jamSelesai;
     private String namaRuangan;
