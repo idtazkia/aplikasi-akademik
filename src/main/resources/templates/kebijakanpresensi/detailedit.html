@@ -30,8 +30,7 @@
                                     <select class="form-control js-example-placeholder-single" th:field="*{dosen}"
                                             style="width: 100%!important;" name="dosen">
                                         <option value=""></option>
-                                        <option th:text="${sesi.dosen.karyawan.namaKaryawan}" th:value="${sesi.dosen.id}"></option>
-                                        <option th:each="dosen : ${sesi.dosens}" th:text="${dosen.karyawan.namaKaryawan}" th:value="${dosen.id}">sdasd</option>
+                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
                                     </select>
                                 </div>
                                 <input type="hidden" name="id" th:field="*{id}">

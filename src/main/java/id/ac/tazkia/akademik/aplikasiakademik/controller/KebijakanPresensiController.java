@@ -184,6 +184,9 @@ model.addAttribute("jadwal", jadwal);
         presensiDosenDao.save(presensiDosen);
 
         SesiKuliah sesiKuliah = new SesiKuliah();
+        if (jadwalDto.getBeritaAcara().isEmpty() || jadwalDto.getBeritaAcara() == null){
+            sesiKuliah.setBeritaAcara("");
+        }
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
         sesiKuliah.setJadwal(jadwalDto.getJadwal());
         sesiKuliah.setPresensiDosen(presensiDosen);
@@ -327,7 +330,9 @@ model.addAttribute("jadwal", jadwal);
 
 
 
+
         model.addAttribute("sesi", jadwalDto);
+        model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sk.getJadwal()));
 
     }
 

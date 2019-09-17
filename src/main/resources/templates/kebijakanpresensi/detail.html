@@ -136,7 +136,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" th:action="@{/kebijakanpresensi/detail}">
+                    <form method="post" th:action="@{/kebijakanpresensi/detail}" th:object="${jadwal}">
                         <div class="col-md-12">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -159,7 +159,7 @@
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Masuk :</label>
                                     <div class='input-group date' id='datetimepicker3'>
-                                        <input type='text' class="form-control" placeholder="07:00" name="jamMulai"/>
+                                        <input type='text' class="form-control" th:field="*{jamMulai}" placeholder="07:00" name="jamMulai"/>
                                         <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-time"></span>
                                             </span>
@@ -172,7 +172,7 @@
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Selesai :</label>
                                     <div class='input-group date' id='datetimepicker2'>
-                                        <input type='text' class="form-control" placeholder="09:30" name="jamSelesai"/>
+                                        <input type='text' class="form-control" th:field="*{jamSelesai}" placeholder="09:30" name="jamSelesai"/>
                                         <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-time"></span>
                                             </span>
