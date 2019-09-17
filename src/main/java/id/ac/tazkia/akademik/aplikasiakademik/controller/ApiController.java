@@ -377,6 +377,13 @@ public class ApiController {
         return hasil;
     }
 
+    private ApiPresensiMahasiswa presensiMahasiswaError(String errorMessage) {
+        ApiPresensiMahasiswa hasil = new ApiPresensiMahasiswa();
+        hasil.setSukses(false);
+        hasil.setPesanError(errorMessage);
+        return hasil;
+    }
+
     @GetMapping("/api/getrfid")
     @ResponseBody
     public List<ApiRfidDto> getRfid(){
@@ -438,6 +445,53 @@ public class ApiController {
         }
 
         return dataNull();
+
+    }
+
+    @GetMapping("/api/getdataMahasiswa")
+    @ResponseBody
+    public List<ApiPresensiMahasiswa> cekMahasiswa(@RequestParam String sesiKuliah){
+
+        if (sesiKuliah.isEmpty()){
+            return Arrays.asList(presensiMahasiswaError("Sesi Kuliah dengan id "+sesiKuliah+" tidak ditemukan"));
+        }
+
+        SesiKuliah s = sesiKuliahDao.findById(sesiKuliah).get();
+
+        if (s.getJadwal() == null){
+            return Arrays.asList(presensiMahasiswaError("Jadwal tidak ditemukan"));
+        }
+
+        List<ApiPresensiMahasiswa> mahasiswas = new ArrayList<>();
+
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(s,StatusRecord.AKTIF);
+
+        if (presensiMahasiswa.isEmpty()){
+            return Arrays.asList(presensiMahasiswaError("Presensi Mahasiswa Tidak Ada"));
+        }
+        for (PresensiMahasiswa pm : presensiMahasiswa){
+            ApiPresensiMahasiswa apiPresensiMahasiswa = new ApiPresensiMahasiswa();
+            apiPresensiMahasiswa.setCatatan(pm.getCatatan());
+            apiPresensiMahasiswa.setJumlah(presensiMahasiswa.size());
+            apiPresensiMahasiswa.setNim(pm.getMahasiswa().getNim());
+            apiPresensiMahasiswa.setKrsDetail(pm.getKrsDetail().getId());
+            apiPresensiMahasiswa.setMahasiswa(pm.getMahasiswa().getId());
+            apiPresensiMahasiswa.setNamaMahasiswa(pm.getMahasiswa().getNama());
+            apiPresensiMahasiswa.setPresensiMahasiswa(pm.getId());
+            apiPresensiMahasiswa.setRating(pm.getRating());
+            apiPresensiMahasiswa.setRfid(pm.getMahasiswa().getRfid());
+            apiPresensiMahasiswa.setSesiKuliah(pm.getSesiKuliah().getId());
+            apiPresensiMahasiswa.setStatusPresensi(pm.getStatusPresensi());
+            if (pm.getWaktuKeluar() != null) {
+                apiPresensiMahasiswa.setWaktuKeluar(pm.getWaktuKeluar().toLocalTime());
+            }
+            if (pm.getWaktuMasuk() != null) {
+                apiPresensiMahasiswa.setWaktuMasuk(pm.getWaktuMasuk().toLocalTime());
+            }
+            mahasiswas.add(apiPresensiMahasiswa);
+        }
+
+        return mahasiswas;
 
     }
 
