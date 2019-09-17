@@ -41,7 +41,7 @@ public class Karyawan {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahir;
 
-    private BigInteger idAbsen;
+    private Integer idAbsen;
 
 
 }
