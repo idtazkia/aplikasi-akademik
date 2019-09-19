@@ -4,6 +4,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.NotifikasiService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,9 @@ public class KebijakanPresensiController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private NotifikasiService notifikasiService;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -193,6 +197,10 @@ model.addAttribute("jadwal", jadwal);
         sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
         sesiKuliahDao.save(sesiKuliah);
+
+        if (presensiDosen.getWaktuMasuk().toLocalTime().compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0) {
+            notifikasiService.kirimNotifikasiTelat(presensiDosen);
+        }
 
         return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
 
