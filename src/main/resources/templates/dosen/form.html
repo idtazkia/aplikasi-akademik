@@ -24,19 +24,19 @@
 
             <div class="col-md-12"><br>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" class="form-control" name="nip" th:field="*{nik}"  placeholder="Nomor Induk Pegawai">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>NIK</label>
+                                    <input type="text" class="form-control" name="nik" th:field="*{nik}"  placeholder="Nomor Induk Pegawai">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>NIDN</label>
-                                <input type="text" class="form-control" th:field="*{nidn}"  name="nidn" placeholder="Nomor Induk Dosen Nasional">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>NIDN</label>
+                                    <input type="text" class="form-control" th:field="*{nidn}"  name="nidn" placeholder="Nomor Induk Dosen Nasional">
+                                </div>
                             </div>
-                        </div>
                     </div>
 
                     <div class="row">
@@ -114,6 +114,25 @@
 
 
                     </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>RFID</label>
+                            &nbsp&nbsp
+                            <input type="text" class="form-control" name="rfid" th:field="*{rfid}" placeholder="RFID">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Absen</label>
+                            &nbsp&nbsp
+                            <input type="text" class="form-control" name="absen" readonly th:field="*{absen}" placeholder="Absen">
+                        </div>
+                    </div>
+                </div>
+
 
                     <input type="hidden" name="id" th:field="*{id}">
                     <input type="hidden" name="idUser" th:field="*{idUser}">

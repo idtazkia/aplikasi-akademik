@@ -59,6 +59,8 @@ public class DosenController {
                 dosenDto.setNama(karyawan.getNamaKaryawan());
                 dosenDto.setNidn(karyawan.getNidn());
                 dosenDto.setNik(karyawan.getNik());
+                dosenDto.setRfid(karyawan.getRfid());
+                dosenDto.setAbsen(karyawan.getIdAbsen());
                 if (karyawan.getIdUser() != null) {
                     dosenDto.setIdUser(karyawan.getIdUser());
                 }
@@ -87,8 +89,9 @@ public class DosenController {
             karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
             karyawan.setNamaKaryawan(dosenDto.getNama());
             karyawan.setNidn(dosenDto.getNidn());
-            karyawan.setNik(dosenDto.getNik());
             karyawan.setIdUser(user);
+            karyawan.setNik(dosenDto.getNik());
+            karyawan.setRfid(dosenDto.getRfid());
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
             karyawanDao.save(karyawan);
 
@@ -118,8 +121,10 @@ public class DosenController {
             karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
             karyawan.setNamaKaryawan(dosenDto.getNama());
             karyawan.setNidn(dosenDto.getNidn());
-            karyawan.setNik(dosenDto.getNik());
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
+            karyawan.setRfid(dosenDto.getRfid());
+            karyawan.setNik(dosenDto.getNik());
+            karyawan.setIdAbsen(dosenDto.getAbsen());
 
             karyawanDao.save(karyawan);
 

@@ -21,4 +21,6 @@ public class DosenDto {
     private String email;
     private String prodi;
     private User idUser;
+    private String rfid;
+    private Integer absen;
 }
