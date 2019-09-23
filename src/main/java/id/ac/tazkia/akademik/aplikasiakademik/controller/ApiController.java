@@ -87,6 +87,7 @@ public class ApiController {
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
+        System.out.println(hari.getNamaHari());
         List<ApiJadwalDto> jadwalDosenDtos = new ArrayList<>();
 
         LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(5);
@@ -176,7 +177,7 @@ public class ApiController {
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        List<PresensiDosen> presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
+        List<PresensiDosen> presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHariAndStatus(j,d,tahunAkademik,hari,StatusRecord.AKTIF);
 
         for (PresensiDosen pd : presensiDosen){
             LocalDate date = pd.getWaktuMasuk().toLocalDate();
