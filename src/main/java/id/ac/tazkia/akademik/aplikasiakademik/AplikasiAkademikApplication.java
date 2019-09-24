@@ -5,6 +5,7 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,17 +40,23 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 	}
 
 	@Autowired private RekapPresensiService rekapPresensiService;
+    @Value("${runOnStartup:#{false}}") private Boolean runOnStartup;
 
 	@Override
 	public void run(String... args) throws Exception {
-		LocalDate i = LocalDate.of(2019,9,1);
-		LocalDate tanggalAkhir = LocalDate.now();
+        if (runOnStartup) {
+            LOGGER.info("Isi Rekap Presensi Dosen");
 
-		while(i.isBefore(tanggalAkhir)) {
-			//rekapPresensiService.isiRekap(i);
-			//rekapPresensiService.isiRekapPresensiDosen(i);
-			i = i.plusDays(1);
-		}
+            LocalDate i = LocalDate.of(2019,9,1);
+            LocalDate tanggalAkhir = LocalDate.now();
+
+            while(i.isBefore(tanggalAkhir)) {
+                //rekapPresensiService.isiRekap(i);
+                rekapPresensiService.isiRekapPresensiDosen(i);
+                i = i.plusDays(1);
+            }
+        }
+
 
 	}
 
