@@ -75,7 +75,7 @@ public class RekapPresensiService {
     public void isiRekapPresensiDosen(LocalDate tanggal) {
         LocalDateTime jam00 = tanggal.atTime(0,0,0,0);
         LocalDateTime jam00besoknya = jam00.plusDays(1);
-        Iterable<PresensiDosen> dataPresensi = presensiDosenDao.findByWaktuMasukBetween(jam00, jam00besoknya);
+        Iterable<PresensiDosen> dataPresensi = presensiDosenDao.findByStatusAndWaktuMasukBetween(StatusRecord.AKTIF, jam00, jam00besoknya);
 
         LOGGER.info("Mengisi rekap presensi dosen untuk tanggal {}", jam00.toLocalDate());
 

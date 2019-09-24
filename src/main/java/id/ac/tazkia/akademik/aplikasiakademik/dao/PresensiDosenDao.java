@@ -12,5 +12,5 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
     List<PresensiDosen> findByJadwalAndDosenAndTahunAkademikAndJadwalHariAndStatus(Jadwal jadwal, Dosen dosen, TahunAkademik tahunAkademik, Hari hari,StatusRecord statusRecord);
     Iterable<PresensiDosen> findByJadwalAndDosenAndTahunAkademikAndStatusOrderByWaktuMasuk(Jadwal jadwal, Dosen dosen, TahunAkademik ta, StatusRecord statusRecord);
     Long countByJadwalAndDosenAndTahunAkademikAndStatus(Jadwal jadwal, Dosen dosen, TahunAkademik ta, StatusRecord statusRecord);
-    Iterable<PresensiDosen> findByWaktuMasukBetween(LocalDateTime mulai, LocalDateTime sampai);
+    Iterable<PresensiDosen> findByStatusAndWaktuMasukBetween(StatusRecord status, LocalDateTime mulai, LocalDateTime sampai);
 }
