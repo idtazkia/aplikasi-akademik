@@ -4,6 +4,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.NotifikasiService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.PresensiService;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,8 @@ public class ApiController {
     private KaryawanDao karyawanDao;
     @Autowired
     private NotifikasiService notifikasiService;
+    @Autowired
+    private PresensiService presensiService;
 
     @GetMapping("/api/tarikData")
     @ResponseBody
@@ -233,38 +236,7 @@ public class ApiController {
 
         Dosen d = od.get();
 
-        PresensiDosen presensiDosen = new PresensiDosen();
-        presensiDosen.setDosen(d);
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
-        presensiDosen.setWaktuMasuk(dateTime);
-        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-        presensiDosen.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        presensiDosen.setJadwal(j);
-        presensiDosenDao.save(presensiDosen);
-
-        SesiKuliah sesiKuliah = new SesiKuliah();
-        sesiKuliah.setJadwal(j);
-        sesiKuliah.setPresensiDosen(presensiDosen);
-        sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
-        sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
-        sesiKuliahDao.save(sesiKuliah);
-
-        if (presensiDosen.getWaktuMasuk().toLocalTime().compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0) {
-            notifikasiService.kirimNotifikasiTelat(presensiDosen);
-        }
-
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-
-        for (KrsDetail kd : krsDetail){
-            PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-            presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
-            presensiMahasiswa.setSesiKuliah(sesiKuliah);
-            presensiMahasiswa.setKrsDetail(kd);
-            presensiMahasiswa.setCatatan("-");
-            presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-            presensiMahasiswa.setRating(0);
-            presensiMahasiswaDao.save(presensiMahasiswa);
-        }
+        PresensiDosen presensiDosen = presensiService.inputPresensi(d, j, dateTime);
 
         return presensiDosen(j.getId(),d.getId());
 
