@@ -26,7 +26,7 @@ public class PresensiService {
     @Autowired
     private KrsDetailDao krsDetailDao;
 
-    public PresensiDosen inputPresensi(Dosen d, Jadwal j, LocalDateTime dateTime) {
+    public PresensiDosen inputPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime) {
         PresensiDosen presensiDosen = new PresensiDosen();
         presensiDosen.setDosen(d);
         presensiDosen.setWaktuSelesai(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
@@ -37,6 +37,7 @@ public class PresensiService {
         presensiDosenDao.save(presensiDosen);
 
         SesiKuliah sesiKuliah = new SesiKuliah();
+        sesiKuliah.setBeritaAcara(beritaAcara == null? "" : beritaAcara.trim());
         sesiKuliah.setJadwal(j);
         sesiKuliah.setPresensiDosen(presensiDosen);
         sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
@@ -61,6 +62,10 @@ public class PresensiService {
         }
 
         return presensiDosen;
+    }
+
+    public PresensiDosen inputPresensi(Dosen d, Jadwal j, LocalDateTime dateTime) {
+        return inputPresensi(d, j, null, dateTime);
     }
 
 }

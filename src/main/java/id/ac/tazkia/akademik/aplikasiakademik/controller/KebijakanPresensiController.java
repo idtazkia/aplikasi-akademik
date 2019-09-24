@@ -5,6 +5,7 @@ import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import id.ac.tazkia.akademik.aplikasiakademik.service.NotifikasiService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.PresensiService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,9 @@ public class KebijakanPresensiController {
 
     @Autowired
     private NotifikasiService notifikasiService;
+
+    @Autowired
+    private PresensiService presensiService;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -178,29 +182,10 @@ model.addAttribute("jadwal", jadwal);
 
     @PostMapping("/kebijakanpresensi/detail")
     public String tambahPresensi(@ModelAttribute @Valid JadwalDto jadwalDto){
-        PresensiDosen presensiDosen = new PresensiDosen();
-        presensiDosen.setDosen(jadwalDto.getDosen());
-        presensiDosen.setJadwal(jadwalDto.getJadwal());
-        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-        presensiDosen.setTahunAkademik(jadwalDto.getTahunAkademik());
-        presensiDosen.setWaktuMasuk(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
-        presensiDosenDao.save(presensiDosen);
 
-        SesiKuliah sesiKuliah = new SesiKuliah();
-        if (jadwalDto.getBeritaAcara().isEmpty() || jadwalDto.getBeritaAcara() == null){
-            sesiKuliah.setBeritaAcara("");
-        }
-        sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
-        sesiKuliah.setJadwal(jadwalDto.getJadwal());
-        sesiKuliah.setPresensiDosen(presensiDosen);
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
-        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
-        sesiKuliahDao.save(sesiKuliah);
-
-        if (presensiDosen.getWaktuMasuk().toLocalTime().compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0) {
-            notifikasiService.kirimNotifikasiTelat(presensiDosen);
-        }
+        presensiService.inputPresensi(jadwalDto.getDosen(),
+                jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
+                LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
 
         return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
 
