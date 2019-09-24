@@ -18,6 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class JadwalDosenDaoTests {
@@ -33,7 +35,7 @@ public class JadwalDosenDaoTests {
 
         Iterable<JadwalDosen> hasil = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord.HAPUS, ta,d);
 
-        Assert.assertNotNull(hasil);
+        assertNotNull(hasil);
         for (JadwalDosen j : hasil) {
             System.out.println("Matkul : "+j.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
             System.out.println("Hari : "+j.getJadwal().getHari().getNamaHari());
@@ -87,5 +89,20 @@ public class JadwalDosenDaoTests {
         for (RekapJadwalDosenDto r : rekap.getContent()) {
             System.out.println(r);
         }
+    }
+
+    @Test
+    public void testCariJadwalDosen() {
+        Jadwal j = new Jadwal();
+        j.setId("6165");
+
+        Dosen dosen = new Dosen();
+        dosen.setId("sfatma");
+
+        JadwalDosen jd = jadwalDosenDao.findByJadwalAndDosen(j, dosen);
+        assertNotNull(jd);
+        System.out.println("Matakuliah : "+jd.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        System.out.println("Status Jadwal : "+jd.getStatusJadwalDosen());
+
     }
 }

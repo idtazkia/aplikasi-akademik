@@ -8,6 +8,7 @@ import java.time.LocalTime;
 
 @Data @NoArgsConstructor @AllArgsConstructor
 public class RekapJadwalDosenDto {
+    private String idJadwal;
     private String idDosen;
     private String namaDosen;
     private String namaMatakuliah;
@@ -20,4 +21,5 @@ public class RekapJadwalDosenDto {
     private LocalTime jamSelesai;
     private String namaRuangan;
     private String namaGedung;
+    private Integer jumlahKehadiran;
 }

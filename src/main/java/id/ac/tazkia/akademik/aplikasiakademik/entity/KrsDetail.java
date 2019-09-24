@@ -63,4 +63,18 @@ public class KrsDetail {
     private BigDecimal bobot;
     private String grade;
 
+    @NotNull @Min(0)
+    private Integer jumlahKehadiran;
+
+    @NotNull @Min(0)
+    private Integer jumlahTerlambat;
+
+    @NotNull @Min(0)
+    private Integer jumlahMangkir;
+
+    @NotNull @Min(0)
+    private Integer jumlahSakit;
+
+    @NotNull @Min(0)
+    private Integer jumlahIzin;
 }

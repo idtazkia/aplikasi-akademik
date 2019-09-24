@@ -2,7 +2,10 @@ package id.ac.tazkia.akademik.aplikasiakademik.service;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,8 @@ import java.util.List;
 
 @Service @Transactional
 public class PresensiService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PresensiService.class);
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -25,6 +30,12 @@ public class PresensiService {
     private PresensiMahasiswaDao presensiMahasiswaDao;
     @Autowired
     private KrsDetailDao krsDetailDao;
+    @Autowired private JadwalDosenDao jadwalDosenDao;
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateRekapPresensiDosen() {
+        LOGGER.debug("TODO : implement rekap presensi dosen dan mahasiswa");
+    }
 
     public PresensiDosen inputPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime) {
         PresensiDosen presensiDosen = new PresensiDosen();
