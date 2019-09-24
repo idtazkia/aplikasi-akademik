@@ -42,11 +42,12 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LocalDate i = LocalDate.of(2018,10,1);
+		LocalDate i = LocalDate.of(2019,9,1);
 		LocalDate tanggalAkhir = LocalDate.now();
 
 		while(i.isBefore(tanggalAkhir)) {
 			//rekapPresensiService.isiRekap(i);
+			rekapPresensiService.isiRekapPresensiDosen(i);
 			i = i.plusDays(1);
 		}
 

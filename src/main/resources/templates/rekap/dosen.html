@@ -99,8 +99,10 @@
                                                 <td th:text="${jd.jamMulai}">455-981-221</td>
                                                 <td th:text="${jd.jamSelesai}">455-981-221</td>
                                                 <td th:text="${jd.namaRuangan}">455-981-221</td>
-                                                <td>
+                                                <td th:text="${jd.jumlahKehadiran}">
+                                                    <!--
                                                     <a th:href="@{/dosen/presensi(jadwal=${jd.idJadwal}, dosen=${jd.idDosen})}" th:text="${jd.jumlahKehadiran}">jumlah kehadiran</a>
+                                                    -->
                                                 </td>
                                             </tr>
                                             </tbody>

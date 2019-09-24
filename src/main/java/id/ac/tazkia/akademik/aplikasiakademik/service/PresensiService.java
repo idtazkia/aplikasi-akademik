@@ -5,7 +5,6 @@ import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +30,6 @@ public class PresensiService {
     @Autowired
     private KrsDetailDao krsDetailDao;
     @Autowired private JadwalDosenDao jadwalDosenDao;
-
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void updateRekapPresensiDosen() {
-        LOGGER.debug("TODO : implement rekap presensi dosen dan mahasiswa");
-    }
 
     public PresensiDosen inputPresensi(Dosen d, Jadwal j, String beritaAcara, LocalDateTime dateTime) {
         PresensiDosen presensiDosen = new PresensiDosen();

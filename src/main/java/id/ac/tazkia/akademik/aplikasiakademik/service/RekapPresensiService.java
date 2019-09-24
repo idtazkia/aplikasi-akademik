@@ -1,18 +1,13 @@
 package id.ac.tazkia.akademik.aplikasiakademik.service;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dao.JadwalDosenDao;
+import id.ac.tazkia.akademik.aplikasiakademik.dao.PresensiDosenDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.PresensiMahasiswaDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.RekapKehadiranMahasiswaDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.SesiKuliahDao;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.PresensiMahasiswa;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.RekapKehadiranMahasiswa;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.SesiKuliah;
-import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusPresensi;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +20,10 @@ import java.time.LocalDateTime;
 public class RekapPresensiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RekapPresensiService.class);
 
-    @Autowired private SesiKuliahDao sesiKuliahDao;
+    @Autowired private PresensiDosenDao presensiDosenDao;
     @Autowired private PresensiMahasiswaDao presensiMahasiswaDao;
     @Autowired private RekapKehadiranMahasiswaDao rekapKehadiranMahasiswaDao;
+    @Autowired private JadwalDosenDao jadwalDosenDao;
 
     // tiap jam 1 malam
     @Scheduled(cron = "* * 1 * * *")
@@ -68,6 +64,45 @@ public class RekapPresensiService {
             }
             r.setTerakhirUpdate(LocalDateTime.now());
             rekapKehadiranMahasiswaDao.save(r);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void isiRekapPresensiDosen() {
+        isiRekapPresensiDosen(LocalDate.now().minusDays(1));
+    }
+
+    public void isiRekapPresensiDosen(LocalDate tanggal) {
+        LocalDateTime jam00 = tanggal.atTime(0,0,0,0);
+        LocalDateTime jam00besoknya = jam00.plusDays(1);
+        Iterable<PresensiDosen> dataPresensi = presensiDosenDao.findByWaktuMasukBetween(jam00, jam00besoknya);
+
+        LOGGER.info("Mengisi rekap presensi dosen untuk tanggal {}", jam00.toLocalDate());
+
+        for (PresensiDosen pd : dataPresensi) {
+            JadwalDosen jd = jadwalDosenDao.findByJadwalIdAndDosenId(pd.getJadwal().getId(), pd.getDosen().getId());
+            if (jd == null) {
+                throw new IllegalStateException("Jadwal dosen dengan id_dosen " + pd.getDosen().getId() + " dan id_jadwal " + pd.getJadwal().getId() + " tidak ditemukan di database");
+            }
+            LOGGER.debug("Rekap Presensi dosen {} tanggal {} mata kuliah {} dengan status {}",
+                    pd.getDosen().getKaryawan().getNamaKaryawan(), jam00.toLocalDate(),
+                    pd.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah(),
+                    pd.getStatusPresensi());
+            if (StatusPresensi.HADIR.equals(pd.getStatusPresensi())) {
+                jd.setJumlahKehadiran(jd.getJumlahKehadiran()+1);
+            }
+            if (StatusPresensi.MANGKIR.equals(pd.getStatusPresensi())) {
+                jd.setJumlahMangkir(jd.getJumlahMangkir()+1);
+            }
+            if (StatusPresensi.IZIN.equals(pd.getStatusPresensi())) {
+                jd.setJumlahIzin(jd.getJumlahIzin()+1);
+            }
+            if (StatusPresensi.TERLAMBAT.equals(pd.getStatusPresensi())) {
+                jd.setJumlahTerlambat(jd.getJumlahTerlambat()+1);
+            }
+            if (StatusPresensi.SAKIT.equals(pd.getStatusPresensi())) {
+                jd.setJumlahSakit(jd.getJumlahSakit()+1);
+            }
         }
     }
 }

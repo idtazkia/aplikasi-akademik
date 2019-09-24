@@ -99,7 +99,7 @@ public class JadwalDosenDaoTests {
         Dosen dosen = new Dosen();
         dosen.setId("sfatma");
 
-        JadwalDosen jd = jadwalDosenDao.findByJadwalAndDosen(j, dosen);
+        JadwalDosen jd = jadwalDosenDao.findByJadwalIdAndDosenId(j.getId(), dosen.getId());
         assertNotNull(jd);
         System.out.println("Matakuliah : "+jd.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
         System.out.println("Status Jadwal : "+jd.getStatusJadwalDosen());
