@@ -47,7 +47,7 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 
 		while(i.isBefore(tanggalAkhir)) {
 			//rekapPresensiService.isiRekap(i);
-			rekapPresensiService.isiRekapPresensiDosen(i);
+			//rekapPresensiService.isiRekapPresensiDosen(i);
 			i = i.plusDays(1);
 		}
 
