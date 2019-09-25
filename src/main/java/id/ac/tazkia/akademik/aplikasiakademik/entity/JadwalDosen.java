@@ -30,18 +30,18 @@ public class JadwalDosen {
     private StatusJadwalDosen statusJadwalDosen;
 
     @NotNull @Min(0)
-    private Integer jumlahKehadiran;
+    private Integer jumlahKehadiran = 0;
 
     @NotNull @Min(0)
-    private Integer jumlahTerlambat;
+    private Integer jumlahTerlambat = 0;
 
     @NotNull @Min(0)
-    private Integer jumlahMangkir;
+    private Integer jumlahMangkir = 0;
 
     @NotNull @Min(0)
-    private Integer jumlahSakit;
+    private Integer jumlahSakit = 0;
 
     @NotNull @Min(0)
-    private Integer jumlahIzin;
+    private Integer jumlahIzin = 0;
 
 }
