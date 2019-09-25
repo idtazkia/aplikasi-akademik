@@ -648,6 +648,11 @@ public class KrsController {
                                     kd.setNilaiUas(BigDecimal.ZERO);
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
+                                    kd.setJumlahKehadiran(0);
+                                    kd.setJumlahTerlambat(0);
+                                    kd.setJumlahMangkir(0);
+                                    kd.setJumlahSakit(0);
+                                    kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
                                 }else {
                                     attributes.addFlashAttribute("batasRuang", jadwal);
@@ -692,6 +697,11 @@ public class KrsController {
                                     kd.setNilaiUas(BigDecimal.ZERO);
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
+                                    kd.setJumlahKehadiran(0);
+                                    kd.setJumlahMangkir(0);
+                                    kd.setJumlahTerlambat(0);
+                                    kd.setJumlahSakit(0);
+                                    kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
                                 }else {
                                     attributes.addFlashAttribute("batasRuang", jadwal);
