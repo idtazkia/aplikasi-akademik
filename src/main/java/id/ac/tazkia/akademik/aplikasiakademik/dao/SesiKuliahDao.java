@@ -20,6 +20,6 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     Page<SesiKuliah> cariSesiKuliah(@Param("mulai") LocalDateTime mulai, @Param("sampai") LocalDateTime sampai, Pageable pageable);
 
     Page<SesiKuliah> findByJadwal(Jadwal jadwal,Pageable pageable);
-    List<SesiKuliah> findByJadwalAndPresensiDosenStatus(Jadwal jadwal, StatusRecord statusRecord);
+    List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord statusRecord);
     SesiKuliah findByPresensiDosen(PresensiDosen presensiDosen);
 }

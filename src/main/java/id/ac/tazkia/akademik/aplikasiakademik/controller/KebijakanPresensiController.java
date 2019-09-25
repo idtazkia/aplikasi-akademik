@@ -157,7 +157,7 @@ model.addAttribute("jadwal", jadwal);
 
     @GetMapping("/kebijakanpresensi/detail")
     public void  formKebijakanPresensi(Model model, @RequestParam Jadwal jadwal, Pageable page){
-        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwalAndPresensiDosenStatus(jadwal,StatusRecord.AKTIF);
+        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(jadwal,StatusRecord.AKTIF);
 
         List<JadwalDto> detail = new ArrayList<>();
         for (SesiKuliah sk : sesiKuliah) {
