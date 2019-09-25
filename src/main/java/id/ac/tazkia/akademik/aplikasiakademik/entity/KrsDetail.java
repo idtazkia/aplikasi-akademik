@@ -18,7 +18,7 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class KrsDetail {
+public class KrsDetail extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid" )
