@@ -2,6 +2,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.MatakuliahKurikulumDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class JadwalKuliahController {
@@ -192,7 +194,20 @@ public class JadwalKuliahController {
         if (program != null && tahunAkademik != null){
             model.addAttribute("selectedTahun",tahunAkademik);
             model.addAttribute("selectedProgram",program);
-            model.addAttribute("jadwal", jadwalDao.ploting(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik));
+            List<PlotingDto> plotingDto = jadwalDao.ploting(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik);
+            List<PlotingDto> ploting = jadwalDao.plotingKosong(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik);
+
+            List<PlotingDto> combinedList = new ArrayList<>();
+            combinedList.addAll(ploting);
+            combinedList.addAll(plotingDto);
+            List<PlotingDto> newList = combinedList.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            System.out.println(plotingDto.size());
+            System.out.println(ploting.size());
+            System.out.println(newList.size());
+
+            model.addAttribute("jadwal", newList);
             model.addAttribute("kelas", kelasMahasiswaDao.cariKelas(StatusRecord.AKTIF));
 
 
