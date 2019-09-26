@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.ac.tazkia.akademik.aplikasiakademik.dao.HariDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.JadwalDao;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.DataNotifikasiTerlambat;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.NotifikasiSmile;
@@ -26,7 +27,7 @@ public class NotifikasiService {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private JadwalDao jadwalDao;
+    private HariDao hariDao;
 
 
 
@@ -37,7 +38,7 @@ public class NotifikasiService {
                 .email(presensiDosen.getDosen().getKaryawan().getEmail())
                 .mobile("")
                 .data(DataNotifikasiTerlambat.builder()
-                        .hariMasuk(presensiDosen.getJadwal().getHari().getNamaHari())
+                        .hariMasuk(hariDao.findByNamaHariEngContainingIgnoreCase(presensiDosen.getWaktuMasuk().toLocalDate().getDayOfWeek().toString()).getNamaHari())
                         .hari(presensiDosen.getJadwal().getHari().getNamaHari())
                         .jam(presensiDosen.getJadwal().getJamMulai())
                         .jamMasuk(presensiDosen.getWaktuMasuk().toLocalTime())
