@@ -2,6 +2,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapJadwalDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.TeamDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,29 +27,17 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen, 
             @Param("dosen") Dosen dosen,
             @Param("statusJadwalDosen")StatusJadwalDosen sjd, @Param("ta")TahunAkademik ta, @Param("statusJadwal")StatusRecord statusJadwal, Pageable page);
 
-    static final String QUERY_JADWAL_DOSEN_DTO =
-            "select new id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto(j.dosen.id,j.dosen.absen,j.dosen.karyawan.namaKaryawan," +
-                    "j.dosen.karyawan.rfid,j.jadwal.id,j.jadwal.jamMulai,j.jadwal.jamSelesai,0) " +
-                    "from JadwalDosen j where j.jadwal.ruangan = :ruangan " +
-                    "and j.jadwal.tahunAkademik = :tahunAkademik " +
-                    "and j.jadwal.hari = :hari " +
-                    "and j.jadwal.jamMulai between :mulai and :sampai ";
-
-    static final String QUERY_JADWAL_DTO =
-            "select new id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto(j.dosen.id,j.dosen.absen,j.dosen.karyawan.namaKaryawan," +
-                    "j.dosen.karyawan.rfid,j.jadwal.id,j.jadwal.jamMulai,j.jadwal.jamSelesai,0) " +
-                    "from JadwalDosen j where j.jadwal.ruangan = :ruangan " +
-                    "and j.jadwal.tahunAkademik = :tahunAkademik " +
-                    "and j.jadwal.hari = :hari and j.dosen.karyawan.rfid = :rfid" +
-                    "and j.jadwal.jamMulai between :mulai and :sampai ";
-
     Iterable<JadwalDosen> findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord status, TahunAkademik tahunAkademik, Dosen dosen);
+
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TeamDto (jd.jadwal.id,jd.dosen.karyawan.namaKaryawan)from JadwalDosen jd where jd.jadwal.tahunAkademik = :tahun and jd.statusJadwalDosen =:status")
+    Iterable<TeamDto> cariTeam(@Param("tahun")TahunAkademik tahunAkademik,@Param("status") StatusJadwalDosen statusJadwalDosen);
+
     JadwalDosen findByJadwalAndDosenAndStatusJadwalDosen(Jadwal jadwal,Dosen dosen,StatusJadwalDosen statusJadwalDosen);
     JadwalDosen findByJadwalAndStatusJadwalDosen(Jadwal jadwal,StatusJadwalDosen statusJadwalDosen);
     List<JadwalDosen> findByJadwal(Jadwal jadwal);
 
-    @Query(QUERY_JADWAL_DOSEN_DTO)
-    Iterable<JadwalDosenDto> cariJadwal(@Param("tahunAkademik") TahunAkademik ta, @Param("ruangan") Ruangan r, @Param("hari") Hari hari, @Param("mulai")LocalTime mulai, @Param("sampai") LocalTime sampai);
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto(j.dosen.id,j.dosen.absen,j.dosen.karyawan.namaKaryawan, j.dosen.karyawan.rfid,j.jadwal.id,j.jadwal.jamMulai,j.jadwal.jamSelesai,0) from JadwalDosen j where j.jadwal.ruangan = :ruangan and j.jadwal.tahunAkademik = :tahunAkademik and j.jadwal.hari = :hari and j.jadwal.status = :status and j.jadwal.jamMulai between :mulai and :sampai ")
+    Iterable<JadwalDosenDto> cariJadwal(@Param("tahunAkademik") TahunAkademik ta, @Param("ruangan") Ruangan r, @Param("hari") Hari hari,@Param("status")StatusRecord statusRecord, @Param("mulai")LocalTime mulai, @Param("sampai") LocalTime sampai);
 
 
     @Query("select j from JadwalDosen  j where j.dosen = :dosen and j.jadwal.tahunAkademik = :tahun and j.jadwal.hari =:hari and j.jadwal.ruangan = :ruangan and  :sampai between  subtime(j.jadwal.jamMulai,'500') and subtime(j.jadwal.jamSelesai,'600')")

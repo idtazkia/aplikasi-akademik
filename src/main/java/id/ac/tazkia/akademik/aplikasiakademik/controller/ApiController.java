@@ -72,7 +72,7 @@ public class ApiController {
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             jadwalDosenDto.setJumlah(jumlah);
@@ -93,12 +93,12 @@ public class ApiController {
         System.out.println(hari.getNamaHari());
         List<ApiJadwalDto> jadwalDosenDtos = new ArrayList<>();
 
-        LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(5);
-        LocalTime sampai = LocalTime.now().plusHours(7).plusMinutes(5);
+        LocalTime mulai = LocalTime.now().plusHours(7);
+        LocalTime sampai = LocalTime.now().plusHours(7).plusMinutes(9);
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF ,mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             ApiJadwalDto apiJadwalDto = new ApiJadwalDto();
@@ -133,7 +133,7 @@ public class ApiController {
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             jadwalDosenDto.setJumlah(jumlah);
