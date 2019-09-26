@@ -65,11 +65,21 @@
 
                             <div class="col-md-12">
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Punya Responsi/Lab</label><br>
-                                        <label>
-                                            <input name="responsi" th:field="*{responsi}" value="Y" maxlength="1" type="checkbox" class="js-switch" />
-                                        </label >
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Punya Responsi</label><br>
+                                            <label>
+                                                <input name="responsi" th:field="*{responsi}" value="Y" maxlength="1" type="checkbox" class="js-switch" />
+                                            </label >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Skripsi</label><br>
+                                            <label>
+                                                <input name="statusSkripsi" th:field="*{statusSkripsi}" value="AKTIF" maxlength="1" type="checkbox" class="js-switch" />
+                                            </label >
+                                        </div>
                                     </div>
                                 </div>
 
@@ -190,6 +200,14 @@
                                     <div class="form-group">
                                         <label>Upload Silabus</label>
                                         <input type="file" name="silabus" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Bobot SDS</label>
+                                        <span class><small class="btn-danger">*Isian hanya angka saja</small></span>
+                                        <input type="number" th:field="*{sds}" name="sds" class="form-control"/>
                                     </div>
                                 </div>
 

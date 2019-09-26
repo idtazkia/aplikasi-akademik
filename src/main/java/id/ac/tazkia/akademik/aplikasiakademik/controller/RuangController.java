@@ -169,10 +169,11 @@ public class RuangController {
     }
 
     @PostMapping("/kelas/form")
-    public String buatKelas(@Valid Kelas kelas){
+    public String buatKelas(@Valid Kelas kelas,@RequestParam Prodi prodi){
         if (kelas.getStatus() == null){
             kelas.setStatus(StatusRecord.NONAKTIF);
         }
+        kelas.setIdProdi(prodi);
         kelasDao.save(kelas);
         return "redirect:list";
     }

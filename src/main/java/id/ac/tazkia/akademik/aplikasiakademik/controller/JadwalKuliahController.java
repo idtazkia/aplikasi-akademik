@@ -150,8 +150,22 @@ public class JadwalKuliahController {
     @ResponseBody
     public List<MatakuliahKurikulumDto> cariMatakuliah(@RequestParam(required = false) String id){
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findFirstByKelasAndStatusAndMahasiswaKurikulumNotNull(kelasDao.findById(id).get(),StatusRecord.AKTIF);
+        if (kelasMahasiswa == null){
+            return kelasMatkul(id);
+        }
         Kurikulum kurikulum = kurikulumDao.findByIdAndStatus(kelasMahasiswa.getMahasiswa().getKurikulum().getId(),StatusRecord.AKTIF);
-        System.out.println(matakuliahKurikulumDao.cariMk(StatusRecord.AKTIF,kurikulum));
+        return matakuliahKurikulumDao.cariMk(StatusRecord.AKTIF,kurikulum);
+    }
+
+    @GetMapping("/api/kelasMatkul")
+    @ResponseBody
+    public List<MatakuliahKurikulumDto> kelasMatkul(@RequestParam(required = false) String id){
+        Kelas kelas = kelasDao.findById(id).get();
+        if (kelas.getKurikulum() == null){
+            return null;
+        }
+        Kurikulum kurikulum = kurikulumDao.findByIdAndStatus(kelas.getKurikulum().getId(),StatusRecord.AKTIF);
+        System.out.println(kurikulum.getNamaKurikulum());
         return matakuliahKurikulumDao.cariMk(StatusRecord.AKTIF,kurikulum);
     }
 
@@ -203,12 +217,10 @@ public class JadwalKuliahController {
             List<PlotingDto> newList = combinedList.stream()
                     .distinct()
                     .collect(Collectors.toList());
-            System.out.println(plotingDto.size());
-            System.out.println(ploting.size());
-            System.out.println(newList.size());
+            model.addAttribute("team",jadwalDosenDao.cariTeam(tahunAkademik.getTahunAkademik(),StatusJadwalDosen.TEAM));
 
             model.addAttribute("jadwal", newList);
-            model.addAttribute("kelas", kelasMahasiswaDao.cariKelas(StatusRecord.AKTIF));
+            model.addAttribute("kelas", kelasDao.findByStatus(StatusRecord.AKTIF));
 
 
         }

@@ -581,6 +581,11 @@ public class KrsMahasiswaController {
                                 kd.setNilaiUas(BigDecimal.ZERO);
                                 kd.setNilaiUts(BigDecimal.ZERO);
                                 kd.setFinalisasi("N");
+                                kd.setJumlahMangkir(0);
+                                kd.setJumlahKehadiran(0);
+                                kd.setJumlahTerlambat(0);
+                                kd.setJumlahIzin(0);
+                                kd.setJumlahSakit(0);
                                 krsDetailDao.save(kd);
                             }else {
                                 attributes.addFlashAttribute("batasRuang", jadwal);
@@ -629,6 +634,11 @@ public class KrsMahasiswaController {
                                     kd.setNilaiUas(BigDecimal.ZERO);
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
+                                    kd.setJumlahSakit(0);
+                                    kd.setJumlahKehadiran(0);
+                                    kd.setJumlahMangkir(0);
+                                    kd.setJumlahTerlambat(0);
+                                    kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
 
                                 }else {
@@ -673,8 +683,13 @@ public class KrsMahasiswaController {
                                     kd.setNilaiPresensi(BigDecimal.ZERO);
                                     kd.setNilaiTugas(BigDecimal.ZERO);
                                     kd.setNilaiUas(BigDecimal.ZERO);
+                                    kd.setJumlahSakit(0);
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
+                                    kd.setJumlahKehadiran(0);
+                                    kd.setJumlahMangkir(0);
+                                    kd.setJumlahTerlambat(0);
+                                    kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
 
                                 }else {

@@ -153,7 +153,7 @@ public class PenilaianController {
     public String saveBobot(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes ,
                             @RequestParam String jamMulai,
                             @RequestParam String jamSelesai){
-        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
         LocalTime mulai = LocalTime.parse(jamMulai,
                 DateTimeFormatter.ofPattern("HH:mm:ss"));
         LocalTime selesai = LocalTime.parse(jamSelesai,
@@ -185,7 +185,30 @@ public class PenilaianController {
 
     @GetMapping("/penilaian/nilai")
     public String nilaiPenilaian(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
-        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+        if (jadwal.getMatakuliahKurikulum().getSds() != null){
+            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+            if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                System.out.println("gabisa");
+                return "redirect:bobot?jadwal="+jadwal.getId();
+            }
+        }
+
+        if (jadwal.getMatakuliahKurikulum().getSds() == null){
+            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+            if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                System.out.println("gabisa");
+                return "redirect:bobot?jadwal="+jadwal.getId();
+            }
+        }
+
+
+        int presdos = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal).size();
+        if (presdos == 0){
+            attributes.addFlashAttribute("gaadapres", "Gaada Presensi");
+            return "redirect:bobot?jadwal=" + jadwal.getId();
+        }
         List<BobotTugas> bobot = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
         BigDecimal sum = bobot.stream()
                 .map(BobotTugas::getBobot)
@@ -199,11 +222,6 @@ public class PenilaianController {
             }
         }
 
-        if (totalBobot.toBigInteger().intValueExact() < 100) {
-            attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-            System.out.println("gabisa");
-            return "redirect:bobot?jadwal="+jadwal.getId();
-        }
 
         model.addAttribute("absensi", presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal).size());
         model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());

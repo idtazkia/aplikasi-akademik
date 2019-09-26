@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                     <center>
                                         <div class="btn-group">
-                                            <a th:href="@{/penilaian/bobot}">
+                                            <a th:href="@{/penilaian/bobot(jadwal = ${jadwal.id})}">
                                                 <button class="btn btn-primary"  type="button">Bobot Penilaian</button>
                                             </a>
                                             <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
@@ -121,8 +121,19 @@
                                 <h4>OOPS!!!</h4>
                                     <p>Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!</p>
                             </div>
+
+                            <div class="alert alert-danger fade in" th th:if="${gaadapres != null}">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4>OOPS!!!</h4>
+                                    <p>Anda belum pernah masuk untuk mengajar</p>
+                            </div>
                             <form th:action="@{/penilaian/bobot}" method="post" th:object="${jadwal}">
                                 <table>
+                                    <tr>
+                                        <td style="width: 20%"><label>SDS</label></td>
+                                        <td>&nbsp; : &nbsp;</td>
+                                        <td><input type="text" name="sds" th:value="${jadwal.matakuliahKurikulum.sds}" readonly class="form-control" style="width: 20%;"></td>
+                                    </tr>
                                     <tr>
                                         <td style="width: 20%"><label>Presensi</label></td>
                                         <td>&nbsp; : &nbsp;</td>
