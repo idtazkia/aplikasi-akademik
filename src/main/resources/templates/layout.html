@@ -256,7 +256,9 @@
                                 <ul class="nav child_menu">
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
                                     <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/aktifasi}">KRS</a></li>
-                                    <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}" sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">SKS</a></li>
                                 </ul>
                             </li>
 
@@ -272,7 +274,7 @@
                                     <li><a th:href="@{/menumahasiswa/krs/list}">K R S</a></li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/absensi/list}">Attendance</a></li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/khs/list}">K H S</a></li>
-                                    <li><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
                                 </ul>
                             </li>
 
