@@ -83,13 +83,13 @@ public class ApiController {
 
     @GetMapping("/api/uploadMesin")
     @ResponseBody
-    public Iterable<ApiJadwalDto> uploadData (@RequestParam(required = false) String id){
+    public Iterable<ApiJadwalDto> uploadData (@RequestParam(required = false) String id,@RequestParam(required = false) String idHari){
 
         Ruangan ruangan = ruanganDao.findById(id).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
+        Hari hari = hariDao.findById(idHari).get();
         System.out.println(hari.getNamaHari());
         List<ApiJadwalDto> jadwalDosenDtos = new ArrayList<>();
 
