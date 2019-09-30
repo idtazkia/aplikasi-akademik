@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiRfidDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,9 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.ApiRfidDto(m.idAbsen,m.nama,m.rfid,true ,'',0) from  Mahasiswa m where m.status = :status and m.rfid is not null")
     List<ApiRfidDto> rfidMahasiswa(@Param("status")StatusRecord statusRecord);
+
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto(m.id,m.nama,m.nim,'',m.kurikulum.namaKurikulum) from Mahasiswa  m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi")
+    Iterable<KelasMahasiswaDto> carikelas(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi);
 
 
 }
