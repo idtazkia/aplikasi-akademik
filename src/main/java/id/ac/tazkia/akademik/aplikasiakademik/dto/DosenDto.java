@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -23,4 +24,6 @@ public class DosenDto {
     private User idUser;
     private String rfid;
     private Integer absen;
+    private BigDecimal honor;
+    private String StatusDosen;
 }

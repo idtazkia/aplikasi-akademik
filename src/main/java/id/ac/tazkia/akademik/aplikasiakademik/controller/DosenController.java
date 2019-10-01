@@ -59,6 +59,8 @@ public class DosenController {
                 dosenDto.setNama(karyawan.getNamaKaryawan());
                 dosenDto.setNidn(karyawan.getNidn());
                 dosenDto.setNik(karyawan.getNik());
+                dosenDto.setStatusDosen(dosenDao.findByKaryawan(karyawan).getStatusDosen());
+                dosenDto.setHonor(dosenDao.findByKaryawan(karyawan).getHonor());
                 dosenDto.setRfid(karyawan.getRfid());
                 dosenDto.setAbsen(karyawan.getIdAbsen());
                 if (karyawan.getIdUser() != null) {
@@ -98,6 +100,8 @@ public class DosenController {
             Dosen d = new Dosen();
             d.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
             d.setKaryawan(karyawan);
+            d.setStatusDosen(dosenDto.getStatusDosen());
+            d.setHonor(dosenDto.getHonor());
             d.setStatus(StatusRecord.AKTIF);
             dosenDao.save(d);
         }else {
@@ -129,6 +133,8 @@ public class DosenController {
             karyawanDao.save(karyawan);
 
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            dosen.setStatusDosen(dosenDto.getStatusDosen());
+            dosen.setHonor(dosenDto.getHonor());
             dosen.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
             dosenDao.save(dosen);
         }

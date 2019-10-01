@@ -133,6 +133,27 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Honor Dosen</label>
+                            &nbsp&nbsp
+                            <input type="text" class="form-control" name="honor" th:field="*{honor}" placeholder="Honor Dosen">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Status Dosen</label>
+                            &nbsp&nbsp
+                            <select name="statusDosen" class="form-control" th:field="*{statusDosen}" id="">
+                                <option value="LB">LB</option>
+                                <option value="HB">HB</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
 
                     <input type="hidden" name="id" th:field="*{id}">
                     <input type="hidden" name="idUser" th:field="*{idUser}">

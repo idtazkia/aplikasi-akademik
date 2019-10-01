@@ -153,6 +153,9 @@ public class JadwalKuliahController {
         if (kelasMahasiswa == null){
             return kelasMatkul(id);
         }
+        if (kelasMahasiswa.getMahasiswa().getKurikulum() == null){
+            return kelasMatkul(id);
+        }
         Kurikulum kurikulum = kurikulumDao.findByIdAndStatus(kelasMahasiswa.getMahasiswa().getKurikulum().getId(),StatusRecord.AKTIF);
         return matakuliahKurikulumDao.cariMk(StatusRecord.AKTIF,kurikulum);
     }
