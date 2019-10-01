@@ -107,14 +107,34 @@ public class RuangController {
             List<KelasMahasiswaDto> mahasiswaDtos = new ArrayList<>();
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
-            Iterable<KelasMahasiswaDto> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
-            for (KelasMahasiswaDto km : mahasiswa){
-                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(km.getId()).get(),StatusRecord.AKTIF);
+            Iterable<String> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
+            for (String m : mahasiswa){
+                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(m).get(),StatusRecord.AKTIF);
                 if (kelasMahasiswa == null){
+                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                    KelasMahasiswaDto km = new KelasMahasiswaDto();
+                    km.setId(mhsw.getId());
+                    km.setNama(mhsw.getNama());
+                    if (mhsw.getKurikulum() != null) {
+                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                    }else {
+                        km.setKurikulum("");
+                    }
+                    km.setNim(mhsw.getNim());
                     km.setKelas("");
                     mahasiswaDtos.add(km);
                 }
                 if (kelasMahasiswa != null){
+                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                    KelasMahasiswaDto km = new KelasMahasiswaDto();
+                    km.setId(mhsw.getId());
+                    km.setNama(mhsw.getNama());
+                    if (mhsw.getKurikulum() != null) {
+                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                    }else {
+                        km.setKurikulum("");
+                    }
+                    km.setNim(mhsw.getNim());
                     km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
                     mahasiswaDtos.add(km);
 

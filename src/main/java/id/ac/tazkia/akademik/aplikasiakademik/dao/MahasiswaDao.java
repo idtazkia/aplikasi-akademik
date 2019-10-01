@@ -28,8 +28,8 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.ApiRfidDto(m.idAbsen,m.nama,m.rfid,true ,'',0) from  Mahasiswa m where m.status = :status and m.rfid is not null")
     List<ApiRfidDto> rfidMahasiswa(@Param("status")StatusRecord statusRecord);
 
-    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto(m.id,m.nama,m.nim,'',m.kurikulum.namaKurikulum) from Mahasiswa  m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi")
-    Iterable<KelasMahasiswaDto> carikelas(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi);
+    @Query("select m.id from Mahasiswa m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi")
+    Iterable<String> carikelas(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi);
 
 
 }
