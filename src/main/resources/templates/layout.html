@@ -257,10 +257,10 @@
                                 <ul class="nav child_menu">
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
                                     <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/aktifasi}">KRS</a></li>
-                                    <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
-                                    <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
-                                    <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">SKS</a></li>
-                                    <li sec:authorize="hasAnyAuthority('VIEW_FINANCE')"><a th:href="@{/rekap/dosen}">SKS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/sks}">SKS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_FINANCE')"><a th:href="@{/rekap/sks}">SKS</a></li>
                                 </ul>
                             </li>
 
