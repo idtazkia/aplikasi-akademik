@@ -150,6 +150,7 @@
                                     <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a th:href="@{/krs/list}">K R S</a></li>
+                                            <li><a th:href="@{/krs/paket}">Generate KRS (Semester I & II)</a></li>
                                             <li><a th:href="@{/kebijakanpresensi/list}">Attendance</a></li>
                                             <li><a th:href="@{/penilaian/list}">Assesment</a></li>
                                             <li><a th:href="@{/khs/list}">K H S</a></li>
@@ -258,7 +259,8 @@
                                     <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/aktifasi}">KRS</a></li>
                                     <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
                                     <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
-                                    <li th:if="${not @environment.acceptsProfiles('production')}" sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">SKS</a></li>
+                                    <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">SKS</a></li>
+                                    <li sec:authorize="hasAnyAuthority('VIEW_FINANCE')"><a th:href="@{/rekap/dosen}">SKS</a></li>
                                 </ul>
                             </li>
 
