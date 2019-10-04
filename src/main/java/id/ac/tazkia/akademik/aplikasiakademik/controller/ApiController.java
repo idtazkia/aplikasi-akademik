@@ -185,7 +185,7 @@ public class ApiController {
         for (PresensiDosen pd : presensiDosen){
             LocalDate date = pd.getWaktuMasuk().toLocalDate();
             LocalTime masuk = pd.getWaktuMasuk().toLocalTime();
-            LocalTime minus5 = pd.getJadwal().getJamMulai().minusMinutes(5);
+            LocalTime minus5 = pd.getJadwal().getJamMulai().minusMinutes(10);
             if (date.isEqual(LocalDate.now())){
                 if (masuk.compareTo(minus5) >= 0 && masuk .compareTo(pd.getJadwal().getJamSelesai()) <= 0){
                             SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(pd);

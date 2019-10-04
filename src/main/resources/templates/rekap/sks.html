@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ploting Dosen</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Aktifasi KRS <small>Manual</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-chevron-up"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a th:href="@{/rekap/sks}">Semua</a>
+                            </li>
+                            <li><a th:href="@{/rekap/sks(skripsi = yes)}">Tanpa Skripsi</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+
+            <form method="get">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>Prodi</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="prodi">
+                                        <option></option>
+                                        <option th:each="data : ${prodi}" th:text="${data.namaProdi}" th:value="${data.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>Tahun Akademik</b></label></center>
+                                    <select class="form-control js-example-placeholder-single"
+                                            style="width: 100%!important;" name="tahun">
+                                        <option></option>
+                                        <option th:each="data : ${tahun}" th:text="${data.namaTahunAkademik}" th:value="${data.id}"></option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" th:if="${skripsi != null}" name="skripsi" value="yes">
+
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Search</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <br>
+            <hr>
+
+            <span >
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Prodi<small><b></b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <div>
+                                <!--Show <span sd:page-size-selector="javascript"></span> entries-->
+                            </div>
+                            <br>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>NIM</th>
+                                    <th>Nama</th>
+                                    <th>Jumlah SKS</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    <span >
+                                        <tr th:each="rekap, row : ${rekapJumlahSks}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td th:text="${rekap.value.nim}"></td>
+                                            <td th:text="${rekap.value.nama}"></td>
+                                            <td th:text="${rekap.value.jumlah}"></td>
+                                        </tr>
+                                    </span>
+                                </tbody>
+                            </table>
+
+                            <!--<div class="row">-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<nav class="pull-right">-->
+                            <!--<ul class="pagination" sd:pagination="full">-->
+                            <!--&lt;!&ndash; Pagination created by SpringDataDialect, this content is just for mockup &ndash;&gt;-->
+                            <!--<li class="disabled"><a href="#" aria-label="Previous"><span-->
+                            <!--aria-hidden="true">&laquo;</span></a>-->
+                            <!--</li>-->
+                            <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
+                            <!--</li>-->
+                            <!--</ul>-->
+                            <!--</nav>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            </span>
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+</script>

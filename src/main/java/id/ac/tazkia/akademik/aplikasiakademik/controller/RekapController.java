@@ -1,6 +1,9 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapJadwalDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -28,6 +34,8 @@ public class RekapController {
     private MahasiswaDao mahasiswaDao;
     @Autowired
     private JadwalDao jadwalDao;
+    @Autowired
+    private ProdiDao prodiDao;
 
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -37,6 +45,11 @@ public class RekapController {
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(StatusRecord.HAPUS);
+    }
+
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
     @GetMapping("/rekap/aktifasi")
@@ -75,6 +88,75 @@ public class RekapController {
             }
 
         }
+
+    }
+
+    @GetMapping("/rekap/sks")
+    public void rekapSks(@RequestParam(required = false) Prodi prodi,@PageableDefault(size = Integer.MAX_VALUE) Pageable page,
+                         @RequestParam(required = false) TahunAkademik tahun,@RequestParam(required = false) String skripsi,
+                         Model model){
+                    model.addAttribute("skripsi",skripsi);
+
+            if (prodi != null && tahun != null) {
+                if (skripsi == null || skripsi.isEmpty()) {
+                    model.addAttribute("prodi", prodi);
+                    model.addAttribute("tahun", tahun);
+
+                    Page<RekapSksDto> rekap = krsDetailDao
+                            .cariSks(tahun, prodi, StatusRecord.AKTIF, page);
+
+                    Map<String, RekapSksDto> rekapJumlahSks = new LinkedHashMap<>();
+
+                    for (RekapSksDto r : rekap.getContent()) {
+
+                        // hitung total sks
+                        RekapSksDto rsks = rekapJumlahSks.get(r.getId());
+                        if (rsks == null) {
+                            rsks = new RekapSksDto();
+                            rsks.setNama(r.getNama());
+                            rsks.setNim(r.getNim());
+                            rsks.setJumlah(0);
+                        }
+
+                        rsks.tambahSks(r.getJumlah());
+                        rekapJumlahSks.put(r.getId(), rsks);
+
+
+                    }
+
+
+                    model.addAttribute("rekapJumlahSks", rekapJumlahSks);
+                }else{
+                    model.addAttribute("prodi", prodi);
+                    model.addAttribute("tahun", tahun);
+
+                    Page<RekapSksDto> rekap = krsDetailDao
+                            .tanpaSkripsi(tahun, prodi, StatusRecord.AKTIF,StatusRecord.AKTIF, page);
+
+                    Map<String, RekapSksDto> rekapJumlahSks = new LinkedHashMap<>();
+
+                    for (RekapSksDto r : rekap.getContent()) {
+
+                        // hitung total sks
+                        RekapSksDto rsks = rekapJumlahSks.get(r.getId());
+                        if (rsks == null) {
+                            rsks = new RekapSksDto();
+                            rsks.setNim(r.getNim());
+                            rsks.setNama(r.getNama());
+                            rsks.setJumlah(0);
+                        }
+
+                        rsks.tambahSks(r.getJumlah());
+                        rekapJumlahSks.put(r.getId(), rsks);
+
+
+                    }
+
+
+                    model.addAttribute("rekapJumlahSks", rekapJumlahSks);
+                }
+            }
+
 
     }
 }

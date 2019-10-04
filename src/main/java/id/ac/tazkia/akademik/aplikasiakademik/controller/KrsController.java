@@ -1,7 +1,9 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +50,8 @@ public class KrsController {
     private KelasMahasiswaDao kelasMahasiswaDao;
     @Autowired
     private IpkDao ipkDao;
+    @Autowired
+    private KelasDao kelasDao;
 
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
@@ -735,6 +740,77 @@ public class KrsController {
         krsDetailDao.save(id);
 
         return "redirect:list?nim="+id.getMahasiswa().getNim()+"&tahunAkademik="+id.getKrs().getTahunAkademik().getId();
+    }
+
+    @GetMapping("/krs/paket")
+    public void main(Model model,@RequestParam(required = false) Kelas kelas){
+        model.addAttribute("kelas",kelasMahasiswaDao.carikelasMahasiswa());
+        model.addAttribute("selected",kelas);
+        List<KelasMahasiswaDto> kelasMahasiswaDtos = new ArrayList<>();
+
+        if (kelas != null){
+            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas,StatusRecord.AKTIF);
+            if (IterableUtils.size(kelasMahasiswa) == 0){
+                model.addAttribute("kosong","gada mahasiswa");
+            }
+            if (IterableUtils.size(kelasMahasiswa) > 0){
+                for (KelasMahasiswa km : kelasMahasiswa){
+                    KelasMahasiswaDto kelasMahasiswaDto = new KelasMahasiswaDto();
+                    kelasMahasiswaDto.setNim(km.getMahasiswa().getNim());
+                    kelasMahasiswaDto.setNama(km.getMahasiswa().getNama());
+                    kelasMahasiswaDto.setKelas(km.getKelas().getNamaKelas());
+                    kelasMahasiswaDtos.add(kelasMahasiswaDto);
+
+                }
+            }
+            model.addAttribute("mahasiswaList",kelasMahasiswaDtos);
+        }
+
+
+
+
+
+    }
+
+    @PostMapping("/krs/paket")
+    private String paketKrs(@RequestParam(required = false) Kelas kelas) {
+        if (kelas != null){
+            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(kelas,StatusRecord.AKTIF);
+            if (kelasMahasiswa == null){
+//                model.addAttribute("empty","tidak ada mahasiswa");
+            }
+
+            if (kelasMahasiswa != null) {
+                for (KelasMahasiswa km : kelasMahasiswa) {
+                    Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),km.getMahasiswa(),StatusRecord.AKTIF);
+                    if (krs != null){
+                        List<Jadwal> jadwal = jadwalDao.findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),kelas);
+                        for (Jadwal j : jadwal) {
+                            KrsDetail kd = krsDetailDao.findByJadwalAndStatusAndKrs(j, StatusRecord.AKTIF, krs);
+                            if (kd == null){
+                                KrsDetail krsDetail = new KrsDetail();
+                                krsDetail.setJadwal(j);
+                                krsDetail.setKrs(krs);
+                                krsDetail.setMahasiswa(krs.getMahasiswa());
+                                krsDetail.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+                                krsDetail.setNilaiPresensi(BigDecimal.ZERO);
+                                krsDetail.setNilaiUas(BigDecimal.ZERO);
+                                krsDetail.setNilaiUts(BigDecimal.ZERO);
+                                krsDetail.setNilaiTugas(BigDecimal.ZERO);
+                                krsDetail.setFinalisasi("N");
+                                krsDetail.setJumlahKehadiran(0);
+                                krsDetail.setJumlahMangkir(0);
+                                krsDetail.setJumlahTerlambat(0);
+                                krsDetail.setJumlahSakit(0);
+                                krsDetail.setJumlahIzin(0);
+                                krsDetailDao.save(krsDetail);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return "redirect:paket?kelas="+kelas.getId();
     }
 
 }

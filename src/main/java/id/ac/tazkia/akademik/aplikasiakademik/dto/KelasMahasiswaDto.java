@@ -13,4 +13,6 @@ public class KelasMahasiswaDto {
     private String nim;
     private String kelas;
     private String kurikulum;
+    private String krs;
+    private String krsDetail;
 }
