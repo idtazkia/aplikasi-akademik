@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Ploting Dosen</title>
+    <title>Rekap SKS</title>
 </head>
 <body>
 
@@ -12,7 +12,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Aktifasi KRS <small>Manual</small></h2>
+                <h2>Rekap SKS<small>Mahasiswa</small></h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-chevron-up"></i></a>
@@ -37,7 +37,8 @@
                                     <select class="form-control js-example-placeholder-single"
                                             style="width: 100%!important;" name="prodi">
                                         <option></option>
-                                        <option th:each="data : ${prodi}" th:text="${data.namaProdi}" th:value="${data.id}"></option>
+                                        <option th:each="data : ${prodi}" th:selected="(${data} == *{selectedProdi})"
+                                                th:text="${data.namaProdi}" th:value="${data.id}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -48,7 +49,8 @@
                                     <select class="form-control js-example-placeholder-single"
                                             style="width: 100%!important;" name="tahun">
                                         <option></option>
-                                        <option th:each="data : ${tahun}" th:text="${data.namaTahunAkademik}" th:value="${data.id}"></option>
+                                        <option th:each="data : ${tahun}" th:selected="(${data} == *{selectedTahun})"
+                                                th:text="${data.namaTahunAkademik}" th:value="${data.id}"></option>
 
                                     </select>
                                 </div>
@@ -69,11 +71,11 @@
             <br>
             <hr>
 
-            <span >
+            <span th:if="${selectedProdi != null}">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Prodi<small><b></b></small></h2>
+                        <h2 th:text="${selectedProdi.namaProdi}">Prodi<small><b></b></small></h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>

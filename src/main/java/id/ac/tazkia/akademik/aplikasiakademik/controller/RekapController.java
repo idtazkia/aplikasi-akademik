@@ -99,8 +99,8 @@ public class RekapController {
 
             if (prodi != null && tahun != null) {
                 if (skripsi == null || skripsi.isEmpty()) {
-                    model.addAttribute("prodi", prodi);
-                    model.addAttribute("tahun", tahun);
+                    model.addAttribute("selectedProdi", prodi);
+                    model.addAttribute("selectedTahun", tahun);
 
                     Page<RekapSksDto> rekap = krsDetailDao
                             .cariSks(tahun, prodi, StatusRecord.AKTIF, page);
@@ -127,28 +127,30 @@ public class RekapController {
 
                     model.addAttribute("rekapJumlahSks", rekapJumlahSks);
                 }else{
-                    model.addAttribute("prodi", prodi);
-                    model.addAttribute("tahun", tahun);
+                    model.addAttribute("selectedProdi", prodi);
+                    model.addAttribute("selectedTahun", tahun);
 
                     Page<RekapSksDto> rekap = krsDetailDao
-                            .tanpaSkripsi(tahun, prodi, StatusRecord.AKTIF,StatusRecord.AKTIF, page);
+                            .cariSks(tahun, prodi, StatusRecord.AKTIF, page);
 
                     Map<String, RekapSksDto> rekapJumlahSks = new LinkedHashMap<>();
 
                     for (RekapSksDto r : rekap.getContent()) {
 
-                        // hitung total sks
-                        RekapSksDto rsks = rekapJumlahSks.get(r.getId());
-                        if (rsks == null) {
-                            rsks = new RekapSksDto();
-                            rsks.setNim(r.getNim());
-                            rsks.setNama(r.getNama());
-                            rsks.setJumlah(0);
+                        if (r.getSkripsi() != StatusRecord.AKTIF) {
+
+                            // hitung total sks
+                            RekapSksDto rsks = rekapJumlahSks.get(r.getId());
+                            if (rsks == null) {
+                                rsks = new RekapSksDto();
+                                rsks.setNim(r.getNim());
+                                rsks.setNama(r.getNama());
+                                rsks.setJumlah(0);
+                            }
+
+                            rsks.tambahSks(r.getJumlah());
+                            rekapJumlahSks.put(r.getId(), rsks);
                         }
-
-                        rsks.tambahSks(r.getJumlah());
-                        rekapJumlahSks.put(r.getId(), rsks);
-
 
                     }
 
