@@ -131,14 +131,11 @@ public class RekapController {
                     model.addAttribute("selectedTahun", tahun);
 
                     Page<RekapSksDto> rekap = krsDetailDao
-                            .cariSks(tahun, prodi, StatusRecord.AKTIF, page);
+                            .tanpaSkripsi(tahun, prodi, StatusRecord.AKTIF,StatusRecord.NONAKTIF, page);
 
                     Map<String, RekapSksDto> rekapJumlahSks = new LinkedHashMap<>();
 
                     for (RekapSksDto r : rekap.getContent()) {
-
-                        if (r.getSkripsi() != StatusRecord.AKTIF) {
-
                             // hitung total sks
                             RekapSksDto rsks = rekapJumlahSks.get(r.getId());
                             if (rsks == null) {
@@ -150,7 +147,6 @@ public class RekapController {
 
                             rsks.tambahSks(r.getJumlah());
                             rekapJumlahSks.put(r.getId(), rsks);
-                        }
 
                     }
 

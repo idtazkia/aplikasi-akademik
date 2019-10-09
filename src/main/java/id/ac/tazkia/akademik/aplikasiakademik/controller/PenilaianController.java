@@ -153,32 +153,22 @@ public class PenilaianController {
     public String saveBobot(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes ,
                             @RequestParam String jamMulai,
                             @RequestParam String jamSelesai){
+        BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+
         if (jadwal.getMatakuliahKurikulum().getSds() != null) {
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
-            LocalTime mulai = LocalTime.parse(jamMulai,
-                    DateTimeFormatter.ofPattern("HH:mm:ss"));
-            LocalTime selesai = LocalTime.parse(jamSelesai,
-                    DateTimeFormatter.ofPattern("HH:mm:ss"));
-            if (totalBobot.toBigInteger().intValueExact() > 100){
+            BigDecimal total = totalBobot.add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+
+            if (total.toBigInteger().intValueExact() > 100){
                 attributes.addFlashAttribute("lebih", "Melebihi Batas");
             }else {
-                jadwal.setJamSelesai(mulai);
-                jadwal.setJamMulai(selesai);
                 jadwalDao.save(jadwal);
             }
         }
 
         if (jadwal.getMatakuliahKurikulum().getSds() == null) {
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
-            LocalTime selesai = LocalTime.parse(jamSelesai,
-                    DateTimeFormatter.ofPattern("HH:mm:ss"));
-            LocalTime mulai = LocalTime.parse(jamMulai,
-                    DateTimeFormatter.ofPattern("HH:mm:ss"));
             if (totalBobot.toBigInteger().intValueExact() > 100){
                 attributes.addFlashAttribute("lebih", "Melebihi Batas");
             }else {
-                jadwal.setJamMulai(selesai);
-                jadwal.setJamSelesai(mulai);
                 jadwalDao.save(jadwal);
             }
         }
