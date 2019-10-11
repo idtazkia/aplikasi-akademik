@@ -83,4 +83,10 @@ public class Jadwal extends Auditable {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Akses akses = Akses.TERTUTUP;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusUts;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusUas;
 }

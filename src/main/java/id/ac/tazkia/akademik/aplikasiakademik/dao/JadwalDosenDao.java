@@ -31,6 +31,8 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen, 
 
     Iterable<JadwalDosen> findByJadwalStatusAndStatusJadwalDosenAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord status,StatusJadwalDosen statusDosen, TahunAkademik tahunAkademik, Dosen dosen);
 
+    Page<JadwalDosen> findByJadwalStatusAndStatusJadwalDosenAndJadwalTahunAkademikAndJadwalHariNotNullAndJadwalKelasNotNull(StatusRecord status,StatusJadwalDosen statusDosen, TahunAkademik tahunAkademik, Pageable page);
+
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TeamDto (jd.jadwal.id,jd.dosen.karyawan.namaKaryawan)from JadwalDosen jd where jd.jadwal.tahunAkademik = :tahun and jd.statusJadwalDosen =:status")
     Iterable<TeamDto> cariTeam(@Param("tahun")TahunAkademik tahunAkademik,@Param("status") StatusJadwalDosen statusJadwalDosen);
 

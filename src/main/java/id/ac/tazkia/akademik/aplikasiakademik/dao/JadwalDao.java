@@ -56,5 +56,12 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
     List<Jadwal> findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,Kelas kelas);
 
+    Page<Jadwal> findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,String nama,String matkul,Pageable page);
+
+    Page<Jadwal> findByStatusAndTahunAkademikAndStatusUtsAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,StatusApprove statusApprove,String nama,String matkul,Pageable page);
+
+    Page<Jadwal> findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,Pageable pageable);
+    Page<Jadwal> findByStatusAndTahunAkademikAndStatusUtsAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,StatusApprove statusApprove,Pageable pageable);
+
 }
 

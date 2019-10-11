@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Soal</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="right_col offset-md-" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Detail</h3>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Approval<small></small></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="mail-list">
+                                <div class="left">
+
+                                </div>
+                                <div class="right">
+                                    <h4><b>Nama Dosen</b></h4>
+                                    <p><b th:text="${jadwal.dosen.karyawan.namaKaryawan}">Hera Herdiansyah, S.E., M.E.</b></p>
+                                </div>
+                                <div class="ln_solid"></div>
+                                <div class="left">
+
+                                </div>
+                                <div class="right">
+                                    <h4><b>Kelas</b></h4>
+                                    <p><b th:text="${jadwal.kelas.namaKelas}">Computer Lab</b></p>
+                                </div>
+                                <div class="ln_solid"></div>
+                                <div class="left">
+
+                                </div>
+                                <div class="right">
+                                    <h4><b>Mata Kuliah</b></h4>
+                                    <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + ' ' +'  (  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + '  )'}">Akuntansi Syariah</b></p>
+                                    <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Akuntansi Syariah</b></p>
+                                    <a th:if="${soal.statusApprove.APPROVED} != ${soal.statusApprove}" th:href="@{/file/{fileName}(fileName=${soal.fileUpload},soal=${soal.id})}" class="btn btn-success">Download</a>
+                                    <a th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}" th:href="@{/fileUpload/{fileName}(fileName=${soal.fileApprove},soal=${soal.id})}" class="btn btn-success">Download Soal Ujian</a>
+                                </div>
+                                <div class="ln_solid"></div>
+                            </div>
+                            <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3" th:if="${soal.statusApprove.APPROVED} != ${soal.statusApprove}">
+                                <a href="" class="show_hide_approved"><button class="btn btn-primary">Approved</button></a>
+                                <a href="" class="show_hide_rejected"><button type="submit" class="btn btn-danger">Rejected</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="approved">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Approved</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form th:action="@{/uploadsoal/approval (soal = ${soal.id})}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="id" th:value="${soal.id}">
+                                    <input type="hidden" name="jadwal" th:value="${soal.jadwal.id}">
+                                    <div class="form-group">
+                                        <input type="file" name="file" placeholder="Upload" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="rejected">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Rejected</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form th:action="@{/uploadsoal/rejected (soal = ${soal.id})}" method="post">
+                                    <div class="form-group">
+                                        <textarea name="keteranganApprove" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-danger" type="submit">Reject</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>
+<script>
+    $(document).ready(function(){
+        $(".approved").hide();
+        $(".rejected").hide();
+        $(".show_hide_approved").show();
+
+        $('.show_hide_approved').click(function(){
+            $(".rejected").hide();
+            $(".approved").slideToggle();
+            return false;
+        })
+        $('.show_hide_rejected').click(function(){
+            $(".approved").hide();
+            $(".rejected").slideToggle();
+            return false;
+        })
+
+    });
+</script>
