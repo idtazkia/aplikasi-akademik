@@ -108,6 +108,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                                 </thead>
 
@@ -157,6 +158,13 @@
                                             <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/fileUpload (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
                                                 <i class="fa fa-check"></i> Download Soal
                                             </a>
+                                        </td>
+                                        <td>
+                                            <form th:if="${data.statusUts.APPROVED == data.statusUts}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">
+                                                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">
+                                                    <i class="fa fa-close"></i> Cancel
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 </tbody>

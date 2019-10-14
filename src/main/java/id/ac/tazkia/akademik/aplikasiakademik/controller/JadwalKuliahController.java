@@ -282,7 +282,7 @@ public class JadwalKuliahController {
         }
 
         model.addAttribute("jadwal",jadwal);
-        model.addAttribute("team",jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.TEAM));
+        model.addAttribute("team",jadwalDosenDao.findByStatusJadwalDosenAndJadwal(StatusJadwalDosen.TEAM,jadwal));
         model.addAttribute("hari", hariDao.findAll());
     }
 

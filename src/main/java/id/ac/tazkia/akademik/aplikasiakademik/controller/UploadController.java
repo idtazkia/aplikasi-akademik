@@ -223,7 +223,7 @@ public class UploadController {
         }
 
 
-        String idFile = soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getJadwal().getKelas().getNamaKelas();
+        String idFile = soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-UTS-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
         idFile = idFile.replaceAll(" ", "-").toLowerCase();
         String lokasiUpload = uploadFolder + File.separator + soal.getJadwal().getId();
         LOGGER.debug("Lokasi upload : {}", lokasiUpload);
@@ -310,6 +310,21 @@ public class UploadController {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @PostMapping("/uploadsoal/cancel")
+    public String cancel (@RequestParam Jadwal jadwal)
+    {
+        Soal soal = soalDao.findByJadwalAndStatusAndStatusApprove(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED);
+        soal.setStatusApprove(StatusApprove.REJECTED);
+        soal.setKeteranganApprove("Dibatalkan");
+        soalDao.save(soal);
+
+        jadwal.setStatusUts(StatusApprove.REJECTED);
+        jadwalDao.save(jadwal);
+
+        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+
     }
 
 

@@ -38,6 +38,7 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen, 
 
     JadwalDosen findByJadwalAndDosenAndStatusJadwalDosen(Jadwal jadwal,Dosen dosen,StatusJadwalDosen statusJadwalDosen);
     JadwalDosen findByJadwalAndStatusJadwalDosen(Jadwal jadwal,StatusJadwalDosen statusJadwalDosen);
+    List<JadwalDosen> findByStatusJadwalDosenAndJadwal(StatusJadwalDosen statusJadwalDosen,Jadwal jadwal);
     List<JadwalDosen> findByJadwal(Jadwal jadwal);
 
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto(j.dosen.id,j.dosen.absen,j.dosen.karyawan.namaKaryawan, j.dosen.karyawan.rfid,j.jadwal.id,j.jadwal.jamMulai,j.jadwal.jamSelesai,0) from JadwalDosen j where j.jadwal.ruangan = :ruangan and j.jadwal.tahunAkademik = :tahunAkademik and j.jadwal.hari = :hari and j.jadwal.status = :status and j.jadwal.jamMulai between :mulai and :sampai ")
