@@ -77,4 +77,7 @@ public class KrsDetail extends Auditable {
 
     @NotNull @Min(0)
     private Integer jumlahIzin;
+
+    private String kodeUts;
+    private String kodeUas;
 }

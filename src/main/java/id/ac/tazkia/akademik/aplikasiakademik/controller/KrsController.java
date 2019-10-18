@@ -1,14 +1,17 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.Kartu;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,6 +56,12 @@ public class KrsController {
     private IpkDao ipkDao;
     @Autowired
     private KelasDao kelasDao;
+    @Autowired
+    private EnableFitureDao enableFitureDao;
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
 
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
@@ -495,6 +505,10 @@ public class KrsController {
                 model.addAttribute("jadwal",matkulYangBisaDipilih.values());
                 model.addAttribute("krs", krs);
 
+                EnableFiture utsFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,StatusRecord.UTS,"1",tahunAkademik);
+
+                model.addAttribute("uts",utsFiture);
+
                 model.addAttribute("detail", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs, mahasiswa));
             }
         }
@@ -524,55 +538,74 @@ public class KrsController {
         }
     }
 
-    @PostMapping("/krs/prosesAktifasi")
-    public String prosesKrs(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
-                            @RequestParam(required = false) Program program, @RequestParam(required = false) String angkatan,
-                            @RequestParam(required = false) String nim){
+    @GetMapping("krs/downloadkartu")
+    public void kartu(Model model, @RequestParam String nim,@RequestParam TahunAkademik tahunAkademik){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mahasiswa",mahasiswa);
 
-        if (nim == null){
-            List<Mahasiswa> mahasiswas = mahasiswaDao.findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord.AKTIF, angkatan, prodi, program);
-            for (Mahasiswa mahasiswa : mahasiswas){
-                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa);
-                if (cariKrs == null){
-                    TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik,prodi);
-                    Krs krs = new Krs();
-                    krs.setTanggalTransaksi(LocalDateTime.now());
-                    krs.setStatus(StatusRecord.AKTIF);
-                    krs.setTahunAkademik(tahunAkademik);
-                    krs.setNim(mahasiswa.getNim());
-                    krs.setProdi(prodi);
-                    krs.setMahasiswa(mahasiswa);
-                    krs.setTahunAkademikProdi(tahunAkademikProdi);
-                    krsDao.save(krs);
-                }
-            }
-            return "redirect:aktifasi?tahunAkademik=" + tahunAkademik.getId()+"&prodi="+prodi.getId()+"&program="+program.getId()+"&angkatan="+angkatan;
 
-        } else {
-            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            if (mahasiswa == null){
-                return "redirect:list";
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,tahunAkademik);
+        List<KrsDetail> krsDetail = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa);
+        List<Kartu> kartus = new ArrayList<>();
+
+        for (KrsDetail kd : krsDetail){
+            Long presensiMahasiswa = presensiMahasiswaDao.hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
+            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+
+            if (absen > 3){
+                LOGGER.info("Tidak masuk lebih dari 3");
+            }else {
+                Kartu kartu = new Kartu();
+                kartu.setIdUjian(kd.getKodeUts());
+                kartu.setMatakuliah(kd.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                kartus.add(kartu);
             }
-            if (mahasiswa != null){
-                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik, mahasiswa);
-                TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
-                if (cariKrs == null) {
-                    Krs krs = new Krs();
-                    krs.setTanggalTransaksi(LocalDateTime.now());
-                    krs.setStatus(StatusRecord.AKTIF);
-                    krs.setTahunAkademik(tahunAkademik);
-                    krs.setNim(mahasiswa.getNim());
-                    krs.setProdi(mahasiswa.getIdProdi());
-                    krs.setMahasiswa(mahasiswa);
-                    krs.setTahunAkademikProdi(tahunAkademikProdi);
-                    krsDao.save(krs);
-                }else {
-                    cariKrs.setStatus(StatusRecord.AKTIF);
-                    krsDao.save(cariKrs);
-                }
-            }
-            return "redirect:aktifasi?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
+
+            model.addAttribute("kartu",kartus);
+            model.addAttribute("tahun",tahunAkademik);
+            model.addAttribute("bulan",LocalDate.now().getMonth());
+            model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+            model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
         }
+
+
+
+    }
+
+    @GetMapping("/krs/kartu")
+    public void aktifasiKrs(Model model,
+                            @RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) String nim,@RequestParam(required = false) String uas){
+
+        if (uas == null || uas.isEmpty()){
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedNim", nim);
+            Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
+            model.addAttribute("mahasiswa", mhsw);
+        }else {
+
+        }
+    }
+
+    @PostMapping("/krs/kartu")
+    public String prosesKrs(@RequestParam TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) String nim,@RequestParam(required = false) String uas){
+
+        if (uas == null || uas.isEmpty()) {
+            Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
+            EnableFiture enableFiture = new EnableFiture();
+            enableFiture.setEnable("1");
+            enableFiture.setFitur(StatusRecord.UTS);
+            enableFiture.setKeterangan("-");
+            enableFiture.setMahasiswa(mhsw);
+            enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            enableFitureDao.save(enableFiture);
+        }
+
+        return "redirect:kartu?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
+
     }
 
     @PostMapping("/krs/prosesKrs")
@@ -604,6 +637,8 @@ public class KrsController {
                                 kd.setNilaiPresensi(BigDecimal.ZERO);
                                 kd.setNilaiTugas(BigDecimal.ZERO);
                                 kd.setNilaiUas(BigDecimal.ZERO);
+                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                 kd.setNilaiUts(BigDecimal.ZERO);
                                 kd.setFinalisasi("N");
                                 krsDetailDao.save(kd);
@@ -657,6 +692,8 @@ public class KrsController {
                                     kd.setJumlahTerlambat(0);
                                     kd.setJumlahMangkir(0);
                                     kd.setJumlahSakit(0);
+                                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                     kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
                                 }else {
@@ -705,6 +742,8 @@ public class KrsController {
                                     kd.setJumlahKehadiran(0);
                                     kd.setJumlahMangkir(0);
                                     kd.setJumlahTerlambat(0);
+                                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                     kd.setJumlahSakit(0);
                                     kd.setJumlahIzin(0);
                                     krsDetailDao.save(kd);
@@ -802,6 +841,8 @@ public class KrsController {
                                 krsDetail.setJumlahMangkir(0);
                                 krsDetail.setJumlahTerlambat(0);
                                 krsDetail.setJumlahSakit(0);
+                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                 krsDetail.setJumlahIzin(0);
                                 krsDetailDao.save(krsDetail);
                             }

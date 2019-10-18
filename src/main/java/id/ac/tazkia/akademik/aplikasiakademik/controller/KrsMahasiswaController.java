@@ -1,8 +1,10 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.Kartu;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
+import java.util.*;
 
 @Controller
 public class KrsMahasiswaController {
@@ -47,6 +48,12 @@ public class KrsMahasiswaController {
     private KelasMahasiswaDao kelasMahasiswaDao;
     @Autowired
     private IpkDao ipkDao;
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
+    @Autowired
+    private EnableFitureDao enableFitureDao;
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @GetMapping("/api/sum")
     @ResponseBody
@@ -116,6 +123,7 @@ public class KrsMahasiswaController {
     @GetMapping("/menumahasiswa/krs/list")
     public void daftarKRS(Model model, Authentication authentication,Pageable page,
                           @RequestParam(required = false) TahunAkademik tahunAkademik){
+        System.out.println(authentication);
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -524,12 +532,16 @@ public class KrsMahasiswaController {
             model.addAttribute("search", tahunAkademik);
             Krs krs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa);
             model.addAttribute("krs",krs);
+            EnableFiture utsFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,StatusRecord.UTS,"1",tahunAkademik);
 
-
+            model.addAttribute("uts",utsFiture);
             model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
         }else {
             Krs krs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF,mahasiswa);
             model.addAttribute("krs",krs);
+            EnableFiture utsFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,StatusRecord.UTS,"1",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+            model.addAttribute("uts",utsFiture);
 
             model.addAttribute("data",krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa));
 
@@ -583,6 +595,8 @@ public class KrsMahasiswaController {
                                 kd.setFinalisasi("N");
                                 kd.setJumlahMangkir(0);
                                 kd.setJumlahKehadiran(0);
+                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                 kd.setJumlahTerlambat(0);
                                 kd.setJumlahIzin(0);
                                 kd.setJumlahSakit(0);
@@ -634,6 +648,8 @@ public class KrsMahasiswaController {
                                     kd.setNilaiUas(BigDecimal.ZERO);
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
+                                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                     kd.setJumlahSakit(0);
                                     kd.setJumlahKehadiran(0);
                                     kd.setJumlahMangkir(0);
@@ -687,6 +703,8 @@ public class KrsMahasiswaController {
                                     kd.setNilaiUts(BigDecimal.ZERO);
                                     kd.setFinalisasi("N");
                                     kd.setJumlahKehadiran(0);
+                                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                     kd.setJumlahMangkir(0);
                                     kd.setJumlahTerlambat(0);
                                     kd.setJumlahIzin(0);
@@ -724,6 +742,43 @@ public class KrsMahasiswaController {
         krsDetailDao.save(id);
 
         return "redirect:/menumahasiswa/krs/list";
+    }
+
+    @GetMapping("/menumahasiswa/krs/kartu")
+    public void kartu(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa",mahasiswa);
+
+
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        List<KrsDetail> krsDetail = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa);
+        List<Kartu> kartus = new ArrayList<>();
+
+        for (KrsDetail kd : krsDetail){
+            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
+            Long presensiMahasiswa = presensiMahasiswaDao.hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+
+            if (absen > 3){
+                LOGGER.info("Tidak masuk lebih dari 3");
+            }else {
+                Kartu kartu = new Kartu();
+                kartu.setMatakuliah(kd.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                kartu.setIdUjian(kd.getKodeUts());
+                kartus.add(kartu);
+            }
+
+            model.addAttribute("kartu",kartus);
+            model.addAttribute("tahun",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            model.addAttribute("bulan",LocalDate.now().getMonth());
+            model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+            model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+        }
+
+
+
     }
 
 

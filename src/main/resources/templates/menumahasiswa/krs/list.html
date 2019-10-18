@@ -47,6 +47,7 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" onclick="loadContent()" data-target="#exampleModal" th:if="${krsAktif != null }">
                     Add KRS
                 </button>
+                <a class="btn btn-info" target="_blank" th:if="${uts != null}" th:href="@{/menumahasiswa/krs/kartu}">Download Kartu UTS</a>
             </div>
 
             <table class="table table-striped jambo_table bulk_action" width="100%">

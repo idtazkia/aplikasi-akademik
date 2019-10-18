@@ -55,6 +55,7 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" onclick="loadContent()" data-target="#exampleModal" th:if="${krsAktif != null }">
                         Add KRS
                     </button>
+                    <a class="btn btn-info" target="_blank" th:if="${uts != null}" th:href="@{/krs/downloadkartu (nim = ${nim}, tahunAkademik = ${tahun.id})}">Download Kartu UTS</a>
                 </div>
             </form>
 

@@ -59,6 +59,9 @@ public class JadwalKuliahController {
     KurikulumDao kurikulumDao;
 
     @Autowired
+    KrsDetailDao krsDetailDao;
+
+    @Autowired
     JadwalDosenDao jadwalDosenDao;
 
     @Autowired
@@ -233,6 +236,12 @@ public class JadwalKuliahController {
     public String deleteJadwal(@RequestParam Jadwal jadwal){
         jadwal.setStatus(StatusRecord.HAPUS);
         jadwalDao.save(jadwal);
+
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail){
+            kd.setStatus(StatusRecord.HAPUS);
+            krsDetailDao.save(kd);
+        }
         return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
     }
 
