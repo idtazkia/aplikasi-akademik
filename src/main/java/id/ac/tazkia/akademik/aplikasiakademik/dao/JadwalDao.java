@@ -19,6 +19,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
     List<Jadwal> findByTahunAkademikAndAksesAndStatusAndHariNotNull(TahunAkademik tahunAkademik, Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByTahunAkademikAndProdiAndAksesAndStatusAndHariNotNull(TahunAkademik tahunAkademik, Prodi prodi, Akses akses, StatusRecord statusRecord);
     List<Jadwal> findByStatusNotInAndTahunAkademik(StatusRecord statusRecord,TahunAkademik tahunAkademik);
+    List<Jadwal> findByStatusAndTahunAkademikAndHariAndRuangan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Hari hari, Ruangan ruang);
+
+    List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHari(StatusRecord statusRecord, TahunAkademik tahunAkademik, Dosen dosen, Hari hari);
+
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariAndProgramAndHariNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, Hari hari, Program program);
     List<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariIdAndProgramAndHariNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi, String hari, Program program);
     Iterable<Jadwal> findByStatusNotInAndProdiAndTahunAkademikProdiAndHariNullAndJamMulaiNullAndJamSelesaiNullAndKelasNotNull(StatusRecord statusRecord, Prodi prodi, TahunAkademikProdi tahunAkademikProdi);

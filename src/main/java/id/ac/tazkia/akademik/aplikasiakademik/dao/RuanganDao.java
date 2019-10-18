@@ -1,5 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
+import id.ac.tazkia.akademik.aplikasiakademik.entity.Gedung;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Ruangan;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,5 @@ public interface RuanganDao extends PagingAndSortingRepository<Ruangan, String> 
     List<Ruangan> findByStatusAndNamaRuanganContainingIgnoreCase(StatusRecord statusRecord, String nama);
     Iterable<Ruangan> findByStatusNotIn(StatusRecord hapus);
     Iterable<Ruangan> findByStatus(StatusRecord hapus);
+    Iterable<Ruangan> findByStatusAndGedung(StatusRecord hapus, Gedung gedung);
 }
