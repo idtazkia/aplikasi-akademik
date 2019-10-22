@@ -1,5 +1,6 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
+import id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
@@ -47,8 +48,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDto(kd.krs.id,kd.mahasiswa.nim,kd.mahasiswa.nama,kd.matakuliahKurikulum.jumlahSks,kd.matakuliahKurikulum.statusSkripsi) from KrsDetail kd where kd.krs.tahunAkademik = :tahun and kd.mahasiswa.idProdi = :prodi and kd.status = :status and kd.matakuliahKurikulum.statusSkripsi = :skripsi")
     Page<RekapSksDto> tanpaSkripsi(@Param("tahun")TahunAkademik tahunAkademik, @Param("prodi")Prodi prodi, @Param("status")StatusRecord statusRecord,@Param("skripsi")StatusRecord skripsi, Pageable page);
 
-    @Query("select count(*) from KrsDetail kd where kd.status = :status and kd.krs = :krs")
-    Long jumlahKrsDetail(@Param("status") StatusRecord statusRecord,@Param("krs")Krs krs);
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.kodeUts,1,0) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = :status")
+    Iterable<AbsenDto> cariId (@Param("jadwal")Jadwal jadwal, @Param("status")StatusRecord statusRecord);
 
 
 

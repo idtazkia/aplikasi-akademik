@@ -1,8 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.MatakuliahKurikulumDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,9 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class JadwalKuliahController {
@@ -63,6 +63,12 @@ public class JadwalKuliahController {
 
     @Autowired
     JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
+
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
@@ -347,5 +353,70 @@ public class JadwalKuliahController {
         }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademikProdi().getId() +"&program="+jadwal.getProgram().getId();
+    }
+
+
+    @GetMapping("jadwalkuliah/absenuts")
+    public void absenUts(@RequestParam Jadwal jadwal,Model model,@PageableDefault(size = Integer.MAX_VALUE) Pageable page){
+        List<KelasMahasiswaDto> absens = new ArrayList<>();
+        Integer tahun = Integer.valueOf(jadwal.getTahunAkademik().getTahun())+1;
+        model.addAttribute("tahun",tahun);
+
+        Long presensiDosen = presensiDosenDao.jumlahKehadiranDosen(StatusRecord.AKTIF,jadwal);
+
+        if (presensiDosen == 0){
+            Iterable<AbsenDto> krsDetail = krsDetailDao.cariId(jadwal,StatusRecord.AKTIF);
+                    model.addAttribute("absen", krsDetail);
+
+
+        }
+
+        if (presensiDosen != 0){
+            System.out.println(presensiDosen);
+            Map<String, AbsenDto> absenDtoMap = new LinkedHashMap<>();
+            Page<AbsenDto> presensiMahasiswa = presensiMahasiswaDao.cariPresensi(jadwal,StatusRecord.AKTIF,StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT,page);
+
+            for (AbsenDto absenDto : presensiMahasiswa.getContent()) {
+                AbsenDto rsks = absenDtoMap.get(absenDto.getNim());
+
+                if (rsks == null) {
+                    rsks = new AbsenDto();
+                    rsks.setNama(absenDto.getNama());
+                    rsks.setId(absenDto.getId());
+                    rsks.setNim(absenDto.getNim());
+                    rsks.setNim(absenDto.getNim());
+                    rsks.setTotalHadirDosen(presensiDosen.intValue());
+                    rsks.setTotalHadir(0);
+                }
+
+                rsks.tambahAbsen(absenDto.getTotalHadir());
+                absenDtoMap.put(absenDto.getNim(), rsks);
+
+
+            }
+            model.addAttribute("absensi",absenDtoMap);
+
+        }
+
+//
+//        for (KrsDetail kd : krsDetail){
+//            Long presensiMahasiswa = presensiMahasiswaDao.hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+//            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+//
+//            if (absen > 3){
+//
+//            }else {
+//                KelasMahasiswaDto absenUts  = new KelasMahasiswaDto();
+//                absenUts.setId(kd.getKodeUts());
+//                absenUts.setNama(kd.getMahasiswa().getNama());
+//                absenUts.setNim(kd.getMahasiswa().getNim());
+//                absens.add(absenUts);
+//
+//            }
+//        }
+//
+//        model.addAttribute("absen", absens);
+        model.addAttribute("jadwal", jadwal);
+
     }
 }

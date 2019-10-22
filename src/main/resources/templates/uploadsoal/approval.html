@@ -48,6 +48,10 @@
                                     <h4><b>Kelas</b></h4>
                                     <p><b th:text="${jadwal.kelas.namaKelas}">Computer Lab</b></p>
                                 </div>
+                                <div class="right" th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}">
+                                    <h4><b>Keterangan</b></h4>
+                                    <p><b th:text="${soal.keterangan}">Computer Lab</b></p>
+                                </div>
                                 <div class="ln_solid"></div>
                                 <div class="left">
 
@@ -57,7 +61,7 @@
                                     <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + ' ' +'  (  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + '  )'}">Akuntansi Syariah</b></p>
                                     <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Akuntansi Syariah</b></p>
                                     <a th:if="${soal.statusApprove.APPROVED} != ${soal.statusApprove}" th:href="@{/file/{fileName}(fileName=${soal.fileUpload},soal=${soal.id})}" class="btn btn-success">Download</a>
-                                    <a th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}" th:href="@{/fileUpload/{fileName}(fileName=${soal.fileApprove},soal=${soal.id})}" class="btn btn-success">Download Soal Ujian</a>
+                                    <a th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}" th:href="@{/fileUpload (jadwal = ${jadwal.id})}" class="btn btn-success">Download Soal Ujian</a>
                                 </div>
                                 <div class="ln_solid"></div>
                             </div>
