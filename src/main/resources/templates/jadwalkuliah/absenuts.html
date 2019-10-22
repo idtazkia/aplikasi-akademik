@@ -39,7 +39,7 @@
 <body>
 <div class="container" id="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-xs-12">
             <div class="col-md-2">
                 <center>
                     <div class="margin-content">
@@ -60,7 +60,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <table>
                 <tr>
                     <td>&nbsp  <b>Subject</b></td>
@@ -68,23 +68,24 @@
                     <td>&nbsp  <span th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></td>
                 </tr>
                 <tr>
+                    <td>&nbsp  <b>Lecturer</b></td>
+                    <td>&nbsp &nbsp :</td>
+                    <td>&nbsp <span th:text="${jadwal.dosen.karyawan.namaKaryawan}"></span></td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="col-xs-5">
+            <table>
+                <tr>
+                    <td>&nbsp  <b>Course</b></td>
+                    <td>&nbsp &nbsp :</td>
+                    <td>&nbsp <span th:text="${jadwal.kelas.namaKelas}"></span></td>
+                </tr>
+                <tr>
                     <td>&nbsp  <b>Room No/Time</b></td>
                     <td>&nbsp &nbsp  :</td>
                     <td>&nbsp  .......................</td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-xs-6">
-            <table>
-                <tr>
-                    <td>&nbsp &nbsp  <b>Course</b></td>
-                    <td>&nbsp &nbsp &nbsp &nbsp :</td>
-                    <td>&nbsp &nbsp <span th:text="${jadwal.kelas.namaKelas}"></span></td>
-                </tr>
-                <tr>
-                    <td>&nbsp &nbsp  <b>Lecturer</b></td>
-                    <td>&nbsp &nbsp &nbsp &nbsp :</td>
-                    <td>&nbsp &nbsp <span th:text="${jadwal.dosen.karyawan.namaKaryawan}"></span></td>
                 </tr>
             </table>
         </div>
@@ -105,7 +106,7 @@
                         </tr>
                         <tr>
                             <th>Score</th>
-                            <th th:text="${jadwal.bobotUts}"></th>
+                            <th th:text="${jadwal.bobotUts+'%'}"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -146,11 +147,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="data,row : ${absensi}" th:if="${data.value.totalHadirDosen - data.value.totalHadir  < 3}">
+                        <tr th:each="data,row : ${absensi}">
                             <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.value.id}">17535</td>
-                            <td th:text="${data.value.nim}">S.17101.092</td>
-                            <td th:text="${data.value.nama}">Firza Faadhilah Arifian</td>
+                            <td th:text="${data.id}">17535</td>
+                            <td th:text="${data.nim}">S.17101.092</td>
+                            <td th:text="${data.nama}">Firza Faadhilah Arifian</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -163,20 +164,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-3">
+        <div class="col-xs-4">
             <p>Bogor .................................</p>
             <p>Invigilator,</p>
             <br>
             <br>
             <p>(......................................)</p>
         </div>
-        <div class="col-xs-6"></div>
-        <div class="col-xs-3">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-6">
+            <center>
             <p>Bogor .................................</p>
             <p>Lecturer,</p>
             <br>
             <br>
             <p th:text="${'(  ' + jadwal.dosen.karyawan.namaKaryawan + '  )'}">( Aam Slamet Rusydiana,S.E.I., ME )</p>
+            </center>
         </div>
     </div>
     <a href="" id="printPageButton" onclick="window.print()" class="btn btn-danger">Print</a>

@@ -373,6 +373,7 @@ public class JadwalKuliahController {
 
         if (presensiDosen != 0){
             System.out.println(presensiDosen);
+            List<AbsenDto> absenDtos = new ArrayList<>();
             Map<String, AbsenDto> absenDtoMap = new LinkedHashMap<>();
             Page<AbsenDto> presensiMahasiswa = presensiMahasiswaDao.cariPresensi(jadwal,StatusRecord.AKTIF,StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT,page);
 
@@ -394,7 +395,19 @@ public class JadwalKuliahController {
 
 
             }
-            model.addAttribute("absensi",absenDtoMap);
+
+            absenDtoMap.values().forEach(absenDto -> {
+                if (absenDto.getTotalHadirDosen() - absenDto.getTotalHadir() > 3){
+
+                }
+
+                if (absenDto.getTotalHadirDosen() - absenDto.getTotalHadir() < 3){
+                    absenDtos.add(absenDto);
+                }
+            });
+
+
+            model.addAttribute("absensi",absenDtos);
 
         }
 
