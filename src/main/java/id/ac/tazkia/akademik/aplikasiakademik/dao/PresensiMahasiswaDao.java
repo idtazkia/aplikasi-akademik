@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.DetailPresensi;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapMissAttendance;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto(pm.mahasiswa.nim,pm.mahasiswa.nama,pm.krsDetail.kodeUts, 1,0) from PresensiMahasiswa pm where pm.krsDetail.jadwal = :id and pm.status = :status and pm.statusPresensi not in (:terlambat,:mangkir)")
     Page<AbsenDto> cariPresensi(@Param("id")Jadwal krsDetail, @Param("status")StatusRecord statusRecord, @Param("terlambat")StatusPresensi statusPresensi, @Param("mangkir")StatusPresensi mangkir, Pageable page);
 
-//    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto (pm.mahasiswa.nim,pm.mahasiswa.nama) from PresensiMahasiswa pm where pm.krsDetail = :krs")
-//    Page<String> acariPresensi(@Param("krs")KrsDetail krsDetail, Pageable page);
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.DetailPresensi(pm.waktuMasuk,pm.statusPresensi,pm.sesiKuliah.beritaAcara) from PresensiMahasiswa pm where pm.krsDetail = :kd and pm.status = :status")
+    List<DetailPresensi> detailPresensi(@Param("kd")KrsDetail krsDetail,@Param("status")StatusRecord statusRecord);
 
 }

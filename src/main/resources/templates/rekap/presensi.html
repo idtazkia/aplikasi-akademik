@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>List Krs</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Study Plan Card <small>List</small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <br>
+            <table class="table table-striped jambo_table bulk_action" width="100%">
+                <tr>
+                    <td>Nama : <span th:text="${mahasiswa.nama}"></span></td>
+                    <td th:if="${mahasiswa.dosen != null}">
+                        Pemb Akd : <span th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></span>
+                    </td>
+                    <td th:if="${mahasiswa.dosen == null}">
+                        Pemb Akd : </td>
+                </tr>
+                <tr>
+                    <td>NIM &nbsp;&nbsp; : <span th:text="${mahasiswa.nim}"></span></td>
+                    <td>Studi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                        <span th:text="${mahasiswa.idProdi.namaProdi + ' , ' + mahasiswa.idProdi.idJurusan.namaJurusan + ' , ' + mahasiswa.idProdi.idJurusan.idFakultas.namaFakultas}"></span>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th class="column-title">#</th>
+                            <th class="column-title">Matakuliah</th>
+                            <th class="column-title">SKS</th>
+                            <th class="column-title">Kelas</th>
+                            <th class="column-title">Dosen</th>
+                            <th class="column-title">Jumlah Hadir</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr class="even pointer" th:each="data,row : ${data}">
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td><b th:text="${data.matakuliah}"></b></td>
+                            <td th:text="${data.sks}">3</td>
+                            <td th:text="${data.kelas}">AI-A-15</td>
+                            <td th:text="${data.dosen}">Dewi Febriani</td>
+                            <td><center th:text="${data.jumlahHadir}"></center></td>
+                            <td><a th:href="@{/rekap/presensiDetail (krsDetail = ${data.id})}" class="btn btn-sm btn-info">Lihat Detail</a></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <nav class="pull-left">
+
+
+
+                                <ul class="pagination">
+                                    <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    $('.single-checkbox').on('change', function() {
+        var inputHidden= $("input[name=hidden]");
+        console.log(inputHidden.val())
+        if($('.single-checkbox:checked').length > inputHidden.val()) {
+            this.checked = false;
+        }
+    });
+
+    function loadContent(){
+        var url = "/api/krs";
+    }
+
+    function myFunction(arg) {
+        var id = arg.getAttribute('id');
+        var sum = 0;
+
+        var  sks = $("input[name='" + id + "']").val();
+        $('#result').val(sks);
+        var  jumlah= $("input[name=result]");
+        console.log("result  :  "  + jumlah.val());
+
+        $.get("/api/sum",{sks: sks}, function(data, status){
+
+
+
+
+        });
+
+        var result = (+sks) + (+jumlah);
+
+
+
+        console.log("jumlah sks :  " + sks);
+        console.log("hasil akhir :  " + result);
+    }
+
+    function loadContent(){
+
+        $.get("/api/krs", function(data, status){
+
+            console.log(data);
+            var inputHidden= $("input[name=hidden]");
+            inputHidden.val(data);
+
+        });
+    };
+</script>

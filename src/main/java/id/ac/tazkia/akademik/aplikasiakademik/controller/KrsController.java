@@ -549,7 +549,7 @@ public class KrsController {
         List<Kartu> kartus = new ArrayList<>();
 
         for (KrsDetail kd : krsDetail){
-            Long presensiMahasiswa = presensiMahasiswaDao.hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
             List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
             Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
 
@@ -852,6 +852,54 @@ public class KrsController {
             }
         }
         return "redirect:paket?kelas="+kelas.getId();
+    }
+
+    @PostMapping("/krs/prosesAktifasi")
+    public String prosesKrs(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
+                            @RequestParam(required = false) Program program, @RequestParam(required = false) String angkatan,
+                            @RequestParam(required = false) String nim){
+
+        if (nim == null){
+            List<Mahasiswa> mahasiswas = mahasiswaDao.findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord.AKTIF, angkatan, prodi, program);
+            for (Mahasiswa mahasiswa : mahasiswas){
+                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik,mahasiswa);
+                if (cariKrs == null){
+                    TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik,prodi);
+                    Krs krs = new Krs();
+                    krs.setTanggalTransaksi(LocalDateTime.now());
+                    krs.setStatus(StatusRecord.AKTIF);
+                    krs.setTahunAkademik(tahunAkademik);
+                    krs.setNim(mahasiswa.getNim());
+                    krs.setProdi(prodi);
+                    krs.setMahasiswa(mahasiswa);
+                    krs.setTahunAkademikProdi(tahunAkademikProdi);
+                    krsDao.save(krs);
+                }
+            }
+            return "redirect:aktifasi?tahunAkademik=" + tahunAkademik.getId()+"&prodi="+prodi.getId()+"&program="+program.getId()+"&angkatan="+angkatan;
+
+        } else {
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            if (mahasiswa == null){
+                return "redirect:list";
+            }
+            if (mahasiswa != null){
+                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswa(tahunAkademik, mahasiswa);
+                TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+                if (cariKrs == null) {
+                    Krs krs = new Krs();
+                    krs.setTanggalTransaksi(LocalDateTime.now());
+                    krs.setStatus(StatusRecord.AKTIF);
+                    krs.setTahunAkademik(tahunAkademik);
+                    krs.setNim(mahasiswa.getNim());
+                    krs.setProdi(mahasiswa.getIdProdi());
+                    krs.setMahasiswa(mahasiswa);
+                    krs.setTahunAkademikProdi(tahunAkademikProdi);
+                    krsDao.save(krs);
+                }
+            }
+            return "redirect:aktifasi?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
+        }
     }
 
 }

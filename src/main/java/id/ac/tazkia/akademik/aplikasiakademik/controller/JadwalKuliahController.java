@@ -73,6 +73,12 @@ public class JadwalKuliahController {
     @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
+    @Autowired
+    private EnableFitureDao enableFitureDao;
+
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
+
     @GetMapping("/api/plotKelas")
     @ResponseBody
     public Page<Kelas> cariDataKelas(@RequestParam(required = false) String search, Pageable page){
@@ -402,7 +408,10 @@ public class JadwalKuliahController {
                 }
 
                 if (absenDto.getTotalHadirDosen() - absenDto.getTotalHadir() < 3){
-                    absenDtos.add(absenDto);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswaDao.findByNim(absenDto.getNim()),StatusRecord.UTS,"1",jadwal.getTahunAkademik());
+                    if (enableFiture != null){
+                        absenDtos.add(absenDto);
+                    }
                 }
             });
 

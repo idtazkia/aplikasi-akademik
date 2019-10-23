@@ -1,15 +1,15 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapJadwalDosenDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDosenDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +36,10 @@ public class RekapController {
     private JadwalDao jadwalDao;
     @Autowired
     private ProdiDao prodiDao;
+    @Autowired
+    private CurrentUserService currentUserService;
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -155,6 +159,50 @@ public class RekapController {
                 }
             }
 
+
+    }
+
+    @GetMapping("/rekap/presensi")
+    public void rekapPresensimahasiswa( Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        model.addAttribute("mahasiswa",mahasiswa);
+
+            List<RekapPresensi> rekapPresensis = new ArrayList<>();
+            Krs krs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF,mahasiswa);
+            List<RekapPresensi> krsDetail = krsDetailDao.cariPresensi(StatusRecord.AKTIF,krs,mahasiswa);
+
+            for (RekapPresensi presensi : krsDetail){
+                Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(krsDetailDao.findById(presensi.getId()).get(),StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+
+                RekapPresensi rekapPresensi = new RekapPresensi();
+                rekapPresensi.setDosen(presensi.getDosen());
+                rekapPresensi.setJumlahHadir(Math.toIntExact(presensiMahasiswa));
+                rekapPresensi.setKelas(presensi.getKelas());
+                rekapPresensi.setMatakuliah(presensi.getMatakuliah());
+                rekapPresensi.setNama(presensi.getNama());
+                rekapPresensi.setNim(presensi.getNim());
+                rekapPresensi.setSks(presensi.getSks());
+                rekapPresensi.setId(presensi.getId());
+                rekapPresensis.add(rekapPresensi);
+
+            }
+
+            model.addAttribute("krs",krs);
+            model.addAttribute("data",rekapPresensis);
+
+    }
+
+    @GetMapping("/rekap/presensiDetail")
+    public void rekapDetailPresensimahasiswa(@RequestParam KrsDetail krsDetail, Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        model.addAttribute("mahasiswa",mahasiswa);
+
+        List<DetailPresensi> presensiMahasiswa = presensiMahasiswaDao.detailPresensi(krsDetail,StatusRecord.AKTIF);
+        model.addAttribute("detail",presensiMahasiswa);
 
     }
 }
