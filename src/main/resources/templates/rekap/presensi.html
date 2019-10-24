@@ -56,8 +56,7 @@
                             <td th:text="${data.sks}">3</td>
                             <td th:text="${data.kelas}">AI-A-15</td>
                             <td th:text="${data.dosen}">Dewi Febriani</td>
-                            <td><center th:text="${data.jumlahHadir}"></center></td>
-                            <td><a th:href="@{/rekap/presensiDetail (krsDetail = ${data.id})}" class="btn btn-sm btn-info">Lihat Detail</a></td>
+                            <td><a th:href="@{/rekap/presensiDetail (jadwal = ${data.idJadwal},krs=${data.id})}" class="btn btn-sm btn-info">Lihat Detail</a></td>
 
                         </tr>
                         </tbody>

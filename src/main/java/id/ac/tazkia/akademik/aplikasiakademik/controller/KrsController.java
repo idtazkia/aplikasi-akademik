@@ -896,6 +896,9 @@ public class KrsController {
                     krs.setMahasiswa(mahasiswa);
                     krs.setTahunAkademikProdi(tahunAkademikProdi);
                     krsDao.save(krs);
+                }else {
+                    cariKrs.setStatus(StatusRecord.AKTIF);
+                    krsDao.save(cariKrs);
                 }
             }
             return "redirect:aktifasi?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
