@@ -574,6 +574,42 @@ public class KrsController {
 
     }
 
+    @GetMapping("krs/downloadkartuhp")
+    public void kartuhp(Model model, @RequestParam String nim,@RequestParam TahunAkademik tahunAkademik){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mahasiswa",mahasiswa);
+
+
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademik(mahasiswa,tahunAkademik);
+        List<KrsDetail> krsDetail = krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,krs,mahasiswa);
+        List<Kartu> kartus = new ArrayList<>();
+
+        for (KrsDetail kd : krsDetail){
+            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
+            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
+            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+
+            if (absen > 3){
+                LOGGER.info("Tidak masuk lebih dari 3");
+            }else {
+                Kartu kartu = new Kartu();
+                kartu.setIdUjian(kd.getKodeUts());
+                kartu.setMatakuliah(kd.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                kartus.add(kartu);
+            }
+
+            model.addAttribute("kartu",kartus);
+            model.addAttribute("tahun",tahunAkademik);
+            model.addAttribute("bulan",LocalDate.now().getMonth());
+            model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+            model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+        }
+
+
+
+    }
+
     @GetMapping("/krs/kartu")
     public void aktifasiKrs(Model model,
                             @RequestParam(required = false) TahunAkademik tahunAkademik,

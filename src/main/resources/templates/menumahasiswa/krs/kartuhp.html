@@ -12,32 +12,40 @@
             color:#eee;
         }
         .text-size{
-            font-size: 20px;
+            font-size: 12px;
         }
         .background-color{
             background-color: coral;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            height: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            height: 10px;
         }
         .background-color-top{
             background-color: #0a5a8c;
-            border-end-end-radius: 10px;
-            border-end-start-radius: 10px;
-            height: 20px;
+            border-end-end-radius: 5px;
+            border-end-start-radius: 5px;
+            height: 10px;
         }
         .background{
+            border: 1px;
             border-style: solid;
             border-color: black;
+            padding: 0px;
+            margin: 0;
         }
-        .table.table-bordered{
-            border: 2px solid black!important;
+        table.table-bordered{
+            border:1px solid black!important;
+            margin-top:0px;
         }
         table.table-bordered > thead > tr > th{
-            border: 2px solid black!important;
+            border:1px solid black!important;
+            margin: 0px;
+            padding: 0px;
         }
         table.table-bordered > tbody > tr > td{
-            border: 2px solid black!important;
+            border:1px solid black!important;
+            margin: 0px;
+            padding: 0px;
         }
     </style>
     <!-- Optional theme -->
@@ -47,15 +55,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
-<body>
-<div id="content" class="col-md-6" style="border-left: 2px solid coral; border-right: 2px solid #0a5a8c; border-bottom: 2px solid coral; border-top: 2px solid #0a5a8c">
+<body  onLoad="setTimeout('closemyself()',3000);" >
+<div id="content">
     <div class="row">
-        <div class="background-color-top">
+        <div class="col-md-6">
+            <div class="background-color-top">
+                <center>
 
+                </center>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <br>
             <div class="col-md-4">
 
@@ -66,7 +78,7 @@
             <div class="col-md-4">
                 <center>
                     <div class="background">
-                        <center>
+                        <center style="font-size: 10px;">
                             IAI/FM/ACD/28.6
                         </center>
                     </div>
@@ -74,43 +86,41 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <br>
-        <div class="col-md-12">
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-6">
             <div class="row">
-                <div class="col-md-2 col-xs-3">
-                    <div class="container">
-                        <img th:src="@{/images/logo.png}" width="100px" height="90px" alt="">
-                    </div>
-                </div>
-                <div class="col-md-8 col-xs-8">
+                <div class="col-md-2">
                     <center>
-                        <h4><b>Kartu Ujian</b></h4>
-                        <h4><b>2019/2020 Semester Ganjil</b></h4>
+                        <img th:src="@{/images/logo.png}" width="50px" height="40px" alt="">
+                    </center>
+                </div>
+                <div class="col-md-8">
+                    <center>
+                        <h6><b>Kartu Ujian Akhir</b></h6>
+                        <h6><b>2019/2020 Semester Ganjil</b></h6>
                     </center>
                 </div>
             </div>
         </div>
     </div>
-    <br>
     <div class="row">
         <div class="col-md-12">
             <div class="container">
                 <table>
                     <tr>
                         <td><i class="text-size">Nama</i> </td>
-                        <td class="text-size">&nbsp &nbsp &nbsp &nbsp :</td>
-                        <td class="text-size">&nbsp &nbsp &nbsp <span th:text="${mahasiswa.nama}"></span></td>
+                        <td class="text-size">    :</td>
+                        <td class="text-size" th:text="${mahasiswa.nama}">   Muhammad Naufal Muayyad</td>
                     </tr>
                     <tr>
                         <td><i class="text-size">NIM</i> </td>
-                        <td class="text-size">&nbsp &nbsp &nbsp &nbsp :</td>
-                        <td class="text-size">&nbsp &nbsp &nbsp <span th:text="${mahasiswa.nim}"></span></td>
+                        <td class="text-size">    :</td>
+                        <td class="text-size" th:text="${mahasiswa.nim}">   16102045</td>
                     </tr>
                     <tr>
                         <td><i class="text-size">Prodi</i> </td>
-                        <td class="text-size">&nbsp &nbsp &nbsp &nbsp :</td>
-                        <td class="text-size">&nbsp &nbsp &nbsp <span th:text="${mahasiswa.idProdi.namaProdi}"></span></td>
+                        <td class="text-size">    :</td>
+                        <td class="text-size" th:text="${mahasiswa.idProdi.namaProdi}">   Akuntansi Syariah</td>
                     </tr>
                 </table>
             </div>
@@ -118,13 +128,13 @@
     </div>
     <div class="row">
         <div style="margin:  10px 10px 10px 10px;">
-            <div class="col-md-12">
-                <div class="table-responsive">
+            <div class="col-md-12 col-xs-12">
+                <div class="">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th class="text-size">No.</th>
-                            <th class="text-size">UTS ID</th>
+                            <th class="text-size">UAS ID</th>
                             <th class="text-size">Mata Kuliah</th>
                             <th class="text-size">Keterangan</th>
                         </tr>
@@ -136,6 +146,7 @@
                             <td class="text-size" th:text="${data.matakuliah}">Student Dynamic Session</td>
                             <td class="text-size"></td>
                         </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -143,75 +154,55 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="col-md-6">
 
             </div>
             <div class="col-md-6">
                 <center>
-                    <p class="text-size" th:text="${'BOGOR, '+ tanggal + ' ' + bulan + ' ' + tahun}">Bogor, 09 Oktober 2019</p>
+                    <p style="font-size: 10px;" th:text="${'BOGOR, '+ tanggal + ' ' + bulan + ' ' + tahun}">Bogor, 09 Oktober 2019</p>
                 </center>
             </div>
         </div>
     </div>
-    <br>
-    <br>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="col-md-6">
 
             </div>
             <div class="col-md-6">
                 <center>
                     <h5 class="text-legal"><b class="text-size" th:text="${mahasiswa.nim}">16102045</b></h5>
-                    <h5><b class="text-size">Hera Herdiansyah, S.E, M.E.</b></h5>
-                    <h6><b class="text-size">Kepala Bagain Akademik</b></h6>
+                    <h5><b style="font-size: 10px;">Hera Herdiansyah, S.E, M.E.</b></h5>
+                    <p><b style="font-size: 10px;">Kepala Bagain Akademik</b></p>
                 </center>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="background-color">
+        <div class="col-md-6">
+            <div class="background-color">
 
+            </div>
         </div>
     </div>
 </div>
 
-<style type="text/css">
-    @page
-    {
-
-        size: auto;   /* auto is the current printer page size */
-        margin: 0mm;  /* this affects the margin in the printer settings */
-    }
-
-    @media print {
-        #printbtn {
-            display :  none;
-        }
-    }
-</style>
-
 </body>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script>
-    function printpage()
-    {
-        window.print()
-    }
-
-    var doc = new jsPDF('p','pt','letter');
+    var doc = new jsPDF('p','pt','letter', 'a2');
     var content = $('#content');
     doc.addHTML(document.body,function() {
         doc.save('sample-file.pdf');
     });
 
 </script>
-
 <script language=javascript>
     function closemyself() {
         window.opener=self;
