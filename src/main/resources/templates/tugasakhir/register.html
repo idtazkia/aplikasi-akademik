@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Konsep Note</title>
+    <style type="text/css">
+        @keyframes bounceIn {
+            from,
+            20%,
+            40%,
+            60%,
+            80%,
+            to {
+                animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            }
+
+            0% {
+                opacity: 0;
+                transform: scale3d(0.3, 0.3, 0.3);
+            }
+
+            20% {
+                transform: scale3d(1.1, 1.1, 1.1);
+            }
+
+            40% {
+                transform: scale3d(0.9, 0.9, 0.9);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale3d(1.03, 1.03, 1.03);
+            }
+
+            80% {
+                transform: scale3d(0.97, 0.97, 0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        .bounceIn {
+            animation-duration: 0.75s;
+            animation-name: bounceIn;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="row">
+        <div class="col-md-12 col-xs-12" style="background-image: url('https://images.wallpaperscraft.com/image/apple_macbook_imac_109739_1920x1080.jpg'); background-size: 1238px;">
+            <div class="col-md-4">
+
+            </div>
+            <div class="bounceIn">
+            <div class="col-md-4 col-xs-12" style="margin-top: 270px; margin-bottom: 285px;">
+                <div class="x_panel">
+                    <div class="x_content">
+
+                        <center>
+                            <h2><b>Klik Untuk Daftar Konsep Note</b></h2>
+                            <a th:href="@{/tugasakhir/alertpage}" class="btn btn-success"><i class="fa fa-sign-in"></i>&nbsp; Daftar</a>
+                            <br>
+                        </center>
+
+
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
