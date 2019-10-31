@@ -235,7 +235,7 @@ model.addAttribute("jadwal", jadwal);
 
     @GetMapping("/kebijakanpresensi/presensi")
     public void dosenKebijakanPresensi(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
 
         Map<String, String> statusPresensi = new HashMap<>();
         for(PresensiMahasiswa pm : presensiMahasiswa){

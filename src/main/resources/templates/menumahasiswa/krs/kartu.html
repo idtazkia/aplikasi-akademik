@@ -47,7 +47,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
-<body>
+<body onLoad="setTimeout('closemyself()',3000);" >
 <div id="content" class="col-md-6" style="border-left: 2px solid coral; border-right: 2px solid #0a5a8c; border-bottom: 2px solid coral; border-top: 2px solid #0a5a8c">
     <div class="row">
         <div class="background-color-top">
@@ -85,8 +85,8 @@
                 </div>
                 <div class="col-md-8 col-xs-8">
                     <center>
-                        <h4><b>Kartu Ujian Akhir</b></h4>
-                        <h4><b>2018/2019 Semester Genap</b></h4>
+                        <h4><b>Kartu Ujian</b></h4>
+                        <h4><b>2019/2020 Semester Ganjil</b></h4>
                     </center>
                 </div>
             </div>
@@ -165,7 +165,7 @@
                 <center>
                     <h5 class="text-legal"><b class="text-size" th:text="${mahasiswa.nim}">16102045</b></h5>
                     <h5><b class="text-size">Hera Herdiansyah, S.E, M.E.</b></h5>
-                    <h6><b class="text-size">Kepala Bagain Akademik</b></h6>
+                    <h6><b class="text-size">Kepala Bagian Akademik</b></h6>
                 </center>
             </div>
         </div>

@@ -40,6 +40,8 @@ public class RekapController {
     private CurrentUserService currentUserService;
     @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
+    @Autowired
+    private SesiKuliahDao sesiKuliahDao;
 
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -172,37 +174,33 @@ public class RekapController {
             List<RekapPresensi> rekapPresensis = new ArrayList<>();
             Krs krs = krsDao.findByTahunAkademikStatusAndMahasiswa(StatusRecord.AKTIF,mahasiswa);
             List<RekapPresensi> krsDetail = krsDetailDao.cariPresensi(StatusRecord.AKTIF,krs,mahasiswa);
-
-            for (RekapPresensi presensi : krsDetail){
-                Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(krsDetailDao.findById(presensi.getId()).get(),StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-
-                RekapPresensi rekapPresensi = new RekapPresensi();
-                rekapPresensi.setDosen(presensi.getDosen());
-                rekapPresensi.setJumlahHadir(Math.toIntExact(presensiMahasiswa));
-                rekapPresensi.setKelas(presensi.getKelas());
-                rekapPresensi.setMatakuliah(presensi.getMatakuliah());
-                rekapPresensi.setNama(presensi.getNama());
-                rekapPresensi.setNim(presensi.getNim());
-                rekapPresensi.setSks(presensi.getSks());
-                rekapPresensi.setId(presensi.getId());
-                rekapPresensis.add(rekapPresensi);
-
-            }
-
             model.addAttribute("krs",krs);
-            model.addAttribute("data",rekapPresensis);
+            model.addAttribute("data",krsDetail);
 
     }
 
     @GetMapping("/rekap/presensiDetail")
-    public void rekapDetailPresensimahasiswa(@RequestParam KrsDetail krsDetail, Model model, Authentication authentication){
+    public void rekapDetailPresensimahasiswa(@RequestParam Jadwal jadwal,@RequestParam KrsDetail krs, Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         model.addAttribute("mahasiswa",mahasiswa);
+        List<DetailPresensi> presensiMahasiswas = new ArrayList<>();
 
-        List<DetailPresensi> presensiMahasiswa = presensiMahasiswaDao.detailPresensi(krsDetail,StatusRecord.AKTIF);
-        model.addAttribute("detail",presensiMahasiswa);
+        List<String> sesiKuliah = sesiKuliahDao.cariId(jadwal,StatusRecord.AKTIF);
+        for (String sk : sesiKuliah){
+            List<DetailPresensi> presensiMahasiswa = presensiMahasiswaDao.detailPresensi(krs,StatusRecord.AKTIF,sk);
+            for (DetailPresensi dp : presensiMahasiswa){
+                presensiMahasiswas.add(dp);
+            }
+
+
+        }
+
+
+
+//        List<DetailPresensi> presensiMahasiswa = presensiMahasiswaDao.detailPresensi(jadwall,StatusRecord.AKTIF);
+        model.addAttribute("detail",presensiMahasiswas);
 
     }
 }

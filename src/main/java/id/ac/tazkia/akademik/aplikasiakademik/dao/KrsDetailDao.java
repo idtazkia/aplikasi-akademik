@@ -16,8 +16,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     Page<KrsDetail> findByKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(Krs krs, Mahasiswa mahasiswa, Pageable page);
     List<KrsDetail> findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord status,Krs krs, Mahasiswa mahasiswa);
 
-    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.RekapPresensi (kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,kd.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah,kd.jadwal.matakuliahKurikulum.jumlahSks,kd.jadwal.kelas.namaKelas,kd.jadwal.dosen.karyawan.namaKaryawan,0)from KrsDetail kd where kd.status = :status and kd.krs =:krs and kd.mahasiswa = :mahasiswa order by kd.jadwal.hari asc,kd.jadwal.jamMulai asc ")
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.RekapPresensi (kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,kd.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah,kd.jadwal.matakuliahKurikulum.jumlahSks,kd.jadwal.kelas.namaKelas,kd.jadwal.dosen.karyawan.namaKaryawan,0,kd.jadwal.id)from KrsDetail kd where kd.status = :status and kd.krs =:krs and kd.mahasiswa = :mahasiswa order by kd.jadwal.hari asc,kd.jadwal.jamMulai asc ")
     List<RekapPresensi> cariPresensi(@Param("status")StatusRecord statusRecord,@Param("krs")Krs krs,@Param("mahasiswa")Mahasiswa mahasiswa);
+
+    @Query("select kd.id from KrsDetail kd where kd.status = :status and kd.krs =:krs and kd.mahasiswa = :mahasiswa order by kd.jadwal.hari asc,kd.jadwal.jamMulai asc ")
+    List<String> cariJadwalId(@Param("status")StatusRecord statusRecord,@Param("krs")Krs krs,@Param("mahasiswa")Mahasiswa mahasiswa);
 
     @Query("SELECT u FROM KrsDetail u WHERE u.mahasiswa = ?1 and u.krs = ?2 and u.status= ?3 and u.jadwal.hari in(DAYOFWEEK(NOW())-1,DAYOFWEEK(NOW())) order by u.jadwal.hari,u.jadwal.jamMulai")
     List<KrsDetail> findByMahasiswaAndKrsAndStatus(Mahasiswa mahasiswa, Krs krs, StatusRecord statusRecord);

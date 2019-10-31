@@ -16,5 +16,6 @@ public class RekapPresensi {
     private String kelas;
     private String dosen;
     private Integer jumlahHadir;
+    private String idJadwal;
 
 }
