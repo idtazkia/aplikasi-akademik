@@ -34,4 +34,6 @@ public class MatkulDto {
     private Akses akses;
     private StatusRecord statusSkripsi;
     private Integer sds;
+    private StatusRecord konsepNote;
+    private StatusRecord sempro;
 }

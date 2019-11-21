@@ -99,6 +99,16 @@ public class UploadController {
             }
         }
 
+        if (tahun != null && status == null){
+            model.addAttribute("tahunAkademik",tahun);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,search,page));
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+            }
+        }
+
 
     }
 

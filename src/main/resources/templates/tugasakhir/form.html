@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+</head>
+<body>
+<section layout:fragment="main" class="container">
+    <div class="row">
+        <div class="col-md-4 col-xs-12">
+            <div style="background-color: white; border-radius: 20px;">
+                <div style="background-color: #4285f4; padding-top: 10px; padding-left: 20px; padding-bottom: 10px; padding-right: 20px; border-top-right-radius: 20px; border-top-left-radius: 20px;">
+                    <h4 style="color: white;">Detail Konsep Note</h4>
+                </div>
+
+                <div style="padding-left: 20px; padding-bottom: 10px;">
+                    <h5 style="color: #6c6c6c;"><b>Nim</b></h5>
+                    <h4 style="color: #4285f4"><b th:text="${note.mahasiswa.nim}">1212121</b></h4>
+
+                    <h5 style="color: #6c6c6c;"><b>Nama</b></h5>
+                    <h4 style="color: #4285f4"><b th:text="${note.mahasiswa.nama}">Ujang Mamang</b></h4>
+
+                    <h5 style="color: #6c6c6c;"><b>Supervisor 1</b></h5>
+                    <h4 style="color: #4285f4" th:object="${note}">
+                        <select name="" class="form-control js-example-placeholder-single" id="dosen-note" th:field="*{dosen}">
+                            <option value=""></option>
+                            <option th:each="data : ${dosen}"
+                                    th:value="${data.id}"
+                                    th:text="${data.karyawan.namaKaryawan}"></option>
+                        </select>
+                    </h4>
+
+                    <h5 style="color: #6c6c6c;"><b>Supervisor 2</b></h5>
+                    <h4 style="color: #4285f4" th:object="${note}">
+                        <select name="" class="form-control js-example-placeholder-single" id="dosen2-note" th:field="*{dosen2}">
+                            <option value=""></option>
+                            <option th:each="data : ${dosen}"
+                                    th:value="${data.id}"
+                                    th:text="${data.karyawan.namaKaryawan}"></option>
+                        </select>
+                    </h4>
+
+                    <h5 style="color: #6c6c6c"><b>Comment</b></h5>
+                        <div class="form-group" th:object="${note}">
+                            <textarea name="area" id="area" cols="30" rows="" th:field="*{keterangan}" onkeyup="writeMessage()"></textarea>
+                        </div>
+                    <br>
+                        <div class="form-group col-md-12">
+                            <form th:action="@{/tugasakhir/approve}" method="post" th:object="${note}" class="col-md-6">
+                                <input type="hidden" id="dosen" name="dosen" th:field="*{dosen}">
+                                <input type="hidden" id="dosen2" name="dosen2" th:field="*{dosen2}">
+                                <input type="hidden" name="keterangan" id="ke" th:field="*{keterangan}">
+                                <input type="hidden" name="id" th:field="*{id}">
+                                <button style="background-color: #4285f4; border: none; color: white; width: 100px; height: 30px; border-radius: 10px;">Approved</button>
+                            </form>
+                            <form th:action="@{/tugasakhir/reject}" method="post" th:object="${note}" class="col-md-6">
+                                <input type="hidden" id="dosen2reject" name="dosen2" th:field="*{dosen2}">
+                                <input type="hidden" id="dosenreject" name="dosen" th:field="*{dosen}">
+                                <input type="hidden" name="keterangan" th:field="*{keterangan}">
+                                <input type="hidden" name="id" th:field="*{id}">
+                                <button style="background-color: #f23405; border: none; color: white; width: 100px; height: 30px; border-radius: 10px;">Rejected</button>
+
+                            </form>
+                        </div>
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-8 col-xs-12">
+            <!--<iframe th:src="@{/uploaded/{note}/bukti/(note=${note.id})}"    width="100%" height="600px"></iframe>-->
+            <embed th:src="@{/uploaded/{note}/bukti/(note=${note.id})}"  width="100%" height="600px">
+            <!--<a th:href="@{/uploaded/{note}/bukti/(note=${note.id})}" target="mapframe" ><strong>Lakeview Farm Supply</strong></a>-->
+            <!--<p>-->
+                <!--<iframe name="mapframe" id="mapframe" th:src="@{/uploaded/{note}/bukti/(note=${note.id})}" style="border:1px solid #aaa;border-radius:10px;width:100%;height:600px;"></iframe>-->
+            <!--</p>-->
+            <!--<iframe src="https://www.w3schools.com">-->
+                <!--<p>Your browser does not support iframes.</p>-->
+            <!--</iframe>-->
+            <!--<iframe th:src="@{/images/pres.pdf}" width="100%" height="600px"></iframe>-->
+
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    function writeMessage() {
+        var keteranagan= $("input[name=keterangan]");
+        keteranagan.val(document.getElementById("area").value);
+    }
+
+    (function($){
+        $('#dosen-note').select2();
+
+        $('#dosen-note').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#dosen').val(e.params.args.data.id);
+            $('#dosenreject').val(e.params.args.data.id);
+        });
+
+        $('#dosen2-note').select2();
+
+        $('#dosen2-note').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#dosen2').val(e.params.args.data.id);
+            $('#dosen2reject').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+</script>

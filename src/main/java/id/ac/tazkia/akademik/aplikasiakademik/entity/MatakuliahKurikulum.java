@@ -68,5 +68,11 @@ public class MatakuliahKurikulum {
 
     private Integer sds;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord konsepNote = StatusRecord.NONAKTIF;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord sempro = StatusRecord.NONAKTIF;
+
 
 }

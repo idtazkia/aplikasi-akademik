@@ -1,6 +1,7 @@
 package id.ac.tazkia.akademik.aplikasiakademik.dao;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.ListPenilaian;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.PlotingDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.data.domain.Page;
@@ -66,6 +67,9 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
 
     Page<Jadwal> findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,Pageable pageable);
     Page<Jadwal> findByStatusAndTahunAkademikAndStatusUtsAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord statusRecord,TahunAkademik tahunAkademik,StatusApprove statusApprove,Pageable pageable);
+
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.ListPenilaian(j.id,j.tahunAkademik.namaTahunAkademik,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.matakuliahKurikulum.jumlahSks,j.hari.namaHari,j.jamMulai,j.jamSelesai,j.prodi.namaProdi,j.dosen.karyawan.namaKaryawan,j.kelas.namaKelas,j.matakuliahKurikulum.sds,j.bobotPresensi,j.bobotUts,j.bobotUas,j.bobotTugas) from Jadwal j where j.id = :id")
+    ListPenilaian cariData(@Param("id") String id);
 
 }
 

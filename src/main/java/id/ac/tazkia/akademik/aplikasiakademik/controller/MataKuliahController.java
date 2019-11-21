@@ -169,6 +169,8 @@ public class MataKuliahController {
                 matkulDto.setAkses(matakuliahKurikulum.getAkses());
                 matkulDto.setStatusSkripsi(matakuliahKurikulum.getStatusSkripsi());
                 matkulDto.setSds(matakuliahKurikulum.getSds());
+                matkulDto.setSempro(matakuliahKurikulum.getSempro());
+                matkulDto.setKonsepNote(matakuliahKurikulum.getKonsepNote());
                 model.addAttribute("matkul",matkulDto);
 
             }

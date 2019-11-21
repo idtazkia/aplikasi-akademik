@@ -31,6 +31,9 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
 
     List<PresensiMahasiswa> findByKrsDetailAndStatusAndStatusPresensi(KrsDetail krsDetail, StatusRecord status,StatusPresensi statusPresensi);
 
+    @Query("select count (pm.id) from PresensiMahasiswa pm where pm.krsDetail.id = :id and pm.status = :status and pm.statusPresensi = :statusPresensi")
+    Long countPresensiMahasiswa (@Param("id")String id,@Param("status")StatusRecord statusRecord,@Param("statusPresensi")StatusPresensi statusPresensi);
+
     List<PresensiMahasiswa> findByKrsDetailJadwalAndStatus(Jadwal jadwal, StatusRecord statusRecord);
 
     @Query("select count (*) from PresensiMahasiswa pm where pm.krsDetail = :krsDetail and pm.status = :status and pm.statusPresensi not in (:terlambat,:mangkir)")

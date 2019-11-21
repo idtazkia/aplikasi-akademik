@@ -68,6 +68,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Punya Responsi</label><br>
+                                            <br>
                                             <label>
                                                 <input name="responsi" th:field="*{responsi}" value="Y" maxlength="1" type="checkbox" class="js-switch" />
                                             </label >
@@ -76,9 +77,22 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Skripsi</label><br>
+                                            <br>
                                             <label>
                                                 <input name="statusSkripsi" th:field="*{statusSkripsi}" value="AKTIF" maxlength="1" type="checkbox" class="js-switch" />
                                             </label >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Blocking Konsep Note</label><br>
+                                            <input name="konsepNote" th:field="*{konsepNote}" value="AKTIF" type="checkbox" maxlength="1" class="js-switch">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Blocking SEMPRO</label><br>
+                                            <input name="sempro" th:field="*{sempro}" value="AKTIF" type="checkbox" maxlength="1" class="js-switch">
                                         </div>
                                     </div>
                                 </div>

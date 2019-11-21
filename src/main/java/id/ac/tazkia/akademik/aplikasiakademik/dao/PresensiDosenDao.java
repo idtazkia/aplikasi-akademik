@@ -15,6 +15,6 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
     Long countByJadwalAndDosenAndTahunAkademikAndStatus(Jadwal jadwal, Dosen dosen, TahunAkademik ta, StatusRecord statusRecord);
     Iterable<PresensiDosen> findByStatusAndWaktuMasukBetween(StatusRecord status, LocalDateTime mulai, LocalDateTime sampai);
 
-    @Query("select count (*) from PresensiDosen pd where pd.status =:status and pd.jadwal = :jadwal")
-    Long jumlahKehadiranDosen(@Param("status")StatusRecord statusRecord,@Param("jadwal")Jadwal jadwal);
+    @Query("select count (*) from PresensiDosen pd where pd.status =:status and pd.jadwal.id = :jadwal")
+    Long jumlahKehadiranDosen(@Param("status")StatusRecord statusRecord,@Param("jadwal")String jadwal);
 }

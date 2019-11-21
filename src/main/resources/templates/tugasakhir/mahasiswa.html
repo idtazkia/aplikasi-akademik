@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+
+        #quote-carousel {
+            padding: 0 10px 30px 10px;
+            margin-top: 60px;
+        }
+
+        #quote-carousel .carousel-control {
+            background: none;
+            color: #CACACA;
+            font-size: 2.3em;
+            text-shadow: none;
+            margin-top: 30px;
+        }
+        #quote-carousel .carousel-indicators {
+            position: relative;
+            right: 50%;
+            top: auto;
+            bottom: 0px;
+            margin-top: 20px;
+            margin-right: -19px;
+        }
+        #quote-carousel .carousel-indicators li {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            opacity: 0.4;
+            overflow: hidden;
+            transition: all .10s ease-in;
+            vertical-align: middle;
+        }
+        #quote-carousel .carousel-indicators .active {
+            width: 128px;
+            height: 128px;
+            opacity: 1;
+            transition: all .10s;
+        }
+        .item blockquote {
+            border-left: none;
+            margin: 0;
+        }
+        .item blockquote p:before {
+            content: "\f10d";
+            font-family: 'Fontawesome';
+            float: left;
+            margin-right: 10px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .card-profile {
+            background-color: white;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            height: 100px;
+            width: 100%;
+        }
+
+        .img-profile{
+            height: 70px;
+            width: 70px;
+            background-color: #555;
+            border-radius: 50%;
+            background-size: cover;
+            position: absolute;
+            left: 50px;
+            top: 80px;
+            z-index: 1;
+        }
+
+        .text-title{
+            color: black; font-size: 15px;
+        }
+        .btn-status{
+            color: white; border: none; border-radius: 10px; width: 120px; height: 30px;
+        }
+
+        .card-body{
+            background-color: white;
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            padding-top: 140px;
+            padding-left: 25px;
+            padding-bottom: 25px;
+            padding-right: 25px;
+        }
+
+        .name-profile{
+            color: black;
+            font-size: 17px;
+        }
+
+        .nim-profile{
+            color: #4285f4;
+            font-size: 15px;
+        }
+    </style>
+
+
+</head>
+<body>
+<section layout:fragment="main" class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6 col-xs-12">
+                <div style="margin: 16px;">
+                    <div>
+                        <div class="col-md-12 card-profile" style="background-image: url('https://images.wallpaperscraft.com/image/landscape_blue_tree_black_92069_1920x1080.jpg')"></div>
+                        <img th:src="${#authentication.principal.picture}" class="img-profile" alt="">
+                        <div class="card-body">
+                            <b class="name-profile" th:text="${mahasiswa.nama}">Nama User</b>
+                            <br>
+                            <b th:text="${mahasiswa.nim}" class="nim-profile">11404344</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding: 16px; text-align: center;">
+                    <div class="col-md-12" style="background-color: white; border-radius: 10px;">
+                        <div style="width: 30px; height: 10px; background-color: #4285f4; margin-left: 40px;"></div>
+                        <div style=" padding: 16px;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="carousel slide" data-ride="carousel" id="quote-carousel">
+                                            <!-- Carousel Slides / Quotes -->
+                                            <div class="carousel-inner text-center">
+                                                <!-- Quote 1 -->
+                                                <div class="item active">
+                                                    <blockquote>
+                                                        <div class="row">
+                                                            <div class="col-sm-8 col-sm-offset-2">
+                                                                <p>Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya..."</p>
+                                                                <small>Q.S Al-Baqarah 2:286</small>
+                                                            </div>
+                                                        </div>
+                                                    </blockquote>
+                                                </div>
+                                                <!-- Quote 2 -->
+                                                <div class="item">
+                                                    <blockquote>
+                                                        <div class="row">
+                                                            <div class="col-sm-8 col-sm-offset-2">
+                                                                <p>Janganlah kamu bersikap lemah dan janganlah pula kamu bersedih hati, padahal kamulah orang orang yang paling tinggi derajatnya jika kamu beriman. </p>
+                                                                <small>Q.S Al Imran 3:139</small>
+                                                            </div>
+                                                        </div>
+                                                    </blockquote>
+                                                </div>
+                                                <!-- Quote 3 -->
+                                                <div class="item">
+                                                    <blockquote>
+                                                        <div class="row">
+                                                            <div class="col-sm-8 col-sm-offset-2">
+                                                                <p>Berdoalah kepada-Ku pastilah aku kabulkan untukmu.</p>
+                                                                <small>Q.S Al Gafir 40:60</small>
+                                                            </div>
+                                                        </div>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
+
+                                            <a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+                                            <a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a th:if="${waiting == null && approved == null}" class="btn btn-primary" th:href="@{/tugasakhir/konsepnote}"><i class="fa fa-repeat" aria-hidden="true"></i><b> Daftar Ulang</b></a>
+                            <a th:if="${waiting != null && approved == null}" class="btn btn-warning" th:href="@{/tugasakhir/konsepnote (id=${waiting.id})}"><i class="fa fa-repeat" aria-hidden="true"></i><b> Revisi</b></a>
+                            <a th:if="${approved != null}" class="btn btn-success" th:href="@{/soon}"><i class="fa fa-arrow-right" aria-hidden="true"></i><b> Lanjut Seminar Proposal</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                <div style="overflow-y: scroll; height: 650px;">
+                    <div class="row" th:each="rejected : ${rejected}" style="padding: 16px;">
+                        <div class="col-md-12 card">
+                            <p><b class="text-title" th:text="${rejected.judul}">Ini Judul</b> <span th:text="${rejected.judulInggris}" style="color: #4285f4;">Ini Judul Inggris</span></p>
+                            <p th:text="${rejected.keterangan}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, aut, beatae ducimus eius expedita facilis illo itaque, iusto laudantium maiores nesciunt nisi odio possimus provident quod reiciendis repudiandae velit veniam.</p>
+                            <button class="btn-status btn-danger" th:if="${rejected.status.REJECTED == rejected.status}">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <b>Rejected</b>
+                            </button>
+
+                            <button class="btn-status btn-success" th:if="${rejected.status.APPROVED == rejected.status}">
+                                <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                <b>Approved</b>
+                            </button>
+
+                            <button class="btn-status btn-warning" th:if="${rejected.status.WAITING == rejected.status}">
+                                <i class="fa fa-hourglass-start" aria-hidden="true"></i>
+                                <b>Waiting</b>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</section>
+</body>
+<script>
+    var slideIndex = 0;
+    carousel();
+
+    function carousel() {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        slideIndex++;
+        if (slideIndex > x.length) {slideIndex = 1}
+        x[slideIndex-1].style.display = "block";
+        setTimeout(carousel, 2000);
+    }
+</script>
+</html>
