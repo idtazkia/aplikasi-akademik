@@ -158,14 +158,14 @@
                                             <li><a th:href="@{/khs/list}">K H S</a></li>
                                         </ul>
                                     </li>
-                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Graduations<span class="fa fa-chevron-down"></span></a>
+                                    <li ><a>Graduations<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li><a th:href="@{/intership/list}">Internship</a></li>
-                                            <li><a th:href="@{/conceptnote/list}">Concept Note</a></li>
-                                            <li><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
-                                            <li><a th:href="@{/thesis/list}">Thesis</a></li>
-                                            <li><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
-                                            <li><a th:href="@{/skpi/list}">S K P I</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/intership/list}">Internship</a></li>
+                                            <li><a th:href="@{/tugasakhir/list}">Concept Note</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/thesis/list}">Thesis</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/skpi/list}">S K P I</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -188,6 +188,17 @@
                                     <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
                                     <li><a th:href="@{/uploadsoal/listdosen}">Upload Soal</a></li>
                                     <li><a th:href="@{/uploadsoal/list}">Validasi Soal</a></li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a><i class="fa fa-graduation-cap "></i>Graduations<Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/intership/list}">Internship</a></li>
+                                    <li><a th:href="@{/tugasakhir/list}">Concept Note</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/thesis/list}">Thesis</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/skpi/list}">S K P I</a></li>
                                 </ul>
                             </li>
 

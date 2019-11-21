@@ -354,7 +354,8 @@ public class JadwalKuliahController {
             return "redirect:form?jadwal=" + jadwal.getId();
         }
 
-        if (plot != null){
+        if (plot != null || !plot.isEmpty()){
+
             return "redirect:/plotingdosen/list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
         }
 
@@ -368,7 +369,7 @@ public class JadwalKuliahController {
         Integer tahun = Integer.valueOf(jadwal.getTahunAkademik().getTahun())+1;
         model.addAttribute("tahun",tahun);
 
-        Long presensiDosen = presensiDosenDao.jumlahKehadiranDosen(StatusRecord.AKTIF,jadwal);
+        Long presensiDosen = presensiDosenDao.jumlahKehadiranDosen(StatusRecord.AKTIF,jadwal.getId());
 
         if (presensiDosen == 0){
             Iterable<AbsenDto> krsDetail = krsDetailDao.cariId(jadwal,StatusRecord.AKTIF);

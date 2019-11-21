@@ -2,10 +2,8 @@ package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.constants.ExcelFileConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.InputNilaiDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.NilaiDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.NilaiTugasDao;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.PenilaianDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -179,7 +177,18 @@ public class PenilaianController {
     @PostMapping("/penilaian/tugas")
     public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas){
         bobotTugasDao.save(bobotTugas);
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail){
+            NilaiTugas nilaiTugas = new NilaiTugas();
+            nilaiTugas.setNilai(BigDecimal.ZERO);
+            nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
+            nilaiTugas.setKrsDetail(kd);
+            nilaiTugas.setBobotTugas(bobotTugas);
+            nilaiTugas.setStatus(StatusRecord.AKTIF);
+            nilaiTugasDao.save(nilaiTugas);
+        }
         return "redirect:bobot?jadwal="+bobotTugas.getJadwal().getId();
+
     }
 
     @PostMapping("/penilaian/delete")
@@ -187,86 +196,76 @@ public class PenilaianController {
         BobotTugas bobotTugas = bobotTugasDao.findById(bobot).get();
         bobotTugas.setStatus(StatusRecord.HAPUS);
         bobotTugasDao.save(bobotTugas);
+
         return "redirect:bobot?jadwal="+bobotTugas.getJadwal().getId();
     }
 
 
     @GetMapping("/penilaian/nilai")
-    public String nilaiPenilaian(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
-        if (jadwal.getMatakuliahKurikulum().getSds() != null){
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+    public String nilaiPenilaian(@RequestParam String jadwal, Model model, RedirectAttributes attributes){
+        ListPenilaian j = jadwalDao.cariData(jadwal);
+        if (j.getSds() != null){
+            BigDecimal totalBobot = j.getPresensi().add(j.getTugas()).add(j.getUas()).add(j.getUts()).add(new BigDecimal(j.getSds()));
             if (totalBobot.toBigInteger().intValueExact() < 100) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 System.out.println("gabisa");
-                return "redirect:bobot?jadwal="+jadwal.getId();
+                return "redirect:bobot?jadwal="+j.getId();
             }
         }
 
-        if (jadwal.getMatakuliahKurikulum().getSds() == null){
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+        if (j.getSds() == null){
+            BigDecimal totalBobot = j.getPresensi().add(j.getTugas()).add(j.getUas()).add(j.getUts());
             if (totalBobot.toBigInteger().intValueExact() < 100) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 System.out.println("gabisa");
-                return "redirect:bobot?jadwal="+jadwal.getId();
+                return "redirect:bobot?jadwal="+j.getId();
             }
         }
+        Long presensiDosen =  presensiDosenDao.jumlahKehadiranDosen(StatusRecord.AKTIF,j.getId());
 
 
-        int presdos = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal).size();
-        if (presdos == 0){
+        if (presensiDosen == 0){
             attributes.addFlashAttribute("gaadapres", "Gaada Presensi");
-            return "redirect:bobot?jadwal=" + jadwal.getId();
+            return "redirect:bobot?jadwal=" + j.getId();
         }
-        List<BobotTugas> bobot = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-        BigDecimal sum = bobot.stream()
-                .map(BobotTugas::getBobot)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        System.out.println(sum.toBigInteger().intValueExact());
-        if (bobot.size() != 0 || !bobot.isEmpty()) {
-            if (sum.toBigInteger().intValueExact() < jadwal.getBobotTugas().toBigInteger().intValue() || sum.toBigInteger().intValueExact() > jadwal.getBobotTugas().toBigInteger().intValue()) {
+
+        Long bobot = bobotTugasDao.sumBobot(j.getId(),StatusRecord.AKTIF);
+
+        System.out.println(bobot);
+        if (bobot != 0) {
+            if (bobot < j.getTugas().toBigInteger().intValue() || bobot > j.getTugas().toBigInteger().intValue()) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 System.out.println("gabisa");
-                return "redirect:bobot?jadwal=" + jadwal.getId();
+                return "redirect:bobot?jadwal=" + j.getId();
             }
         }
 
 
-        model.addAttribute("absensi", presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal).size());
-        model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
-        List<NilaiDto> nim = new ArrayList<>();
-        List<NilaiDto> id = new ArrayList<>();
-        List<PenilaianDto> penilaianDtos = new ArrayList<>();
-        model.addAttribute("jadwal", jadwal);
-        model.addAttribute("bobotTugas", bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF));
+        model.addAttribute("absensi", presensiDosen);
+        model.addAttribute("jumlahMahasiswa", krsDetailDao.jumlahMahasiswa(j.getId(),StatusRecord.AKTIF));
+        List<TestDto> penilaianDtos = new ArrayList<>();
+        model.addAttribute("jadwal", j);
+        model.addAttribute("bobotTugas", bobotTugasDao.Tugas(j.getId(),StatusRecord.AKTIF));
+        List<BobotDto> nilaiTugasList = new ArrayList<>();
+        for (TestDto testDto : krsDetailDao.penilaianList(j.getId(),StatusRecord.AKTIF)){
+            Long presensiMahasiswa = presensiMahasiswaDao.countPresensiMahasiswa(testDto.getId(),StatusRecord.AKTIF,StatusPresensi.HADIR);
+            BigDecimal nilaiPres = j.getPresensi().multiply(new BigDecimal(presensiMahasiswa)).divide(new BigDecimal(100));
+            testDto.setPresensi(nilaiPres.intValue());
+            testDto.setAbsensi(presensiDosen.intValue());
+            penilaianDtos.add(testDto);
+            List<BobotDto> nilaiTugas = nilaiTugasDao.nilaiTugasList(StatusRecord.AKTIF,testDto.getId());
+            nilaiTugasList.addAll(nilaiTugas);
+        }
+        model.addAttribute("nilaiTugas", nilaiTugasList);
         model.addAttribute("mahasiswa", penilaianDtos);
-        model.addAttribute("nilai", nilaiTugasDao.findByStatusAndKrsDetailJadwal(StatusRecord.AKTIF,jadwal));
-        model.addAttribute("pres", presensiMahasiswaDao.findByKrsDetailJadwalAndStatus(jadwal,StatusRecord.AKTIF));
-        for (KrsDetail krsDetail : krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF)){
-            int presensiMahasiswa = presensiMahasiswaDao.findByKrsDetailAndStatusAndStatusPresensi(krsDetail,StatusRecord.AKTIF,StatusPresensi.HADIR).size();
-            int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
-            PenilaianDto penilaianDto = new PenilaianDto();
-            penilaianDto.setKrsDetail(krsDetail);
-            penilaianDto.setId(krsDetail.getId());
-            penilaianDto.setPresensiDosen(presensiDosen);
-            penilaianDto.setAbsensiMahasiswa(presensiMahasiswa);
-            penilaianDtos.add(penilaianDto);
-        }
 
-        List<KrsDetail> kd = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
-        for (KrsDetail krsDetail : kd){
-            NilaiDto r = new NilaiDto();
-            r.setId(krsDetail.getMahasiswa().getNim());
-            r.setNilai(String.valueOf(krsDetail.getNilaiUts()));
-            nim.add(r);
-        }
-        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-        for (BobotTugas bt : bobotTugas){
-            NilaiDto r = new NilaiDto();
-            r.setId(bt.getId());
-            id.add(r);
-        }
-        model.addAttribute("jsMahasiswa", nim);
-        model.addAttribute("bobot", id);
+
+        List<NilaiDto> kd = krsDetailDao.nilaiDto(j.getId(),StatusRecord.AKTIF);
+
+        List<NilaiDto> bobotTugas = bobotTugasDao.bobotTugas(j.getId(),StatusRecord.AKTIF);
+
+        model.addAttribute("jsMahasiswa", kd);
+        model.addAttribute("bobot", bobotTugas);
 
         return null;
     }
@@ -308,8 +307,11 @@ public class PenilaianController {
                 } else {
 
                     KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
-                    krsDetail.setNilaiUts(new BigDecimal(in.getUts()).multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100)));
-                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
+                    BigDecimal nilaiUts = new BigDecimal(in.getUts()).multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+                    BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+
+                    krsDetail.setNilaiUts(new BigDecimal(in.getUts()));
+                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUas).add(krsDetail.getNilaiPresensi()).add(nilaiUts));
                     int presensiMahasiswa = presensiMahasiswaDao.findByKrsDetailAndStatusAndStatusPresensi(krsDetail,StatusRecord.AKTIF,StatusPresensi.HADIR).size();
                     int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
                     int nilaiPresensi = presensiMahasiswa / presensiDosen * 100;
@@ -390,9 +392,11 @@ public class PenilaianController {
                     int nilaiPresensi = presensiMahasiswa / presensiDosen * 100;
                     int totalPresensi = nilaiPresensi * krsDetail.getJadwal().getBobotPresensi().toBigInteger().intValue() / 100;
                     krsDetail.setNilaiPresensi(new BigDecimal(totalPresensi));
-                    krsDetail.setNilaiUas(new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100)));
+                    BigDecimal nilaiUas = new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+                    BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+                    krsDetail.setNilaiUas(new BigDecimal(in.getUas()));
 
-                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
+                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas));
                     if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
                         System.out.println("a-");
                         krsDetail.setGrade(amin.getNama());
@@ -477,7 +481,9 @@ public class PenilaianController {
                     KrsDetail kd = krsDetailDao.findById(nilaiTugas.getKrsDetail().getId()).get();
                     kd.setNilaiTugas(sum);
                     kd.setNilaiPresensi(new BigDecimal(totalPresensi));
-                    kd.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts()).add(krsDetail.getNilaiPresensi()).add(krsDetail.getNilaiUas()));
+                    BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+                    BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+                    kd.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas));
 
                     if (kd.getNilaiAkhir().toBigInteger().intValue() >= 80 && kd.getNilaiAkhir().toBigInteger().intValue() < 85){
                         System.out.println("a-");
@@ -552,9 +558,11 @@ public class PenilaianController {
                     int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
                     int nilaiPresensi = presensiMahasiswa / presensiDosen * 100;
                     int totalPresensi = nilaiPresensi * krsDetail.getJadwal().getBobotPresensi().toBigInteger().intValue() / 100;
+                    BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+                    BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                     kd.setNilaiPresensi(new BigDecimal(totalPresensi));
                     kd.setNilaiTugas(sum);
-                    kd.setNilaiAkhir(kd.getNilaiTugas().add(kd.getNilaiUts()).add(kd.getNilaiPresensi()).add(kd.getNilaiUas()));
+                    kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas));
 
 
                     if (kd.getNilaiAkhir().toBigInteger().intValue() >= 80 && kd.getNilaiAkhir().toBigInteger().intValue() < 85){
