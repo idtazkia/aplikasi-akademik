@@ -70,7 +70,7 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/tugasakhir/mahasiswa")
-    public void rejected(Model model, Authentication authentication){
+    public String rejected(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Note waiting = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.WAITING);
@@ -89,6 +89,8 @@ public class TugasAkhirController {
         model.addAttribute("mahasiswa" , mahasiswa);
         model.addAttribute("rejected" , rejected);
 
+        return "tugasakhir/mahasiswa";
+
     }
 
     @GetMapping("/tugasakhir/register")
@@ -100,8 +102,11 @@ public class TugasAkhirController {
         Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.APPROVED);
         List<Note> empty = noteDao.findByMahasiswa(mahasiswa);
 
-        if (empty != null) {
+        if (empty == null || empty.isEmpty()) {
 
+            return "tugasakhir/register";
+
+        }else {
             if (approve != null) {
                 return "redirect:/tugasakhir/mahasiswa";
             }
@@ -113,10 +118,9 @@ public class TugasAkhirController {
             if (note != null) {
                 return "redirect:/tugasakhir/mahasiswa";
             }
-
         }
-
         return "tugasakhir/register";
+
     }
 
     @GetMapping("/tugasakhir/alertpage")
@@ -152,7 +156,7 @@ public class TugasAkhirController {
             }
             if (validasi == null){
                 model.addAttribute("note",new Note());
-                return "/tugasakhir/konsepnote";
+                return ":tugasakhir/konsepnote";
             }
 
             if (validasi != null){
@@ -174,7 +178,7 @@ public class TugasAkhirController {
             }
         }
 
-        return "/tugasakhir/konsepnote";
+        return "tugasakhir/konsepnote";
 
     }
 

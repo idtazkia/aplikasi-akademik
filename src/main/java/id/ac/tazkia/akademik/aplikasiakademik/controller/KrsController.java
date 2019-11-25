@@ -631,13 +631,17 @@ public class KrsController {
 
         if (uas == null || uas.isEmpty()) {
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
-            EnableFiture enableFiture = new EnableFiture();
-            enableFiture.setEnable("1");
-            enableFiture.setFitur(StatusRecord.UTS);
-            enableFiture.setKeterangan("-");
-            enableFiture.setMahasiswa(mhsw);
-            enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-            enableFitureDao.save(enableFiture);
+            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,StatusRecord.UTS,"1",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (validasiFiture == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setEnable("1");
+                enableFiture.setFitur(StatusRecord.UTS);
+                enableFiture.setKeterangan("-");
+                enableFiture.setMahasiswa(mhsw);
+                enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(enableFiture);
+            }
+
         }
 
         return "redirect:kartu?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
