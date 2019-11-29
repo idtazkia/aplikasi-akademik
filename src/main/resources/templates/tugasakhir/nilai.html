@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .card{
+            background-color: white;
+            border-radius: 10px;
+            border-bottom: 3px solid #0a5a8c;
+            padding: 15px;
+            box-shadow: 2px 2px 2px 2px #eee;
+        }
+        .card-header{
+            width: 100%;
+            border-bottom: 1px solid #eeeeee;
+            padding-left: 5px;
+            padding-bottom: 10px;
+        }
+        .card-body{
+            padding: 10px;
+        }
+
+        .btn{
+            border: none;
+            color: white;
+            width: 70px;
+            height: 30px;
+            background-color: #0e90d2;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover{
+            background-color: #0a5a8c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="container">
+    <div class="row" style="padding: 15px;">
+        <div class="col-md-6 col-xs-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><b>Upload Nilai</b></h5>
+                </div>
+                <form th:action="@{/tugasakhir/nilai}" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" style="margin-left: 5px; margin-top: 10px;">
+                    <button type="submit" class="btn" style="margin: 5px">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding: 15px;" th:if="${list != null}">
+        <div class="col-md-12 col-xs-12">
+            <div class="card">
+                <div class="card-header">Data List</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <tr>
+                                <th>No</th>
+                                <th>Nim</th>
+                                <th>Nama</th>
+                                <th>Nilai</th>
+                            </tr>
+                            <tr th:each="data,row : ${list}">
+                                <th th:text="${(row.index + 1)}"></th>
+                                <th th:text="${data.kode}"></th>
+                                <th th:text="${data.nama}"></th>
+                                <th th:text="${data.jumlah}"></th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+</body>
+</html>

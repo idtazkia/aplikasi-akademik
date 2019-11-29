@@ -23,4 +23,6 @@ public interface MatakuliahKurikulumDao extends PagingAndSortingRepository<Matak
 
      @Query("select mk.id from MatakuliahKurikulum mk where mk.status= :status and mk.kurikulum = :kurikulum and mk.konsepNote = :konsep")
      List<String> CariMatakuliahKonsep(@Param("status")StatusRecord statusRecord,@Param("kurikulum")Kurikulum kurikulum,@Param("konsep")StatusRecord konsep);
+
+
 }

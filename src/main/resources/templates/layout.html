@@ -161,6 +161,7 @@
                                     <li ><a>Graduations<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/intership/list}">Internship</a></li>
+                                            <li><a th:href="@{/tugasakhir/nilai}">Internship Score Input</a></li>
                                             <li><a th:href="@{/tugasakhir/list}">Concept Note</a></li>
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/thesis/list}">Thesis</a></li>

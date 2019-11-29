@@ -1,8 +1,11 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.TahunDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +22,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -316,5 +322,69 @@ public class TugasAkhirController {
 
         return "redirect:list?tahun="+note.getTahunAkademik().getId()+"&prodi="+note.getMahasiswa().getIdProdi().getId();
     }
+
+    @GetMapping("/tugasakhir/nilai")
+    public void nilai(@RequestParam(required = false)String list){}
+
+    @PostMapping("/tugasakhir/nilai")
+    public String prosesFormUploadUTS(MultipartFile file, RedirectAttributes attributes) throws Exception {
+
+        LOGGER.debug("Nama file : {}", file.getOriginalFilename());
+        LOGGER.debug("Ukuran file : {} bytes", file.getSize());
+
+        List<TahunDto> tahunDtos = new ArrayList<>();
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+            int row = 5;
+            int terakhir = sheetPertama.getLastRowNum() - row;
+            System.out.println("jumlah row  :  " +terakhir);
+
+            for (int i = 0; i <= terakhir; i++) {
+                System.out.println(i);
+                Row baris = sheetPertama.getRow(row + i);
+                    Cell nim = baris.getCell(1);
+                    nim.setCellType(CellType.STRING);
+
+                    Cell nilai = baris.getCell(6);
+                    nilai.setCellType(CellType.NUMERIC);
+
+                    String mahasiswa = mahasiswaDao.cariIdMahasiswa(nim.getStringCellValue());
+                    System.out.println("nim  :  " + nim + "  nilai  "  + nilai);
+
+
+                String krsDetail = krsDetailDao.idKrsDetail(mahasiswa,StatusRecord.AKTIF,"Magang",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+                if (krsDetail == null){
+                    System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
+                }
+
+                if (krsDetail != null){
+                    System.out.println("nim  :  " + nim + "  Krs Detail  "  + krsDetail + "   nilai  :  "  + nilai);
+                    KrsDetail kd = krsDetailDao.findById(krsDetail).get();
+                    kd.setNilaiAkhir(new BigDecimal(nilai.getNumericCellValue()));
+                    krsDetailDao.save(kd);
+                    TahunDto tahunDto = new TahunDto();
+                    tahunDto.setId(kd.getId());
+                    tahunDto.setNama(kd.getMahasiswa().getNama());
+                    tahunDto.setKode(kd.getMahasiswa().getNim());
+                    tahunDto.setJumlah(kd.getNilaiAkhir().intValue());
+                    tahunDtos.add(tahunDto);
+                }
+
+
+
+
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        attributes.addFlashAttribute("list", tahunDtos);
+        return "redirect:/tugasakhir/nilai?list=true";
+
+    }
+
 
 }

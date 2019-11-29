@@ -41,6 +41,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     KrsDetail findByJadwalAndStatusAndKrs(Jadwal jadwal,StatusRecord statusRecord,Krs krs);
 
     List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatus(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord);
+    KrsDetail findByMahasiswaAndKrsTahunAkademikAndStatusAndMatakuliahKurikulumMatakuliahNamaMatakuliahLike(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord,String matkul);
 
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TestDto(kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,0,kd.nilaiUts,kd.nilaiUas,0) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
     List<TestDto> penilaianList(@Param("jadwal")String jadwal,@Param("status")StatusRecord statusRecord);
@@ -59,5 +60,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     @Query("select count (kd.id) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
     Long jumlahMahasiswa(@Param("jadwal")String jadwal,@Param("status")StatusRecord statusRecord);
+
+    @Query("select kd.id from KrsDetail kd where kd.mahasiswa.id = :id and kd.status = :status and kd.matakuliahKurikulum.matakuliah.namaMatakuliah like %:nama% and kd.krs.tahunAkademik = :tahun")
+    String idKrsDetail(@Param("id")String id,@Param("status")StatusRecord statusRecord,@Param("nama")String nama,@Param("tahun")TahunAkademik tahunAkademik);
 
 }
