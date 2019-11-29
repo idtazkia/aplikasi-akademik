@@ -333,6 +333,7 @@ public class TugasAkhirController {
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
         List<TahunDto> tahunDtos = new ArrayList<>();
+        List<Mahasiswa> mahasiswas = new ArrayList<>();
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
@@ -358,6 +359,8 @@ public class TugasAkhirController {
 
                 if (krsDetail == null){
                     System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
+                    Mahasiswa m = mahasiswaDao.findByNim(nim.getStringCellValue());
+                    mahasiswas.add(m);
                 }
 
                 if (krsDetail != null){
@@ -382,6 +385,7 @@ public class TugasAkhirController {
         }
 
         attributes.addFlashAttribute("list", tahunDtos);
+        attributes.addFlashAttribute("mahasiswa", mahasiswas);
         return "redirect:/tugasakhir/nilai?list=true";
 
     }

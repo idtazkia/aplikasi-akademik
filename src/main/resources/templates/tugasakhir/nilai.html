@@ -36,6 +36,36 @@
             background-color: #0a5a8c;
             color: white;
         }
+
+        #approved{
+            display: block;
+        }
+
+        #rejected{
+            display: none;
+        }
+
+        .show{
+            display: block;
+        }
+        .hide{
+            display: none;
+        }
+
+        .btn-approved{
+            background-color: white;
+            color: #00AEEF;
+            border: none;
+            border-bottom: 2px solid #00AEEF;
+
+            transition: 1s;
+        }
+        .btn-approved:hover{
+            border: none;
+            height: 30px;
+            color: white;
+            background-color: #00AEEF;
+        }
     </style>
 </head>
 <body>
@@ -58,27 +88,72 @@
             <div class="card">
                 <div class="card-header">Data List</div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped jambo_table bulk_action">
-                            <tr>
-                                <th>No</th>
-                                <th>Nim</th>
-                                <th>Nama</th>
-                                <th>Nilai</th>
-                            </tr>
-                            <tr th:each="data,row : ${list}">
-                                <th th:text="${(row.index + 1)}"></th>
-                                <th th:text="${data.kode}"></th>
-                                <th th:text="${data.nama}"></th>
-                                <th th:text="${data.jumlah}"></th>
-                            </tr>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-12" style="padding-top: 10px; padding-bottom: 10px;">
+                            <button class="btn-approved" onclick="show()">Berhasil</button>
+                            <button class="btn-approved" onclick="hide()">Belum mengambil KRS</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="approved">
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>Nilai</th>
+                                    </tr>
+                                    <tr th:each="data,row : ${list}">
+                                        <th th:text="${(row.index + 1)}"></th>
+                                        <th th:text="${data.kode}"></th>
+                                        <th th:text="${data.nama}"></th>
+                                        <th th:text="${data.jumlah}"></th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="rejected">
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                    <tr th:each="data,row : ${mahasiswa}">
+                                        <th th:text="${(row.index + 1)}"></th>
+                                        <th th:text="${data.nim}"></th>
+                                        <th th:text="${data.nama}"></th>
+                                        <th>Belum Mengambil Krs Magang</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function hide() {
+            x = document.getElementById('approved');
+            y = document.getElementById('rejected')
+            x.className = 'hide';
+            y.className = 'show';
 
+            // Or...
+            // x.style.display = 'none';
+        }
+
+        function show() {
+            x = document.getElementById('approved');
+            y = document.getElementById('rejected')
+            x.className = 'show';
+            y.className = 'hide';
+        }
+    </script>
 
 </section>
 </body>
