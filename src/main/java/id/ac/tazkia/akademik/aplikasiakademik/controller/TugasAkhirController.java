@@ -76,6 +76,7 @@ public class TugasAkhirController {
         Note waiting = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.WAITING);
         Note approved = noteDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.APPROVED);
 
+
         if (waiting != null){
             model.addAttribute("waiting",waiting);
         }
@@ -85,7 +86,11 @@ public class TugasAkhirController {
         }
 
         List<Note> rejected = noteDao.findByMahasiswaOrderByTanggalInputDesc(mahasiswa);
+        if (rejected == null || rejected.isEmpty()) {
 
+            return "tugasakhir/register";
+
+        }
         model.addAttribute("mahasiswa" , mahasiswa);
         model.addAttribute("rejected" , rejected);
 
@@ -108,15 +113,15 @@ public class TugasAkhirController {
 
         }else {
             if (approve != null) {
-                return "redirect:/tugasakhir/mahasiswa";
+                return "redirect:tugasakhir/mahasiswa";
             }
 
             if (approve == null && note == null) {
-                return "redirect:/tugasakhir/mahasiswa";
+                return "redirect:tugasakhir/mahasiswa";
             }
 
             if (note != null) {
-                return "redirect:/tugasakhir/mahasiswa";
+                return "redirect:tugasakhir/mahasiswa";
             }
         }
         return "tugasakhir/register";
@@ -156,7 +161,7 @@ public class TugasAkhirController {
             }
             if (validasi == null){
                 model.addAttribute("note",new Note());
-                return ":tugasakhir/konsepnote";
+                return "tugasakhir/konsepnote";
             }
 
             if (validasi != null){

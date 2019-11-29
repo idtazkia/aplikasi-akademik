@@ -229,17 +229,6 @@ public class PenilaianController {
             return "redirect:bobot?jadwal=" + j.getId();
         }
 
-        Long bobot = bobotTugasDao.sumBobot(j.getId(),StatusRecord.AKTIF);
-
-        System.out.println(bobot);
-        if (bobot != 0) {
-            if (bobot < j.getTugas().toBigInteger().intValue() || bobot > j.getTugas().toBigInteger().intValue()) {
-                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                System.out.println("gabisa");
-                return "redirect:bobot?jadwal=" + j.getId();
-            }
-        }
-
 
         model.addAttribute("absensi", presensiDosen);
         model.addAttribute("jumlahMahasiswa", krsDetailDao.jumlahMahasiswa(j.getId(),StatusRecord.AKTIF));
