@@ -46,17 +46,10 @@
                                         <button type="submit" class="fa fa-edit btn btn-primary"> Edit</button>
                                     </a>
                                 </td>
-
-                                <!--<td>-->
-                                    <!--&lt;!&ndash;<a th:if="${not @environment.acceptsProfiles('production')}" class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>&ndash;&gt;-->
-                                <!--</td>-->
-
-                                <!--<td>-->
-                                    <!--&lt;!&ndash;<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<input type="file" name="file">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<button type="submit">pusing</button>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
-                                <!--</td>-->
+                                <td>
+                                    <a class="btn btn-success btn-sm" th:href="@{/penilaian/uploadnilai
+                                    (jadwal = ${jadwal.id})}">Upload Nilai</a>
+                                </td>
                             </tr>
                         </span>
                         </tbody>

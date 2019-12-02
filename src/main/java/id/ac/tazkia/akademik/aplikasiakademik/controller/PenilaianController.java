@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,9 @@ public class PenilaianController {
 
     @Autowired
     private DosenDao dosenDao;
+
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
 
     @Autowired
     private KaryawanDao karyawanDao;
@@ -627,142 +631,21 @@ public class PenilaianController {
         return krsDetail;
     }
 
-    @PostMapping("/penilaian/upload")
-    public String postTest(MultipartFile file,Authentication authentication)throws Exception{
-        User user = currentUserService.currentUser(authentication);
-
-        String namaFile = file.getName();
-        String jenisFile = file.getContentType();
-        String namaAsli = file.getOriginalFilename();
-        Long ukuran = file.getSize();
-
-        System.out.println("Nama File : {}" + namaFile);
-        System.out.println("Jenis File : {}" + jenisFile);
-        System.out.println("Nama Asli File : {}" + namaAsli);
-        System.out.println("Ukuran File : {}"+ ukuran);
-
-//        memisahkan extensi
-        String extension = "";
-
-        int i = namaAsli.lastIndexOf('.');
-        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-        if (i > p) {
-            extension = namaAsli.substring(i + 1);
-        }
-
-        String idFile = UUID.randomUUID().toString();
-        String lokasiUpload = uploadFolder + File.separator + user.getId();
-        LOGGER.debug("Lokasi upload : {}", lokasiUpload);
-        new File(lokasiUpload).mkdirs();
-        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-        file.transferTo(tujuan);
-        LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
-
-        String fileName= tujuan.getAbsolutePath();
-        Vector dataHolder=read(fileName);
-        saveToDatabase(dataHolder);
 
 
-
-        return "redirect:list";
-    }
-
-    public static Vector read(String fileName)    {
-        Vector cellVectorHolder = new Vector();
-        try{
-            FileInputStream myInput = new FileInputStream(fileName);
-            DataFormatter dataFormatter = new DataFormatter();
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(myInput);
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
-            Iterator rowIter = mySheet.rowIterator();
-            FormulaEvaluator evaluator = myWorkBook.getCreationHelper().createFormulaEvaluator();
-            while(rowIter.hasNext()){
-                HSSFRow myRow = (HSSFRow) rowIter.next();
-                Iterator cellIter = myRow.cellIterator();
-                //Vector cellStoreVector=new Vector();
-                List list = new ArrayList();
-                while(cellIter.hasNext()){
-                    HSSFCell myCell = (HSSFCell) cellIter.next();
-                    list.add(myCell);
-                }
-                cellVectorHolder.addElement(list);
-            }
-        }catch (Exception e){e.printStackTrace(); }
-        return cellVectorHolder;
-    }
-
-    public void saveToDatabase(Vector dataHolder) {
-        String id = "";
-        String idUser = "";
-        String password = "";
-
-        for (Iterator iterator = dataHolder.iterator(); iterator.hasNext(); ) {
-            List list = (List) iterator.next();
-            System.out.println(list);
-            id = list.get(0).toString();
-            idUser = list.get(4).toString();
-            password = list.get(2).toString();
-
-            try {
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Connection con = DriverManager.getConnection(urlDatabase, usernameDb, passwordDb);
-                System.out.println("connection made...");
-                PreparedStatement stmt = con.prepareStatement("INSERT INTO susah(column1,column2) VALUES(?,?)");
-                stmt.setString(1, id);
-                stmt.setString(2, idUser);
-                stmt.executeUpdate();
-
-                System.out.println("Data is inserted");
-                stmt.close();
-                con.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    @GetMapping("/nilai/excel")
-    public void downloadExcel (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+    //TUGAS
+    @GetMapping("/nilai/excelTugas")
+    public void downloadExcelTugas (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
 
         List<String> staticColumn1 = new ArrayList<>();
-        List<String> staticColumn2 = new ArrayList<>();
-        List<String> dynamicColumn = new ArrayList<>();
-        List<String> uts = new ArrayList<>();
-        List<String> uas = new ArrayList<>();
-        List<String> total = new ArrayList<>();
-        List<String> grade = new ArrayList<>();
 
         staticColumn1.add("No.   ");
-        staticColumn1.add("NIM             ");
-        staticColumn1.add("NAMA                                                   ");
+        staticColumn1.add("NIM    ");
+        staticColumn1.add("NAMA                                 ");
+        staticColumn1.add("NILAI ");
 
-        Jadwal jadwal = jadwalDao.findById(id).get();
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
-        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-
-        for (BobotTugas bt : bobotTugas){
-            dynamicColumn.add("Nilai " + bt.getNamaTugas());
-            dynamicColumn.add("Total " + bt.getNamaTugas());
-
-        }
-        uts.add("Total UTS");
-        uas.add(" Total UAS");
-        staticColumn2.add("Nilai UTS");
-        staticColumn2.add("Total UTS");
-        staticColumn2.add("Nilai UAS");
-        staticColumn2.add(" Total UAS");
-        staticColumn2.add("Total");
-        total.add("Total");
-        staticColumn2.add("Grade");
-
+        BobotTugas tugas = bobotTugasDao.findById(id).get();
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(tugas.getJadwal(),StatusRecord.AKTIF);
 
 
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -771,53 +654,50 @@ public class PenilaianController {
 
 
 
+        /*+---Input Gambar---+*/
+//        //FileInputStream obtains input bytes from the image file
+////        InputStream inputStream = logoTazkia.getInputStream();
+//        //Get the contents of an InputStream as a byte[].
+////        byte[] bytes = IOUtils.toByteArray(inputStream);
+//        //Adds a picture to the workbook
+////        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+//        //close the input stream
+////        inputStream.close();
+//
+//        //Returns an object that handles instantiating concrete classes
+//        CreationHelper helper = workbook.getCreationHelper();
+//
+//        //Create an anchor that is attached to the worksheet
+//        ClientAnchor anchor = helper.createClientAnchor();
+//
+//        //Creates the top-level drawing patriarch.
+//        Drawing drawing = sheet.createDrawingPatriarch();
+//
+//        //create an anchor with upper left cell _and_ bottom right cell
+//        anchor.setCol1(0); //Column a
+//        anchor.setRow1(0); //Row 1
+//        anchor.setCol2(1); //Column B
+//        anchor.setRow2(2); //Row 3
+//
+//        //Creates a picture
+////        Picture pict = drawing.createPicture(anchor, pictureIdx);
+//
+//        //Reset the image to the original size
+////        pict.resize();
+//
+//        //Create the Cell B3
+//        Cell cellimg = sheet.createRow(2).createCell(1);
+//
+//
+//        //set width to n character widths = count characters * 256
+//        int widthUnits = 10;
+//        sheet.setColumnWidth(1, widthUnits);
+//
+//        //set height to n points in twips = n * 20
+//        short heightUnits = 20;
+//        cellimg.getRow().setHeight(heightUnits);
 
-        //Input Gambar---
-        //FileInputStream obtains input bytes from the image file
-//        InputStream inputStream = logoTazkia.getInputStream();
-        //Get the contents of an InputStream as a byte[].
-//        byte[] bytes = IOUtils.toByteArray(inputStream);
-        //Adds a picture to the workbook
-//        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-        //close the input stream
-//        inputStream.close();
-
-        //Returns an object that handles instantiating concrete classes
-        CreationHelper helper = workbook.getCreationHelper();
-
-        //Create an anchor that is attached to the worksheet
-        ClientAnchor anchor = helper.createClientAnchor();
-
-        //Creates the top-level drawing patriarch.
-        Drawing drawing = sheet.createDrawingPatriarch();
-
-        //create an anchor with upper left cell _and_ bottom right cell
-        anchor.setCol1(0); //Column a
-        anchor.setRow1(0); //Row 1
-        anchor.setCol2(1); //Column B
-        anchor.setRow2(2); //Row 3
-
-        //Creates a picture
-//        Picture pict = drawing.createPicture(anchor, pictureIdx);
-
-        //Reset the image to the original size
-//        pict.resize();
-
-        //Create the Cell B3
-        Cell cellimg = sheet.createRow(2).createCell(1);
-
-
-        //set width to n character widths = count characters * 256
-        int widthUnits = 10;
-        sheet.setColumnWidth(1, widthUnits);
-
-        //set height to n points in twips = n * 20
-        short heightUnits = 20;
-        cellimg.getRow().setHeight(heightUnits);
-        //---
-
-
-
+        //---+
 
 
         Font headerFont = workbook.createFont();
@@ -825,49 +705,51 @@ public class PenilaianController {
         headerFont.setFontHeightInPoints((short) 12);
         headerFont.setColor(IndexedColors.BLACK.getIndex());
 
-
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
 
 
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
         sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
-        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2017/2018");
+        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
 
         int rowInfo = 5 ;
         Row rowi1 = sheet.createRow(rowInfo);
         rowi1.createCell(2).setCellValue("Subject :");
-        rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-        rowi1.createCell(5).setCellValue("Course :");
-        rowi1.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
-
+        rowi1.createCell(3).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        rowi1.createCell(4).setCellValue("Course :");
+        rowi1.createCell(5).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
 
 
         int rowInfo2 = 6 ;
         Row rowi2 = sheet.createRow(rowInfo2);
         rowi2.createCell(2).setCellValue("Day/date :");
-        rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
-        rowi2.createCell(5).setCellValue("Semester :");
-        rowi2.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getSemester());
+        rowi2.createCell(3).setCellValue(tugas.getJadwal().getHari().getNamaHari());
+        rowi2.createCell(4).setCellValue("Semester :");
+        rowi2.createCell(5).setCellValue(tugas.getJadwal().getMatakuliahKurikulum().getSemester().toString());
 
 
         int rowInfo3 = 7 ;
         Row rowi3 = sheet.createRow(rowInfo3);
         rowi3.createCell(2).setCellValue("Room No/Time :");
-        rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
-        rowi3.createCell(5).setCellValue("Lecturer :");
-        rowi3.createCell(6).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+        rowi3.createCell(3).setCellValue(tugas.getJadwal().getRuangan().getNamaRuangan());
+        rowi3.createCell(4).setCellValue("Lecturer :");
+        rowi3.createCell(5).setCellValue(tugas.getJadwal().getDosen().getKaryawan().getNamaKaryawan());
 
+        int rowInfo4 = 8 ;
+        Row rowi4 = sheet.createRow(rowInfo4);
+        rowi4.createCell(2).setCellValue("Komponen :");
+        rowi4.createCell(3).setCellValue("Tugas " + tugas.getNamaTugas());
+        rowi4.createCell(4).setCellValue("Bobot :");
+        rowi4.createCell(5).setCellValue(tugas.getBobot().toString());
 
-
-
-
-
-
-
-        Row headerRow = sheet.createRow(10);
-
-        Integer cellNum = 0;
+/**/
+        Row headerRow = sheet.createRow(11);
+        Integer cellNum = 2;
 
         for (String header : staticColumn1) {
             Cell cell = headerRow.createCell(cellNum);
@@ -877,28 +759,10 @@ public class PenilaianController {
             cellNum++;
         }
 
-        for (String header : dynamicColumn) {
-            Cell cell = headerRow.createCell(cellNum);
-            cell.setCellValue(header);
-            cell.setCellStyle(headerCellStyle);
-            sheet.autoSizeColumn(cellNum);
-            cellNum++;
-        }
 
-        for (String header : staticColumn2) {
-            Cell cell = headerRow.createCell(cellNum);
-            cell.setCellValue(header);
-            cell.setCellStyle(headerCellStyle);
-            sheet.autoSizeColumn(cellNum);
-            cellNum++;
-        }
-
-
-
-
-        int rowNum = 11 ;
+        int rowNum = 12 ;
         for (KrsDetail kd : krsDetail) {
-            int kolom = 0 ;
+            int kolom = 2 ;
 
             Row row = sheet.createRow(rowNum);
             row.createCell(kolom++).setCellValue(kolom);
@@ -906,78 +770,861 @@ public class PenilaianController {
             row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
 
 
-            for (BobotTugas bt : bobotTugas) {
-                row.createCell(kolom++); // buat ngisi nilai
-                Cell cellNilaiBobot = row.createCell(kolom);
-                cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom - 1]+(rowNum+1)
-                        +"*"+bt.getBobot().toPlainString()+"/"+new Integer(100)+"*"+kd.getJadwal().getBobotTugas()+"/"+new Integer(100));
-                kolom++;
-            }
-
-            for (String s : uts) {
-                row.createCell(kolom++);
-                Cell cellNilaiBobot = row.createCell(kolom);
-                cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom-1]+(rowNum+1)
-                        +"*"+kd.getJadwal().getBobotUts().toPlainString()+"/"+new Integer(100));
-                kolom++;
+            rowNum++;
+        }
 
 
-            }
-
-            for (String s : uas) {
-                row.createCell(kolom++);
-                Cell cellNilaiBobot = row.createCell(kolom);
-                cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom-1]+(rowNum+1)
-                        +"*"+kd.getJadwal().getBobotUas().toPlainString()+"/"+new Integer(100));
-                kolom++;
-
-            }
-
-            int totalColumn = bobotTugas.size()+2;
-            for (String s : total){
-                Cell cellNilaiBobot = row.createCell(kolom);
-                cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()]+(rowNum+1)+":"
-                        + ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()+totalColumn-1]+(rowNum+1)+")");
-                kolom++;
-            }
-
-            row.createCell(kolom++).setCellFormula("IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(85) + ",\"A\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(80) + ",\"A-\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(75) + ",\"B+\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(70) + ",\"B\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(65) + ",\"B-\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(60) + ",\"C+\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(55) + ",\"C\""
-                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(50) + ",\"D\""+",\"E\""+")"+")" +")"+")" +")"+")" +")"+")") ;
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "attachment; filename=PenilaianTugas.xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
 
 
 
-            for (int i = 4; i<sheet.getRow(10).getLastCellNum()-2; i+= 2){
 
-                Cell cellNilaiBobot = row.createCell(kolom);
-                cellNilaiBobot.setCellType(CellType.FORMULA);
-                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[i]+(rowNum+1)+")");
-                sheet.setColumnHidden(kolom,true);
-                kolom++;
-            }
+
+
+
+    //UTS
+    @GetMapping("/nilai/excelUTS")
+    public void downloadExcelUts (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+
+        List<String> staticColumn1 = new ArrayList<>();
+
+        staticColumn1.add("No.   ");
+        staticColumn1.add("NIM    ");
+        staticColumn1.add("NAMA                                 ");
+        staticColumn1.add("NILAI ");
+
+        Jadwal jadwal = jadwalDao.findById(id).get();
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("penilaian");
+        sheet.autoSizeColumn(9);
+
+
+
+        /*+---Input Gambar---+*/
+//        //FileInputStream obtains input bytes from the image file
+////        InputStream inputStream = logoTazkia.getInputStream();
+//        //Get the contents of an InputStream as a byte[].
+////        byte[] bytes = IOUtils.toByteArray(inputStream);
+//        //Adds a picture to the workbook
+////        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+//        //close the input stream
+////        inputStream.close();
+//
+//        //Returns an object that handles instantiating concrete classes
+//        CreationHelper helper = workbook.getCreationHelper();
+//
+//        //Create an anchor that is attached to the worksheet
+//        ClientAnchor anchor = helper.createClientAnchor();
+//
+//        //Creates the top-level drawing patriarch.
+//        Drawing drawing = sheet.createDrawingPatriarch();
+//
+//        //create an anchor with upper left cell _and_ bottom right cell
+//        anchor.setCol1(0); //Column a
+//        anchor.setRow1(0); //Row 1
+//        anchor.setCol2(1); //Column B
+//        anchor.setRow2(2); //Row 3
+//
+//        //Creates a picture
+////        Picture pict = drawing.createPicture(anchor, pictureIdx);
+//
+//        //Reset the image to the original size
+////        pict.resize();
+//
+//        //Create the Cell B3
+//        Cell cellimg = sheet.createRow(2).createCell(1);
+//
+//
+//        //set width to n character widths = count characters * 256
+//        int widthUnits = 10;
+//        sheet.setColumnWidth(1, widthUnits);
+//
+//        //set height to n points in twips = n * 20
+//        short heightUnits = 20;
+//        cellimg.getRow().setHeight(heightUnits);
+
+        //---+
+
+
+        Font headerFont = workbook.createFont();
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setBold(true);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+        sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
+        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
+
+        int rowInfo = 5 ;
+        Row rowi1 = sheet.createRow(rowInfo);
+        rowi1.createCell(2).setCellValue("Subject :");
+        rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        rowi1.createCell(4).setCellValue("Course :");
+        rowi1.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+
+
+        int rowInfo2 = 6 ;
+        Row rowi2 = sheet.createRow(rowInfo2);
+        rowi2.createCell(2).setCellValue("Day/date :");
+        rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
+        rowi2.createCell(4).setCellValue("Semester :");
+        rowi2.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getSemester().toString());
+
+
+        int rowInfo3 = 7 ;
+        Row rowi3 = sheet.createRow(rowInfo3);
+        rowi3.createCell(2).setCellValue("Room No/Time :");
+        rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
+        rowi3.createCell(4).setCellValue("Lecturer :");
+        rowi3.createCell(5).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+
+        int rowInfo4 = 8 ;
+        Row rowi4 = sheet.createRow(rowInfo4);
+        rowi4.createCell(2).setCellValue("Komponen :");
+        rowi4.createCell(3).setCellValue("UTS");
+        rowi4.createCell(4).setCellValue("Bobot :");
+        rowi4.createCell(5).setCellValue(jadwal.getBobotUts().toString());
+
+/**/
+        Row headerRow = sheet.createRow(11);
+        Integer cellNum = 2;
+
+        for (String header : staticColumn1) {
+            Cell cell = headerRow.createCell(cellNum);
+            cell.setCellValue(header);
+            sheet.autoSizeColumn(cellNum);
+            cell.setCellStyle(headerCellStyle);
+            cellNum++;
+        }
+
+
+        int rowNum = 12 ;
+        for (KrsDetail kd : krsDetail) {
+            int kolom = 2 ;
+
+            Row row = sheet.createRow(rowNum);
+            row.createCell(kolom++).setCellValue(kolom);
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
 
 
             rowNum++;
         }
 
 
-
-
-
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment; filename=Penilaian.xlsx");
+        response.setHeader("Content-disposition", "attachment; filename=PenilaianUTS.xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+
+    //UAS
+    @GetMapping("/nilai/excelUAS")
+    public void downloadExcelUas (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+
+        List<String> staticColumn1 = new ArrayList<>();
+
+        staticColumn1.add("No.   ");
+        staticColumn1.add("NIM    ");
+        staticColumn1.add("NAMA                                 ");
+        staticColumn1.add("NILAI ");
+
+        Jadwal jadwal = jadwalDao.findById(id).get();
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
+        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("penilaian");
+        sheet.autoSizeColumn(9);
+
+
+
+        /*+---Input Gambar---+*/
+//        //FileInputStream obtains input bytes from the image file
+////        InputStream inputStream = logoTazkia.getInputStream();
+//        //Get the contents of an InputStream as a byte[].
+////        byte[] bytes = IOUtils.toByteArray(inputStream);
+//        //Adds a picture to the workbook
+////        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+//        //close the input stream
+////        inputStream.close();
+//
+//        //Returns an object that handles instantiating concrete classes
+//        CreationHelper helper = workbook.getCreationHelper();
+//
+//        //Create an anchor that is attached to the worksheet
+//        ClientAnchor anchor = helper.createClientAnchor();
+//
+//        //Creates the top-level drawing patriarch.
+//        Drawing drawing = sheet.createDrawingPatriarch();
+//
+//        //create an anchor with upper left cell _and_ bottom right cell
+//        anchor.setCol1(0); //Column a
+//        anchor.setRow1(0); //Row 1
+//        anchor.setCol2(1); //Column B
+//        anchor.setRow2(2); //Row 3
+//
+//        //Creates a picture
+////        Picture pict = drawing.createPicture(anchor, pictureIdx);
+//
+//        //Reset the image to the original size
+////        pict.resize();
+//
+//        //Create the Cell B3
+//        Cell cellimg = sheet.createRow(2).createCell(1);
+//
+//
+//        //set width to n character widths = count characters * 256
+//        int widthUnits = 10;
+//        sheet.setColumnWidth(1, widthUnits);
+//
+//        //set height to n points in twips = n * 20
+//        short heightUnits = 20;
+//        cellimg.getRow().setHeight(heightUnits);
+
+        //---+
+
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setBorderTop(BorderStyle.THIN);
+        headerCellStyle.setBorderBottom(BorderStyle.THIN);
+        headerCellStyle.setBorderLeft(BorderStyle.THIN);
+        headerCellStyle.setBorderRight(BorderStyle.THIN);
+
+
+        sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
+        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
+
+        int rowInfo = 5 ;
+        Row rowi1 = sheet.createRow(rowInfo);
+        rowi1.createCell(2).setCellValue("Subject :");
+        rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        rowi1.createCell(4).setCellValue("Course :");
+        rowi1.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+
+
+        int rowInfo2 = 6 ;
+        Row rowi2 = sheet.createRow(rowInfo2);
+        rowi2.createCell(2).setCellValue("Day/date :");
+        rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
+        rowi2.createCell(4).setCellValue("Semester :");
+        rowi2.createCell(5).setCellValue(jadwal.getMatakuliahKurikulum().getSemester().toString());
+
+
+        int rowInfo3 = 7 ;
+        Row rowi3 = sheet.createRow(rowInfo3);
+        rowi3.createCell(2).setCellValue("Room No/Time :");
+        rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
+        rowi3.createCell(4).setCellValue("Lecturer :");
+        rowi3.createCell(5).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+
+        int rowInfo4 = 8 ;
+        Row rowi4 = sheet.createRow(rowInfo4);
+        rowi4.createCell(2).setCellValue("Komponen :");
+        rowi4.createCell(3).setCellValue("UAS");
+        rowi4.createCell(4).setCellValue("Bobot :");
+        rowi4.createCell(5).setCellValue(jadwal.getBobotUas().toString());
+
+/**/
+        Row headerRow = sheet.createRow(11);
+        Integer cellNum = 2;
+
+        for (String header : staticColumn1) {
+            Cell cell = headerRow.createCell(cellNum);
+            cell.setCellStyle(headerCellStyle);
+            cell.setCellValue(header);
+            sheet.autoSizeColumn(cellNum);
+            cellNum++;
+        }
+
+
+        int rowNum = 12 ;
+        for (KrsDetail kd : krsDetail) {
+            Row row = sheet.createRow(rowNum);
+            int kolom = 2 ;
+
+            row.createCell(kolom++).setCellValue(kolom);
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+
+
+            rowNum++;
+        }
+
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "attachment; filename=PenilaianUAS.xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
+
+
+    //post.excel.Tugas
+    @PostMapping("/upload/formTugas")
+    public String prosesFormUploadTugas(MultipartFile file, @RequestParam(name = "jadwal",value = "jadwal") BobotTugas bobotTugas) {
+
+        LOGGER.debug("Nama file : {}", file.getOriginalFilename());
+        LOGGER.debug("Ukuran file : {} bytes", file.getSize());
+
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+
+            int row = 12;
+            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
+            int jmlMhs = krsDetailAt.size();
+            for (int i = 0; i < jmlMhs;i++){
+                Row baris = sheetPertama.getRow(row + i);
+
+                String nim = baris.getCell(3).getStringCellValue();
+                Cell nilai = baris.getCell(5 );
+                if (nilai != null) {
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            bobotTugas.getJadwal(), StatusRecord.AKTIF);
+                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF, bobotTugas,
+                            krsDetail);
+                    BigDecimal nilaiAkhir = new BigDecimal(nilai.getNumericCellValue()).multiply(bobotTugas.getBobot())
+                            .divide(new BigDecimal(100));
+
+
+
+                    nilaiTugas.setNilai(new BigDecimal(nilai.getNumericCellValue()));
+                    nilaiTugas.setNilaiAkhir(nilaiAkhir);
+
+                    nilaiTugasDao.save(nilaiTugas);
+                    List<NilaiTugas> nilaiAkhirnya = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord.AKTIF, krsDetail,StatusRecord.AKTIF);
+
+/*sum semua tugas*/ BigDecimal nilTug = nilaiAkhirnya.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    krsDetail.setNilaiTugas(nilTug);
+                    krsDetailDao.save(krsDetail);
+                }else {
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            bobotTugas.getJadwal(), StatusRecord.AKTIF);
+                    NilaiTugas nilaiTugas = nilaiTugasDao.findByStatusAndBobotTugasAndKrsDetail(StatusRecord.AKTIF, bobotTugas,
+                            krsDetail);
+
+                    nilaiTugas.setNilai(BigDecimal.ZERO);
+                    nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
+
+                    nilaiTugasDao.save(nilaiTugas);
+
+                }
+
+
+            }
+
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        return "redirect:/penilaian/list";
+
+    }
+
+    //post.excel.UTS
+    @PostMapping("/upload/formUTS")
+    public String prosesFormUploadUTS(MultipartFile file, @RequestParam Jadwal jadwal) {
+
+        LOGGER.debug("Nama file : {}", file.getOriginalFilename());
+        LOGGER.debug("Ukuran file : {} bytes", file.getSize());
+
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+            int row = 12;
+            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+            int jmlMhs = krsDetailAt.size();
+            for (int i = 0; i < jmlMhs;i++) {
+                Row baris = sheetPertama.getRow(row + i);
+
+                String nim = baris.getCell(3).getStringCellValue();
+                Cell nilai = baris.getCell(5);
+
+                if(nilai != null) {
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            jadwal, StatusRecord.AKTIF);
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+                    krsDetail.setNilaiUts(new BigDecimal(nilai.getNumericCellValue()));
+                    krsDetailDao.save(krsDetail);
+
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UTS {} tidak ditemukan", nim, jadwal.getStatusUts());
+                        return "redirect:/penilaian/list";
+                    }
+
+                }else {
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            jadwal, StatusRecord.AKTIF);
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+                    krsDetail.setNilaiUts(BigDecimal.ZERO);
+                    krsDetailDao.save(krsDetail);
+
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UTS {} tidak ditemukan", nim, jadwal.getStatusUts());
+                        return "redirect:/penilaian/list";
+                    }
+
+                }
+
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        return "redirect:/penilaian/list";
+
+    }
+
+    //post.excel.UAS
+    @PostMapping("/upload/formUAS")
+    public String prosesFormUploadUAS(MultipartFile file, @RequestParam Jadwal jadwal) {
+
+        LOGGER.debug("Nama file : {}", file.getOriginalFilename());
+        LOGGER.debug("Ukuran file : {} bytes", file.getSize());
+
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+            int row = 12;
+            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+            int jmlMhs = krsDetailAt.size();
+            for (int i = 0; i < jmlMhs;i++) {
+                Row baris = sheetPertama.getRow(row + i);
+
+                Cell nilai = baris.getCell(5);
+                String nim = baris.getCell(3).getStringCellValue();
+
+                if (nilai != null) {
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            jadwal, StatusRecord.AKTIF);
+                    krsDetail.setNilaiUas(new BigDecimal(nilai.getNumericCellValue()));
+                    krsDetailDao.save(krsDetail);
+
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UAS {} tidak ditemukan", nim, jadwal.getStatusUas());
+                        return "redirect:/penilaian/list";
+                    }
+                }else {
+                    LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
+
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
+                            jadwal, StatusRecord.AKTIF);
+                    krsDetail.setNilaiUas(BigDecimal.ZERO);
+                    krsDetailDao.save(krsDetail);
+
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UAS {} tidak ditemukan", nim, jadwal.getStatusUas());
+                        return "redirect:/penilaian/list";
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        return "redirect:/penilaian/list";
+
+    }
+
+
+
+    @GetMapping("/penilaian/uploadnilai")
+    public void uploadNilaiForm(Model model,@RequestParam Jadwal jadwal){
+        List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("listTugas",listTugas);
+
+
+    }
+
+
+
+
+
+//    @PostMapping("/penilaian/upload")
+//    public String postTest(MultipartFile file,Authentication authentication)throws Exception{
+//        User user = currentUserService.currentUser(authentication);
+//
+//        String namaFile = file.getName();
+//        String jenisFile = file.getContentType();
+//        String namaAsli = file.getOriginalFilename();
+//        Long ukuran = file.getSize();
+//
+//        System.out.println("Nama File : {}" + namaFile);
+//        System.out.println("Jenis File : {}" + jenisFile);
+//        System.out.println("Nama Asli File : {}" + namaAsli);
+//        System.out.println("Ukuran File : {}"+ ukuran);
+//
+////        memisahkan extensi
+//        String extension = "";
+//
+//        int i = namaAsli.lastIndexOf('.');
+//        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+//
+//        if (i > p) {
+//            extension = namaAsli.substring(i + 1);
+//        }
+//
+//        String idFile = UUID.randomUUID().toString();
+//        String lokasiUpload = uploadFolder + File.separator + user.getId();
+//        LOGGER.debug("Lokasi upload : {}", lokasiUpload);
+//        new File(lokasiUpload).mkdirs();
+//        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+//        file.transferTo(tujuan);
+//        LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+//
+//        String fileName= tujuan.getAbsolutePath();
+//        Vector dataHolder=read(fileName);
+//        saveToDatabase(dataHolder);
+//
+//
+//
+//        return "redirect:list";
+//    }
+//
+//    public static Vector read(String fileName)    {
+//        Vector cellVectorHolder = new Vector();
+//        try{
+//            FileInputStream myInput = new FileInputStream(fileName);
+//            DataFormatter dataFormatter = new DataFormatter();
+//            HSSFWorkbook myWorkBook = new HSSFWorkbook(myInput);
+//            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
+//            Iterator rowIter = mySheet.rowIterator();
+//            FormulaEvaluator evaluator = myWorkBook.getCreationHelper().createFormulaEvaluator();
+//            while(rowIter.hasNext()){
+//                HSSFRow myRow = (HSSFRow) rowIter.next();
+//                Iterator cellIter = myRow.cellIterator();
+//                //Vector cellStoreVector=new Vector();
+//                List list = new ArrayList();
+//                while(cellIter.hasNext()){
+//                    HSSFCell myCell = (HSSFCell) cellIter.next();
+//                    list.add(myCell);
+//                }
+//                cellVectorHolder.addElement(list);
+//            }
+//        }catch (Exception e){e.printStackTrace(); }
+//        return cellVectorHolder;
+//    }
+//
+//    public void saveToDatabase(Vector dataHolder) {
+//        String id = "";
+//        String idUser = "";
+//        String password = "";
+//
+//        for (Iterator iterator = dataHolder.iterator(); iterator.hasNext(); ) {
+//            List list = (List) iterator.next();
+//            System.out.println(list);
+//            id = list.get(0).toString();
+//            idUser = list.get(4).toString();
+//            password = list.get(2).toString();
+//
+//            try {
+//                Class.forName("com.mysql.jdbc.Driver").newInstance();
+//                Connection con = DriverManager.getConnection(urlDatabase, usernameDb, passwordDb);
+//                System.out.println("connection made...");
+//                PreparedStatement stmt = con.prepareStatement("INSERT INTO susah(column1,column2) VALUES(?,?)");
+//                stmt.setString(1, id);
+//                stmt.setString(2, idUser);
+//                stmt.executeUpdate();
+//
+//                System.out.println("Data is inserted");
+//                stmt.close();
+//                con.close();
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            } catch (InstantiationException e) {
+//                e.printStackTrace();
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+
+//    @GetMapping("/nilai/excel")
+//    public void downloadExcel (@RequestParam(required = false) String id, HttpServletResponse response) throws IOException {
+//
+//        List<String> staticColumn1 = new ArrayList<>();
+//        List<String> staticColumn2 = new ArrayList<>();
+//        List<String> dynamicColumn = new ArrayList<>();
+//        List<String> uts = new ArrayList<>();
+//        List<String> uas = new ArrayList<>();
+//        List<String> total = new ArrayList<>();
+//        List<String> grade = new ArrayList<>();
+//
+//        staticColumn1.add("No.   ");
+//        staticColumn1.add("NIM             ");
+//        staticColumn1.add("NAMA                                                   ");
+//
+//        Jadwal jadwal = jadwalDao.findById(id).get();
+//        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
+//        List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
+//
+//        for (BobotTugas bt : bobotTugas){
+//            dynamicColumn.add("Nilai " + bt.getNamaTugas());
+//            dynamicColumn.add("Total " + bt.getNamaTugas());
+//
+//        }
+//        uts.add("Total UTS");
+//        uas.add(" Total UAS");
+//        staticColumn2.add("Nilai UTS");
+//        staticColumn2.add("Total UTS");
+//        staticColumn2.add("Nilai UAS");
+//        staticColumn2.add(" Total UAS");
+//        staticColumn2.add("Total");
+//        total.add("Total");
+//        staticColumn2.add("Grade");
+//
+//
+//
+//        HSSFWorkbook workbook = new HSSFWorkbook();
+//        HSSFSheet sheet = workbook.createSheet("penilaian");
+//        sheet.autoSizeColumn(9);
+//
+//
+//
+//
+//        //Input Gambar---
+//        //FileInputStream obtains input bytes from the image file
+////        InputStream inputStream = logoTazkia.getInputStream();
+//        //Get the contents of an InputStream as a byte[].
+////        byte[] bytes = IOUtils.toByteArray(inputStream);
+//        //Adds a picture to the workbook
+////        int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+//        //close the input stream
+////        inputStream.close();
+//
+//        //Returns an object that handles instantiating concrete classes
+//        CreationHelper helper = workbook.getCreationHelper();
+//
+//        //Create an anchor that is attached to the worksheet
+//        ClientAnchor anchor = helper.createClientAnchor();
+//
+//        //Creates the top-level drawing patriarch.
+//        Drawing drawing = sheet.createDrawingPatriarch();
+//
+//        //create an anchor with upper left cell _and_ bottom right cell
+//        anchor.setCol1(0); //Column a
+//        anchor.setRow1(0); //Row 1
+//        anchor.setCol2(1); //Column B
+//        anchor.setRow2(2); //Row 3
+//
+//        //Creates a picture
+////        Picture pict = drawing.createPicture(anchor, pictureIdx);
+//
+//        //Reset the image to the original size
+////        pict.resize();
+//
+//        //Create the Cell B3
+//        Cell cellimg = sheet.createRow(2).createCell(1);
+//
+//
+//        //set width to n character widths = count characters * 256
+//        int widthUnits = 10;
+//        sheet.setColumnWidth(1, widthUnits);
+//
+//        //set height to n points in twips = n * 20
+//        short heightUnits = 20;
+//        cellimg.getRow().setHeight(heightUnits);
+//        //---
+//
+//
+//
+//
+//
+//        Font headerFont = workbook.createFont();
+//        headerFont.setBold(true);
+//        headerFont.setFontHeightInPoints((short) 12);
+//        headerFont.setColor(IndexedColors.BLACK.getIndex());
+//
+//
+//        CellStyle headerCellStyle = workbook.createCellStyle();
+//        headerCellStyle.setFont(headerFont);
+//
+//
+//        sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
+//        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
+//        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2017/2018");
+//
+//        int rowInfo = 5 ;
+//        Row rowi1 = sheet.createRow(rowInfo);
+//        rowi1.createCell(2).setCellValue("Subject :");
+//        rowi1.createCell(3).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+//        rowi1.createCell(5).setCellValue("Course :");
+//        rowi1.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+//
+//
+//
+//        int rowInfo2 = 6 ;
+//        Row rowi2 = sheet.createRow(rowInfo2);
+//        rowi2.createCell(2).setCellValue("Day/date :");
+//        rowi2.createCell(3).setCellValue(jadwal.getHari().getNamaHari());
+//        rowi2.createCell(5).setCellValue("Semester :");
+//        rowi2.createCell(6).setCellValue(jadwal.getMatakuliahKurikulum().getSemester());
+//
+//
+//        int rowInfo3 = 7 ;
+//        Row rowi3 = sheet.createRow(rowInfo3);
+//        rowi3.createCell(2).setCellValue("Room No/Time :");
+//        rowi3.createCell(3).setCellValue(jadwal.getRuangan().getNamaRuangan());
+//        rowi3.createCell(5).setCellValue("Lecturer :");
+//        rowi3.createCell(6).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+//
+//
+//
+//
+//
+//
+//
+//
+//        Row headerRow = sheet.createRow(10);
+//
+//        Integer cellNum = 0;
+//
+//        for (String header : staticColumn1) {
+//            Cell cell = headerRow.createCell(cellNum);
+//            cell.setCellValue(header);
+//            cell.setCellStyle(headerCellStyle);
+//            sheet.autoSizeColumn(cellNum);
+//            cellNum++;
+//        }
+//
+//        for (String header : dynamicColumn) {
+//            Cell cell = headerRow.createCell(cellNum);
+//            cell.setCellValue(header);
+//            cell.setCellStyle(headerCellStyle);
+//            sheet.autoSizeColumn(cellNum);
+//            cellNum++;
+//        }
+//
+//        for (String header : staticColumn2) {
+//            Cell cell = headerRow.createCell(cellNum);
+//            cell.setCellValue(header);
+//            cell.setCellStyle(headerCellStyle);
+//            sheet.autoSizeColumn(cellNum);
+//            cellNum++;
+//        }
+//
+//
+//
+//
+//        int rowNum = 11 ;
+//        for (KrsDetail kd : krsDetail) {
+//            int kolom = 0 ;
+//
+//            Row row = sheet.createRow(rowNum);
+//            row.createCell(kolom++).setCellValue(kolom);
+//            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+//            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+//
+//
+//            for (BobotTugas bt : bobotTugas) {
+//                row.createCell(kolom++); // buat ngisi nilai
+//                Cell cellNilaiBobot = row.createCell(kolom);
+//                cellNilaiBobot.setCellType(CellType.FORMULA);
+//                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom - 1]+(rowNum+1)
+//                        +"*"+bt.getBobot().toPlainString()+"/"+new Integer(100)+"*"+kd.getJadwal().getBobotTugas()+"/"+new Integer(100));
+//                kolom++;
+//            }
+//
+//            for (String s : uts) {
+//                row.createCell(kolom++);
+//                Cell cellNilaiBobot = row.createCell(kolom);
+//                cellNilaiBobot.setCellType(CellType.FORMULA);
+//                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom-1]+(rowNum+1)
+//                        +"*"+kd.getJadwal().getBobotUts().toPlainString()+"/"+new Integer(100));
+//                kolom++;
+//
+//
+//            }
+//
+//            for (String s : uas) {
+//                row.createCell(kolom++);
+//                Cell cellNilaiBobot = row.createCell(kolom);
+//                cellNilaiBobot.setCellType(CellType.FORMULA);
+//                cellNilaiBobot.setCellFormula(ExcelFileConstants.COLUMN_NAMES[kolom-1]+(rowNum+1)
+//                        +"*"+kd.getJadwal().getBobotUas().toPlainString()+"/"+new Integer(100));
+//                kolom++;
+//
+//            }
+//
+//            int totalColumn = bobotTugas.size()+2;
+//            for (String s : total){
+//                Cell cellNilaiBobot = row.createCell(kolom);
+//                cellNilaiBobot.setCellType(CellType.FORMULA);
+//                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()]+(rowNum+1)+":"
+//                        + ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()+totalColumn-1]+(rowNum+1)+")");
+//                kolom++;
+//            }
+//
+//            row.createCell(kolom++).setCellFormula("IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(85) + ",\"A\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(80) + ",\"A-\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(75) + ",\"B+\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(70) + ",\"B\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(65) + ",\"B-\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(60) + ",\"C+\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(55) + ",\"C\""
+//                    + ",IF("+ExcelFileConstants.COLUMN_NAMES[sheet.getRow(10).getLastCellNum()-2]+(rowNum+1)+">="+new Integer(50) + ",\"D\""+",\"E\""+")"+")" +")"+")" +")"+")" +")"+")") ;
+//
+//
+//
+//            for (int i = 4; i<sheet.getRow(10).getLastCellNum()-2; i+= 2){
+//
+//                Cell cellNilaiBobot = row.createCell(kolom);
+//                cellNilaiBobot.setCellType(CellType.FORMULA);
+//                cellNilaiBobot.setCellFormula("SUM("+ExcelFileConstants.COLUMN_NAMES[i]+(rowNum+1)+")");
+//                sheet.setColumnHidden(kolom,true);
+//                kolom++;
+//            }
+//
+//
+//            rowNum++;
+//        }
+//
+//
+//
+//
+//
+//        response.setContentType("application/vnd.ms-excel");
+//        response.setHeader("Content-disposition", "attachment; filename=Penilaian.xlsx");
+//        workbook.write(response.getOutputStream());
+//        workbook.close();
+//    }
 
 //    @PostMapping("/upload/assesment")
 //    public String processFormUpload(@RequestParam(required = false) Boolean pakaiHeader,

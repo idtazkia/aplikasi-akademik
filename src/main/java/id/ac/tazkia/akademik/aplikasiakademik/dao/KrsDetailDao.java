@@ -64,4 +64,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     @Query("select kd.id from KrsDetail kd where kd.mahasiswa.id = :id and kd.status = :status and kd.matakuliahKurikulum.matakuliah.namaMatakuliah like %:nama% and kd.krs.tahunAkademik = :tahun")
     String idKrsDetail(@Param("id")String id,@Param("status")StatusRecord statusRecord,@Param("nama")String nama,@Param("tahun")TahunAkademik tahunAkademik);
 
+    KrsDetail findByMahasiswaAndJadwalAndStatus(Mahasiswa mahasiswa, Jadwal jadwal, StatusRecord statusRecord);
+
 }
