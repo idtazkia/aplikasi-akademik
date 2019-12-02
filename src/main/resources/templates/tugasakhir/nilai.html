@@ -70,16 +70,32 @@
 </head>
 <body>
 <section layout:fragment="main" class="container">
-    <div class="row" style="padding: 15px;">
+    <div class="row col-md-12" style="padding: 15px;">
         <div class="col-md-6 col-xs-12">
             <div class="card">
                 <div class="card-header">
-                    <h5><b>Upload Nilai</b></h5>
+                    <h5><b>Upload Score</b></h5>
                 </div>
                 <form th:action="@{/tugasakhir/nilai}" method="post" enctype="multipart/form-data">
                     <input type="file" name="file" style="margin-left: 5px; margin-top: 10px;">
                     <button type="submit" class="btn" style="margin: 5px">Upload</button>
                 </form>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xs-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><b>Example File Upload</b></h5>
+                </div>
+                <form th:action="@{/contoh/uploadNilai}" method="get">
+                    <button class="btn-info">Download File Upload</button>
+                </form>
+                <p>
+                    <small>
+
+                    </small>
+                </p>
             </div>
         </div>
     </div>

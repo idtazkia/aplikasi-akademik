@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +62,9 @@ public class TugasAkhirController {
 
     @Value("${upload.note}")
     private String uploadFolder;
+
+    @Value("classpath:sample/example.xlsx")
+    private Resource example;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -388,6 +394,14 @@ public class TugasAkhirController {
         attributes.addFlashAttribute("mahasiswa", mahasiswas);
         return "redirect:/tugasakhir/nilai?list=true";
 
+    }
+
+    @GetMapping("/contoh/uploadNilai")
+    public void downloadContohFileTagihan(HttpServletResponse response) throws Exception {
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Example-File.xlsx");
+        FileCopyUtils.copy(example.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
     }
 
 
