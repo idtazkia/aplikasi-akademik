@@ -1090,7 +1090,7 @@ public class PenilaianController {
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
         try {
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Workbook workbook = new HSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
 
 
@@ -1157,7 +1157,7 @@ public class PenilaianController {
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
         try {
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Workbook workbook = new HSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
@@ -1212,7 +1212,7 @@ public class PenilaianController {
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
         try {
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Workbook workbook = new HSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
