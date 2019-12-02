@@ -1,16 +1,11 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
-import id.ac.tazkia.akademik.aplikasiakademik.constants.ExcelFileConstants;
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dao.NilaiTugasDao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,15 +23,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class PenilaianController {
@@ -648,8 +638,9 @@ public class PenilaianController {
         List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(tugas.getJadwal(),StatusRecord.AKTIF);
 
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("penilaian");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("penilaian");
+        Workbook wb = WorkbookFactory.create(new File("MyExcel.xls"));
         sheet.autoSizeColumn(9);
 
 
@@ -800,8 +791,8 @@ public class PenilaianController {
         Jadwal jadwal = jadwalDao.findById(id).get();
         List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("penilaian");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("penilaian");
         sheet.autoSizeColumn(9);
 
 
@@ -948,8 +939,8 @@ public class PenilaianController {
         List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
         List<BobotTugas> bobotTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("penilaian");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("penilaian");
         sheet.autoSizeColumn(9);
 
 
