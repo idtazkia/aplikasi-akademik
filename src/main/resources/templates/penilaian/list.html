@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Penilaian</title>
 </head>
 <body>
 
@@ -93,16 +93,9 @@
                                         <button type="submit" class="fa fa-edit btn btn-primary"> Edit</button>
                                     </a>
                                 </td>
-
                                 <td>
-                                    <a class="btn btn-info btn-sm" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>
-                                </td>
-
-                                <td>
-                                    <!--<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">-->
-                                        <!--<input type="file" name="file">-->
-                                        <!--<button type="submit">pusing</button>-->
-                                    <!--</form>-->
+                                    <a class="btn btn-success btn-sm" th:href="@{/penilaian/uploadnilai
+                                    (jadwal = ${jadwal.id})}">Upload Nilai</a>
                                 </td>
                             </tr>
                         </tbody>
