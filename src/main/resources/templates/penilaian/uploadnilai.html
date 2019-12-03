@@ -34,8 +34,8 @@
                                     <td>
                                         <form th:action="@{/upload/formTugas (jadwal = ${data.id})}"
                                               method="post" enctype="multipart/form-data">
-                                            <input class="btn btn-success btn-sm" type="file" name="file">
-                                            <button class="btn btn-success btn-sm" type="submit">Upload Nilai</button>
+                                            <input class="btn btn-success btn-sm" type="file" name="file" id="uploadTugasFile">
+                                            <button class="btn btn-success btn-sm" type="submit" id="uploadTugas">Upload Nilai</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -52,8 +52,8 @@
                                         <form th:action="@{/upload/formUTS (jadwal = ${jadwal.id})}"
                                               method="post" enctype="multipart/form-data">
 
-                                            <input class="btn btn-success btn-sm" type="file" name="file">
-                                            <button class="btn btn-success btn-sm" type="submit">Upload Nilai</button>
+                                            <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUTSFile">
+                                            <button class="btn btn-success btn-sm" type="submit" id="uploadUTS">Upload Nilai</button>
 
                                         </form>
                                     </td>
@@ -71,8 +71,8 @@
                                         <form th:action="@{/upload/formUAS (jadwal = ${jadwal.id})}"
                                               method="post" enctype="multipart/form-data">
 
-                                            <input class="btn btn-success btn-sm" type="file" name="file">
-                                            <button class="btn btn-success btn-sm" type="submit">Upload Nilai</button>
+                                            <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUASFile">
+                                            <button class="btn btn-success btn-sm" type="submit" id="uploadUAS">Upload Nilai</button>
 
                                         </form>
                                     </td>
@@ -108,4 +108,20 @@
             showConfirmButton: false
         })
     });
+
+    $('#uploadTugas').bind("click",function()
+    { if(!$('#uploadTugasFile').val()){
+        alert("Please select the file first!");
+        return false;} });
+
+    $('#uploadUTS').bind("click",function()
+    { if(!$('#uploadUTSFile').val()){
+        alert("Please select the file first!");
+        return false;} });
+
+    $('#uploadUAS').bind("click",function()
+    { if(!$('#uploadUASFile').val()){
+        alert("Please select the file first!");
+        return false;} });
+
 </script>
