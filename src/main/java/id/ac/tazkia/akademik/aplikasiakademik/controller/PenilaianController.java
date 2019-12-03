@@ -640,7 +640,6 @@ public class PenilaianController {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("penilaian");
-        Workbook wb = WorkbookFactory.create(new File("MyExcel.xls"));
         sheet.autoSizeColumn(9);
 
 
@@ -1136,7 +1135,7 @@ public class PenilaianController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        return "redirect:/penilaian/list";
+        return "redirect:/penilaian/uploadnilai?jadwal=" + bobotTugas.getJadwal().getId();
 
     }
 
@@ -1191,7 +1190,7 @@ public class PenilaianController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        return "redirect:/penilaian/list";
+        return "redirect:/penilaian/uploadnilai?jadwal=" + jadwal.getId();
 
     }
 
@@ -1245,7 +1244,7 @@ public class PenilaianController {
             LOGGER.error(e.getMessage(), e);
         }
 
-        return "redirect:/penilaian/list";
+        return "redirect:/penilaian/uploadnilai?jadwal=" + jadwal.getId();
 
     }
 
