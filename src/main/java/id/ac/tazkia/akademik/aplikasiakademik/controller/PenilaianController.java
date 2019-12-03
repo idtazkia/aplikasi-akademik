@@ -452,7 +452,7 @@ public class PenilaianController {
                     nilaiTugas.setNilaiAkhir(nilai);
                     nilaiTugas.setNilai(new BigDecimal(in.getNilai()));
                     nilaiTugasDao.save(nilaiTugas);
-                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetail(StatusRecord.AKTIF, krsDetail);
+                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord.AKTIF, krsDetail,StatusRecord.AKTIF);
                     int presensiMahasiswa = presensiMahasiswaDao.findByKrsDetailAndStatusAndStatusPresensi(krsDetail,StatusRecord.AKTIF,StatusPresensi.HADIR).size();
                     int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
                     int nilaiPresensi = presensiMahasiswa / presensiDosen * 100;
@@ -531,7 +531,7 @@ public class PenilaianController {
                     validasi.setNilaiAkhir(nilai);
                     validasi.setNilai(new BigDecimal(in.getNilai()));
                     nilaiTugasDao.save(validasi);
-                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetail(StatusRecord.AKTIF, krsDetail);
+                    List<NilaiTugas> nilaiAkhir = nilaiTugasDao.findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord.AKTIF, krsDetail,StatusRecord.AKTIF);
                     BigDecimal sum = nilaiAkhir.stream()
                             .map(NilaiTugas::getNilaiAkhir)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
