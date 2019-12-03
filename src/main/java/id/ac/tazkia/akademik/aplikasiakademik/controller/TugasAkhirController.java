@@ -351,6 +351,8 @@ public class TugasAkhirController {
             for (int i = 0; i <= terakhir; i++) {
                 System.out.println(i);
                 Row baris = sheetPertama.getRow(row + i);
+
+                if (baris.getCell(1) != null) {
                     Cell nim = baris.getCell(1);
                     nim.setCellType(CellType.STRING);
 
@@ -358,32 +360,34 @@ public class TugasAkhirController {
                     nilai.setCellType(CellType.NUMERIC);
 
                     String mahasiswa = mahasiswaDao.cariIdMahasiswa(nim.getStringCellValue());
-                    System.out.println("nim  :  " + nim + "  nilai  "  + nilai);
+                    System.out.println("nim  :  " + nim + "  nilai  " + nilai);
 
 
-                String krsDetail = krsDetailDao.idKrsDetail(mahasiswa,StatusRecord.AKTIF,"Magang",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                    String krsDetail = krsDetailDao.idKrsDetail(mahasiswa, StatusRecord.AKTIF, "Magang", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
 
-                if (krsDetail == null){
-                    System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
-                    Mahasiswa m = mahasiswaDao.findByNim(nim.getStringCellValue());
-                    mahasiswas.add(m);
+                    if (krsDetail == null || baris.getCell(1) != null) {
+                        System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
+                        Mahasiswa m = mahasiswaDao.findByNim(nim.getStringCellValue());
+                        mahasiswas.add(m);
+                    }
+
+                    if (krsDetail != null) {
+                        System.out.println("nim  :  " + nim + "  Krs Detail  " + krsDetail + "   nilai  :  " + nilai);
+                        KrsDetail kd = krsDetailDao.findById(krsDetail).get();
+                        kd.setNilaiAkhir(new BigDecimal(nilai.getNumericCellValue()));
+                        krsDetailDao.save(kd);
+                        TahunDto tahunDto = new TahunDto();
+                        tahunDto.setId(kd.getId());
+                        tahunDto.setNama(kd.getMahasiswa().getNama());
+                        tahunDto.setKode(kd.getMahasiswa().getNim());
+                        tahunDto.setJumlah(kd.getNilaiAkhir().intValue());
+                        tahunDtos.add(tahunDto);
+                    }
+
+
+                }else {
+                    System.out.println("kosong");
                 }
-
-                if (krsDetail != null){
-                    System.out.println("nim  :  " + nim + "  Krs Detail  "  + krsDetail + "   nilai  :  "  + nilai);
-                    KrsDetail kd = krsDetailDao.findById(krsDetail).get();
-                    kd.setNilaiAkhir(new BigDecimal(nilai.getNumericCellValue()));
-                    krsDetailDao.save(kd);
-                    TahunDto tahunDto = new TahunDto();
-                    tahunDto.setId(kd.getId());
-                    tahunDto.setNama(kd.getMahasiswa().getNama());
-                    tahunDto.setKode(kd.getMahasiswa().getNim());
-                    tahunDto.setJumlah(kd.getNilaiAkhir().intValue());
-                    tahunDtos.add(tahunDto);
-                }
-
-
-
 
             }
         } catch (IOException e) {

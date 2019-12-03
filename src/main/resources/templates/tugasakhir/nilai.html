@@ -140,8 +140,10 @@
                                     </tr>
                                     <tr th:each="data,row : ${mahasiswa}">
                                         <th th:text="${(row.index + 1)}"></th>
-                                        <th th:text="${data.nim}"></th>
-                                        <th th:text="${data.nama}"></th>
+                                        <th th:text="${data.nim}" th:if="${data != null}"></th>
+                                        <th th:if="${data == null}"></th>
+                                        <th th:text="${data.nama}" th:if="${data != null}"></th>
+                                        <th th:if="${data == null}"></th>
                                         <th>Belum Mengambil Krs Magang</th>
                                     </tr>
                                 </table>
