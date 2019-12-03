@@ -40,18 +40,18 @@
                         <form th:action="@{/tugasakhir/konsepnote}" method="post" enctype="multipart/form-data" th:object="${note}">
                             <div class="form-group">
                                 <label class="text-name">Jenis</label>
-                                <select name="jenis" th:field="*{jenis}" id="" class="form-control">
+                                <select name="jenis" th:field="*{jenis}" id="" required class="form-control">
                                     <option value="SKRIPSI">Skripsi</option>
                                     <option value="STUDI_KELAYAKAN">Studi Kelayakan Bisnis</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label class="text-name">Title / Judul</label>
-                                <input type="text" th:field="*{judul}" name="judul" class="form-control">
+                                <input type="text" required th:field="*{judul}" name="judul" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label class="text-name">Title / Judul English</label>
-                                <input type="text" th:field="*{judulInggris}" name="judulInggris" class="form-control">
+                                <input type="text" required th:field="*{judulInggris}" name="judulInggris" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label class="text-name">File Konsep Note</label>
@@ -59,7 +59,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="text-name">Dosen 1</label>
-                                <select name="dosen" th:field="*{dosen}" class="form-control js-example-placeholder-single">
+                                <select name="dosen" required th:field="*{dosen}" class="form-control js-example-placeholder-single">
                                     <option value=""></option>
                                     <option th:each="data : ${dosen}"
                                             th:value="${data.id}"
@@ -71,7 +71,7 @@
 
                             <div class="form-group">
                                 <label class="text-name">Dosen 2</label>
-                                <select name="dosen2" th:field="*{dosen2}" class="form-control js-example-placeholder-single">
+                                <select name="dosen2" required th:field="*{dosen2}" class="form-control js-example-placeholder-single">
                                     <option value="" class="disabled"></option>
                                     <option th:each="data : ${dosen}"
                                             th:value="${data.id}"
