@@ -316,6 +316,8 @@ public class JadwalKuliahController {
         if (jdwl == null || jdwl.isEmpty()) {
 //            jadwal.setJamMulai(jadwal.getJamMulai());
 //            jadwal.setJamSelesai(jadwal.getJamSelesai());
+            jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
             jadwalDao.save(jadwal);
 
             JadwalDosen jadwalDosen = jadwalDosenDao.findByJadwalAndStatusJadwalDosen(jadwal,StatusJadwalDosen.PENGAMPU);

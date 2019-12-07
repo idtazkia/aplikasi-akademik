@@ -48,9 +48,13 @@
                                     <h4><b>Kelas</b></h4>
                                     <p><b th:text="${jadwal.kelas.namaKelas}">Computer Lab</b></p>
                                 </div>
-                                <div class="right" th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}">
+                                <div class="right" th:if="${soal.statusApprove.APPROVED} != ${soal.statusApprove}">
                                     <h4><b>Keterangan</b></h4>
                                     <p><b th:text="${soal.keterangan}">Computer Lab</b></p>
+                                </div>
+                                <div class="right" th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}">
+                                    <h4><b>Keterangan</b></h4>
+                                    <p><b th:text="${soal.statusApprove}">Computer Lab</b></p>
                                 </div>
                                 <div class="ln_solid"></div>
                                 <div class="left">

@@ -123,76 +123,76 @@
                             <div class="row">
                                 <div class="col-md-2 col-xs-12">
                                     <div class="row">
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id})}" th:if="${status == null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id})}" th:if="${status == null}">
                                             <div class="col-md-12 tabs-active">
                                                 <b>All</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id})}" th:if="${status != null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id})}" th:if="${status != null}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>All</b>
                                             </div>
                                         </a>
 
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status == null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status == null}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Waiting</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status != null && status == status.WAITING}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status != null && status == status.WAITING}">
                                             <div class="col-md-12 tabs-active">
                                                 <b>Waiting</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status != null && status != status.WAITING}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'WAITING')}" th:if="${status != null && status != status.WAITING}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Waiting</b>
                                             </div>
                                         </a>
 
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status == null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status == null}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Approved</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status != null && status == status.APPROVED}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status != null && status == status.APPROVED}">
                                             <div class="col-md-12 tabs-active">
                                                 <b>Approved</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status != null && status != status.APPROVED}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" th:if="${status != null && status != status.APPROVED}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Approved</b>
                                             </div>
                                         </a>
 
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status == null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status == null}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Rejected</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status != null && status == status.REJECTED}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status != null && status == status.REJECTED}">
                                             <div class="col-md-12 tabs-active">
                                                 <b>Rejected</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status != null && status != status.REJECTED}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" th:if="${status != null && status != status.REJECTED}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Rejected</b>
                                             </div>
                                         </a>
 
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status == null}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status == null}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Not Uploaded Yet</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status != null && status == status.NOT_UPLOADED_YET}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status != null && status == status.NOT_UPLOADED_YET}">
                                             <div class="col-md-12 tabs-active">
                                                 <b>Not Uploaded Yet</b>
                                             </div>
                                         </a>
-                                        <a th:href="@{/uploadsoal/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status != null && status != status.NOT_UPLOADED_YET}">
+                                        <a th:href="@{/uploadsoal/listuas(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" th:if="${status != null && status != status.NOT_UPLOADED_YET}">
                                             <div class="col-md-12 tabs-noactive">
                                                 <b>Not Uploaded Yet</b>
                                             </div>
@@ -223,48 +223,48 @@
                                         <td th:text="${data.kelas.namaKelas}"></td>
                                         <td th:text="${data.dosen.karyawan.namaKaryawan}"></td>
                                         <td>
-                                             <a th:if="${data.statusUts.APPROVED} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-success"
+                                             <a th:if="${data.statusUas.APPROVED} == ${data.statusUas}" href="#" data-toggle="popover" class="label label-success"
                                                 data-placement="right"  data-trigger="focus" onclick="return false"
                                                 title="Status"
                                                 text="Approved"
                                                 data-content="Pada Tanggal 11-10-2019">Approved
                                             </a>
 
-                                            <a th:if="${data.statusUts.WAITING} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-warning"
+                                            <a th:if="${data.statusUas.WAITING} == ${data.statusUas}" href="#" data-toggle="popover" class="label label-warning"
                                                data-placement="right"  data-trigger="focus" onclick="return false"
                                                title="Status"
                                                text="Waiting for Approval"
                                                data-content="Soal yang Anda masih menunggu untuk disetujui">Waiting for Approval
                                             </a>
 
-                                            <a th:if="${data.statusUts.REJECTED} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-danger"
+                                            <a th:if="${data.statusUas.REJECTED} == ${data.statusUas}" href="#" data-toggle="popover" class="label label-danger"
                                                data-placement="right"  data-trigger="focus" onclick="return false"
                                                title="Status"
                                                text="Waiting for Approval"
                                                data-content="Soal yang Anda masih menunggu untuk disetujui">Rejected
                                             </a>
 
-                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-default"
+                                            <a th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}" href="#" data-toggle="popover" class="label label-default"
                                                data-placement="right"  data-trigger="focus" onclick="return false"
                                                title="Status"
                                                text="Approved"
                                                data-content="Soal yang Anda upload ditolak, silahkan upload ulang soal">NOT UPLOAD YET
                                             </a>
                                     </td>
-                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET} != ${data.statusUts}"></td>
+                                        <td th:if="${data.statusUas.NOT_UPLOADED_YET} != ${data.statusUas}"></td>
 
                                         <td>
-                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts && data.statusUts.APPROVED != data.statusUts && data.statusUts.REJECTED != data.statusUts}" th:href="@{/uploadsoal/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                            <a th:if="${data.statusUas.NOT_UPLOADED_YET != data.statusUas && data.statusUas.APPROVED != data.statusUas && data.statusUas.REJECTED != data.statusUas}" th:href="@{/uploadsoal/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
                                                 <i class="fa fa-check"></i> Validasi Soal
                                             </a>
                                         </td>
                                         <td>
-                                            <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/uploadsoal/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                            <a th:if="${data.statusUas.APPROVED == data.statusUas}" th:href="@{/uploadsoal/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
                                                 <i class="fa fa-check"></i> Download Soal
                                             </a>
                                         </td>
                                         <td>
-                                            <form th:if="${data.statusUts.APPROVED == data.statusUts}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">
+                                            <form th:if="${data.statusUas.APPROVED == data.statusUas}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">
                                                 <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">
                                                     <i class="fa fa-close"></i> Cancel
                                                 </button>

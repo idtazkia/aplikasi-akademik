@@ -57,6 +57,9 @@ public class UploadController {
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
+    @Value("classpath:sample/uas.doc")
+    private Resource contohSoalUas;
+
     @GetMapping("/uploadsoal/listdosen")
     public void listSoalDosen(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
@@ -70,9 +73,14 @@ public class UploadController {
 
     }
 
+    @GetMapping("/uploadsoal/listdosenuas")
+    public void listUas(Model model, Authentication authentication){
+        listSoalDosen(model,authentication);
+
+    }
+
     @GetMapping("/uploadsoal/list")
-    public void listSoal(Model model, @RequestParam(required = false)String uas, @RequestParam(required = false)String uts,
-                         @RequestParam(required = false)TahunAkademik tahun, @RequestParam(required = false)Prodi prodi, Pageable page,
+    public void listSoal(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
                          @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
 
         model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(StatusRecord.HAPUS));
@@ -90,7 +98,7 @@ public class UploadController {
 
         if (tahun != null && status != null){
             model.addAttribute("tahunAkademik",tahun);
-            model.addAttribute("approve",status);
+            model.addAttribute("status",status);
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
                 model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUtsAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,search,page));
@@ -99,38 +107,84 @@ public class UploadController {
             }
         }
 
-        if (tahun != null && status == null){
+
+
+    }
+
+    @GetMapping("/uploadsoal/listuas")
+    public void listSoalUas(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
+                         @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
+
+        model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(StatusRecord.HAPUS));
+
+        if (tahun != null && status != null){
+            model.addAttribute("status",status);
             model.addAttribute("tahunAkademik",tahun);
             if (StringUtils.hasText(search)) {
                 model.addAttribute("search", search);
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,search,page));
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,search,page));
             } else {
-                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun,status, page));
             }
         }
 
+        if (tahun != null && status == null) {
+            model.addAttribute("tahunAkademik",tahun);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,search,page));
+                model.addAttribute("search", search);
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+            }
+
+        }
 
     }
 
     @GetMapping("/uploadsoal/detail")
-    public void detailUpload(@RequestParam Jadwal jadwal,Authentication authentication, Model model){
-        Iterable<Soal> soal = soalDao.findByJadwal(jadwal);
-        User user = currentUserService.currentUser(authentication);
-        Karyawan karyawan = karyawanDao.findByIdUser(user);
-        Soal s = soalDao.findByJadwalAndStatusAndStatusApprove(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED);
-        Dosen dosen = dosenDao.findByKaryawan(karyawan);
-        model.addAttribute("jadwal", jadwal);
-        model.addAttribute("soal",soal);
-        model.addAttribute("dosen",dosen);
-        model.addAttribute("approve",s);
+    public void detailUpload(@RequestParam Jadwal jadwal,@RequestParam StatusRecord status, Authentication authentication, Model model){
+
+        if (StatusRecord.UTS == status) {
+            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusRecord.UTS);
+            User user = currentUserService.currentUser(authentication);
+            Karyawan karyawan = karyawanDao.findByIdUser(user);
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UTS);
+            Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            model.addAttribute("jadwal", jadwal);
+            model.addAttribute("soal", soal);
+            model.addAttribute("dosen", dosen);
+            model.addAttribute("approve", s);
+            model.addAttribute("status",status);
+        }
+
+        if (StatusRecord.UAS == status) {
+            Iterable<Soal> soal = soalDao.findByJadwalAndStatusAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusRecord.UAS);
+            User user = currentUserService.currentUser(authentication);
+            Karyawan karyawan = karyawanDao.findByIdUser(user);
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UAS);
+            Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            model.addAttribute("jadwal", jadwal);
+            model.addAttribute("soal", soal);
+            model.addAttribute("dosen", dosen);
+            model.addAttribute("status",status);
+            model.addAttribute("approve", s);
+        }
 
     }
 
     @GetMapping("/contoh/soal")
-    public void downloadContohFileTagihan(HttpServletResponse response) throws Exception {
+    public void contohUts(HttpServletResponse response) throws Exception {
         response.setContentType("application/msword");
         response.setHeader("Content-Disposition", "attachment; filename=Template-Soal.doc");
         FileCopyUtils.copy(contohSoal.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
+    }
+
+    @GetMapping("/contoh/soaluas")
+    public void contohUas(HttpServletResponse response) throws Exception {
+        response.setContentType("application/msword");
+        response.setHeader("Content-Disposition", "attachment; filename=Template-Soal.doc");
+        FileCopyUtils.copy(contohSoalUas.getInputStream(), response.getOutputStream());
         response.getOutputStream().flush();
     }
 
@@ -196,9 +250,7 @@ public class UploadController {
         }
         jadwalDao.save(jadwal);
 
-
-
-        return "redirect:detail?jadwal=" +soal.getJadwal().getId();
+        return "redirect:detail?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
 
     }
 
@@ -243,14 +295,22 @@ public class UploadController {
         LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
         soal.setFileApprove(idFile + "." + extension);
         soal.setStatusApprove(StatusApprove.APPROVED);
-        soal.setKeteranganApprove(StatusApprove.APPROVED.toString());
+        soal.setKeteranganApprove(soal.getKeterangan());
         soalDao.save(soal);
 
         Jadwal jadwal =jadwalDao.findById(soal.getJadwal().getId()).get();
-        jadwal.setStatusUts(StatusApprove.APPROVED);
+        if (soal.getStatusSoal() == StatusRecord.UTS) {
+            jadwal.setStatusUts(StatusApprove.APPROVED);
+        }
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            jadwal.setStatusUas(StatusApprove.APPROVED);
+        }
         jadwalDao.save(jadwal);
-        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
 
+        if (soal.getStatusSoal() == StatusRecord.UAS){
+            return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        }
+        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
     }
 
     @PostMapping("/uploadsoal/rejected")
@@ -260,8 +320,17 @@ public class UploadController {
         soalDao.save(soal);
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
-        jadwal.setStatusUts(StatusApprove.REJECTED);
+        if (soal.getStatusSoal() == StatusRecord.UTS) {
+            jadwal.setStatusUts(StatusApprove.REJECTED);
+        }
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            jadwal.setStatusUas(StatusApprove.REJECTED);
+        }
         jadwalDao.save(jadwal);
+
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            return "redirect:listuas    ?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+        }
 
         return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
     }

@@ -18,8 +18,12 @@
                 <!--<a th:href="@{/matakuliah/list (prodi = ${matakuliahKurikulum.kurikulum.prodi.id},kurikulum = ${matakuliahKurikulum.kurikulum.id})}" class="navbar-right panel_toolbox"><i class="fa fa-chevron-left"></i></a>-->
                 <div class="clearfix"></div>
             </div>
-            <div>
+            <div th:if="${status.UTS == status}">
                 <a th:href="@{/contoh/soal}" class="btn btn-info">Download Template Soal</a>
+            </div>
+
+            <div th:if="${status.UAS == status}">
+                <a th:href="@{/contoh/soaluas}" class="btn btn-info">Download Template Soal</a>
             </div>
             <br>
 
@@ -44,11 +48,20 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" th:if="${status.UTS == status}">
                             <div class="form-group">
                                 <label>Status Soal</label>
-                                <select class="form-control" name="statusSoal">
+                                <select readonly class="form-control" name="statusSoal">
                                     <option value="UTS">UTS</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" th:if="${status.UAS == status}">
+                            <div class="form-group">
+                                <label>Status Soal</label>
+                                <select readonly class="form-control" name="statusSoal">
                                     <option value="UAS">UAS</option>
                                 </select>
 
