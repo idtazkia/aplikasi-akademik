@@ -46,10 +46,13 @@
                                         <center>
                                             <div class="btn-group">
                                                 <a th:href="@{/penilaian/bobot(jadwal = ${jadwal.id})}">
-                                                    <button class="btn btn-primary"  type="button">Bobot Penilaian</button>
+                                                    <button class="btn btn-primary"  type="button">Pembobotan</button>
                                                 </a>
                                                 <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
-                                                    <button class="btn btn-default" type="button">Nilai Mahasiswa</button>
+                                                    <button class="btn btn-default" type="button">Rekapitulasi Penilaian</button>
+                                                </a>
+                                                <a th:href="@{/penilaian/uploadnilai(jadwal = ${jadwal.id})}">
+                                                    <button class="btn btn-default" type="button">Submit Nilai</button>
                                                 </a>
                                                 <a th:href="@{/penilaian/list}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                                     <button class="btn btn-default" type="button">Kembali</button>
