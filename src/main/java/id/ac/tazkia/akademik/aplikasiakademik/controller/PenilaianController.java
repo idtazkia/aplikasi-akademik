@@ -704,8 +704,8 @@ public class PenilaianController {
 
 
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
-        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
-        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
+        sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
         int rowInfo = 5 ;
         Row rowi1 = sheet.createRow(rowInfo);
@@ -751,15 +751,14 @@ public class PenilaianController {
 
 
         int rowNum = 12 ;
+        int no = 1;
         for (KrsDetail kd : krsDetail) {
-            int kolom = 2 ;
-
-            Row row = sheet.createRow(rowNum);
-            row.createCell(kolom++).setCellValue(kolom);
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
-
-
+            int kolom = 2;
+                Row row = sheet.createRow(rowNum);
+                row.createCell(kolom++).setCellValue(no);
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+            no++;
             rowNum++;
         }
 
@@ -856,8 +855,8 @@ public class PenilaianController {
 
 
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
-        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
-        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
+        sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
         int rowInfo = 5 ;
         Row rowi1 = sheet.createRow(rowInfo);
@@ -903,15 +902,14 @@ public class PenilaianController {
 
 
         int rowNum = 12 ;
+        int no = 1;
         for (KrsDetail kd : krsDetail) {
-            int kolom = 2 ;
-
-            Row row = sheet.createRow(rowNum);
-            row.createCell(kolom++).setCellValue(kolom);
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
-
-
+            int kolom = 2;
+                Row row = sheet.createRow(rowNum);
+                row.createCell(kolom++).setCellValue(no);
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+            no++;
             rowNum++;
         }
 
@@ -1004,8 +1002,8 @@ public class PenilaianController {
 
 
         sheet.createRow(0).createCell(3).setCellValue("   SCORE RECAPITULATION FIRST SEMESTER");
-        sheet.createRow(1).createCell(3).setCellValue("    SEKOLAH TINGGI EKONOMI ISLAM TAZKIA");
-        sheet.createRow(2).createCell(3).setCellValue("                ACADEMIC YEAR 2019/2020");
+        sheet.createRow(1).createCell(3).setCellValue("                        INSTITUT TAZKIA");
+        sheet.createRow(2).createCell(3).setCellValue("                 ACADEMIC YEAR 2019/2020");
 
         int rowInfo = 5 ;
         Row rowi1 = sheet.createRow(rowInfo);
@@ -1050,16 +1048,16 @@ public class PenilaianController {
         }
 
 
+
         int rowNum = 12 ;
+        int no = 1;
         for (KrsDetail kd : krsDetail) {
-            Row row = sheet.createRow(rowNum);
-            int kolom = 2 ;
-
-            row.createCell(kolom++).setCellValue(kolom);
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
-            row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
-
-
+            int kolom = 2;
+                Row row = sheet.createRow(rowNum);
+                row.createCell(kolom++).setCellValue(no);
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNim());
+                row.createCell(kolom++).setCellValue(kd.getMahasiswa().getNama());
+            no++;
             rowNum++;
         }
 

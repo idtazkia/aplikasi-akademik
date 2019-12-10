@@ -5,7 +5,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Rekapitulasi Nilai</title>
     <style type="text/css">
         form{
             margin: 20px 0;
@@ -217,10 +217,13 @@
                                     <center>
                                         <div class="btn-group">
                                             <a th:href="@{/penilaian/bobot(jadwal = ${jadwal.id})}">
-                                                <button class="btn btn-default"  type="button">Bobot Penilaian</button>
-                                            <!--</a>-->
+                                                <button class="btn btn-default"  type="button">Pembobotan</button>
+                                            </a>
                                             <a th:href="@{/penilaian/nilai}">
-                                                <button class="btn btn-primary" type="button">Nilai Mahasiswa</button>
+                                                <button class="btn btn-primary" type="button">Rekapitulasi Penilaian</button>
+                                            </a>
+                                            <a th:href="@{/penilaian/uploadnilai(jadwal = ${jadwal.id})}">
+                                                <button class="btn btn-default"  type="button">Submit Nilai</button>
                                             </a>
                                             <a th:href="@{/penilaian/list}">
                                                 <button class="btn btn-default" type="button">Kembali</button>
