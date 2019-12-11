@@ -60,7 +60,7 @@
                                     <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
                                     <td><b th:text="${jadwal.jadwal.statusUts}"></b></td>
                                     <td>
-                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/uploadsoal/detail (jadwal = ${jadwal.jadwal.id})}">
+                                        <a type="button" class="btn btn-primary btn-xs" th:href="@{/uploadsoal/detail (jadwal = ${jadwal.jadwal.id}, status = 'UTS')}">
                                             <i class="fa fa-edit"></i> Upload Soal
                                         </a>
                                     </td>
