@@ -58,7 +58,7 @@ public class KaryawanController {
     @PostMapping("/karyawan/save")
     public String saveKaryawan(@Valid @ModelAttribute Karyawan karyawan){
         karyawanDao.save(karyawan);
-        return"redirect:";
+        return"redirect:list";
 
     }
 
