@@ -195,9 +195,16 @@ public class RekapController {
             for (DetailPresensi dp : presensiMahasiswa){
                 PresensiDetail presensiDetail = new PresensiDetail();
 
-                LocalDateTime jamMasuk = LocalDateTime.of(dp.getMasukDosen().toLocalDate(),dp.getTanggalMasuk().toLocalTime());
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
-                presensiDetail.setJamMasuk(jamMasuk.format(format));
+                if (dp.getTanggalMasuk() != null) {
+
+                    LocalDateTime jamMasuk = LocalDateTime.of(dp.getMasukDosen().toLocalDate(), dp.getTanggalMasuk().toLocalTime());
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+                    presensiDetail.setJamMasuk(jamMasuk.format(format));
+                }else {
+                    LocalDateTime jamMasuk = dp.getMasukDosen();
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+                    presensiDetail.setJamMasuk(jamMasuk.format(format));
+                }
                 presensiDetail.setMateri(dp.getMateri());
                 presensiDetail.setPresensi(dp.getPresensi());
                 presensiMahasiswas.add(presensiDetail);
