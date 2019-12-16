@@ -612,24 +612,22 @@ public class KrsController {
 
     @GetMapping("/krs/kartu")
     public void aktifasiKrs(Model model,
-                            @RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) TahunAkademik tahunAkademik,@RequestParam(required = false) String status,
                             @RequestParam(required = false) String nim,@RequestParam(required = false) String uas){
 
-        if (uas == null || uas.isEmpty()){
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedNim", nim);
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
             model.addAttribute("mahasiswa", mhsw);
-        }else {
+            model.addAttribute("status", status);
 
-        }
     }
 
     @PostMapping("/krs/kartu")
     public String prosesKrs(@RequestParam TahunAkademik tahunAkademik,
-                            @RequestParam(required = false) String nim,@RequestParam(required = false) String uas){
+                            @RequestParam(required = false) String nim,@RequestParam(required = false) String status){
 
-        if (uas == null || uas.isEmpty()) {
+        if (status == "UTS") {
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
             EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,StatusRecord.UTS,"1",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (validasiFiture == null) {
@@ -642,9 +640,21 @@ public class KrsController {
                 enableFitureDao.save(enableFiture);
             }
 
+        }else {
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.UAS, "1", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (validasiFiture == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setEnable("1");
+                enableFiture.setFitur(StatusRecord.UAS);
+                enableFiture.setMahasiswa(mahasiswa);
+                enableFiture.setKeterangan("-");
+                enableFiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(enableFiture);
+            }
         }
 
-        return "redirect:kartu?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
+        return "redirect:kartu?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim+"&status="+status;
 
     }
 

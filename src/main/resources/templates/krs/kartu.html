@@ -31,7 +31,7 @@
                 <div class="form-group">
                     <div class="row col-sm-offset-1 ">
                         <div class="col-md-12">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <center><label><b>Tahun Akademik</b></label></center>
                                     <select name="tahunAkademik" required
@@ -43,10 +43,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <center><label><b>NIM</b></label></center>
                                     <input type="text" th:value="${selectedNim}" class="form-control" name="nim">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <center><label><b>Status</b></label></center>
+                                    <select name="status" required
+                                            class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                        <option value=""></option>
+                                        <option th:selected="(${status} == 'UTS')" value="UTS">UTS</option>
+                                        <option th:selected="(${status} == 'UAS')" value="UAS">UAS</option>
+
+                                    </select>
                                 </div>
                             </div>
 
