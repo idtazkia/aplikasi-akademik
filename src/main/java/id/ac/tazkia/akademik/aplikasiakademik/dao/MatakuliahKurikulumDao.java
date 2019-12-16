@@ -24,5 +24,11 @@ public interface MatakuliahKurikulumDao extends PagingAndSortingRepository<Matak
      @Query("select mk.id from MatakuliahKurikulum mk where mk.status= :status and mk.kurikulum = :kurikulum and mk.konsepNote = :konsep")
      List<String> CariMatakuliahKonsep(@Param("status")StatusRecord statusRecord,@Param("kurikulum")Kurikulum kurikulum,@Param("konsep")StatusRecord konsep);
 
+     @Query("select mk.id from MatakuliahKurikulum mk where mk.status= :status and mk.matakuliah.singkatan = :singkatan and mk.konsepNote = :konsep")
+     List<String> CariMatakuliahMetolit(@Param("status")StatusRecord statusRecord,@Param("singkatan")String singkatan,@Param("konsep")StatusRecord konsep);
+
+     @Query("select mk.id from MatakuliahKurikulum mk where mk.status= :status and mk.matakuliah.namaMatakuliah = :nama and mk.konsepNote = :konsep")
+     List<String> CariMatakuliahMagang(@Param("status")StatusRecord statusRecord,@Param("nama")String nama, @Param("konsep")StatusRecord konsep);
+
 
 }

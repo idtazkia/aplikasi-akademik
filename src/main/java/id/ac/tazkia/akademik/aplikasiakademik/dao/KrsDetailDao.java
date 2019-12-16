@@ -66,4 +66,12 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     KrsDetail findByMahasiswaAndJadwalAndStatus(Mahasiswa mahasiswa, Jadwal jadwal, StatusRecord statusRecord);
 
+    @Query("select kd.nilaiAkhir from KrsDetail kd where kd.status = :status and kd.mahasiswa = :mahasiswa and kd.matakuliahKurikulum.matakuliah.namaMatakuliah = :nama and kd.nilaiAkhir > 60")
+    List<BigDecimal> nilaiMagang(@Param("status")StatusRecord statusRecord,@Param("mahasiswa") Mahasiswa mahasiswa,@Param("nama")String nama);
+
+    @Query("select kd.nilaiAkhir from KrsDetail kd where kd.status = :status and kd.mahasiswa = :mahasiswa and kd.matakuliahKurikulum.matakuliah.singkatan = :singkatan and kd.nilaiAkhir > 60")
+    List<BigDecimal> nilaiMetolit(@Param("status")StatusRecord statusRecord,@Param("mahasiswa") Mahasiswa mahasiswa,@Param("singkatan")String singkatan);
+
+
+
 }

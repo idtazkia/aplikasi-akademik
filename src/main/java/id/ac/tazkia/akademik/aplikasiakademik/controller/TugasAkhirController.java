@@ -125,15 +125,15 @@ public class TugasAkhirController {
 
         }else {
             if (approve != null) {
-                return "redirect:tugasakhir/mahasiswa";
+                return "redirect:mahasiswa";
             }
 
             if (approve == null && note == null) {
-                return "redirect:tugasakhir/mahasiswa";
+                return "redirect:mahasiswa";
             }
 
             if (note != null) {
-                return "redirect:tugasakhir/mahasiswa";
+                return "redirect:mahasiswa";
             }
         }
         return "tugasakhir/register";
@@ -154,45 +154,71 @@ public class TugasAkhirController {
 
         Note validasi = noteDao.findByTahunAkademikAndMahasiswaAndStatusNotIn(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa,StatusApprove.REJECTED);
 
+        List<BigDecimal> magang = krsDetailDao.nilaiMagang(StatusRecord.AKTIF,mahasiswa, "Magang");
+        List<BigDecimal> metolit = krsDetailDao.nilaiMetolit(StatusRecord.AKTIF,mahasiswa, "METOLIT");
+
+        System.out.println(metolit);
+
 //
 
 
 
         if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-            Iterable<String> matakuliahKurikulum = matakuliahKurikulumDao.CariMatakuliahKonsep(StatusRecord.AKTIF, mahasiswa.getKurikulum(), StatusRecord.AKTIF);
-            System.out.println(matakuliahKurikulum);
-            if (mahasiswa.getKurikulum() != null) {
-                for (String mk : matakuliahKurikulum) {
-                    List<KrsDetail> konsepNote = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndNilaiAkhirGreaterThan(matakuliahKurikulumDao.findById(mk).get(), mahasiswa, StatusRecord.AKTIF, new BigDecimal(60));
-
-
-                    if (konsepNote == null || konsepNote.isEmpty()) {
-                        return "redirect:alertpage";
-                    }
+            if (magang != null || !magang.isEmpty()){
+                if (metolit == null || metolit.isEmpty()){
+                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
+                    return "redirect:alertpage";
                 }
+
             }
-            if (validasi == null){
-                model.addAttribute("note",new Note());
-                return "tugasakhir/konsepnote";
+
+            if (magang == null || magang.isEmpty()){
+                LOGGER.info("nilai magang kosong atau kurang dari 60");
+                return "redirect:alertpage";
             }
+//            Iterable<String> matakuliahKurikulum = matakuliahKurikulumDao.CariMatakuliahKonsep(StatusRecord.AKTIF, mahasiswa.getKurikulum(), StatusRecord.AKTIF);
+//            System.out.println(matakuliahKurikulum);
+//            if (mahasiswa.getKurikulum() != null) {
+//                for (String mk : matakuliahKurikulum) {
+//                    List<KrsDetail> konsepNote = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndNilaiAkhirGreaterThan(matakuliahKurikulumDao.findById(mk).get(), mahasiswa, StatusRecord.AKTIF, new BigDecimal(60));
+//
+//
+//                    if (konsepNote == null || konsepNote.isEmpty()) {
+//                        return "redirect:alertpage";
+//                    }
+//                }
+//            }
+//            if (validasi == null){
+//                model.addAttribute("note",new Note());
+//                return "tugasakhir/konsepnote";
+//            }
 
             if (validasi != null){
                 return "redirect:register";
             }
             model.addAttribute("note",new Note());
         }else {
-            Iterable<String> matakuliahKurikulum = matakuliahKurikulumDao.CariMatakuliahKonsep(StatusRecord.AKTIF, mahasiswa.getKurikulum(), StatusRecord.AKTIF);
-            System.out.println(matakuliahKurikulum);
-            if (mahasiswa.getKurikulum() != null) {
-                for (String mk : matakuliahKurikulum) {
-                    List<KrsDetail> note = krsDetailDao.findByMatakuliahKurikulumAndMahasiswaAndStatusAndNilaiAkhirGreaterThan(matakuliahKurikulumDao.findById(mk).get(), mahasiswa, StatusRecord.AKTIF, new BigDecimal(60));
-                    System.out.println();
-                    if (note == null || note.isEmpty()) {
-                        return "redirect:alertpage";
-                    }
+            if (magang != null || magang.isEmpty()){
+                for (BigDecimal nilaiMagang : magang){
+                    System.out.println(nilaiMagang);
+                }
+
+            }
+
+            if (magang != null || !magang.isEmpty()){
+                if (metolit == null || metolit.isEmpty()){
+                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
+                    return "redirect:alertpage";
                 }
                 model.addAttribute("note",noteDao.findById(id).get());
+
             }
+
+            if (magang == null || magang.isEmpty()){
+                LOGGER.info("nilai magang kosong atau kurang dari 60");
+                return "redirect:alertpage";
+            }
+
         }
 
         return "tugasakhir/konsepnote";
