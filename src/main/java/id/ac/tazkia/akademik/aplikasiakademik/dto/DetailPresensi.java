@@ -20,4 +20,5 @@ public class DetailPresensi {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String materi;
+    private LocalDateTime masukDosen;
 }

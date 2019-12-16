@@ -45,7 +45,7 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto(pm.mahasiswa.nim,pm.mahasiswa.nama,pm.krsDetail.kodeUts, 1,0) from PresensiMahasiswa pm where pm.krsDetail.jadwal = :id and pm.status = :status and pm.statusPresensi not in (:terlambat,:mangkir)")
     Page<AbsenDto> cariPresensi(@Param("id")Jadwal krsDetail, @Param("status")StatusRecord statusRecord, @Param("terlambat")StatusPresensi statusPresensi, @Param("mangkir")StatusPresensi mangkir, Pageable page);
 
-    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.DetailPresensi(pm.waktuMasuk,pm.statusPresensi,pm.sesiKuliah.beritaAcara) from PresensiMahasiswa pm where pm.krsDetail = :kd and pm.status = :status and pm.sesiKuliah.id = :id")
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.DetailPresensi(pm.waktuMasuk,pm.statusPresensi,pm.sesiKuliah.beritaAcara,pm.sesiKuliah.waktuMulai) from PresensiMahasiswa pm where pm.krsDetail = :kd and pm.status = :status and pm.sesiKuliah.id = :id")
     List<DetailPresensi> detailPresensi(@Param("kd")KrsDetail krsDetail,@Param("status")StatusRecord statusRecord,@Param("id") String id);
 
 }

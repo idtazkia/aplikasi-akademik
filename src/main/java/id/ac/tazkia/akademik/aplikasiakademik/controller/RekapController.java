@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -185,13 +187,20 @@ public class RekapController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         model.addAttribute("mahasiswa",mahasiswa);
-        List<DetailPresensi> presensiMahasiswas = new ArrayList<>();
+        List<PresensiDetail> presensiMahasiswas = new ArrayList<>();
 
         List<String> sesiKuliah = sesiKuliahDao.cariId(jadwal,StatusRecord.AKTIF);
         for (String sk : sesiKuliah){
             List<DetailPresensi> presensiMahasiswa = presensiMahasiswaDao.detailPresensi(krs,StatusRecord.AKTIF,sk);
             for (DetailPresensi dp : presensiMahasiswa){
-                presensiMahasiswas.add(dp);
+                PresensiDetail presensiDetail = new PresensiDetail();
+
+                LocalDateTime jamMasuk = LocalDateTime.of(dp.getMasukDosen().toLocalDate(),dp.getTanggalMasuk().toLocalTime());
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+                presensiDetail.setJamMasuk(jamMasuk.format(format));
+                presensiDetail.setMateri(dp.getMateri());
+                presensiDetail.setPresensi(dp.getPresensi());
+                presensiMahasiswas.add(presensiDetail);
             }
 
 

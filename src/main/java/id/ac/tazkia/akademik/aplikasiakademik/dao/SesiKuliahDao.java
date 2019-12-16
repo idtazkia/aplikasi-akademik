@@ -23,7 +23,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord statusRecord);
     SesiKuliah findByPresensiDosen(PresensiDosen presensiDosen);
 
-    @Query("select sk.id from SesiKuliah sk where sk.jadwal =:jadwal and sk.presensiDosen.status =:status")
+    @Query("select sk.id from SesiKuliah sk where sk.jadwal =:jadwal and sk.presensiDosen.status =:status order by sk.waktuMulai asc")
     List<String> cariId(@Param("jadwal")Jadwal j,@Param("status")StatusRecord statusRecord);
 
 }
