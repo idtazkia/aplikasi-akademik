@@ -891,8 +891,8 @@ public class KrsController {
                                 krsDetail.setJumlahMangkir(0);
                                 krsDetail.setJumlahTerlambat(0);
                                 krsDetail.setJumlahSakit(0);
-                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                                krsDetail.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                krsDetail.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                 krsDetail.setJumlahIzin(0);
                                 krsDetailDao.save(krsDetail);
                             }
