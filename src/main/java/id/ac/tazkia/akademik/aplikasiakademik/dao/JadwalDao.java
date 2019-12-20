@@ -73,5 +73,14 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal,String> {
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.ListPenilaian(j.id,j.tahunAkademik.namaTahunAkademik,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.matakuliahKurikulum.jumlahSks,j.hari.namaHari,j.jamMulai,j.jamSelesai,j.prodi.namaProdi,j.dosen.karyawan.namaKaryawan,j.kelas.namaKelas,j.matakuliahKurikulum.sds,j.bobotPresensi,j.bobotUts,j.bobotUas,j.bobotTugas) from Jadwal j where j.id = :id")
     ListPenilaian cariData(@Param("id") String id);
 
+
+    @Query("select j from Jadwal j where j.prodi = :prodi and j.tahunAkademikProdi = :tahun and j.program = :program and j.status not in (:status)")
+    List<Jadwal> jadwalnya(@Param("prodi") Prodi prodi,@Param("tahun")TahunAkademikProdi t,@Param("program")Program p,@Param("status")StatusRecord statusRecord);
+
+    @Query("select j from Jadwal j where j.prodi = :prodi and j.tahunAkademikProdi = :tahun and j.program = :program and j.hari = :hari and j.status not in (:status)")
+    List<Jadwal> jadwalnyaperhari(@Param("prodi") Prodi prodi,@Param("tahun")TahunAkademikProdi t,@Param("program")Program p, @Param("hari")Hari h,@Param("status")StatusRecord statusRecord);
+
+    List <Jadwal> findByStatusAndProdi(StatusRecord statusRecord, Prodi prodi);
+
 }
 

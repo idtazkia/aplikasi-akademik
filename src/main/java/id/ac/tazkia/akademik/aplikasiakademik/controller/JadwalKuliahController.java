@@ -294,6 +294,22 @@ public class JadwalKuliahController {
             model.addAttribute("sabtu", jadwalDao.schedule(tahunAkademik.getProdi(),StatusRecord.HAPUS,tahunAkademik,hariDao.findById("6").get(),program));
         }
 
+
+        //show button saat magister terpilih
+        if (program != null && tahunAkademik != null && hari != null) {
+            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
+                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
+            }
+        }
+
+        //show button saat magister terpilih tanpa hari
+        if (program != null && tahunAkademik != null && hari == null) {
+            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
+                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
+            }
+        }
+
+
     }
 
     @GetMapping("/jadwalkuliah/form")
@@ -444,4 +460,63 @@ public class JadwalKuliahController {
         model.addAttribute("jadwal", jadwal);
 
     }
+
+
+    //clear all tanpa hari
+    @PostMapping("/jadwalkuliah/clear")
+    public String clearAll(@RequestParam TahunAkademikProdi tahunAkademikProdi, @RequestParam Program program,
+                        Jadwal jadwal){
+
+
+        List<Jadwal> jadwalList = jadwalDao.jadwalnya(tahunAkademikProdi.getProdi(),tahunAkademikProdi,program,StatusRecord.AKTIF);
+
+        for (Jadwal jdl : jadwalList){
+            jdl.setSesi(null);
+            jdl.setRuangan(null);
+            jdl.setHari(null);
+            jdl.setJamSelesai(null);
+            jdl.setJamMulai(null);
+            jadwalDao.save(jdl);
+        }
+
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
+    }
+
+
+    @PostMapping("/jadwalkuliah/clearallperhari")
+    public String clearAllPerHari(@RequestParam TahunAkademikProdi tahunAkademikProdi, @RequestParam Program program,
+                        @RequestParam Hari hari, Jadwal jadwal){
+
+
+        List<Jadwal> jadwalList = jadwalDao.jadwalnyaperhari(tahunAkademikProdi.getProdi(),tahunAkademikProdi,program,hari,StatusRecord.AKTIF);
+
+        for (Jadwal jdl : jadwalList){
+            jdl.setSesi(null);
+            jdl.setHari(null);
+            jdl.setRuangan(null);
+            jdl.setJamMulai(null);
+            jdl.setJamSelesai(null);
+            jadwalDao.save(jdl);
+        }
+
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId()+"&hari="+jadwal.getHari().getId();
+    }
+
+
+    @PostMapping("/jadwalkuliah/clearperid")
+    public String clearPerId(Jadwal jadwal){
+
+            jadwal.setSesi(null);
+            jadwal.setRuangan(null);
+            jadwal.setHari(null);
+            jadwal.setJamMulai(null);
+            jadwal.setJamSelesai(null);
+            jadwalDao.save(jadwal);
+
+
+
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademikProdi().getId()+"&program="+jadwal.getProgram().getId();
+
+    }
+
 }
