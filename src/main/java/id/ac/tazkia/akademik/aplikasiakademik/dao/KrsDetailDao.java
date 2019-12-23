@@ -41,6 +41,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     KrsDetail findByJadwalAndStatusAndKrs(Jadwal jadwal,StatusRecord statusRecord,Krs krs);
 
     List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatus(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord);
+    List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord,StatusRecord statusEdom);
     KrsDetail findByMahasiswaAndKrsTahunAkademikAndStatusAndMatakuliahKurikulumMatakuliahNamaMatakuliahLike(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord,String matkul);
 
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TestDto(kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,0,kd.nilaiUts,kd.nilaiUas,0) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
@@ -72,6 +73,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     @Query("select kd.nilaiAkhir from KrsDetail kd where kd.status = :status and kd.mahasiswa = :mahasiswa and kd.matakuliahKurikulum.matakuliah.singkatan = :singkatan and kd.nilaiAkhir > 60")
     List<BigDecimal> nilaiMetolit(@Param("status")StatusRecord statusRecord,@Param("mahasiswa") Mahasiswa mahasiswa,@Param("singkatan")String singkatan);
 
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.KhsDto(kd.id,kd.matakuliahKurikulum.matakuliah.kodeMatakuliah,kd.matakuliahKurikulum.matakuliah.namaMatakuliah,kd.matakuliahKurikulum.jumlahSks,kd.nilaiPresensi,kd.nilaiTugas,kd.nilaiUts,kd.nilaiUas,kd.nilaiPresensi,kd.nilaiAkhir,kd.nilaiUts) from KrsDetail kd where kd.status = :status and kd.krs = :krs and kd.mahasiswa = :mahasiswa order by kd.jadwal.hari,kd.jadwal.jamMulai asc ")
+    List<KhsDto> khsMahasiswa (@Param("status") StatusRecord status,@Param("krs") Krs krs, @Param("mahasiswa") Mahasiswa mahasiswa);
+
+    @Query(value = "select b.id,b.id_matakuliah_kurikulum as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas,b.nilai_akhir as nilaiAkhir,c.bobot as bobot,c.nama as grade from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas where a.id_tahun_akademik= ?1 and a.id_mahasiswa= ?2 and a.status='AKTIF' and b.status='aktif'", nativeQuery = true)
+    List<Khs> getKhs(TahunAkademik tahunAkademik,Mahasiswa mahasiswa);
 
 
 }
