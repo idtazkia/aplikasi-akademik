@@ -56,7 +56,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.RekapSksDto(kd.krs.id,kd.mahasiswa.nim,kd.mahasiswa.nama,kd.matakuliahKurikulum.jumlahSks,kd.matakuliahKurikulum.statusSkripsi) from KrsDetail kd where kd.krs.tahunAkademik = :tahun and kd.mahasiswa.idProdi = :prodi and kd.status = :status and kd.matakuliahKurikulum.statusSkripsi = :skripsi")
     Page<RekapSksDto> tanpaSkripsi(@Param("tahun")TahunAkademik tahunAkademik, @Param("prodi")Prodi prodi, @Param("status")StatusRecord statusRecord,@Param("skripsi")StatusRecord skripsi, Pageable page);
 
-    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.kodeUts,1,0) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = :status")
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.AbsenDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.kodeUas,1,0) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = :status")
     Iterable<AbsenDto> cariId (@Param("jadwal")Jadwal jadwal, @Param("status")StatusRecord statusRecord);
 
     @Query("select count (kd.id) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
@@ -78,6 +78,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
 
     @Query(value = "select b.id,b.id_matakuliah_kurikulum as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas,b.nilai_akhir as nilaiAkhir,c.bobot as bobot,c.nama as grade from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas where a.id_tahun_akademik= ?1 and a.id_mahasiswa= ?2 and a.status='AKTIF' and b.status='aktif'", nativeQuery = true)
     List<Khs> getKhs(TahunAkademik tahunAkademik,Mahasiswa mahasiswa);
+
+    @Query("select kd.kodeUas from KrsDetail kd where kd.status = 'AKTIF' and kd.mahasiswa.nim = :mahasiswa and kd.jadwal =:jadwal")
+    String cariId (@Param("mahasiswa") String nim,@Param("jadwal") Jadwal jadwal);
 
 
 }

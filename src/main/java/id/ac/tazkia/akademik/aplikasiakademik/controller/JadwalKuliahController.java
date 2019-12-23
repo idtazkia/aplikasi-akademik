@@ -410,7 +410,6 @@ public class JadwalKuliahController {
                     rsks.setNama(absenDto.getNama());
                     rsks.setId(absenDto.getId());
                     rsks.setNim(absenDto.getNim());
-                    rsks.setNim(absenDto.getNim());
                     rsks.setTotalHadirDosen(presensiDosen.intValue());
                     rsks.setTotalHadir(0);
                 }
@@ -439,24 +438,67 @@ public class JadwalKuliahController {
 
         }
 
-//
-//        for (KrsDetail kd : krsDetail){
-//            Long presensiMahasiswa = presensiMahasiswaDao.hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-//            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
-//
-//            if (absen > 3){
-//
-//            }else {
-//                KelasMahasiswaDto absenUts  = new KelasMahasiswaDto();
-//                absenUts.setId(kd.getKodeUts());
-//                absenUts.setNama(kd.getMahasiswa().getNama());
-//                absenUts.setNim(kd.getMahasiswa().getNim());
-//                absens.add(absenUts);
-//
-//            }
-//        }
-//
-//        model.addAttribute("absen", absens);
+        model.addAttribute("jadwal", jadwal);
+
+    }
+
+    @GetMapping("jadwalkuliah/absenuas")
+    public void absenUas(@RequestParam Jadwal jadwal,Model model,@PageableDefault(size = Integer.MAX_VALUE) Pageable page){
+
+        List<KelasMahasiswaDto> absens = new ArrayList<>();
+        Integer tahun = Integer.valueOf(jadwal.getTahunAkademik().getTahun())+1;
+        model.addAttribute("tahun",tahun);
+
+        Long presensiDosen = presensiDosenDao.jumlahKehadiranDosen(StatusRecord.AKTIF,jadwal.getId());
+
+        if (presensiDosen == 0){
+            Iterable<AbsenDto> krsDetail = krsDetailDao.cariId(jadwal,StatusRecord.AKTIF);
+            model.addAttribute("absen", krsDetail);
+
+
+        }
+
+        if (presensiDosen != 0){
+            System.out.println(presensiDosen);
+            List<AbsenDto> absenDtos = new ArrayList<>();
+            Map<String, AbsenDto> absenDtoMap = new LinkedHashMap<>();
+            Page<AbsenDto> presensiUas = presensiMahasiswaDao.cariPresensiUas(jadwal,StatusRecord.AKTIF,StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT,page);
+
+            for (AbsenDto absenDto : presensiUas.getContent()) {
+                AbsenDto rsks = absenDtoMap.get(absenDto.getNim());
+
+                if (rsks == null) {
+                    rsks = new AbsenDto();
+                    rsks.setId(absenDto.getId());
+                    rsks.setNama(absenDto.getNama());
+                    rsks.setNim(absenDto.getNim());
+                    rsks.setTotalHadirDosen(presensiDosen.intValue());
+                    rsks.setTotalHadir(0);
+                }
+
+                rsks.tambahAbsen(absenDto.getTotalHadir());
+                absenDtoMap.put(absenDto.getNim(), rsks);
+
+
+            }
+
+            absenDtoMap.values().forEach(absenDto -> {
+                if (absenDto.getTotalHadirDosen() - absenDto.getTotalHadir() > 3){
+
+                }
+
+                if (absenDto.getTotalHadirDosen() - absenDto.getTotalHadir() < 3){
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswaDao.findByNim(absenDto.getNim()),StatusRecord.UAS,"1",jadwal.getTahunAkademik());
+                    if (enableFiture != null){
+                        absenDtos.add(absenDto);
+                    }
+                }
+            });
+
+
+            model.addAttribute("absensi",absenDtos);
+
+        }
         model.addAttribute("jadwal", jadwal);
 
     }
