@@ -56,7 +56,7 @@
                         Add KRS
                     </button>
 
-                    <div class="btn-group" th:if="${uts != null}">
+                    <div class="btn-group" th:if="${uts != null && uas == null}">
                         <button type="button" class="btn btn-info">Download Kartu UTS</button>
                         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <span class="caret"></span>
@@ -66,6 +66,20 @@
                             <li><a target="_blank" th:href="@{/krs/downloadkartuhp (nim = ${nim}, tahunAkademik = ${tahun.id})}">HandPhone</a>
                             </li>
                             <li><a target="_blank" th:href="@{/krs/downloadkartu (nim = ${nim}, tahunAkademik = ${tahun.id})}">Komputer</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="btn-group" th:if="${uas != null}">
+                        <button type="button" class="btn btn-info">Download Kartu UAS</button>
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a target="_blank" th:href="@{/krs/downloadkartuhpuas (nim = ${nim}, tahunAkademik = ${tahun.id})}">HandPhone</a>
+                            </li>
+                            <li><a target="_blank" th:href="@{/krs/downloadkartuuas (nim = ${nim}, tahunAkademik = ${tahun.id})}">Komputer</a>
                             </li>
                         </ul>
                     </div>

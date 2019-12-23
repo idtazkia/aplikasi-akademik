@@ -48,7 +48,7 @@
                     Add KRS
                 </button>
 
-                <div class="btn-group" th:if="${uts != null}">
+                <div class="btn-group" th:if="${uts != null && uas == null}">
                     <button type="button" class="btn btn-info">Download Kartu UTS</button>
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         <span class="caret"></span>
@@ -60,9 +60,23 @@
                         <li><a target="_blank" th:href="@{/menumahasiswa/krs/kartu}">Komputer</a>
                         </li>
                     </ul>
-                </div>
+
 
             </div>
+
+                <div class="btn-group" th:if="${uas != null}">
+                    <button type="button" class="btn btn-info">Download Kartu UAS</button>
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a target="_blank" th:href="@{/menumahasiswa/krs/kartuhpuas}">HandPhone</a>
+                        </li>
+                        <li><a target="_blank" th:href="@{/menumahasiswa/krs/kartuuas}">Komputer</a>
+                        </li>
+                    </ul>
+                </div>
 
             <table class="table table-striped jambo_table bulk_action" width="100%">
                 <tr>
