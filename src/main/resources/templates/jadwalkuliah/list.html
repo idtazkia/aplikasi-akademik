@@ -80,13 +80,13 @@
             <div class="col-md-12">
                 <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a>
 
-                <span th:if="${hanyaMagister == '05' }">
-                <form th:action="@{/jadwalkuliah/clearallperhari (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id}, hari = ${selectedHari.id})}" method="post">
-                    <button type="submit" class="btn btn-danger btn-xs"
-                            onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi
-                    </button>
-                </form>
-                </span>
+                <!--<span th:if="${hanyaMagister == '05' }">-->
+                <!--<form th:action="@{/jadwalkuliah/clearallperhari (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id}, hari = ${selectedHari.id})}" method="post">-->
+                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                            <!--onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi-->
+                    <!--</button>-->
+                <!--</form>-->
+                <!--</span>-->
                 <br>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" >
@@ -141,14 +141,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -165,13 +165,13 @@
             <span th:if="${selectedHari == null && selectedTahun != null}">
             <div class="col-md-12">
                 <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a>
-                <span th:if="${hanyaMagister == '05' }">
-                <form th:action="@{/jadwalkuliah/clear (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id})}" method="post">
-                    <button type="submit" class="btn btn-danger btn-xs"
-                            onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi
-                    </button>
-                </form>
-                </span>
+                <!--<span th:if="${hanyaMagister == '05' }">-->
+                <!--<form th:action="@{/jadwalkuliah/clear (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id})}" method="post">-->
+                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                            <!--onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi-->
+                    <!--</button>-->
+                <!--</form>-->
+                <!--</span>-->
                 <br>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" >
@@ -226,14 +226,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -277,14 +277,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -327,14 +327,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -378,14 +378,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -429,14 +429,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -480,14 +480,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -531,14 +531,14 @@
 
                                      </a>
                                     </td>
-                                    <td th:if="${hanyaMagister == '05' }">
-                                        <form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Are you sure want too clear this?')">
-                                                    Clear Jam-Ruangan-Sesi
-                                                </button>
-                                        </form>
-                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
 
                                     </tr>
                                     </tbody>

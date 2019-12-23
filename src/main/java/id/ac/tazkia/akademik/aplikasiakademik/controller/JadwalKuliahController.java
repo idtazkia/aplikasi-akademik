@@ -295,19 +295,19 @@ public class JadwalKuliahController {
         }
 
 
-        //show button saat magister terpilih
-        if (program != null && tahunAkademik != null && hari != null) {
-            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
-                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
-            }
-        }
-
-        //show button saat magister terpilih tanpa hari
-        if (program != null && tahunAkademik != null && hari == null) {
-            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
-                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
-            }
-        }
+//        //show button saat magister terpilih
+//        if (program != null && tahunAkademik != null && hari != null) {
+//            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
+//                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
+//            }
+//        }
+//
+//        //show button saat magister terpilih tanpa hari
+//        if (program != null && tahunAkademik != null && hari == null) {
+//            for (Jadwal jdl : jadwalDao.findByStatusAndProdi(StatusRecord.AKTIF, tahunAkademik.getProdi())) {
+//                model.addAttribute("hanyaMagister", jdl.getProdi().getId());
+//            }
+//        }
 
 
     }
