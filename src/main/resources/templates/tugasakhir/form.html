@@ -14,7 +14,7 @@
                 <div style="background-color: #4285f4; padding-top: 10px; padding-left: 20px; padding-bottom: 10px; padding-right: 20px; border-top-right-radius: 20px; border-top-left-radius: 20px;">
                     <h4 style="color: white;">Detail Konsep Note</h4>
                 </div>
-
+                <form th:action="@{/tugasakhir/approve(idnote=${note.id})}" method="post" th:object="${note}" class="col-md-6">
                 <div style="padding-left: 20px; padding-bottom: 10px;">
                     <h5 style="color: #6c6c6c;"><b>Nim</b></h5>
                     <h4 style="color: #4285f4"><b th:text="${note.mahasiswa.nim}">1212121</b></h4>
@@ -24,8 +24,8 @@
 
                     <h5 style="color: #6c6c6c;"><b>Supervisor 1</b></h5>
                     <h4 style="color: #4285f4" th:object="${note}">
-                        <select name="" class="form-control js-example-placeholder-single" id="dosen-note" th:field="*{dosen}">
-                            <option value=""></option>
+                        <select name="dosen" class="form-control js-example-placeholder-single" id="dosen-note" th:field="*{dosen}">
+                            <option value="-I-"> - </option>
                             <option th:each="data : ${dosen}"
                                     th:value="${data.id}"
                                     th:text="${data.karyawan.namaKaryawan}"></option>
@@ -34,8 +34,8 @@
 
                     <h5 style="color: #6c6c6c;"><b>Supervisor 2</b></h5>
                     <h4 style="color: #4285f4" th:object="${note}">
-                        <select name="" class="form-control js-example-placeholder-single" id="dosen2-note" th:field="*{dosen2}">
-                            <option value=""></option>
+                        <select name="dosen2" class="form-control js-example-placeholder-single" id="dosen2-note" th:field="*{dosen2}">
+                            <option value="-I-"> - </option>
                             <option th:each="data : ${dosen}"
                                     th:value="${data.id}"
                                     th:text="${data.karyawan.namaKaryawan}"></option>
@@ -48,10 +48,9 @@
                         </div>
                     <br>
                         <div class="form-group col-md-12">
-                            <form th:action="@{/tugasakhir/approve}" method="post" th:object="${note}" class="col-md-6">
-                                <input type="hidden" id="dosen" name="dosen" th:field="*{dosen}">
+                               <!-- <input type="hidden" id="dosen" name="dosen" th:field="*{dosen}">
                                 <input type="hidden" id="dosen2" name="dosen2" th:field="*{dosen2}">
-                                <input type="hidden" name="keterangan" id="ke" th:field="*{keterangan}">
+                                <input type="hidden" name="keterangan" id="ke" th:field="*{keterangan}">-->
                                 <input type="hidden" name="id" th:field="*{id}">
                                 <button style="background-color: #4285f4; border: none; color: white; width: 100px; height: 30px; border-radius: 10px;">Approved</button>
                             </form>

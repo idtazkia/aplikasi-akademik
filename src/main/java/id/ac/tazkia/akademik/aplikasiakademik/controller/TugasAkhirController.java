@@ -330,16 +330,21 @@ public class TugasAkhirController {
     }
 
     @PostMapping("/tugasakhir/approve")
-    public String Approve(Authentication authentication,@RequestParam String id,@RequestParam String keterangan){
-        User user = currentUserService.currentUser(authentication);
-        Note note = noteDao.findById(id).get();
-        note.setStatus(StatusApprove.APPROVED);
-        note.setKeterangan(keterangan);
-        note.setTanggalApprove(LocalDate.now());
-        note.setUserApprove(user);
-        noteDao.save(note);
+    public String Approve(Authentication authentication,
+                          @RequestParam String idnote,
+                          @ModelAttribute Note note){
 
-        return "redirect:list?tahun="+note.getTahunAkademik().getId()+"&prodi="+note.getMahasiswa().getIdProdi().getId();
+        User user = currentUserService.currentUser(authentication);
+        Note note1 = noteDao.findById(idnote).get();
+        note1.setDosen(note.getDosen());
+        note1.setDosen2(note.getDosen2());
+        note1.setStatus(StatusApprove.APPROVED);
+        note1.setKeterangan(note.getKeterangan());
+        note1.setTanggalApprove(LocalDate.now());
+        note1.setUserApprove(user);
+        noteDao.save(note1);
+
+        return "redirect:list?tahun="+note1.getTahunAkademik().getId()+"&prodi="+note1.getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/tugasakhir/reject")

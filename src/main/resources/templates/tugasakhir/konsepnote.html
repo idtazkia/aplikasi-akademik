@@ -60,7 +60,7 @@
                             <div class="form-group">
                                 <label class="text-name">Dosen 1</label>
                                 <select name="dosen" required th:field="*{dosen}" class="form-control js-example-placeholder-single">
-                                    <option value=""></option>
+                                    <option value="-I-"> - </option>
                                     <option th:each="data : ${dosen}"
                                             th:value="${data.id}"
                                             th:text="${data.karyawan.namaKaryawan}"></option>
@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <label class="text-name">Dosen 2</label>
                                 <select name="dosen2" required th:field="*{dosen2}" class="form-control js-example-placeholder-single">
-                                    <option value="" class="disabled"></option>
+                                    <option value="-I-"> - </option>
                                     <option th:each="data : ${dosen}"
                                             th:value="${data.id}"
                                             th:text="${data.karyawan.namaKaryawan}"></option>
