@@ -551,9 +551,7 @@ public class KrsController {
         List<Kartu> kartus = new ArrayList<>();
 
         for (KrsDetail kd : krsDetail){
-            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
-            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+            Long absen = presensiMahasiswaDao.jumlahMangkir(mahasiswa,kd);
 
             if (absen > 3){
                 LOGGER.info("Tidak masuk lebih dari 3");
@@ -587,9 +585,7 @@ public class KrsController {
         List<Kartu> kartus = new ArrayList<>();
 
         for (KrsDetail kd : krsDetail){
-            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
-            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+            Long absen = presensiMahasiswaDao.jumlahMangkir(mahasiswa,kd);
 
             if (absen > 3){
                 LOGGER.info("Tidak masuk lebih dari 3");
@@ -623,9 +619,7 @@ public class KrsController {
         List<Kartu> kartus = new ArrayList<>();
 
         for (KrsDetail kd : krsDetail){
-            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
-            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+            Long absen = presensiMahasiswaDao.jumlahMangkir(mahasiswa,kd);
 
             if (absen > 3){
                 LOGGER.info("Tidak masuk lebih dari 3");
@@ -659,9 +653,7 @@ public class KrsController {
         List<Kartu> kartus = new ArrayList<>();
 
         for (KrsDetail kd : krsDetail){
-            Long presensiMahasiswa = presensiMahasiswaDao. hitungAbsen(kd,StatusRecord.AKTIF,StatusPresensi.TERLAMBAT,StatusPresensi.MANGKIR);
-            List<PresensiDosen> presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,kd.getJadwal());
-            Integer absen = Math.toIntExact(presensiDosen.size() - presensiMahasiswa);
+            Long absen = presensiMahasiswaDao.jumlahMangkir(mahasiswa,kd);
 
             if (absen > 3){
                 LOGGER.info("Tidak masuk lebih dari 3");

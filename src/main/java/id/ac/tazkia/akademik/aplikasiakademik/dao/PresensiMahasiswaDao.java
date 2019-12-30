@@ -51,4 +51,8 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.DetailPresensi(pm.waktuMasuk,pm.statusPresensi,pm.sesiKuliah.beritaAcara,pm.sesiKuliah.waktuMulai) from PresensiMahasiswa pm where pm.krsDetail = :kd and pm.status = :status and pm.sesiKuliah.id = :id")
     List<DetailPresensi> detailPresensi(@Param("kd")KrsDetail krsDetail,@Param("status")StatusRecord statusRecord,@Param("id") String id);
 
+    @Query(value = "select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=?2 and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR','TERLAMBAT')", nativeQuery = true)
+    Long jumlahMangkir(Mahasiswa mahasiswa, KrsDetail krsDetail);
+
+
 }
