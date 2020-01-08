@@ -131,42 +131,6 @@
         </div>
     </div>
 
-    <div class="row" th:if="${absensi != null}">
-        <div class="col-xs-12">
-            <div class="container">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th rowspan="2">No.</th>
-                            <th rowspan="2">UAS ID</th>
-                            <th rowspan="2">NIM</th>
-                            <th rowspan="2">Student Name</th>
-                            <th rowspan="2">Signature</th>
-                            <th colspan="2" style="text-align: center;">Grade</th>
-                        </tr>
-                        <tr>
-                            <th>Score</th>
-                            <th th:text="${jadwal.bobotUts+'%'}">20.00%</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="data,row : ${absensi}">
-                            <td th:text="${(row.index + 1)}">1</td>
-                            <td th:text="${data.id}">17535</td>
-                            <td th:text="${data.nim}">S.17101.092</td>
-                            <td th:text="${data.nama}">Firza Faadhilah Arifian</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
     <div class="row">
         <div class="col-xs-4">
             <p>Bogor .................................</p>
