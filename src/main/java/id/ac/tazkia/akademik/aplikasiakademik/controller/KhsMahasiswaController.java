@@ -78,9 +78,6 @@ public class KhsMahasiswaController {
 
         model.addAttribute("mahasiswa",mahasiswa);
 
-        if (mahasiswa.getTerakhirUpdate() == null){
-            return "redirect:user/form";
-        }
 
         if (tahunAkademik != null) {
 //            List<KhsDto> khsDtos = new ArrayList<>();
