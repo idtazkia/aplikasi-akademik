@@ -44,7 +44,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail,Strin
     List<KrsDetail> findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord,StatusRecord statusEdom);
     KrsDetail findByMahasiswaAndKrsTahunAkademikAndStatusAndMatakuliahKurikulumMatakuliahNamaMatakuliahLike(Mahasiswa mahasiswa,TahunAkademik tahunAkademik,StatusRecord statusRecord,String matkul);
 
-    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TestDto(kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,0,kd.nilaiUts,kd.nilaiUas,0) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
+    @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.TestDto(kd.id,kd.mahasiswa.nim,kd.mahasiswa.nama,0,kd.nilaiUts,kd.nilaiUas,0,kd.nilaiAkhir,kd.grade) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")
     List<TestDto> penilaianList(@Param("jadwal")String jadwal,@Param("status")StatusRecord statusRecord);
 
     @Query("select new id.ac.tazkia.akademik.aplikasiakademik.dto.NilaiDto(kd.mahasiswa.nim,kd.nilaiUts) from KrsDetail kd where kd.jadwal.id = :jadwal and kd.status = :status")

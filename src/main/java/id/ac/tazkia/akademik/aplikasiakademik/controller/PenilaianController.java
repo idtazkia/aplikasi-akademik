@@ -266,8 +266,8 @@ public class PenilaianController {
     }
 
     @PostMapping(value = "/penilaian/nilai")
-    @ResponseBody @ResponseStatus(HttpStatus.OK)
-    public String simpanNilai(@RequestBody @Valid InputNilaiDto in) throws Exception   {
+    @ResponseStatus(HttpStatus.OK)
+    public void simpanNilai(@RequestBody @Valid InputNilaiDto in) throws Exception   {
         Grade a = gradeDao.findById("1").get();
         Grade amin= gradeDao.findById("2").get();
         Grade bplus= gradeDao.findById("3").get();
@@ -278,17 +278,10 @@ public class PenilaianController {
         Grade d = gradeDao.findById("8").get();
         Grade e = gradeDao.findById("9").get();
 
-        if (in == null){
+        if (in != null){
 
-        }else {
-
-            if (in.getNilai().isEmpty() || in.getNilai() == "") {
-                if (in.getNilai().isEmpty() || in.getNilai() == "" && in.getUts().isEmpty() || in.getUts() == "" && in.getUas() == null || in.getUas() == "") {
-                }
-                if (in == null && in.getUts().isEmpty() || in.getUts() == "" || in.getUts() == null) {
-
-                } else {
-
+            if (in.getNilai().trim().isEmpty()) {
+                if (in.getUts() != null && !in.getUts().isEmpty()) {
                     KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
                     BigDecimal nilaiUts = new BigDecimal(in.getUts()).multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                     BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
@@ -359,16 +352,11 @@ public class PenilaianController {
                         krsDetail.setBobot(a.getBobot());
                     }
 
-
-
-
                     krsDetailDao.save(krsDetail);
-                    return "redirect:penilaian/nilai?jadwal=" + krsDetail.getJadwal().getId();
                 }
 
-                if (in.getUas() == null || in.getUas() == "") {
+                if (in.getUas() != null && !in.getUas().trim().isEmpty()) {
 
-                } else {
                     KrsDetail krsDetail = krsDetailDao.findById(in.getKrs()).get();
                     int presensiMahasiswa = presensiMahasiswaDao.findByKrsDetailAndStatusAndStatusPresensi(krsDetail,StatusRecord.AKTIF,StatusPresensi.HADIR).size();
                     int presensiDosen = presensiDosenDao.findByStatusAndJadwal(StatusRecord.AKTIF,krsDetail.getJadwal()).size();
@@ -435,7 +423,6 @@ public class PenilaianController {
                         krsDetail.setBobot(a.getBobot());
                     }
                     krsDetailDao.save(krsDetail);
-                    return "redirect:penilaian/nilai?jadwal=" + krsDetail.getJadwal().getId();
                 }
             } else {
 
@@ -524,7 +511,6 @@ public class PenilaianController {
                     }
 
                     krsDetailDao.save(kd);
-                    return "redirect:penilaian/nilai?jadwal=" + kd.getJadwal().getId();
 
                 } else {
                     BigDecimal nilai = bobotTugas.getBobot().multiply(new BigDecimal(in.getNilai()).divide(new BigDecimal(100)));
@@ -603,15 +589,10 @@ public class PenilaianController {
                         kd.setBobot(a.getBobot());
                     }
                     krsDetailDao.save(kd);
-
-                    return "redirect:penilaian/nilai?jadwal=" + kd.getJadwal().getId();
                 }
 
             }
         }
-
-
-        return null;
     }
 
     @GetMapping("/api/nilai")

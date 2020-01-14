@@ -17,4 +17,6 @@ public class TestDto {
     private BigDecimal nilaiUts;
     private BigDecimal nilaiUas;
     private Integer absensi;
+    private BigDecimal nilaiAkhir;
+    private String grade;
 }
