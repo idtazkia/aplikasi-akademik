@@ -49,7 +49,7 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
-        $('.filterme').keypress(function(evt) {
+        $('.filterme').keypress(function(eve) {
             var charCode = (evt.which) ? evt.which : event.keyCode;
             if (charCode > 31 && (charCode < 48 || charCode > 57))
                 return false;
@@ -66,20 +66,22 @@
             };
         })();
 
+        $(document).ready(
+            function() {
+                setInterval(function() {
+                    $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                        document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                        document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                        // console.log(data);
+                    });
 
-        function hitungNilaiAkhir(id) {
-            console.log("Hitung nilai akhir");
-            $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val())
-                .done(function(data, status){
-                    console.log("selesai request nilai akhir");
-                    document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
-                    document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
-                    // console.log(data);
-                });
-        }
+                }, 5000);  //Delay here = 5 seconds
+            });
+
+
 
         //function uas
-        function inputUts(arg) {
+        function myFunction(arg) {
             var id = arg.getAttribute('id');
             var value = arg.value;
 
@@ -89,78 +91,116 @@
             console.log(value);
             console.log($("input[name='" + id + '-' + 'krs' + "']").val());
 
-            console.log(id);
-            var url = "/penilaian/nilai";
-            var token = $("input[name='_csrf']").val();
+            $(document).keyup(function (e) {
+                delay(function () {
+                    console.log(id);
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        url: url,
+                        data: JSON.stringify({
+                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
+                            "uts" : value,
+                            "nilai": "",
+                            "tugas": "",
+                            "uas" : ""
+                        })
+                    }, 500);
+                    delay(function () {
+                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                            console.log(data);
+                        });
+                    }, 2000);
 
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json;charset=UTF-8",
-                headers: {"X-CSRF-TOKEN": token},
-                url: url,
-                data: JSON.stringify({
-                    "krs": $("input[name='" + id + '-' + 'krs' + "']").val(),
-                    "uts": value,
-                    "nilai": "",
-                    "tugas": "",
-                    "uas": ""
-                })
-            }, 500).done(hitungNilaiAkhir(id));
+                }, 1000);
+
+            });
         }
 
 
 
         //function tugas
-        function inputTugas(arg) {
-                var id = arg.getAttribute('id');
-                var value = arg.value;
+        function lookup(arg) {
+            var id = arg.getAttribute('id');
+            var value = arg.value;
 
             var mahasiswa = /*[[${jsMahasiswa}]]*/["001", "002"];
             var i;
 
             console.log(id);
 
-            var url = "/penilaian/nilai";
-            var token = $("input[name='_csrf']").val();
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json;charset=UTF-8",
-                headers: {"X-CSRF-TOKEN": token},
-                data: JSON.stringify({
+            $(document).keyup(function (e) {
+                delay(function () {
 
-                    "nilai": $("input[name='" + id + "']").val(),
-                    "tugas": $("input[name='" + id + '-' + 'id' + "']").val(),
-                    "krs": $("input[name='" + id + '-' + 'krs' + "']").val()
-                }),
-                url: url
-            }, 500).done(hitungNilaiAkhir(id));
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        data: JSON.stringify({
 
+                            "nilai": $("input[name='" + id + "']").val(),
+                            "tugas": $("input[name='" + id + '-' + 'id' + "']").val(),
+                            "krs": $("input[name='" + id + '-' + 'krs' + "']").val()
+                        }),
+                        url: url
+                    }, 500);
+                    delay(function () {
+                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                            console.log(data);
+                        });
+                    }, 2000);
+
+                }, 1000);
+
+            });
         }
 
 
-        function inputUas(arg) {
+        function hitungUas(arg) {
             var id = arg.getAttribute('id');
             var value = arg.value;
 
-            console.log(id);
-            var url = "/penilaian/nilai";
-            var token = $("input[name='_csrf']").val();
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json;charset=UTF-8",
-                headers: {"X-CSRF-TOKEN": token},
-                url: url,
-                data: JSON.stringify({
-                    "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
-                    "uts" : "",
-                    "nilai": "",
-                    "tugas": "",
-                    "uas" : value
-                })
-            }, 500).done(hitungNilaiAkhir(id));
+            $(document).keyup(function (e) {
+                delay(function () {
+                    console.log(id);
+                    var url = "/penilaian/nilai";
+                    var token = $("input[name='_csrf']").val();
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        url: url,
+                        data: JSON.stringify({
+                            "krs" : $("input[name='" + id + '-' + 'krs' + "']").val(),
+                            "uts" : "",
+                            "nilai": "",
+                            "tugas": "",
+                            "uas" : value
+                        })
+                    }, 500);
+                    delay(function () {
+                        $.get("/api/nilai?krsDetail="+ $("input[name='" + id + '-' + 'krs' + "']").val(), function(data, status){
+                            document.getElementById(data.mahasiswa.id).innerHTML = data.nilaiAkhir;
+                            document.getElementById(data.mahasiswa.id+'grade').innerHTML = data.grade;
+                            console.log(data);
+                        });
+                    }, 2000);
+
+                }, 1000);
+
+            });
         }
 
     </script>
@@ -271,16 +311,16 @@
                                                 <td><span th:text="${data.absensi}"></span><sup>x</sup></td>
                                                 <td th:text="${data.presensi}">0</td>
                                                 <td th:each="tugas :${bobotTugas}"><center>
-                                                    <input th:each="nilai :${nilaiTugas}" th:if="${nilai.id == data.id && nilai.nama == tugas.id}" class="filterme" type="text" maxlength="3" th:name="${tugas.id + '-' + data.nim}" onkeydown="inputTugas(this);" th:id="${tugas.id + '-' + data.nim}" style="width: 80%;" th:placeholder="${nilai.bobot}">
+                                                    <input th:each="nilai :${nilaiTugas}" th:if="${nilai.id == data.id && nilai.nama == tugas.id}" class="filterme" type="text" maxlength="3" th:name="${tugas.id + '-' + data.nim}" onkeyup="lookup(this);" th:id="${tugas.id + '-' + data.nim}" style="width: 80%;" th:placeholder="${nilai.bobot}">
                                                     <input type="hidden" th:value="${tugas.id}" th:name="${tugas.id + '-' + data.nim + '-' + 'id'}">
                                                     <input type="hidden" th:value="${data.id}" th:name="${tugas.id + '-' + data.nim + '-' + 'krs'}">
                                                 </center></td>
                                                 <td><center>
-                                                    <input class="filterme" th:placeholder="${data.nilaiUts}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uts'}" th:name="${data.nim + 'uts'}"  onkeydown="inputUts(this);" style="width: 80%;"></center>
+                                                    <input class="filterme" th:placeholder="${data.nilaiUts}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uts'}" th:name="${data.nim + 'uts'}"  onkeyup="myFunction(this);" style="width: 80%;"></center>
                                                     <input type="hidden" th:name="${data.nim + '-' + 'uts' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uts' + 'krs'}" th:value="${data.id}">
                                                 </td>
                                                 <td><center>
-                                                    <input class="filterme" th:placeholder="${data.nilaiUas}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uas'}" th:name="${data.nim + 'uas'}" onkeydown="inputUas(this);" style="width: 80%;">
+                                                    <input class="filterme" th:placeholder="${data.nilaiUas}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uas'}" th:name="${data.nim + 'uas'}" onkeyup="hitungUas(this);" style="width: 80%;">
                                                     <input type="hidden" th:name="${data.nim + '-' + 'uas' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uas' + 'krs'}" th:value="${data.id}">
                                                 </center></td>
 
