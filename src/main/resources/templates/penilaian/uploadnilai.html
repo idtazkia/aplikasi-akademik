@@ -35,7 +35,7 @@
                                         <form th:action="@{/upload/formTugas (jadwal = ${data.id})}"
                                               method="post" enctype="multipart/form-data">
                                             <input class="btn btn-success btn-sm" type="file" name="file" id="uploadTugasFile">
-                                            <button class="btn btn-success btn-sm" type="submit" id="uploadTugas">Upload Nilai</button>
+                                            <button class="btn btn-success btn-sm simpan" type="submit" id="uploadTugas">Upload Nilai</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -53,7 +53,7 @@
                                               method="post" enctype="multipart/form-data">
 
                                             <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUTSFile">
-                                            <button class="btn btn-success btn-sm" type="submit" id="uploadUTS">Upload Nilai</button>
+                                            <button class="btn btn-success btn-sm simpan" type="submit" id="uploadUTS">Upload Nilai</button>
 
                                         </form>
                                     </td>
@@ -72,11 +72,20 @@
                                               method="post" enctype="multipart/form-data">
 
                                             <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUASFile">
-                                            <button class="btn btn-success btn-sm" type="submit" id="uploadUAS">Upload Nilai</button>
+                                            <button class="btn btn-success btn-sm simpan" type="submit" id="uploadUAS">Upload Nilai</button>
 
                                         </form>
                                     </td>
                                 </tr>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td >
+                                            <a th:href="@{/penilaian/nilai (jadwal = ${jadwal.id})}">
+                                                <button class="btn btn-warning" type="button">Nilai Mahasiswa</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
                             </table>
 
 
@@ -102,12 +111,13 @@
 
     $('.simpan').click(function () {
         Swal.fire({
-            position: 'top-end',
+            position: 'middle',
             type: 'success',
             title: 'Your work has been saved',
             showConfirmButton: false
         })
     });
+
 
     $('#uploadTugas').bind("click",function()
     { if(!$('#uploadTugasFile').val()){
