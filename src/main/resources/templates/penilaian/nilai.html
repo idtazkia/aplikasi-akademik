@@ -311,16 +311,16 @@
                                                 <td><span th:text="${data.absensi}"></span><sup>x</sup></td>
                                                 <td th:text="${data.presensi}">0</td>
                                                 <td th:each="tugas :${bobotTugas}"><center>
-                                                    <input th:each="nilai :${nilaiTugas}" th:if="${nilai.id == data.id && nilai.nama == tugas.id}" class="filterme" type="text" maxlength="3" th:name="${tugas.id + '-' + data.nim}" onkeyup="lookup(this);" th:id="${tugas.id + '-' + data.nim}" style="width: 80%;" th:placeholder="${nilai.bobot}">
+                                                    <input th:each="nilai :${nilaiTugas}" th:if="${nilai.id == data.id && nilai.nama == tugas.id}" class="filterme" type="text" maxlength="6" th:name="${tugas.id + '-' + data.nim}" onkeyup="lookup(this);" th:id="${tugas.id + '-' + data.nim}" style="width: 80%;" th:placeholder="${nilai.bobot}">
                                                     <input type="hidden" th:value="${tugas.id}" th:name="${tugas.id + '-' + data.nim + '-' + 'id'}">
                                                     <input type="hidden" th:value="${data.id}" th:name="${tugas.id + '-' + data.nim + '-' + 'krs'}">
                                                 </center></td>
                                                 <td><center>
-                                                    <input class="filterme" th:placeholder="${data.nilaiUts}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uts'}" th:name="${data.nim + 'uts'}"  onkeyup="myFunction(this);" style="width: 80%;"></center>
+                                                    <input class="filterme" th:placeholder="${data.nilaiUts}" type="text" maxlength="6" th:id="${data.nim + '-' + 'uts'}" th:name="${data.nim + 'uts'}"  onkeyup="myFunction(this);" style="width: 80%;"></center>
                                                     <input type="hidden" th:name="${data.nim + '-' + 'uts' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uts' + 'krs'}" th:value="${data.id}">
                                                 </td>
                                                 <td><center>
-                                                    <input class="filterme" th:placeholder="${data.nilaiUas}" type="text" maxlength="3" th:id="${data.nim + '-' + 'uas'}" th:name="${data.nim + 'uas'}" onkeyup="hitungUas(this);" style="width: 80%;">
+                                                    <input class="filterme" th:placeholder="${data.nilaiUas}" type="text" maxlength="6" th:id="${data.nim + '-' + 'uas'}" th:name="${data.nim + 'uas'}" onkeyup="hitungUas(this);" style="width: 80%;">
                                                     <input type="hidden" th:name="${data.nim + '-' + 'uas' + '-' + 'krs'}" th:id="${data.nim + '-' + 'uas' + 'krs'}" th:value="${data.id}">
                                                 </center></td>
 
