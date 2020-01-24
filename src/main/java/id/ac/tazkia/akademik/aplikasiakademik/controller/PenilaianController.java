@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -75,6 +76,9 @@ public class PenilaianController {
 
     @Autowired
     private CurrentUserService currentUserService;
+
+    @Autowired
+    private MatakuliahKurikulumDao matakuliahKurikulumDao;
 
     @Value("${upload.excel}")
     private String uploadFolder;
@@ -1081,6 +1085,9 @@ public class PenilaianController {
 
                 String nim = baris.getCell(3).getStringCellValue();
                 Cell nilai = baris.getCell(5 );
+
+                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
+
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
@@ -1102,7 +1109,20 @@ public class PenilaianController {
 /*sum semua tugas*/ BigDecimal nilTug = nilaiAkhirnya.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
                     krsDetail.setNilaiTugas(nilTug);
 
-                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(krsDetail.getNilaiPresensi()));
+                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
+
+                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,bobotTugas.getJadwal());
+
+                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliah_PresensiDosen_StatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
+
+
+                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
+                    BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds*10*krsDetail.getMatakuliahKurikulum().getSds()/100));
+                    krsDetail.setNilaiPresensi(nilaiPresensi);
+
+
+
+                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
 
                     if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
                         System.out.println("a-");
@@ -1217,6 +1237,8 @@ public class PenilaianController {
                 String nim = baris.getCell(3).getStringCellValue();
                 Cell nilai = baris.getCell(5);
 
+                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
+
                 if(nilai != null) {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
@@ -1228,7 +1250,17 @@ public class PenilaianController {
                             .divide(new BigDecimal(100));
 
 
-                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(krsDetail.getNilaiPresensi()));
+                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
+                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
+
+                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliah_PresensiDosen_StatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
+
+
+                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
+                    BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds*10*krsDetail.getMatakuliahKurikulum().getSds()/100));
+                    krsDetail.setNilaiPresensi(nilaiPresensi);
+
+                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
 
                     if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
                         System.out.println("a-");
@@ -1347,17 +1379,36 @@ public class PenilaianController {
                 Cell nilai = baris.getCell(5);
                 String nim = baris.getCell(3).getStringCellValue();
 
+                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
+
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
+
                     krsDetail.setNilaiUas(new BigDecimal(nilai.getNumericCellValue()));
 
                     BigDecimal nilaiUas = new BigDecimal(nilai.getNumericCellValue()).multiply(krsDetail.getJadwal().getBobotUts())
                             .divide(new BigDecimal(100));
 
-                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(nilaiUas).add(krsDetail.getNilaiPresensi()));
+
+
+                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
+                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
+
+                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliah_PresensiDosen_StatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
+
+                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
+                    BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds*10*krsDetail.getMatakuliahKurikulum().getSds()/100));
+                    krsDetail.setNilaiPresensi(nilaiPresensi);
+
+                    System.out.println(" JUMLAH PRESENSI DOSEN         :   "   +  jmlhDsn);
+                    System.out.println(" JUMLAH PRESENSI MAHASISWA     :   "   +  jmlhMhsw);
+                    System.out.println(" JUMLAH PRESENSI SDS MAHASISWA :   "   +  jmlhSds);
+                    System.out.println(" HASIL NILAI PRESENSI SDS      :   "   +  nilaiPresensiSds);
+
+                    krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
 
                     if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
                         System.out.println("a-");

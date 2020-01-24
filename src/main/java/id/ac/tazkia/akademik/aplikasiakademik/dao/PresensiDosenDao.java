@@ -17,4 +17,7 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
 
     @Query("select count (*) from PresensiDosen pd where pd.status =:status and pd.jadwal.id = :jadwal")
     Long jumlahKehadiranDosen(@Param("status")StatusRecord statusRecord,@Param("jadwal")String jadwal);
+
+    Long countByStatusAndJadwal(StatusRecord statusRecord,Jadwal jadwal);
+
 }
