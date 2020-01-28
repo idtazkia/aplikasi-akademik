@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Jurusan</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Jurusan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/setting/major/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr class="heading">
+                                <th>
+                                    <input type="checkbox" id="check-all" class="flat">
+                                </th>
+                                <th class="column-title">#</th>
+                                <th class="column-title">Faculty</th>
+                                <th class="column-title">Majors</th>
+                                <th class="column-title">Description</th>
+                                <th class="column-title">Action</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="even pointer" th:each="dataJ,row :${listJurusan}">
+                                <td class="a-center ">
+                                    <input type="checkbox" class="flat" name="table_records">
+                                </td>
+                                <td th:text="${(row.index + 1) + (listJurusan.number * listJurusan.size)}"></td>
+                                <td th:text="${dataJ.kodeJurusan}"></td>
+
+                                <td>
+
+                                    <a class="btn btn-success btn-outline-success btn-sm" href="form" th:if="${dataJ.status.AKTIF} == ${dataJ.status}" th:text="${dataJ.namaJurusan}"  th:href="@{/setting/major/form(id = ${dataJ.id})}">
+                                    </a>
+                                    <a class="btn btn-danger btn-outline-danger btn-sm" href="form" th:if="${dataJ.status.NONAKTIF} == ${dataJ.status}" th:text="${dataJ.namaJurusan}"  th:href="@{/setting/major/form(id = ${dataJ.id})}">
+                                    </a>
+
+                                </td>
+
+                                <td th:text="${dataJ.keterangan}" ></td>
+
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + dataJ.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                    <div class="modal fade" th:id="${'modal-notification' + dataJ.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                            <div class="modal-content bg-gradient-danger">
+
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="py-3 text-center">
+                                                        <i class="far fa-trash-alt fa-3x"></i>
+                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <form method="post" th:action="@{/setting/major/delete(jurusan = ${dataJ.id})}">
+                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

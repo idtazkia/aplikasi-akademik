@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-success{
+            background-color: #5cb85c;
+            border-radius: 10px;
+        }
+
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: #d9534f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body onload="myFunction()">
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>KRS Form</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/krs}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bounceIn">
+            <div class="row" th:if="${full == null}">
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert">
+                        Jumlah batas maksimal SKS 21 !
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert" th:text="${'Jumlah SKS yang telah diambil ' + sks}">
+                        Jumlah SKS  21 !
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" th:if="${lebih != null}">
+                <div class="col-md-12 col-xs-12">
+                    <div class="alert alert-danger">
+                        Jumlah SKS sudah melampaui batas !!!
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" th:if="${full != null}">
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert">
+                        Jumlah batas maksimal SKS 23 !
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                    <div class="alert alert-info" role="alert" th:text="${'Jumlah SKS yang telah diambil ' + sks}">
+                        Jumlah SKS  21 !
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Data KRS</h2>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <form th:action="@{/study/form}" method="post" id="krs">
+                                <input type="hidden" name="jumlah" th:if="${full == null}" th:value="${'21'}">
+                                <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'23'}">
+                                <button class="btn btn-primary notika-btn-danger btn-sm waves-effect">Simpan</button>
+                                <br>
+                                <br>
+                                <table id="data-table-basic" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Day</th>
+                                        <th>Time</th>
+                                        <th>Subject</th>
+                                        <th>SKS</th>
+                                        <th>Class</th>
+                                        <th>Lecture</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${pilihanKrs}">
+                                        <td><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
+                                        <td th:text="${data[1]}">Senin</td>
+                                        <td th:text="${data[3] + ' - ' + data[4]}">13.00</td>
+                                        <td><button class="bd-primary" th:text="${data[7]}">Ini Subject Ini Subject</button></td>
+                                        <td th:text="${data[5]}">Ini SKS</td>
+                                        <td><button class="bd-warning" th:text="${data[2]}">Ruang 1.3</button></td>
+                                        <td th:text="${data[6]}">Ini Lecture</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $("#save").click(function(){
+        $("#save").hide();
+    });
+</script>
+</body>
+</html>

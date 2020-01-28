@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h1 font-weight-bold mb-0">Class Room</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
+                                            <i class="fas fa-building"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form Data</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a href="/ruang/list" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="container mt-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Select Building</label>
+                                            <select class="form-control" name="">
+                                                <option selected hidden value="">Select One</option>
+                                                <option value="">Granada</option>
+                                                <option value="">Abu Yusuf</option>
+                                                <option value="">Bina Qalbu</option>
+                                                <option value="">STEI Tazkia</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Select Room Type</label>
+                                            <select class="form-control" name="">
+                                                <option selected hidden value="">Select One</option>
+                                                <option value="">Ruang Kelas</option>
+                                                <option value="">Asrama Putra</option>
+                                                <option value="">ASrama Putri</option>
+                                                <option value="">Ruang Rapat</option>
+                                                <option value="">Aula</option>
+                                                <option value="">Ruang Kantor</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Capacity</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Floor</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <span class="clearfix"></span>
+                                            <div>Status</div>
+                                            <label class="custom-toggle">
+                                                <input type="checkbox" checked>
+                                                <span class="custom-toggle-slider rounded-circle"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Class Room Code</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Room Name</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea name="des" class="form-control" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

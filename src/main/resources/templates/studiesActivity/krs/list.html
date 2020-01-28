@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>KRS</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">KRS</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>NIM</label>
+                                    <input name="nim"
+                                           class="form-control" required
+                                           placeholder="NIM" th:value="${nim}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Academic Years</label>
+                                    <select name="tahunAkademik" th:value="${tahun}" required class="form-control">
+                                        <option value="" selected disabled>-- Select One --</option>
+                                        <option th:each="data : ${tahunAkademik}"
+                                                th:selected="(${data} == *{tahun})"
+                                                th:text="${data.namaTahunAkademik}"
+                                                th:value="${data.id}">sdasd</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 10px; padding-bottom: 20px;">
+                                <div class="col-md-12" style="text-align: center;">
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Search</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="card shadow" th:if="${tahun != null}">
+                            <div class="card-header border-0">
+                                <a th:href="@{/studiesActivity/krs/form(nim = ${nim}, tahunAkademik= ${tahun.id})}" class="btn btn-dark btn-sm"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                            <div class="card-header border-0">
+                                <center>
+                                    <h3 class="mb-0">2018/2019 Semester Genap</h3>
+                                </center>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <tr>
+                                        <th><h4 class="mb-0">Name &nbsp;: <span th:text="${mahasiswa.nama}">Muhammad Arif</span></h4></th>
+                                        <th><h4 class="mb-0">Guide Lecturer &nbsp; : <span th:text="${mahasiswa.dosen?.karyawan.namaKaryawan}">Muhammad Arif</span></h4></th>
+                                    </tr>
+                                    <tr>
+                                        <th><h4 class="mb-0">NIM  &nbsp;  &nbsp; &nbsp;: <span th:text="${mahasiswa.nim}">19191919</span></h4></th>
+                                        <th><h4 class="mb-0">Study &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: <span th:text="${mahasiswa.idProdi.namaProdi}">19191919</span></h4></th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Day</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">SKS</th>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Room</th>
+                                        <th scope="col">Lecture</th>
+                                        <th class="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listKrs}">
+                                        <td th:text="${(row.index + 1)}">1</td>
+                                        <td th:text="${data.jadwal.hari.namaHariEng}">Senin</td>
+                                        <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}">13.00</td>
+                                        <td th:if="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}"
+                                            th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Ini Subject</td>
+                                        <td th:if="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"
+                                            th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Ini Subject</td>
+                                        <td th:text="${data.matakuliahKurikulum.jumlahSks}">Ini SKS</td>
+                                        <td th:text="${data.jadwal.kelas.namaKelas}">Ruang 1.3</td>
+                                        <td th:text="${data.jadwal.ruangan.namaRuangan}">Ruang 1.3</td>
+                                        <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Ini Lecture</td>
+                                        <td style="width: 15px;">
+                                            <a th:href="@{/study/detail (id = ${data.jadwal.id})}">
+                                                <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Detail">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </a>
+
+                                        </td>
+                                        <td>
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+
+                                                <!--modal-->
+                                                <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                        <div class="modal-content bg-gradient-danger">
+
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="modal-body">
+
+                                                                <div class="py-3 text-center">
+                                                                    <i class="far fa-trash-alt fa-3x"></i>
+                                                                    <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                    <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="modal-footer">
+                                                                <form method="post" th:action="@{/studiesActivity/krs/delete(id = ${data.id})}">
+                                                                     <button type="submit" class="btn btn-white">Delete</button>
+                                                                </form>
+                                                                <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>

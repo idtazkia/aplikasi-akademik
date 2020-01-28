@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Tugas Akhir </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card shadow">
+                    <div class="card-header border-1">
+                        <h3 class="mb-0">Detail Konsep Note</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/graduation/admin/approve(idnote=${note.id})}" method="post" th:object="${note}">
+                            <div class="form-group">
+                                <label>Nim</label>
+                                <h3 class="mb-0" th:text="${note.mahasiswa.nim}">1212121</h3>
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <h3 class="mb-0" th:text="${note.mahasiswa.nama}">Muhammad Arif</h3>
+                            </div>
+                            <div class="form-group" th:object="${note}">
+                                <label>Supervisor 1</label>
+                                <select name="dosen" id="dosen-note" required class="form-control" th:field="*{dosen}">
+                                    <option value="" selected disabled>-- Select One --</option>
+                                    <option th:each="data : ${dosen}"
+                                            th:value="${data.id}"
+                                            th:text="${data.karyawan.namaKaryawan}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group" th:object="${note}">
+                                <label>Supervisor 2</label>
+                                <select name="dosen2" id="dosen2-note" required class="form-control" th:field="*{dosen2}">
+                                    <option value="" selected disabled>-- Select One --</option>
+                                    <option th:each="data : ${dosen}"
+                                            th:value="${data.id}"
+                                            th:text="${data.karyawan.namaKaryawan}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group" th:object="${note}">
+                                <label>Comment</label>
+                                <textarea name="area" id="area" required class="form-control" th:field="*{keterangan}" onkeyup="writeMessage()" cols="30"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="id" th:field="*{id}">
+                                <input type="hidden" name="judul" th:field="*{judul}">
+                                <input type="hidden" name="judulInggris" th:field="*{judulInggris}">
+                                <button class="btn btn-primary">Approved</button>
+                            </div>
+                        </form>
+                        <form th:action="@{/graduation/admin/reject}" method="post" th:object="${note}">
+                            <input type="hidden" id="dosen2reject" name="dosen2" th:field="*{dosen2}">
+                            <input type="hidden" id="dosenreject" name="dosen" th:field="*{dosen}">
+                            <input type="hidden" name="keterangan" th:field="*{keterangan}">
+                            <input type="hidden" name="judul" th:field="*{judul}">
+                            <input type="hidden" name="judulInggris" th:field="*{judulInggris}">
+                            <input type="hidden" name="id" th:field="*{id}">
+                            <button class="btn btn-danger">Rejected</button>
+
+                        </form>
+
+
+                            </div>
+
+                    </div>
+                </div>
+
+            <div class="col-md-7">
+                <embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    function writeMessage() {
+        var keteranagan= $("input[name=keterangan]");
+        keteranagan.val(document.getElementById("area").value);
+    }
+
+    (function($){
+        $('#dosen-note').select2();
+
+        $('#dosen-note').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#dosen').val(e.params.args.data.id);
+            $('#dosenreject').val(e.params.args.data.id);
+        });
+
+        $('#dosen2-note').select2();
+
+        $('#dosen2-note').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#dosen2').val(e.params.args.data.id);
+            $('#dosen2reject').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+</script>
+

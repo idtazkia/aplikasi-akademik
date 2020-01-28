@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>KHS LIST</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>KHS List</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Data KHS</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6 col-xs-12">
+                                <form method="get">
+                                    <div class="col-md-10 col-xs-12">
+                                        <div class="form-group">
+                                            <select name="tahunAkademik" id="" class="form-control">
+                                                <option th:each="data : ${tahun}"
+                                                        th:text="${data[1]}"
+                                                        th:selected="(${data[1]} == *{selectedTahun})"
+                                                        th:value="${data[0]}">2019
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xs-12">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Cari</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Code</th>
+                                    <th>Matakuliah</th>
+                                    <th>SKS</th>
+                                    <th>Presensi</th>
+                                    <th>Task</th>
+                                    <th>Mid Term</th>
+                                    <th>End Semester Exam</th>
+                                    <th>Weight</th>
+                                    <th>Grade</th>
+                                    <th>Total</th>
+                                </tr>
+                                <tr th:each="data,row : ${khs}" >
+                                    <td th:text="${(row.index + 1)}"></td>
+                                    <td th:text="${data.kode}"></td>
+                                    <td th:text="${data.mapel}"></td>
+                                    <td th:text="${data.sks}"></td>
+                                    <td th:text="${data.presensi}"></td>
+                                    <td th:text="${data.tugas}"></td>
+                                    <td th:text="${data.uts}"></td>
+                                    <td th:text="${data.uas}"></td>
+                                    <td th:text="${data.totalBobot}"></td>
+                                    <td th:text="${data.id}"></td>
+                                    <td th:text="${data.total}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

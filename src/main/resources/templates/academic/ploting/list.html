@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link th:href="@{/css/style.css}" rel="stylesheet">
+
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Ploting Dosen </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-list"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Prodi</label>
+                                                <select name="prodi" class="form-control">
+                                                    <option value="" disabled selected>-- Select One --</option>
+                                                    <option th:each="prodi : ${prodi}"
+                                                            th:text="${prodi.namaProdi}"
+                                                            th:value="${prodi.id}">-- Select One --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tahun Angkatan</label>
+                                                <select name="angkatan" class="form-control">
+                                                    <option value="" disabled selected>-- Select One --</option>
+                                                    <option th:each="item : ${angkatan}"
+                                                            th:text="${item}"
+                                                            th:value="${item}">-- Select One --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Semester</label>
+                                                <select name="semester" id="" class="form-control">
+                                                    <option value="" disabled selected>-- Select One --</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;">
+                                            <div class="form-group">
+                                                <button class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                            </div>
+                        </div>
+
+                        </form>
+
+                        <form th:action="@{/academic/ploting/list (prodi = ${selectedProdi.id}, semester = ${selectedSemester}, angkatan = ${selectedAngkatan})}" method="post" th:if="${selectedProdi != null}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Magister Ekonomi Syariah</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="data-table-basic" class="table table-striped">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">Class</th>
+                                                    <th scope="col">Course Code</th>
+                                                    <th scope="col">Name Courses</th>
+                                                    <th scope="col">English Name Courses</th>
+                                                    <th scope="col" style="width: 100px;">Lecture</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data : ${ploting}">
+                                                    <td th:text="${data[0]}"></td>
+                                                    <td th:text="${data[2]}"></td>
+                                                    <td th:text="${data[3]}"></td>
+                                                    <td th:text="${data[4]}"></td>
+                                                    <td>
+                                                        <select th:name="${data[0] + data[2] + data[3]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
+                                                            <option value=""></option>
+                                                            <option th:each="item : ${listDosen}"
+                                                                    th:text="${item[1] + ' - '  + item[2] + ' SKS'}"
+                                                                    th:value="${item[0]}"></option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-info"><i class="fa fa-save"></i> Save</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select One",
+        allowClear: true
+    });
+</script>

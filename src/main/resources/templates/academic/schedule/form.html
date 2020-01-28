@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="myFunction()">
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Studies Schedule </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-list"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/academic/schedule/list (tahunAkademik = ${jadwal.tahunAkademik.id}, prodi = ${jadwal.prodi.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" th:if="${validJadwal != null}">
+                            <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                            <span class="alert-inner--text">Sorry, Your selected schedule has been used, please another schedule</span>
+                        </div>
+                        <form th:action="@{/academic/schedule/form}" th:object="${jadwal}" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <input type="text" disabled th:field="*{prodi.namaProdi}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Program</label>
+                                        <input type="text" disabled th:field="*{program.namaProgram}" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Day</label>
+                                        <select class="form-control js-example-placeholder-single" onchange="mySesi()"
+                                                style="width: 100%!important; height: 100px;" id="select2-hari" th:field="*{hari}">
+                                            <option value=""></option>
+                                            <option th:each="data: ${hari}"
+                                                    th:text="${data.namaHari + '  -  ' + data.namaHariEng}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                        <input type="hidden" id="isiHari" name="hari" th:field="*{hari}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Courses</label>
+                                        <input type="text" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + '  -  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Room</label>
+                                        <select class="form-control js-example-placeholder-single" onchange="mySesi()"
+                                                style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
+                                            <option value=""></option>
+                                            <option th:each="data: ${ruangan}"
+                                                    th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                        <input type="hidden" id="isiRuangan" name="ruangan" th:field="*{ruangan}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Session</label>
+                                        <select id="locality-dropdown"  class="form-control" onchange="waktu()">
+                                        </select>
+                                        <input type="hidden" id="isiSesi" name="sesi" th:field="*{sesi}">
+                                        <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Start Time</label>
+                                        <input type="text" th:field="*{jamMulai}" disabled maxlength="5" max="5" name="mulai" id="jamMulai" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>End Time</label>
+                                        <input type="text" name="selesai" th:field="*{jamSelesai}" maxlength="5" disabled id="jamSelesai" class="form-control">
+                                        <input type="hidden" id="mulai" name="jamMulai" th:field="*{jamMulai}">
+                                        <input type="hidden" id="selesai" name="jamSelesai" th:field="*{jamSelesai}">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Class</label>
+                                        <input type="text" class="form-control" id="plotKelas" th:value="${jadwal.kelas.namaKelas}"
+                                               placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" readonly required>
+                                        <input type="hidden" id="isiPlotKelas" name="kelas" th:field="*{kelas}">
+                                        <input type="hidden" id="isiPlotMatakuliah" name="matakuliahKurikulum" th:field="*{matakuliahKurikulum}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Lecturer</label>
+                                        <input type="hidden" id="idDosen" th:field="*{dosen}">
+                                        <select class="form-control js-example-placeholder-single" id="select2-dosen"
+                                                style="width: 100%!important;" name="dosen"  th:field="*{dosen}" onchange="mySesi()">
+                                            <option value=""></option>
+                                            <option th:each="data: ${dosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select class="form-control" th:field="*{finalStatus}"
+                                                style="width: 100%!important;" name="finalStatus">
+                                            <option value=""></option>
+                                            <option value="Y">Kuliah</option>
+                                            <option value="N">responsi</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Access</label>
+                                        <select name="akses" class="form-control" th:field="*{akses}">
+                                            <option value="TERTUTUP">Tertutup</option>
+                                            <option value="PRODI" th:text="${jadwal.prodi.namaProdi}">PRODI</option>
+                                            <option value="UMUM">Semua Prodi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+
+                            </div>
+
+
+                            <div class="form-group">
+                                <button class="btn btn-primary">Save</button>
+                            </div>
+                            <input type="hidden" name="prodi" th:field="*{prodi}">
+                            <input type="hidden" name="program" th:field="*{program}">
+                            <input type="hidden" name="tahunAkademikProdi" th:field="*{tahunAkademikProdi}">
+                            <input type="hidden" name="id" id="id" th:field="*{id}">
+
+                            <input name="status" th:field="*{status}" type="hidden"/>
+                            <input type="hidden" name="tahunAkademik" th:field="*{tahunAkademik}">
+                            <input type="hidden" name="jumlahSesi" th:field="*{jumlahSesi}">
+                            <input type="hidden" name="bobotUts" th:field="*{bobotUts}">
+                            <input type="hidden" name="bobotUas" th:field="*{bobotUas}">
+                            <input type="hidden" name="bobotTugas" th:field="*{bobotTugas}">
+                            <input type="hidden" name="bobotPresensi" th:field="*{bobotPresensi}">
+                            <input type="hidden" name="statusUts" th:field="*{statusUts}">
+                            <input type="hidden" name="statusUas" th:field="*{statusUas}">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#select2-ruangan').select2();
+
+        $('#select2-ruangan').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiRuangan').val(e.params.args.data.id);
+        });
+
+        $('#select2-hari').select2();
+
+        $('#select2-hari').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiHari').val(e.params.args.data.id);
+        });
+
+        $('#select2-dosen').select2();
+
+        $('#select2-dosen').on('select2:selecting', function(e) {
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#idDosen').val(e.params.args.data.id);
+        });
+    })(jQuery);
+
+    function mySesi() {
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiRuangan').val())
+        const url = '/api/sesi?idHari='+$('#isiHari').val()+'&idRuangan='+$('#isiRuangan').val()+'&sks='+$('#sks').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+
+        // Populate dropdown with list of provinces
+        $.getJSON(url, function (data) {
+
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
+            })
+        });
+    }
+
+    function waktu() {
+        var x = document.getElementById("locality-dropdown").value;
+        console.log(x);
+        const url = '/api/waktu?id='+x;
+        $.getJSON(url, function (data) {
+
+            $('#mulai').val(data.jamMulai);
+            $('#jamMulai').val(data.jamMulai);
+            $('#selesai').val(data.jamSelesai);
+            $('#jamSelesai').val(data.jamSelesai);
+            $('#isiSesi').val(data.sesi);
+            document.getElementById("mulai").value = data.jamMulai;
+            document.getElementById("selesai").value = data.jamSelesai;
+        });
+
+    }
+
+    function myFunction() {
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Sesi</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiRuangan').val())
+        const url = '/api/sesi?idHari='+$('#isiHari').val()+'&idRuangan='+$('#isiRuangan').val()+'&sks='+$('#sks').val()+'&kelas='+$('#isiPlotKelas').val()+'&dosen='+$('#idDosen').val();
+
+        // Populate dropdown with list of provinces
+        $.getJSON(url, function (data) {
+
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
+            })
+        });
+    }
+</script>

@@ -1,86 +1,86 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login V2</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>SMILE INSTITUT TAZKIA</title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" th:href="@{/css/vendors/bootstrap/dist/css/bootstrap.min.css}" />
-    <!-- Font Awesome -->
-    <link th:href="@{/css/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet" />
-    <!-- NProgress -->
-    <link th:href="@{/css/vendors/nprogress/nprogress.css}" rel="stylesheet" />
-    <!-- Animate.css -->
-    <link th:href="@{/css/vendors/animate.css/animate.min.css}" rel="stylesheet" />
-    <!-- Custom Theme Style -->
-    <link th:href="@{/css/build/css/custom.css}" rel="stylesheet" />
-
-    <style>
-        .bg {
-            /* The image used */
-            background-image: url("https://tazkia.ac.id/wp-content/uploads/revslider/tazkia-funtastique/slider-4.jpg");
-            /*background-image: url("/images/back.jpg");*/
-            /* Add the blur effect */
-            filter: blur(4px);
-            -webkit-filter: blur(4px);
-            /* Full height */
-            opacity: 0.7;
-            height: 100%;
-
-            /* Center and scale the image nicely */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        .float{
-            margin-left: -450px;
-            margin-top: 30px;
-        }
-    </style>
-
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/css/icons/favicon.ico}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/bootstrap/css/bootstrap.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/fonts/iconic/css/material-design-iconic-font.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/animate/animate.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/css-hamburgers/hamburgers.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/animsition/css/animsition.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/select2/select2.min.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style/daterangepicker/daterangepicker.css}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/css/util.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/css/main.css}">
+    <!--===============================================================================================-->
 </head>
-
 <body>
-<div class="login_wrapper">
-    <div class="animate form login_form">
-        <div class="float">
-            <img style="width: 15%; margin-top: -20px; margin-left: -10%" th:src="@{images/logo.png}" />
-        </div>
-        <section class="login_content" style="margin-top: -100px;">
-            <img style="width: 60%; margin-top: 10%;"th:src="@{images/smile.png}" />
-            <form id="sign_in" method="POST" th:action="@{/login}">
-                <h1><img style="width: 55%; margin-top: -15px" th:src="@{images/mele1.png}" /></h1><br>
-                <div>
-                    <!--<img style=" margin-top: -55px" th:src="@{images/mele1.png}" />-->
-                </div>
-                <div style="margin-top: -40px;"><br>
-                    <a th:href="@{/oauth2/authorization/google}" type="button" style="width: 50%;" class="btn btn-round btn-primary btn-lg"><i class="fa fa-google"></i> Sign In</a>
-                </div>
 
+<div class="limiter">
+    <div class="container-login100" style="background-image: url('https://images.wallpaperscraft.com/image/headphones_books_education_121501_1920x1200.jpg');">
+        <div class="wrap-login100" style="opacity: 0.5;
+  filter: alpha(opacity=50);">
+            <form class="login100-form validate-form">
+                <span class="login100-form-title p-b-48">
+						<img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
+					</span>
 
-                <div class="clearfix"></div>
-
-                <div class="separator">
-
-                    <div class="clearfix"></div>
-                    <br />
-
-                    <div>
-                        <p><font color="#f8f8ff">©2018 All Rights Reserved. Sistem Informasi Akademik <br>
-                            INSTITUT TAZKIA</font></p>
+                <div class="container-login100-form-btn">
+                    <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <a th:href="@{/oauth2/authorization/google}" class="login100-form-btn" style="background-color: #ed7402;">
+                            Login
+                        </a>
                     </div>
                 </div>
+
+                <div class="text-center p-t-115">
+						<span class="txt1">
+
+©2020 All Rights Reserved. SMILE
+INSTITUT TAZKIA
+						</span>
+
+
+                </div>
             </form>
-        </section>
+        </div>
     </div>
 </div>
 
+
+<div id="dropDownSelect1"></div>
+
+<!--===============================================================================================-->
+<script th:src="@{/css/style/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/style/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/style/bootstrap/js/popper.js}"></script>
+<script th:src="@{/css/style/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/style/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/style/daterangepicker/moment.min.js}"></script>
+<script th:src="@{/css/style/daterangepicker/daterangepicker.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/style/countdowntime/countdowntime.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/css/js/main.js}"></script>
+
 </body>
-<div class="bg">
-</div>
 </html>

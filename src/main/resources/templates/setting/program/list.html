@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Program </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/setting/program/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Program Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${daftarProgram}">
+                                <th th:text="${(row.index + 1)}">1</th>
+                                <td>
+                                    <a class="btn btn-success btn-outline-success btn-sm" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/setting/program/form(id = ${data.id})}">
+                                    </a>
+                                    <a class="btn btn-danger btn-outline-danger btn-sm" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaProgram}"  th:href="@{/setting/program/form(id = ${data.id})}">
+                                    </a>
+                                </td>
+                                <td th:text="${data.keterangan}">Sarjana</td>
+                                <td>
+                                    <form method="post" th:action="@{/setting/program/delete(program=${data.id})}">
+                                        <a th:href="@{/setting/program/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content bg-gradient-danger">
+
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="py-3 text-center">
+                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <form method="post" th:action="@{/setting/program/delete(gedung = ${data.id})}">
+                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+
+</div>
+</body>
+</html>

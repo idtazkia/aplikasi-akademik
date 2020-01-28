@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Concentration</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/setting/concentration/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Program Study</th>
+                                <th scope="col">Concentration Code</th>
+                                <th scope="col">Concentration</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
+                                <th class="column-title"></th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${daftarKonsentrasi}" class="even pointer">
+
+
+                                <td th:text="${(row.index + 1) + (daftarKonsentrasi.number * daftarKonsentrasi.size)}">1</td>
+                                <td th:text="${data.idProdi.namaProdi}" >Fakultas Ekonomi</td>
+                                <td th:text="${data.kodeKonsentrasi}" >Fakultas Ekonomi</td>
+                                <td>
+                                    <a class="btn btn-success btn-outline-success btn-sm" href="form" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaKonsentrasi}">
+                                    </a>
+                                    <a class="btn btn-danger btn-danger btn-outline-danger btn-sm" href="form" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaKonsentrasi}">
+                                    </a>
+                                </td>
+                                <td th:text="${data.keterangan}">keterangan</td>
+                                <td>
+                                    <a th:href="@{/setting/concentration/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                </td>
+                                <td>
+
+                                    <form method="post" th:action="@{/setting/concentration/delete(konsentrasi = ${data.id})}">
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

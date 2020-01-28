@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Concentration </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/setting/concentration/form}" th:object="${konsentrasi}">
+
+                            <div class="form-group">
+                                <label>Concentration Code</label>
+                                <input type="text" th:field="*{kodeKonsentrasi}"name="kodeKonsentrasi" class="form-control" placeholder="Concentration Code">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Program Study</label>
+                                <select required name="idProdi"  class="form-control js-example-placeholder-single" th:field="*{idProdi}" style="width: 100%!important;">
+                                    <option value=""></option>
+                                    <option th:each="data : ${prodi}"
+                                            th:text="${data.namaProdi}"
+                                            th:value="${data.id}">P</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Concentration</label>
+                                <input type="text" th:field="*{namaKonsentrasi}" name="namaKonsentrasi" class="form-control" placeholder="Concentration">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text"  th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Description">
+                            </div>
+
+                            <div class="form-group">
+                                <table class="table table-responsive">
+                                    <tr>
+                                        <div class="form-group">
+                                            <label>Status</label><br>
+                                            <label>
+                                                <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                                            </label >
+                                            <input type="hidden" name="id" th:field="*{id}">
+                                        </div>
+                                    </tr>
+                                </table>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Save</button>
+                            <a class="btn btn-primary" th:href="@{/setting/concentration/list}" role="button">
+                                <span aria-hidden="true"></span>Cancel
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Exam Question</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Detail</h5>
+                                        <span class="h2 font-weight-bold mb-0">Upload Soal </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a th:if="${status.UTS == status}" th:href="@{/contoh/soal}" class="btn btn-success">Download Template</a>
+                        <a th:if="${status.UAS == status}" th:href="@{/contoh/soaluas}" class="btn btn-success">Download Template</a>
+                        <br>
+                        <br>
+                        <form th:action="@{/studiesActivity/assesment/upload/soal}" enctype="multipart/form-data" th:if="${approve == null}">
+                            <div class="row">
+                                <div class="col-md-4 col-xs-12">
+                                    <label>File Upload</label>
+                                    <input type="file" name="file" class="form-control">
+                                </div>
+                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                <input type="hidden" name="dosen" th:value="${dosen.id}">
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Description</label>
+                                    <input type="text" name="keterangan" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Status Soal</label>
+                                    <select name="statusSoal" readonly class="form-control" th:if="${status.UTS == status}">
+                                        <option value="UTS">UTS</option>
+                                    </select>
+                                    <select name="statusSoal" readonly class="form-control" th:if="${status.UAS == status}">
+                                        <option value="UAS">UAS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Upload</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">Detail Data</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course</th>
+                                        <th>Lecture</th>
+                                        <th>Uploaded Date</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${soal}">
+                                        <td th:text="${(row.index + 1)}">1</td>
+                                        <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Pajak</td>
+                                        <td th:text="${data.dosen.karyawan.namaKaryawan}">Tutut Adiningsih</td>
+                                        <td th:text="${data.tanggalUpload}">10-10-2019</td>
+                                        <td th:text="${data.keterangan}">Soal Uts</td>
+                                        <td>
+                                            <a th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}" class="btn btn-success btn-sm">Approved</a>
+                                            <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" class="btn btn-warning btn-sm">Waiting</a>
+                                            <a th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}" class="btn btn-danger btn-sm">Rejected</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>

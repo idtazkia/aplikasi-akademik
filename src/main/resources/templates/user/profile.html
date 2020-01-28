@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Profile</title>
+    <style type="text/css">
+        .card{
+            background-color: #ffffff;
+            padding: 0px;
+            border-radius: 10px;
+
+        }
+        .card-content{
+            background-color: #f49c6c;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .card-body{
+            padding: 15px;
+        }
+
+        .txt-profile{
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            color: white;
+        }
+
+        .card-body-content{
+            text-align: center;
+            padding: 5px;
+        }
+
+        .bt-edit{
+            width: 220px;
+            background-color: #f49c6c;
+            border: 2px solid white;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        .txt-title{
+            color: #292928;
+        }
+        .txt-warning{
+            color: red;
+            font-size: 10px;
+        }
+        .ohide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Profile Mahasiswa</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="" th:object="${mahasiswa}">
+        <div class="contact-area">
+            <div class="container">
+                <div class="row" style="padding: 15px;">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 card" style="margin-top: 10px;">
+                        <div class="card-content">
+                            <div class="contact-img">
+                                <img th:src="@{/img/post/1.jpg}" alt="" />
+                            </div>
+                            <b class="txt-profile" th:field="*{nama}">Muhammad Rafizki</b>
+                            <br>
+                            <b class="txt-profile" th:text="${mahasiswa.nim}"></b>
+                            <br>
+                            <br>
+                            <button class="bt-edit" th:field="*{prodi}"><b>Hukum Ekonomi Syariah</b></button>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-6 col-xs-6 card-body-content">
+                                <span th:field="*{angkatan}">2019</span>
+                                <br>
+                                <b>Angkatan</b>
+                            </div>
+
+                            <div class="col-md-6 col-xs-6 card-body-content">
+                                <span th:field="*{kelamin}">PRIA</span>
+                                <br>
+                                <b>Gender</b>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9 col-md-9 col-xs-12" style="padding-top: 10px;">
+                        <div class="wizard-wrap-int">
+                            <div class="wizard-hd">
+                                <center>
+                                    <h2>Edit Profile</h2>
+                                </center>
+
+
+                            </div>
+                            <div id="rootwizard">
+                                <div class="navbar">
+                                    <div class="navbar-inner">
+                                        <div class="container-pro wizard-cts-st">
+                                            <ul>
+                                                <li><a href="#tab1" data-toggle="tab">Personal Data</a></li>
+                                                <li><a href="#tab2" data-toggle="tab">Address</a></li>
+                                                <li><a href="#tab3" data-toggle="tab">Parents</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane wizard-ctn" id="tab1">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Name <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                        <input type="text" name="nama" disabled th:field="*{nama}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Student Identification Number (NIM)</label>
+                                                        <input type="text" disabled name="nim" th:field="*{nim}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Religion</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" th:field="*{agama}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${agama}"
+                                                                        th:text="${data.agama}"
+                                                                        th:value="${data.idAgama}">Islam</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                        <input type="text" name="lahir" th:field="*{lahir}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Date of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                        <input type="date" name="tanggalLahir" th:field="*{tanggalLahir}" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Gender</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="kelamin" th:field="*{kelamin}">
+                                                                <option value=""></option>
+                                                                <option value="PRIA">Male</option>
+                                                                <option value="WANITA">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">ID Number</label>
+                                                        <input type="text" name="nik" th:field="*{nik}" class="form-control">                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">NISN</label>
+                                                        <input type="text" name="nisn" th:field="*{nisn}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Citizen</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="wargaNegara" th:field="*{wargaNegara}">
+                                                                <option value=""></option>
+                                                                <option value="WNI">WNI</option>
+                                                                <option value="WNA">WNA</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Tranportation</span></label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="trasportasi" th:field="*{transportasi}">
+                                                                <option value=""></option>
+                                                                <option th:each="transport : ${transportasi}"
+                                                                        th:text="${transport.nama}"
+                                                                        th:value="${transport.id}">Mobil</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Telephone</label>
+                                                        <input type="number" name="telepon" th:field="*{telepon}" class="form-control">                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Phone</label>
+                                                        <input type="number" name="hp" th:field="*{hp}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Personal Email</label>
+                                                        <input type="text" name="email" th:field="*{email}" class="form-control">                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Email</label>
+                                                        <input type="text" name="emailTazkia" th:field="*{emailTazkia}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Cloth Size (Toga)</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="toga" th:field="*{toga}">
+                                                                <option value=""></option>
+                                                                <option value="S">S</option>
+                                                                <option value="M">M</option>
+                                                                <option value="L">L</option>
+                                                                <option value="XL">XL</option>
+                                                                <option value="XXL">XXL</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                        <input type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="tab-pane wizard-ctn" id="tab2">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Country</label>
+                                                        <input type="text" name="negara" th:field="*{negara}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Address</label>
+                                                        <input type="text" class="form-control" name="alamat" th:field="*{alamat}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="tab-pane wizard-ctn" id="tab3">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">ID Number</label>
+                                                        <input type="text" name="nikAyah" th:field="*{nikAyah}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Father's Name</label>
+                                                        <input type="text" name="ayah" th:field="*{ayah}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Eductaion Level</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="pendidikanAyah" th:field="*{pendidikanAyah}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${pendidikan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Place of Birth</label>
+                                                        <input type="text" name="lahirAyah" th:field="*{lahirAyah}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Date of Birth</label>
+                                                        <input type="date" name="tanggalLahirAyah" th:field="*{tanggalLahirAyah}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Job</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="pekerjaanAyah" th:field="*{pekerjaanAyah}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${pekerjaan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Revenue</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="penghasilanAyah" th:field="*{penghasilanAyah}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${penghasilan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Religion</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="agamaAyah" th:field="*{agamaAyah}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${agama}"
+                                                                        th:value="${data.idAgama}"
+                                                                        th:text="${data.agama}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Live Status</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="statusAyah" th:field="*{statusAyah}">
+                                                                <option value=""></option>
+                                                                <option value="H">Hidup</option>
+                                                                <option value="M">Meninggal</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Special Needs</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="kebutuhanAyah" th:field="*{kebutuhanAyah}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${kebutuhan}"
+                                                                        th:text="${data.kode + '  -  ' + data.nama}"
+                                                                        th:value="${data.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">ID Number</label>
+                                                        <input type="text" name="nikIbu" th:field="*{nikIbu}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Mother's Name</label>
+                                                        <input type="text" name="ibu" th:field="*{ibu}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Eductaion Level</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="pendidikanIbu" th:field="*{pendidikanIbu}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${pendidikan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Place of Birth</label>
+                                                        <input type="text" name="lahirIbu" th:field="*{lahirIbu}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Date of Birth</label>
+                                                        <input type="date" name="tanggalLahirIbu" th:field="*{tanggalLahirIbu}" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Job</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="pekerjaanIbu" th:field="*{pekerjaanIbu}">
+                                                                <option value=""></option>
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${pekerjaan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Revenue</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="penghasilanIbu" th:field="*{penghasilanIbu}">
+                                                                option value=""></option>
+                                                                <option th:each="data : ${penghasilan}"
+                                                                        th:text="${data.nama}"
+                                                                        th:value="${data.id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Religion</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="agamaIbu" th:field="*{agamaIbu}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${agama}"
+                                                                        th:value="${data.idAgama}"
+                                                                        th:text="${data.agama}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Live Status</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="statusIbu" th:field="*{statusIbu}">
+                                                                <option value=""></option>
+                                                                <option value="H">Hidup</option>
+                                                                <option value="M">Meninggal</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <div class="form-group ic-cmp-int">
+                                                    <div class="form-ic-cmp">
+
+                                                    </div>
+                                                    <div class="nk-int-st">
+                                                        <label class="txt-title">Special Needs</label>
+                                                        <div class="bootstrap-select fm-cmp-mg">
+                                                            <select class="selectpicker" name="kebutuhanIbu" th:field="*{kebutuhanIbu}">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${kebutuhan}"
+                                                                        th:text="${data.kode + '  -  ' + data.nama}"
+                                                                        th:value="${data.id}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="wizard-action-pro">
+                                        <ul class="wizard-nav-ac">
+                                            <li><a class="button-previous a-prevent" href="#"><i class="notika-icon notika-back"></i></a></li>
+                                            <li><a class="button-next a-prevent" href="#"><i class="notika-icon notika-next-pro"></i></a></li>
+                                        </ul>
+                                        <div class="row">
+                                            <div class="col-md-12 col-xs-12">
+
+                                                <p>
+                                                    <input type="checkbox" required>
+                                                    I hereby certify that the profile data that I have completed in the form
+                                                    above is appropriate and correct with my legality documents.
+                                                    Therefore, my data can be used for academic administratiion purpose such as
+                                                    <b>Creficate, Transcript, Correspondence and Academic Reporting to Goverment agencies.</b>
+                                                </p>
+
+                                                <button class="btn btn-primary notika-btn-primary btn-sm waves-effect">Save</button>
+                                                <a href="" class="btn btn-danger notika-btn-danger btn-sm waves-effect">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+</body>
+</html>

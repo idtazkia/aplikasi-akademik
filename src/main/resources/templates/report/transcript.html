@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Transkrip</title>
+    <style type="text/css">
+        .background-color-white{
+            background-color: white;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 10px;
+            pa
+        }
+        .shape{
+            background-color: #4285f4;
+            color: white;
+            padding-top: 15px;
+            padding-left: 15px;
+            padding-bottom: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: white;
+            border: 2px solid #d9534f;
+            border-radius: 15px;
+            color: #d9534f;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-danger:hover{
+            background-color: #d9534f;
+            color: white;
+        }
+        .bd-success{
+            background-color: white;
+            border: 2px solid #5cb85c;
+            border-radius: 15px;
+            color: #5cb85c;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-success:hover{
+            background-color: #5cb85c;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Transkrip List</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-12 col-xs-12 background-color-white">
+            <div class="row">
+                <div class="col-md-12 col-xs-12 shape">
+                    <h4><b>Semester</b> <b> 2</b></h4>
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Kode MK</th>
+                                <th>Nama Mata Kuliah</th>
+                                <th>SKS</th>
+                                <th>Nilai</th>
+                                <th>Bobot Mutu</th>
+                                <th>Mutu</th>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xs-12 shape">
+                    <h4><b>Semester</b> <b> 2</b></h4>
+                </div>
+                <div class="col-md-12 col-xs-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Kode MK</th>
+                                <th>Nama Mata Kuliah</th>
+                                <th>SKS</th>
+                                <th>Nilai</th>
+                                <th>Bobot Mutu</th>
+                                <th>Mutu</th>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                            <tr>
+                                <td>AEM1101</td>
+                                <td>Dirasah Islamiah</td>
+                                <td><b>3</b></td>
+                                <td><button class="bd-primary"><b>B</b></button></td>
+                                <td><button class="bd-danger"><b>3.00</b></button></td>
+                                <td><b>9</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>

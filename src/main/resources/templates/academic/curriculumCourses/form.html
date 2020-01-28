@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Curriculum Courses</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Curriculum Courses </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/academic/curriculumCourses/form}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/academic/curriculumCourses/form}" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Courses</label>
+                                        <input type="text" name="namaMatakuliah" class="form-control"
+                                               id="matakuliah" placeholder="Search ..."
+                                               data-provide="typeahead"
+                                               autocomplete="off" required autofocus>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="matakuliah">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Code Courses</label>
+                                        <input type="text" id="kodeMatkul" name="kodeMatakuliah" disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Courses(English)</label>
+                                        <input type="text" id="matkulEng" disabled name="namaMatakuliahEnglish" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Abbreviation</label>
+                                        <input type="text" name=singkatan disabled class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Punya Responsi</label>
+                                        <br>
+                                        <input type="checkbox" name="responsi" value="N" checked data-toggle="toggle">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Skripsi</label>
+                                        <br>
+                                        <input type="checkbox" name="statusSkripsi" value="AKTIF" data-toggle="toggle">
+                                    </div>
+                                </div>
+                                <input type="hidden" name="kurikulum" th:value="${kurikulum.id}">
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Blocking Konsep Note</label>
+                                        <br>
+                                        <input type="checkbox" name="konsepNote" value="AKTIF" data-toggle="toggle">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Blocking SEMPRO</label>
+                                        <br>
+                                        <input type="checkbox" name="sempro" value="AKTIF" data-toggle="toggle">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Access</label>
+                                        <select name="akses" class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option value="WAJIB_UMUM">WAJIB UMUM</option>
+                                            <option value="PILIHAN">PILIHAN</option>
+                                            <option value="WAJIB_PRODI">WAJIB PRODI</option>
+                                            <option value="WAJIB_KONSENTRASI">WAJIB KONSENTRASI</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Amount SKS</label>
+                                        <input type="text" name="jumlahSks" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Concentration</label>
+                                        <select name="konsentrasi" id="" class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option th:each="data : ${konsentrasi}"
+                                                    th:text="${data.namaKonsentrasi}"
+                                                    th:value="${data.id}">AS-SISTEM INFORMASI</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Semester</label>
+                                        <select name="semester" class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="4">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>minimum IPK</label>
+                                        <input type="text" name="ipkMinimal" class="form-control"  placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Minimum SKS</label>
+                                        <input type="text" name="sksMinimal" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Upload Syllabus</label>
+                                        <input type="file" name="file" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>SDS weights <span style="color: red; font-size: 10px;">*Fields are only numbers</span></label>
+                                        <input type="number" name="sds" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button class="btn btn-primary">Save</button>
+                                <a th:href="@{/academic/curriculumCourses/list}" class="btn btn-danger">Cancel</a>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select One",
+        allowClear: true
+    });
+</script>

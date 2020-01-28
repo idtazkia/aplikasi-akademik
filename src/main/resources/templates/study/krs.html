@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>KRS</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>KRS List</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Data KRS</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>SKS</th>
+                                <th>Class</th>
+                                <th>Room</th>
+                                <th>Lecture</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="data,row : ${listKrs}">
+                                <td th:text="${(row.index + 1)}">1</td>
+                                <td th:text="${data.jadwal.hari.namaHariEng}">Senin</td>
+                                <td th:text="${data.jadwal.jamMulai + ' - ' + data.jadwal.jamSelesai}">13.00</td>
+                                <td th:if="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}"
+                                    th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Ini Subject</td>
+                                <td th:if="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"
+                                    th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Ini Subject</td>
+                                <td th:text="${data.matakuliahKurikulum.jumlahSks}">Ini SKS</td>
+                                <td th:text="${data.jadwal.kelas.namaKelas}">Ruang 1.3</td>
+                                <td th:text="${data.jadwal.ruangan.namaRuangan}">Ruang 1.3</td>
+                                <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">Ini Lecture</td>
+                                <td style="width: 15px;">
+                                    <a th:href="@{/study/detail (id = ${data.jadwal.id})}">
+                                        <button type="button" class="btn btn-warning waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Detail">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+
+                                </td>
+                                <td th:if="${validasi == null}">
+                                    <form th:action="@{/study/deleteKrs(id = ${data.id})}" method="post">
+                                        <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

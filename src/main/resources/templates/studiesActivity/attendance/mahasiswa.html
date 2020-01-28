@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Edit</h5>
+                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">List Kehadiran</h3>
+                            </div>
+                            <div class="col text-right">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/studiesActivity/attendance/mahasiswa (jadwal = ${jadwal},sesi = ${sesi})}" method="post" th:object="${presensi}">
+                            <div class="table-responsive">
+                                <table id="data-table-basic" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>Status</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tr class="even pointer" th:each="data,row : ${presensi}">
+                                        <td th:text="${(row.index + 1)}">#</td>
+                                        <td th:text="${data.mahasiswa.nim}">NIM</td>
+                                        <td th:text="${data.mahasiswa.nama}">Name</td>
+                                        <td>
+                                            <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                            <select th:name="${data.mahasiswa.nim + 'nim'}">
+                                                <option th:each="sp : ${statusPresensi}"
+                                                        th:text="${sp}" th:value="${sp}"
+                                                        th:selected="${sp == data.statusPresensi}"></option>
+                                            </select>
+                                        </td>
+                                        <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                        <input type="hidden" name="krsDetail" th:value="${data.krsDetail.id}">
+                                        <input type="hidden" name="id" th:value="${data.id}">
+                                        <input type="hidden" name="waktuMasuk" th:value="${data.waktuMasuk}">
+                                        <input type="hidden" name="waktuKeluar" th:value="${data.waktuKeluar}">
+                                        <input type="hidden" name="catatan" th:value="${data.catatan}">
+                                        <input type="hidden" name="rating" th:value="${data.rating}">
+                                        <input type="hidden" name="status" th:value="${data.status}">
+                                        <input type="hidden" name="sesiKuliah" th:value="${data.sesiKuliah.id}">
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+</html>

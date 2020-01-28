@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Konsep Note</title>
+    <style type="text/css">
+        .card{
+            background-color: white;
+            border-radius: 10px;
+        }
+        .card-header{
+            padding: 15px;
+            border-bottom: 1px solid #eeeeee;
+            color: #4285f4;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .card-body{
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Konsep Note Form</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" style="padding: 15px">
+            <div class="col-md-12 col-xs-12 card">
+                <div class="card-header">
+                    Konsep Note
+                </div>
+                <div class="card-body">
+                    <div class="col-md-6 col-xs-12">
+                        <img src="https://nikahinaja.id/image/undraw_Creation_process_ukbh.png" alt="">
+                    </div>
+                    <div class="col-md-6 col-xs-12" style="padding-top: 15px;">
+                        <form th:action="@{/graduation/form}" method="post" enctype="multipart/form-data" th:object="${note}">
+
+                            <div class="form-group float-lb">
+                                <div class="nk-int-st">
+                                    <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+                                        <h2>Jenis</h2>
+                                    </div>
+                                    <div class="bootstrap-select fm-cmp-mg">
+                                        <select class="selectpicker" name="jenis" th:field="*{jenis}" data-live-search="true">
+                                            <option value=""></option>
+                                            <option value="SKRIPSI">Skripsi</option>
+                                            <option value="STUDI_KELAYAKAN">Studi Kelayakan Bisnis</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ic-cmp-int">
+                                <div class="form-ic-cmp">
+                                    <i class="notika-icon notika-mail"></i>
+                                </div>
+                                <div class="nk-int-st">
+                                    <input type="text" required th:field="*{judul}"placeholder="Title" name="judul" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group ic-cmp-int">
+                                <div class="form-ic-cmp">
+                                    <i class="notika-icon notika-mail"></i>
+                                </div>
+                                <div class="nk-int-st">
+                                    <input type="text" placeholder="Title Inggris" required th:field="*{judulInggris}" name="judulInggris" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group float-lb">
+                                <div class="nk-int-st">
+                                    <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+                                        <h2>Lecure 1</h2>
+                                    </div>
+                                    <div class="bootstrap-select fm-cmp-mg">
+                                        <select class="selectpicker" name="dosen" required th:field="*{dosen}" data-live-search="true">
+                                            <option value=""></option>
+                                            <option th:each="data : ${dosen}"
+                                                    th:value="${data.id}"
+                                                    th:text="${data.karyawan.namaKaryawan}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group float-lb">
+                                <div class="nk-int-st">
+                                    <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+                                        <h2>Lecure 2</h2>
+                                    </div>
+                                    <div class="bootstrap-select fm-cmp-mg">
+                                        <select class="selectpicker" name="dosen2" required th:field="*{dosen2}" data-live-search="true">
+                                            <option value=""></option>
+                                            <option th:each="data : ${dosen}"
+                                                    th:value="${data.id}"
+                                                    th:text="${data.karyawan.namaKaryawan}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" th:field="*{id}">
+
+                            <div class="form-group float-lb">
+                                <label>File Konsep Note</label>
+                                <div class="nk-int-st">
+                                    <input type="file" accept="application/pdf" name="file" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group float-lb">
+                                <div class="nk-int-st">
+                                    <button type="submit" class="btn btn-primary notika-btn-primary btn-sm waves-effect">Simpan</button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendancee</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Academic Year</label>
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Prody</label>
+                                        <select name="prodi" required class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option th:each="data : ${prodi}"
+                                                    th:selected="(${data} == *{selectedProdi})"
+                                                    th:text="${data.namaProdi}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Day</label>
+                                        <select name="hari" class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option value=""></option>
+                                            <option th:each="data : ${hari}"
+                                                    th:selected="(${data} == *{selectedHari})"
+                                                    th:text="${data.namaHariEng}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: center;">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+
+                        <div class="card shadow" th:if="${selectedHari != null}">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">Attendance List</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Room</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Course</th>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Lecture</th>
+                                        <th scope="col"></th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="jadwal,row : ${jadwal}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${jadwal.ruangan}"></td>
+                                        <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                            <span th:text="${jadwal.jamSelesai}"></span></td>
+                                        <td th:text="${jadwal.course}"></td>
+                                        <td th:text="${jadwal.namaKelas}"></td>
+                                        <td th:text="${jadwal.namaDosen}"></td>
+                                        <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(minggu)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Sunday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${minggu}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(senin)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Monday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${senin}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(selasa)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Tuesday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${selasa}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(rabu)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Wednesday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${rabu}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(kamis)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Thursday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${kamis}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(jumat)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Friday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${jumat}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="padding: 5px;" th:if="${not #lists.isEmpty(sabtu)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Saturday</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Room</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Course</th>
+                                                <th scope="col">Class</th>
+                                                <th scope="col">Lecture</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="jadwal,row : ${sabtu}">
+                                                <td th:text="${row.index + 1}"></td>
+                                                <td th:text="${jadwal.ruangan}"></td>
+                                                <td><span  th:text="${jadwal.jamMulai}"></span> -
+                                                    <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                <td th:text="${jadwal.course}"></td>
+                                                <td th:text="${jadwal.namaKelas}"></td>
+                                                <td th:text="${jadwal.namaDosen}"></td>
+                                                <td><a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Sesi Kuliah</a></td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+
+</div>
+</body>
+</html>

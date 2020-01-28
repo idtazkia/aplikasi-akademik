@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Assesment</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Score</h5>
+                                        <span class="h2 font-weight-bold mb-0">Assesment </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="#" style="width: 100%;" class="btn btn-primary">Pembobotan</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${jadwal.id})}"  style="width: 100%;" class="btn btn-secondary">Penilaian</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${jadwal.id})}" style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a th:href="@{/studiesActivity/assesment/list}" style="width: 100%;" class="btn btn-secondary">Back</a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><b class="mb-0">Tahun Akademik</b></th>
+                                    <th style="width: 0px;">:</th>
+                                    <th th:text="${jadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Ganjil</th>
+
+                                    <th><b class="mb-0">Program Studi</b></th>
+                                    <th style="width: 0px;">:</th>
+                                    <th th:text="${jadwal.prodi.namaProdi}">Ekonomi Syariah</th>
+                                </tr>
+                            </thead>
+                            <thead>
+                            <tr>
+                                <th><b class="mb-0">Mata Kuliah</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Basic Econometrics</th>
+
+                                <th><b class="mb-0">Dosen</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th th:text="${jadwal.dosen.karyawan.namaKaryawan}">Aam Slamet Rusydiana</th>
+                            </tr>
+                            </thead>
+                            <thead class="thead-light">
+                            <tr>
+                                <th><b class="mb-0">SKS</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta : <span th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span th:text="${absensi}"></span></th>
+
+                                <th><b class="mb-0">Kelas</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th th:text="${jadwal.kelas.namaKelas}">ES-18-R</th>
+                            </tr>
+                            </thead>
+                            <thead>
+                            <tr>
+                                <th><b class="mb-0">Jadwal Kuliah</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th>
+                                    <span th:text="${jadwal.hari.namaHariEng}"></span>
+                                    <small style="font-size: 8px" th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
+                                </th>
+
+                                <th><b class="mb-0">Jadwal Ujian</b></th>
+                                <th style="width: 0px;">:</th>
+                                <th>-</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="alert alert-danger" th:if="${tidakvalid != null}">
+                            Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!
+                        </div>
+                        <div class="alert alert-danger" th:if="${gaadapres != null}">
+                            Anda belum pernah masuk untuk mengajar
+                        </div>
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">Bobot Penilaian</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12">
+                                        <div class="card shadow">
+                                            <form th:action="@{/studiesActivity/assesment/weight}" method="post" th:object="${jadwal}">
+                                                <div class="table-responsive">
+                                                    <table class="table align-items-center table-flush">
+                                                        <thead>
+                                                        <tr>
+                                                            <td><h5 class="mb-1">SDS</h5></td>
+                                                            <td th:if="${jadwal.matakuliahKurikulum.sds != null}"><input type="text" name="sds" th:value="${jadwal.matakuliahKurikulum.sds}" disabled class="form-control"></td>
+                                                            <td th:if="${jadwal.matakuliahKurikulum.sds == null}"><input type="text" name="sds" th:value="${0}" disabled class="form-control"></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <thead>
+                                                        <tr>
+                                                            <td><h5 class="mb-1">Presensi</h5></td>
+                                                            <td><input type="text" name="bobotPresensi" th:field="*{bobotPresensi}" class="form-control"></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <thead>
+                                                        <tr>
+                                                            <td><h5 class="mb-1">Tugas</h5></td>
+                                                            <td><input type="text" name="bobotTugas" th:field="*{bobotTugas}" class="form-control"></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <thead>
+                                                        <tr>
+                                                            <td><h5 class="mb-1">Ujian Tengah Semester</h5></td>
+                                                            <td><input name="bobotUts" th:field="*{bobotUts}" type="text" class="form-control"></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <thead>
+                                                        <tr>
+                                                            <td><h5 class="mb-1">Ujian Akhir Semester</h5></td>
+                                                            <td><input name="bobotUas" th:field="*{bobotUas}" type="text" class="form-control"></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <thead>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td><button type="submit" class="btn btn-primary">Save</button></td>
+                                                        </tr>
+                                                        </thead>
+
+                                                    </table>
+                                                </div>
+                                                <input type="hidden" name="id" th:value="${jadwal.id}">
+                                                <input type="hidden" name="matakuliahKurikulum" th:value="${jadwal.matakuliahKurikulum.id}">
+                                                <input type="hidden" name="hari" th:value="${jadwal.hari.id}">
+                                                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai+''}">
+                                                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai+''}">
+                                                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
+                                                <input type="hidden" name="tahunAkademikProdi" th:value="${jadwal.tahunAkademikProdi.id}">
+                                                <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
+                                                <input type="hidden" name="dosen" th:value="${jadwal.dosen.id}">
+                                                <input type="hidden" name="ruangan" th:value="${jadwal.ruangan.id}">
+                                                <input type="hidden" name="kelas" th:value="${jadwal.kelas.id}">
+                                                <input type="hidden" name="jumlahSesi" th:value="${jadwal.jumlahSesi}">
+                                                <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
+                                                <input type="hidden" name="program" th:value="${jadwal.program.id}">
+                                                <input type="hidden" name="status" th:value="${jadwal.status}">
+                                                <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
+                                                <input type="hidden" name="statusUts" th:value="${jadwal.statusUts}">
+                                                <input type="hidden" name="statusUas" th:value="${jadwal.statusUas}">
+                                            </form>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="row" style="padding-top: 10px;">
+                                    <div class="col-md-12 col-xs-12">
+                                        <div class="card shadow">
+                                            <div class="card-header border-0">
+                                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                                    <i class="fas fa-plus-circle"></i> Added Assessment Component
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <form th:action="@{/studiesActivity/assesment/task}" method="post">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Tambah Tugas</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 col-xs-12">
+                                                                            <div class="form-group">
+                                                                                <label>Meeting :</label>
+                                                                                <select class="form-control"
+                                                                                        style="width: 100%!important;" name="pertemuan">
+                                                                                    <option value="1">1</option>
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                    <option value="4">4</option>
+                                                                                    <option value="5">5</option>
+                                                                                    <option value="6">6</option>
+                                                                                    <option value="7">7</option>
+                                                                                    <option value="8">8</option>
+                                                                                    <option value="9">9</option>
+                                                                                    <option value="10">10</option>
+                                                                                    <option value="11">11</option>
+                                                                                    <option value="12">12</option>
+                                                                                    <option value="13">13</option>
+                                                                                    <option value="14">14</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-xs-12">
+                                                                            <div class="form-group">
+                                                                                <label>Weight :</label>
+                                                                                <input type="number" name="bobot" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <label>Task Name :</label>
+                                                                                <input type="text" name="namaTugas" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="table-responsive">
+                                                <table class="table align-items-center table-flush">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Pertemuan Ke :</th>
+                                                        <th>Nama Tugas</th>
+                                                        <th>Bobot tugas</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="data,row : ${bobot}">
+                                                        <td th:text="${row.index + 1}">#</td>
+                                                        <td th:text="${data.pertemuan}">Ruangan</td>
+                                                        <td th:text="${data.namaTugas}">Jam</td>
+                                                        <td th:text="${data.bobot}">Matakuliah</td>
+                                                        <td>
+                                                            <a th:href="@{/studiesActivity/assesment/uploadnilai (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-editfas fa-edit"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

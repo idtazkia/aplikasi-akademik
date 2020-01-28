@@ -1,56 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Title</title>
 </head>
 <body>
-
 <section layout:fragment="main" class="content">
-    <div class="row tile_count" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Employee</span>
-            <div class="count " th:text="${JmlKar}">7,325</div>
-            <span class="count_bottom"></span>
-        </div>
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Lectures Active</span>
-            <div class="count " th:text="${jmlDosen}">123</div>
-            <span class="count_bottom"> </span>
-        </div>
-
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Male Students</span>
-            <div class="count blue" th:text="${jmlL}">1500</div>
-            <span class="count_bottom"> </span>
-        </div>
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Female Students</span>
-            <div class="count purple" th:text="${jmlP}">1000</div>
-            <span class="count_bottom"></span>
-        </div>
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Student Active</span>
-            <div class="count green" th:text="${jmlMhsA}"></div>
-            <span class="count_bottom"><i class="green"></i></span>
-        </div>
-        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-            <span class="count_top"><i class="fa fa-user"></i> Total Student Inactive</span>
-            <div class="count red" th:text="${jmlMhsInA}">2,315</div>
-            <span class="count_bottom"> </span>
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-xs-12">
-            <a href="https://baitulmaltazkia.com/"><img src="https://baitulmaltazkia.com/wp-content/uploads/2019/10/bmt-21-sedekah-web.jpg" alt="" class="col-md-12 col-xs-12"></a>
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Dashboard</h2>
+                                        <p>Welcome to Smile Mahasiswa Application :)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- /top tiles -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Jadwal Mapel</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Subject</th>
+                                    <th>Day</th>
+                                    <th>Time</th>
+                                    <th>Lecture</th>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="data,row : ${krsdetail}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Senin</td>
+                                    <td th:text="${data.jadwal.hari.namaHari}"></td>
+                                    <td th:text="${data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">Matematika</td>
+                                    <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">13.00</td>
+                                    <td th:text="${data.jadwal.ruangan.namaRuangan}">13.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="ongoing-task-inner notika-shadow mg-t-30">
+                    <div class="realtime-ctn">
+                        <div class="realtime-title ongoing-hd-wd">
+                            <h2>Miss Attendence</h2>
+                        </div>
+                    </div>
+                    <div class="skill-content-3 ongoing-tsk">
+                        <div class="skill">
+                            <a href="">
+                            <div class="progress" th:each="data : ${persentase}">
+                                <div class="lead-content">
+                                    <p th:text="${data[0]}">Matematika</p><br>
+                                </div>
+                                <div th:if="${data[1] == 1}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 33%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
+                                <div th:if="${data[1] == 2}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 66%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
+                                <div th:if="${data[1] > 3}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 100%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span>>3</span></div>
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-
 </body>
 </html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Details</h5>
+                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus-circle"></i> Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" style="text-align: center; padding: 10px;">
+                            <b style="font-size: 17px;" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Intership</b>
+                            <br>
+                            <p style="font-size: 14px;" th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">3 SKS</p>
+                        </div>
+                        <div class="col-md-4" style="text-align: center; padding: 10px;">
+                            <b style="font-size: 17px;" th:text="${jadwal.kelas.namaKelas}">MUA-15</b>
+                        </div>
+                        <div class="col-md-4" style="text-align: center; padding: 10px;">
+                            <b style="font-size: 17px;">Schedule</b>
+                            <br>
+                            <p style="font-size: 14px;" th:text="${jadwal.hari.namaHariEng +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">Sunday, 15:31:00 - 18:00:00</p>
+                        </div>
+                    </div>
+                    <div class="table-responsive" th:if="${not #lists.isEmpty(detail)}">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Start Time</th>
+                                <th scope="col">End Time</th>
+                                <th scope="col">Lecture</th>
+                                <th scope="col">Description</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="headings" th:each="data,row : ${detail}">
+                                <td th:text="${(row.index + 1)}">#</td>
+                                <td th:text="${data.waktuMulai}">Jam</td>
+                                <td th:text="${data.waktuSelesai}">Jam</td>
+                                <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
+                                <td th:text="${data.beritaAcara}">Dosen</td>
+                                <td><a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Kehadiran Mahasiswa</a></td>
+                                <td><a th:href="@{/studiesActivity/attendance/form (id = ${data.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit Berita Acara</a></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                    <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                            <div class="modal-content bg-gradient-danger">
+
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="py-3 text-center">
+                                                        <i class="far fa-trash-alt fa-3x"></i>
+                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <form th:action="@{/studiesActivity/attendance/delete (id = ${data.id})}" method="post">
+                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <form th:action="@{/studiesActivity/attendance/detail}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Meeting :</label>
+                                        <input type="text" name="pertemuan" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date :</label>
+                                        <input type="date" name="tanggal" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Start Time :</label>
+                                        <input type="text" readonly required placeholder="07:00" max="5" name="jamMulai" class="time-picker form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>End Time :</label>
+                                        <input type="text" id='datetimepicker3' required placeholder="09:30" name="jamSelesai" class="time-picker form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Lecture :</label>
+                                        <select name="dosen" class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Description :</label>
+                                        <textarea name="beritaAcara" class="form-control" id=""></textarea>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker3').datetimepicker({
+            format: 'HH:mm'
+        });
+    });
+
+    $(function () {
+        $('#datetimepicker2').datetimepicker({
+            format: 'HH:mm'
+        });
+    });
+</script>

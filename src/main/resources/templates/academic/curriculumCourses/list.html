@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Curriculum Courses</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Curriculum Courses </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right" th:if="${selected != null}">
+                                <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id})}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-copy"></i> Copy Curriculum Courses</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Prodi</label>
+                                                <input type="text" th:if="${selected != null}" class="form-control" id="prodi"  data-provide="typeahead" autocomplete="off" required th:value="${selected.namaProdi}" />
+                                                <input type="text" th:if="${selected == null}" class="form-control" id="prodi"
+                                                       data-provide="typeahead" autocomplete="off" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Curriculum</label>
+                                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected != null}" th:value="${kurikulumSelected.namaKurikulum}" data-provide="typeahead" autocomplete="off" required>
+                                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected == null}"
+                                                       data-provide="typeahead" autocomplete="off" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <form method="get">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <input type="hidden" th:if="${selected != null}" id="isiProdi" name="prodi" th:value="${selected.id}">
+                                    <input type="hidden" th:if="${kurikulumSelected != null}" id="isiKurikulum" name="kurikulum" th:value="${kurikulumSelected.id}">
+                                    <input type="hidden" th:if="${selected == null}" id="isiProdi" name="prodi">
+                                    <input type="hidden" th:if="${kurikulumSelected == null}" id="isiKurikulum" name="kurikulum">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning" th:if="${selected != null}">
+                            <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                            <span class="alert-inner--text">Note : Course can be deleted if it hasn't been used</span>
+                        </div>
+                        <div class="row" th:if="${not #lists.isEmpty(satu)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 1</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${satu}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(dua)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 2</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${dua}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(tiga)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 3</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${tiga}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(empat)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 4</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${empat}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(lima)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 5</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${lima}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(enam)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 6</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${enam}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(tujuh)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 7</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${tujuh}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(delapan)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 8</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${delapan}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${not #lists.isEmpty(sembilan)}">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Semester 9</h3> <span th:text="${kurikulumSelected.namaKurikulum + '  (' + selected.namaProdi + ')'}"></span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Code</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Singkatan</th>
+                                                    <th scope="col">SKS</th>
+                                                    <th scope="col">Pras</th>
+                                                    <th scope="col"></th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data,row : ${sembilan}">
+                                                    <td th:text="${row.index + 1}">1</td>
+                                                    <td th:text="${data.matakuliah.kodeMatakuliah}">121</td>
+                                                    <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
+                                                    <td th:text="${data.matakuliah.singkatan}"></td>
+                                                    <td th:text="${data.jumlahSks}">3</td>
+                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                        <!--button-->
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form th:action="@{/academic/curriculumCourses/delete (id = ${data.id})}" method="post">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label>Curriculum</label>
+                                <select name="" id="" class="form-control">
+                                    <option value="" disabled selected>-- Select One --</option>
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>

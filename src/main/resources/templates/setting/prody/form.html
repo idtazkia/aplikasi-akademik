@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Study Program </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/setting/prody/form}" th:object="${programStudy}">
+
+                            <div class="form-group">
+                                <label>Code</label>
+                                <input type="text" class="form-control" th:field="*{kodeProdi}" name="kodeProdi" placeholder="Kode">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama Prodi</label>
+                                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Study Program" name="namaProdi">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jurusan</label>
+                                <select name="idJurusan" style="width:100%!important;" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="data : ${jurusan}"
+                                            th:text="${data.namaJurusan}" th:value="${data.id}">Department ID</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Jenjang</label>
+                                <select name="idJurusan" style="width:100%!important;" th:field="*{idJenjang}" class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="data : ${jenjang}"
+                                            th:text="${data.namaJenjang}" th:value="${data.id}">Department ID</option>
+                                </select>
+                            </div>
+
+
+
+                            <!--<div class="form-group">-->
+                            <!--<label>Program</label>-->
+                            <!--<select name="programs" th:field="*{programs}" class="form-control js-example-placeholder-single"-->
+                            <!--multiple="multiple" style="width: 100%!important;">-->
+                            <!--<option th:each="data : ${program}"-->
+                            <!--th:text="${data.namaProgram}"-->
+                            <!--th:value="${data.id}"></option>-->
+                            <!--</select>-->
+                            <!--</div>-->
+
+                            <div class="form-group">
+                                <label>Status</label><br>
+                                <label>
+                                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                                </label>
+                                <input type="hidden" name="id" th:field="*{id}">
+
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Save">
+                            <a th:href="@{/setting/prody/list}" class="btn btn-primary" role="button">
+                                <span aria-hidden="true"></span>Cancel
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

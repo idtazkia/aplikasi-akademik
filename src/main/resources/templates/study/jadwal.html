@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Jadwal</title>
+    <style type="text/css">
+        .small-padding{
+            padding: 10px;
+        }
+        .card{
+            background-color: white;
+            border-radius: 5px;
+            padding: 16px;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            margin: 5px;
+        }
+
+        .text-title{
+            font-family: "Roboto", Arial, Helvetica, sans-serif;
+            font-size: 17px;
+            color: #4285f4;
+        }
+
+        .text-subtitle{
+            font-family: "Roboto", Arial, Helvetica, sans-serif;
+            font-size: 10px;
+            color: grey;
+        }
+
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Jadwal hari ini</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/krs}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> KRS</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-xs-12 small-padding card">
+                <div>
+                    <b class="text-subtitle">Matakuliah</b>
+                    <br>
+                    <b class="text-title">Matematika</b>
+                </div>
+                <hr>
+                <div class="col-md-5 col-xs-5">
+                    <b class="text-subtitle">Dosen</b>
+                    <br>
+                    <b>Muhammad Arif Rahmatullah Lc, MA</b>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <b class="text-subtitle">Ruang</b>
+                    <br>
+                    <b>Ruang 1.2</b>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <b class="text-subtitle">Waktu</b>
+                    <b class="text-title">07.00</b>
+                </div>
+
+            </div>
+            <div class="col-md-4 col-xs-12 small-padding card">
+                <div>
+                    <b class="text-subtitle">Matakuliah</b>
+                    <br>
+                    <b class="text-title">Matematika</b>
+                </div>
+                <hr>
+                <div class="col-md-5 col-xs-5">
+                    <b class="text-subtitle">Dosen</b>
+                    <br>
+                    <b>Muhammad Arif Rahmatullah Lc, MA</b>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <b class="text-subtitle">Ruang</b>
+                    <br>
+                    <b>Ruang 1.2</b>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <b class="text-subtitle">Waktu</b>
+                    <b class="text-title">07.00</b>
+                </div>
+
+            </div>
+            <div class="col-md-4 col-xs-12 small-padding card">
+                <div>
+                    <b class="text-subtitle">Matakuliah</b>
+                    <br>
+                    <b class="text-title">Matematika</b>
+                </div>
+                <hr>
+                <div class="col-md-5 col-xs-5">
+                    <b class="text-subtitle">Dosen</b>
+                    <br>
+                    <b>Muhammad Arif Rahmatullah Lc, MA</b>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <b class="text-subtitle">Ruang</b>
+                    <br>
+                    <b>Ruang 1.2</b>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <b class="text-subtitle">Waktu</b>
+                    <b class="text-title">07.00</b>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+</body>
+</html>
