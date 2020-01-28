@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Soal | SMILE</title>
+
+
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Upload Soal<small>List</small></h2>
+                <!--<a th:href="@{/matakuliah/list (prodi = ${matakuliahKurikulum.kurikulum.prodi.id},kurikulum = ${matakuliahKurikulum.kurikulum.id})}" class="navbar-right panel_toolbox"><i class="fa fa-chevron-left"></i></a>-->
+                <div class="clearfix"></div>
+            </div>
+            <div th:if="${status.UTS == status}">
+                <a th:href="@{/contoh/soal}" class="btn btn-info">Download Template Soal</a>
+            </div>
+
+            <div th:if="${status.UAS == status}">
+                <a th:href="@{/contoh/soaluas}" class="btn btn-info">Download Template Soal</a>
+            </div>
+            <br>
+
+            <form method="post" th:action="@{/uploadsoal/detail}" enctype="multipart/form-data" th:if="${approve == null}">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>File Upload</label>
+                                <input type="file" name="file" class="form-control">
+
+                            </div>
+                        </div>
+                        <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                        <input type="hidden" name="dosen" th:value="${dosen.id}">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea rows="3" name="keterangan" class="form-control"></textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" th:if="${status.UTS == status}">
+                            <div class="form-group">
+                                <label>Status Soal</label>
+                                <select readonly class="form-control" name="statusSoal">
+                                    <option value="UTS">UTS</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4" th:if="${status.UAS == status}">
+                            <div class="form-group">
+                                <label>Status Soal</label>
+                                <select readonly class="form-control" name="statusSoal">
+                                    <option value="UAS">UAS</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Upload</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <hr>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Detail Upload<small><b> </b></small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Matakuliah</th>
+                                    <th>Dosen</th>
+                                    <th>Tanggal Upload</th>
+                                    <th>Keterangan</th>
+                                    <th>Status Validasi</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="data,row : ${soal}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Pajak</td>
+                                    <td th:text="${data.dosen.karyawan.namaKaryawan}">Tutut Adiningsih</td>
+                                    <td th:text="${data.tanggalUpload}">10-10-2019</td>
+                                    <td th:text="${data.keterangan}">Soal Uts</td>
+                                    <td th:if="${data.status.AKTIF} == ${data.status}">
+                                        <a th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}" href="#" data-toggle="popover" class="label label-success"
+                                           data-placement="right"  data-trigger="focus" onclick="return false"
+                                           title="Status"
+                                           text="Approved"
+                                           data-content="Soal Anda telah disetujui, terimakasih :)">Approved
+                                        </a>
+
+                                        <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" href="#" data-toggle="popover" class="label label-warning"
+                                           data-placement="right"  data-trigger="focus" onclick="return false"
+                                           title="Status"
+                                           text="Waiting for Approval"
+                                           data-content="Soal yang Anda masih menunggu untuk disetujui">Waiting for Approval
+                                        </a>
+
+                                        <a th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}" href="#" data-toggle="popover" class="label label-danger"
+                                           data-placement="right"  data-trigger="focus" onclick="return false"
+                                           title="Status"
+                                           text="Approved"
+                                           th:data-content="${data.keteranganApprove}">Rejected
+                                        </a>
+
+                                    </td>
+                                    <td th:if="${data.status.HAPUS} == ${data.status}">
+                                        <a href="#" data-toggle="popover" class="label label-danger">Hapus
+                                        </a>
+                                    </td>
+                                    <td th:if="${data.status.NONAKTIF} == ${data.status}">
+                                        <a href="#" data-toggle="popover" class="label label-default">Canceled
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</section>
+
+</body>
+</html>
+
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    })
+</script>

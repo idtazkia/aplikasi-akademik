@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface KelasDao extends PagingAndSortingRepository<Kelas,String> {
 
     Iterable<Kelas> findByStatusNotIn(StatusRecord statusRecord);
+    Iterable<Kelas> findByStatus(StatusRecord statusRecord);
     Page<Kelas> findByStatusNotIn(StatusRecord statusRecord,Pageable pageable);
     Page<Kelas> findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord statusRecord,String nama,Pageable page);
     Page<Kelas> findByStatusNotInAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord statusRecord,String nama,Pageable page);

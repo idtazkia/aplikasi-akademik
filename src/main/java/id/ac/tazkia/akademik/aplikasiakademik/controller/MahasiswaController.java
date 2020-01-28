@@ -371,4 +371,27 @@ public class MahasiswaController {
 
     }
 
+    @GetMapping("/mahasiswa/rfid")
+    public void rfid(@RequestParam(required = false) String nim,@RequestParam(required = false) String rfid,Model model){
+        model.addAttribute("nim", nim);
+        model.addAttribute("rfid", rfid);
+
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+
+        if (mahasiswa != null){
+            model.addAttribute("mahasiswa", mahasiswa);
+        }
+    }
+
+    @PostMapping("/mahasiswa/rfid")
+    public String prosesRfid(@RequestParam String nim,@RequestParam String rfid){
+
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        mahasiswa.setRfid(rfid);
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:rfid?nim="+nim+"&rfid="+rfid;
+
+    }
+
 }

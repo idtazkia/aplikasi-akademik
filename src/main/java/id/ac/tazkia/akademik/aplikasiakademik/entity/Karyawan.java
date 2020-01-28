@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 @Entity
@@ -39,6 +40,8 @@ public class Karyawan {
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahir;
+
+    private Integer idAbsen;
 
 
 }

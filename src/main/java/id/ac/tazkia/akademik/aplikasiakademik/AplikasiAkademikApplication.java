@@ -1,16 +1,20 @@
 package id.ac.tazkia.akademik.aplikasiakademik;
 
 import id.ac.tazkia.akademik.aplikasiakademik.service.RekapPresensiService;
+import id.ac.tazkia.akademik.aplikasiakademik.utility.EntityAuditorAware;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.thymeleaf.dialect.springdata.SpringDataDialect;
 
@@ -20,12 +24,18 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableJpaAuditing
 public class AplikasiAkademikApplication implements CommandLineRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(AplikasiAkademikApplication.class);
 
 	public static void main(String[] args) {
         LOGGER.debug("Mulai menjalankan aplikasinya");
 		SpringApplication.run(AplikasiAkademikApplication.class, args);
+	}
+
+	@Bean
+	public AuditorAware<String> auditorProvider() {
+		return new EntityAuditorAware();
 	}
 
 	@Bean
@@ -39,16 +49,23 @@ public class AplikasiAkademikApplication implements CommandLineRunner {
 	}
 
 	@Autowired private RekapPresensiService rekapPresensiService;
+    @Value("${runOnStartup:#{false}}") private Boolean runOnStartup;
 
 	@Override
 	public void run(String... args) throws Exception {
-		LocalDate i = LocalDate.of(2018,10,1);
-		LocalDate tanggalAkhir = LocalDate.now();
+        if (runOnStartup) {
+            LOGGER.info("Isi Rekap Presensi Dosen");
 
-		while(i.isBefore(tanggalAkhir)) {
-			//rekapPresensiService.isiRekap(i);
-			i = i.plusDays(1);
-		}
+            LocalDate i = LocalDate.of(2019,9,1);
+            LocalDate tanggalAkhir = LocalDate.now();
+
+            while(i.isBefore(tanggalAkhir)) {
+                //rekapPresensiService.isiRekap(i);
+                rekapPresensiService.isiRekapPresensiDosen(i);
+                i = i.plusDays(1);
+            }
+        }
+
 
 	}
 

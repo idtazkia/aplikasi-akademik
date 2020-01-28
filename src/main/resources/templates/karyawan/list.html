@@ -21,14 +21,14 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <a th:href="@{/karyawan/form}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
+                            <a th:href="@{/karyawan/baru}" class="btn btn-primary" role="button" aria-pressed="true">Add</a>
                         </td>
                         <td align="right">
                             <form method="get">
                                 <div class="title_right">
                                     <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                                         <div class="input-group">
-                                            <input type="text"  class="form-control" placeholder="Search for..." name="search">
+                                            <input type="text"  class="form-control" placeholder="Search for..." name="search" th:value="${search}">
                                             <span class="input-group-btn">
                               <button class="btn btn-default" type="submit">Search</button>
                           </span>
@@ -41,13 +41,16 @@
                 </table>
                 <br>
                 <div class="box-body table-responsive no-padding">
+                    <div>
+                        Show <span sd:page-size-selector="javascript"></span> entries
+                    </div>
+                    <br>
                     <table class="table table-striped">
                         <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Employee Number</th>
                             <th scope="col">Employee Name</th>
-                            <th scope="col">Degree</th>
                             <th scope="col">Gender</th>
                             <th scope="col" width="30px">Action</th>
                             <th scope="col" width="40px"></th>
@@ -57,16 +60,15 @@
                         <tbody>
 
 
-                        <tr class="even pointer" th:each="karyawan,row : ${daftarKaryawan}" >
-                            <td >1</td>
+                        <tr class="even pointer" th:each="karyawan,row : ${listKaryawan}" >
+                            <td th:text="${(row.index + 1) + (listKaryawan.number * listKaryawan.size)}">1</td>
                             <td th:text="${karyawan.nik}"></td>
-                            <td>ono</td>
-                            <td>sarjana</td>
-                            <td>cowo</td>
+                            <td th:text="${karyawan.namaKaryawan}">ono</td>
+                            <td th:text="${karyawan.jenisKelamin}">cowo</td>
                             <td align="center">
-                                <a href="#" class="btn btn-success btn-xs" th:href="@{/karyawan/form}" title="edit">Edit</a></td>
+                                <a href="#" class="btn btn-success btn-xs" th:href="@{/karyawan/baru(id=${karyawan.id})}" title="edit">Edit</a></td>
                             <td align="center">
-                                <form method="post">
+                                <form method="post" th:action="@{/karyawan/delete (karyawan = ${karyawan.id})}">
                                     <button type="submit" class="btn btn-danger btn-xs"
                                             onclick="return confirm('Are you sure? Once deleted, you will not be able' +
                                                                  ' to recover this imaginary file!')">
@@ -82,27 +84,19 @@
                     </table>
                 </div>
                 <br>
-                <div>
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-
+                <div class="row">
+                    <div class="col-sm-8">
+                        <nav class="pull-right">
+                            <ul class="pagination" sd:pagination="full">
+                                <!-- Pagination created by SpringDataDialect, this content is just for mockup -->
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>

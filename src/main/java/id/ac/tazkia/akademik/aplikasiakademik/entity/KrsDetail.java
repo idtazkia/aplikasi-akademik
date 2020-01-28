@@ -18,7 +18,7 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class KrsDetail {
+public class KrsDetail extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -63,4 +63,30 @@ public class KrsDetail {
     private BigDecimal bobot;
     private String grade;
 
+    @NotNull @Min(0)
+    private Integer jumlahKehadiran;
+
+    @NotNull @Min(0)
+    private Integer jumlahTerlambat;
+
+    @NotNull @Min(0)
+    private Integer jumlahMangkir;
+
+    @NotNull @Min(0)
+    private Integer jumlahSakit;
+
+    @NotNull @Min(0)
+    private Integer jumlahIzin;
+
+    private String kodeUts;
+    private String kodeUas;
+
+    private Integer e1;
+    private Integer e2;
+    private Integer e3;
+    private Integer e4;
+    private Integer e5;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord statusEdom;
 }

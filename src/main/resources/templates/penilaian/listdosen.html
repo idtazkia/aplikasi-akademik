@@ -28,7 +28,7 @@
                             <th>Kelas <small style="font-size: 8px;">KRS</small></th>
                             <th>Jadwal</th>
                             <th>Jam</th>
-                            <th></th>
+                            <th colspan="4"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -43,20 +43,20 @@
                                 <td th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</td>
                                 <td>
                                     <a th:href="@{/penilaian/bobot (jadwal = ${jadwal.id})}">
-                                        <button type="submit" class="fa fa-edit btn btn-primary"> Edit</button>
+                                        <button class="fa fa-edit btn btn-primary btn-sm" type="button"> Bobot</button>
                                     </a>
                                 </td>
+                                <td>
+                                    <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
+                                        <button class="fa fa-edit btn btn-warning btn-sm" type="button"> Nilai Mahasiswa</button>
+                                    </a>
 
-                                <!--<td>-->
-                                    <!--&lt;!&ndash;<a th:if="${not @environment.acceptsProfiles('production')}" class="btn btn-info" th:href="@{/nilai/excel (id = ${jadwal.id})}">Download File Excel</a>&ndash;&gt;-->
-                                <!--</td>-->
-
-                                <!--<td>-->
-                                    <!--&lt;!&ndash;<form th:action="@{/penilaian/upload}" method="post" enctype="multipart/form-data">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<input type="file" name="file">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<button type="submit">pusing</button>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</form>&ndash;&gt;-->
-                                <!--</td>-->
+                                </td>
+                                <td>
+                                    <a  th:href="@{/penilaian/uploadnilai(jadwal = ${jadwal.id})}">
+                                        <button class="fa fa-pencil btn btn-success btn-sm" type="button"> Submit Nilai</button>
+                                    </a>
+                                </td>
                             </tr>
                         </span>
                         </tbody>

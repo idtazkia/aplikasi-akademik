@@ -167,6 +167,10 @@ public class MataKuliahController {
                 matkulDto.setProdi(matakuliahKurikulum.getKurikulum().getProdi());
                 matkulDto.setPrograms(matakuliahKurikulum.getPrograms());
                 matkulDto.setAkses(matakuliahKurikulum.getAkses());
+                matkulDto.setStatusSkripsi(matakuliahKurikulum.getStatusSkripsi());
+                matkulDto.setSds(matakuliahKurikulum.getSds());
+                matkulDto.setSempro(matakuliahKurikulum.getSempro());
+                matkulDto.setKonsepNote(matakuliahKurikulum.getKonsepNote());
                 model.addAttribute("matkul",matkulDto);
 
             }
@@ -177,7 +181,6 @@ public class MataKuliahController {
 
     @PostMapping("/matakuliah/form")
     public String prosesMatkul(@ModelAttribute @Valid MatkulDto matkulDto, MultipartFile silabus, BindingResult errors) throws Exception {
-        System.out.println(matkulDto.getIdMat());
         String namaFile = silabus.getName();
         String jenisFile = silabus.getContentType();
         String namaAsli = silabus.getOriginalFilename();
@@ -218,9 +221,13 @@ public class MataKuliahController {
                 if (matkulDto.getWajib() == null) {
                     matakuliahKurikulum.setResponsi("N");
                 }
+
+
                 matakuliahKurikulum.setMatakuliah(matakuliah);
                 matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                 matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                matakuliahKurikulum.setSds(matkulDto.getSds());
+                matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
                 matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                 matakuliahKurikulum.setAkses(matkulDto.getAkses());
                 matakuliahKurikulum.setSilabus(idFile + "." + extension);
@@ -239,6 +246,8 @@ public class MataKuliahController {
                 matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                 matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
                 matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
+                matakuliahKurikulum.setSds(matkulDto.getSds());
                 matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                 matakuliahKurikulum.setSilabus(idFile + "." + extension);
                 matakuliahKurikulumDao.save(matakuliahKurikulum);
@@ -261,6 +270,8 @@ public class MataKuliahController {
                     }
                     matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                     matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSds(matkulDto.getSds());
+                    matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
                     matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                     matakuliahKurikulum.setSilabus(idFile + "." + extension);
                     matakuliahKurikulum.setAkses(matkulDto.getAkses());
@@ -279,7 +290,9 @@ public class MataKuliahController {
                     matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                     matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                     matakuliahKurikulum.setAkses(matkulDto.getAkses());
+                    matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
                     matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSds(matkulDto.getSds());
                     matakuliahKurikulum.setSilabus(idFile + "." + extension);
                     matakuliahKurikulumDao.save(matakuliahKurikulum);
                 }
@@ -307,6 +320,8 @@ public class MataKuliahController {
                     matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                     matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                     matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSds(matkulDto.getSds());
+                    matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
                     matakuliahKurikulum.setSilabus(idFile + "." + extension);
                     matakuliahKurikulum.setAkses(matkulDto.getAkses());
                     matakuliahKurikulumDao.save(matakuliahKurikulum);
@@ -323,6 +338,8 @@ public class MataKuliahController {
                     matakuliahKurikulum.setJumlahSks(matkulDto.getSks());
                     matakuliahKurikulum.setMatakuliah(matakuliah);
                     matakuliahKurikulum.setNomorUrut(matkulDto.getNourut());
+                    matakuliahKurikulum.setSds(matkulDto.getSds());
+                    matakuliahKurikulum.setStatusSkripsi(matkulDto.getStatusSkripsi());
                     matakuliahKurikulum.setSyaratTugasAkhir(matkulDto.getSyaratTugas());
                     matakuliahKurikulum.setAkses(matkulDto.getAkses());
                     matakuliahKurikulum.setSilabus(idFile + "." + extension);

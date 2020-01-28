@@ -124,4 +124,8 @@ public class DashboardController {
     public void form404(){
     }
 
+    @GetMapping("/soon")
+    public void comingSoon(){
+    }
+
 }

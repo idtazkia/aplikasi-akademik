@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Aktifasi RFID</title>
+</head>
+<body>
+
+<section layout:fragment="main" class="container">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Aktivasi RFID</h2>
+                <div class="clearfix"></div>
+            </div>
+
+
+
+            <form method="post" th:action="@{/mahasiswa/rfid}">
+                <div class="form-group">
+                    <div class="row col-sm-offset-1 ">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>NIM</b></label></center>
+                                    <input type="text" th:value="${nim}" class="form-control" name="nim">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <center><label><b>RFID</b></label></center>
+                                    <input type="text" class="form-control" th:value="${rfid}" name="rfid">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <center>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info">Aktifasi</button>
+                            </div>
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <br>
+            <hr>
+
+
+            <div class="col-md-12" role="main" th:if="${mahasiswa != null}">
+                <div class="">
+                    <div class="clearfix"></div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>List KRS <small ></small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    <section class="content invoice">
+                                        <!-- title row -->
+                                        <div class="row">
+                                            <div class="col-xs-12 invoice-header">
+                                                <h1>
+                                                    <i class="fa fa-user"></i>
+                                                    <span th:text="${mahasiswa.nama}">2019</span><small th:text="${'  ( ' + mahasiswa.nim + ' )  '}"></small>
+                                                </h1>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <br>
+                                        <!-- info row -->
+                                        <div class="row invoice-info">
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong th:text="${mahasiswa.idProdi.namaProdi}">2008/2009 Semester Ganjil</strong>
+                                                    <br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong th:text="${mahasiswa.idProgram.namaProgram}">Bisnis Manajemen Syariah</strong>
+                                                    <br>
+                                                </address>
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-4 invoice-col">
+                                                <address>
+                                                    <strong th:text="${mahasiswa.angkatan}">Reguler</strong>
+                                                    <br>
+
+                                                </address>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div>
+                                            <!--Show <span sd:page-size-selector="javascript"></span> entries-->
+                                        </div>
+                                        <!-- /.row -->
+
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>

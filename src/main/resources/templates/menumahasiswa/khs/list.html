@@ -4,7 +4,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>List Krs</title>
+    <title>List Khs</title>
 </head>
 <body>
 
@@ -18,36 +18,36 @@
             </div>
 
 
-            <form method="get">
-                <div class="form-group">
-                    <center>
-                        <label>Academic Years :</label>
-                        <select class="form-control js-example-placeholder-single"
-                                style="width: 100%!important;" name="tahunAkademik"
-                                th:value="${search}">
-                            <option></option>
-                            <option th:each="data : ${listTahunAkademik}"
-                                    th:text="${data.namaTahunAkademik}"
-                                    th:value="${data.id}">sdasd</option>
-                            <option selected th:if="${search} != null" th:each="data : ${search}"
-                                    th:value="${data.id}"
-                                    th:text="${data.namaTahunAkademik}">Akuntasi Islam</option>
-                        </select><br><br>
-                        <button type="submit" class="btn btn-info">Search</button>
-                    </center>
-                </div>
-            </form>
+            <!--<form method="get" th:if="${not @environment.acceptsProfiles('production')}">-->
+                <!--<div class="form-group">-->
+                    <!--<center>-->
+                        <!--<label>Academic Years :</label>-->
+                        <!--<select class="form-control js-example-placeholder-single"-->
+                                <!--style="width: 100%!important;" name="tahunAkademik"-->
+                                <!--th:value="${search}">-->
+                            <!--<option></option>-->
+                            <!--<option th:each="data : ${listTahunAkademik}"-->
+                                    <!--th:text="${data.namaTahunAkademik}"-->
+                                    <!--th:value="${data.id}">sdasd</option>-->
+                            <!--<option selected th:if="${search} != null" th:each="data : ${search}"-->
+                                    <!--th:value="${data.id}"-->
+                                    <!--th:text="${data.namaTahunAkademik}">Akuntasi Islam</option>-->
+                        <!--</select><br><br>-->
+                        <!--<button type="submit" class="btn btn-info">Search</button>-->
+                    <!--</center>-->
+                <!--</div>-->
+            <!--</form>-->
             <br>
             <div>
                 <Center>
-                    <H2>Tahun Akademik</H2>
+                    <!--<H2 >Tahun Akademik</H2>-->
                 </Center>
             </div>
             <table class="table table-striped jambo_table bulk_action" width="100%">
                 <tr>
                     <td>Nama : <span th:text="${mahasiswa.nama}">Gifar Haidar</span></td>
                     <td>
-                        Pemb Akd : <span th:text="${mahasiswa.dosen}" }>Lebron</span>
+                        Pemb Akd : <span th:text="${mahasiswa.dosen.karyawan.namaKaryawan}" }>Lebron</span>
                     </td>
                 </tr>
                 <tr>
@@ -94,28 +94,10 @@
                             <td th:text="${data.tugas}"></td>
                             <td th:text="${data.uts}"></td>
                             <td th:text="${data.uas}"></td>
-                            <td th:if="${data.total} > ${gradeA.bawah}" th:text="${gradeA.bobot}"></td>
-                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}" th:text="${grademinA.bobot}">A-</td>
-                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}" th:text="${gradeplusB.bobot}">B+</td>
-                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}" th:text="${gradeB.bobot}">B</td>
-                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}" th:text="${grademinB.bobot}">B-</td>
-                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}" th:text="${gradeplusC.bobot}">C+</td>
-                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}" th:text="${gradeC.bobot}">C</td>
-                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}" th:text="${gradeD.bobot}">D</td>
-                            <td th:if="${data.total < gradeE.atas}" th:text="${gradeE.bobot}">E</td>
-
-
-                            <td th:if="${data.total} > ${gradeA.bawah}">A</td>
-                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}">A-</td>
-                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}">B+</td>
-                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}">B</td>
-                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}">B-</td>
-                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}">C+</td>
-                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}">C</td>
-                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}">D</td>
-                            <td th:if="${data.total < gradeE.atas}">E</td>
-
+                            <td th:text="${data.totalBobot}"></td>
+                            <td th:text="${data.id}"></td>
                             <td th:text="${data.total}"></td>
+
                         </tr>
                         </tbody>
                     </table>

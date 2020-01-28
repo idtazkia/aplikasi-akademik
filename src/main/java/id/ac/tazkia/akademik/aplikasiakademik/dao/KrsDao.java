@@ -12,6 +12,7 @@ import java.util.List;
 public interface KrsDao extends PagingAndSortingRepository<Krs,String> {
     Krs findByTahunAkademikStatusAndMahasiswa(StatusRecord statusRecord, Mahasiswa mahasiswa);
     Krs findByTahunAkademikAndMahasiswa(TahunAkademik tahunAkademik, Mahasiswa mahasiswa);
+    Krs findByTahunAkademikAndMahasiswaAndStatus(TahunAkademik tahunAkademik, Mahasiswa mahasiswa,StatusRecord statusRecord);
     Krs findByMahasiswaAndTahunAkademik(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
     Iterable<Krs> findByMahasiswa(Mahasiswa mahasiswa);
     Long countKrsByTahunAkademikAndMahasiswa(TahunAkademik tahunAkademik,Mahasiswa mahasiswa);

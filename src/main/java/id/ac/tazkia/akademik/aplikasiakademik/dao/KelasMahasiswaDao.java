@@ -24,5 +24,8 @@ public interface KelasMahasiswaDao extends PagingAndSortingRepository <KelasMaha
     @Query("select distinct new id.ac.tazkia.akademik.aplikasiakademik.dto.KelasDto(k.kelas.id,k.kelas.namaKelas,k.mahasiswa.kurikulum.id) from KelasMahasiswa k where k.status= :status")
     List<KelasDto> cariKelas(@Param("status") StatusRecord statusRecord);
 
+    @Query("select distinct km.kelas from KelasMahasiswa km")
+    List<Kelas> carikelasMahasiswa ();
+
 
 }

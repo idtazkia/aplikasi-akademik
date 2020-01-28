@@ -4,6 +4,8 @@ import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
 import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import id.ac.tazkia.akademik.aplikasiakademik.service.CurrentUserService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.NotifikasiService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.PresensiService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,12 @@ public class KebijakanPresensiController {
     @Autowired
     private MahasiswaDao mahasiswaDao;
 
+    @Autowired
+    private NotifikasiService notifikasiService;
+
+    @Autowired
+    private PresensiService presensiService;
+
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
         return dosenDao.findByStatusNotIn(StatusRecord.HAPUS);
@@ -149,49 +157,35 @@ model.addAttribute("jadwal", jadwal);
 
     @GetMapping("/kebijakanpresensi/detail")
     public void  formKebijakanPresensi(Model model, @RequestParam Jadwal jadwal, Pageable page){
-        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwal(jadwal);
+        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(jadwal,StatusRecord.AKTIF);
 
-        if (sesiKuliah != null) {
-            List<JadwalDto> detail = new ArrayList<>();
-            for (SesiKuliah sk : sesiKuliah) {
-                JadwalDto jadwalDto = new JadwalDto();
-                jadwalDto.setJadwal(sk.getJadwal());
-                jadwalDto.setBeritaAcara(sk.getBeritaAcara());
-                jadwalDto.setPresensiDosen(sk.getPresensiDosen());
-                jadwalDto.setId(sk.getId());
-                LocalDateTime jamMasuk = sk.getWaktuMulai();
-                LocalDateTime jamSelesai = sk.getWaktuSelesai();
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
-                jadwalDto.setWaktuMulai(jamMasuk.format(format));
-                jadwalDto.setWaktuSelesai(jamSelesai.format(format));
-                detail.add(jadwalDto);
+        List<JadwalDto> detail = new ArrayList<>();
+        for (SesiKuliah sk : sesiKuliah) {
+            JadwalDto jadwalDto = new JadwalDto();
+            jadwalDto.setJadwal(sk.getJadwal());
+            jadwalDto.setBeritaAcara(sk.getBeritaAcara());
+            jadwalDto.setPresensiDosen(sk.getPresensiDosen());
+            jadwalDto.setId(sk.getId());
+            LocalDateTime jamMasuk = sk.getWaktuMulai();
+            LocalDateTime jamSelesai = sk.getWaktuSelesai();
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+            jadwalDto.setWaktuMulai(jamMasuk.format(format));
+            jadwalDto.setWaktuSelesai(jamSelesai.format(format));
+            detail.add(jadwalDto);
 
-            }
-            model.addAttribute("detail", detail);
         }
+        model.addAttribute("detail", detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
-//        model.addAttribute("teamTeaching", jadwal.getDosens());
+        model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwal", jadwal);
     }
 
     @PostMapping("/kebijakanpresensi/detail")
     public String tambahPresensi(@ModelAttribute @Valid JadwalDto jadwalDto){
-        PresensiDosen presensiDosen = new PresensiDosen();
-        presensiDosen.setDosen(jadwalDto.getDosen());
-        presensiDosen.setJadwal(jadwalDto.getJadwal());
-        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-        presensiDosen.setTahunAkademik(jadwalDto.getTahunAkademik());
-        presensiDosen.setWaktuMasuk(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
-        presensiDosenDao.save(presensiDosen);
 
-        SesiKuliah sesiKuliah = new SesiKuliah();
-        sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
-        sesiKuliah.setJadwal(jadwalDto.getJadwal());
-        sesiKuliah.setPresensiDosen(presensiDosen);
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
-        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
-        sesiKuliahDao.save(sesiKuliah);
+        presensiService.inputPresensi(jadwalDto.getDosen(),
+                jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
+                LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
 
         return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
 
@@ -241,7 +235,7 @@ model.addAttribute("jadwal", jadwal);
 
     @GetMapping("/kebijakanpresensi/presensi")
     public void dosenKebijakanPresensi(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
-        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
 
         Map<String, String> statusPresensi = new HashMap<>();
         for(PresensiMahasiswa pm : presensiMahasiswa){
@@ -329,7 +323,9 @@ model.addAttribute("jadwal", jadwal);
 
 
 
+
         model.addAttribute("sesi", jadwalDto);
+        model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(sk.getJadwal()));
 
     }
 
@@ -337,11 +333,11 @@ model.addAttribute("jadwal", jadwal);
     public String updateDetail(@Valid @ModelAttribute JadwalDto jadwalDto){
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
-        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMasuk().toLocalTime()));
-        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamKeluar().toLocalTime()));
+        sesiKuliah.setWaktuMulai(sesiKuliah.getWaktuMulai());
+        sesiKuliah.setWaktuSelesai(sesiKuliah.getWaktuSelesai());
         sesiKuliah.getPresensiDosen().setDosen(jadwalDto.getDosen());
         sesiKuliahDao.save(sesiKuliah);
-        return "redirect:detail";
+        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
     }
 
 
@@ -417,6 +413,23 @@ model.addAttribute("jadwal", jadwal);
         workbook.write(response.getOutputStream());
         workbook.close();
 
+
+    }
+
+    @PostMapping("/kebijakanpresensi/deletePresensi")
+    public String deletePresensi(@RequestParam SesiKuliah sesiKuliah){
+
+        PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
+        presensiDosen.setStatus(StatusRecord.HAPUS);
+        presensiDosenDao.save(presensiDosen);
+
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliah(sesiKuliah);
+        for (PresensiMahasiswa pm : presensiMahasiswa){
+            pm.setStatus(StatusRecord.HAPUS);
+            presensiMahasiswaDao.save(pm);
+        }
+
+        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
 
     }
 }

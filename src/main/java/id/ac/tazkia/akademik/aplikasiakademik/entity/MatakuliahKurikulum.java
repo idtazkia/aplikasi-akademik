@@ -63,5 +63,16 @@ public class MatakuliahKurikulum {
     @Enumerated(EnumType.STRING)
     private Akses akses;
 
+    @Enumerated(EnumType.STRING)
+    private StatusRecord statusSkripsi = StatusRecord.NONAKTIF;
+
+    private Integer sds;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord konsepNote = StatusRecord.NONAKTIF;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord sempro = StatusRecord.NONAKTIF;
+
 
 }

@@ -9,8 +9,8 @@
 </head>
 <body>
 
-<section layout:fragment="main" class="content" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-    <div class="row tile_count">
+<section layout:fragment="main" class="content">
+    <div class="row tile_count" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
         <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
             <span class="count_top"><i class="fa fa-user"></i> Total Employee</span>
             <div class="count " th:text="${JmlKar}">7,325</div>
@@ -43,6 +43,11 @@
             <span class="count_bottom"> </span>
         </div>
 
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <a href="https://baitulmaltazkia.com/"><img src="https://baitulmaltazkia.com/wp-content/uploads/2019/10/bmt-21-sedekah-web.jpg" alt="" class="col-md-12 col-xs-12"></a>
+        </div>
     </div>
     <!-- /top tiles -->
 </section>

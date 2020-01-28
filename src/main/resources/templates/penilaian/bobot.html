@@ -5,7 +5,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Komponen Penilaian</title>
     <style type="text/css">
         form{
             margin: 20px 0;
@@ -39,170 +39,186 @@
                 </div>
                 <table class="x_content">
                     <p class="text-muted font-13 m-b-30">
-                    <div class="form-group">
-                        <div class="row col-sm-offset-1 ">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <center>
-                                        <div class="btn-group">
-                                            <a th:href="@{/penilaian/bobot}">
-                                                <button class="btn btn-primary"  type="button">Bobot Penilaian</button>
-                                            </a>
-                                            <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
-                                                <button class="btn btn-default" type="button">Nilai Mahasiswa</button>
-                                            </a>
-                                            <a th:href="@{/penilaian/list}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-                                                <button class="btn btn-default" type="button">Kembali</button>
-                                            </a>
-                                        </div>
-                                    </center>
+                        <div class="form-group">
+                            <div class="row col-sm-offset-1 ">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <center>
+                                            <div class="btn-group">
+                                                <a th:href="@{/penilaian/bobot(jadwal = ${jadwal.id})}">
+                                                    <button class="btn btn-primary"  type="button">Pembobotan</button>
+                                                </a>
+                                                <a th:href="@{/penilaian/nilai(jadwal = ${jadwal.id})}">
+                                                    <button class="btn btn-default" type="button">Rekapitulasi Penilaian</button>
+                                                </a>
+                                                <a th:href="@{/penilaian/uploadnilai(jadwal = ${jadwal.id})}">
+                                                    <button class="btn btn-default" type="button">Submit Nilai</button>
+                                                </a>
+                                                <a th:href="@{/penilaian/list}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                                    <button class="btn btn-default" type="button">Kembali</button>
+                                                </a>
+                                            </div>
+                                        </center>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <table class="table table-striped">
-                                <tr>
-                                    <td>Tahun Akademik</td>
-                                    <td>:</td>
-                                    <td th:text="${jadwal.tahunAkademik.namaTahunAkademik}">20191</td>
-                                    <td>&nbsp;</td>
-                                    <td>Program Studi</td>
-                                    <td>:</td>
-                                    <td th:text="${jadwal.prodi.namaProdi}">Manajemen Bisnis Syariah <small style="font-size: 8px">01</small></td>
-                                </tr>
-                                <tr>
-                                    <td>Mata Kuliah</td>
-                                    <td>:</td>
-                                    <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px">SDS20192</small></td>
-                                    <td>&nbsp;</td>
-                                    <td>Dosen</td>
-                                    <td>:</td>
-                                    <td th:text="${jadwal.dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px">M.M</small></td>
-                                </tr>
-                                <tr>
-                                    <td>SKS</td>
-                                    <td>:</td>
-                                    <td><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> <small>,</small> <span>Peserta :
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td>Tahun Akademik</td>
+                                        <td>:</td>
+                                        <td th:text="${jadwal.tahunAkademik.namaTahunAkademik}">20191</td>
+                                        <td>&nbsp;</td>
+                                        <td>Program Studi</td>
+                                        <td>:</td>
+                                        <td th:text="${jadwal.prodi.namaProdi}">Manajemen Bisnis Syariah <small style="font-size: 8px">01</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mata Kuliah</td>
+                                        <td>:</td>
+                                        <td th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Student Dynamic Session <small style="font-size: 8px">SDS20192</small></td>
+                                        <td>&nbsp;</td>
+                                        <td>Dosen</td>
+                                        <td>:</td>
+                                        <td th:text="${jadwal.dosen.karyawan.namaKaryawan}">Afif Zaerofi <small style="font-size: 8px">M.M</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td>SKS</td>
+                                        <td>:</td>
+                                        <td><span th:text="${jadwal.matakuliahKurikulum.jumlahSks}"></span> <small>,</small> <span>Peserta :
                                         <span th:text="${jumlahMahasiswa}"></span></span> , <span>Absensi Dosen : </span><span th:text="${absensi}"></span>
-                                    </td>
-                                    <td>&nbsp;</td>
-                                    <td>Kelas</td>
-                                    <td>:</td>
-                                    <td th:text="${jadwal.kelas.namaKelas}">K</td>
-                                </tr>
-                                <tr>
-                                    <td>Jadwal Kuliah</td>
-                                    <td>:</td>
-                                    <td><span th:text="${jadwal.hari.namaHariEng}"></span>
-                                        <small style="font-size: 8px" th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
-                                    </td>
-                                    <td>&nbsp;</td>
-                                    <td>Jadwal Ujian</td>
-                                    <td>:</td>
-                                    <td>01-01-2019, Rabu <small style="font-size: 8px">14.00-15.30</small></td>
-                                </tr>
-                            </table>
-
-
-                            <center>
-                                <div class="clearfix">
-                                    <h2>Bobot Penilaian</h2>
-                                    <div class="x_title"></div>
-                                </div>
-                            </center>
-
-                            <div class="alert alert-danger fade in" th th:if="${lebih != null}">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                <h4>OOPS!!!</h4>
-                                    <p>Data bobot yang Anda masukan melebihin 100%, Silahkan Coba Lagi!</p>
-                            </div>
-
-                            <div class="alert alert-danger fade in" th th:if="${tidakvalid != null}">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                <h4>OOPS!!!</h4>
-                                    <p>Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!</p>
-                            </div>
-                            <form th:action="@{/penilaian/bobot}" method="post" th:object="${jadwal}">
-                                <table>
-                                    <tr>
-                                        <td style="width: 20%"><label>Presensi</label></td>
-                                        <td>&nbsp; : &nbsp;</td>
-                                        <td><input type="text" name="bobotPresensi" th:field="*{bobotPresensi}" class="form-control" style="width: 20%;" placeholder="Presensi (%)"></td>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>Kelas</td>
+                                        <td>:</td>
+                                        <td th:text="${jadwal.kelas.namaKelas}">K</td>
                                     </tr>
                                     <tr>
-                                        <td style="width: 5%"><label>Tugas</label></td>
-                                        <td style="width: 3%">&nbsp; : &nbsp;</td>
-                                        <td><input type="text" name="bobotTugas" th:field="*{bobotTugas}" class="form-control" style="width: 20%;" placeholder="Presensi (%)"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="10%"><label>Ujian Tengah Semester</label></td>
-                                        <td width="3%">&nbsp; : &nbsp;</td>
-                                        <td><input type="text" name="bobotUts" th:field="*{bobotUts}" class="form-control" style="width: 20%;" placeholder="%"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="10%"><label>Ujian Akhir Semester</label></td>
-                                        <td width="3%">&nbsp; : &nbsp;</td>
-                                        <td><input type="text" name="bobotUas" th:field="*{bobotUas}" class="form-control" style="width: 20%;" placeholder="%"></td>
+                                        <td>Jadwal Kuliah</td>
+                                        <td>:</td>
+                                        <td><span th:text="${jadwal.hari.namaHariEng}"></span>
+                                            <small style="font-size: 8px" th:text="${jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">13.00-15.00</small>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>Jadwal Ujian</td>
+                                        <td>:</td>
+                                        <td>01-01-2019, Rabu <small style="font-size: 8px">14.00-15.30</small></td>
                                     </tr>
                                 </table>
-                                <input type="hidden" name="id" th:value="${jadwal.id}">
-                                <input type="hidden" name="matakuliahKurikulum" th:value="${jadwal.matakuliahKurikulum.id}">
-                                <input type="hidden" name="hari" th:value="${jadwal.hari.id}">
-                                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai+''}">
-                                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai+''}">
-                                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
-                                <input type="hidden" name="tahunAkademikProdi" th:value="${jadwal.tahunAkademikProdi.id}">
-                                <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
-                                <input type="hidden" name="dosen" th:value="${jadwal.dosen.id}">
-                                <input type="hidden" name="ruangan" th:value="${jadwal.ruangan.id}">
-                                <input type="hidden" name="kelas" th:value="${jadwal.kelas.id}">
-                                <input type="hidden" name="jumlahSesi" th:value="${jadwal.jumlahSesi}">
-                                <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
-                                <input type="hidden" name="program" th:value="${jadwal.program.id}">
-                                <input type="hidden" name="status" th:value="${jadwal.status}">
-                                <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
-                                <br>
+
+
                                 <center>
-                                    <button type="submit" class="btn btn-success simpan">Simpan Perubahan</button>
+                                    <div class="clearfix">
+                                        <h2>Bobot Penilaian</h2>
+                                        <div class="x_title"></div>
+                                    </div>
                                 </center>
-                                <br>
-                                <div class="table-responsive">
-                                    <span><strong><button type="button" class="btn btn-round btn-primary" data-toggle="modal" data-target="#basicExampleModal" >Tambah Tugas</button></strong></span>
-                                    <table class="table table-striped jambo_table bulk_action">
-                                        <thead>
-                                        <tr class="headings">
-                                            <th>#</th>
-                                            <th>Pertemuan Ke :</th>
-                                            <th>Nama Tugas</th>
-                                            <th>Bobot Tugas</th>
-                                            <th colspan="2"></th>
-                                        </tr>
-                                        </thead>
 
-                                        <tbody>
-                                         <tr th:each="data,row : ${bobot}">
-                                            <td th:text="${row.index + 1}">#</td>
-                                            <td th:text="${data.pertemuan}">Ruangan</td>
-                                            <td th:text="${data.namaTugas}">Jam</td>
-                                            <td th:text="${data.bobot}">Matakuliah</td>
-                                            <td>
-                                                <center>
-                                                    <a th:href="@{/penilaian/edit(bobot = ${data.id})}">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </a>
-                                                </center>
-                                            </td>
-                                         </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    </p>
-                </table>
+                                <div class="alert alert-danger fade in" th th:if="${lebih != null}">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h4>OOPS!!!</h4>
+                    <p>Data bobot yang Anda masukan melebihin 100%, Silahkan Coba Lagi!</p>
             </div>
+
+            <div class="alert alert-danger fade in" th th:if="${tidakvalid != null}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4>OOPS!!!</h4>
+                <p>Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!</p>
+            </div>
+
+            <div class="alert alert-danger fade in" th th:if="${gaadapres != null}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4>OOPS!!!</h4>
+                <p>Anda belum pernah masuk untuk mengajar</p>
+            </div>
+            <form th:action="@{/penilaian/bobot}" method="post" th:object="${jadwal}">
+                <table>
+                    <tr>
+                        <td style="width: 20%"><label>SDS</label></td>
+                        <td>&nbsp; : &nbsp;</td>
+                        <td><input type="text" name="sds" th:value="${jadwal.matakuliahKurikulum.sds}" readonly class="form-control" style="width: 20%;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%"><label>Presensi</label></td>
+                        <td>&nbsp; : &nbsp;</td>
+                        <td><input type="text" name="bobotPresensi" th:field="*{bobotPresensi}" class="form-control" style="width: 20%;" placeholder="Presensi (%)"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 5%"><label>Tugas</label></td>
+                        <td style="width: 3%">&nbsp; : &nbsp;</td>
+                        <td><input type="text" name="bobotTugas" th:field="*{bobotTugas}" class="form-control" style="width: 20%;" placeholder="Presensi (%)"></td>
+                    </tr>
+                    <tr>
+                        <td width="10%"><label>Ujian Tengah Semester</label></td>
+                        <td width="3%">&nbsp; : &nbsp;</td>
+                        <td><input type="text" name="bobotUts" th:field="*{bobotUts}" class="form-control" style="width: 20%;" placeholder="%"></td>
+                    </tr>
+                    <tr>
+                        <td width="10%"><label>Ujian Akhir Semester</label></td>
+                        <td width="3%">&nbsp; : &nbsp;</td>
+                        <td><input type="text" name="bobotUas" th:field="*{bobotUas}" class="form-control" style="width: 20%;" placeholder="%"></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="id" th:value="${jadwal.id}">
+                <input type="hidden" name="matakuliahKurikulum" th:value="${jadwal.matakuliahKurikulum.id}">
+                <input type="hidden" name="hari" th:value="${jadwal.hari.id}">
+                <input type="hidden" name="jamMulai" th:value="${jadwal.jamMulai+''}">
+                <input type="hidden" name="jamSelesai" th:value="${jadwal.jamSelesai+''}">
+                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
+                <input type="hidden" name="tahunAkademikProdi" th:value="${jadwal.tahunAkademikProdi.id}">
+                <input type="hidden" name="prodi" th:value="${jadwal.prodi.id}">
+                <input type="hidden" name="dosen" th:value="${jadwal.dosen.id}">
+                <input type="hidden" name="ruangan" th:value="${jadwal.ruangan.id}">
+                <input type="hidden" name="kelas" th:value="${jadwal.kelas.id}">
+                <input type="hidden" name="jumlahSesi" th:value="${jadwal.jumlahSesi}">
+                <input type="hidden" name="finalStatus" th:value="${jadwal.finalStatus}">
+                <input type="hidden" name="program" th:value="${jadwal.program.id}">
+                <input type="hidden" name="status" th:value="${jadwal.status}">
+                <input type="hidden" name="sesi" th:value="${jadwal.sesi}">
+                <input type="hidden" name="statusUts" th:value="${jadwal.statusUts}">
+                <input type="hidden" name="statusUas" th:value="${jadwal.statusUas}">
+                <br>
+                <center>
+                    <button type="submit" class="btn btn-success simpan">Simpan Perubahan</button>
+                </center>
+                <br>
+                <div class="table-responsive">
+                    <span><strong><button type="button" class="btn btn-round btn-primary" data-toggle="modal" data-target="#basicExampleModal" >Tambah Komponen Penilaian</button></strong></span>
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th>#</th>
+                            <th>Pertemuan Ke :</th>
+                            <th>Nama Tugas</th>
+                            <th>Bobot Tugas</th>
+                            <th colspan="2"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="data,row : ${bobot}">
+                            <td th:text="${row.index + 1}">#</td>
+                            <td th:text="${data.pertemuan}">Ruangan</td>
+                            <td th:text="${data.namaTugas}">Jam</td>
+                            <td th:text="${data.bobot}">Matakuliah</td>
+                            <td>
+                                <center>
+                                    <a th:href="@{/penilaian/edit(bobot = ${data.id})}">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                </center>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </form>
         </div>
+    </div>
+    </p>
+    </table>
+    </div>
+    </div>
     </div>
 
     <div class="modal fade" id="basicExampleModal" role="dialog" aria-labelledby="exampleModalLabel"

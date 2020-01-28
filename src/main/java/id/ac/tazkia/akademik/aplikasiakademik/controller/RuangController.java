@@ -1,6 +1,8 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.KelasMahasiswaDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.MahasiswaDto;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class RuangController {
@@ -100,10 +104,43 @@ public class RuangController {
     public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, Model model, Pageable page){
         model.addAttribute("selectedKelas", kelas);
         if (prodi != null){
+            List<KelasMahasiswaDto> mahasiswaDtos = new ArrayList<>();
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
-            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.findByStatusAndAngkatanAndIdProdi(StatusRecord.AKTIF,angkatan,prodi);
-            model.addAttribute("mahasiswaList", mahasiswa);
+            Iterable<String> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
+            for (String m : mahasiswa){
+                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(m).get(),StatusRecord.AKTIF);
+                if (kelasMahasiswa == null){
+                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                    KelasMahasiswaDto km = new KelasMahasiswaDto();
+                    km.setId(mhsw.getId());
+                    km.setNama(mhsw.getNama());
+                    if (mhsw.getKurikulum() != null) {
+                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                    }else {
+                        km.setKurikulum("");
+                    }
+                    km.setNim(mhsw.getNim());
+                    km.setKelas("");
+                    mahasiswaDtos.add(km);
+                }
+                if (kelasMahasiswa != null){
+                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                    KelasMahasiswaDto km = new KelasMahasiswaDto();
+                    km.setId(mhsw.getId());
+                    km.setNama(mhsw.getNama());
+                    if (mhsw.getKurikulum() != null) {
+                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                    }else {
+                        km.setKurikulum("");
+                    }
+                    km.setNim(mhsw.getNim());
+                    km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
+                    mahasiswaDtos.add(km);
+
+                }
+            }
+            model.addAttribute("mahasiswaList", mahasiswaDtos);
         }
     }
 
@@ -169,10 +206,11 @@ public class RuangController {
     }
 
     @PostMapping("/kelas/form")
-    public String buatKelas(@Valid Kelas kelas){
+    public String buatKelas(@Valid Kelas kelas,@RequestParam Prodi prodi){
         if (kelas.getStatus() == null){
             kelas.setStatus(StatusRecord.NONAKTIF);
         }
+        kelas.setIdProdi(prodi);
         kelasDao.save(kelas);
         return "redirect:list";
     }

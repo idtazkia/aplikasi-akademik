@@ -24,14 +24,23 @@
 
                         <div class="form-group">
                             <label>Select prodi</label>
-                            <select class="form-control js-example-placeholder-single"
-                                    style="width: 100%!important;" name="idProdi" th:field="*{idProdi}">
-                                <option value=""></option>
-                                <option th:each="data : ${prodi}"
-                                        th:text="${data.namaProdi}"
-                                        th:value="${data.id}">sdasd</option>
-                            </select>
+                            <input type="text" th:if="${kelas.id == null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                   data-provide="typeahead" autocomplete="off" required>
+                            <input type="text" th:if="${kelas.id != null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
+                                   data-provide="typeahead" autocomplete="off" th:field="*{idProdi.namaProdi}" required>
                         </div>
+
+                        <div class="form-group">
+                            <label>Select Curiculum</label>
+                            <input type="text" th:if="${kelas.id == null}" class="form-control" id="kurikulum"
+                                   placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
+                            <input type="text" th:if="${kelas.id != null}" class="form-control" id="kurikulum" th:field="*{kurikulum.namaKurikulum}"
+                                   placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
+                        </div>
+                        <input type="hidden" th:if="${kelas.id == null}" id="isiProdi" name="prodi">
+                        <input type="hidden" th:if="${kelas.id == null}" id="isiKurikulum" name="kurikulum">
+                        <input type="hidden" th:if="${kelas.id != null}" id="isiProdi" name="prodi" th:value="*{idProdi.id}">
+                        <input type="hidden" th:if="${kelas.id != null}" id="isiKurikulum" name="kurikulum" th:values="*{kurikulum.id}">
 
                         <div class="form-group">
                             <label>Class Room Code</label>

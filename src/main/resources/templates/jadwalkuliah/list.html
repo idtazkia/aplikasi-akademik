@@ -78,7 +78,16 @@
 
             <span th:if="${selectedHari != null}">
             <div class="col-md-12">
-                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a><br>
+                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a>
+
+                <!--<span th:if="${hanyaMagister == '05' }">-->
+                <!--<form th:action="@{/jadwalkuliah/clearallperhari (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id}, hari = ${selectedHari.id})}" method="post">-->
+                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                            <!--onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi-->
+                    <!--</button>-->
+                <!--</form>-->
+                <!--</span>-->
+                <br>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" >
                 <div class="x_panel">
@@ -105,7 +114,7 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
-                                    <th></th>
+                                    <th th:colspan="4"></th>
                                 </tr>
                                 </thead>
 
@@ -119,7 +128,27 @@
                                     <td th:text="${jadwal.namaKelas}"></td>
                                     <td th:text="${jadwal.jumlahSks}"></td>
                                     <td th:text="${jadwal.namaDosen}"></td>
-                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}"
+                                           class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td><a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS
+
+                                     </a>
+                                    </td>
+                                     <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                            class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -135,7 +164,15 @@
 
             <span th:if="${selectedHari == null && selectedTahun != null}">
             <div class="col-md-12">
-                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a><br>
+                <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#exampleModal">Tambah jadwal</a>
+                <!--<span th:if="${hanyaMagister == '05' }">-->
+                <!--<form th:action="@{/jadwalkuliah/clear (tahunAkademikProdi = ${selectedTahun.id}, program = ${selectedProgram.id})}" method="post">-->
+                    <!--<button type="submit" class="btn btn-danger btn-xs"-->
+                            <!--onclick="return confirm('Are you sure?')">Clear Jam-Ruangan-Sesi-->
+                    <!--</button>-->
+                <!--</form>-->
+                <!--</span>-->
+                <br>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12" >
                 <div class="x_panel">
@@ -163,7 +200,7 @@
                                     <th>Kelas</th>
                                     <th>SKS</th>
                                     <th>Dosen</th>
-                                    <th></th>
+                                    <th th:colspan="34"></th>
                                 </tr>
                                 </thead>
 
@@ -177,7 +214,26 @@
                                     <td th:text="${jadwal.namaKelas}"></td>
                                     <td th:text="${jadwal.jumlahSks}"></td>
                                     <td th:text="${jadwal.namaDosen}"></td>
-                                    <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                    <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -195,7 +251,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -209,7 +265,26 @@
                                     <td th:text="${jadwal.namaKelas}"></td>
                                     <td th:text="${jadwal.jumlahSks}"></td>
                                     <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                        <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -227,7 +302,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <td></td>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -241,7 +316,27 @@
                                     <td th:text="${jadwal.namaKelas}"></td>
                                     <td th:text="${jadwal.jumlahSks}"></td>
                                     <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -259,7 +354,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <td></td>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -273,7 +368,26 @@
                                     <td th:text="${jadwal.namaKelas}"></td>
                                     <td th:text="${jadwal.jumlahSks}"></td>
                                     <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                        <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -291,7 +405,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <td></td>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -305,7 +419,26 @@
                                         <td th:text="${jadwal.namaKelas}"></td>
                                         <td th:text="${jadwal.jumlahSks}"></td>
                                         <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                        <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -323,7 +456,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <td></td>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -337,7 +470,26 @@
                                         <td th:text="${jadwal.namaKelas}"></td>
                                         <td th:text="${jadwal.jumlahSks}"></td>
                                         <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                        <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -355,7 +507,7 @@
                                         <th>Kelas</th>
                                         <th>SKS</th>
                                         <th>Dosen</th>
-                                        <th></th>
+                                        <th th:colspan="4"></th>
                                     </tr>
                                     </thead>
 
@@ -369,7 +521,26 @@
                                         <td th:text="${jadwal.namaKelas}"></td>
                                         <td th:text="${jadwal.jumlahSks}"></td>
                                         <td th:text="${jadwal.namaDosen}"></td>
-                                        <td><a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn-info btn-sm">Edit</a></td>
+                                        <td>
+                                        <a th:href="@{/jadwalkuliah/form (jadwal = ${jadwal.id})}" class="btn btn-info btn-sm">Edit</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/jadwalkuliah/absenuts (jadwal = ${jadwal.id})}"
+                                           class="btn btn-primary btn-sm">Absensi UTS</a>
+                                    </td>
+                                        <td><a th:href="@{/jadwalkuliah/absenuas (jadwal = ${jadwal.id})}"
+                                               class="btn btn-primary btn-sm">Absensi UAS
+
+                                     </a>
+                                    </td>
+                                    <!--<td th:if="${hanyaMagister == '05' }">-->
+                                        <!--<form th:action="@{/jadwalkuliah/clearperid (jadwal = ${jadwal.id})}" method="post">-->
+                                                <!--<button type="submit" class="btn btn-danger btn-sm"-->
+                                                        <!--onclick="return confirm('Are you sure want too clear this?')">-->
+                                                    <!--Clear Jam-Ruangan-Sesi-->
+                                                <!--</button>-->
+                                        <!--</form>-->
+                                    <!--</td>-->
 
                                     </tr>
                                     </tbody>
@@ -416,7 +587,7 @@
                                 <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
                                 <td th:text="${data.kelas.namaKelas}">BMI 14</td>
                                 <td th:text="${data.matakuliahKurikulum.jumlahSks}">6</td>
-                                <td th:text="${data.dosen.karyawan.namaKaryawan}">Gifar Haidar</td>
+                                <td th:text="${data.dosen.karyawan?.namaKaryawan}">Gifar Haidar</td>
                                 <td><a th:href="@{/jadwalkuliah/form (jadwal = ${data.id})}" class="btn btn-xs btn-primary">Buat Jadwal</a></td>
                             </tr>
                             </tbody>

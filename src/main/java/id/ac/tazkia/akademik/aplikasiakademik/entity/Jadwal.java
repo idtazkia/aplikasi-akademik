@@ -1,6 +1,5 @@
 package id.ac.tazkia.akademik.aplikasiakademik.entity;
 
-
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Jadwal {
+public class Jadwal extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -85,5 +84,9 @@ public class Jadwal {
     @Enumerated(EnumType.STRING)
     private Akses akses = Akses.TERTUTUP;
 
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusUts;
 
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusUas;
 }

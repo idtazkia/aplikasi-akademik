@@ -59,6 +59,10 @@ public class DosenController {
                 dosenDto.setNama(karyawan.getNamaKaryawan());
                 dosenDto.setNidn(karyawan.getNidn());
                 dosenDto.setNik(karyawan.getNik());
+                dosenDto.setStatusDosen(dosenDao.findByKaryawan(karyawan).getStatusDosen());
+                dosenDto.setHonor(dosenDao.findByKaryawan(karyawan).getHonor());
+                dosenDto.setRfid(karyawan.getRfid());
+                dosenDto.setAbsen(karyawan.getIdAbsen());
                 if (karyawan.getIdUser() != null) {
                     dosenDto.setIdUser(karyawan.getIdUser());
                 }
@@ -87,14 +91,17 @@ public class DosenController {
             karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
             karyawan.setNamaKaryawan(dosenDto.getNama());
             karyawan.setNidn(dosenDto.getNidn());
-            karyawan.setNik(dosenDto.getNik());
             karyawan.setIdUser(user);
+            karyawan.setNik(dosenDto.getNik());
+            karyawan.setRfid(dosenDto.getRfid());
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
             karyawanDao.save(karyawan);
 
             Dosen d = new Dosen();
             d.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
             d.setKaryawan(karyawan);
+            d.setStatusDosen(dosenDto.getStatusDosen());
+            d.setHonor(dosenDto.getHonor());
             d.setStatus(StatusRecord.AKTIF);
             dosenDao.save(d);
         }else {
@@ -118,12 +125,16 @@ public class DosenController {
             karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
             karyawan.setNamaKaryawan(dosenDto.getNama());
             karyawan.setNidn(dosenDto.getNidn());
-            karyawan.setNik(dosenDto.getNik());
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
+            karyawan.setRfid(dosenDto.getRfid());
+            karyawan.setNik(dosenDto.getNik());
+            karyawan.setIdAbsen(dosenDto.getAbsen());
 
             karyawanDao.save(karyawan);
 
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            dosen.setStatusDosen(dosenDto.getStatusDosen());
+            dosen.setHonor(dosenDto.getHonor());
             dosen.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
             dosenDao.save(dosen);
         }

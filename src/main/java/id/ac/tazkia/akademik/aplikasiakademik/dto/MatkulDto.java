@@ -32,4 +32,8 @@ public class MatkulDto {
     private Set<Program> programs = new HashSet<>();
     private String namaFile;
     private Akses akses;
+    private StatusRecord statusSkripsi;
+    private Integer sds;
+    private StatusRecord konsepNote;
+    private StatusRecord sempro;
 }

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -143,26 +142,36 @@
                                             <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
                                             <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
                                             <li><a th:href="@{/plotingdosen/list}">Ploting Dosen</a></li>
+                                            <li><a th:href="@{/jadwaldosen/list}">Jadwal Dosen</a></li>
+                                            <li><a th:href="@{/ruangkuliah/list}">Ruang Kuliah</a></li>
                                             <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
                                         </ul>
                                     </li>
                                     <li><a>Studies Activity<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
+                                    <ul class="nav child_menu">
                                             <li><a th:href="@{/krs/list}">K R S</a></li>
+                                            <li><a th:href="@{/krs/paket}">Generate KRS (Semester I & II)</a></li>
                                             <li><a th:href="@{/kebijakanpresensi/list}">Attendance</a></li>
+                                            <li><a>Validasi Soal<span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu">
+                                                    <li><a th:href="@{/uploadsoal/list}">UTS</a></li>
+                                                    <li><a th:href="@{/uploadsoal/listuas}">UAS</a></li>
+                                                </ul>
+                                            </li>
                                             <li><a th:href="@{/penilaian/list}">Assesment</a></li>
                                             <li><a th:href="@{/khs/list}">K H S</a></li>
                                         </ul>
                                     </li>
-                                    <li  th:if="${not @environment.acceptsProfiles('production')}"><a>Graduations<span class="fa fa-chevron-down"></span></a>
+                                    <li ><a>Graduations<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li><a th:href="@{/intership/list}">Internship</a></li>
-                                            <li><a th:href="@{/conceptnote/list}">Concept Note</a></li>
-                                            <li><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
-                                            <li><a th:href="@{/thesis/list}">Thesis</a></li>
-                                            <li><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
-                                            <li><a th:href="@{/skpi/list}">S K P I</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/intership/list}">Internship</a></li>
+                                            <li><a th:href="@{/tugasakhir/nilai}">Internship Score Input</a></li>
+                                            <li><a th:href="@{/tugasakhir/list}">Concept Note</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/thesis/list}">Thesis</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                            <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/skpi/list}">S K P I</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -173,6 +182,8 @@
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/akademik/list}">Academic Years</a></li>
                                     <li><a th:href="@{/kurikulum/list}">Curiculum</a></li>
                                     <li><a th:href="@{/matakuliah/list}">Matakuliah</a></li>
+                                    <li><a th:href="@{/krs/list}">K R S</a></li>
+                                    <li><a th:href="@{/krs/paket}">Generate KRS (Semester I & II)</a></li>
                                     <li><a th:href="@{/plotingdosen/list}">Ploting Dosen</a></li>
                                     <li><a th:href="@{/jadwalkuliah/list}">Studies Schedule</a></li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/jadwalujian/list}">Exam Schedule</a></li>
@@ -183,6 +194,38 @@
                                 <ul class="nav child_menu">
                                     <li><a th:href="@{/kebijakanpresensi/listdosen}">Attendance</a></li>
                                     <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
+                                    <li><a th:href="@{/uploadsoal/listdosen}">Upload Soal UTS</a></li>
+                                    <li><a th:href="@{/uploadsoal/listdosenuas}">Upload Soal UAS</a></li>
+                                    <li><a>Validasi Soal<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a th:href="@{/uploadsoal/list}">UTS</a></li>
+                                            <li><a th:href="@{/uploadsoal/listuas}">UAS</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_KPS')"><a><i class="fa fa-graduation-cap "></i>Graduations<Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/intership/list}">Internship</a></li>
+                                    <li><a th:href="@{/tugasakhir/list}">Concept Note</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/seminarproposal/list}">Proposal Seminar</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/thesis/list}">Thesis</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/comperhensive/list}">Comprehensive</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/skpi/list}">S K P I</a></li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_FINANCE')"><a><i class="fa fa-edit"></i>Input RFID <Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{/mahasiswa/rfid}">Mahasiswa</a></li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_MAGANG')"><a><i class="fa fa-edit"></i>Studies Activities <Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{/kebijakanpresensi/list}">Attendance</a></li>
+                                    <li><a th:href="@{/penilaian/list}">Assesment</a></li>
                                 </ul>
                             </li>
 
@@ -190,6 +233,8 @@
                                 <ul class="nav child_menu">
                                             <li><a th:href="@{/kebijakanpresensi/listdosen}">Attendance</a></li>
                                             <li><a th:href="@{/penilaian/listdosen}">Assesment</a></li>
+                                            <li><a th:href="@{/uploadsoal/listdosen}">Upload Soal UTS</a></li>
+                                            <li><a th:href="@{/uploadsoal/listdosenuas}">Upload Soal UAS</a></li>
                                         </ul>
                             </li>
 
@@ -206,6 +251,7 @@
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/finance/komponenbiaya/nilai/list}">Komponen Nilai Biaya</a></li>
                                             <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/finance/tagihan/mahasiswa/list}">Tagihan Mahasiswa</a></li>
                                             <li><a th:href="@{/krs/aktifasi}">Aktifasi KRS</a></li>
+                                            <li><a th:href="@{/krs/kartu}">Aktifasi Kartu</a></li>
                                         </ul>
                                     </li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a>HR Setting<span class="fa fa-chevron-down"></span></a>
@@ -226,6 +272,7 @@
                                             <li><a th:href="@{/golongan/list}">Golongan</a></li>
                                         </ul>
                                     </li>
+                                    <li><a th:href="@{/karyawan/list}">Employee</a></li>
                                     <li  th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/karyawan/list}">Employee</a></li>
                                     <li><a th:href="@{/dosen/list}">Lecture</a></li>
                                     <li><a th:href="@{/mahasiswa/list}">Mahasiswa</a></li>
@@ -239,10 +286,24 @@
                                 </ul>
                             </li>
 
-                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-book"></i>Rekap <span class="fa fa-chevron-down"></span></a>
+                            <li ><a><i class="fa fa-book"></i>Rekap <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
-                                    <li><a th:href="@{/rekap/aktifasi}">KRS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/aktifasi}">KRS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/rekap/presensi}">Presensi</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_KPS')"><a th:href="@{/rekap/dosen}">Dosen</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"><a th:href="@{/rekap/sks}">SKS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_FINANCE')"><a th:href="@{/rekap/sks}">SKS</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                        <a th:href="@{/rekap/salarydosen}">Salary Dosen</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li sec:authorize="hasAnyAuthority('VIEW_SUPERUSER')"><a><i class="fa fa-edit"></i>Input RFID <Activities></Activities><span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{/mahasiswa/rfid}">Mahasiswa</a></li>
                                 </ul>
                             </li>
 
@@ -251,10 +312,12 @@
                                     <!--<li><a th:href="@{/menumahasiswa/tagihan/list}">Tagihan</a></li>-->
                                     <li><a th:href="@{/menumahasiswa/krs/list}">K R S</a></li>
                                     <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/absensi/list}">Attendance</a></li>
-                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/khs/list}">K H S</a></li>
-                                    <li><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
+                                    <li><a th:href="@{/menumahasiswa/khs/list}">K H S</a></li>
+                                    <li th:if="${not @environment.acceptsProfiles('production')}"><a th:href="@{/menumahasiswa/transkript/list}">Transkript</a></li>
                                 </ul>
                             </li>
+
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/tugasakhir/register}"><i class="fa fa-graduation-cap"></i>Tugas Akhir</a></li>
 
 
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')"  th:if="${not @environment.acceptsProfiles('production')}"><a><i class="fa fa-user"></i>Users <span class="fa fa-chevron-down"></span></a>
@@ -408,9 +471,3 @@
 <th:block layout:fragment="script"></th:block>
 </body>
 </html>
-
-
-
-
-
-

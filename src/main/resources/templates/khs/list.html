@@ -60,7 +60,7 @@
                 <tr>
                     <td>Nama : <span th:text="${mahasiswa.nama}">Gifar Haidar</span></td>
                     <td>
-                        Pemb Akd : <span th:text="${mahasiswa.dosen}" }>Lebron</span>
+                        Pemb Akd : <span th:text="${mahasiswa.dosen.karyawan.namaKaryawan}">Lebron</span>
                     </td>
                 </tr>
                 <tr>
@@ -107,53 +107,10 @@
                             <td th:text="${data.tugas}"></td>
                             <td th:text="${data.uts}"></td>
                             <td th:text="${data.uas}"></td>
-                            <td th:if="${data.total} > ${gradeA.bawah}" th:text="${gradeA.bobot}"></td>
-                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}" th:text="${grademinA.bobot}">A-</td>
-                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}" th:text="${gradeplusB.bobot}">B+</td>
-                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}" th:text="${gradeB.bobot}">B</td>
-                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}" th:text="${grademinB.bobot}">B-</td>
-                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}" th:text="${gradeplusC.bobot}">C+</td>
-                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}" th:text="${gradeC.bobot}">C</td>
-                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}" th:text="${gradeD.bobot}">D</td>
-                            <td th:if="${data.total < gradeE.atas}" th:text="${gradeE.bobot}">E</td>
+                            <td th:text="${data.totalBobot}"></td>
+                            <td th:text="${data.id}"></td>
+                            <td th:text="${data.total}"></td>
 
-
-                            <td th:if="${data.total} > ${gradeA.bawah}">A</td>
-                            <td th:if="${data.total > grademinA.bawah && data.total < grademinA.atas}">A-</td>
-                            <td th:if="${data.total > gradeplusB.bawah && data.total < gradeplusB.atas}">B+</td>
-                            <td th:if="${data.total > gradeB.bawah && data.total < gradeB.atas}">B</td>
-                            <td th:if="${data.total > grademinB.bawah && data.total < grademinB.atas}">B-</td>
-                            <td th:if="${data.total > gradeplusC.bawah && data.total < gradeplusC.atas}">C+</td>
-                            <td th:if="${data.total > gradeC.bawah && data.total < gradeC.atas}">C</td>
-                            <td th:if="${data.total > gradeD.bawah && data.total < gradeD.atas}">D</td>
-                            <td th:if="${data.total < gradeE.atas}">E</td>
-
-                            <td th:text="${data.bobot}"></td>
-                        </tr>
-                        <tr th:if="${khs != null}">
-                            <td colspan="4">Total SKS : </td>
-                            <td th:text="${jumlahSks}"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td th:text="${totalBobot}"></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr th:if="${khs != null}">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>IP Semester : </td>
-                            <td th:text="${ip}">450</td>
-                            <td>IP Komulatif :</td>
-                            <td>254</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                         </tr>
                         </tbody>
                     </table>

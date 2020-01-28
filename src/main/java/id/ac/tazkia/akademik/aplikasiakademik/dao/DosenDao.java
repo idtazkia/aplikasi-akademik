@@ -17,4 +17,5 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Dosen findByKaryawan(Karyawan karyawan);
     Dosen findByKaryawanRfid(String string);
 
+    Iterable<Dosen> findByStatus(StatusRecord aktif);
 }

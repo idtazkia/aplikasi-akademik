@@ -1,17 +1,17 @@
 package id.ac.tazkia.akademik.aplikasiakademik.controller;
 
 import id.ac.tazkia.akademik.aplikasiakademik.dao.*;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiJadwalDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiMahasiswaDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.ApiPresensiDosenDto;
-import id.ac.tazkia.akademik.aplikasiakademik.dto.JadwalDosenDto;
+import id.ac.tazkia.akademik.aplikasiakademik.dto.*;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.*;
+import id.ac.tazkia.akademik.aplikasiakademik.service.NotifikasiService;
+import id.ac.tazkia.akademik.aplikasiakademik.service.PresensiService;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,6 +49,12 @@ public class ApiController {
     private PresensiMahasiswaDao presensiMahasiswaDao;
     @Autowired
     private MahasiswaDao mahasiswaDao;
+    @Autowired
+    private KaryawanDao karyawanDao;
+    @Autowired
+    private NotifikasiService notifikasiService;
+    @Autowired
+    private PresensiService presensiService;
 
     @GetMapping("/api/tarikData")
     @ResponseBody
@@ -66,7 +72,7 @@ public class ApiController {
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             jadwalDosenDto.setJumlah(jumlah);
@@ -77,21 +83,22 @@ public class ApiController {
 
     @GetMapping("/api/uploadMesin")
     @ResponseBody
-    public Iterable<ApiJadwalDto> uploadData (@RequestParam(required = false) String id){
+    public Iterable<ApiJadwalDto> uploadData (@RequestParam(required = false) String id,@RequestParam(required = false) String idHari){
 
         Ruangan ruangan = ruanganDao.findById(id).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
+        Hari hari = hariDao.findById(idHari).get();
+        System.out.println(hari.getNamaHari());
         List<ApiJadwalDto> jadwalDosenDtos = new ArrayList<>();
 
-        LocalTime mulai = LocalTime.now().plusHours(7).minusMinutes(5);
-        LocalTime sampai = LocalTime.now().plusHours(7).plusMinutes(5);
+        LocalTime mulai = LocalTime.now().plusHours(7);
+        LocalTime sampai = LocalTime.now().plusHours(7).plusMinutes(9);
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF ,mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             ApiJadwalDto apiJadwalDto = new ApiJadwalDto();
@@ -126,7 +133,7 @@ public class ApiController {
         LOGGER.debug("Mulai : {}", mulai);
         LOGGER.debug("Sampai : {}", sampai);
 
-        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari, mulai, sampai);
+        Iterable<JadwalDosenDto> hasil = jadwalDosenDao.cariJadwal(tahunAkademik, ruangan, hari,StatusRecord.AKTIF, mulai, sampai);
         Integer jumlah = IterableUtils.size(hasil);
         for (JadwalDosenDto jadwalDosenDto : hasil){
             jadwalDosenDto.setJumlah(jumlah);
@@ -173,18 +180,31 @@ public class ApiController {
         Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        PresensiDosen presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHari(j,d,tahunAkademik,hari);
+        List<PresensiDosen> presensiDosen = presensiDosenDao.findByJadwalAndDosenAndTahunAkademikAndJadwalHariAndStatus(j,d,tahunAkademik,hari,StatusRecord.AKTIF);
 
-        SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
-        ApiPresensiDosenDto api = new ApiPresensiDosenDto();
-        api.setPresensiDosen(presensiDosen.getId());
-        api.setSesiKuliah(sesiKuliah.getId());
-        api.setJamMulai(presensiDosen.getWaktuMasuk().toLocalTime());
-        api.setJadwal(presensiDosen.getJadwal().getId());
-        api.setJamSelesai(presensiDosen.getWaktuSelesai().toLocalTime() );
-        api.setJumlah(1);
+        for (PresensiDosen pd : presensiDosen){
+            LocalDate date = pd.getWaktuMasuk().toLocalDate();
+            LocalTime masuk = pd.getWaktuMasuk().toLocalTime();
+            LocalTime minus5 = pd.getJadwal().getJamMulai().minusMinutes(10);
+            if (date.isEqual(LocalDate.now())){
+                if (masuk.compareTo(minus5) >= 0 && masuk .compareTo(pd.getJadwal().getJamSelesai()) <= 0){
+                            SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(pd);
+                            ApiPresensiDosenDto api = new ApiPresensiDosenDto();
+                            api.setPresensiDosen(pd.getId());
+                            api.setSesiKuliah(sesiKuliah.getId());
+                            api.setJamMulai(pd.getWaktuMasuk().toLocalTime());
+                            api.setJadwal(pd.getJadwal().getId());
+                            api.setJamSelesai(pd.getWaktuSelesai().toLocalTime() );
+                            api.setJumlah(1);
+                            return api;
+                }
+            }
 
-        return api;
+        }
+
+
+
+        return result();
     }
 
 
@@ -216,34 +236,7 @@ public class ApiController {
 
         Dosen d = od.get();
 
-        PresensiDosen presensiDosen = new PresensiDosen();
-        presensiDosen.setDosen(d);
-        presensiDosen.setWaktuSelesai(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
-        presensiDosen.setWaktuMasuk(dateTime);
-        presensiDosen.setStatusPresensi(StatusPresensi.HADIR);
-        presensiDosen.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        presensiDosen.setJadwal(j);
-        presensiDosenDao.save(presensiDosen);
-
-        SesiKuliah sesiKuliah = new SesiKuliah();
-        sesiKuliah.setJadwal(j);
-        sesiKuliah.setPresensiDosen(presensiDosen);
-        sesiKuliah.setWaktuMulai(presensiDosen.getWaktuMasuk());
-        sesiKuliah.setWaktuSelesai(presensiDosen.getWaktuSelesai());
-        sesiKuliahDao.save(sesiKuliah);
-
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusAndKrsTahunAkademik(j,StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-
-        for (KrsDetail kd : krsDetail){
-            PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
-            presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
-            presensiMahasiswa.setSesiKuliah(sesiKuliah);
-            presensiMahasiswa.setKrsDetail(kd);
-            presensiMahasiswa.setCatatan("-");
-            presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
-            presensiMahasiswa.setRating(0);
-            presensiMahasiswaDao.save(presensiMahasiswa);
-        }
+        PresensiDosen presensiDosen = presensiService.inputPresensi(d, j, dateTime);
 
         return presensiDosen(j.getId(),d.getId());
 
@@ -252,6 +245,11 @@ public class ApiController {
     @GetMapping("/api/cekpresensi/mahasiswa")
     @ResponseBody
     public Iterable<ApiMahasiswaDto> mahasiswaDto (@RequestParam String jadwal){
+
+        if (!StringUtils.hasText(jadwal)) {
+            LOGGER.debug("Cek presensi mahasiswa by API : Jadwal tidak diisi");
+            return Arrays.asList(apiMahasiswaError("Jadwal dengan id "+jadwal+" tidak ditemukan"));
+        }
 
         LOGGER.info("Cek presensi mahasiswa by API : Jadwal : {}",jadwal);
 
@@ -338,11 +336,143 @@ public class ApiController {
         return hasil;
     }
 
+    private ApiPresensiDosenDto result() {
+        ApiPresensiDosenDto hasil = new ApiPresensiDosenDto();
+        hasil.setSukses(false);
+        hasil.setPesanError("data kosong");
+        return hasil;
+    }
+
+    private ApiJadwalDosen dataNull() {
+        ApiJadwalDosen hasil = new ApiJadwalDosen();
+        hasil.setSukses(false);
+        hasil.setPesanError("data kosong");
+        return hasil;
+    }
+
     private ApiMahasiswaDto apiMahasiswaError(String errorMessage) {
         ApiMahasiswaDto hasil = new ApiMahasiswaDto();
         hasil.setSukses(false);
         hasil.setPesanError(errorMessage);
         return hasil;
+    }
+
+    private ApiPresensiMahasiswa presensiMahasiswaError(String errorMessage) {
+        ApiPresensiMahasiswa hasil = new ApiPresensiMahasiswa();
+        hasil.setSukses(false);
+        hasil.setPesanError(errorMessage);
+        return hasil;
+    }
+
+    @GetMapping("/api/getrfid")
+    @ResponseBody
+    public List<ApiRfidDto> getRfid(){
+
+        List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
+        List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF);
+        for (ApiRfidDto api : mahasiswa){
+            api.setJumlah(mahasiswa.size());
+            apiRfidDtos.add(api);
+        }
+
+
+        return apiRfidDtos;
+
+    }
+
+    @GetMapping("/api/rfidkaryawan")
+    @ResponseBody
+    public List<ApiRfidDto> rfidKaryawan(){
+
+        List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
+        List<ApiRfidDto> karyawan = karyawanDao.rfidKaryawan(StatusRecord.AKTIF);
+        for (ApiRfidDto api : karyawan){
+            api.setJumlah(karyawan.size());
+            apiRfidDtos.add(api);
+        }
+
+
+        return apiRfidDtos;
+
+    }
+
+    @GetMapping("/api/getjadwal")
+    @ResponseBody()
+    public ApiJadwalDosen jadwalDosen(@RequestParam String ruangan,@RequestParam String rfid){
+
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        Hari hari = hariDao.findById(String.valueOf(dayOfWeek-1)).get();
+
+        Dosen dosen = dosenDao.findByKaryawanRfid(rfid);
+
+
+        JadwalDosen jadwalDosen = jadwalDosenDao.cari(dosen,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruanganDao.findById(ruangan).get(),LocalTime.now().plusHours(7));
+
+        if (jadwalDosen != null) {
+
+
+            ApiJadwalDosen apiJadwalDosen = new ApiJadwalDosen();
+            apiJadwalDosen.setJadwal(jadwalDosen.getJadwal().getId());
+            apiJadwalDosen.setDosen(jadwalDosen.getDosen().getId());
+            apiJadwalDosen.setNamaDosen(jadwalDosen.getDosen().getKaryawan().getNamaKaryawan());
+            apiJadwalDosen.setNamaMatakuliah(jadwalDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            apiJadwalDosen.setNamaMatakuliahEng(jadwalDosen.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliahEnglish());
+            apiJadwalDosen.setJamMulai(jadwalDosen.getJadwal().getJamMulai());
+            apiJadwalDosen.setJamSelesai(jadwalDosen.getJadwal().getJamSelesai());
+            apiJadwalDosen.setJumlah(1);
+            return apiJadwalDosen;
+        }
+
+        return dataNull();
+
+    }
+
+    @GetMapping("/api/getdataMahasiswa")
+    @ResponseBody
+    public List<ApiPresensiMahasiswa> cekMahasiswa(@RequestParam String sesiKuliah){
+
+        if (sesiKuliah.isEmpty()){
+            return Arrays.asList(presensiMahasiswaError("Sesi Kuliah dengan id "+sesiKuliah+" tidak ditemukan"));
+        }
+
+        SesiKuliah s = sesiKuliahDao.findById(sesiKuliah).get();
+
+        if (s.getJadwal() == null){
+            return Arrays.asList(presensiMahasiswaError("Jadwal tidak ditemukan"));
+        }
+
+        List<ApiPresensiMahasiswa> mahasiswas = new ArrayList<>();
+
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(s,StatusRecord.AKTIF);
+
+        if (presensiMahasiswa.isEmpty()){
+            return Arrays.asList(presensiMahasiswaError("Presensi Mahasiswa Tidak Ada"));
+        }
+        for (PresensiMahasiswa pm : presensiMahasiswa){
+            ApiPresensiMahasiswa apiPresensiMahasiswa = new ApiPresensiMahasiswa();
+            apiPresensiMahasiswa.setCatatan(pm.getCatatan());
+            apiPresensiMahasiswa.setJumlah(presensiMahasiswa.size());
+            apiPresensiMahasiswa.setNim(pm.getMahasiswa().getNim());
+            apiPresensiMahasiswa.setKrsDetail(pm.getKrsDetail().getId());
+            apiPresensiMahasiswa.setMahasiswa(pm.getMahasiswa().getId());
+            apiPresensiMahasiswa.setNamaMahasiswa(pm.getMahasiswa().getNama());
+            apiPresensiMahasiswa.setPresensiMahasiswa(pm.getId());
+            apiPresensiMahasiswa.setRating(pm.getRating());
+            apiPresensiMahasiswa.setRfid(pm.getMahasiswa().getRfid());
+            apiPresensiMahasiswa.setSesiKuliah(pm.getSesiKuliah().getId());
+            apiPresensiMahasiswa.setStatusPresensi(pm.getStatusPresensi());
+            if (pm.getWaktuKeluar() != null) {
+                apiPresensiMahasiswa.setWaktuKeluar(pm.getWaktuKeluar().toLocalTime());
+            }
+            if (pm.getWaktuMasuk() != null) {
+                apiPresensiMahasiswa.setWaktuMasuk(pm.getWaktuMasuk().toLocalTime());
+            }
+            mahasiswas.add(apiPresensiMahasiswa);
+        }
+
+        return mahasiswas;
+
     }
 
 }

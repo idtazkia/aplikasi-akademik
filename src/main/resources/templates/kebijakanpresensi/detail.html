@@ -93,9 +93,18 @@
                                                         <td><a th:href="@{/kebijakanpresensi/mahasiswa(id = ${data.id})}" type="button" class="btn btn-primary btn-xs">
                                                             <i class="fa fa-book"> Kehadiran Mahasiswa</i>
                                                         </a></td>
-                                                        <!--<td><a th:href="@{/kebijakanpresensi/detailedit(id = ${data.id})}" type="button" class="btn btn-warning btn-xs">-->
-                                                            <!--<i class="fa fa-edit"> Edit Presensi</i>-->
-                                                        <!--</a></td>-->
+                                                        <td><a th:href="@{/kebijakanpresensi/detailedit(id = ${data.id})}" type="button" class="btn btn-warning btn-xs">
+                                                            <i class="fa fa-edit"> Edit Berita Acara</i>
+                                                        </a></td>
+                                                        <td>
+                                                            <form th:action="@{/kebijakanpresensi/deletePresensi (sesiKuliah = ${data.id})}" method="post">
+                                                                <button type="submit" class="btn btn-danger btn-xs"
+                                                                        onclick="return confirm('Are you sure? Once deleted, ' +
+                                                 'you will not be able' + ' to recover this imaginary ' +
+                                                  'file!')"><i class="fa fa-edit"> Hapus Presensi</i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
                                                         <td></td>
                                                     </tr>
                                                     </tbody>
@@ -127,7 +136,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" th:action="@{/kebijakanpresensi/detail}">
+                    <form method="post" th:action="@{/kebijakanpresensi/detail}" th:object="${jadwal}">
                         <div class="col-md-12">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -150,8 +159,8 @@
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Masuk :</label>
                                     <div class='input-group date' id='datetimepicker3'>
-                                        <input type='text' class="form-control" name="jamMulai"/>
-                                            <span class="input-group-addon">
+                                        <input type='text' class="form-control" th:field="*{jamMulai}" placeholder="07:00" name="jamMulai"/>
+                                        <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-time"></span>
                                             </span>
                                     </div>
@@ -163,7 +172,7 @@
                                 <div class="form-group">
                                     <label class="col-form-label">Jam Selesai :</label>
                                     <div class='input-group date' id='datetimepicker2'>
-                                        <input type='text' class="form-control" name="jamSelesai"/>
+                                        <input type='text' class="form-control" th:field="*{jamSelesai}" placeholder="09:30" name="jamSelesai"/>
                                         <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-time"></span>
                                             </span>
@@ -180,8 +189,7 @@
                                     <select class="form-control js-example-placeholder-single"
                                             style="width: 100%!important;" name="dosen">
                                         <option></option>
-                                        <option th:text="${dosenUtama.karyawan.namaKaryawan}" th:value="${dosenUtama.id}"></option>
-                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.karyawan.namaKaryawan}">sdasd</option>
+                                        <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
                                     </select>
                                 </div>
                             </div>

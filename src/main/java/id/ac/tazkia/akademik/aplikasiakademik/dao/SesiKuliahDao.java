@@ -3,6 +3,7 @@ package id.ac.tazkia.akademik.aplikasiakademik.dao;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.Jadwal;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.PresensiDosen;
 import id.ac.tazkia.akademik.aplikasiakademik.entity.SesiKuliah;
+import id.ac.tazkia.akademik.aplikasiakademik.entity.StatusRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,10 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     Page<SesiKuliah> cariSesiKuliah(@Param("mulai") LocalDateTime mulai, @Param("sampai") LocalDateTime sampai, Pageable pageable);
 
     Page<SesiKuliah> findByJadwal(Jadwal jadwal,Pageable pageable);
-    List<SesiKuliah> findByJadwal(Jadwal jadwal);
+    List<SesiKuliah> findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(Jadwal jadwal, StatusRecord statusRecord);
     SesiKuliah findByPresensiDosen(PresensiDosen presensiDosen);
+
+    @Query("select sk.id from SesiKuliah sk where sk.jadwal =:jadwal and sk.presensiDosen.status =:status order by sk.waktuMulai asc")
+    List<String> cariId(@Param("jadwal")Jadwal j,@Param("status")StatusRecord statusRecord);
+
 }
