@@ -680,6 +680,7 @@ public class StudiesActivityController {
             List<BobotDto> nilaiTugas = nilaiTugasDao.nilaiTugasList(jadwal);
         model.addAttribute("detailJadwal", jadwal);
         model.addAttribute("jadwal", score);
+        model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
         model.addAttribute("nilaiTugas", nilaiTugas);
         model.addAttribute("bobot", bobotTugasDao.bobotTugas(jadwal.getId(),StatusRecord.AKTIF));
         model.addAttribute("bobotTugas", bobotTugasDao.Tugas(jadwal.getId(),StatusRecord.AKTIF));

@@ -234,44 +234,44 @@
                             <tr>
                                 <th><b class="mb-0">Tahun Akademik</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>2019/2020 Semester Ganjil</th>
+                                <th th:text="${detailJadwal.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Ganjil</th>
 
                                 <th><b class="mb-0">Program Studi</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>Ekonomi Syariah</th>
+                                <th th:text="${detailJadwal.prodi.namaProdi}">Ekonomi Syariah</th>
                             </tr>
                             </thead>
                             <thead>
                             <tr>
                                 <th><b class="mb-0">Mata Kuliah</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>Basic Econometrics</th>
+                                <th th:text="${detailJadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Basic Econometrics</th>
 
                                 <th><b class="mb-0">Dosen</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>Aam Slamet Rusydiana</th>
+                                <th th:text="${detailJadwal.dosen.karyawan.namaKaryawan}">Aam Slamet Rusydiana</th>
                             </tr>
                             </thead>
                             <thead class="thead-light">
                             <tr>
                                 <th><b class="mb-0">SKS</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>3 , Peserta : 43 , Absensi Dosen : 14</th>
+                                <th><span th:text="${detailJadwal.matakuliahKurikulum.jumlahSks}"></span> , Peserta : <span th:text="${jumlahMahasiswa}"></span> , Absensi Dosen : <span th:text="${absensi}"></span></th>
 
                                 <th><b class="mb-0">Kelas</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>ES-18-R</th>
+                                <th th:text="${detailJadwal.kelas.namaKelas}">ES-18-R</th>
                             </tr>
                             </thead>
                             <thead>
                             <tr>
                                 <th><b class="mb-0">Jadwal Kuliah</b></th>
                                 <th style="width: 0px;">:</th>
-                                <th>Wednesday 07:00:00 - 09:35:00</th>
+                                <th>
+                                    <span th:text="${detailJadwal.hari.namaHariEng}"></span>
+                                    <small style="font-size: 8px" th:text="${detailJadwal.jamMulai + ' - ' + detailJadwal.jamSelesai}">13.00-15.00</small>
+                                </th>
 
-                                <th><b class="mb-0">Jadwal Ujian</b></th>
-                                <th style="width: 0px;">:</th>
-                                <th>01-01-2019, Rabu 14.00-15.35</th>
                             </tr>
                             </thead>
                         </table>
