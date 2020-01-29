@@ -20,10 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class ReportMahasiswaController {
@@ -48,7 +45,7 @@ public class ReportMahasiswaController {
 
         List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF, StatusRecord.UNDONE);
 
-        model.addAttribute("tahun" , tahunAkademikDao.cariTahunAkademik(StatusRecord.HAPUS));
+        model.addAttribute("tahun" , tahunAkademikDao.cariTahunAkademik(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun" , tahunAkademik);
 

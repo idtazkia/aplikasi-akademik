@@ -130,9 +130,9 @@
                                     <span th:text="${data.jamSelesai}"></span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-form"><i class="fas fa-eye"></i> Show</button>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-form' + data.id}"><i class="fas fa-eye"></i> Show</button>
 
-                                    <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal fade" th:id="${'modal-form' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                             <div class="modal-content">
 
