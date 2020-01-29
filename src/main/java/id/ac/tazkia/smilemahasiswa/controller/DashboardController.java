@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 @Controller
 public class DashboardController {
@@ -109,11 +113,19 @@ public class DashboardController {
     public void UserProfile(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mhsw", mahasiswa);
         model.addAttribute("mahasiswa", detailKeluargaDao.userProfile(mahasiswa));
         model.addAttribute("transportasi", transportasiDao.findAll());
         model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
 
 
+    }
+
+    @PostMapping("/user/profile")
+    public String prosesUser(@ModelAttribute @Valid ProfileDto profileDto){
+
+
+        return null;
     }
 
     @GetMapping("/admin")
