@@ -101,22 +101,22 @@
                             <div class="contact-img">
                                 <img th:src="@{/img/post/1.jpg}" alt="" />
                             </div>
-                            <b class="txt-profile" th:text="${mahasiswa.nama}">Muhammad Rafizki</b>
+                            <b class="txt-profile" th:text="${mhsw.nama}">Muhammad Rafizki</b>
                             <br>
-                            <b class="txt-profile" th:text="${mahasiswa.nim}"></b>
+                            <b class="txt-profile" th:text="${mhsw.nim}"></b>
                             <br>
                             <br>
-                            <button class="bt-edit" th:text="${mahasiswa.prodi}"><b>Hukum Ekonomi Syariah</b></button>
+                            <button class="bt-edit" th:text="${mhsw.idProdi.namaProdi}"><b>Hukum Ekonomi Syariah</b></button>
                         </div>
                         <div class="card-body">
                             <div class="col-md-6 col-xs-6 card-body-content">
-                                <span th:text="${mahasiswa.angkatan}">2019</span>
+                                <span th:text="${mhsw.angkatan}">2019</span>
                                 <br>
                                 <b>Angkatan</b>
                             </div>
 
                             <div class="col-md-6 col-xs-6 card-body-content">
-                                <span th:text="${mahasiswa.kelamin}">PRIA</span>
+                                <span th:text="${mhsw.jenisKelamin}">PRIA</span>
                                 <br>
                                 <b>Gender</b>
                             </div>

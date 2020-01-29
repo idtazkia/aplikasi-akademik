@@ -54,11 +54,11 @@ public class ReportMahasiswaController {
 
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
             List<KhsDto> khsDtos = new ArrayList<>();
-
-            for (DataKhsDto kd : krsDetail){
+        if (!krsDetail.isEmpty() && krsDetail == null) {
+            for (DataKhsDto kd : krsDetail) {
                 KhsDto khsDto = new KhsDto();
                 KrsDetail matakuliahKurikulum = krsDetailDao.findById(kd.getId()).get();
-                if (kd.getNilaiAkhir() == null){
+                if (kd.getNilaiAkhir() == null) {
                     khsDto.setId("E");
                     khsDto.setTotal(BigDecimal.ZERO);
                     khsDto.setBobot(BigDecimal.ZERO);
@@ -80,36 +80,37 @@ public class ReportMahasiswaController {
                 khsDto.setPresensi(kd.getPresensi());
                 khsDtos.add(khsDto);
             }
-
+        }
             model.addAttribute("khs",khsDtos);
         } else {
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
             List<KhsDto> khsDtos = new ArrayList<>();
+            if (!krsDetail.isEmpty() && krsDetail == null) {
+                for (DataKhsDto kd : krsDetail) {
+                    KhsDto khsDto = new KhsDto();
+                    KrsDetail matakuliahKurikulum = krsDetailDao.findById(kd.getId()).get();
+                    if (kd.getNilaiAkhir() == null) {
+                        khsDto.setId("E");
+                        khsDto.setBobot(BigDecimal.ZERO);
+                        khsDto.setTotal(BigDecimal.ZERO);
+                        khsDto.setTotalBobot(BigDecimal.ZERO);
 
-            for (DataKhsDto kd : krsDetail){
-                KhsDto khsDto = new KhsDto();
-                KrsDetail matakuliahKurikulum = krsDetailDao.findById(kd.getId()).get();
-                if (kd.getNilaiAkhir() == null){
-                    khsDto.setId("E");
-                    khsDto.setBobot(BigDecimal.ZERO);
-                    khsDto.setTotal(BigDecimal.ZERO);
-                    khsDto.setTotalBobot(BigDecimal.ZERO);
-
+                    }
+                    if (kd.getNilaiAkhir() != null) {
+                        khsDto.setId(kd.getGrade());
+                        khsDto.setBobot(kd.getBobot());
+                        khsDto.setTotal(kd.getNilaiAkhir());
+                        khsDto.setTotalBobot(kd.getNilaiAkhir());
+                    }
+                    khsDto.setSks(matakuliahKurikulum.getMatakuliahKurikulum().getJumlahSks());
+                    khsDto.setKode(matakuliahKurikulum.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
+                    khsDto.setMapel(matakuliahKurikulum.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                    khsDto.setTugas(kd.getTugas());
+                    khsDto.setUas(kd.getUas());
+                    khsDto.setUts(kd.getUts());
+                    khsDto.setPresensi(kd.getPresensi());
+                    khsDtos.add(khsDto);
                 }
-                if (kd.getNilaiAkhir() != null) {
-                    khsDto.setId(kd.getGrade());
-                    khsDto.setBobot(kd.getBobot());
-                    khsDto.setTotal(kd.getNilaiAkhir());
-                    khsDto.setTotalBobot(kd.getNilaiAkhir());
-                }
-                khsDto.setSks(matakuliahKurikulum.getMatakuliahKurikulum().getJumlahSks());
-                khsDto.setKode(matakuliahKurikulum.getMatakuliahKurikulum().getMatakuliah().getKodeMatakuliah());
-                khsDto.setMapel(matakuliahKurikulum.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
-                khsDto.setTugas(kd.getTugas());
-                khsDto.setUas(kd.getUas());
-                khsDto.setUts(kd.getUts());
-                khsDto.setPresensi(kd.getPresensi());
-                khsDtos.add(khsDto);
             }
 
             model.addAttribute("khs",khsDtos);
