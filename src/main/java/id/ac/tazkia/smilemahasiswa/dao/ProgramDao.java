@@ -14,4 +14,6 @@ public interface ProgramDao extends PagingAndSortingRepository<Program,String> {
     Page<Program> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
 
     List<Program> findByStatus(StatusRecord aktif);
+
+    Iterable<Program> findByStatusNotIn(List<StatusRecord> asList);
 }

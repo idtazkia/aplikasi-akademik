@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>KHS List</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p></p>
                                     </div>
                                 </div>
                             </div>
@@ -51,9 +51,9 @@
                                         <div class="form-group">
                                             <select name="tahunAkademik" id="" class="form-control">
                                                 <option th:each="data : ${tahun}"
-                                                        th:text="${data[1]}"
-                                                        th:selected="(${data[1]} == *{selectedTahun})"
-                                                        th:value="${data[0]}">2019
+                                                        th:text="${data.namaTahunAkademik}"
+                                                        th:selected="(${data} == *{selectedTahun})"
+                                                        th:value="${data.id}">2019
                                                 </option>
                                             </select>
                                         </div>
@@ -72,7 +72,7 @@
                                     <th>No</th>
                                     <th>Code</th>
                                     <th>Matakuliah</th>
-                                    <th>SKS</th>
+                                    <!--<th>SKS</th>-->
                                     <th>Presensi</th>
                                     <th>Task</th>
                                     <th>Mid Term</th>
@@ -84,15 +84,15 @@
                                 <tr th:each="data,row : ${khs}" >
                                     <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.kode}"></td>
-                                    <td th:text="${data.mapel}"></td>
-                                    <td th:text="${data.sks}"></td>
+                                    <td th:text="${data.matakuliah}"></td>
+                                    <!--<td th:text="${data.sks}"></td>-->
                                     <td th:text="${data.presensi}"></td>
                                     <td th:text="${data.tugas}"></td>
                                     <td th:text="${data.uts}"></td>
                                     <td th:text="${data.uas}"></td>
-                                    <td th:text="${data.totalBobot}"></td>
-                                    <td th:text="${data.id}"></td>
-                                    <td th:text="${data.total}"></td>
+                                    <td th:text="${data.bobot}"></td>
+                                    <td th:text="${data.grade}"></td>
+                                    <td th:text="${data.nilaiAkhir}"></td>
                                 </tr>
                             </table>
                         </div>

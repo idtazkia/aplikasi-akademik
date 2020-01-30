@@ -88,9 +88,9 @@
                             <tr th:each="data,row : ${listKelas}">
                                 <td></td>
                                 <td>
-                                    <a type="button" class="btn btn-success btn-outline-success btn-sm" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/kelas/form(id = ${data.id})}">
+                                    <a type="button" class="btn btn-success btn-outline-success btn-sm" th:if="${data.status.AKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/class/form(id = ${data.id})}">
                                     </a>
-                                    <a type="button" class="btn btn-danger btn-outline-danger btn-sm" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/kelas/form(id = ${data.id})}">
+                                    <a type="button" class="btn btn-danger btn-outline-danger btn-sm" th:if="${data.status.NONAKTIF} == ${data.status}" th:text="${data.namaKelas}"  th:href="@{/class/form(id = ${data.id})}">
                                     </a>
                                 </td>
                                 <td th:text="${data.idProdi.namaProdi}"></td>

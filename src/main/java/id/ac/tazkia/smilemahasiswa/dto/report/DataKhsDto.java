@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public interface DataKhsDto {
     String getId();
+    String getKode();
     String getMatakuliah();
     BigDecimal getPresensi();
     BigDecimal getTugas();

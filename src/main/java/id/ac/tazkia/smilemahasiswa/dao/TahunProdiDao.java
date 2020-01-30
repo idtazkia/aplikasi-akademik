@@ -17,4 +17,6 @@ public interface TahunProdiDao extends PagingAndSortingRepository<TahunAkademikP
     TahunAkademikProdi findByStatusAndTahunAkademikAndProdi(StatusRecord status, TahunAkademik tahun, Prodi prodi);
 
     Iterable<TahunAkademikProdi> findByStatusNotInOrderByTahunAkademikDesc(List<StatusRecord >hapus);
+
+    TahunAkademikProdi findByTahunAkademikAndProdi(TahunAkademik tahunAkademik, Prodi prodi);
 }

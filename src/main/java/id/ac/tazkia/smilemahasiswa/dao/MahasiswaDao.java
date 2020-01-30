@@ -1,10 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +24,6 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     @Query("select m.id from Mahasiswa m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi")
     Iterable<String> carikelas(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi);
+
+    List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);
 }
