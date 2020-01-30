@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">RFID </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+
+              <div class="card shadow">
+                  <div class="card-header border-0">
+                      <h3 class="mb-0">Aktivasi RFID</h3>
+                  </div>
+                  <div class="card-body">
+                      <form method="post" th:action="@{/activation/rfid}">
+                          <div class="row">
+                              <div class="col-md-6 col-xs-12">
+                                  <div class="form-group">
+                                      <label>Nim</label>
+                                      <input type="text" required th:value="${nim}" class="form-control" name="nim">
+                                  </div>
+                              </div>
+                              <div class="col-md-6 col-xs-12">
+                                  <div class="form-group">
+                                      <label>RFID</label>
+                                      <input type="text" class="form-control" th:value="${rfid}" name="rfid">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-12 text-center">
+                                  <button type="submit" class="btn btn-info">Aktifasi</button>
+                              </div>
+                          </div>
+                      </form>
+
+                      <div class="card-body"  th:if="${mahasiswa != null}">
+                          <div class="card shadow">
+                              <div class="card-body">
+                                  <div class="row">
+                                      <div class="col-md-3">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <h5>Nama</h5>
+                                                  <h3 class="mb-0" th:text="${mahasiswa.nama}">nama <span th:text="${'  ( ' + mahasiswa.nim + ' )  '}"></span></h3>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <h5>Prodi</h5>
+                                                  <h3 class="mb-0" th:text="${mahasiswa.idProdi.namaProdi}">nama</h3>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <h5>Program</h5>
+                                                  <h3 class="mb-0" th:text="${mahasiswa.idProgram.namaProgram}">nama</h3>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="card shadow">
+                                              <div class="card-body">
+                                                  <h5>Angkatan</h5>
+                                                  <h3 class="mb-0" th:text="${mahasiswa.angkatan}">nama</h3>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

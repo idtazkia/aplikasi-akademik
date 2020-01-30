@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Activation KRS</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">KRS</h5>
+                                        <span class="h2 font-weight-bold mb-0">Aktifasi</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/activation/krs}" class="btn btn-sm btn-default">All</a>
+                                <a th:href="@{/activation/krs (mahasiswa = 'AKTIF')}" class="btn btn-sm btn-warning">Mahasiswa</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" th:action="@{/activation/process}" th:if="${validasi == null}">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required
+                                                class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="tahun : ${tahun}" th:selected="(${tahun} == *{selectedTahun})"
+                                                    th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Prodi</label>
+                                        <select name="prodi" required class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="prod : ${prodi}" th:selected="(${prod} == *{selectedProdi})"
+                                                    th:value="${prod.id}" th:text="${prod.namaProdi}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Program Pendidikan</label>
+                                        <select name="program" required class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="prog : ${program}" th:text="${prog.namaProgram}"
+                                                    th:value="${prog.id}" th:selected="(${prog} == *{selectedProgram})"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Angkatan</label>
+                                        <select name="angkatan" required class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="angkat : ${angkatan}" th:text="${angkat}"
+                                                    th:selected="(${angkat} == *{selectedAngkatan})" th:value="${angkat}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Aktifasi</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <form method="post" th:action="@{/activation/process}" th:if="${validasi != null}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required
+                                                class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="tahun : ${tahun}" th:selected="(${selectedTahun} == *{tahun})"
+                                                    th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>NIM</label>
+                                        <input type="text" th:value="${selectedNim}" class="form-control" name="nim">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Aktifasi</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="card-body" th:if="${selectedProdi != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-1">
+                                <h3 class="mb-0">List KRS</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Tahun</h5>
+                                        <h3 class="mb-0" th:text="${selectedTahun.tahun}">2019</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Nama Tahun Akademik</h5>
+                                        <h3 class="mb-0" th:text="${selectedTahun.namaTahunAkademik}">2019</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Nama Prodi</h5>
+                                        <h3 class="mb-0" th:text="${selectedProdi.namaProdi}">2019</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Nama Program</h5>
+                                        <h3 class="mb-0" th:text="${selectedProgram.namaProgram}">2019</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <th scope="col"></th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">NIM</th>
+                                    <th scope="col">Tanggal di Buat KRS</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${krs}">
+                                        <td th:text="${(row.index + 1) + (krs.number * krs.size)}"></td>
+                                        <td th:text="${data.mahasiswa.nama}" ></td>
+                                        <td th:text="${data.mahasiswa.nim}" ></td>
+                                        <td th:text="${data.tanggalTransaksi}" ></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" th:if="${selectedNim != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List KRS <small th:text="${'  ' + selectedTahun.namaTahunAkademik}">asd</small></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Nama Mahasiswa</h5>
+                                        <h3 class="mb-0" th:text="${krsMahasiswa.mahasiswa.nama}">kldsfa</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Prodi</h5>
+                                        <h3 class="mb-0" th:text="${krsMahasiswa.prodi.namaProdi}">kldsfa</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Program</h5>
+                                        <h3 class="mb-0" th:text="${krsMahasiswa.mahasiswa.idProgram.namaProgram}">kldsfa</h3>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 text-center">
+                                        <h5>Angkatan</h5>
+                                        <h3 class="mb-0" th:text="${krsMahasiswa.mahasiswa.angkatan}">kldsfa</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
