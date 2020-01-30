@@ -512,7 +512,7 @@ public class AcademicActivityController {
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
             model.addAttribute("selectedSemester", semester);
-            model.addAttribute("listDosen", dosenDao.listDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+            model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
             model.addAttribute("ploting", matakuliahKurikulumDao.plotingDosen(prodi, angkatan, semester));
         }

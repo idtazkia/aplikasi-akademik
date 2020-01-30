@@ -46,19 +46,23 @@
                         <h3 class="mb-0">Data List</h3>
                     </div>
                     <div class="card-body">
-                        <form action="">
+                        <form method="get">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Nim</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" th:value="${selectedNim}" name="nim" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Academic Years</label>
-                                        <select class="form-control" name="" id="">
-                                            <option value=""></option>
+                                        <select class="form-control" name="tahunAkademik" id="">
+                                            <option th:each="data : ${tahun}"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:value="${data.id}">2019
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -66,42 +70,41 @@
                             <div class="row">
                                 <div class="col-md-12" style="text-align: center;">
                                     <div class="form-group">
-                                        <button class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
                                     </div>
                                 </div>
 
                             </div>
                         </form>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive" th:if="${selectedNim != null  }">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Matakuliah</th>
-                                <th scope="col">Presensi</th>
-                                <th scope="col">Task</th>
-                                <th scope="col">Mid Term</th>
-                                <th scope="col">End Semester Exam</th>
-                                <th scope="col">Weight</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Total</th>
-
+                                <th>No</th>
+                                <th>Code</th>
+                                <th>Matakuliah</th>
+                                <!--<th>SKS</th>-->
+                                <th>Presensi</th>
+                                <th>Task</th>
+                                <th>Mid Term</th>
+                                <th>End Semester Exam</th>
+                                <th>Weight</th>
+                                <th>Grade</th>
+                                <th>Total</th>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr th:each="data,row : ${khs}" >
+                                <td th:text="${(row.index + 1)}"></td>
+                                <td th:text="${data.kode}"></td>
+                                <td th:text="${data.matakuliah}"></td>
+                                <!--<td th:text="${data.sks}"></td>-->
+                                <td th:text="${data.presensi}"></td>
+                                <td th:text="${data.tugas}"></td>
+                                <td th:text="${data.uts}"></td>
+                                <td th:text="${data.uas}"></td>
+                                <td th:text="${data.bobot}"></td>
+                                <td th:text="${data.grade}"></td>
+                                <td th:text="${data.nilaiAkhir}"></td>
                             </tr>
 
                             </tbody>

@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
@@ -1761,6 +1762,30 @@ public class StudiesActivityController {
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
+
+    //KHS
+
+    @GetMapping("/studiesActivity/khs/list")
+    public void listKhs(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                        @RequestParam(required = false) String nim){
+
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        if (mahasiswa != null){
+            if (tahunAkademik != null) {
+                model.addAttribute("selectedTahun" , tahunAkademik);
+                model.addAttribute("selectedNim" , nim);
+                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+                model.addAttribute("khs",krsDetail);
+            } else {
+                model.addAttribute("selectedNim" , nim);
+                List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
+                model.addAttribute("khs",krsDetail);
+            }
+        }
+    }
+
+
 
 
 

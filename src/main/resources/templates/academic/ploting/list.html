@@ -141,8 +141,11 @@
                                                         <select th:name="${data[0] + data[2] + data[3]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
                                                             <option value=""></option>
                                                             <option th:each="item : ${listDosen}"
-                                                                    th:text="${item[1] + ' - '  + item[2] + ' SKS'}"
-                                                                    th:value="${item[0]}"></option>
+                                                                    th:text="${item.karyawan.namaKaryawan}"
+                                                                    th:value="${item.id}"></option>
+                                                            <!--<option th:each="item : ${listDosen}"-->
+                                                                    <!--th:text="${item[1] + ' - '  + item[2] + ' SKS'}"-->
+                                                                    <!--th:value="${item[0]}"></option>-->
                                                         </select>
                                                     </td>
                                                 </tr>
