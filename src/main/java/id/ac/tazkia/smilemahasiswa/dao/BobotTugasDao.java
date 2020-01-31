@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface BobotTugasDao extends PagingAndSortingRepository<BobotTugas, String> {
     List<BobotTugas> findByJadwalAndStatus(Jadwal jadwal, StatusRecord aktif);
+    List<BobotTugas> findByJadwalAndStatusOrderByPertemuanAsc(Jadwal jadwal, StatusRecord aktif);
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotScoreDto(bt.id,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.status = :status")
     List<BobotScoreDto> bobotTugas(@Param("jadwal")String jadwal, @Param("status")StatusRecord statusRecord);

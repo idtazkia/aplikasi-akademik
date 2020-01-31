@@ -496,6 +496,26 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/assesment/edit")
+    public void editTugas(@RequestParam(name = "id", value = "id") BobotTugas bobot, Model model){
+        model.addAttribute("bobotTugas", bobot);
+
+    }
+
+    @PostMapping("/studiesActivity/assesment/edit")
+    String prosesEdit(@ModelAttribute @Valid BobotTugas bobotTugas){
+        bobotTugasDao.save(bobotTugas);
+        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
+    }
+
+    @PostMapping("/studiesActivity/assesment/delete")
+    public String deleteBobot(@RequestParam(name = "id", value = "id") String bobot){
+        BobotTugas bobotTugas = bobotTugasDao.findById(bobot).get();
+        bobotTugas.setStatus(StatusRecord.HAPUS);
+        bobotTugasDao.save(bobotTugas);
+        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
+    }
+
     @GetMapping("/studiesActivity/assesment/upload/soal")
     public void listUas(@RequestParam Jadwal jadwal,@RequestParam StatusRecord status, Authentication authentication, Model model){
 
@@ -615,7 +635,7 @@ public class StudiesActivityController {
         model.addAttribute("absensi", presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal));
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
-        model.addAttribute("bobot",bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF));}
+        model.addAttribute("bobot",bobotTugasDao.findByJadwalAndStatusOrderByPertemuanAsc(jadwal,StatusRecord.AKTIF));}
 
     @PostMapping("/studiesActivity/assesment/weight")
     public String prosesWeight(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes){
