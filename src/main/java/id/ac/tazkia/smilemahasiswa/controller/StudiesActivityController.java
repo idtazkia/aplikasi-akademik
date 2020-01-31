@@ -697,6 +697,9 @@ public class StudiesActivityController {
         }
 
         List<ScoreDto> score = jadwalDao.scoreInput(jadwal,jadwal.getTahunAkademik());
+        for (ScoreDto sc : score){
+            System.out.println(sc.getSds());
+        }
 
 
             List<BobotDto> nilaiTugas = nilaiTugasDao.nilaiTugasList(jadwal);

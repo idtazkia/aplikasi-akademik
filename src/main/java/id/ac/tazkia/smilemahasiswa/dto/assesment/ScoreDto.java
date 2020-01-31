@@ -11,7 +11,7 @@ public interface ScoreDto {
     String getAbsdosen();
     BigDecimal getAbsen();
     BigDecimal getNilaiabsen();
-    BigDecimal getNilaisds();
+    BigDecimal getSds();
     BigDecimal getUts();
     BigDecimal getUas();
     BigDecimal getAkhir();
