@@ -32,7 +32,6 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/equipment/institution/list").hasAuthority("")
                 .anyRequest().authenticated()
                 .and().logout().permitAll()
                 .and().oauth2Login().loginPage("/login").permitAll()

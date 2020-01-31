@@ -69,7 +69,7 @@
                             <input type="hidden" th:if="${kelas.id != null}" id="isiKurikulum" name="kurikulum" th:values="*{kurikulum.id}">
 
                             <div class="form-group">
-                                <label>Class Room Code</label>
+                                <label>Angkatan</label>
                                 <select name="angkatan" class="form-control" th:field="*{angkatan}">
                                     <option value="">Select One</option>
                                     <option th:each="data: ${angkatan}" th:text="${data}" th:value="${data}"></option>

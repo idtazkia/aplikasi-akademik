@@ -231,10 +231,11 @@ public class EquipmentController {
     }
 
     @PostMapping("/equipment/class/form")
-    public String prosesClass(@Valid Kelas kelas, @RequestParam Prodi prodi){
+    public String prosesClass(@Valid Kelas kelas, @RequestParam Prodi prodi,@RequestParam Kurikulum kurikulum){
         if (kelas.getStatus() == null){
             kelas.setStatus(StatusRecord.NONAKTIF);
         }
+        kelas.setKurikulum(kurikulum);
         kelas.setIdProdi(prodi);
         kelasDao.save(kelas);
         return "redirect:list";
