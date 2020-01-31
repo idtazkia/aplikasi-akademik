@@ -85,7 +85,7 @@
 
                                                     <div class="card bg-secondary shadow border-0">
                                                         <div class="card-header bg-transparent pb-5">
-                                                            <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Soal</small></div>
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal = ${data.id}, status = 'UTS') }" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
@@ -98,7 +98,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="card-header bg-transparent pb-5">
-                                                            <div class="text-muted text-center mt-2 mb-3"><small>Action</small></div>
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Assesment</small></div>
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
@@ -106,13 +106,18 @@
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/score (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
-                                                                    <span class="btn-inner--text">Score</span>
+                                                                    <span class="btn-inner--text">Recapitulation</span>
+                                                                </a>
+                                                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
+                                                                    <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
+                                                                    <span class="btn-inner--text">Submit Score</span>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <div class="card-body px-lg-5 py-lg-5">
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}"  class="btn btn-warning"><i class="fas fa-cog"> Submit Score</i></a>
+                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Lecturer Evaluation</i></a>
                                                             </div>
                                                         </div>
                                                     </div>

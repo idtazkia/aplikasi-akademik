@@ -133,14 +133,14 @@
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-form' + data.id}"><i class="fas fa-eye"></i> Show</button>
 
                                     <div class="modal fade" th:id="${'modal-form' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
 
                                                 <div class="modal-body p-0">
 
                                                     <div class="card bg-secondary shadow border-0">
                                                         <div class="card-header bg-transparent pb-5">
-                                                            <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Assesment</small></div>
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
@@ -150,11 +150,17 @@
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                     <span class="btn-inner--text">Assesment</span>
                                                                 </a>
+                                                                <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
+                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                    <span class="btn-inner--text">Submit Score</span>
+                                                                </a>
+
                                                             </div>
                                                         </div>
                                                         <div class="card-body px-lg-5 py-lg-5">
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="text-center">
-                                                                <a href="" class="btn btn-primary"><i class="fas fa-edit"> Submit Score</i></a>
+                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Lecturer Evaluation</i></a>
                                                             </div>
                                                         </div>
                                                     </div>
