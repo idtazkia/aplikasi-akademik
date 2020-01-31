@@ -2,10 +2,12 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
+import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.KhsDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.TugasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class ReportMahasiswaController {
     @Autowired
     private MahasiswaDao mahasiswaDao;
 
+    @Autowired
+    private NilaiTugasDao nilaiTugasDao;
+
     @GetMapping("/report/khs")
     public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik){
 
@@ -44,7 +49,7 @@ public class ReportMahasiswaController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF, StatusRecord.UNDONE);
-
+        List<TugasDto> tugasDtos = new ArrayList<>();
         model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun" , tahunAkademik);
@@ -53,8 +58,12 @@ public class ReportMahasiswaController {
             model.addAttribute("khs",krsDetail);
         } else {
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
-
+            for (DataKhsDto data : krsDetail) {
+                List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
+                tugasDtos.addAll(nilaiTugas);
+            }
             model.addAttribute("khs",krsDetail);
+            model.addAttribute("tugas",tugasDtos);
         }
 
 

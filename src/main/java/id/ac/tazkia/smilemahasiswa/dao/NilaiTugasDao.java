@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.TugasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -15,4 +16,7 @@ public interface NilaiTugasDao extends PagingAndSortingRepository<NilaiTugas, St
     NilaiTugas findByStatusAndBobotTugasAndKrsDetail(StatusRecord aktif, BobotTugas bobotTugas, KrsDetail krsDetail);
 
     List<NilaiTugas> findByStatusAndKrsDetailAndBobotTugasStatus(StatusRecord aktif, KrsDetail krsDetail, StatusRecord aktif1);
+
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.report.TugasDto(nt.krsDetail.id,nt.bobotTugas.pertemuan,nt.nilai) from NilaiTugas nt where nt.status = 'AKTIF' and nt.bobotTugas.status = 'AKTIF' and nt.krsDetail.id = :id order by nt.bobotTugas.pertemuan asc ")
+    List<TugasDto> findTaskScore(@Param("id")String id);
 }

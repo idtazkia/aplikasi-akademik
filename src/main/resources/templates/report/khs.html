@@ -38,6 +38,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-xs-12">
+                <div class="alert alert-info">
+                    <b>Info : To see task detail score, Please click the task score</b>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
                         <h2>Data KHS</h2>
@@ -87,7 +92,34 @@
                                     <td th:text="${data.matakuliah}"></td>
                                     <!--<td th:text="${data.sks}"></td>-->
                                     <td th:text="${data.presensi}"></td>
-                                    <td th:text="${data.tugas}"></td>
+                                    <td>
+                                        <button data-toggle="modal" th:data-target="${'#myModalfour'+data.id}" style="background-color: white;border: 2px solid #4285f4; padding: 5px; border-radius: 10px;" th:text="${data.tugas}">
+                                            0.00
+                                        </button>
+                                        <div class="modal animated bounce" th:id="${'myModalfour'+data.id}" role="dialog">
+                                            <div class="modal-dialog modals-default">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped">
+                                                                <tr>
+                                                                    <th>Nama Tugas</th>
+                                                                    <th>Nilai</th>
+                                                                </tr>
+                                                                <tr th:each="item : ${tugas}" th:if="${data.id == item.id}">
+                                                                    <td th:text="${'Task ' +item.nama}">Matematika</td>
+                                                                    <td th:text="${item.nilai}">10</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td th:text="${data.uts}"></td>
                                     <td th:text="${data.uas}"></td>
                                     <td th:text="${data.bobot}"></td>
