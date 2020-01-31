@@ -1806,9 +1806,11 @@ public class StudiesActivityController {
         }
     }
 
+    //Edom
+
 
     @GetMapping("/studiesActivity/assesment/hasiledom")
-    public void hasilEdom(Model model, @RequestParam Jadwal jadwal, Pageable page) {
+    public void hasilEdom(Model model, @RequestParam Jadwal jadwal) {
 
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
@@ -1837,12 +1839,6 @@ public class StudiesActivityController {
         model.addAttribute("e5", e5);
         model.addAttribute("rata",rata.divide(BigDecimal.valueOf(5), 2, RoundingMode.HALF_UP));
 
-
-        System.out.println(" TOTAL RATA    :  "  + rata);
-        System.out.println(" RATA BAGI     :  "  + rata.divide(BigDecimal.valueOf(5), 2, RoundingMode.HALF_UP));
-        System.out.println(" MAHASISWA     :  "  + mahasiswa.size());
-        System.out.println(" JUMLAH TOTAL  :  "  + krsDetailDao.jumlahE5(jadwal));
-        System.out.println(" EDOM          :  "  + e5);
 
     }
 
