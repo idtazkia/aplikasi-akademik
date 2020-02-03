@@ -14,4 +14,6 @@ public class PlotingDto {
     private String kelas;
     private Integer sks;
     private String dosen;
+    private String idDosen;
+    private String idKelas;
 }

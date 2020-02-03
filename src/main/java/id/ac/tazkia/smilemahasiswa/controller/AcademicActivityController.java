@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -594,16 +595,51 @@ public class AcademicActivityController {
         model.addAttribute("hari", hariDao.findAll());
     }
 
+    @GetMapping("/academic/schedule/ploting")
+    public void plotingSchedule(Model model,@RequestParam(name = "id", value = "id") Prodi prodi,@RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik){
+        model.addAttribute("selectedTahun",tahunAkademik);
+        model.addAttribute("selectedProdi",prodi);
+        model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
+        model.addAttribute("hari", hariDao.findAll());
+
+    }
+
+    @PostMapping("/academic/schedule/ploting")
+    public String prosesPloting(HttpServletRequest request,@RequestParam(name = "id", value = "id") Prodi prodi,@RequestParam(name = "tahun", value = "tahun") TahunAkademik tahunAkademik){
+        List<PlotingDto> jadwal = jadwalDao.ploting(prodi,tahunAkademik);
+        for (PlotingDto j : jadwal){
+            String mulai = request.getParameter(j.getId()+"_mulai");
+            String selesai = request.getParameter(j.getId()+"_selesai");
+            String sesi = request.getParameter(j.getId()+"_isiSesi");
+            String ruangan = request.getParameter(j.getId()+"_roomisi");
+            String hari = request.getParameter(j.getId()+"_hariisi");
+            String idSesi = request.getParameter(j.getId()+"_sesii");
+            if (hari!= null && !hari.trim().isEmpty()){
+                Jadwal jdwl = jadwalDao.findById(j.getId()).get();
+                jdwl.setSesi(sesi);
+                jdwl.setJamMulai(LocalTime.parse(mulai));
+                jdwl.setJamSelesai(LocalTime.parse(selesai));
+                jdwl.setHari(hariDao.findById(hari).get());
+                jdwl.setRuangan(ruanganDao.findById(ruangan).get());
+                jdwl.setFinalStatus("N");
+                jadwalDao.save(jdwl);
+            }
+        }
+
+        return "redirect:list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
+
+
+    }
+
     @PostMapping("/academic/schedule/form")
-    public String prosesSchedule(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes, LocalTime mulai, LocalTime selesai){
+    public String prosesSchedule(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes,@RequestParam Sesi sesii){
 
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
+        System.out.println(sesii);
 
-        System.out.println(jadwal.getJamMulai());
-        System.out.println(jadwal.getJamSelesai());
         if (jdwl == null | jdwl.isEmpty()){
-            jadwal.setJamMulai(jadwal.getJamMulai());
-            jadwal.setJamSelesai(jadwal.getJamSelesai());
+            jadwal.setJamMulai(sesii.getJamMulai());
+            jadwal.setJamSelesai(sesii.getJamSelesai());
             jadwalDao.save(jadwal);
 
 

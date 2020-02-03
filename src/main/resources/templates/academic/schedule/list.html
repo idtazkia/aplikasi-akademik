@@ -115,7 +115,9 @@
 
                                     </div>
                                     <div class="card-body">
-                                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus-circle"></i> Add</button>
+                                        <a th:href="@{/academic/schedule/ploting (id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
+                                            <button class="btn btn-default btn-sm"><i class="fas fa-plus-circle"></i> Add</button>
+                                        </a>
                                         <br>
                                         <br>
                                         <div class="table-responsive">
@@ -240,7 +242,7 @@
 
                     <span th:if="${selectedHari == null && selectedTahun != null}">
 <div class="row" th:if="${selectedProdi != null}">
-                            <div class="col-md-12" th:if="${not #lists.isEmpty(minggu)}">
+                            <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
                                         <div class="col">
@@ -249,10 +251,127 @@
 
                                     </div>
                                     <div class="card-body">
-                                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus-circle"></i> Add</button>
+                                        <a th:href="@{/academic/schedule/ploting (id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
+                                            <button class="btn btn-default btn-sm"><i class="fas fa-plus-circle"></i> Add</button>
+                                        </a>
                                         <br><br>
+
+                                        <div class="row" style="padding: 5px;">
+                                <div class="col-md-12" th:if="${not #lists.isEmpty(ploting)}">
+                                <div class="card shadow">
+                                    <div class="card-header border-0">
+                                        <h3 class="mb-0">Not Schedule Yet</h3>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Room</th>
+                                                    <th scope="col">Time</th>
+                                                    <th scope="col">Course</th>
+                                                    <th scope="col">Class</th>
+                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="jadwal,row : ${ploting}">
+                                                    <td th:text="${row.index + 1}"></td>
+                                                    <td>-</td>
+                                                    <td><span>-</span> -
+                                                        <span>-</span></td>
+                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:text="${jadwal.kelas}"></td>
+                                                    <td th:text="${jadwal.dosen}"></td>
+                                                    <td>
+                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-show'+jadwal.id}"><i class="fas fa-eye"></i> Show</button>
+
+                                                        <div class="modal fade" th:id="${'modal-show'+jadwal.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-body p-0">
+
+
+                                                                        <div class="card bg-secondary shadow border-0">
+                                                                            <div class="card-header bg-transparent pb-5">
+                                                                                <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
+                                                                                <div class="btn-wrapper text-center">
+                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                                        <span class="btn-inner--text">Absensi UTS</span>
+                                                                                    </a>
+                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                                        <span class="btn-inner--text">Absensi UAS</span>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="card-header bg-transparent pb-5">
+                                                                                <div class="text-muted text-center mt-2 mb-3"><small>Action</small></div>
+                                                                                <div class="btn-wrapper text-center">
+                                                                                    <a th:href="@{/academic/schedule/form (id = ${jadwal.id})}" class="btn btn-primary btn-icon">
+                                                                                        <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
+                                                                                        <span class="btn-inner--text">Edit Data</span>
+                                                                                    </a>
+                                                                                    <button data-toggle="modal" th:data-target="${'#modal-notification'+jadwal.id}" class="btn btn-danger btn-icon">
+                                                                                        <span class="btn-inner--icon"><i class="fas fa-trash"></i></span>
+                                                                                        <span class="btn-inner--text">Delete Data</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal fade" th:id="${'modal-notification'+jadwal.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form  method="post">
+                                                                            <button th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}" type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                                     <div class="row" style="padding: 5px;">
-                            <div class="col-md-12">
+                                <div class="col-md-12" th:if="${not #lists.isEmpty(minggu)}">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
                                         <h3 class="mb-0">Sunday</h3>

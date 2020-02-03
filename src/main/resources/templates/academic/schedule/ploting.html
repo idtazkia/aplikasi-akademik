@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<link rel="stylesheet" th:href="@{/style.css}">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Schedule</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-list"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" th:action="@{/academic/schedule/ploting(id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="data-table-basic" class="table table-striped">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">Lecturer</th>
+                                        <th scope="col">Courses</th>
+                                        <th scope="col">Day</th>
+                                        <th scope="col">Room</th>
+                                        <th scope="col">Session</th>
+                                        <th scope="col">Jam Mulai</th>
+                                        <th scope="col">Jam Selesai</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr th:each="data,row : ${ploting}">
+                                        <td th:text="${data.kelas}">MBS-17-A</td>
+                                        <td th:text="${data.dosen}">AEM2204</td>
+                                        <td th:text="${data.course}">Cost And Management Accounting</td>
+                                        <td>
+                                            <select th:name="${data.id+'_hari'}" style="width: 200px!important;" th:id="${data.id+'_hari'}" class="form-control js-example-placeholder-single" onchange="mySesi(this)">
+                                                <option value=""></option>
+                                                <option th:each="data: ${hari}"
+                                                        th:text="${data.namaHari + '  -  ' + data.namaHariEng}"
+                                                        th:value="${data.id}">sdasd</option>
+                                            </select>
+                                            <input type="hidden" th:id="${data.id+'_hariisi'}" th:name="${data.id+'_hariisi'}">
+                                        </td>
+                                        <td>
+                                            <select th:name="${data.id+'_room'}" style="width: 200px!important;" th:id="${data.id+'_room'}" onchange="myRoom(this)" class="form-control js-example-placeholder-single">
+                                                <option value=""></option>
+                                                <option th:each="data: ${ruangan}"
+                                                        th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
+                                                        th:value="${data.id}">sdasd</option>
+                                                <input type="hidden" th:id="${data.id+'_roomisi'}" th:name="${data.id+'_roomisi'}">
+                                                <input type="hidden" th:id="${data.id+'_sks'}" th:value="${data.sks}" th:name="${data.id+'_sks'}">
+                                                <input type="hidden" th:id="${data.id+'_dosen'}" th:value="${data.idDosen}" th:name="${data.id+'_dosen'}">
+                                                <input type="hidden" th:id="${data.id+'_kelas'}" th:value="${data.idKelas}" th:name="${data.id+'_kelas'}">
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select th:id="${data.id+'_sesi'}" style="width: 200px!important;" class="form-control" onchange="waktu(this)">
+                                                <option value=""></option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" style="width: 100px;" th:id="${data.id+'_mulai'}" th:name="${data.id+'_mulai'}" readonly class="form-control"></td>
+                                        <td><input type="text" style="width: 100px;" th:id="${data.id+'_selesai'}" th:name="${data.id+'_selesai'}" readonly class="form-control"></td>
+                                        <input type="hidden" th:id="${data.id+'_sesii'}" th:name="${data.id+'_sesii'}" disabled class="form-control">
+                                        <input type="hidden" th:id="${data.id+'_idSesi'}" disabled class="form-control">
+                                        <input type="hidden" th:id="${data.id+'_isiSesi'}" disabled class="form-control">
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select One",
+        allowClear: true
+    });
+
+    function mySesi(arg) {
+        var id = arg.getAttribute('id');
+        var isiHari = id+'isi';
+        var value = arg.value;
+        console.log(isiHari);
+        $('#'+isiHari).val(value);
+
+    }
+
+    function waktu(arg) {
+        var id = arg.getAttribute('id');
+        var value = arg.value;
+        console.log(value);
+        const url = '/api/waktu?id='+value;
+        const withoutLastChunk = id.slice(0, id.lastIndexOf("_"));
+
+        $.getJSON(url, function (data) {
+
+            $('#'+withoutLastChunk+'_mulai').val(data.jamMulai);
+            $('#'+withoutLastChunk+'_selesai').val(data.jamSelesai);
+            $('#'+withoutLastChunk+"_isiSesi").val(data.sesi);
+            $('#'+withoutLastChunk+'_sesii').val(data.id);
+            $('#'+withoutLastChunk+'_idSesi').val(data.id);
+            // document.getElementById("mulai").value = data.jamMulai;
+            // document.getElementById("selesai").value = data.jamSelesai;
+        });
+
+    }
+
+    function myRoom(arg) {
+        var id = arg.getAttribute('id');
+        var isiRoom = id+'isi';
+        var value = arg.value;
+        console.log(isiRoom);
+        $('#'+isiRoom).val(value);
+
+        const withoutLastChunk = id.slice(0, id.lastIndexOf("_"));
+        var isiHari = withoutLastChunk+'_hariisi';
+        var sks = withoutLastChunk+'_sks';
+        var dosen = withoutLastChunk+'_dosen';
+        var kelas = withoutLastChunk+'_kelas';
+
+        let dropdown = $('#'+withoutLastChunk+'_sesi');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Select One</option>');
+        dropdown.prop('selectedIndex', 0);
+        const url = '/api/sesi?idHari='+$('#'+isiHari).val()+'&idRuangan='+$('#'+isiRoom).val()+'&sks='+$('#'+sks).val()+'&kelas='+$('#'+kelas).val()+'&dosen='+$('#'+dosen).val();
+
+        // Populate dropdown with list of provinces
+        $.getJSON(url, function (data) {
+
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
+            })
+        });
+
+    }
+
+
+
+</script>

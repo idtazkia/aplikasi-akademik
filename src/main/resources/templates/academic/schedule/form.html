@@ -129,8 +129,9 @@
                                     <div class="form-group">
                                         <label>End Time</label>
                                         <input type="text" name="selesai" th:field="*{jamSelesai}" maxlength="5" disabled id="jamSelesai" class="form-control">
-                                        <input type="hidden" id="mulai" name="jamMulai" th:field="*{jamMulai}">
-                                        <input type="hidden" id="selesai" name="jamSelesai" th:field="*{jamSelesai}">
+                                        <input type="hidden" id="mulai" name="mulai" th:field="*{jamMulai}">
+                                        <input type="hidden" id="selesai" name="selesai" th:field="*{jamSelesai}">
+                                        <input type="hidden" id="sesii" name="sesii">
 
                                     </div>
                                 </div>
@@ -278,6 +279,7 @@
             $('#selesai').val(data.jamSelesai);
             $('#jamSelesai').val(data.jamSelesai);
             $('#isiSesi').val(data.sesi);
+            $('#sesii').val(data.id);
             document.getElementById("mulai").value = data.jamMulai;
             document.getElementById("selesai").value = data.jamSelesai;
         });
