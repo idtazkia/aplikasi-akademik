@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Concept Note</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Concept Note </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card shadow" style="margin-top: 10px; margin-bottom: 10px;" th:each="data : ${listDosen}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-xs-12">
+                                        <b style="font-size: 12px; color: #4285f4;">Nim</b>
+                                        <br>
+                                        <b th:text="${data.mahasiswa.nim}">21212121</b>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12">
+                                        <b style="font-size: 12px; color: #4285f4;">Nama</b>
+                                        <br>
+                                        <b th:text="${data.mahasiswa.nama}">Muhammad Rafizki</b>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12">
+                                        <b style="font-size: 12px; color: #4285f4;">Lecturer 1</b>
+                                        <br>
+                                        <b th:text="${data.dosen.karyawan.namaKaryawan}">21212121</b>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12" th:if="${data.dosen2 != null}">
+                                        <b style="font-size: 12px; color: #4285f4;">Lecturer 2</b>
+                                        <br>
+                                        <b th:text="${data.dosen2.karyawan.namaKaryawan}">21212121</b>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <b style="font-size: 12px; color: #4285f4;">Title</b>
+                                        <br>
+                                        <p th:text="${data.judul}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias enim et fugiat illo labore laboriosam maxime non perspiciatis, quidem reiciendis sapiente temporibus ullam unde! Aspernatur deserunt dolores illum inventore sed.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <b style="font-size: 12px; color: #4285f4;">Title English</b>
+                                        <br>
+                                        <p th:text="${data.judulInggris}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias enim et fugiat illo labore laboriosam maxime non perspiciatis, quidem reiciendis sapiente temporibus ullam unde! Aspernatur deserunt dolores illum inventore sed.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <a th:href="@{/uploaded/{note}/bukti/(note=${data.id})}" target="_blank" class="btn btn-primary">Show PDF</a>
+                                        <a th:href="@{/graduation/{fileName}(fileName=${data.fileUpload},note=${data.id})}" class="btn btn-success">Download PDF</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

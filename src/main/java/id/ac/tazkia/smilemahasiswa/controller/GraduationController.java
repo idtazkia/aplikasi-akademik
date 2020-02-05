@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,12 +27,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -280,6 +283,7 @@ public class GraduationController {
 
         if (approved != null){
             model.addAttribute("approved",approved);
+            return "redirect:success?note="+approved.getId();
         }
 
         List<Note> rejected = noteDao.findByMahasiswaOrderByTanggalInputDesc(mahasiswa);
@@ -293,6 +297,11 @@ public class GraduationController {
 
         return "graduation/list";
 
+    }
+
+    @GetMapping("/graduation/success")
+    public void success(Model model, @RequestParam Note note){
+        model.addAttribute("note", note);
     }
 
 //    Graduation Admin
@@ -521,4 +530,46 @@ public class GraduationController {
         FileCopyUtils.copy(example.getInputStream(), response.getOutputStream());
         response.getOutputStream().flush();
     }
+
+//    Lecturer
+
+    @PreAuthorize("hasAnyAuthority('VIEW_DOSEN','VIEW_KPS')")
+    @GetMapping("/graduation/lecture/list")
+    public void listLecture(Authentication authentication, Model model){
+        User user = currentUserService.currentUser(authentication);
+        Dosen dosen = dosenDao.findByKaryawanIdUser(user);
+
+        model.addAttribute("listDosen", noteDao.cariDosenPembimbing(dosen));
+
+
+    }
+
+    @RequestMapping("/graduation/{fileName}")
+    public void downloadPDFResource( HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     @RequestParam Note note,
+                                     @PathVariable("fileName") String fileName)
+    {
+        //If user is not authorized - he should be thrown out from here itself
+
+        //Authorized user will download the file
+        String lokasi = uploadFolder+File.separator+note.getMahasiswa().getNim();
+        String dataDirectory = request.getServletContext().getRealPath(lokasi);
+        Path file = Paths.get(lokasi, fileName);
+        System.out.println(file);
+        if (Files.exists(file))
+        {
+            response.setContentType("application/pdf");
+            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }
