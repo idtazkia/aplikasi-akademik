@@ -122,13 +122,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Start Time</label>
-                                        <input type="text" th:field="*{jamMulai}" disabled maxlength="5" max="5" name="mulai" id="jamMulai" class="form-control">
+                                        <input type="text" th:field="*{jamMulai}" readonly maxlength="5" max="5" name="jamMulai" id="jamMulai" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>End Time</label>
-                                        <input type="text" name="selesai" th:field="*{jamSelesai}" maxlength="5" disabled id="jamSelesai" class="form-control">
+                                        <input type="text" name="jamSelesai" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
                                         <input type="hidden" id="mulai" name="mulai" th:field="*{jamMulai}">
                                         <input type="hidden" id="selesai" name="selesai" th:field="*{jamSelesai}">
                                         <input type="hidden" id="sesii" name="sesii">

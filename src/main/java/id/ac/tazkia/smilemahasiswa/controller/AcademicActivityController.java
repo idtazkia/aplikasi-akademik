@@ -643,8 +643,8 @@ public class AcademicActivityController {
         System.out.println(sesii);
 
         if (jdwl == null | jdwl.isEmpty()){
-            jadwal.setJamMulai(sesii.getJamMulai());
-            jadwal.setJamSelesai(sesii.getJamSelesai());
+//            jadwal.setJamMulai(sesii.getJamMulai());
+//            jadwal.setJamSelesai(sesii.getJamSelesai());
             jadwalDao.save(jadwal);
 
 
