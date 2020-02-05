@@ -163,6 +163,13 @@
                                                                 <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Lecturer Evaluation</i></a>
                                                             </div>
                                                         </div>
+                                                        <div class="card-body px-lg-5 py-lg-5" th:if="${data.course == 'Student Dynamic Session'}">
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>Add</small></div>
+                                                            <div class="text-center">
+                                                                <a th:href="@{/studiesActivity/assesment/sds (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                            </div>
+
+                                                        </div>
                                                     </div>
 
                                                 </div>

@@ -91,7 +91,7 @@
                                 <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
                                 <td th:text="${data.beritaAcara}">Dosen</td>
                                 <td><a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Kehadiran Mahasiswa</a></td>
-                                <td><a th:href="@{/studiesActivity/attendance/form (id = ${data.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit Berita Acara</a></td>
+                                <td><a th:href="@{/studiesActivity/attendance/form (id = ${data.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit Topic</a></td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                         <i class="fas fa-trash"></i>
@@ -191,7 +191,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Description :</label>
+                                        <label>Topic :</label>
                                         <textarea name="beritaAcara" class="form-control" id=""></textarea>
                                     </div>
                                 </div>

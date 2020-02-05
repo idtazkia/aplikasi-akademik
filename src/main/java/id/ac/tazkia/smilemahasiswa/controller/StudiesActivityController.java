@@ -959,7 +959,42 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/assesment/sds")
+    public void sds(Model model,@RequestParam Jadwal jadwal){
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("mahasiswa", jadwalDao.cariMahasiswaBelumSds(jadwal.getProdi(),jadwal.getTahunAkademik()));
+    }
 
+
+    @PostMapping("/studiesActivity/assesment/sds")
+    public String sds(@RequestParam Jadwal jadwal, @RequestParam(required = false) String[] data){
+        if (data != null){
+            for (String krs : data) {
+                Krs k = krsDao.findById(krs).get();
+                KrsDetail kd = new KrsDetail();
+                kd.setJadwal(jadwal);
+                kd.setKrs(k);
+                kd.setMahasiswa(k.getMahasiswa());
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setJumlahMangkir(0);
+                kd.setJumlahKehadiran(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                krsDetailDao.save(kd);
+            }
+        }
+
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademik().getId()+"&prodi="+jadwal.getProdi().getId();
+    }
 
 
     //TUGAS

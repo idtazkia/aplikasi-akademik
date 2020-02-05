@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -78,6 +79,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     @Query("SELECT sum(kd.e5) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF'")
     Long jumlahE5 (@Param("jadwal") Jadwal jadwal);
+
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.mahasiswa.idProdi.namaProdi) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF' order by kd.mahasiswa.nim asc")
+    List<StudentDto> cariJadwalMahasiswa(@Param("jadwal") Jadwal jadwal);
 
 
 

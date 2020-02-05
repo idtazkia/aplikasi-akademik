@@ -4,6 +4,8 @@ import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,8 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
     List<ApiRfidDto> rfidKaryawan(@Param("status")StatusRecord statusRecord);
 
     Karyawan findByIdUser(User user);
+
+    Page<Karyawan> findByStatusAndNamaKaryawanContainingIgnoreCaseOrderByNamaKaryawan(StatusRecord aktif, String search, Pageable page);
+
+    Page<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif, Pageable page);
 }
