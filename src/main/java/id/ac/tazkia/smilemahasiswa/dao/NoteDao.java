@@ -23,6 +23,6 @@ public interface NoteDao extends PagingAndSortingRepository <Note, String> {
 
     Page<Note> findByTahunAkademikAndMahasiswaIdProdiAndStatusNotIn(TahunAkademik tahun, Prodi prodi, List<StatusApprove> asList, Pageable pageable);
 
-    @Query("select n from Note n where n.status = 'APPROVED' and n.dosen = :dosen or n.dosen2 = :dosen")
+    @Query("select n from Note n where n.status = 'APPROVED' and n.dosen = :dosen or n.dosen2 = :dosen and  n.status = 'APPROVED'")
     List<Note> cariDosenPembimbing(@Param("dosen")Dosen dosen);
 }
