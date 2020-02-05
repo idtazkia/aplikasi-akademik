@@ -631,6 +631,11 @@ public class AcademicActivityController {
 
     }
 
+    @GetMapping("/academic/schedule/student")
+    public void studentSchedule(@RequestParam(value = "id", name = "id")Jadwal jadwal,Model model){
+        model.addAttribute("student", krsDetailDao.cariJadwalMahasiswa(jadwal));
+    }
+
     @PostMapping("/academic/schedule/form")
     public String prosesSchedule(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes,@RequestParam Sesi sesii){
 
@@ -665,6 +670,7 @@ public class AcademicActivityController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @PostMapping("/academic/schedule/delete")
     public String deleteSchedule(@RequestParam Jadwal jadwal){
         jadwal.setStatus(StatusRecord.HAPUS);
