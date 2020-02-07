@@ -28,9 +28,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-xs-12">
                                 <div class="breadcomb-report">
-                                    <a th:href="@{/study/form}">
-                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
-                                    </a>
+
                                 </div>
                             </div>
                         </div>
@@ -45,7 +43,16 @@
             <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Data KRS</h2>
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                                Data List
+                            </div>
+                            <div class="col-md-6 col-xs-12 text-right">
+                                <a th:href="@{/study/form}">
+                                    <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
