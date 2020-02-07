@@ -72,7 +72,7 @@ public class StudyActivityController {
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
-        if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) <= 0) {
+        if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) >= 0) {
             model.addAttribute("validasi", ta);
         }
 
@@ -111,6 +111,11 @@ public class StudyActivityController {
 
     }
 
+    @GetMapping("/study/alert")
+    public void alert(){
+
+    }
+
     @PostMapping("/study/form")
     public String prosesKrs(Authentication authentication,@RequestParam String jumlah, @RequestParam(required = false) String[] selected,
                             RedirectAttributes attributes){
@@ -119,6 +124,11 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik,StatusRecord.AKTIF);
+
+        if (k == null){
+            System.out.println("Bayar");
+            return "redirect:alert";
+        }
 
         Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 

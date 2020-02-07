@@ -193,7 +193,6 @@ public class AcademicActivityController {
 
 //    Academic Year
 
-    @PreAuthorize("hasAuthority('VIEW_SUPERUSER')")
     @GetMapping("/academic/year/list")
     public void academicList(Model model, @PageableDefault(size = 10) Pageable page, String search) {
         List<StatusRecord> statusRecords = new ArrayList<>();
@@ -208,7 +207,6 @@ public class AcademicActivityController {
         }
     }
 
-    @PreAuthorize("hasAuthority('VIEW_SUPERUSER')")
     @GetMapping("/academic/year/form")
     public void academicForm(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("tahunAkademik", new TahunAkademik());
@@ -223,7 +221,6 @@ public class AcademicActivityController {
 
     @PostMapping("/academic/year/form")
     public String prosesAcademic(@Valid TahunAkademik tahunAkademik) {
-        tahunAkademik.setId(tahunAkademik.getKodeTahunAkademik());
         tahunAkademikDao.save(tahunAkademik);
 
         return "redirect:list";
@@ -303,7 +300,6 @@ public class AcademicActivityController {
 
 //Curriculum
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/curriculum/list")
     public void curriculumList(Model model,@RequestParam(required = false) Prodi prodi,
                                @PageableDefault(direction = Sort.Direction.DESC,sort = "tahunKurikulum") Pageable page){
@@ -318,7 +314,6 @@ public class AcademicActivityController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/curriculum/form")
     public void curriculumForm(Model model,@RequestParam(required = false, name = "id")
             Kurikulum kurikulum){
@@ -350,7 +345,6 @@ public class AcademicActivityController {
 //    Courses
 
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/courses/list")
     public void listCourses(Model model,@RequestParam(required = false) String search, Pageable pageable){
             if (!StringUtils.isEmpty(search)){
@@ -361,7 +355,6 @@ public class AcademicActivityController {
             }
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/courses/form")
     public void formCourses(Model model,@RequestParam(required = false, name = "id")
             Matakuliah matakuliah){
@@ -390,7 +383,6 @@ public class AcademicActivityController {
 
     //    Curriculum Courses
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/curriculumCourses/list")
     public void listCurriculumCourses(Model model, @RequestParam(required = false) Prodi prodi,
                                       @RequestParam(required = false) Kurikulum kurikulum){
@@ -414,7 +406,6 @@ public class AcademicActivityController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/curriculumCourses/form")
     public void formCurriculumCourses(@RequestParam(required = false) String prodi,@RequestParam(required = false) String kurikulum,Model model){
         model.addAttribute("prodi",prodiDao.findById(prodi).get());
@@ -465,7 +456,6 @@ public class AcademicActivityController {
         return "redirect:list?prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId();
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/curriculumCourses/prasyarat")
     public void formPrasyarat(Model model, @RequestParam(name = "id", value = "id") MatakuliahKurikulum matakuliahKurikulum,
                               @RequestParam(required = false) String pras){
@@ -504,7 +494,6 @@ public class AcademicActivityController {
     //    Ploting
 
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/ploting/list")
     public void listPloting(Model model, @RequestParam(required = false)String angkatan,
                             @RequestParam(required = false)Prodi prodi,@RequestParam(required = false)Integer semester){
@@ -557,7 +546,6 @@ public class AcademicActivityController {
     //    Schedule
 
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/schedule/list")
     public void listSchedule(Model model, @RequestParam(required = false) Prodi prodi,
                              @RequestParam(required = false) TahunAkademik tahunAkademik,
@@ -584,7 +572,6 @@ public class AcademicActivityController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/schedule/form")
     public void scheduleForm(Model model,@RequestParam(name = "id", value = "id") Jadwal jadwal,@RequestParam(required = false) String plot){
         if (plot != null){
@@ -670,7 +657,6 @@ public class AcademicActivityController {
 
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @PostMapping("/academic/schedule/delete")
     public String deleteSchedule(@RequestParam Jadwal jadwal){
         jadwal.setStatus(StatusRecord.HAPUS);
@@ -679,7 +665,6 @@ public class AcademicActivityController {
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
     }
 
-    @PreAuthorize("hasAnyAuthority('VIEW_SUPERUSER','VIEW_KPS')")
     @GetMapping("/academic/schedule/team")
     public void teamTeaching(Model model,@RequestParam Jadwal jadwal){
 
