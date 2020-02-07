@@ -108,7 +108,7 @@
             <div class="row" th:if="${full != null}">
                 <div class="col-md-6 col-xs-12">
                     <div class="alert alert-info" role="alert">
-                        Jumlah batas maksimal SKS 23 !
+                        Jumlah batas maksimal SKS 24 !
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
                         <div class="bsc-tbl-st">
                             <form th:action="@{/study/form}" method="post" id="krs">
                                 <input type="hidden" name="jumlah" th:if="${full == null}" th:value="${'21'}">
-                                <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'23'}">
+                                <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'24'}">
                                 <button class="btn btn-primary notika-btn-danger btn-sm waves-effect">Simpan</button>
                                 <br>
                                 <br>
