@@ -9,6 +9,7 @@ import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -109,6 +110,8 @@ public class StudiesActivityController {
 
     @Autowired
     private SoalDao soalDao;
+
+    @Autowired private ScoreService scoreService;
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -718,16 +721,6 @@ public class StudiesActivityController {
     @ResponseStatus(HttpStatus.OK)
     public void simpanNilai(@RequestBody @Valid ScoreInput in) throws Exception   {
 
-        Grade a = gradeDao.findById("1").get();
-        Grade amin= gradeDao.findById("2").get();
-        Grade bplus= gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus= gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade e = gradeDao.findById("9").get();
-
         if (in != null){
 
             if (in.getNilai() != null && !in.getNilai().trim().isEmpty()){
@@ -753,62 +746,7 @@ public class StudiesActivityController {
                     kd.setNilaiTugas(sum);
                     kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
 
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 80 && kd.getNilaiAkhir().toBigInteger().intValue() < 85){
-                        System.out.println("a-");
-                        kd.setGrade(amin.getNama());
-                        kd.setBobot(a.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 75 && kd.getNilaiAkhir().toBigInteger().intValue() < 80){
-                        System.out.println("b+");
-                        kd.setGrade(bplus.getNama());
-                        kd.setBobot(bplus.getBobot());
-
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 70 && kd.getNilaiAkhir().toBigInteger().intValue() < 75){
-                        System.out.println("b");
-                        kd.setGrade(b.getNama());
-                        kd.setBobot(b.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 65 && kd.getNilaiAkhir().toBigInteger().intValue() < 70){
-                        System.out.println("b-");
-                        kd.setGrade(bmin.getNama());
-                        kd.setBobot(bmin.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 60 && kd.getNilaiAkhir().toBigInteger().intValue() < 65){
-                        System.out.println("c+");
-                        kd.setGrade(cplus.getNama());
-                        kd.setBobot(cplus.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 55 && kd.getNilaiAkhir().toBigInteger().intValue() < 60){
-                        System.out.println("c");
-                        kd.setGrade(c.getNama());
-                        kd.setBobot(c.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 50 && kd.getNilaiAkhir().toBigInteger().intValue() < 55){
-                        System.out.println("d");
-                        kd.setGrade(d.getNama());
-                        kd.setBobot(d.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 0 && kd.getNilaiAkhir().toBigInteger().intValue() < 50){
-                        System.out.println("e");
-                        kd.setGrade(e.getNama());
-                        kd.setBobot(e.getBobot());
-                    }
-
-                    if (kd.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                        System.out.println("a");
-                        kd.setGrade(a.getNama());
-                        kd.setBobot(a.getBobot());
-                    }
-                    krsDetailDao.save(kd);
+                    scoreService.hitungNilaiAkhir(kd);
                 }
             }
 
@@ -821,62 +759,7 @@ public class StudiesActivityController {
 
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
 
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
-                    System.out.println("a-");
-                    krsDetail.setGrade(amin.getNama());
-                    krsDetail.setBobot(a.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
-                    System.out.println("b+");
-                    krsDetail.setGrade(bplus.getNama());
-                    krsDetail.setBobot(bplus.getBobot());
-
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 70 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 75){
-                    System.out.println("b");
-                    krsDetail.setGrade(b.getNama());
-                    krsDetail.setBobot(b.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 65 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 70){
-                    System.out.println("b-");
-                    krsDetail.setGrade(bmin.getNama());
-                    krsDetail.setBobot(bmin.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 60 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 65){
-                    System.out.println("c+");
-                    krsDetail.setGrade(cplus.getNama());
-                    krsDetail.setBobot(cplus.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 55 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 60){
-                    System.out.println("c");
-                    krsDetail.setGrade(c.getNama());
-                    krsDetail.setBobot(c.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 50 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 55){
-                    System.out.println("d");
-                    krsDetail.setGrade(d.getNama());
-                    krsDetail.setBobot(d.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 0 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 50){
-                    System.out.println("e");
-                    krsDetail.setGrade(e.getNama());
-                    krsDetail.setBobot(e.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                    System.out.println("a");
-                    krsDetail.setGrade(a.getNama());
-                    krsDetail.setBobot(a.getBobot());
-                }
-                krsDetailDao.save(krsDetail);
-
+                scoreService.hitungNilaiAkhir(krsDetail);
 
             }
 
@@ -888,67 +771,14 @@ public class StudiesActivityController {
                 krsDetail.setNilaiUts(new BigDecimal(in.getUts()));
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
 
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
-                    System.out.println("a-");
-                    krsDetail.setGrade(amin.getNama());
-                    krsDetail.setBobot(a.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
-                    System.out.println("b+");
-                    krsDetail.setGrade(bplus.getNama());
-                    krsDetail.setBobot(bplus.getBobot());
-
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 70 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 75){
-                    System.out.println("b");
-                    krsDetail.setGrade(b.getNama());
-                    krsDetail.setBobot(b.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 65 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 70){
-                    System.out.println("b-");
-                    krsDetail.setGrade(bmin.getNama());
-                    krsDetail.setBobot(bmin.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 60 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 65){
-                    System.out.println("c+");
-                    krsDetail.setGrade(cplus.getNama());
-                    krsDetail.setBobot(cplus.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 55 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 60){
-                    System.out.println("c");
-                    krsDetail.setGrade(c.getNama());
-                    krsDetail.setBobot(c.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 50 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 55){
-                    System.out.println("d");
-                    krsDetail.setGrade(d.getNama());
-                    krsDetail.setBobot(d.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 0 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 50){
-                    System.out.println("e");
-                    krsDetail.setGrade(e.getNama());
-                    krsDetail.setBobot(e.getBobot());
-                }
-
-                if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                    System.out.println("a");
-                    krsDetail.setGrade(a.getNama());
-                    krsDetail.setBobot(a.getBobot());
-                }
-
-                krsDetailDao.save(krsDetail);
+                scoreService.hitungNilaiAkhir(krsDetail);
 
             }
         }
 
     }
+
+
 
     @GetMapping("/studiesActivity/assesment/uploadnilai")
     public void upload(Model model,@RequestParam Jadwal jadwal){
@@ -1094,11 +924,6 @@ public class StudiesActivityController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
-
-
-
-
-
 
 
     //UTS
@@ -1309,16 +1134,6 @@ public class StudiesActivityController {
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
-        Grade a = gradeDao.findById("1").get();
-        Grade amin= gradeDao.findById("2").get();
-        Grade bplus= gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus= gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade ee = gradeDao.findById("9").get();
-
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
@@ -1397,63 +1212,7 @@ public class StudiesActivityController {
                         }
                     }
                     krsDetail.setNilaiPresensi(nilaiPresensi);
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
-                        System.out.println("a-");
-                        krsDetail.setGrade(amin.getNama());
-                        krsDetail.setBobot(amin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
-                        System.out.println("b+");
-                        krsDetail.setGrade(bplus.getNama());
-                        krsDetail.setBobot(bplus.getBobot());
-
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 70 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 75){
-                        System.out.println("b");
-                        krsDetail.setGrade(b.getNama());
-                        krsDetail.setBobot(b.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 65 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 70){
-                        System.out.println("b-");
-                        krsDetail.setGrade(bmin.getNama());
-                        krsDetail.setBobot(bmin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 60 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 65){
-                        System.out.println("c+");
-                        krsDetail.setGrade(cplus.getNama());
-                        krsDetail.setBobot(cplus.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 55 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 60){
-                        System.out.println("c");
-                        krsDetail.setGrade(c.getNama());
-                        krsDetail.setBobot(c.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 50 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 55){
-                        System.out.println("d");
-                        krsDetail.setGrade(d.getNama());
-                        krsDetail.setBobot(d.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 0 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 50){
-                        System.out.println("e");
-                        krsDetail.setGrade(ee.getNama());
-                        krsDetail.setBobot(ee.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                        System.out.println("a");
-                        krsDetail.setGrade(a.getNama());
-                        krsDetail.setBobot(a.getBobot());
-                    }
-
-                    krsDetailDao.save(krsDetail);
+                    scoreService.hitungNilaiAkhir(krsDetail);
                 }else {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
@@ -1468,7 +1227,6 @@ public class StudiesActivityController {
                     nilaiTugasDao.save(nilaiTugas);
 
                 }
-
 
             }
 
@@ -1486,17 +1244,6 @@ public class StudiesActivityController {
 
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
-
-        Grade a = gradeDao.findById("1").get();
-        Grade amin= gradeDao.findById("2").get();
-        Grade bplus= gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus= gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade ee = gradeDao.findById("9").get();
-
 
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
@@ -1516,6 +1263,12 @@ public class StudiesActivityController {
                 if(nilai != null) {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
+
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UTS {} tidak ditemukan", nim, jadwal.getStatusUts());
+                        return "redirect:/penilaian/list";
+                    }
+
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     krsDetail.setNilaiUts(new BigDecimal(nilai.getNumericCellValue()));
@@ -1562,70 +1315,7 @@ public class StudiesActivityController {
                         }
                     }
                     krsDetail.setNilaiPresensi(nilaiPresensi);
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
-                        System.out.println("a-");
-                        krsDetail.setGrade(amin.getNama());
-                        krsDetail.setBobot(amin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
-                        System.out.println("b+");
-                        krsDetail.setGrade(bplus.getNama());
-                        krsDetail.setBobot(bplus.getBobot());
-
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 70 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 75){
-                        System.out.println("b");
-                        krsDetail.setGrade(b.getNama());
-                        krsDetail.setBobot(b.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 65 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 70){
-                        System.out.println("b-");
-                        krsDetail.setGrade(bmin.getNama());
-                        krsDetail.setBobot(bmin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 60 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 65){
-                        System.out.println("c+");
-                        krsDetail.setGrade(cplus.getNama());
-                        krsDetail.setBobot(cplus.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 55 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 60){
-                        System.out.println("c");
-                        krsDetail.setGrade(c.getNama());
-                        krsDetail.setBobot(c.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 50 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 55){
-                        System.out.println("d");
-                        krsDetail.setGrade(d.getNama());
-                        krsDetail.setBobot(d.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 0 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 50){
-                        System.out.println("e");
-                        krsDetail.setGrade(ee.getNama());
-                        krsDetail.setBobot(ee.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                        System.out.println("a");
-                        krsDetail.setGrade(a.getNama());
-                        krsDetail.setBobot(a.getBobot());
-                    }
-
-
-                    krsDetailDao.save(krsDetail);
-
-
-                    if (krsDetail == null) {
-                        LOGGER.warn("KRS Detail untuk nim {} dan UTS {} tidak ditemukan", nim, jadwal.getStatusUts());
-                        return "redirect:/penilaian/list";
-                    }
+                    scoreService.hitungNilaiAkhir(krsDetail);
 
                 }else {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
@@ -1657,16 +1347,6 @@ public class StudiesActivityController {
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
 
-        Grade a = gradeDao.findById("1").get();
-        Grade amin= gradeDao.findById("2").get();
-        Grade bplus= gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus= gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade ee = gradeDao.findById("9").get();
-
         try {
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheetPertama = workbook.getSheetAt(0);
@@ -1688,12 +1368,15 @@ public class StudiesActivityController {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
                             jadwal, StatusRecord.AKTIF);
 
+                    if (krsDetail == null) {
+                        LOGGER.warn("KRS Detail untuk nim {} dan UAS {} tidak ditemukan", nim, jadwal.getStatusUas());
+                        return "redirect:/penilaian/list";
+                    }
+
                     krsDetail.setNilaiUas(new BigDecimal(nilai.getNumericCellValue()));
 
                     BigDecimal nilaiUas = new BigDecimal(nilai.getNumericCellValue()).multiply(krsDetail.getJadwal().getBobotUts())
                             .divide(new BigDecimal(100));
-
-
 
                     Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
                     Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
@@ -1733,73 +1416,9 @@ public class StudiesActivityController {
                         }
                     }
                     krsDetail.setNilaiPresensi(nilaiPresensi);
+                    scoreService.hitungNilaiAkhir(krsDetail);
 
 
-
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
-                        System.out.println("a-");
-                        krsDetail.setGrade(amin.getNama());
-                        krsDetail.setBobot(amin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
-                        System.out.println("b+");
-                        krsDetail.setGrade(bplus.getNama());
-                        krsDetail.setBobot(bplus.getBobot());
-
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 70 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 75){
-                        System.out.println("b");
-                        krsDetail.setGrade(b.getNama());
-                        krsDetail.setBobot(b.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 65 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 70){
-                        System.out.println("b-");
-                        krsDetail.setGrade(bmin.getNama());
-                        krsDetail.setBobot(bmin.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 60 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 65){
-                        System.out.println("c+");
-                        krsDetail.setGrade(cplus.getNama());
-                        krsDetail.setBobot(cplus.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 55 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 60){
-                        System.out.println("c");
-                        krsDetail.setGrade(c.getNama());
-                        krsDetail.setBobot(c.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 50 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 55){
-                        System.out.println("d");
-                        krsDetail.setGrade(d.getNama());
-                        krsDetail.setBobot(d.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 0 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 50){
-                        System.out.println("e");
-                        krsDetail.setGrade(ee.getNama());
-                        krsDetail.setBobot(ee.getBobot());
-                    }
-
-                    if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                        System.out.println("a");
-                        krsDetail.setGrade(a.getNama());
-                        krsDetail.setBobot(a.getBobot());
-                    }
-
-
-
-                    krsDetailDao.save(krsDetail);
-
-                    if (krsDetail == null) {
-                        LOGGER.warn("KRS Detail untuk nim {} dan UAS {} tidak ditemukan", nim, jadwal.getStatusUas());
-                        return "redirect:/penilaian/list";
-                    }
                 }else {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 

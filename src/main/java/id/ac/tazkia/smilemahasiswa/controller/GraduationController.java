@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -72,6 +73,8 @@ public class GraduationController {
 
     @Autowired
     private GradeDao gradeDao;
+
+    @Autowired private ScoreService scoreService;
 
     @Value("classpath:sample/example.xlsx")
     private Resource example;
@@ -442,83 +445,19 @@ public class GraduationController {
     public String prosesScoreInput(@RequestParam(required = false)String nim,@RequestParam(required = false)BigDecimal nilai,
                                    RedirectAttributes attributes){
 
-        Grade a = gradeDao.findById("1").get();
-        Grade amin= gradeDao.findById("2").get();
-        Grade bplus= gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus= gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade e = gradeDao.findById("9").get();
 
         String krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-        if (!krsDetail.trim().isEmpty() && krsDetail != null){
+        if (StringUtils.hasText(krsDetail)){
             KrsDetail kd = krsDetailDao.findById(krsDetail).get();
             kd.setNilaiAkhir(nilai);
 
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 80 && kd.getNilaiAkhir().toBigInteger().intValue() < 85){
-                System.out.println("a-");
-                kd.setGrade(amin.getNama());
-                kd.setBobot(a.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 75 && kd.getNilaiAkhir().toBigInteger().intValue() < 80){
-                System.out.println("b+");
-                kd.setGrade(bplus.getNama());
-                kd.setBobot(bplus.getBobot());
-
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 70 && kd.getNilaiAkhir().toBigInteger().intValue() < 75){
-                System.out.println("b");
-                kd.setGrade(b.getNama());
-                kd.setBobot(b.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 65 && kd.getNilaiAkhir().toBigInteger().intValue() < 70){
-                System.out.println("b-");
-                kd.setGrade(bmin.getNama());
-                kd.setBobot(bmin.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 60 && kd.getNilaiAkhir().toBigInteger().intValue() < 65){
-                System.out.println("c+");
-                kd.setGrade(cplus.getNama());
-                kd.setBobot(cplus.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 55 && kd.getNilaiAkhir().toBigInteger().intValue() < 60){
-                System.out.println("c");
-                kd.setGrade(c.getNama());
-                kd.setBobot(c.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 50 && kd.getNilaiAkhir().toBigInteger().intValue() < 55){
-                System.out.println("d");
-                kd.setGrade(d.getNama());
-                kd.setBobot(d.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 0 && kd.getNilaiAkhir().toBigInteger().intValue() < 50){
-                System.out.println("e");
-                kd.setGrade(e.getNama());
-                kd.setBobot(e.getBobot());
-            }
-
-            if (kd.getNilaiAkhir().toBigInteger().intValue() >= 85){
-                System.out.println("a");
-                kd.setGrade(a.getNama());
-                kd.setBobot(a.getBobot());
-            }
-            krsDetailDao.save(kd);
+            scoreService.hitungNilaiAkhir(kd);
             attributes.addFlashAttribute("success", "success");
-            return "redirect:/graduation/admin/inputscore?nim="+nim;
 
         }else {
             attributes.addFlashAttribute("unsuccess", "unsuccess");
-            return "redirect:/graduation/admin/inputscore?nim="+nim;
         }
+        return "redirect:/graduation/admin/inputscore?nim="+nim;
 
 
     }
