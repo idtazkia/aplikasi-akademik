@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Assesment </span>
+                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -52,6 +52,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Room</th>
+                                <th scope="col">Day</th>
                                 <th scope="col">Time</th>
                                 <th scope="col">Course</th>
                                 <th scope="col">Class</th>
@@ -65,6 +66,7 @@
                             <tr th:each="jadwal,row : ${jadwal}">
                                 <td th:text="${row.index + 1}"></td>
                                 <td th:text="${jadwal.jadwal.ruangan.namaRuangan}"></td>
+                                <td th:text="${jadwal.jadwal.hari.namaHariEng}"></td>
                                 <td><span  th:text="${jadwal.jadwal.jamMulai}"></span> -
                                     <span th:text="${jadwal.jadwal.jamSelesai}"></span></td>
                                 <td th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>

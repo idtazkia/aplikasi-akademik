@@ -87,4 +87,6 @@ public class Jadwal extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private StatusApprove statusUas;
+
+    private Integer kapasitas;
 }

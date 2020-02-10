@@ -264,9 +264,9 @@ public class EquipmentController {
             model.addAttribute("selectedAngkatan", angkatan);
             Iterable<String> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
             for (String m : mahasiswa){
-                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(m).get(),StatusRecord.AKTIF);
+                Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mhsw,StatusRecord.AKTIF);
                 if (kelasMahasiswa == null){
-                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
                     KelasMahasiswaDto km = new KelasMahasiswaDto();
                     km.setId(mhsw.getId());
                     km.setNama(mhsw.getNama());
@@ -280,7 +280,6 @@ public class EquipmentController {
                     mahasiswaDtos.add(km);
                 }
                 if (kelasMahasiswa != null){
-                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
                     KelasMahasiswaDto km = new KelasMahasiswaDto();
                     km.setId(mhsw.getId());
                     km.setNama(mhsw.getNama());
