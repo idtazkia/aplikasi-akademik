@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 
 @Controller
 public class DashboardController {
@@ -58,6 +59,12 @@ public class DashboardController {
 
     @Autowired
     private DosenDao dosenDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private JadwalDosenDao jadwalDosenDao;
 
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
@@ -129,13 +136,21 @@ public class DashboardController {
     }
 
     @GetMapping("/admin")
-    public String adminDashboard(Model model){
+    public String adminDashboard(Model model,Authentication authentication){
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         model.addAttribute("jmlDosen",dosenDao.countDosenByStatus(StatusRecord.AKTIF));
         model.addAttribute("jmlMhsA" ,krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik,StatusRecord.AKTIF));
         model.addAttribute("jmlL",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.PRIA));
         model.addAttribute("jmlP",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.WANITA));
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+        model.addAttribute("jadwal", jadwal);
+
 
 
         return "dashboardadmin";

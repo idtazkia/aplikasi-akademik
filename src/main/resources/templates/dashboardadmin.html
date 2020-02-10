@@ -85,6 +85,57 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                    <div class="col-xl-12 mb-5 mb-xl-0">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="text-uppercase ls-1 mb-1">Dashboard</h6>
+                                        <h2 class=" mb-0">Your Schedule !</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <div>
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Ruangan</th>
+                                            <th>Jam</th>
+                                            <th>Matakuliah</th>
+                                            <th>Kelas</th>
+                                            <th>Hari</th>
+                                            <th>SKS</th>
+                                            <th>Dosen</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="list">
+                                        <tr th:each="jadwal,row : ${jadwal}">
+                                            <td th:text="${row.index + 1}"></td>
+                                            <td th:text="${jadwal.jadwal.ruangan.namaRuangan}"></td>
+                                            <td><span  th:text="${jadwal.jadwal.jamMulai}"></span> -
+                                                <span th:text="${jadwal.jadwal.jamSelesai}"></span></td>
+                                            <td th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                            <td th:text="${jadwal.jadwal.kelas.namaKelas}"></td>
+                                            <td><b th:text="${jadwal.jadwal.hari.namaHari}"></b></td>
+                                            <td th:text="${jadwal.jadwal.matakuliahKurikulum.jumlahSks}"></td>
+                                            <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
+                                            <td><b th:text="${jadwal.statusJadwalDosen}"></b></td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
