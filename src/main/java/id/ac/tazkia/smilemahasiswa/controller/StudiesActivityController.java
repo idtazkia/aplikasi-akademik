@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
+import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
@@ -357,7 +358,8 @@ public class StudiesActivityController {
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
+        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
+
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
         Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);

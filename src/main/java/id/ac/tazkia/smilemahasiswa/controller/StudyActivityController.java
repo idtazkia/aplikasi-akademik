@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -90,7 +91,7 @@ public class StudyActivityController {
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        Ipk ipk = ipkDao.findByMahasiswa(mahasiswa);
+        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
         Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
