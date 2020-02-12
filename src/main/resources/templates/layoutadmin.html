@@ -130,26 +130,26 @@
                         <i class="ni ni-tv-2 text-primary"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                     <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 text-default"></i>
                         <span class="nav-link-text">Equipment</span>
                     </a>
                     <div class="collapse" id="navbar-tables">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/equipment/institution/list}" class="nav-link">Institution</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/equipment/building/list}" class="nav-link">Building</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/equipment/campus/list}" class="nav-link">Campus</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/equipment/room/list}" class="nav-link">Room</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/equipment/class/list}" class="nav-link">Class</a>
                             </li>
                         </ul>
