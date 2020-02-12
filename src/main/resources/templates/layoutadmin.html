@@ -237,8 +237,8 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/krs/list}" class="nav-link">KRS</a>
                             </li>
-                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
-                                <a href="../../pages/tables/datatables.html" class="nav-link">Generate KRS</a>
+                            <li class="nav-item">
+                                <a th:href="@{/studiesActivity/krs/paket}" class="nav-link">Generate KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/attendance/list}" class="nav-link">Attendance</a>

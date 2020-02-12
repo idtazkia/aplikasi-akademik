@@ -43,4 +43,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     List<Object[]> cariMahasiswaBelumSds(Prodi prodi, TahunAkademik tahunAkademik);
 
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord aktif, TahunAkademik tahun, Dosen dosen);
+
+    List<Jadwal> findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord aktif, TahunAkademik byStatus, Kelas kelas);
 }

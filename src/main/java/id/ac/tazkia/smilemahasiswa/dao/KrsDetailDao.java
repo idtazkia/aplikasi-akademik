@@ -33,8 +33,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "        left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum \n" +
             "        left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='UMUM' and a.id_hari is not null)aa \n" +
             "\tleft join \n" +
-            "\t\t(select a.*,c.id_matakuliah_pras, c.nilai,d.id as id_matkul_pras,d.kode_matakuliah from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
-            "\t\tleft join prasyarat as c on b.id_matakuliah=c.id_matakuliah_pras inner join matakuliah as d on c.id_matakuliah_pras=d.id  where a.status='AKTIF' and id_mahasiswa=?4 and a.bobot > c.nilai group by a.id) bb on (aa.id_matakuliah_pras=bb.id_matakuliah_pras or aa.id_matkul_pras=bb.id_matkul_pras or aa.kode_matakuliah=bb.kode_matakuliah) and aa.nilai=bb.nilai \n" +
+            "\t\t(select a.*,b.id_matakuliah, coalesce(bobot,0) as nilai,d.id as id_matkul_pras,d.kode_matakuliah from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
+            "\t\tinner join matakuliah as d on b.id_matakuliah=d.id  where a.status='AKTIF' and id_mahasiswa=?4 group by a.id) bb on (aa.id_matakuliah_pras=bb.id_matakuliah or aa.id_matkul_pras=bb.id_matkul_pras or aa.kode_matakuliah=bb.kode_matakuliah) and aa.nilai < bb.nilai \n" +
             "\tleft join \n" +
             "\t\t(select x.*,z.kode_matakuliah from krs_detail as x inner join matakuliah_kurikulum as y on x.id_matakuliah_kurikulum=y.id inner join matakuliah as z on y.id_matakuliah=z.id where x.status='AKTIF' and id_mahasiswa=?4 and bobot >= 3.00) cc on aa.id_matakuliah_kurikulum = cc.id_matakuliah_kurikulum)aaa  \n" +
             "\n" +
@@ -123,5 +123,5 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     IpkDto ip (Mahasiswa mahasiswa, TahunAkademik tahun);
 
 
-
+    KrsDetail findByJadwalAndStatusAndKrs(Jadwal j, StatusRecord aktif, Krs krs);
 }
