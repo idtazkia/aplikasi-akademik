@@ -72,7 +72,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="data,row : ${pilihanKrs}">
-                                    <td><input type="checkbox" th:if="${data[12] == null}" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
+                                    <td th:if="${data[12] == null}"><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
                                     <td th:if="${data[12] != null && data[11] == null}" th:text="${'Anda belum mengambil matakuliah prasyarat ' + data[13]}"></td>
                                     <td th:text="${data[1]}">Senin</td>
                                     <td th:text="${data[3] + ' - ' + data[4]}">13.00</td>
