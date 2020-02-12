@@ -18,7 +18,39 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     List<KrsDetail> findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord status,Krs krs, Mahasiswa mahasiswa);
 
-    @Query(value = "select aaa.id,ddd.nama_hari,ggg.nama_kelas,aaa.jam_mulai,aaa.jam_selesai,bbb.jumlah_sks,fff.nama_karyawan as dosen,ccc.nama_matakuliah,kapasitas,mhsw,cmkk,bmkk,aaa.kode_matakuliah as matkul_prass from (select aa.*,bb.kode_matakuliah as bmkk,cc.kode_matakuliah as cmkk from (select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah from jadwal as a  left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum=c.id left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='TERTUTUP' and a.id_kelas=?2 and id_hari is not null union select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah from jadwal as a left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='PRODI' and a.id_prodi=?3 and id_hari is not null union select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah from jadwal as a left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='UMUM' and a.id_hari is not null)aa left join (select a.*,c.id_matakuliah_pras, c.nilai,d.id as id_matkul_pras,d.kode_matakuliah from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id  left join prasyarat as c on b.id_matakuliah=c.id_matakuliah_pras inner join matakuliah as d on c.id_matakuliah_pras=d.id  where a.status='AKTIF' and id_mahasiswa=?4 and a.bobot > c.nilai group by a.id) bb on (aa.id_matakuliah_pras=bb.id_matakuliah_pras or aa.id_matkul_pras=bb.id_matkul_pras or aa.kode_matakuliah=bb.kode_matakuliah) and aa.nilai=bb.nilai  left join (select x.*,z.kode_matakuliah from krs_detail as x inner join matakuliah_kurikulum as y on x.id_matakuliah_kurikulum=y.id inner join matakuliah as z on y.id_matakuliah=z.id where x.status='AKTIF' and id_mahasiswa=?4 and bobot >= 3.00) cc on aa.id_matakuliah_kurikulum = cc.id_matakuliah_kurikulum)aaa inner join matakuliah_kurikulum as bbb on aaa.id_matakuliah_kurikulum = bbb.id inner join matakuliah as ccc on bbb.id_matakuliah=ccc.id inner join hari as ddd on aaa.id_hari=ddd.id inner join dosen as eee on aaa.id_dosen_pengampu=eee.id inner join karyawan as fff on eee.id_karyawan=fff.id inner join kelas as ggg on aaa.id_kelas=ggg.id left join (select xx.id as krs_detail, id_jadwal from krs_detail as xx inner join krs as yy on xx.id_krs=yy.id where xx.status='AKTIF' and yy.status='AKTIF' and yy.id_tahun_akademik=?1 and yy.id_mahasiswa=?4)hhh  on aaa.id = hhh.id_jadwal left join(select id_jadwal,count(a.id)as mhsw from krs_detail as a inner join krs as  b on a.id_krs=b.id where a.status='AKTIF' and b.id_tahun_akademik=?1  group by id_jadwal)iii on aaa.id=iii.id_jadwal where cmkk is null and coalesce(bmkk,'AA') = coalesce(aaa.kode_matakuliah,'AA')  and krs_detail is null and kapasitas > coalesce(mhsw,0)  group by aaa.id", nativeQuery = true)
+    @Query(value = "select aaa.id,ddd.nama_hari,ggg.nama_kelas,aaa.jam_mulai,aaa.jam_selesai,bbb.jumlah_sks,fff.nama_karyawan as dosen,ccc.nama_matakuliah,kapasitas,mhsw,cmkk,bmkk,aaa.kode_matakuliah as matkul_prass,aaa.nama_pras from \n" +
+            "(select aa.*,bb.kode_matakuliah as bmkk,cc.kode_matakuliah as cmkk from \n" +
+            "\t(select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah,d.nama_matakuliah as nama_pras from jadwal as a \n" +
+            "        left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum\n" +
+            "        inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum=c.id\n" +
+            "        left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='TERTUTUP' and a.id_kelas=?2 and id_hari is not null \n" +
+            "        union \n" +
+            "        select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah,d.nama_matakuliah as nama_pras from jadwal as a \n" +
+            "        left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum\n" +
+            "        left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='PRODI' and a.id_prodi=?3 and id_hari is not null \n" +
+            "        union \n" +
+            "        select a.*,b.id_matakuliah_kurikulum_pras,b.id_matakuliah_pras,b.nilai,d.id as id_matkul_pras,d.kode_matakuliah,d.nama_matakuliah as nama_pras from jadwal as a \n" +
+            "        left join prasyarat as b on a.id_matakuliah_kurikulum=b.id_matakuliah_kurikulum \n" +
+            "        left join matakuliah as d on b.id_matakuliah_pras=d.id where a.status='AKTIF' and a.id_tahun_akademik=?1 and a.akses='UMUM' and a.id_hari is not null)aa \n" +
+            "\tleft join \n" +
+            "\t\t(select a.*,c.id_matakuliah_pras, c.nilai,d.id as id_matkul_pras,d.kode_matakuliah from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
+            "\t\tleft join prasyarat as c on b.id_matakuliah=c.id_matakuliah_pras inner join matakuliah as d on c.id_matakuliah_pras=d.id  where a.status='AKTIF' and id_mahasiswa=?4 and a.bobot > c.nilai group by a.id) bb on (aa.id_matakuliah_pras=bb.id_matakuliah_pras or aa.id_matkul_pras=bb.id_matkul_pras or aa.kode_matakuliah=bb.kode_matakuliah) and aa.nilai=bb.nilai \n" +
+            "\tleft join \n" +
+            "\t\t(select x.*,z.kode_matakuliah from krs_detail as x inner join matakuliah_kurikulum as y on x.id_matakuliah_kurikulum=y.id inner join matakuliah as z on y.id_matakuliah=z.id where x.status='AKTIF' and id_mahasiswa=?4 and bobot >= 3.00) cc on aa.id_matakuliah_kurikulum = cc.id_matakuliah_kurikulum)aaa  \n" +
+            "\n" +
+            "inner join matakuliah_kurikulum as bbb on aaa.id_matakuliah_kurikulum = bbb.id \n" +
+            "inner join matakuliah as ccc on bbb.id_matakuliah=ccc.id \n" +
+            "inner join hari as ddd on aaa.id_hari=ddd.id \n" +
+            "inner join dosen as eee on aaa.id_dosen_pengampu=eee.id \n" +
+            "inner join karyawan as fff on eee.id_karyawan=fff.id \n" +
+            "inner join kelas as ggg on aaa.id_kelas=ggg.id \n" +
+            "left join \n" +
+            "\t(select xx.id as krs_detail, id_jadwal from krs_detail as xx \n" +
+            "    inner join krs as yy on xx.id_krs=yy.id where xx.status='AKTIF' and yy.status='AKTIF' and yy.id_tahun_akademik=?1 and yy.id_mahasiswa=?4)hhh \n" +
+            "on aaa.id = hhh.id_jadwal\n" +
+            "left join(select id_jadwal,count(a.id)as mhsw from krs_detail as a inner join krs as  b on a.id_krs=b.id where a.status='AKTIF' and b.id_tahun_akademik=?1  group by id_jadwal)iii\n" +
+            "on aaa.id=iii.id_jadwal\n" +
+            " where cmkk is null and krs_detail is null and kapasitas > coalesce(mhsw,0)  group by aaa.id", nativeQuery = true)
     List<Object[]> pilihanKrs(TahunAkademik tahunAkademik, Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 
     @Query("select sum (kd.matakuliahKurikulum.jumlahSks) from KrsDetail kd where kd.status = :status and kd.krs= :krs")
@@ -87,7 +119,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "SELECT ROUND(SUM(COALESCE(a.bobot,0)*d.jumlah_sks)/SUM(d.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN krs AS b ON a.id_krs=b.id INNER JOIN jadwal AS c ON a.id_jadwal = c.id INNER JOIN matakuliah_kurikulum AS d ON c.id_matakuliah_kurikulum=d.id WHERE b.id_mahasiswa=?1 AND d.jumlah_sks > 0" , nativeQuery = true)
     IpkDto ipk (Mahasiswa mahasiswa);
 
-    @Query(value = "SELECT ROUND(SUM(COALESCE(a.bobot,0)*d.jumlah_sks)/SUM(d.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN krs AS b ON a.id_krs=b.id INNER JOIN jadwal AS c ON a.id_jadwal = c.id INNER JOIN matakuliah_kurikulum AS d ON c.id_matakuliah_kurikulum=d.id WHERE b.id_mahasiswa=?1 AND b.id_tahun_akademik=?2 AND d.jumlah_sks > 0", nativeQuery = true)
+    @Query(value = "SELECT ROUND(SUM(COALESCE(a.bobot,0)*d.jumlah_sks)/SUM(d.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN krs AS b ON a.id_krs=b.id INNER JOIN jadwal AS c ON a.id_jadwal = c.id INNER JOIN matakuliah_kurikulum AS d ON c.id_matakuliah_kurikulum=d.id WHERE b.id_mahasiswa=?1 AND b.id_tahun_akademik=?2 and a.status = 'AKTIF' AND d.jumlah_sks > 0", nativeQuery = true)
     IpkDto ip (Mahasiswa mahasiswa, TahunAkademik tahun);
 
 
