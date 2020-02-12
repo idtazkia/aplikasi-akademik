@@ -91,21 +91,54 @@ public class StudyActivityController {
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
-        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+        String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
+        System.out.println(firstFourChars);
 
-        Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+        if (ta.getJenis() == StatusRecord.GENAP){
+            String kode = firstFourChars+"1";
+            System.out.println("kode : " + kode);
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GANJIL);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
-        if (ipk == null){
-            model.addAttribute("kosong", "21");
-        }else {
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
-            if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                model.addAttribute("full", "23");
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
             }
+            model.addAttribute("lebih", lebih);
+            model.addAttribute("sks", sks);
         }
-        model.addAttribute("lebih", lebih);
-        model.addAttribute("sks", sks);
+
+        if (ta.getJenis() == StatusRecord.GANJIL){
+            Integer prosesKode = Integer.valueOf(firstFourChars)-1;
+            String kode = prosesKode.toString()+"2";
+
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+            System.out.println(tahun.getKodeTahunAkademik());
+            System.out.println(ipk.getIpk());
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
+            }
+            model.addAttribute("lebih", lebih);
+            model.addAttribute("sks", sks);
+        }
+
+
 
         List<Object[]> krsDetail = krsDetailDao.pilihanKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
         model.addAttribute("pilihanKrs", krsDetail);

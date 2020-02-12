@@ -55,7 +55,14 @@ public class ReportMahasiswaController {
             model.addAttribute("selectedTahun" , tahunAkademik);
 
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+            for (DataKhsDto data : krsDetail) {
+                List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
+                tugasDtos.addAll(nilaiTugas);
+            }
+            model.addAttribute("tugas",tugasDtos);
             model.addAttribute("khs",krsDetail);
+            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
         } else {
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
             for (DataKhsDto data : krsDetail) {
@@ -64,6 +71,8 @@ public class ReportMahasiswaController {
             }
             model.addAttribute("khs",krsDetail);
             model.addAttribute("tugas",tugasDtos);
+            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         }
 
 

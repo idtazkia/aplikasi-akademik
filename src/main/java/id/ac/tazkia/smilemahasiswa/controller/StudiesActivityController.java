@@ -348,7 +348,7 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/krs/form")
-    public void formKrs(@RequestParam(required = false)String nim, @RequestParam(required = false) String tahunAkademik,Model model){
+    public void formKrs(@RequestParam(required = false)String nim, @RequestParam(required = false) String tahunAkademik,Model model, @RequestParam(required = false) String lebih){
         model.addAttribute("nim", nim);
         model.addAttribute("tahun", tahunAkademik);
 
@@ -358,20 +358,52 @@ public class StudiesActivityController {
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
+        String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
+        System.out.println(firstFourChars);
 
-        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+        if (ta.getJenis() == StatusRecord.GENAP){
+            String kode = firstFourChars+"1";
+            System.out.println("kode : " + kode);
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GANJIL);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
-        Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
-        if (ipk == null){
-            model.addAttribute("kosong", "21");
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
+            }
+            model.addAttribute("sks", sks);
+            model.addAttribute("lebih", lebih);
         }
 
-        if (ipk != null && ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0){
-            model.addAttribute("full", "23");
+        if (ta.getJenis() == StatusRecord.GANJIL){
+            Integer prosesKode = Integer.valueOf(firstFourChars)-1;
+            String kode = prosesKode.toString()+"2";
+
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+            System.out.println(tahun.getKodeTahunAkademik());
+            System.out.println(ipk.getIpk());
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
+            }
+            model.addAttribute("sks", sks);
+            model.addAttribute("lebih", lebih);
         }
-        model.addAttribute("sks", sks);
 
         List<Object[]> krsDetail = krsDetailDao.pilihanKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
         model.addAttribute("pilihanKrs", krsDetail);
@@ -1457,10 +1489,14 @@ public class StudiesActivityController {
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
                 model.addAttribute("khs",krsDetail);
+                model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+                model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
             } else {
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
                 model.addAttribute("khs",krsDetail);
+                model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+                model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
             }
         }
     }

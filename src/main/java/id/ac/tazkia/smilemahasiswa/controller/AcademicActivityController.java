@@ -609,6 +609,7 @@ public class AcademicActivityController {
                 jdwl.setHari(hariDao.findById(hari).get());
                 jdwl.setRuangan(ruanganDao.findById(ruangan).get());
                 jdwl.setFinalStatus("N");
+                jdwl.setKapasitas(ruanganDao.findById(hari).get().getKapasitas().intValue());
                 jadwalDao.save(jdwl);
             }
         }
@@ -661,6 +662,12 @@ public class AcademicActivityController {
     public String deleteSchedule(@RequestParam Jadwal jadwal){
         jadwal.setStatus(StatusRecord.HAPUS);
         jadwalDao.save(jadwal);
+
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail){
+            kd.setStatus(StatusRecord.HAPUS);
+            krsDetailDao.save(kd);
+        }
 
         return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
     }
