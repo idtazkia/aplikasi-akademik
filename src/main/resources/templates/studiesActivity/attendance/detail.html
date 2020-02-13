@@ -142,7 +142,7 @@
 
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <form th:action="@{/studiesActivity/attendance/detail}" method="post">
+                <form th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
@@ -161,7 +161,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Date :</label>
-                                        <input type="date" name="tanggal" class="form-control">
+                                        <input type="date" name="tanggal" required class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -169,13 +169,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Start Time :</label>
-                                        <input type="text" readonly required placeholder="07:00" max="5" name="jamMulai" class="time-picker form-control">
+                                        <input type="text" readonly  required th:field="*{jamMulai}" max="5" name="jamMulai" class="time-picker form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>End Time :</label>
-                                        <input type="text" id='datetimepicker3' required placeholder="09:30" name="jamSelesai" class="time-picker form-control" readonly>
+                                        <input type="text" id='datetimepicker3' th:field="*{jamMulai}" placeholder="09:30" name="jamSelesai" class="time-picker form-control" readonly>
                                     </div>
                                 </div>
                             </div>

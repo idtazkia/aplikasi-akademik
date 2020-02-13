@@ -82,45 +82,45 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3" th:if="${status == null}">
-                                    <a th:href="@{/tugasakhir/admin/list (tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">All</a>
+                                    <a th:href="@{/graduation/admin/list (tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">All</a>
                                 </div>
                                 <div class="col-md-3" th:if="${status != null}">
-                                    <a th:href="@{/tugasakhir/admin/list (tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">All</a>
+                                    <a th:href="@{/graduation/admin/list (tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">All</a>
                                 </div>
                                 <div class="col-md-3" th:if="${status == null}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-secondary">Approved</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-secondary">Approved</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status != status.APPROVED}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-secondary">Approved</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-secondary">Approved</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status == status.APPROVED}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-primary">Approved</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'APPROVED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}"  style="width: 100%;" class="btn btn-primary">Approved</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status == null}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status != status.WAITING}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status == status.WAITING}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">Waiting</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'WAITING',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">Waiting</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status == null}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status != status.REJECTED}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
                                 </div>
 
                                 <div class="col-md-3" th:if="${status != null && status == status.REJECTED}">
-                                    <a th:href="@{/tugasakhir/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">Rejected</a>
+                                    <a th:href="@{/graduation/admin/list (status = 'REJECTED',tahun = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" style="width: 100%;" class="btn btn-primary">Rejected</a>
                                 </div>
 
 
@@ -192,7 +192,7 @@
                                         <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Rejected</button>
 
                                     </td>
-                                    <td><a th:href="@{/tugasakhir/admin/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Validasi </a></td>
+                                    <td><a th:href="@{/graduation/admin/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Validasi </a></td>
                                 </tr>
 
                                 </tbody>
