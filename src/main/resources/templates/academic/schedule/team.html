@@ -67,7 +67,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Team Teaching</label>
-                                                <select name="dosen" id="" class="form-control">
+                                                <select name="dosen" id="" class="form-control js-example-placeholder-single">
                                                     <option value="" disabled="" selected>-- Select One --</option>
                                                     <option th:each="data: ${dosen}"
                                                             th:text="${data.karyawan.namaKaryawan}"
@@ -127,3 +127,9 @@
 </div>
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>

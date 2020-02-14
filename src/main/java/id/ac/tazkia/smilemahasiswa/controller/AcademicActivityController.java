@@ -609,7 +609,7 @@ public class AcademicActivityController {
                 jdwl.setHari(hariDao.findById(hari).get());
                 jdwl.setRuangan(ruanganDao.findById(ruangan).get());
                 jdwl.setFinalStatus("N");
-                jdwl.setKapasitas(ruanganDao.findById(hari).get().getKapasitas().intValue());
+                jdwl.setKapasitas(ruanganDao.findById(ruangan).get().getKapasitas().intValue());
                 jadwalDao.save(jdwl);
             }
         }
