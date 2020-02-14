@@ -124,4 +124,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
 
     KrsDetail findByJadwalAndStatusAndKrs(Jadwal j, StatusRecord aktif, Krs krs);
+
+    Long countByJadwalAndStatus(Jadwal jadwal, StatusRecord statusRecord);
 }

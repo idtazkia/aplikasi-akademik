@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
@@ -1023,8 +1024,10 @@ public class StudiesActivityController {
         }
 
 
+        String namaFile = "PenilaianTugas ";
+        String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment; filename=PenilaianTugas.xlsx");
+        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + tugas.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + tugas.getJadwal().getKelas().getNamaKelas() + "_" + tugas.getNamaTugas() + extentionX +  "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
@@ -1122,8 +1125,10 @@ public class StudiesActivityController {
         }
 
 
+        String namaFile = "PenilaianUTS ";
+        String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment; filename=PenilaianUTS.xlsx");
+        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + jadwal.getKelas().getNamaKelas() + extentionX +  "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
@@ -1223,8 +1228,10 @@ public class StudiesActivityController {
         }
 
 
+        String namaFile = "PenilaianUAS ";
+        String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment; filename=PenilaianUAS.xlsx");
+        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + "_" + jadwal.getKelas().getNamaKelas() + extentionX +  "\"");
         workbook.write(response.getOutputStream());
         workbook.close();
     }
@@ -1244,15 +1251,12 @@ public class StudiesActivityController {
 
 
             int row = 12;
-            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
-            int jmlMhs = krsDetailAt.size();
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
             for (int i = 0; i < jmlMhs;i++){
                 Row baris = sheetPertama.getRow(row + i);
 
                 String nim = baris.getCell(3).getStringCellValue();
                 Cell nilai = baris.getCell(5 );
-
-                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
 
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
@@ -1274,49 +1278,7 @@ public class StudiesActivityController {
 
                     /*sum semua tugas*/ BigDecimal nilTug = nilaiAkhirnya.stream().map(NilaiTugas::getNilaiAkhir).reduce(BigDecimal.ZERO, BigDecimal::add);
                     krsDetail.setNilaiTugas(nilTug);
-
-                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
-
-                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,bobotTugas.getJadwal());
-
-                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliahPresensiDosenStatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
-
-
-                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
-
-                    if (bobotTugas.getJadwal().getMatakuliahKurikulum().getSds() == null){
-                        BigDecimal nilaiPresensiSds = BigDecimal.ZERO;
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (bobotTugas.getJadwal().getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (bobotTugas.getJadwal().getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }else {
-                        BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds * 10 * krsDetail.getMatakuliahKurikulum().getSds() / 100));
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (bobotTugas.getJadwal().getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (bobotTugas.getJadwal().getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }
-                    krsDetail.setNilaiPresensi(nilaiPresensi);
-                    scoreService.hitungNilaiAkhir(krsDetail);
+                    krsDetailDao.save(krsDetail);
                 }else {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
@@ -1338,6 +1300,20 @@ public class StudiesActivityController {
             LOGGER.error(e.getMessage(), e);
         }
 
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(bobotTugas.getJadwal(),bobotTugas.getJadwal().getTahunAkademik());
+
+        for(ScoreHitungDto s : scoreDtos){
+
+            KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
+            krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
+            krsDetail2.setGrade(s.getGrade());
+            krsDetail2.setBobot(s.getBobot());
+
+            krsDetailDao.save(krsDetail2);
+
+
+        }
+
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + bobotTugas.getJadwal().getId();
 
     }
@@ -1354,15 +1330,13 @@ public class StudiesActivityController {
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
-            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-            int jmlMhs = krsDetailAt.size();
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
             for (int i = 0; i < jmlMhs;i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 String nim = baris.getCell(3).getStringCellValue();
                 Cell nilai = baris.getCell(5);
 
-                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
 
                 if(nilai != null) {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
@@ -1376,50 +1350,8 @@ public class StudiesActivityController {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
 
                     krsDetail.setNilaiUts(new BigDecimal(nilai.getNumericCellValue()));
+                    krsDetailDao.save(krsDetail);
 
-                    BigDecimal nilaiUts = new BigDecimal(nilai.getNumericCellValue()).multiply(krsDetail.getJadwal().getBobotUts())
-                            .divide(new BigDecimal(100));
-
-
-                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
-                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
-
-                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliahPresensiDosenStatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
-
-                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
-                    if (jadwal.getMatakuliahKurikulum().getSds() == null){
-                        BigDecimal nilaiPresensiSds = BigDecimal.ZERO;
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }else {
-                        BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds * 10 * krsDetail.getMatakuliahKurikulum().getSds() / 100));
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }
-                    krsDetail.setNilaiPresensi(nilaiPresensi);
-                    scoreService.hitungNilaiAkhir(krsDetail);
 
                 }else {
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswaDao.findByNim(nim),
@@ -1440,6 +1372,22 @@ public class StudiesActivityController {
             LOGGER.error(e.getMessage(), e);
         }
 
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal,jadwal.getTahunAkademik());
+
+        for(ScoreHitungDto s : scoreDtos){
+
+            KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
+            krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
+            krsDetail2.setGrade(s.getGrade());
+            krsDetail2.setBobot(s.getBobot());
+
+            krsDetailDao.save(krsDetail2);
+
+
+        }
+
+
+
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
@@ -1456,15 +1404,13 @@ public class StudiesActivityController {
             Sheet sheetPertama = workbook.getSheetAt(0);
 
             int row = 12;
-            List <KrsDetail> krsDetailAt = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-            int jmlMhs = krsDetailAt.size();
+            Long jmlMhs = krsDetailDao.countByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
             for (int i = 0; i < jmlMhs;i++) {
                 Row baris = sheetPertama.getRow(row + i);
 
                 Cell nilai = baris.getCell(5);
                 String nim = baris.getCell(3).getStringCellValue();
 
-                List<StatusPresensi> statusp = Arrays.asList(StatusPresensi.MANGKIR,StatusPresensi.TERLAMBAT);
 
                 if (nilai != null) {
                     LOGGER.info("NIM : {}, Nilai : {}", nim, nilai);
@@ -1478,49 +1424,7 @@ public class StudiesActivityController {
                     }
 
                     krsDetail.setNilaiUas(new BigDecimal(nilai.getNumericCellValue()));
-
-                    BigDecimal nilaiUas = new BigDecimal(nilai.getNumericCellValue()).multiply(krsDetail.getJadwal().getBobotUts())
-                            .divide(new BigDecimal(100));
-
-                    Long jmlhMhsw = presensiMahasiswaDao.countByStatusPresensiNotInAndKrsDetailAndStatus(statusp,krsDetail,StatusRecord.AKTIF);
-                    Long jmlhDsn = presensiDosenDao.countByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
-
-                    Long jmlhSds = presensiMahasiswaDao.countByStatusAndSesiKuliahPresensiDosenStatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord.AKTIF,StatusRecord.AKTIF,statusp,krsDetail.getMahasiswa(),"SDS");
-
-                    BigDecimal nilaiPresensi = BigDecimal.valueOf(new Long(jmlhMhsw*100/jmlhDsn));
-                    if (jadwal.getMatakuliahKurikulum().getSds() == null){
-                        BigDecimal nilaiPresensiSds = BigDecimal.ZERO;
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }else {
-                        BigDecimal nilaiPresensiSds = BigDecimal.valueOf(new Long(jmlhSds * 10 * krsDetail.getMatakuliahKurikulum().getSds() / 100));
-                        if (nilaiPresensiSds == null && jmlhSds == null){
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(BigDecimal.ZERO));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(BigDecimal.ZERO));
-                            }
-                        }else {
-                            if (jadwal.getBobotPresensi().toBigInteger().intValue() == 0){
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(BigDecimal.ZERO).add(nilaiPresensiSds));
-                            }else {
-                                krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts().divide(new BigDecimal(100)))).add(krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas().divide(new BigDecimal(100)))).add(nilaiPresensi.divide(krsDetail.getJadwal().getBobotPresensi())).add(nilaiPresensiSds));
-                            }
-                        }
-                    }
-                    krsDetail.setNilaiPresensi(nilaiPresensi);
-                    scoreService.hitungNilaiAkhir(krsDetail);
+                    krsDetailDao.save(krsDetail);
 
 
                 }else {
@@ -1539,6 +1443,20 @@ public class StudiesActivityController {
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
+        }
+
+        List<ScoreHitungDto> scoreDtos = jadwalDao.hitungUploadScore(jadwal,jadwal.getTahunAkademik());
+
+        for(ScoreHitungDto s : scoreDtos){
+
+            KrsDetail krsDetail2 = krsDetailDao.findById(s.getKrs()).get();
+            krsDetail2.setNilaiAkhir(s.getNilaiAkhir());
+            krsDetail2.setGrade(s.getGrade());
+            krsDetail2.setBobot(s.getBobot());
+
+            krsDetailDao.save(krsDetail2);
+
+
         }
 
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
