@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Recapitulation Lecturer</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group text-center">
+                                        <label>Semester</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="ta">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-info">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer" th:if="${selectedTahun != null}">
+                        <div class="card shadow" th:each="rekap, row : ${rekapJumlahSks}" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0"><i class="fas fa-user"></i> &nbsp; <span th:text="${rekap.value.namaDosen}"></span></h3>
+                                    </div>
+                                    <div class="col text-right">
+                                        <h3 class="mb-0"><i class="fas fa-book"></i> &nbsp; Jumlah SKS (<span style="color: red" th:text="${rekap.value.totalSks}"></span>)</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Matakuliah</th>
+                                        <th>SKS</th>
+                                        <th>Kelas</th>
+                                        <th>Hari</th>
+                                        <th>Sesi</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
+                                        <th>Ruangan</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="jd : ${rekapJadwalPerDosen.get(rekap.key)}">
+                                        <td th:text="${jd.namaMatakuliah}">1</td>
+                                        <td th:text="${jd.sks}">$64.50</td>
+                                        <td th:text="${jd.namaKelas}">Call of Duty</td>
+                                        <td th:text="${jd.namaHari}">455-981-221</td>
+                                        <td th:text="${jd.sesi}">455-981-221</td>
+                                        <td th:text="${jd.jamMulai}">455-981-221</td>
+                                        <td th:text="${jd.jamSelesai}">455-981-221</td>
+                                        <td th:text="${jd.namaRuangan}">455-981-221</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
