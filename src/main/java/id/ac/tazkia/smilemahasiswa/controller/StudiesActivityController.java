@@ -595,13 +595,21 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/assesment/listdosen")
-    public void listPenilaianDosen(Model model,Authentication authentication){
+    public void listPenilaianDosen(Model model,Authentication authentication, @RequestParam(required = false)TahunAkademik tahunAkademik){
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahun));
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+
+            TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahunAkademik));
+        }else{
+            TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahun));
+        }
+
 
     }
 
