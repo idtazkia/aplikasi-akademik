@@ -45,72 +45,74 @@
                                 <h3 class="mb-0">Form Data</h3>
                             </div>
                             <div class="col text-right">
-                                <a href="/ruang/list" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                <a th:href="@{/equipment/room/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="container mt-3">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Select Building</label>
-                                            <select class="form-control" name="">
-                                                <option selected hidden value="">Select One</option>
-                                                <option value="">Granada</option>
-                                                <option value="">Abu Yusuf</option>
-                                                <option value="">Bina Qalbu</option>
-                                                <option value="">STEI Tazkia</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Select Room Type</label>
-                                            <select class="form-control" name="">
-                                                <option selected hidden value="">Select One</option>
-                                                <option value="">Ruang Kelas</option>
-                                                <option value="">Asrama Putra</option>
-                                                <option value="">ASrama Putri</option>
-                                                <option value="">Ruang Rapat</option>
-                                                <option value="">Aula</option>
-                                                <option value="">Ruang Kantor</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Capacity</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Floor</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <span class="clearfix"></span>
-                                            <div>Status</div>
-                                            <label class="custom-toggle">
-                                                <input type="checkbox" checked>
-                                                <span class="custom-toggle-slider rounded-circle"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Class Room Code</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Room Name</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Description</label>
-                                            <textarea name="des" class="form-control" cols="30" rows="10"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="btn btn-primary">Save</button>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/equipment/room/form}" th:object="${ruangan}">
+
+                            <div class="form-group">
+                                <label>Select Building</label>
+                                <select style="width:100%!important;" name="gedung" th:field="*{gedung}"
+                                        class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="dataGedung : ${gedung}"
+                                            th:text="${dataGedung.namaGedung}"
+                                            th:value="${dataGedung.id}"></option>
+                                </select>
                             </div>
-                        </div>
+
+                            <div class="form-group">
+                                <label>Class Room Code</label>
+                                <input type="text" name="kodeRuangan" th:field="*{kodeRuangan}" class="form-control" placeholder="Class Room Code">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Select Room Type</label>
+                                <select style="width:100%!important;" name="jenisRuangan" th:field="*{jenisRuangan}"
+                                        class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="dataRuangJenis : ${ruangJenis}"
+                                            th:text="${dataRuangJenis.jenisRuangan}"
+                                            th:value="${dataRuangJenis.id}"></option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Room Name</label>
+                                <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Room Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Capacity</label>
+                                <input type="number" name="kapasitas" th:field="*{kapasitas}" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Floor</label>
+                                <input type="number" name="lantai" th:field="*{lantai}" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" name="keterangan" th:field="*{keterangan}" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label><br>
+                                <label>
+                                    <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
+                                </label >
+                            </div>
+                            <input type="hidden" name="id" th:field="*{id}">
+
+                            <input class="btn btn-primary" type="submit" value="Save">
+                            <a class="btn btn-primary" th:href="@{/ruang/list}" role="button">
+                                <span aria-hidden="true"></span>Cancel
+                            </a>
+                        </form>
                     </div>
                 </div>
             </div>

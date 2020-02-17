@@ -43,6 +43,12 @@ public class EquipmentController {
     @Autowired
     private ProdiDao prodiDao;
 
+    @Autowired
+    private RuangJenisDao ruangJenisDao;
+
+    @Autowired
+    private RuanganDao ruanganDao;
+
     //    Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -191,14 +197,39 @@ public class EquipmentController {
     }
 
 //    Room
-    @GetMapping("/equipment/room/list")
-    public void roomList(){
-    
+@GetMapping("/equipment/room/form")
+public void roomForm(Model model,@RequestParam(required = false) String id){
+    model.addAttribute("ruangan", new Ruangan());
+    model.addAttribute("ruangJenis", ruangJenisDao.findByStatus(StatusRecord.AKTIF));
+    model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
+
+
+    if (id != null && !id.isEmpty()) {
+        Ruangan ruangan = ruanganDao.findById(id).get();
+        if (ruangan != null) {
+            model.addAttribute("ruangan", ruangan);
+            if (ruangan.getStatus() == null){
+                ruangan.setStatus(StatusRecord.NONAKTIF);
+            }
+        }
+    }
+}
+
+    @PostMapping("/equipment/room/form")
+    public String prosesForm(@Valid Ruangan ruangan){
+        if (ruangan.getStatus() == null){
+            ruangan.setStatus(StatusRecord.NONAKTIF);
+        }
+        ruanganDao.save(ruangan);
+        return "redirect:list";
     }
 
-    @GetMapping("/equipment/room/form")
-    public void roomForm(){
+    @PostMapping("/equipment/room/delete")
+    public String deleteRuangan(@RequestParam Ruangan ruangan){
+        ruangan.setStatus(StatusRecord.HAPUS);
+        ruanganDao.save(ruangan);
 
+        return "redirect:list";
     }
 
     

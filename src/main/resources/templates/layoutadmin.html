@@ -210,8 +210,8 @@
                             <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
                                 <a href="../../pages/tables/sortable.html" class="nav-link">Lecturer schedule</a>
                             </li>
-                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
-                                <a href="../../pages/tables/sortable.html" class="nav-link">Room Schedule</a>
+                            <li class="nav-item">
+                                <a th:href="@{/academic/schedule/room}" class="nav-link">Room Schedule</a>
                             </li>
                             <li class="nav-item">
                                 <a th:href="@{/academic/schedule/list}" class="nav-link">Studies Schedule</a>
@@ -237,7 +237,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/krs/list}" class="nav-link">KRS</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/krs/paket}" class="nav-link">Generate KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
@@ -322,7 +322,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')" th:if="${not @environment.acceptsProfiles('production')}">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                     <a class="nav-link" href="#navbar-report" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-folder-17 text-danger"></i>
                         <span class="nav-link-text">Report</span>
@@ -330,9 +330,9 @@
                     <div class="collapse" id="navbar-report">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="../../pages/tables/tables.html" class="nav-link">Lecturer Report</a>
+                                <a th:href="@{/report/recapitulation/lecturer}" class="nav-link">Lecturer Report</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
                                 <a href="../../pages/tables/datatables.html" class="nav-link">SKS</a>
                             </li>
                         </ul>

@@ -45,14 +45,15 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a href="/ruang/form" class="btn btn-sm btn-default"><i class="fas fa-plus"></i> Add</a>
+                                <a th:href="@{/equipment/room/form}" class="btn btn-sm btn-default"><i class="fas fa-plus"></i> Add</a>
                             </div>
                         </div>
                         <div class="row mt-3">
+                            <form method="get">
                             <div class="col">
                                 <div class="d-flex flex-row-reverse bd-highlight">
                                     <div class="p-2 bd-highlight">
-                                        <button class="btn btn-primary">Search</button>
+                                        <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                     <div class="p-2 bd-highlight">
                                         <div class="form-group">
@@ -60,12 +61,13 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                                 </div>
-                                                <input type="text" class="form-control">
+                                                <input type="text" name="search" class="form-control">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -98,131 +100,46 @@
                             </thead>
                             <tbody class="list">
 
-                            <tr>
-                                <th scope="row" class="name">
-                                    1
-                                </th>
-                                <td class="budget">
-                                    Abu Yusuf
-                                </td>
-                                <td class="budget">
-                                    -AH 5
-                                </td>
-                                <td class="budget">
-                                    Ruang Kelas
-                                </td>
-                                <td class="status">
-                                    <span class="badge badge-danger">
-                                        <h6>Abu Hanifah</h6>
-                                    </span>
-                                </td>
-                                <th scope="row" class="name">
-                                    2
-                                </th>
-                                <td class="budget">
-                                    40
-                                </td>
-                                <td>
-                                    <span></span>
-                                </td>
-                                <td colspan="2">
-                                    <a href="/ruang/form">
-                                        <span class="btn btn-default btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </span>
+                            <tr class="even pointer" th:each="dataRuang,row :${listRuang}">
+
+                                <td th:text="${(row.index + 1) + (listRuang.number * listRuang.size)}">1</td>
+                                <td th:text="${dataRuang.gedung.namaGedung}"></td>
+                                <td th:text="${dataRuang.kodeRuangan}"></td>
+                                <td th:text="${dataRuang.jenisRuangan.jenisRuangan}"></td>
+                                <td >
+
+                                    <a type="button" class="btn btn-success btn-sm" href="form" th:if="${dataRuang.status.AKTIF} == ${dataRuang.status}" th:text="${dataRuang.namaRuangan}"  th:href="@{/equipment/room/form(id = ${dataRuang.id})}">
                                     </a>
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="name">
-                                    2
-                                </th>
-                                <td class="budget">
-                                    Bina Qalbu
-                                </td>
-                                <td class="budget">
-                                    Bina Qalbu 4
-                                </td>
-                                <td class="budget">
-                                    Ruang Kelas
-                                </td>
-                                <td class="status">
-                                    <span class="badge badge-success">
-                                        <h6>Bina Qalbu 4</h6>
-                                    </span>
-                                </td>
-                                <th scope="row" class="name">
-                                    2
-                                </th>
-                                <td class="budget">
-                                    25
-                                </td>
-                                <td>
-                                    <span></span>
-                                </td>
-                                <td colspan="2">
-                                    <a href="/ruang/form">
-                                        <span class="btn btn-default btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </span>
+                                    <a type="button" class="btn btn-danger btn-sm" href="form" th:if="${dataRuang.status.NONAKTIF} == ${dataRuang.status}" th:text="${dataRuang.namaRuangan}"  th:href="@{/equipment/room/form(id = ${dataRuang.id})}">
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-notification">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                    <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-10" role="document">
-                                            <div class="modal-content bg-gradient-danger">
 
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-
-                                                <div class="modal-body">
-
-                                                    <div class="py-3 text-center">
-                                                        <i class="far fa-trash-alt ni-3x"></i>
-                                                        <h4 class="heading mt-4">Are you Sure?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-white">Delete</button>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                </td>
+                                <td th:text="${dataRuang.lantai}"></td>
+                                <td th:text="${dataRuang.kapasitas}"></td>
+                                <td th:text="${dataRuang.keterangan}"></td>
+                                <td >
+                                    <form method="post" th:action="@{/equipment/room/delete(ruangan = ${dataRuang.id})}">
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure?')">
+                                            <i class="ti-eraser"></i> Delete
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
 
                             </tbody>
                         </table>
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-end">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fa fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item "><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fa fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
 
                 </div>

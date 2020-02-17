@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.RoomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Controller
 public class AcademicActivityController {
@@ -91,6 +90,9 @@ public class AcademicActivityController {
 
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private GedungDao gedungDao;
 
 //    Attribute
     @ModelAttribute("angkatan")
@@ -611,6 +613,16 @@ public class AcademicActivityController {
                 jdwl.setFinalStatus("N");
                 jdwl.setKapasitas(ruanganDao.findById(ruangan).get().getKapasitas().intValue());
                 jadwalDao.save(jdwl);
+
+                JadwalDosen jadwalDosen = new JadwalDosen();
+                jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
+                jadwalDosen.setDosen(jdwl.getDosen());
+                jadwalDosen.setJumlahIzin(0);
+                jadwalDosen.setJumlahKehadiran(0);
+                jadwalDosen.setJumlahMangkir(0);
+                jadwalDosen.setJumlahSakit(0);
+                jadwalDosen.setJumlahTerlambat(0);
+                jadwalDosenDao.save(jadwalDosen);
             }
         }
 
@@ -663,6 +675,11 @@ public class AcademicActivityController {
         jadwal.setStatus(StatusRecord.HAPUS);
         jadwalDao.save(jadwal);
 
+        List<JadwalDosen> jadwalDosen = jadwalDosenDao.findByJadwal(jadwal);
+        for (JadwalDosen jd : jadwalDosen){
+            jadwalDosenDao.delete(jd);
+        }
+
         List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
         for (KrsDetail kd : krsDetail){
             kd.setStatus(StatusRecord.HAPUS);
@@ -692,5 +709,64 @@ public class AcademicActivityController {
 
         jadwalDosenDao.delete(jadwalDosen);
         return "redirect:team?jadwal="+jadwalDosen.getJadwal().getId();
+    }
+
+    @GetMapping("/academic/schedule/room")
+    public void roomSchedule(Model model, @RequestParam(required = false) Gedung gedung, @RequestParam(required = false) Hari hari){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        model.addAttribute("hari", hariDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("selectedHari", hari);
+        model.addAttribute("selectedGedung",gedung);
+
+
+        if (gedung !=null && hari != null){
+
+            Iterable<Ruangan> ruangan = ruanganDao.findByStatusAndGedung(StatusRecord.AKTIF,gedung);
+            List<RoomDto> sesi = new ArrayList<>();
+            for (Ruangan ruang1 : ruangan ){
+
+                RoomDto roomDto = new RoomDto();
+                roomDto.setId(ruang1.getId());
+                roomDto.setRuangan1(ruang1.getNamaRuangan());
+
+                List<Jadwal> jadwal1= jadwalDao.findByStatusAndTahunAkademikAndHariAndRuangan
+                        (StatusRecord.AKTIF,tahunAkademik,hari,ruang1);
+
+                for (Jadwal j : jadwal1){
+
+                    if (j.getSesi().equals("1")){
+                        roomDto.setSesi1(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                        roomDto.setDosen1(j.getDosen().getKaryawan().getNamaKaryawan());
+                        roomDto.setKelas1(j.getKelas().getNamaKelas());
+                    }
+
+                    if (j.getSesi().equals("2")){
+                        roomDto.setSesi2(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                        roomDto.setDosen2(j.getDosen().getKaryawan().getNamaKaryawan());
+                        roomDto.setKelas2(j.getKelas().getNamaKelas());
+                    }
+
+                    if (j.getSesi().equals("3")){
+                        roomDto.setSesi3(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                        roomDto.setDosen3(j.getDosen().getKaryawan().getNamaKaryawan());
+                        roomDto.setKelas3(j.getKelas().getNamaKelas());
+                    }
+
+                    if (j.getSesi().equals("4")){
+                        roomDto.setSesi4(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                        roomDto.setDosen4(j.getDosen().getKaryawan().getNamaKaryawan());
+                        roomDto.setKelas4(j.getKelas().getNamaKelas());
+                    }
+
+                }
+
+                sesi.add(roomDto);
+
+            }
+
+            model.addAttribute("jadwalRuang",sesi);
+
+        }
     }
 }
