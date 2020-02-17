@@ -169,13 +169,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Start Time :</label>
-                                        <input type="text" readonly  required th:field="*{jamMulai}" max="5" name="jamMulai" class="time-picker form-control">
+                                        <input type="text" readonly  required th:field="*{jamMulai}" max="5" name="jamMulai" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>End Time :</label>
-                                        <input type="text" id='datetimepicker3' th:field="*{jamMulai}" placeholder="09:30" name="jamSelesai" class="time-picker form-control" readonly>
+                                        <input type="text" th:field="*{jamSelesai}" placeholder="09:30" name="jamSelesai" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -213,15 +213,15 @@
 </body>
 </html>
 <script type="text/javascript">
-    $(function () {
-        $('#datetimepicker3').datetimepicker({
-            format: 'HH:mm'
-        });
-    });
-
-    $(function () {
-        $('#datetimepicker2').datetimepicker({
-            format: 'HH:mm'
-        });
-    });
+    // $(function () {
+    //     $('#datetimepicker3').datetimepicker({
+    //         format: 'HH:mm:ss'
+    //     });
+    // });
+    //
+    // $(function () {
+    //     $('#datetimepicker2').datetimepicker({
+    //         format: 'HH:mm:ss'
+    //     });
+    // });
 </script>
