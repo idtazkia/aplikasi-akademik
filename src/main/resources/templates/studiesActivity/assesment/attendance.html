@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance</title>
+    <style type="text/css">
+        .container{
+            padding-top: 30px;
+        }
+        .text{
+            font-size: 12px;
+        }
+        td{
+            font-size: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+            <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
+        </div>
+        <div class="col-md-11 text-center">
+            <b>ATTENDANCE LIST OF FIRST SEMESTER</b>
+            <br>
+            <b>TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS</b>
+            <br>
+            <b th:text="${'ACADEMIC YEAR ' + tahun}">ACADEMIC YEAR 2018/2019</b>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+        <div class="col-md-12">
+            <table>
+                <tr>
+                    <td class="text"><b>Departement/Group</b></td>
+                    <td class="text"><b> &nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.prodi.namaProdi + ' / ' + jadwal.kelas.namaKelas}">Islamic Business and Management/MBS-C-17</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><b>Subject</b></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.kodeMatakuliah + ' ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">ACC2701-Islamic Business Ethic</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><b>Lecture</b></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text" th:text="${jadwal.dosen.karyawan.namaKaryawan}"><b>KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table border="1" width="100%">
+                <thead>
+                <tr>
+                    <td rowspan="2"><center>No</center></td>
+                    <td rowspan="2"><center>Nim</center></td>
+                    <td rowspan="2"><center>Name Of Student</center></td>
+                    <td colspan="16" rowspan="2"><center>Class Meeting,Date & Sign</center></td>
+                </tr>
+                <tr>
+
+                </tr>
+                <tr th:each="data,row : ${attendance}">
+                    <td width="4%"><center th:text="${row.index + 1}">1</center></td>
+                    <td width="6%"><center th:text="${data.nim}">17101181</center></td>
+                    <td width="35%" th:text="${data.nama}">Muhammad Hafidz Fathoni Nurahim</td>
+                    <td width="40%" colspan="16"><center th:text="${data.presensi}"></center></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right"><b>Sign Of Lecture :</b></td>
+                    <td></td>
+
+                </tr>
+
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    @page
+    {
+
+        size: auto;   /* auto is the current printer page size */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
+    @media print {
+        #printbtn {
+            display :  none;
+        }
+    }
+</style>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script>
+    function printpage()
+    {
+        window.print()
+    }
+
+    var doc = new jsPDF('p','pt','letter');
+    var content = $('#content');
+    doc.addHTML(document.body,function() {
+        doc.save('Kehadiran-BKD.pdf');
+    });
+
+</script>
+
+<script language=javascript>
+    function closemyself() {
+        window.opener=self;
+        window.close();
+        self.close();
+    }
+</script>
+</html>

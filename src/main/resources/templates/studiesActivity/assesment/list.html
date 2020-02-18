@@ -83,25 +83,6 @@
                             </div>
                         </form>
                     </div>
-                    <!--<div class="card-body" th:if="${selectedProdi != null}">-->
-                        <!--<form method="get">-->
-                            <!--<div class="row">-->
-
-                                <!--<div class="col-md-6"></div>-->
-                                <!--<div class="col-md-6">-->
-                                    <!--<div class="input-group mb-3">-->
-                                        <!--<input type="text" name="search" class="form-control" placeholder="Search" >-->
-                                        <!--<input type="hidden" name="prodi" th:value="${selectedProdi.id}">-->
-                                        <!--<input type="hidden" name="tahunAkademik" th:value="${selectedTahun.id}">-->
-                                        <!--<div class="input-group-append">-->
-                                            <!--<button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-
-                            <!--</div>-->
-                        <!--</form>-->
-                    <!--</div>-->
                     <div class="table-responsive" th:if="${selectedProdi != null}">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
@@ -120,16 +101,16 @@
                             </thead>
                             <tbody>
                             <tr th:each="data,row : ${list}">
-                                <td th:text="${(row.index + 1)}">1</td>
-                                <td th:text="${data.course}">Basic Econometrics	</td>
-                                <td th:text="${data.namaDosen}">Aam Slamet Rusydiana	</td>
-                                <td th:text="${data.namaKelas}">MBS-D-18	</td>
-                                <td th:text="${data.hari}">Wednesday</td>
-                                <td>
+                                <td style="font-size: 10px;" th:text="${(row.index + 1)}">1</td>
+                                <td style="font-size: 10px;" th:text="${data.course}">Basic Econometrics   </td>
+                                <td style="font-size: 10px;" th:text="${data.namaDosen}">Aam Slamet Rusydiana  </td>
+                                <td style="font-size: 10px;" th:text="${data.namaKelas}">MBS-D-18  </td>
+                                <td style="font-size: 10px;" th:text="${data.hari}">Wednesday</td>
+                                <td style="font-size: 10px;">
                                     <span  th:text="${data.jamMulai}"></span> -
                                     <span th:text="${data.jamSelesai}"></span>
                                 </td>
-                                <td>
+                                <td style="font-size: 10px;">
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-form' + data.id}"><i class="fas fa-eye"></i> Show</button>
 
                                     <div class="modal fade" th:id="${'modal-form' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
@@ -157,6 +138,24 @@
 
                                                             </div>
                                                         </div>
+                                                        <div class="card-header bg-transparent pb-5">
+                                                            <div class="text-muted text-center mt-2 mb-3"><small>BKD</small></div>
+                                                            <div class="btn-wrapper text-center">
+                                                                <a th:href="@{/studiesActivity/assesment/nilai(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
+                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                    <span class="btn-inner--text">Score</span>
+                                                                </a>
+                                                                <a th:href="@{/studiesActivity/assesment/topic(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
+                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                    <span class="btn-inner--text">Topic</span>
+                                                                </a>
+                                                                <a th:href="@{/studiesActivity/assesment/attendance(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
+                                                                    <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                                    <span class="btn-inner--text">Attendance</span>
+                                                                </a>
+
+                                                            </div>
+                                                        </div>
                                                         <div class="card-body px-lg-5 py-lg-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="text-center">
@@ -175,17 +174,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <!--<div class="card-footer py-4">-->
-                        <!--<nav aria-label="...">-->
-                            <!--<ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
-                                <!--<li class="disabled"><a href="#" aria-label="Previous"><span-->
-                                        <!--aria-hidden="true">&laquo;</span></a>-->
-                                <!--</li>-->
-                                <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</nav>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>

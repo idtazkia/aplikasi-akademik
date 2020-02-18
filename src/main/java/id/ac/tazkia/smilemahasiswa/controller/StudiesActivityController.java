@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
@@ -1533,8 +1534,37 @@ public class StudiesActivityController {
 
     }
 
-//    Generate krs
+//    BKD
 
+    @GetMapping("/studiesActivity/assesment/topic")
+    public void topic(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+        model.addAttribute("topic", presensiDosenDao.bkdBeritaAcara(jadwal));
+        model.addAttribute("jadwal", jadwal);
+    }
+
+    @GetMapping("/studiesActivity/assesment/nilai")
+    public void nilai(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
+    }
+
+    @GetMapping("/studiesActivity/assesment/attendance")
+    public void attendance(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("attendance", presensiMahasiswaDao.bkdAttendance(jadwal));
+
+    }
 
 
 }
+

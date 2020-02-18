@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Score</title>
+    <style type="text/css">
+        .container{
+            padding-top: 30px;
+        }
+        .text{
+            font-size: 12px;
+        }
+        td{
+            font-size: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row" style="padding-left: 30px; padding-left: 30px;">
+        <div class="col-md-1">
+            <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
+        </div>
+        <div class="col-md-11 text-center">
+            <b>INSTITUT TAZKIA</b>
+            <br>
+            <b th:text="${'ACADEMIC YEAR ' + tahun}">ACADEMIC YEAR 20**/20**</b>
+            <br>
+            <i>Telp. +62-21-87962291-93, Fax. +62-21-87962294</i>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <hr>
+            <b>Nilai Mata Kuliah Mahasiswa</b>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table>
+                <tr>
+                    <td class="text"><i>Mata Kuliah</i></td>
+                    <td class="text"><b> &nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">AEM2106 Fiqh Muamalah II</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><i>Kelas / Thn Akd</i></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.kelas.namaKelas + ' / ' + jadwal.tahunAkademik.namaTahunAkademik}">MBS-A-17 / 2018/2019 Semester Ganjil</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><i>Semester / SKS</i></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.semester + ' / ' +  jadwal.matakuliahKurikulum.jumlahSks} ">3 /  3</b></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table>
+                <tr>
+                    <td class="text"><i>Dosen Pengasuh</i></td>
+                    <td class="text"><i> &nbsp; &nbsp; :</i></td>
+                    <td class="text"><b th:text="${jadwal.dosen.karyawan.namaKaryawan}">Abdul Mughni, Lc. M.H.I,</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><i>Program Studi</i></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.prodi.namaProdi}">Manajemen Bisnis Syariah (Reguler)</b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-12">
+            <table border="1" width="100%">
+                <thead>
+                <tr>
+                    <td><center>No.</center></td>
+                    <td><center>Nomer Induk Mahasiswa</center></td>
+                    <td><center>Nama Mahasiswa</center></td>
+                    <td><center>Nilai Akhir</center></td>
+                    <td><center>Grade Nilai</center></td>
+                    <td><center>Bobot Nilai</center></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data,row : ${nilai}">
+                    <td width="5%"><center th:text="${row.index + 1}"></center></td>
+                    <td width="15%"><center th:text="${data[0]}"></center></td>
+                    <td width="30%" th:text="${data[1]}">Ivan Fadilla Almisri</td>
+                    <td><center th:text="${data[2]}"></center></td>
+                    <td><center th:text="${data[3]}"></center></td>
+                    <td><center th:text="${data[4]}"></center></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+
+        </div>
+        <div class="col-md-3" style="font-size: 12px;">
+            <span th:text="${'Bogor, ' + #calendars.format(#calendars.createNow(), 'dd MMM yyyy')}">Bogor, 13 Feb 2020</span>
+            <br>
+            <span>Dosen Pengasuh,</span>
+            <br>
+            <br>
+            <br>
+            <b th:text="${jadwal.dosen.karyawan.namaKaryawan}">Abdul Mughni, Lc. M.H.I,</b>
+            <br>
+            <span>NIDN: <span th:text="${jadwal.dosen.karyawan.nidn}"></span></span>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    @page
+    {
+
+        size: auto;   /* auto is the current printer page size */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
+    @media print {
+        #printbtn {
+            display :  none;
+        }
+    }
+</style>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script>
+    function printpage()
+    {
+        window.print()
+    }
+
+    var doc = new jsPDF('p','pt','letter');
+    var content = $('#content');
+    doc.addHTML(document.body,function() {
+        doc.save('Nilai-BKD.pdf');
+    });
+
+</script>
+
+<script language=javascript>
+    function close() {
+        window.opener=self;
+        window.close();
+        self.close();
+    }
+</script>
+</html>
