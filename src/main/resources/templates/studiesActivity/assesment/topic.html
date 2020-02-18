@@ -9,10 +9,10 @@
             padding-top: 30px;
         }
         .text{
-            font-size: 12px;
+            font-size: 18px;
         }
         td{
-            font-size: 12px;
+            font-size: 18px;
         }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -75,14 +75,14 @@
             <tbody>
             <tr th:each="data,row : ${topic}">
                 <td style="text-align: center;" th:text="${row.index + 1}">1</td>
-                <td style="text-align: center;" width="7%" th:text="${data[0]}">2018-09-10</td>
-                <td style="text-align: center;" width="7%" th:text="${data[1]}">09:31:00</td>
-                <td style="text-align: center;" width="7%" th:text="${data[2]}">12:00:00</td>
+                <td style="text-align: center;" width="8%" th:text="${data[0]}">2018-09-10</td>
+                <td style="text-align: center;" width="8%" th:text="${data[1]}">09:31:00</td>
+                <td style="text-align: center;" width="8%" th:text="${data[2]}">12:00:00</td>
                 <td width="39%" th:text="${data[3]}">Perbedaan mekanisme operasional Perbankan syariah vs konvensional. Jenis akad/kontrak Bank Syariah</td>
                 <td style="text-align: center;" width="5%" th:text="${data[4]}">42</td>
-                <td style="text-align: center;" width="10%" th:text="${data[5]}">3</td>
-                <td style="text-align: center;" width="15%" th:text="${data[6]}">Dina Diana</td>
-                <td style="text-align: center;" width="5%"></td>
+                <td style="text-align: center;" width="9%" th:text="${data[5]}">3</td>
+                <td style="text-align: center;" width="14%" th:text="${data[6]}">Dina Diana</td>
+                <td style="text-align: center;" width="4%"></td>
                 <td style="text-align: center;" width="5%"></td>
             </tr>
 
