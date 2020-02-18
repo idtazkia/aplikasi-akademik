@@ -197,23 +197,34 @@ public class EquipmentController {
     }
 
 //    Room
-@GetMapping("/equipment/room/form")
-public void roomForm(Model model,@RequestParam(required = false) String id){
-    model.addAttribute("ruangan", new Ruangan());
-    model.addAttribute("ruangJenis", ruangJenisDao.findByStatus(StatusRecord.AKTIF));
-    model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
+    @GetMapping("/equipment/room/list")
+    public void roomList(Model model, @PageableDefault(size = 10) Pageable page, String search){
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listRuang", ruanganDao.findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(Arrays.asList(StatusRecord.HAPUS), search, page));
+        } else {
+            model.addAttribute("listRuang",ruanganDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS),page));
+
+        }
+    }
+
+    @GetMapping("/equipment/room/form")
+    public void roomForm(Model model,@RequestParam(required = false) String id){
+        model.addAttribute("ruangan", new Ruangan());
+        model.addAttribute("ruangJenis", ruangJenisDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("gedung", gedungDao.findByStatus(StatusRecord.AKTIF));
 
 
-    if (id != null && !id.isEmpty()) {
-        Ruangan ruangan = ruanganDao.findById(id).get();
-        if (ruangan != null) {
-            model.addAttribute("ruangan", ruangan);
-            if (ruangan.getStatus() == null){
-                ruangan.setStatus(StatusRecord.NONAKTIF);
+        if (id != null && !id.isEmpty()) {
+            Ruangan ruangan = ruanganDao.findById(id).get();
+            if (ruangan != null) {
+                model.addAttribute("ruangan", ruangan);
+                if (ruangan.getStatus() == null){
+                    ruangan.setStatus(StatusRecord.NONAKTIF);
+                }
             }
         }
     }
-}
 
     @PostMapping("/equipment/room/form")
     public String prosesForm(@Valid Ruangan ruangan){
@@ -232,7 +243,7 @@ public void roomForm(Model model,@RequestParam(required = false) String id){
         return "redirect:list";
     }
 
-    
+
 //    class
     @GetMapping("/equipment/class/list")
     public void classList(Model model, @PageableDefault(size = 10) Pageable page, String search){
