@@ -90,6 +90,7 @@
                                         <th>Jam Mulai</th>
                                         <th>Jam Selesai</th>
                                         <th>Ruangan</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -102,6 +103,19 @@
                                         <td th:text="${jd.jamMulai}">455-981-221</td>
                                         <td th:text="${jd.jamSelesai}">455-981-221</td>
                                         <td th:text="${jd.namaRuangan}">455-981-221</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Download
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/nilai(jadwal = ${jd.idJadwal})}">Topic</a>
+                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/topic(jadwal = ${jd.idJadwal})}">Attendance</a>
+                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/attendance(jadwal = ${jd.idJadwal})}">Score</a>
+                                                </div>
+                                            </div>
+                                        </td>
+
                                     </tr>
                                     </tbody>
                                 </table>
