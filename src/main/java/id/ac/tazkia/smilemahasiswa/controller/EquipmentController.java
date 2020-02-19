@@ -305,35 +305,37 @@ public class EquipmentController {
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
             Iterable<String> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
-            for (String m : mahasiswa){
-                Mahasiswa mhsw = mahasiswaDao.findById(m).get();
-                KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mhsw,StatusRecord.AKTIF);
-                if (kelasMahasiswa == null){
-                    KelasMahasiswaDto km = new KelasMahasiswaDto();
-                    km.setId(mhsw.getId());
-                    km.setNama(mhsw.getNama());
-                    if (mhsw.getKurikulum() != null) {
-                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
-                    }else {
-                        km.setKurikulum("");
+            for (String m : mahasiswa) {
+                if (!m.trim().isEmpty() && m != null) {
+                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
+                    KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mhsw, StatusRecord.AKTIF);
+                    if (kelasMahasiswa == null) {
+                        KelasMahasiswaDto km = new KelasMahasiswaDto();
+                        km.setId(mhsw.getId());
+                        km.setNama(mhsw.getNama());
+                        if (mhsw.getKurikulum() != null) {
+                            km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                        } else {
+                            km.setKurikulum("");
+                        }
+                        km.setNim(mhsw.getNim());
+                        km.setKelas("");
+                        mahasiswaDtos.add(km);
                     }
-                    km.setNim(mhsw.getNim());
-                    km.setKelas("");
-                    mahasiswaDtos.add(km);
-                }
-                if (kelasMahasiswa != null){
-                    KelasMahasiswaDto km = new KelasMahasiswaDto();
-                    km.setId(mhsw.getId());
-                    km.setNama(mhsw.getNama());
-                    if (mhsw.getKurikulum() != null) {
-                        km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
-                    }else {
-                        km.setKurikulum("");
-                    }
-                    km.setNim(mhsw.getNim());
-                    km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
-                    mahasiswaDtos.add(km);
+                    if (kelasMahasiswa != null) {
+                        KelasMahasiswaDto km = new KelasMahasiswaDto();
+                        km.setId(mhsw.getId());
+                        km.setNama(mhsw.getNama());
+                        if (mhsw.getKurikulum() != null) {
+                            km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                        } else {
+                            km.setKurikulum("");
+                        }
+                        km.setNim(mhsw.getNim());
+                        km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
+                        mahasiswaDtos.add(km);
 
+                    }
                 }
             }
             model.addAttribute("mahasiswaList", mahasiswaDtos);
