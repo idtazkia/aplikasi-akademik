@@ -300,44 +300,44 @@ public class EquipmentController {
     @GetMapping("/equipment/class/mahasiswa")
     public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, Model model, Pageable page){
         model.addAttribute("selectedKelas", kelas);
-        if (prodi != null){
+        if (prodi != null) {
             List<KelasMahasiswaDto> mahasiswaDtos = new ArrayList<>();
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
-            Iterable<String> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF,angkatan,prodi);
-            for (String m : mahasiswa) {
-                if (!m.trim().isEmpty() && m != null) {
-                    Mahasiswa mhsw = mahasiswaDao.findById(m).get();
-                    KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mhsw, StatusRecord.AKTIF);
+            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF, angkatan, prodi);
+
+            if (mahasiswa != null){
+                for (Mahasiswa m : mahasiswa) {
+                    KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
                     if (kelasMahasiswa == null) {
                         KelasMahasiswaDto km = new KelasMahasiswaDto();
-                        km.setId(mhsw.getId());
-                        km.setNama(mhsw.getNama());
-                        if (mhsw.getKurikulum() != null) {
-                            km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                        km.setId(m.getId());
+                        km.setNama(m.getNama());
+                        if (m.getKurikulum() != null) {
+                            km.setKurikulum(m.getKurikulum().getNamaKurikulum());
                         } else {
                             km.setKurikulum("");
                         }
-                        km.setNim(mhsw.getNim());
+                        km.setNim(m.getNim());
                         km.setKelas("");
                         mahasiswaDtos.add(km);
                     }
                     if (kelasMahasiswa != null) {
                         KelasMahasiswaDto km = new KelasMahasiswaDto();
-                        km.setId(mhsw.getId());
-                        km.setNama(mhsw.getNama());
-                        if (mhsw.getKurikulum() != null) {
-                            km.setKurikulum(mhsw.getKurikulum().getNamaKurikulum());
+                        km.setId(m.getId());
+                        km.setNama(m.getNama());
+                        if (m.getKurikulum() != null) {
+                            km.setKurikulum(m.getKurikulum().getNamaKurikulum());
                         } else {
                             km.setKurikulum("");
                         }
-                        km.setNim(mhsw.getNim());
+                        km.setNim(m.getNim());
                         km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
                         mahasiswaDtos.add(km);
 
                     }
                 }
-            }
+        }
             model.addAttribute("mahasiswaList", mahasiswaDtos);
         }
     }
