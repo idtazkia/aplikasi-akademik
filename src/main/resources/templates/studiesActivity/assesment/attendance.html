@@ -12,10 +12,10 @@
             padding-top: 30px;
         }
         .text{
-            font-size: 12px;
+            font-size: 17px;
         }
         td{
-            font-size: 12px;
+            font-size: 17px;
         }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -40,17 +40,17 @@
                 <tr>
                     <td class="text"><b>Departement/Group</b></td>
                     <td class="text"><b> &nbsp; &nbsp; :</b></td>
-                    <td class="text"><b>Islamic Business and Management/MBS-C-17</b></td>
+                    <td class="text"><b th:text="${jadwal.prodi.namaProdi + ' / ' + jadwal.kelas.namaKelas}">Islamic Business and Management/MBS-C-17</b></td>
                 </tr>
                 <tr>
                     <td class="text"><b>Subject</b></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
-                    <td class="text"><b>ACC2701-Islamic Business Ethic</b></td>
+                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">ACC2701-Islamic Business Ethic</b></td>
                 </tr>
                 <tr>
                     <td class="text"><b>Lecture</b></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
-                    <td class="text"><b>KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
+                    <td class="text"><b th:text="${jadwal.dosen.karyawan.namaKaryawan}">KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
                 </tr>
             </table>
         </div>
