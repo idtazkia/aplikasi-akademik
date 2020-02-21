@@ -382,8 +382,9 @@ public class StudiesActivityController {
                                 krsDetail.setJumlahMangkir(0);
                                 krsDetail.setJumlahTerlambat(0);
                                 krsDetail.setJumlahSakit(0);
-                                /*kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));*/
+                                krsDetail.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                                krsDetail.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                krsDetail.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                                 krsDetail.setJumlahIzin(0);
                                 krsDetailDao.save(krsDetail);
                             }
@@ -520,6 +521,7 @@ public class StudiesActivityController {
                             kd.setJumlahTerlambat(0);
                             kd.setJumlahIzin(0);
                             kd.setJumlahSakit(0);
+                            kd.setTahunAkademik(tahunAkademik);
                             kd.setStatusEdom(StatusRecord.UNDONE);
                             krsDetailDao.save(kd);
                         }
@@ -547,6 +549,7 @@ public class StudiesActivityController {
                             kd.setNilaiUas(BigDecimal.ZERO);
                             kd.setNilaiUts(BigDecimal.ZERO);
                             kd.setJumlahMangkir(0);
+                            kd.setTahunAkademik(tahunAkademik);
                             kd.setJumlahKehadiran(0);
                             kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
                             kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
@@ -927,6 +930,7 @@ public class StudiesActivityController {
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setJumlahMangkir(0);
                 kd.setJumlahKehadiran(0);
+                kd.setTahunAkademik(jadwal.getTahunAkademik());
                 kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
                 kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                 kd.setJumlahTerlambat(0);

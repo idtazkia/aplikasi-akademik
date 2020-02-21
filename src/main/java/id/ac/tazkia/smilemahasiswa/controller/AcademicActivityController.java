@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.RoomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -93,6 +94,9 @@ public class AcademicActivityController {
 
     @Autowired
     private GedungDao gedungDao;
+
+    @Autowired
+    private KrsDao krsDao;
 
 //    Attribute
     @ModelAttribute("angkatan")
@@ -616,6 +620,7 @@ public class AcademicActivityController {
 
                 JadwalDosen jadwalDosen = new JadwalDosen();
                 jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
+                jadwalDosen.setJadwal(jdwl);
                 jadwalDosen.setDosen(jdwl.getDosen());
                 jadwalDosen.setJumlahIzin(0);
                 jadwalDosen.setJumlahKehadiran(0);
@@ -768,5 +773,41 @@ public class AcademicActivityController {
             model.addAttribute("jadwalRuang",sesi);
 
         }
+    }
+
+    @GetMapping("/academic/schedule/krs")
+    public void addKrs(Model model,@RequestParam Jadwal jadwal){
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("krs", krsDao.krsList(jadwal.getTahunAkademik(), jadwal));
+    }
+
+    @PostMapping("/academic/schedule/krs")
+    public String postKrs(@RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String[] data){
+        if (data != null){
+            for (String krs : data) {
+                Krs k = krsDao.findById(krs).get();
+                KrsDetail kd = new KrsDetail();
+                kd.setJadwal(jadwal);
+                kd.setKrs(k);
+                kd.setMahasiswa(k.getMahasiswa());
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                krsDetailDao.save(kd);
+            }
+        }
+
+        return "redirect:list?tahunAkademik="+jadwal.getTahunAkademik().getId()+"&prodi="+jadwal.getProdi().getId();
     }
 }

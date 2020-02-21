@@ -357,8 +357,8 @@
                                                                     </div>
 
                                                                     <div class="modal-footer">
-                                                                        <form th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}"  method="post">
-                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        <form  method="post">
+                                                                            <button th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}" type="submit" class="btn btn-white">Delete</button>
                                                                         </form>
                                                                         <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
                                                                     </div>
@@ -449,6 +449,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id}) }" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -480,8 +481,8 @@
                                                                     </div>
 
                                                                     <div class="modal-footer">
-                                                                        <form th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}" method="post">
-                                                                            <button  type="submit" class="btn btn-white">Delete</button>
+                                                                        <form  method="post">
+                                                                            <button th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}" type="submit" class="btn btn-white">Delete</button>
                                                                         </form>
                                                                         <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
                                                                     </div>
@@ -572,6 +573,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -698,6 +700,7 @@
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
                                                                                     <a th:if="${jadwal.course == 'Student Dynamic Session'}" th:href="@{/studiesActivity/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
 
@@ -827,6 +830,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -951,6 +955,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1075,6 +1080,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1200,6 +1206,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
+                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1258,57 +1265,57 @@
 
                 </div>
                     </span>
+                </div>
             </div>
-        </div>
-        <!-- Dark table -->
+            <!-- Dark table -->
 
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add Schedule</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Course(s)</th>
-                                    <th scope="col">Class</th>
-                                    <th scope="col">SKS</th>
-                                    <th scope="col">Lecture</th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="item,row : ${ploting}">
-                                    <td th:text="${(row.index + 1)}"></td>
-                                    <td th:text="${item.course}"></td>
-                                    <td th:text="${item.kelas}"></td>
-                                    <td th:text="${item.sks}"></td>
-                                    <td th:text="${item.dosen}"></td>
-                                    <td><a th:href="@{/academic/schedule/form (id = ${item.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a></td>
-                                </tr>
-
-                                </tbody>
-                            </table>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Schedule</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Course(s)</th>
+                                        <th scope="col">Class</th>
+                                        <th scope="col">SKS</th>
+                                        <th scope="col">Lecture</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item,row : ${ploting}">
+                                        <td th:text="${(row.index + 1)}"></td>
+                                        <td th:text="${item.course}"></td>
+                                        <td th:text="${item.kelas}"></td>
+                                        <td th:text="${item.sks}"></td>
+                                        <td th:text="${item.dosen}"></td>
+                                        <td><a th:href="@{/academic/schedule/form (id = ${item.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 </div>
 </body>
 </html>

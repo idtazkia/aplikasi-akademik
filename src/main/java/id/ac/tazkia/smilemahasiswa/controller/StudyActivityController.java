@@ -196,6 +196,7 @@ public class StudyActivityController {
                             kd.setJumlahIzin(0);
                             kd.setJumlahSakit(0);
                             kd.setStatusEdom(StatusRecord.UNDONE);
+                            kd.setTahunAkademik(tahunAkademik);
                             krsDetailDao.save(kd);
                         }
                     }
@@ -226,6 +227,7 @@ public class StudyActivityController {
                             kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
                             kd.setJumlahTerlambat(0);
                             kd.setJumlahIzin(0);
+                            kd.setTahunAkademik(tahunAkademik);
                             kd.setJumlahSakit(0);
                             kd.setStatusEdom(StatusRecord.UNDONE);
                             krsDetailDao.save(kd);

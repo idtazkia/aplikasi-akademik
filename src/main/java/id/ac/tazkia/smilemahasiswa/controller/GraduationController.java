@@ -399,7 +399,7 @@ public class GraduationController {
                     System.out.println("nim  :  " + nim + "  nilai  " + nilai);
 
 
-                    String krsDetail = krsDetailDao.idKrsDetail(mahasiswa, StatusRecord.AKTIF, "Magang", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                    String krsDetail = krsDetailDao.idKrsDetail(mahasiswa, StatusRecord.AKTIF, "Magang");
 
                     if (krsDetail == null || baris.getCell(1) != null) {
                         System.out.println("nim  :  " + nim + "  tidak memiliki krs magang");
@@ -446,7 +446,7 @@ public class GraduationController {
                                    RedirectAttributes attributes){
 
 
-        String krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        String krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang");
         if (StringUtils.hasText(krsDetail)){
             KrsDetail kd = krsDetailDao.findById(krsDetail).get();
             kd.setNilaiAkhir(nilai);
