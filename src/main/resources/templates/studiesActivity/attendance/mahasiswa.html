@@ -50,8 +50,18 @@
                                 <h3 class="mb-0">List Kehadiran</h3>
                             </div>
                             <div class="col text-right">
+                                <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">
+                                    <b> Set All Student :  </b>
+                                    <select name="statusPresensi">
+                                        <option th:each="sp : ${statusPresensi}" th:text="${sp}" th:value="${sp}">Absen</option>
+                                    </select>
+                                    <button class="btn btn-success btn-sm" type="submit">Set Status</button>
+                                </form>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12">
+
                     </div>
                     <div class="card-body">
                         <form th:action="@{/studiesActivity/attendance/mahasiswa (jadwal = ${jadwal},sesi = ${sesi})}" method="post" th:object="${presensi}">

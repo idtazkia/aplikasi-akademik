@@ -243,6 +243,7 @@ public class StudiesActivityController {
         model.addAttribute("presensi", presensiMahasiswa);
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi",sesiKuliah.getId());
+        model.addAttribute("statusPresensi", StatusPresensi.values());
     }
 
     @PostMapping("/studiesActivity/attendance/mahasiswa")
@@ -270,6 +271,17 @@ public class StudiesActivityController {
         }
 
         return "redirect:detail?jadwal="+j.getId();
+    }
+
+    @PostMapping("/studiesActivity/attendance/save")
+    public String savePresensi(@RequestParam(required = false) String sesi, @RequestParam(required = false) StatusPresensi statusPresensi){
+        SesiKuliah sesiKuliah = sesiKuliahDao.findById(sesi).get();
+        List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
+        for (PresensiMahasiswa pm : presensiMahasiswa){
+            pm.setStatusPresensi(statusPresensi);
+            presensiMahasiswaDao.save(pm);
+        }
+        return "redirect:detail?jadwal="+sesiKuliah.getJadwal().getId();
     }
 
     @GetMapping("/studiesActivity/attendance/form")
