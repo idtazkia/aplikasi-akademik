@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Mahasiswa </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">NIM</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Program Study</th>
+                                <th scope="col">Program</th>
+                                <th scope="col" width="30px"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${list}">
+                                <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
+                                <td th:text="${data.mahasiswa.nim}">1519001</td>
+                                <td>
+                                    <a class="btn btn-success btn-outline-success btn-sm"
+                                       th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}"
+                                       th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
+                                    </a>
+
+                                    <a class="btn btn-danger btn-outline-danger btn-sm"
+                                       th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}"
+                                       th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
+                                    </a>
+                                </td>
+                                <td th:text="${data.mahasiswa.idProdi.namaProdi}">Akuntansi Syariah</td>
+                                <td th:text="${data.mahasiswa.idProgram.namaProgram}">S2</td>
+                                <td align="center">
+
+                                    <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.mahasiswa.id})}" method="post">
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}">
+                                            Disable Student
+                                        </button>
+                                    </form>
+
+                                    <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.mahasiswa.id})}" method="post">
+                                        <button type="submit" class="btn btn-success         btn-xs"
+                                                th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}">
+                                            Enable Student
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>

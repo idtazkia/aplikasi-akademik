@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/mahasiswa/generate}" method="post">
+    <select name="angkatan">
+        <option th:each="data : ${angkatan}" th:value="${data}" th:text="${data}"></option>
+    </select>
+    <button type="submit">Generate</button>
+</form>
+</body>
+</html>
