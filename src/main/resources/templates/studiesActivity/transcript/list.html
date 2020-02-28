@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Transcript</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Transcript </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+
+
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="nim" class="form-control" placeholder="NIM" th:value="${nim}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3" th:if="${nim != null}">
+                                        <input type="email" class="form-control" disabled="disabled" th:field="${mhsw.nama}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" disabled ><i class="fa fa-id-badge"></i> Mahasiswa/i</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <span th:if="${transkrip1}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 1</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip1}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+
+                    <span th:if="${transkrip2}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 2</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip2}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip3}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 3</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip3}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip4}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 4</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip4}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip5}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 5</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip5}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip6}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 6</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip6}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip7}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 7</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip7}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+                    <span th:if="${transkrip8}">
+                        <div class="table-responsive">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Semester<b> 8</b></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkrip8}">
+                                    <td th:text="${data[1]}">AEM1101</td>
+                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:text="${data[3]}"><b>3</b></td>
+                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:text="${data[6]}"><b>9</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
