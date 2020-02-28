@@ -98,4 +98,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "select a.* from (select a.id,a.id_mahasiswa,b.nim,b.nama,c.nama_prodi from krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id where a.id_tahun_akademik=?1 and a.status='AKTIF')a left join (select a.id,a.id_krs from krs_detail as a inner join krs as b on a.id_krs=b.id where id_jadwal=?2 and a.status='AKTIF' and b.id_tahun_akademik=?1 and b.status='AKTIF')b on a.id=b.id_krs  where b.id is null",nativeQuery = true)
     List<Object[]>cariMahasiswaJadwal(TahunAkademik tahunAkademik, Jadwal jadwal);
 
+    @Query(value = "SELECT b.semester, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
+    List<Object[]> transkrip(Mahasiswa mahasiswa);
+
+    @Query(value = "SELECT b.semester, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 ORDER BY b.semester", nativeQuery = true)
+    List<Object[]> transkripSem(Mahasiswa mahasiswa, String semester);
+
+
 }
