@@ -258,7 +258,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/khs/list}" class="nav-link">KHS</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/transcript/list}" class="nav-link">Transcript</a>
                             </li>
                         </ul>

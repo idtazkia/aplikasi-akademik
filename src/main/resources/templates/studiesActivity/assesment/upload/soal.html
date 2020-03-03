@@ -56,7 +56,7 @@
                         <a th:if="${status.UAS == status}" th:href="@{/contoh/soaluas}" class="btn btn-success">Download Template</a>
                         <br>
                         <br>
-                        <form th:action="@{/studiesActivity/assesment/upload/soal}" enctype="multipart/form-data" th:if="${approve == null}">
+                        <form th:action="@{/studiesActivity/assesment/upload/soal}" method="post" enctype="multipart/form-data" th:if="${approve == null}">
                             <div class="row">
                                 <div class="col-md-4 col-xs-12">
                                     <label>File Upload</label>
