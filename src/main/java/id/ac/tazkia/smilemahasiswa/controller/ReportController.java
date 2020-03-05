@@ -1,9 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
+import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
+import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
@@ -27,9 +30,20 @@ public class ReportController {
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
+    @Autowired
+    private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
+
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
+    }
+
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
     }
 
 
@@ -71,5 +85,16 @@ public class ReportController {
         model.addAttribute("rekapJadwalDosen", rekap);
         model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
 
+    }
+
+    @GetMapping("/report/recapitulation/ipk")
+    public void rekapSks(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                         @RequestParam(required = false) String angkatan){
+
+        if (tahunAkademik != null) {
+            model.addAttribute("selectedAngkatan", angkatan);
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan));
+        }
     }
 }

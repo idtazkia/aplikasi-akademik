@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div.ex1 {
+            width: 100%;
+            height: 800px;
+            overflow: scroll;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Report</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik"class="form-control">
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Angkatan</label>
+                                        <select name="angkatan"class="form-control">
+                                            <option th:each="data : ${angkatan}"
+                                                    th:text="${data}"
+                                                    th:selected="(${data} == *{selectedAngkatan})"
+                                                    th:value="${data}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body" th:if="${ipk != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">"Search Result"</h3>
+                            </div>
+                            <div class="table-responsive ex1">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nim</th>
+                                            <th>Nama</th>
+                                            <th>Nama Prodi</th>
+                                            <th>Tahun Akademik</th>
+                                            <th>Status</th>
+                                            <th>Sks Semester</th>
+                                            <th>Ip Semester</th>
+                                            <th>Sks Total</th>
+                                            <th>Ipk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${ipk}">
+                                        <td th:text="${row.index + 1}"></td>
+                                        <td th:text="${data[0]}"></td>
+                                        <td th:text="${data[1]}"></td>
+                                        <td th:text="${data[2]}"></td>
+                                        <td th:text="${data[3]}"></td>
+                                        <td th:text="${data[4]}"></td>
+                                        <td th:text="${data[5]}"></td>
+                                        <td th:text="${data[6]}"></td>
+                                        <td th:text="${data[7]}"></td>
+                                        <td th:text="${data[8]}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
