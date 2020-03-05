@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<revision>2.0.50-RELEASE</revision>
+		<revision>2.0.51-RELEASE</revision>
 	</properties>
 
 	<dependencies>
@@ -44,6 +44,11 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
