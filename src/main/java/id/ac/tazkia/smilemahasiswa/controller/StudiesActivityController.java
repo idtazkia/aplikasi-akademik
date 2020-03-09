@@ -116,6 +116,9 @@ public class StudiesActivityController {
     @Autowired
     private SoalDao soalDao;
 
+    @Autowired
+    private RpsDao rpsDao;
+
     @Autowired private ScoreService scoreService;
 
     @Value("classpath:sample/soal.doc")
@@ -126,6 +129,9 @@ public class StudiesActivityController {
 
     @Value("${upload.soal}")
     private String uploadFolder;
+
+    @Value("${upload.rps}")
+    private String uploadRps;
 
     //    Attribute
 
@@ -1605,6 +1611,71 @@ public class StudiesActivityController {
 
 
 
+
+    }
+
+
+    @GetMapping("/studiesActivity/assesment/upload/rps")
+    public void listRps(@RequestParam Jadwal jadwal, Model model){
+        model.addAttribute("jadwal", jadwal);
+        Iterable<Rps> rps = rpsDao.findByStatusAndJadwal(StatusRecord.AKTIF,jadwal);
+
+        model.addAttribute("rps",rps);
+
+    }
+
+
+    @PostMapping("/studiesActivity/assesment/upload/rps")
+    public String uploadRps(@Valid Rps rps,MultipartFile file, @RequestParam Jadwal jadwal) throws Exception {
+
+
+        String namaFile = file.getName();
+        String jenisFile = file.getContentType();
+        String namaAsli = file.getOriginalFilename();
+        Long ukuran = file.getSize();
+
+        System.out.println("Nama File : {}" + namaFile);
+        System.out.println("Jenis File : {}" + jenisFile);
+        System.out.println("Nama Asli File : {}" + namaAsli);
+        System.out.println("Ukuran File : {}"+ ukuran);
+
+//        memisahkan extensi
+        String extension = "";
+
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = namaAsli.substring(i + 1);
+        }
+
+
+        String idFile = "RPS-" + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah();
+        String lokasiUpload = uploadRps + File.separator + rps.getJadwal().getId();
+        LOGGER.debug("Lokasi upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdirs();
+        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+        file.transferTo(tujuan);
+        LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+
+
+        rps.setJadwal(jadwal);
+        rps.setStatus(StatusRecord.AKTIF);
+        rps.setTanggalUpload(LocalDate.now());
+        rps.setFilename(idFile + "." + extension);
+        Rps rpsId = rpsDao.findByJadwalAndStatus(rps.getJadwal(),StatusRecord.AKTIF);
+
+        if (rpsId == null){
+            rpsDao.save(rps);
+        }
+
+        if (rpsId != null){
+            rpsId.setStatus(StatusRecord.NONAKTIF);
+            rpsDao.save(rpsId);
+            rpsDao.save(rps);
+        }
+
+        return "redirect:/studiesActivity/assesment/upload/rps?jadwal=" + rps.getJadwal().getId();
 
     }
 

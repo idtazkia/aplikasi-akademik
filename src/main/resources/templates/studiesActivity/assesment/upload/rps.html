@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload RPS</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Detail</h5>
+                                        <span class="h2 font-weight-bold mb-0">Upload RPS </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/studiesActivity/assesment/upload/rps}" method="post" enctype="multipart/form-data" >
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>File Upload</label>
+                                    <div class="input-group mb-3">
+                                        <input type="file" name="file" class="form-control" required>
+                                        <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                        <button type="submit" class="btn btn-info">Upload</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">Detail Data</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course</th>
+                                        <th>File Name</th>
+                                        <th>Uploaded Date</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${rps}">
+                                        <td th:text="${(row.index + 1)}">1</td>
+                                        <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Pajak</td>
+                                        <td th:text="${data.filename}"></td>
+                                        <td th:text="${data.tanggalUpload}">10-10-2019</td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>
