@@ -55,65 +55,81 @@
                             <div class="row">
 
 
-                                <div class="col-md-6">
-                                    <div class="input-group mb-3">
+                                <div class="col-md-12">
+                                    <b>Nim</b><br>
+                                    <div class="input-group mb-3" style="margin-top: 10px;">
                                         <input type="text" name="nim" class="form-control" placeholder="NIM" th:value="${nim}">
                                         <div class="input-group-append">
                                             <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Search</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="input-group mb-3" th:if="${nim != null}">
-                                        <input type="email" class="form-control" disabled="disabled" th:field="${mhsw.nama}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" disabled ><i class="fa fa-id-badge"></i> Mahasiswa/i</button>
-                                        </div>
-                                    </div>
-                                </div>
+
 
                             </div>
                         </form>
                     </div>
 
-
-                    <span th:if="${transkrip1}">
-                        <div class="table-responsive">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h3 class="mb-0">Semester<b> 1</b></h3>
+                    <div class="card-body" th:if="${nim != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-1">
+                                <h3 class="mb-0">Nama Mahasiswa/i</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label th:text="${mhsw.nama}"></label>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <a th:href="@{/studiesActivity/transcript/print(nim = ${mhsw.nim})}" target='_blank' class="btn btn-warning btn-sm">Download PDF</a>
                                     </div>
                                 </div>
                             </div>
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th>Kode MK</th>
-                                    <th>Nama Mata Kuliah</th>
-                                    <th>SKS</th>
-                                    <th>Nilai</th>
-                                    <th>Bobot</th>
-                                    <th>Mutu</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="data : ${transkrip1}">
-                                    <td th:text="${data[1]}">AEM1101</td>
-                                    <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                    <td th:text="${data[3]}"><b>3</b></td>
-                                    <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                    <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                    <td th:text="${data[6]}"><b>9</b></td>
-                                </tr>
-                                </tbody>
-                            </table>
                         </div>
-                    </span>
+                    </div>
+
+                    <div class="card-body" th:if="${not #lists.isEmpty(transkrip1)}">
+                        <span th:if="${transkrip1}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
+                                <div class="card-header border-0">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3 class="mb-0">Semester<b> 1</b></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Kode MK</th>
+                                        <th>Nama Mata Kuliah</th>
+                                        <th>SKS</th>
+                                        <th>Nilai</th>
+                                        <th>Bobot</th>
+                                        <th>Mutu</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data : ${transkrip1}">
+                                        <td th:text="${data[1]}">AEM1101</td>
+                                        <td th:text="${data[2]}">Dirasah Islamiah</td>
+                                        <td th:text="${data[3]}"><b>3</b></td>
+                                        <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                        <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                        <td th:text="${data[6]}"><b>9</b></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+
+                        </span>
 
 
-                    <span th:if="${transkrip2}">
-                        <div class="table-responsive">
+                        <span th:if="${not #lists.isEmpty(transkrip2)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -144,10 +160,13 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
 
-                    <span th:if="${transkrip3}">
-                        <div class="table-responsive">
+                        </span>
+
+                        <span th:if="${not #lists.isEmpty(transkrip3)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -178,10 +197,13 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
 
-                    <span th:if="${transkrip4}">
-                        <div class="table-responsive">
+                        </span>
+
+                        <span th:if="${not #lists.isEmpty(transkrip4)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -212,10 +234,13 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
 
-                    <span th:if="${transkrip5}">
-                        <div class="table-responsive">
+                        </span>
+
+                        <span th:if="${not #lists.isEmpty(transkrip5)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -246,10 +271,12 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
+                        </span>
 
-                    <span th:if="${transkrip6}">
-                        <div class="table-responsive">
+                        <span th:if="${not #lists.isEmpty(transkrip6)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -280,10 +307,12 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
+                        </span>
 
-                    <span th:if="${transkrip7}">
-                        <div class="table-responsive">
+                        <span th:if="${not #lists.isEmpty(transkrip7)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -314,10 +343,12 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
+                        </span>
 
-                    <span th:if="${transkrip8}">
-                        <div class="table-responsive">
+                        <span th:if="${not #lists.isEmpty(transkrip8)}">
+                            <div class="card shadow" style="margin-top: 7px;">
+                                <div class="table-responsive">
                             <div class="card-header border-0">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -348,8 +379,27 @@
                                 </tbody>
                             </table>
                         </div>
-                    </span>
+                            </div>
+                        </span>
 
+                        <div class="card shadow" style="margin-top: 7px;">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead>
+                                    <tr>
+                                        <th style="color: white;">Kode MK</th>
+                                        <th class="text-right"><span style="color: white">Nama Maa</span> Jumlah :</th>
+                                        <th><b th:text="${sks}">75</b>(SKS)</th>
+                                        <th style="color: white;">Nilai</th>
+                                        <th style="color: white;">Bobot</th>
+                                        <th><b th:text="${mutu}">292.8</b>(Mutu)</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
             </div>

@@ -247,7 +247,7 @@
                                 <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Attendance</a>
                             </li>
                             <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
-                                <a href="../../pages/tables/sortable.html" class="nav-link">Exam Validation</a>
+                                <a th:href="@{/studiesActivity/validation/list}" class="nav-link">Exam Validation</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/assesment/list}" class="nav-link">Assesment</a>
@@ -258,7 +258,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/khs/list}" class="nav-link">KHS</a>
                             </li>
-                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/transcript/list}" class="nav-link">Transcript</a>
                             </li>
                         </ul>

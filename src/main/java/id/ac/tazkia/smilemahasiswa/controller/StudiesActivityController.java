@@ -6,7 +6,6 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
-import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
@@ -14,6 +13,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.TransciptService;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -43,6 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -116,6 +119,9 @@ public class StudiesActivityController {
     @Autowired
     private SoalDao soalDao;
 
+    @Autowired
+    private TransciptService transciptService;
+
     @Autowired private ScoreService scoreService;
 
     @Value("classpath:sample/soal.doc")
@@ -150,6 +156,14 @@ public class StudiesActivityController {
         public KrsDetail findByJadwal(@RequestParam(required = false) KrsDetail krsDetail ,Model model){
             model.addAttribute("otomatisNilai", krsDetail);
             return krsDetail;
+        }
+
+        @GetMapping("/api/mahasiswa")
+        @ResponseBody
+        public Mahasiswa findByNim(@RequestParam(required = false) String nim ,Model model){
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            model.addAttribute("mahasiswa", mahasiswa);
+            return mahasiswa;
         }
 
 //    Attendance
@@ -442,7 +456,7 @@ public class StudiesActivityController {
 
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
 
-        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik ta = tahunAkademikDao.findById(tahunAkademik).get();
         String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
         System.out.println(firstFourChars);
 
@@ -1592,7 +1606,8 @@ public class StudiesActivityController {
 
             //tampilsemua
             model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
-
+            model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
+            model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
             model.addAttribute("transkrip1", krsDetailDao.transkripSem(mahasiswa,"1"));
             model.addAttribute("transkrip2", krsDetailDao.transkripSem(mahasiswa,"2"));
             model.addAttribute("transkrip3", krsDetailDao.transkripSem(mahasiswa,"3"));
@@ -1608,6 +1623,264 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/transcript/print")
+    public void printTranskript(Model model, @RequestParam(required = false)String nim){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+
+
+        model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
+        model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
+        model.addAttribute("transkrip1", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"1"));
+        model.addAttribute("transkrip2", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"2"));
+        model.addAttribute("transkrip3", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"3"));
+        model.addAttribute("transkrip4", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"4"));
+        model.addAttribute("transkrip5", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"5"));
+        model.addAttribute("transkrip6", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"6"));
+        model.addAttribute("transkrip7", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"7"));
+        model.addAttribute("transkrip8", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
+    }
+
+
+//    Exam Validation
+
+    @GetMapping("/studiesActivity/validation/list")
+    public void validationQuestion(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
+                                   @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
+
+        model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+        if (tahun != null && status == null) {
+            model.addAttribute("tahunAkademik",tahun);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseOrMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,search,page));
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+            }
+
+        }
+
+        if (tahun != null && status != null){
+            model.addAttribute("tahunAkademik",tahun);
+            model.addAttribute("status",status);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUtsAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUtsAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,StatusRecord.AKTIF,status,tahun,search,page));
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUtsAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun,status, page));
+            }
+        }
+
+    }
+
+    @GetMapping("/studiesActivity/validation/listuas")
+    public void validationUas(Model model, @RequestParam(required = false)TahunAkademik tahun, Pageable page,
+                              @RequestParam(required = false)StatusApprove status, @RequestParam(required = false)String search){
+        model.addAttribute("akademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+        if (tahun != null && status != null){
+            model.addAttribute("status",status);
+            model.addAttribute("tahunAkademik",tahun);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("search", search);
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndStatusUasAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,status,search,StatusRecord.AKTIF,status,tahun,search,page));
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndStatusUasAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun,status, page));
+            }
+        }
+
+        if (tahun != null && status == null) {
+            model.addAttribute("tahunAkademik",tahun);
+            if (StringUtils.hasText(search)) {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord.AKTIF,tahun,search,StatusRecord.AKTIF,tahun,search,page));
+                model.addAttribute("search", search);
+            } else {
+                model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page));
+            }
+
+        }
+    }
+
+    @GetMapping("/studiesActivity/validation/approval")
+    public void approval(Model model,@RequestParam Jadwal jadwal,@RequestParam StatusRecord status){
+        model.addAttribute("jadwal",jadwal);
+        model.addAttribute("soal",soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(jadwal,StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED,StatusApprove.APPROVED),status));
+    }
+
+    @GetMapping("/studiesActivity/validation/detail")
+    public void detailApprove (Model model,@RequestParam Jadwal jadwal,@RequestParam StatusRecord status){
+        model.addAttribute("jadwal",jadwal);
+        model.addAttribute("soal",soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,status));
+    }
+
+    @PostMapping("/studiesActivity/validation/approval")
+    public String prosesApprove(@RequestParam Soal soal,MultipartFile file) throws Exception {
+
+
+        String namaFile = file.getName();
+        String jenisFile = file.getContentType();
+        String namaAsli = file.getOriginalFilename();
+        Long ukuran = file.getSize();
+
+        System.out.println("Nama File : {}" + namaFile);
+        System.out.println("Jenis File : {}" + jenisFile);
+        System.out.println("Nama Asli File : {}" + namaAsli);
+        System.out.println("Ukuran File : {}"+ ukuran);
+
+//        memisahkan extensi
+        String extension = "";
+
+        int i = namaAsli.lastIndexOf('.');
+        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = namaAsli.substring(i + 1);
+        }
+
+
+        String idFile = soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-"+soal.getStatusSoal()+"-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
+
+        if (idFile.length() > 65){
+
+        }
+
+        idFile = idFile.replaceAll(" ", "-").toLowerCase();
+        String lokasiUpload = uploadFolder + File.separator + soal.getJadwal().getId();
+        LOGGER.debug("Lokasi upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdirs();
+        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+        file.transferTo(tujuan);
+        LOGGER.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+        soal.setFileApprove(idFile + "." + extension);
+        soal.setStatusApprove(StatusApprove.APPROVED);
+        soal.setKeteranganApprove(soal.getKeterangan());
+        soalDao.save(soal);
+
+        Jadwal jadwal =jadwalDao.findById(soal.getJadwal().getId()).get();
+        if (soal.getStatusSoal() == StatusRecord.UTS) {
+            jadwal.setStatusUts(StatusApprove.APPROVED);
+        }
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            jadwal.setStatusUas(StatusApprove.APPROVED);
+        }
+        jadwalDao.save(jadwal);
+
+        if (soal.getStatusSoal() == StatusRecord.UAS){
+            return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+        }
+        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+    }
+
+    @PostMapping("/studiesActivity/validation/rejected")
+    public String prosesReject(@RequestParam Soal soal,@RequestParam(required = false) String keteranganApprove){
+        soal.setStatusApprove(StatusApprove.REJECTED);
+        soal.setKeteranganApprove(keteranganApprove);
+        soalDao.save(soal);
+
+        Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
+        if (soal.getStatusSoal() == StatusRecord.UTS) {
+            jadwal.setStatusUts(StatusApprove.REJECTED);
+        }
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            jadwal.setStatusUas(StatusApprove.REJECTED);
+        }
+        jadwalDao.save(jadwal);
+
+        if (soal.getStatusSoal() == StatusRecord.UAS) {
+            return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+        }
+
+        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+    }
+
+    @RequestMapping("/filedownload/")
+    public void downloadSoal( HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     @RequestParam Soal soal)
+    {
+        //If user is not authorized - he should be thrown out from here itself
+        String fileName = soal.getFileApprove();
+        //Authorized user will download the file
+        String lokasi = uploadFolder+File.separator+soal.getJadwal().getId();
+        String dataDirectory = request.getServletContext().getRealPath(lokasi);
+        Path file = Paths.get(lokasi, fileName);
+        System.out.println(file);
+        if (Files.exists(file))
+        {
+            response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @RequestMapping("/file/{fileName}")
+    public void downloadPDFResource( HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     @RequestParam Soal soal,
+                                     @PathVariable("fileName") String fileName)
+    {
+        //If user is not authorized - he should be thrown out from here itself
+
+        //Authorized user will download the file
+        String lokasi = uploadFolder+File.separator+soal.getJadwal().getId();
+        String dataDirectory = request.getServletContext().getRealPath(lokasi);
+        Path file = Paths.get(lokasi, fileName);
+        System.out.println(file);
+        if (Files.exists(file))
+        {
+            response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.addHeader("Content-Disposition", "attachment; filename="+fileName);
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
+
+    @PostMapping("/studiesActivity/validation/canceluts")
+    public String cancel (@RequestParam Jadwal jadwal)
+    {
+        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,StatusRecord.UTS);
+        soal.setStatusApprove(StatusApprove.REJECTED);
+        soal.setKeteranganApprove("Dibatalkan");
+        soalDao.save(soal);
+
+        jadwal.setStatusUts(StatusApprove.REJECTED);
+        jadwalDao.save(jadwal);
+
+        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+
+    }
+
+    @PostMapping("/studiesActivity/validation/canceluas")
+    public String cancelUas (@RequestParam Jadwal jadwal)
+    {
+        Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal,StatusRecord.AKTIF,StatusApprove.APPROVED,StatusRecord.UAS);
+        soal.setStatusApprove(StatusApprove.REJECTED);
+        soal.setKeteranganApprove("Dibatalkan");
+        soalDao.save(soal);
+
+        jadwal.setStatusUas(StatusApprove.REJECTED);
+        jadwalDao.save(jadwal);
+
+        return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.APPROVED;
+
+    }
 
 }
 

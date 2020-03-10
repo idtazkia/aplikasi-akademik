@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Detail Validation</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div>
+                                    <b>Nama Dosen</b>
+                                    <br>
+                                    <p><b th:text="${jadwal.dosen.karyawan.namaKaryawan}">Hera Herdiansyah, S.E., M.E.</b></p>
+                                </div>
+                                <div>
+                                    <b>Kelas</b>
+                                    <br>
+                                    <p><b th:text="${jadwal.kelas.namaKelas}">Computer Lab</b></p>
+                                </div>
+                                <div>
+                                    <b>Keterangan</b>
+                                    <br>
+                                    <p><b th:text="${soal.keterangan}">Computer Lab</b></p>
+                                </div>
+                                <div>
+                                    <b>Matakuliah</b>
+                                    <br>
+                                    <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish != null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + ' ' +'  (  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + '  )'}">Akuntansi Syariah</b></p>
+                                    <p th:if="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish == null}"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Akuntansi Syariah</b></p>
+
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3" th:if="${soal.statusApprove == approved}">
+
+                                    </div>
+
+                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3" th:if="${soal.statusApprove != approved}">
+                                        <a href="" class="show_hide_approved"><button class="btn btn-primary">Approved</button></a>
+                                        <a href="" class="show_hide_rejected"><button type="submit" class="btn btn-danger">Rejected</button></a>
+                                        <a th:if="${soal.statusApprove.APPROVED} != ${soal.statusApprove}" th:href="@{/file/{fileName}(fileName=${soal.fileUpload},soal=${soal.id})}" class="btn btn-success">Download</a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="approved">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <h3 class="mb-0">Approved</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form th:action="@{/studiesActivity/validation/approval (soal = ${soal.id})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="id">
+                                        <input type="hidden" name="jadwal">
+                                        <div class="form-group">
+                                            <input type="file" name="file" placeholder="Upload" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Upload</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rejected">
+                            <div class="card shadow">
+                                <div class="card-header border-0">
+                                    <h3 class="mb-0">Rejected</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form th:action="@{/studiesActivity/validation/rejected(soal = ${soal.id})}" method="post">
+                                        <div class="form-group">
+                                            <textarea name="keteranganApprove" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-danger" type="submit">Reject</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(document).ready(function(){
+        $(".approved").hide();
+        $(".rejected").hide();
+        $(".show_hide_approved").show();
+
+        $('.show_hide_approved').click(function(){
+            $(".rejected").hide();
+            $(".approved").slideToggle();
+            return false;
+        })
+        $('.show_hide_rejected').click(function(){
+            $(".approved").hide();
+            $(".rejected").slideToggle();
+            return false;
+        })
+
+    });
+</script>

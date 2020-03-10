@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Question Validation</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List UTS</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studiesActivity/validation/list}" class="btn btn-sm btn-default">UTS</a>
+                                <a th:href="@{/studiesActivity/validation/listuas}" class="btn btn-sm btn-warning">UAS</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="tahun" required>
+                                            <option></option>
+                                            <option th:each="data : ${akademik}"
+                                                    th:selected="(${data} == *{tahunAkademik})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-info">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body" th:if="${jadwal != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">"Search Result"</h3>
+                            </div>
+                            <div class="card-body text-right">
+                                <form method="get">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <div class="row">
+                                                <div class="col-md-7"></div>
+                                                <div class="col-md-5">
+                                                    <div class="input-group mb-3" style="margin-top: 10px;">
+                                                        <input type="text" name="search" class="form-control" th:value="${search}">
+                                                        <input type="hidden" name="tahun" th:value="${tahunAkademik.id}">
+                                                        <input type="hidden" name="status" th:if="${approve != null}" th:value="${approve}">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-default" type="submit">Search</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+<!--                                    alll-->
+                                    <div class="col-md-1" th:if="${status == null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id})}" style="width: 100%;" class="btn btn-primary">All</a>
+                                    </div>
+                                    <div class="col-md-1" th:if="${status != null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id})}" style="width: 100%;" class="btn btn-secondary">All</a>
+                                    </div>
+
+<!--                                    waiting-->
+                                    <div class="col-md-2" th:if="${status == null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
+                                    </div>
+                                    <div class="col-md-2" th:if="${status != null && status == status.WAITING}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" style="width: 100%;" class="btn btn-primary">Waiting</a>
+                                    </div>
+                                    <div class="col-md-2" th:if="${status != null && status != status.WAITING}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'WAITING')}" style="width: 100%;" class="btn btn-secondary">Waiting</a>
+                                    </div>
+
+<!--                                    Approved-->
+                                    <div class="col-md-3" th:if="${status == null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" style="width: 100%;" class="btn btn-secondary">Approved</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status == status.APPROVED}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" style="width: 100%;" class="btn btn-primary">Approved</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status != status.APPROVED}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'APPROVED')}" style="width: 100%;" class="btn btn-secondary">Approved</a>
+                                    </div>
+
+<!--                                    REJECTED-->
+                                    <div class="col-md-3" th:if="${status == null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status == status.REJECTED}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" style="width: 100%;" class="btn btn-primary">Rejected</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status != status.REJECTED}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'REJECTED')}" style="width: 100%;" class="btn btn-secondary">Rejected</a>
+                                    </div>
+
+<!--                                    NOT_UPLOADED_YET-->
+                                    <div class="col-md-3" th:if="${status == null}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" style="width: 100%;" class="btn btn-secondary">Not Uploaded Yet</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status == status.NOT_UPLOADED_YET}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" style="width: 100%;" class="btn btn-primary">Not Uploaded Yet<</a>
+                                    </div>
+                                    <div class="col-md-3" th:if="${status != null && status != status.NOT_UPLOADED_YET}">
+                                        <a th:href="@{/studiesActivity/validation/list(tahun = ${tahunAkademik.id}, status = 'NOT_UPLOADED_YET')}" style="width: 100%;" class="btn btn-secondary">Not Uploaded Yet</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Matakuliah</th>
+                                        <th>Kelas</th>
+                                        <th>Dosen</th>
+                                        <th>Status Upload</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="data,row : ${jadwal}">
+                                        <td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}"></td>
+                                        <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                        <td th:text="${data.kelas.namaKelas}"></td>
+                                        <td th:text="${data.dosen.karyawan.namaKaryawan}"></td>
+                                        <td>
+                                            <a th:if="${data.statusUts.APPROVED} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-success"
+                                               data-placement="right"  data-trigger="focus" onclick="return false"
+                                               title="Status"
+                                               text="Approved"
+                                               data-content="Pada Tanggal 11-10-2019">Approved
+                                            </a>
+
+                                            <a th:if="${data.statusUts.WAITING} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-warning"
+                                               data-placement="right"  data-trigger="focus" onclick="return false"
+                                               title="Status"
+                                               text="Waiting for Approval"
+                                               data-content="Soal yang Anda masih menunggu untuk disetujui">Waiting for Approval
+                                            </a>
+
+                                            <a th:if="${data.statusUts.REJECTED} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-danger"
+                                               data-placement="right"  data-trigger="focus" onclick="return false"
+                                               title="Status"
+                                               text="Waiting for Approval"
+                                               data-content="Soal yang Anda masih menunggu untuk disetujui">Rejected
+                                            </a>
+
+                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-default"
+                                               data-placement="right"  data-trigger="focus" onclick="return false"
+                                               title="Status"
+                                               text="Approved"
+                                               data-content="Soal yang Anda upload ditolak, silahkan upload ulang soal">NOT UPLOAD YET
+                                            </a>
+                                        </td>
+                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET} != ${data.statusUts}"></td>
+
+                                        <td>
+                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts && data.statusUts.APPROVED != data.statusUts && data.statusUts.REJECTED != data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                                <i class="fa fa-check"></i> Validasi Soal
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                                <i class="fa fa-check"></i> Download Soal
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <form th:if="${data.statusUts.APPROVED == data.statusUts}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">
+                                                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">
+                                                    <i class="fa fa-close"></i> Cancel
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer py-4">
+                                <nav aria-label="...">
+                                    <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                        <li class="disabled"><a href="#" aria-label="Previous"><span
+                                                aria-hidden="true">&laquo;</span></a>
+                                        </li>
+                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
