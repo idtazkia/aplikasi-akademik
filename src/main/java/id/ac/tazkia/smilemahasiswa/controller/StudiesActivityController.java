@@ -13,7 +13,6 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
-import id.ac.tazkia.smilemahasiswa.service.TransciptService;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -118,9 +117,6 @@ public class StudiesActivityController {
 
     @Autowired
     private SoalDao soalDao;
-
-    @Autowired
-    private TransciptService transciptService;
 
     @Autowired private ScoreService scoreService;
 
