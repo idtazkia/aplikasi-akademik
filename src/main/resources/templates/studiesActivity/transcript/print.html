@@ -12,7 +12,7 @@
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
-<body onLoad="setTimeout('closemyself()',1000);" >
+<body  onLoad="setTimeout('closemyself()',500);" >
 <div class="container">
     <div class="col-md-12 text-center" style="margin-top: 20px;">
         <b style="font-size: 20px;">INSTITUT AGAMA ISLAM TAZKIA</b>
@@ -138,15 +138,40 @@
                 <td colspan="4" style="padding-left: 20px;" th:text="${ipk.ipk}">2121</td>
             </tr>
         </table>
+        <br>
+        <table id="footer">
+            <thead>
+                <tr>
+                    <td id="tanggal">Bogor, 23 Februari 2020</td>
+                </tr>
+            </thead>
+            <tr>
+                <td th:text="${mhsw.idProdi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td th:text="${mhsw.idProdi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>
+            </tr>
+        </table>
 
     </div>
 </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="https://rawgit.com/MrRio/jsPDF/master/dist/jspdf.debug.js"></script>
-<script src="https://rawgit.com/someatoms/jsPDF-AutoTable/master/dist/jspdf.plugin.autotable.js"></script>
+<script src="https://unpkg.com/jspdf@1.5.3/dist/jspdf.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.2.13/dist/jspdf.plugin.autotable.js"></script>
 
 <script>
+    var d = new Date();
+    var months = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+    document.getElementById("tanggal").innerHTML = "Bogor, " + " " + d.getDate() + " " + months[d.getMonth()] + " " +d.getFullYear();
+
+
     var x = document.getElementById("locality-dropdown").value;
     console.log(x);
     const url = '/api/mahasiswa?nim='+x;
@@ -155,54 +180,44 @@
 
         var doc = new jsPDF('p', 'pt', 'letter');
         var res = doc.autoTableHtmlToJson(document.getElementById('table'));
+        var footer = doc.autoTableHtmlToJson(document.getElementById('footer'));
         doc.setFontSize(10);
         doc.text("                                  INSTITUT AGAMA ISLAM TAZKIA", 150, 50);
         doc.setFontSize(7);
         doc.text("                                       Transkrip Nilai Akademik", 210, 69);
         doc.text("                                       ", 70, 70);
-        doc.setFontSize(10);
+        doc.setFontSize(8);
         doc.text("                                       ", 70, 80);
         doc.text("                                       ", 70, 90);
-        doc.text("NIM                  :  "+data.nim, 170, 90);
-        doc.text("Nama               :  "+data.nama, 170, 103);
-        doc.text("Program Studi  :  "+data.idProdi.namaProdi, 170, 115);
+        doc.text("NIM                  :  "+data.nim, 172, 90);
+        doc.text("Nama               :  "+data.nama, 172, 103);
+        doc.text("Program Studi  :  "+data.idProdi.namaProdi, 172, 115);
         var height = doc.internal.pageSize.height;
         doc.autoTable(res.columns, res.data, {
+            theme : 'plain',
+            styles : {
+                fontSize: number = 8,
+                lineColor: Color = 10,
+                lineWidth: number = 1,
+                useCss : true
+            },
+            tableLineColor: [189, 195, 199],
+            tableLineWidth: 0.75,
+            fontSize : 10,
             startY: 130
         });
+        doc.autoTable(footer.columns, footer.data, {
+            theme : 'plain',
+            styles : {
+                fontSize: number = 8,
+                useCss : true
+            },
+            fontSize : 10,
+        });
 
-        doc.save('Generated PDF.pdf');
+        doc.save('Transkrip.pdf');
     });
 
-    document.getElementById('pdf').onclick = function() {
-        var x = document.getElementById("locality-dropdown").value;
-        console.log(x);
-        const url = '/api/mahasiswa?nim='+x;
-        $.getJSON(url, function (data) {
-
-
-        var doc = new jsPDF('p', 'pt', 'letter');
-        var res = doc.autoTableHtmlToJson(document.getElementById('table'));
-            doc.setFontSize(10);
-            doc.text("                                  INSTITUT AGAMA ISLAM TAZKIA", 150, 50);
-        doc.setFontSize(7);
-        doc.text("                                       Transkrip Nilai Akademik", 210, 69);
-        doc.text("                                       ", 70, 70);
-        doc.setFontSize(10);
-        doc.text("                                       ", 70, 80);
-        doc.text("                                       ", 70, 90);
-        doc.text("NIM                  :  "+data.nim, 170, 90);
-        doc.text("Nama               :  "+data.nama, 170, 103);
-        doc.text("Program Studi  :  "+data.idProdi.namaProdi, 170, 115);
-        var height = doc.internal.pageSize.height;
-        doc.setFontSize(10);
-        doc.autoTable(res.columns, res.data, {
-            startY: 130
-        });
-
-        doc.save('Generated PDF.pdf');
-        });
-    };
 </script>
 <script language=javascript>
     function closemyself() {
