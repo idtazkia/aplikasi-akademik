@@ -211,12 +211,12 @@
                                         <td th:if="${data.statusUts.NOT_UPLOADED_YET} != ${data.statusUts}"></td>
 
                                         <td>
-                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts && data.statusUts.APPROVED != data.statusUts && data.statusUts.REJECTED != data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                            <a th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts && data.statusUts.APPROVED != data.statusUts && data.statusUts.REJECTED != data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id}, status =  'UTS')}" type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-check"></i> Validasi Soal
                                             </a>
                                         </td>
                                         <td>
-                                            <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id})}" type="button" class="btn btn-primary btn-xs">
+                                            <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/studiesActivity/validation/detail (jadwal = ${data.id}, status = 'UTS')}" type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-check"></i> Download Soal
                                             </a>
                                         </td>
