@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,6 +38,16 @@ public class SettingController {
     
     @Autowired
     private KonsentrasiDao konsentrasiDao;
+
+    @Autowired
+    private DosenDao dosenDao;
+
+//    Attribute
+
+    @ModelAttribute("dosen")
+    public Iterable<Dosen> dosen() {
+        return dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
+    }
 
 //setting/program
 

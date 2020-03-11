@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +13,8 @@ import javax.persistence.*;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
     @Entity
-    @Data
+    @Getter
+    @Setter
     public class Prodi {
 
         @Id
@@ -32,6 +35,12 @@ import javax.persistence.*;
         private String namaProdi;
 
         private String keterangan;
+
+        private String jabatan;
+
+        @ManyToOne
+        @JoinColumn(name = "id_dosen")
+        private Dosen dosen;
 
 
         @Enumerated(EnumType.STRING)

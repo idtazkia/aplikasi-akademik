@@ -49,7 +49,7 @@
                         <form method="post" th:action="@{/setting/prody/form}" th:object="${programStudy}">
 
                             <div class="form-group">
-                                <label>Code</label>
+                                <label>Kode</label>
                                 <input type="text" class="form-control" th:field="*{kodeProdi}" name="kodeProdi" placeholder="Kode">
                             </div>
 
@@ -76,17 +76,21 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label>Nama Jabatan</label>
+                                <input type="text" th:field="*{jabatan}" class="form-control" placeholder="Nama Jabatan" name="jabatan">
+                            </div>
 
-
-                            <!--<div class="form-group">-->
-                            <!--<label>Program</label>-->
-                            <!--<select name="programs" th:field="*{programs}" class="form-control js-example-placeholder-single"-->
-                            <!--multiple="multiple" style="width: 100%!important;">-->
-                            <!--<option th:each="data : ${program}"-->
-                            <!--th:text="${data.namaProgram}"-->
-                            <!--th:value="${data.id}"></option>-->
-                            <!--</select>-->
-                            <!--</div>-->
+                            <div class="form-group">
+                                <label>Nama Pejabat</label>
+                                <select class="form-control js-example-placeholder-single" id="select2-dosen"
+                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}">
+                                    <option value=""></option>
+                                    <option th:each="data: ${dosen}"
+                                            th:text="${data.karyawan.namaKaryawan}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label>Status</label><br>
@@ -109,3 +113,9 @@
 </div>
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
