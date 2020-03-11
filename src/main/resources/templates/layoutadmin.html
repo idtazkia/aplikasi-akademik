@@ -246,7 +246,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
                                 <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Attendance</a>
                             </li>
-                            <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/validation/list}" class="nav-link">Exam Validation</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
