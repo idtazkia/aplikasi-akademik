@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <title>Institut Tazkia</title>
+    <style type="text/css">
+        .margin-content{
+            margin: 20px;
+        }
+        table.table-bordered{
+            border:1px solid black!important;
+            margin-top:20px;
+        }
+        table.table-bordered > thead > tr > th{
+            border:1px solid black!important;
+            margin: 0;
+            padding: 5px;
+        }
+        table.table-bordered > tbody > tr > td{
+            border:1px solid black!important;
+            margin: 0;
+            padding: 5px;
+        }
+    </style>
+    <style type="text/css" media="print">
+        @media print {
+            #printPageButton {
+                display: none;
+            }
+
+            @page { margin: 0; }
+            body { margin: 1.6cm; }
+
+        }
+    </style>
+</head>
+<body style="font-size: 12px;">
+<div class="container" id="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-2">
+                <center>
+                    <div class="margin-content">
+                        <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" alt="" width="70px" height="60px">
+                    </div>
+                </center>
+            </div>
+            <div class="col-md-8">
+                <div class="">
+                    <center>
+                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GANJIL == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND FIRST SEMESTER MIDTERM TEST SCORE</b></h5>
+                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GENAP == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND SECOND SEMESTER MIDTERM TEST SCORE</b></h5>
+                        <h5><b>INSTITUT AGAMA ISLAM TAZKIA</b></h5>
+                        <h5><b th:text="${' ACADEMIC YEAR ' + jadwal.tahunAkademik.tahun+'/'+tahun}">ACADEMIC YEAR 2018/2019</b></h5>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-7">
+            <table>
+                <tr>
+                    <td>&nbsp  <b>Subject</b></td>
+                    <td>&nbsp &nbsp  :</td>
+                    <td>&nbsp  <span th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></td>
+                </tr>
+                <tr>
+                    <td>&nbsp  <b>Lecturer</b></td>
+                    <td>&nbsp &nbsp :</td>
+                    <td>&nbsp <span th:text="${jadwal.dosen.karyawan.namaKaryawan}"></span></td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="col-xs-5">
+            <table>
+                <tr>
+                    <td>&nbsp  <b>Course</b></td>
+                    <td>&nbsp &nbsp :</td>
+                    <td>&nbsp <span th:text="${jadwal.kelas.namaKelas}"></span></td>
+                </tr>
+                <tr>
+                    <td>&nbsp  <b>Room No/Time</b></td>
+                    <td>&nbsp &nbsp  :</td>
+                    <td>&nbsp  .......................</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row" th:if="${absen != null}">
+        <div class="col-xs-12">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">No.</th>
+                            <th rowspan="2">UTS ID</th>
+                            <th rowspan="2">NIM</th>
+                            <th rowspan="2">Student Name</th>
+                            <th rowspan="2">Signature</th>
+                            <th colspan="2" style="text-align: center;">Grade</th>
+                        </tr>
+                        <tr>
+                            <th>Score</th>
+                            <th th:text="${jadwal.bobotUts+'%'}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="data,row : ${absen}">
+                            <td th:text="${(row.index + 1)}">1</td>
+                            <td th:text="${data[2]}">17535</td>
+                            <td th:text="${data[0]}">S.17101.092</td>
+                            <td th:text="${data[1]}">Firza Faadhilah Arifian</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-4">
+            <p>Bogor .................................</p>
+            <p>Invigilator,</p>
+            <br>
+            <br>
+            <p>(......................................)</p>
+        </div>
+        <div class="col-xs-2"></div>
+        <div class="col-xs-6">
+            <center>
+                <p>Bogor .................................</p>
+                <p>Lecturer,</p>
+                <br>
+                <br>
+                <p th:text="${'(  ' + jadwal.dosen.karyawan.namaKaryawan + '  )'}">( Aam Slamet Rusydiana,S.E.I., ME )</p>
+            </center>
+        </div>
+    </div>
+    <a href="" id="printPageButton" onclick="window.print()" class="btn btn-danger">Print</a>
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<!-- <script>
+
+    var doc = new jsPDF('p','pt','a4');
+
+    doc.addHTML(document.body,function() {
+        doc.save('sample-file.pdf');
+    });
+
+</script> -->
+</html>

@@ -156,7 +156,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -187,7 +187,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:href="@{/studiesActivity/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary" th:if="${jadwal.course == 'Student Dynamic Session'}"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary" th:if="${jadwal.course == 'Student Dynamic Session'}"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -303,7 +303,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -418,7 +418,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -542,7 +542,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -667,7 +667,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -699,7 +699,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course == 'Student Dynamic Session'}" th:href="@{/studiesActivity/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${jadwal.course == 'Student Dynamic Session'}" th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                     <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
@@ -799,7 +799,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -924,7 +924,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -1049,7 +1049,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>
@@ -1174,7 +1174,7 @@
                                                                             <div class="card-header bg-transparent pb-5">
                                                                                 <div class="text-muted text-center mt-2 mb-3"><small>Show</small></div>
                                                                                 <div class="btn-wrapper text-center">
-                                                                                    <a href="#" class="btn btn-neutral btn-icon">
+                                                                                    <a th:href="@{/academic/schedule/uts (jadwal = ${jadwal.id})}" class="btn btn-neutral btn-icon">
                                                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                                         <span class="btn-inner--text">Absensi UTS</span>
                                                                                     </a>

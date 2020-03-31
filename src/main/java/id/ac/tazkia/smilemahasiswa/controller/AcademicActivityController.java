@@ -1,9 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
-import id.ac.tazkia.smilemahasiswa.dto.schedule.RoomDto;
-import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,11 +96,11 @@ public class AcademicActivityController {
     @Autowired
     private KrsDao krsDao;
 
-//    Attribute
+    //    Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
-    return mahasiswaDao.cariAngkatan();
-}
+        return mahasiswaDao.cariAngkatan();
+    }
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
@@ -134,7 +132,7 @@ public class AcademicActivityController {
         return hariDao.findAll();
     }
 
-//    API
+    //    API
     @GetMapping("/api/prodi")
     @ResponseBody
     public Page<Prodi> cariProdi(@RequestParam(required = false) String search, Pageable page){
@@ -176,7 +174,7 @@ public class AcademicActivityController {
         List<SesiDto> jadwal = jadwalDao.cariSesi(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),hari,ruangan,k,d);
         List<String> stringList = new ArrayList<>();
         for (SesiDto s : jadwal) {
-           stringList.add(s.getSesi());
+            stringList.add(s.getSesi());
         }
 
 
@@ -226,7 +224,9 @@ public class AcademicActivityController {
     }
 
     @PostMapping("/academic/year/form")
-    public String prosesAcademic(@Valid TahunAkademik tahunAkademik) {
+    public String prosesAcademic(@ModelAttribute @Valid TahunAkademik tahunAkademik, @RequestParam String kodeTahunAkademik) {
+        tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
+        System.out.println(kodeTahunAkademik);
         tahunAkademikDao.save(tahunAkademik);
 
         return "redirect:list";
@@ -245,63 +245,63 @@ public class AcademicActivityController {
         List<TahunAkademikProdi> tahunAkademikProdi = tahunProdiDao.findByStatus(StatusRecord.AKTIF);
 
         for(
-    TahunAkademikProdi tahunProdi :tahunAkademikProdi)
+                TahunAkademikProdi tahunProdi :tahunAkademikProdi)
 
-    {
-        tahunProdi.setStatus(StatusRecord.NONAKTIF);
-        tahunProdiDao.save(tahunProdi);
-    }
+        {
+            tahunProdi.setStatus(StatusRecord.NONAKTIF);
+            tahunProdiDao.save(tahunProdi);
+        }
 
-    TahunAkademik thnAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik thnAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         if(thnAkademik !=null)
 
-    {
-        thnAkademik.setStatus(StatusRecord.NONAKTIF);
-        tahunAkademikDao.save(thnAkademik);
-    }
+        {
+            thnAkademik.setStatus(StatusRecord.NONAKTIF);
+            tahunAkademikDao.save(thnAkademik);
+        }
 
         tahunAkademik.setStatus(StatusRecord.AKTIF);
 
         tahunAkademikDao.save(tahunAkademik);
 
-    TahunAkademik akademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-    List<TahunAkademikProdi> akademikProdi = tahunProdiDao.findByTahunAkademik(akademik);
+        TahunAkademik akademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        List<TahunAkademikProdi> akademikProdi = tahunProdiDao.findByTahunAkademik(akademik);
         if(akademikProdi !=null)
 
-    {
-        for (TahunAkademikProdi tahun : akademikProdi) {
-            tahun.setStatus(StatusRecord.AKTIF);
-            tahunProdiDao.save(tahun);
+        {
+            for (TahunAkademikProdi tahun : akademikProdi) {
+                tahun.setStatus(StatusRecord.AKTIF);
+                tahunProdiDao.save(tahun);
+            }
         }
-    }
         if(akademikProdi ==null||akademikProdi.isEmpty())
 
-    {
-        List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
-        for (Prodi prodi : prodis) {
-            TahunAkademikProdi tahunProdi = new TahunAkademikProdi();
-            tahunProdi.setMulaiKuliah(tahunAkademik.getTanggalMulaiKuliah());
-            tahunProdi.setMulaiNilai(tahunAkademik.getTanggalMulaiNilai());
-            tahunProdi.setMulaiUas(tahunAkademik.getTanggalMulaiUas());
-            tahunProdi.setMulaiKrs(tahunAkademik.getTanggalMulaiKrs());
-            tahunProdi.setMulaiUts(tahunAkademik.getTanggalMulaiUts());
-            tahunProdi.setProdi(prodi);
-            tahunProdi.setSelesaiKrs(tahunAkademik.getTanggalSelesaiKrs());
-            tahunProdi.setSelesaiKuliah(tahunAkademik.getTanggalSelesaiKuliah());
-            tahunProdi.setSelesaiNilai(tahunAkademik.getTanggalSelesaiNilai());
-            tahunProdi.setSelesaiUas(tahunAkademik.getTanggalSelesaiUas());
-            tahunProdi.setSelesaiUts(tahunAkademik.getTanggalSelesaiUts());
-            tahunProdi.setStatus(StatusRecord.AKTIF);
-            tahunProdi.setTahunAkademik(tahunAkademik);
-            tahunProdiDao.save(tahunProdi);
+        {
+            List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
+            for (Prodi prodi : prodis) {
+                TahunAkademikProdi tahunProdi = new TahunAkademikProdi();
+                tahunProdi.setMulaiKuliah(tahunAkademik.getTanggalMulaiKuliah());
+                tahunProdi.setMulaiNilai(tahunAkademik.getTanggalMulaiNilai());
+                tahunProdi.setMulaiUas(tahunAkademik.getTanggalMulaiUas());
+                tahunProdi.setMulaiKrs(tahunAkademik.getTanggalMulaiKrs());
+                tahunProdi.setMulaiUts(tahunAkademik.getTanggalMulaiUts());
+                tahunProdi.setProdi(prodi);
+                tahunProdi.setSelesaiKrs(tahunAkademik.getTanggalSelesaiKrs());
+                tahunProdi.setSelesaiKuliah(tahunAkademik.getTanggalSelesaiKuliah());
+                tahunProdi.setSelesaiNilai(tahunAkademik.getTanggalSelesaiNilai());
+                tahunProdi.setSelesaiUas(tahunAkademik.getTanggalSelesaiUas());
+                tahunProdi.setSelesaiUts(tahunAkademik.getTanggalSelesaiUts());
+                tahunProdi.setStatus(StatusRecord.AKTIF);
+                tahunProdi.setTahunAkademik(tahunAkademik);
+                tahunProdiDao.save(tahunProdi);
 
+            }
         }
-    }
 
 
         return"redirect:list";
 
-}
+    }
 
 
 //Curriculum
@@ -353,12 +353,12 @@ public class AcademicActivityController {
 
     @GetMapping("/academic/courses/list")
     public void listCourses(Model model,@RequestParam(required = false) String search, Pageable pageable){
-            if (!StringUtils.isEmpty(search)){
-                model.addAttribute("search", search);
-                model.addAttribute("courses", matakuliahDao.findByNamaMatakuliahContainingIgnoreCaseOrNamaMatakuliahEnglishContainingIgnoreCase(search,search,pageable));
-            }else {
-                model.addAttribute("courses", matakuliahDao.findByStatusNotInOrderByNamaMatakuliahAsc(Arrays.asList(StatusRecord.HAPUS),pageable));
-            }
+        if (!StringUtils.isEmpty(search)){
+            model.addAttribute("search", search);
+            model.addAttribute("courses", matakuliahDao.findByNamaMatakuliahContainingIgnoreCaseOrNamaMatakuliahEnglishContainingIgnoreCase(search,search,pageable));
+        }else {
+            model.addAttribute("courses", matakuliahDao.findByStatusNotInOrderByNamaMatakuliahAsc(Arrays.asList(StatusRecord.HAPUS),pageable));
+        }
     }
 
     @GetMapping("/academic/courses/form")
@@ -809,5 +809,14 @@ public class AcademicActivityController {
         }
 
         return "redirect:list?tahunAkademik="+jadwal.getTahunAkademik().getId()+"&prodi="+jadwal.getProdi().getId();
+    }
+
+    //    Uts & Uas
+    @GetMapping("/academic/schedule/uts")
+    public void absenUas(@RequestParam Jadwal jadwal,Model model){
+
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("absen", krsDetailDao.absenUts(jadwal,jadwal.getTahunAkademik()));
+
     }
 }

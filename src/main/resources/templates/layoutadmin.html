@@ -35,6 +35,7 @@
     <link th:href="@{/css/assets/css/argon-dashboard.css?v=1.1.1}" rel="stylesheet" />
     <link th:href="@{/css/select2/css/select2.css}" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}">
+    <link rel="stylesheet" th:href="@{/css/js/jquery-clockpicker.min.css}">
     <link rel="stylesheet" href="css/timePicker.css">
 
 </head>
@@ -298,6 +299,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/graduation/admin/list}" class="nav-link">Concept Note</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/graduation/seminar/list}" class="nav-link">Seminar Proposal</a>
+                            </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/graduation/lecture/list}" class="nav-link">Student List</a>
                             </li>
@@ -443,6 +447,7 @@
 <!--   Core   -->
 <script th:src="@{/css/assets/js/plugins/jquery/dist/jquery.min.js}"></script>
 <script th:src="@{/css/js/aplikasi.js}"></script>
+<script th:src="@{/css/js/jquery-clockpicker.min.js}"></script>
 <script th:src="@{/css/assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
 <!--   Optional JS   -->
 <script th:src="@{/css/assets/js/plugins/chart.js/dist/Chart.min.js}"></script>

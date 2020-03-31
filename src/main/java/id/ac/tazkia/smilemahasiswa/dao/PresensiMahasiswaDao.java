@@ -15,9 +15,8 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
 
     PresensiMahasiswa findByMahasiswaAndSesiKuliahAndStatus(Mahasiswa m, SesiKuliah sesiKuliah, StatusRecord aktif);
 
-    Long countByStatusPresensiNotInAndKrsDetailAndStatus(List<StatusPresensi> statusp, KrsDetail krsDetail, StatusRecord aktif);
-
-    Long countByStatusAndSesiKuliahPresensiDosenStatusAndStatusPresensiNotInAndMahasiswaAndKrsDetailJadwalMatakuliahKurikulumMatakuliahKodeMatakuliahContainingIgnoreCase(StatusRecord aktif, StatusRecord aktif1, List<StatusPresensi> statusp, Mahasiswa mahasiswa, String sds);
+    @Query(value = "select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=?2 and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR','TERLAMBAT')", nativeQuery = true)
+    Long jumlahMangkir(Mahasiswa mahasiswa, KrsDetail krsDetail);
 
     @Query(value = "CALL getabsensi(?1)", nativeQuery = true)
     List<Object[]> bkdAttendance(Jadwal jadwal);
