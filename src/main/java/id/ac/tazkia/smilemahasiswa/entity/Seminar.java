@@ -58,8 +58,12 @@ public class Seminar {
     private LocalDate tanggalUjian;
 
     @Column(columnDefinition = "TIME")
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime jam;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamMulai;
+
+    @Column(columnDefinition = "TIME")
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime jamSelesai;
 
     @ManyToOne
     @JoinColumn(name = "ruangan")
@@ -101,7 +105,7 @@ public class Seminar {
     private BigDecimal pf;
 
     @Enumerated(EnumType.STRING)
-    private StatusRecord statusSempro;
+    private StatusApprove statusSempro;
 
     private String publish;
 

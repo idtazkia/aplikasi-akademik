@@ -27,4 +27,8 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Long countDosenByStatus(StatusRecord aktif);
 
     Page<Dosen> findByStatusNotInAndKaryawanNamaKaryawanContainingIgnoreCaseOrKaryawanNikContainingIgnoreCase(List<StatusRecord> asList, String search, String search1, Pageable page);
+
+    @Query("select d from Dosen d where d.status not in(:status) and d not in (:dosen)")
+    Iterable<Dosen> validasiDosen(@Param("status") List<StatusRecord> statusRecord, @Param("dosen") List<Dosen> dosen);
+    List<Dosen> findByStatusNotInAndIdNotIn(List<StatusRecord> status, List<String> dosens);
 }

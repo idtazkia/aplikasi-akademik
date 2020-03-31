@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +51,9 @@ public class GraduationController {
 
     @Value("${upload.note}")
     private String uploadFolder;
+
+    @Value("${upload.seminar}")
+    private String seminarFolder;
 
     @Autowired
     private DosenDao dosenDao;
@@ -72,9 +77,15 @@ public class GraduationController {
     private ProdiDao prodiDao;
 
     @Autowired
-    private GradeDao gradeDao;
+    private SeminarDao seminarDao;
 
     @Autowired private ScoreService scoreService;
+
+    @Autowired
+    private RuanganDao ruanganDao;
+
+    @Autowired
+    private HariDao hariDao;
 
     @Value("classpath:sample/example.xlsx")
     private Resource example;
@@ -86,6 +97,10 @@ public class GraduationController {
         return dosenDao.cariDosen(StatusRecord.HAPUS);
     }
 
+    @ModelAttribute("ruangan")
+    public Iterable<Ruangan> ruangan() {
+        return ruanganDao.findByStatus(StatusRecord.AKTIF);
+    }
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
@@ -95,6 +110,35 @@ public class GraduationController {
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
+    }
+
+    //    API
+    @GetMapping("/api/seminar")
+    @ResponseBody
+    public Object[] validasiSeminar(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
+        System.out.println(tanggal.getDayOfWeek().getValue());
+        if (tanggal.getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            System.out.println(hari.getNamaHari());
+            System.out.println(ta.getId());
+            System.out.println(jamMulai);
+            System.out.println(jamSelesai);
+            System.out.println(ruangan.getNamaRuangan());
+            return seminarDao.validasiJadwalSeminar(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
+        }else {
+            Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            System.out.println(hari.getNamaHari());
+            System.out.println(tahunAkademik.getId());
+            System.out.println(jamMulai);
+            System.out.println(jamSelesai);
+            System.out.println(ruangan.getNamaRuangan());
+            return seminarDao.validasiJadwalSeminar(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
+
+        }
     }
 
 //    Graduation Mahasiswa
@@ -303,8 +347,14 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/success")
-    public void success(Model model, @RequestParam Note note){
+    public String success(Model model, @RequestParam Note note){
+        List<Seminar> seminar = seminarDao.findByNote(note);
         model.addAttribute("note", note);
+        if (!seminar.isEmpty()){
+            return "redirect:seminar/waiting?id="+note.getId();
+        }else {
+            return "graduation/success";
+        }
     }
 
 //    Graduation Admin
@@ -509,6 +559,302 @@ public class GraduationController {
                 ex.printStackTrace();
             }
         }
+    }
+
+//    Seminar Proposal
+
+    @GetMapping("/graduation/sempro")
+    public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note,@RequestParam(required = false)String sempro){
+        if (note.getStatus() == StatusApprove.APPROVED){
+            model.addAttribute("note", note);
+            return "graduation/sempro";
+        }else {
+
+            return "redirect:register";
+        }
+
+
+    }
+
+    @GetMapping("/graduation/seminar/waiting")
+    public String waiting(Model model,@RequestParam(name = "id", value = "id", required = false) Note note, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("note", note);
+        if (noteDao.findByMahasiswaAndStatus(note.getMahasiswa(),StatusApprove.APPROVED) != null) {
+            Seminar seminar = seminarDao.findByNoteAndStatus(note, StatusApprove.APPROVED);
+            if (seminar != null) {
+                return "redirect:success?id="+seminar.getId();
+            } else {
+                Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+                model.addAttribute("waiting", waiting);
+
+                model.addAttribute("list", seminarDao.findByNote(note));
+                return "/graduation/seminar/waiting";
+            }
+        }else {
+            return "redirect:../register";
+        }
+
+
+    }
+
+    @GetMapping("/graduation/seminar/success")
+    public void successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+        model.addAttribute("seminar", seminar);
+
+    }
+
+    @PostMapping("/graduation/sempro")
+    public String prosesSeminar(@Valid Seminar seminar,
+                                BindingResult error, MultipartFile kartu,MultipartFile skripsi,MultipartFile pengesahan,
+                                Authentication currentUser) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (!kartu.isEmpty() || kartu != null) {
+            String namaFile = kartu.getName();
+            String jenisFile = kartu.getContentType();
+            String namaAsli = kartu.getOriginalFilename();
+            Long ukuran = kartu.getSize();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+
+            seminar.setFileBimbingan(idFile + "." + extension);
+
+        }else {
+            seminar.setFileBimbingan(seminar.getFileBimbingan());
+        }
+
+        if (!pengesahan.isEmpty() || pengesahan != null) {
+            String namaFile = pengesahan.getName();
+            String jenisFile = pengesahan.getContentType();
+            String namaAsli = pengesahan.getOriginalFilename();
+            Long ukuran = pengesahan.getSize();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pengesahan.transferTo(tujuan);
+
+
+            seminar.setFilePengesahan(idFile + "." + extension);
+
+        }else {
+            seminar.setFilePengesahan(seminar.getFilePengesahan());
+        }
+
+        if (!skripsi.isEmpty() || skripsi != null) {
+            String namaFile = skripsi.getName();
+            String jenisFile = skripsi.getContentType();
+            String namaAsli = skripsi.getOriginalFilename();
+            Long ukuran = skripsi.getSize();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            skripsi.transferTo(tujuan);
+
+
+            seminar.setFileSkripsi(idFile + "." + extension);
+
+        }else {
+            seminar.setFileSkripsi(seminar.getFileSkripsi());
+        }
+
+        seminar.setTanggalInput(LocalDate.now());
+        seminar.setStatus(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        seminarDao.save(seminar);
+
+        return "redirect:list";
+
+    }
+
+    @GetMapping("/graduation/seminar/list")
+    public void seminarList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) Prodi prodi, Pageable pageable){
+        if (tahunAkademik != null) {
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputAsc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
+        }
+    }
+
+    @GetMapping("/graduation/seminar/view")
+    public void viewSeminar(Model model, @RequestParam(name = "id", value = "id") Seminar seminar){
+        model.addAttribute("seminar", seminar);
+
+
+
+    }
+
+    @GetMapping("/graduation/seminar/approved")
+    public void approvedSeminar(@RequestParam(name = "id", value = "id") Seminar seminar,Model model){
+        model.addAttribute("seminar",seminar);
+        List<String> dosenList = new ArrayList<>();
+        dosenList.add(seminar.getNote().getDosen().getId());
+        if (seminar.getNote().getDosen2() != null) {
+            dosenList.add(seminar.getNote().getDosen2().getId());
+        }
+        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS),dosenList));
+
+    }
+
+    @PostMapping("/graduation/seminar/approved")
+    public String prosesApprove(@Valid Seminar seminar,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        seminar.setUserApprove(user);
+        seminar.setStatus(StatusApprove.APPROVED);
+        seminarDao.save(seminar);
+
+        return "redirect:list?tahunAkademik="+seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @GetMapping("/graduation/seminar/reject")
+    public String prosesReject(@RequestParam Seminar seminar,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        seminar.setUserApprove(user);
+        seminar.setStatus(StatusApprove.REJECTED);
+        seminarDao.save(seminar);
+
+        return "redirect:list?tahunAkademik="+seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @GetMapping("/upload/{seminar}/pengesahan/")
+    public ResponseEntity<byte[]> pengesahan(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFilePengesahan();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFilePengesahan().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFilePengesahan().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFilePengesahan().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{seminar}/skripsi/")
+    public ResponseEntity<byte[]> skripsi(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileSkripsi();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileSkripsi().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{seminar}/bimbingan/")
+    public ResponseEntity<byte[]> bimbingan(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileBimbingan();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileBimbingan().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileBimbingan().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileBimbingan().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/graduation/seminar/detail")
+    public void detailSempro(){
+
+    }
+
+    @GetMapping("/graduation/seminar/penilaian")
+    public void penilaianSeminar(){
+
     }
 
 }

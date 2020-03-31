@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .font{
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Detail Sempro</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-1 text-center">
+                        <h3 th:text="${'Detail Seminar '+ seminar.note.mahasiswa.nama}">Detail Seminar Proposal Di sini untuk nama</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label><b class="font">Note</b></label>
+                            <p th:text="${seminar.note.judul}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto, cupiditate dolorum eius excepturi fuga fugiat id, incidunt magni minus molestias nostrum officiis perspiciatis sapiente soluta tempora temporibus veritatis vero voluptatem!</p>
+                        </div>
+                        <div class="form-group">
+                            <label><b class="font">Dosen 1</b></label>
+                            <p th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
+                        </div>
+                        <div class="form-group">
+                            <label><b class="font">Dosen 2</b></label>
+                            <p th:if="${seminar.note.dosen2 != null}" th:text="${seminar.note.dosen2.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
+                            <p th:if="${seminar.note.dosen2 == null}" ></p>
+                        </div>
+                        <div class="form-group text-center">
+                            <a class="btn btn-success" th:href="@{/graduation/seminar/approved (id = ${seminar.id})}"><i class="fas fa-check-circle"></i> Approve</a>
+                            <a class="btn btn-danger" th:href="@{/graduation/seminar/reject (seminar = ${seminar.id})}"><i class="fa fa-window-close" aria-hidden="true"></i> Reject</a>
+                            <!--<button class="btn btn-info"><i class="fas fa-undo"></i> Revision</button>-->
+                            <a class="btn btn-dark" th:href="@{/graduation/seminar/list(tahunAkademik = ${seminar.tahunAkademik.id}, prodi = ${seminar.note.mahasiswa.idProdi.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-xs-12" style="margin-top: 10px;">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="nav-wrapper">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"  th:href="@{/upload/{seminar}/pengesahan/(seminar=${seminar.id})}" role="tab" target="_blank">Lembar Pengesahan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/bimbingan/(seminar=${seminar.id})}" role="tab" target="_blank">Kartu Bimbingan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/skripsi/(seminar=${seminar.id})}" role="tab" target="_blank">Skirpsi Bab 1 - 3</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--<div class="card shadow">-->
+                            <!--<div class="card-body">-->
+                                <!--<div class="tab-content" id="myTabContent">-->
+                                    <!--<div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">-->
+                                        <!--<embed th:src="@{/upload/{seminar}/pengesahan/(seminar=${seminar.id})}" type="application/pdf" width="100%" height="600px">-->
+                                    <!--</div>-->
+                                    <!--<div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">-->
+                                        <!--<embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">-->
+                                    <!--</div>-->
+                                    <!--<div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">-->
+                                        <!--<embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>

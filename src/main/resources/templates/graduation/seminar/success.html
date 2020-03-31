@@ -110,38 +110,38 @@
     <div class="error-page-wrap bounceIn" style="border-radius: 10px; ">
         <i class="notika-icon notika-success" style="color: #4DA8A8;"></i>
         <h2 style="color: #4DA8A8;">Congratulations !</h2>
-        <p>Your Concept Note is Approved</p>
+        <p>Your Seminar is Approved</p>
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <b style="color:#4DA8A8;">Title Concept Note</b>
-                    <p th:text="${note.judul}">Ini Judul Konsep Note</p>
+                    <b style="color:#4DA8A8;">Room</b>
+                    <p th:text="${seminar.ruangan.namaRuangan}">Ini Judul Konsep Note</p>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                    <b style="color:#4DA8A8;">English Title</b>
-                    <p th:text="${note.judulInggris}">Ini Judul Konsep Note</p>
+                    <b style="color:#4DA8A8;">Time</b>
+                    <p th:text="${seminar.jamMulai + ' - ' + seminar.jamSelesai}">Ini Judul Konsep Note</p>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <b style="color:#4DA8A8;">Lecturer 1</b>
-            <p th:text="${note.dosen.karyawan.namaKaryawan}">Dosen 1 Mantap</p>
+            <b style="color:#4DA8A8;">Chairman</b>
+            <p th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Dosen 1 Mantap</p>
         </div>
-        <div class="col-md-6" th:if="${note.dosen2 != null}">
-            <b style="color:#4DA8A8;">Lecturer 2</b>
-            <p th:text="${note.dosen2.karyawan.namaKaryawan}">Dosen 1 Mantap</p>
+        <div class="col-md-6">
+            <b style="color:#4DA8A8;">examiner</b>
+            <p th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Dosen 1 Mantap</p>
         </div>
+        <br><br>
         <div class="col-md-12">
-            <b style="color:#4DA8A8;">Comment</b>
-            <p th:text="${note.keterangan}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur dolorem doloribus explicabo facere possimus repellat sint tempore vitae! Alias architecto doloremque ducimus esse ipsum, neque quam quibusdam reprehenderit sint ut!</p>
+            <h2 style="color: #4DA8A8;">Good Luck 💚</h2>
         </div>
         <br>
 
-        <div class="col-md-6 col-lg-offset-3">
-            <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;">
-            Continue to sempro !
-            </a>
-        </div>
+<!--        <div class="col-md-6 col-lg-offset-3">-->
+<!--            <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;">-->
+<!--            Continue to sempro !-->
+<!--            </a>-->
+<!--        </div>-->
 
     </div>
 

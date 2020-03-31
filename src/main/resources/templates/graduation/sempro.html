@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .card{
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Sempro</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/krs}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                    </a>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Form</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                                <img src="https://nikahinaja.id/image/undraw_Creation_process_ukbh.png" alt="">
+                            </div>
+                            <div class="col-md-6 col-xs-12">
+                                <form th:action="@{/graduation/sempro}" method="post" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label>NIM</label>
+                                        <br>
+                                        <p th:text="${note.mahasiswa.nim}">11605557</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <br>
+                                        <p th:text="${note.mahasiswa.nama}">Muhammad Rafizki</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <br>
+                                        <p th:text="${note.judulInggris}">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis dolorum eos eum, expedita laboriosam minima necessitatibus odio quis rerum similique. At blanditiis dolorem eos error obcaecati, odit totam veniam voluptates.
+                                        </p>
+                                    </div>
+                                    <input type="hidden" name="note" th:value="${note.id}">
+                                    <div class="form-group">
+                                        <label>Lembar Pengesahan</label>
+                                        <input type="file" accept="application/pdf" name="pengesahan" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kartu Bimbingan</label>
+                                        <input type="file" accept="application/pdf" name="kartu" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Skripsi Bab 1-3</label>
+                                        <input type="file" accept="application/pdf" name="skripsi" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

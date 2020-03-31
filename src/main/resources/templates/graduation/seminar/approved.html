@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .font{
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Detail Sempro</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-1 text-center">
+                        <h3>Pengajuan Judul Skripsi/Tugas Akhir/Tesis</h3>
+                        <h3><span th:text="${seminar.note.mahasiswa.nama}"></span> - <span th:text="${seminar.note.mahasiswa.nim}">12212121</span></h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/graduation/seminar/approved}" method="post" th:object="${seminar}">
+                            <input type="hidden" name="id" th:value="${seminar.id}">
+                            <input type="hidden" name="note" th:value="${seminar.note.id}">
+                            <input type="hidden" name="tahunAkademik" th:value="${seminar.note.tahunAkademik.id}">
+                            <input type="hidden" name="filePengesahan" th:value="${seminar.filePengesahan}">
+                            <input type="hidden" name="fileBimbingan" th:value="${seminar.fileBimbingan}">
+                            <input type="hidden" name="fileSkripsi" th:value="${seminar.fileSkripsi}">
+                            <input type="hidden" name="status" th:value="${seminar.status}">
+                            <input type="hidden" name="statusSempro" th:value="${seminar.statusSempro}">
+                            <input type="hidden" name="tanggalInput" th:value="${seminar.tanggalInput}">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label><b class="font">Judul</b></label>
+                                        <p th:text="${seminar.note.judul}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto, cupiditate dolorum eius excepturi fuga fugiat id, incidunt magni minus molestias nostrum officiis perspiciatis sapiente soluta tempora temporibus veritatis vero voluptatem!</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">Ketua</b></label>
+                                        <select name="ketuaPenguji" th:field="*{ketuaPenguji}" class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data : ${listDosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">Penguji</b></label>
+                                        <select name="dosenPenguji" th:field="*{dosenPenguji}"  class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data : ${listDosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">Ruang</b></label>
+                                        <select name="ruangan" onchange="waktu()" id="ruangan" th:field="*{ruangan}" class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data: ${ruangan}"
+                                                    th:text="${data.namaRuangan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><b class="font">Date</b></label>
+                                        <input type="date" onchange="waktu()" id="tanggal" th:field="*{tanggalUjian}" name="tanggalUjian" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><b class="font">Start Time</b></label>
+                                        <input autocomplete="off" class="form-control" onchange="waktu()" th:field="*{jamMulai}" id="input-a" name="jamMulai" data-default="20:48">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">End Time</b></label>
+                                        <input autocomplete="off" class="form-control" onchange="waktu()" th:field="*{jamSelesai}" id="input-b" name="jamSelesai" data-default="20:48">
+                                    </div>
+                                    <div class="alert alert-warning" id="myDIV" style="display: none;">
+                                        <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                        <span class="alert-inner--text" id="mySpan"></span>
+                                    </div>
+                                    <div class="form-group text-center" id="myButton" style="display:none;">
+                                        <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Approved</button>
+                                        <a class="btn btn-warning" th:href="@{/graduation/seminar/view (id=${seminar.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                    </div>
+                                    <div class="form-group text-center" id="myButton1" style="display:block;">
+                                        <!--                                        <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Approved</button>-->
+                                        <a class="btn btn-warning" th:href="@{/graduation/seminar/view (id=${seminar.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    function waktu() {
+        var ruangan = document.getElementById("ruangan").value;
+        var tanggal = document.getElementById("tanggal").value;
+        var jamMulai = document.getElementById("input-a").value;
+        var jamSelesai = document.getElementById("input-b").value;
+        console.log(ruangan);
+        console.log(tanggal);
+        console.log(jamMulai);
+        console.log(jamSelesai);
+        const url = '/api/seminar?ruangan='+ruangan+'&tanggal='+tanggal+'&jamMulai='+jamMulai+':00'+'&jamSelesai='+jamSelesai+':00';
+        $.getJSON(url, function (data) {
+            var x = document.getElementById("myDIV");
+            var y = document.getElementById("myButton");
+            var z = document.getElementById("myButton1");
+            if (isEmpty(data)){
+                x.style.display = "none";
+                z.style.display = "none";
+                y.style.display = "block";
+                console.log("kosong");
+            }else {
+                x.style.display = "block";
+                y.style.display = "none";
+                z.style.display = "block";
+                $.each(data, function (key, entry) {
+                    if (entry[0] == 'Seminar'){
+                        document.getElementById("mySpan").innerHTML="Sorry, Your selected schedule has been used by " + entry[2] + " ( " + entry[1] + " )";
+                    }else {
+                        document.getElementById("mySpan").innerHTML="Sorry, Your selected schedule has been used by " + entry[1] + " ( " + entry[2] + " ) ";
+                    }
+                });
+
+                console.log("data :  "  + data);
+            }
+        });
+
+    }
+
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    var input = $('#input-a');
+    input.clockpicker({
+        autoclose: true
+    });
+
+    var input = $('#input-b');
+    input.clockpicker({
+        autoclose: true
+    });
+
+    // Manual operations
+    $('#button-a').click(function(e){
+        // Have to stop propagation here
+        e.stopPropagation();
+        input.clockpicker('show')
+            .clockpicker('toggleView', 'minutes');
+    });
+    $('#button-b').click(function(e){
+        // Have to stop propagation here
+        e.stopPropagation();
+        input.clockpicker('show')
+            .clockpicker('toggleView', 'hours');
+    });
+</script>
