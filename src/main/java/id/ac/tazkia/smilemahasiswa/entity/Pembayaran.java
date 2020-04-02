@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name = "pembayaran_mahasiswa")
+@Table(name = "pembayaran")
 public class Pembayaran {
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -22,11 +22,15 @@ public class Pembayaran {
 
     @ManyToOne
     @JoinColumn(name = "id_tagihan")
-    private TagihanMahasiswa tagihanMahasiswa;
+    private Tagihan tagihan;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate waktuBayar;
+
+    @ManyToOne
+    @JoinColumn(name = "id_bank")
+    private Bank bank;
 
     @NotNull
     @NotEmpty
@@ -35,9 +39,7 @@ public class Pembayaran {
     @Min(0)
     private BigDecimal amount;
 
+    @NotNull
+    @NotEmpty
     private String referensi;
-
-    @ManyToOne
-    @JoinColumn(name = "id_rencana_pembayaran")
-    private RencanaPembayaran rencanaPembayaran;
 }
