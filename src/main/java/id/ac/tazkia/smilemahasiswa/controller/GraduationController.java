@@ -40,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -86,6 +87,9 @@ public class GraduationController {
 
     @Autowired
     private HariDao hariDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @Value("classpath:sample/example.xlsx")
     private Resource example;
@@ -709,7 +713,7 @@ public class GraduationController {
         seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         seminarDao.save(seminar);
 
-        return "redirect:list";
+        return "redirect:seminar/waiting?id="+seminar.getNote().getId();
 
     }
 
@@ -848,12 +852,66 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/seminar/detail")
-    public void detailSempro(){
+    public void detailSempro(Model model, @RequestParam Seminar seminar, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        model.addAttribute("seminar",seminar);
+        model.addAttribute("dosen", dosen);
 
     }
 
     @GetMapping("/graduation/seminar/penilaian")
-    public void penilaianSeminar(){
+    public void penilaianSeminar(Model model,@RequestParam Seminar seminar,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+        System.out.println(valueHari);
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("seminar",seminar);
+
+    }
+
+    @GetMapping("/graduation/lecture/sempro")
+    public void listSeminar(@RequestParam(required = false) TahunAkademik tahunAkademik, Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        if(tahunAkademik != null){
+            model.addAttribute("list", seminarDao.cariSeminar(dosen,dosen,dosen,tahunAkademik));
+        }
+    }
+
+    @PostMapping("/graduation/seminar/detailPost")
+    public String saveComment(@RequestParam Seminar seminar, @RequestParam(required = false) String komentarDosen1 ,@RequestParam(required = false) String komentarDosen2,
+                              @RequestParam(required = false) String komentarDosen3){
+
+        if (komentarDosen1 != null){
+            seminar.setKomentarDosen1(komentarDosen1);
+            seminarDao.save(seminar);
+        }
+
+        if (komentarDosen2 != null){
+            seminar.setKomentarDosen2(komentarDosen2);
+            seminarDao.save(seminar);
+        }
+
+        if (komentarDosen3 != null){
+            seminar.setKomentarDosen3(komentarDosen3);
+            seminarDao.save(seminar);
+        }
+
+        return "redirect:detail?seminar="+seminar.getId();
 
     }
 
