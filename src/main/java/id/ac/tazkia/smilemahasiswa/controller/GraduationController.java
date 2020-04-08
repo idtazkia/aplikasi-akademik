@@ -595,7 +595,7 @@ public class GraduationController {
                 model.addAttribute("waiting", waiting);
 
                 model.addAttribute("list", seminarDao.findByNote(note));
-                return "/graduation/seminar/waiting";
+                return "graduation/seminar/waiting";
             }
         }else {
             return "redirect:../register";
