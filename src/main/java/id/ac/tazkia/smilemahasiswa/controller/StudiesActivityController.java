@@ -1642,6 +1642,26 @@ public class StudiesActivityController {
         model.addAttribute("transkrip8", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
     }
 
+    @GetMapping("/studiesActivity/transcript/print1")
+    public void printTranskript1(Model model, @RequestParam(required = false)String nim){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+
+
+        model.addAttribute("sks", krsDetailDao.totalSksAkhir(mahasiswa));
+        model.addAttribute("mutu", krsDetailDao.totalMutuAkhir(mahasiswa));
+        model.addAttribute("transkrip1", krsDetailDao.transkripAKhirSem1(mahasiswa));
+        model.addAttribute("transkrip", krsDetailDao.transkripAKhir(mahasiswa));
+        model.addAttribute("transkrip2", krsDetailDao.transkripAKhirSem2(mahasiswa));
+        model.addAttribute("transkrip3", krsDetailDao.transkripAKhirSem3(mahasiswa));
+        model.addAttribute("transkrip4", krsDetailDao.transkripAKhirSem4(mahasiswa));
+        model.addAttribute("transkrip5", krsDetailDao.transkripAKhirSem5(mahasiswa));
+        model.addAttribute("transkrip6", krsDetailDao.transkripAKhirSem6(mahasiswa));
+        model.addAttribute("transkrip7", krsDetailDao.transkripAKhirSem7(mahasiswa));
+        model.addAttribute("transkrip8", krsDetailDao.transkripAKhirSem8(mahasiswa));
+    }
+
 
 //    Exam Validation
 

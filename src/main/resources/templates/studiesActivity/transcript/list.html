@@ -81,7 +81,15 @@
                                         <label th:text="${mhsw.nama}"></label>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <a th:href="@{/studiesActivity/transcript/print(nim = ${mhsw.nim})}" target='_blank' class="btn btn-warning btn-sm">Download PDF</a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Download
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/transcript/print (nim = ${mhsw.nim})}">Transkript Nilai</a>
+                                                <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/transcript/print1 (nim = ${mhsw.nim})}">Transkript Nilai 1</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
