@@ -1646,7 +1646,7 @@ public class StudiesActivityController {
     public void printTranskript1(Model model, @RequestParam(required = false)String nim){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
-        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+        model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
 
 
         model.addAttribute("sks", krsDetailDao.totalSksAkhir(mahasiswa));
