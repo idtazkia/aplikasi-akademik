@@ -918,6 +918,7 @@ public class GraduationController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         if(tahunAkademik != null){
+            model.addAttribute("akademik", tahunAkademik);
             model.addAttribute("list", seminarDao.cariSeminar(dosen,dosen,dosen,tahunAkademik));
         }
     }

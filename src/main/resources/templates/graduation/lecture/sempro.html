@@ -59,7 +59,7 @@
                                         <select name="tahunAkademik" required class="form-control">
                                             <option value="" selected disabled>-- Select One --</option>
                                             <option th:each="tahun : ${tahun}"
-                                                    th:selected="(${tahun} == *{selectedTahun})"
+                                                    th:selected="(${tahun} == *{akademik})"
                                                     th:text="${tahun.namaTahunAkademik}"
                                                     th:value="${tahun.id}"></option>
                                         </select>
@@ -136,9 +136,24 @@
                                                         <div class="text-muted text-center mt-2 mb-3"><small>Schedule</small></div>
                                                         <center >
                                                             <b>Room</b>
-                                                            <p >Abu Hanifah 1</p>
+                                                            <p th:text="${data.ruangan.namaRuangan}">Abu Hanifah 1</p>
                                                         </center>
                                                         <br>
+                                                        <div class="row col-md-12">
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Date</b>
+                                                                    <p th:text="${data.tanggalUjian}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Time</b>
+                                                                    <p th:text="${data.jamMulai + ' - ' + data.jamSelesai}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
