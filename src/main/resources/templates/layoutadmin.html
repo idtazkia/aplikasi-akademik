@@ -303,7 +303,10 @@
                                 <a th:href="@{/graduation/seminar/list}" class="nav-link">Seminar Proposal</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
-                                <a th:href="@{/graduation/lecture/list}" class="nav-link">Student List</a>
+                                <a th:href="@{/graduation/lecture/list}" class="nav-link">Concept Note</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/graduation/lecture/sempro}" class="nav-link">Seminar</a>
                             </li>
                         </ul>
                     </div>

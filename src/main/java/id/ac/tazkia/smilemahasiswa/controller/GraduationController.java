@@ -35,6 +35,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -305,6 +306,34 @@ public class GraduationController {
             } else if (note.getFileUpload().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (note.getFileUpload().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/sempro/{seminar}/bukti/")
+    public ResponseEntity<byte[]> tampilkanEvidence(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileSkripsi();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileSkripsi().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileSkripsi().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileSkripsi().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -867,6 +896,7 @@ public class GraduationController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
+        System.out.println(seminar.getNilaiA());
         if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
@@ -913,6 +943,167 @@ public class GraduationController {
 
         return "redirect:detail?seminar="+seminar.getId();
 
+    }
+
+    @PostMapping("/graduation/seminar/ketua")
+    public String saveKetua(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal ka,
+                            @RequestParam(required = false) BigDecimal kb,@RequestParam(required = false) BigDecimal kc,
+                            @RequestParam(required = false) BigDecimal kd,@RequestParam(required = false) BigDecimal ke,@RequestParam(required = false) String beritaAcara,
+                            @RequestParam(required = false) BigDecimal kf,@RequestParam(required = false) String komentarKetua){
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            seminar.setKa(ka);
+            seminar.setKb(kb);
+            seminar.setKc(kc);
+            seminar.setKd(kd);
+            seminar.setKe(ke);
+            seminar.setKf(kf);
+            seminar.setBeritaAcara(beritaAcara);
+            seminar.setKomentarKetua(komentarKetua);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilaiF(nilaiF);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminar.setStatusSempro(StatusApprove.APPROVED);
+            seminarDao.save(seminar);
+        }
+
+        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            seminar.setKa(ka);
+            seminar.setKb(kb);
+            seminar.setKc(kc);
+            seminar.setKd(kd);
+            seminar.setKe(ke);
+            seminar.setBeritaAcara(beritaAcara);
+            seminar.setKomentarKetua(komentarKetua);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+            seminar.setStatusSempro(StatusApprove.APPROVED);
+            seminarDao.save(seminar);
+        }
+
+        return "redirect:detail?seminar="+seminar.getId();
+    }
+
+    @PostMapping("/graduation/seminar/dosen")
+    public String saveDosen(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal ua,
+                            @RequestParam(required = false) BigDecimal ub,@RequestParam(required = false) BigDecimal uc,
+                            @RequestParam(required = false) BigDecimal ud,@RequestParam(required = false) BigDecimal ue,
+                            @RequestParam(required = false) BigDecimal uf,@RequestParam(required = false) String komentarPenguji){
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            seminar.setUa(ua);
+            seminar.setUb(ub);
+            seminar.setUc(uc);
+            seminar.setUd(ud);
+            seminar.setUe(ue);
+            seminar.setUf(uf);
+            seminar.setKomentarPenguji(komentarPenguji);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilaiF(nilaiF);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminarDao.save(seminar);
+        }
+
+        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            seminar.setUa(ua);
+            seminar.setUb(ub);
+            seminar.setUc(uc);
+            seminar.setUd(ud);
+            seminar.setUe(ue);
+            seminar.setKomentarPenguji(komentarPenguji);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+            seminarDao.save(seminar);
+        }
+
+        return "redirect:detail?seminar="+seminar.getId();
+    }
+
+    @PostMapping("/graduation/seminar/pembimbing")
+    public String savePembimbing(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal pa,
+                            @RequestParam(required = false) BigDecimal pb,@RequestParam(required = false) BigDecimal pc,
+                            @RequestParam(required = false) BigDecimal pd,@RequestParam(required = false) BigDecimal pe,
+                            @RequestParam(required = false) BigDecimal pf,@RequestParam(required = false) String komentarPembimbing){
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            seminar.setPa(pa);
+            seminar.setPb(pb);
+            seminar.setPc(pc);
+            seminar.setPd(pd);
+            seminar.setPe(pe);
+            seminar.setPf(pf);
+            seminar.setKomentarPembimbing(komentarPembimbing);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilaiF(nilaiF);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            seminarDao.save(seminar);
+        }
+
+        if(seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            seminar.setPa(pa);
+            seminar.setPb(pb);
+            seminar.setPc(pc);
+            seminar.setPd(pd);
+            seminar.setPe(pe);
+            seminar.setKomentarPembimbing(komentarPembimbing);
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+            seminarDao.save(seminar);
+        }
+
+        return "redirect:detail?seminar="+seminar.getId();
     }
 
 }

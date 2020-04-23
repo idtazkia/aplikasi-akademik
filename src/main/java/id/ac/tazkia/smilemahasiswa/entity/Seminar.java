@@ -75,34 +75,39 @@ public class Seminar {
     @Column(columnDefinition = "LONGTEXT")
     private String beritaAcara;
 
-    private BigDecimal ka;
-    private BigDecimal kb;
-    private BigDecimal kc;
-    private BigDecimal kd;
-    private BigDecimal ke;
-    private BigDecimal kf;
+    private BigDecimal ka = BigDecimal.ZERO;
+    private BigDecimal kb = BigDecimal.ZERO;
+    private BigDecimal kc = BigDecimal.ZERO;
+    private BigDecimal kd = BigDecimal.ZERO;
+    private BigDecimal ke = BigDecimal.ZERO;
+    private BigDecimal kf = BigDecimal.ZERO;
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String komentarKetua;
 
-    private BigDecimal ua;
-    private BigDecimal ub;
-    private BigDecimal uc;
-    private BigDecimal ud;
-    private BigDecimal ue;
-    private BigDecimal uf;
+    private BigDecimal ua = BigDecimal.ZERO;
+    private BigDecimal ub = BigDecimal.ZERO;
+    private BigDecimal uc = BigDecimal.ZERO;
+    private BigDecimal ud = BigDecimal.ZERO;
+    private BigDecimal ue = BigDecimal.ZERO;
+    private BigDecimal uf = BigDecimal.ZERO;
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String komentarPenguji;
 
-    private BigDecimal pa;
-    private BigDecimal pb;
-    private BigDecimal pc;
-    private BigDecimal pd;
-    private BigDecimal pe;
-    private BigDecimal pf;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarPembimbing;
+
+
+    private BigDecimal pa = BigDecimal.ZERO;
+    private BigDecimal pb = BigDecimal.ZERO;
+    private BigDecimal pc = BigDecimal.ZERO;
+    private BigDecimal pd = BigDecimal.ZERO;
+    private BigDecimal pe = BigDecimal.ZERO;
+    private BigDecimal pf = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     private StatusApprove statusSempro;
@@ -120,5 +125,23 @@ public class Seminar {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String komentarDosen3;
+
+    @Column(name = "nilai_a")
+    private BigDecimal nilaiA = BigDecimal.ZERO;
+
+    @Column(name = "nilai_b")
+    private BigDecimal nilaiB = BigDecimal.ZERO;
+
+    @Column(name = "nilai_c")
+    private BigDecimal nilaiC = BigDecimal.ZERO;
+
+    @Column(name = "nilai_d")
+    private BigDecimal nilaiD = BigDecimal.ZERO;
+
+    @Column(name = "nilai_e")
+    private BigDecimal nilaiE = BigDecimal.ZERO;
+
+    @Column(name = "nilai_f")
+    private BigDecimal nilaiF = BigDecimal.ZERO;
 
 }

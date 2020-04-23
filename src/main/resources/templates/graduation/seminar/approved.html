@@ -56,7 +56,7 @@
                         <form th:action="@{/graduation/seminar/approved}" method="post" th:object="${seminar}">
                             <input type="hidden" name="id" th:value="${seminar.id}">
                             <input type="hidden" name="note" th:value="${seminar.note.id}">
-                            <input type="hidden" name="tahunAkademik" th:value="${seminar.note.tahunAkademik.id}">
+                            <input type="hidden" name="tahunAkademik" th:value="${seminar.tahunAkademik.id}">
                             <input type="hidden" name="filePengesahan" th:value="${seminar.filePengesahan}">
                             <input type="hidden" name="fileBimbingan" th:value="${seminar.fileBimbingan}">
                             <input type="hidden" name="fileSkripsi" th:value="${seminar.fileSkripsi}">

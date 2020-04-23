@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Seminar</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option value="" selected disabled>-- Select One --</option>
+                                            <option th:each="tahun : ${tahun}"
+                                                    th:selected="(${tahun} == *{selectedTahun})"
+                                                    th:text="${tahun.namaTahunAkademik}"
+                                                    th:value="${tahun.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i> Show</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">NIM</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Seminar</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${list}">
+                                        <td th:text="${(row.index + 1)}">1</td>
+                                        <td th:text="${data.note.mahasiswa.nim}">12121</td>
+                                        <td th:text="${data.note.mahasiswa.nama}">Muhammmad Rafizki</td>
+                                        <div class="modal fade" th:id="${'modal-default' + data.id}"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Sempro</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <b>Title</b>
+                                                        <p >Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+                                                        <b>Title in English</b>
+                                                        <p >A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+                                                        <hr>
+                                                                <center >
+                                                                    <b>Chairman</b>
+                                                                   <center>
+                                                                       <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                   </center>
+                                                                </center>
+
+                                                        <div class="row col-md-12">
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Mentor</b>
+                                                                    <p th:text="${data.note.dosen.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Examiner</b>
+                                                                    <p th:text="${data.dosenPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="text-muted text-center mt-2 mb-3"><small>Schedule</small></div>
+                                                        <center >
+                                                            <b>Room</b>
+                                                            <p >Abu Hanifah 1</p>
+                                                        </center>
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <td>
+                                            <button class="btn btn-success btn-sm" th:if="${data.status == data.status.APPROVED}" th:text="${data.status}">Approved</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.status == data.status.WAITING}" th:text="${data.status}">Waiting</button>
+
+                                            <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Rejected</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm" th:if="${data.statusSempro == data.statusSempro.APPROVED}" th:text="${data.statusSempro}">Approved</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.statusSempro == data.statusSempro.WAITING}" th:text="${data.statusSempro}">Waiting</button>
+
+                                            <button class="btn btn-danger btn-sm" th:if="${data.statusSempro == data.statusSempro.REJECTED}" th:text="${data.statusSempro}">Rejected</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline-primary btn-sm" th:data-target="${'#modal-default' + data.id}" data-toggle="modal" >
+                                                <i class="fas fa-list"></i> Detail Seminar
+                                            </button>
+                                            <a type="button" th:href="@{/graduation/seminar/detail(seminar = ${data.id})}" class="btn btn-primary btn-outline-primary btn-sm">
+                                                <i class="fas fa-check"></i> Assesment
+                                            </a>
+
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <center>
+                            </center>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>

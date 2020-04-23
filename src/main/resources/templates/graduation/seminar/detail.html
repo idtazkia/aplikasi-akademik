@@ -49,37 +49,45 @@
             <div class="col-md-4 col-xs-12">
                 <div class="card shadow">
                     <div class="card-body">
-                        <form action="">
+                        <form th:object="${seminar}" th:action="@{/graduation/seminar/detailPost (seminar = ${seminar.id})}" method="post">
                             <div class="form-group">
-                                <label><b class="font">Nim</b></label>
-                                <p>12121</p>
+                                <label><b class="font">NIM</b></label>
+                                <p th:text="${seminar.note.mahasiswa.nim}">12121</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Nama</b></label>
-                                <p>Muhammad Rafizki</p>
+                                <label><b class="font">Name</b></label>
+                                <p th:text="${seminar.note.mahasiswa.nama}">Muhammad Rafizki</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Judul</b></label>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus error eveniet incidunt itaque mollitia obcaecati quas sed!</p>
+                                <label><b class="font">Tittle</b></label>
+                                <p th:text="${seminar.note.judulInggris}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus error eveniet incidunt itaque mollitia obcaecati quas sed!</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Pembimbing</b></label>
-                                <p>Muhammad Lc, MA</p>
+                                <label><b class="font">Mentor</b></label>
+                                <p th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Ketua</b></label>
-                                <p>Muhammad Lc, MA</p>
+                                <label><b class="font">Chairman</b></label>
+                                <p th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Anggota Penguji</b></label>
-                                <p>Muhammad Lc, MA</p>
+                                <label><b class="font">Examiner</b></label>
+                                <p th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
+                            </div>
+                            <div class="form-group" th:if="${seminar.ketuaPenguji == dosen}">
+                                <label><b class="font">Comment Ketua</b></label>
+                                <textarea name="komentarDosen1" th:field="*{komentarDosen1}" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group" th:if="${seminar.dosenPenguji == dosen}">
+                                <label><b class="font">Comment Dosen</b></label>
+                                <textarea name="komentarDosen2" th:field="*{komentarDosen2}" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group" th:if="${seminar.note.dosen == dosen}">
+                                <label><b class="font">Comment Pembimbing</b></label>
+                                <textarea name="komentarDosen3" th:field="*{komentarDosen3}" class="form-control"></textarea>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Komentar</b></label>
-                                <textarea class="form-control"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </form>
                     </div>
@@ -92,31 +100,18 @@
                         <div class="nav-wrapper">
                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Lembar Pengesahan</a>
+                                    <a class="nav-link mb-sm-3 mb-md-0"  th:href="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}" target="_blank" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Lihat File Seminar</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">Kartu Bimbingan</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Skirpsi Bab 1 - 3</a>
+                                    <a class="nav-link mb-sm-3 mb-md-0"  th:href="@{/graduation/seminar/penilaian (seminar = ${seminar.id})}" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Penilaian</a>
                                 </li>
                             </ul>
                         </div>
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-
-                                        <embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">
-                                    </div>
-                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                        <embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">
-                                    </div>
-                                    <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
-                                        <embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">
-                                    </div>
-                                </div>
-                            </div>
+<!--                        <div class="card shadow">-->
+<!--                            <div class="card-body">-->
+<!--                                        <embed th:src="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}"  width="100%" height="600px">-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
