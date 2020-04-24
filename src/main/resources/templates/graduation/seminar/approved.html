@@ -72,7 +72,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label><b class="font">Ketua</b></label>
-                                        <select name="ketuaPenguji" th:field="*{ketuaPenguji}" class="form-control js-example-placeholder-single">
+                                        <select name="ketuaPenguji" onchange="waktu()" th:field="*{ketuaPenguji}" class="form-control js-example-placeholder-single">
                                             <option value=""></option>
                                             <option th:each="data : ${listDosen}"
                                                     th:text="${data.karyawan.namaKaryawan}"
@@ -81,7 +81,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label><b class="font">Penguji</b></label>
-                                        <select name="dosenPenguji" th:field="*{dosenPenguji}"  class="form-control js-example-placeholder-single">
+                                        <select name="dosenPenguji" onchange="waktu()" th:field="*{dosenPenguji}"  class="form-control js-example-placeholder-single">
                                             <option value=""></option>
                                             <option th:each="data : ${listDosen}"
                                                     th:text="${data.karyawan.namaKaryawan}"
