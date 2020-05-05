@@ -248,15 +248,20 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/attendance/mahasiswa")
     public void attendance(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
         List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
+        List<Mahasiswa> mahasiswas = new ArrayList<>();
+
 
         Map<String, String> statusPresensi = new HashMap<>();
         for(PresensiMahasiswa pm : presensiMahasiswa){
+            mahasiswas.add(pm.getMahasiswa());
             statusPresensi.put(pm.getId(), pm.getStatusPresensi().toString());
         }
+        List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas,sesiKuliah.getJadwal(),StatusRecord.AKTIF);
 
         model.addAttribute("statusPresensi", StatusPresensi.values());
         model.addAttribute("status", statusPresensi);
         model.addAttribute("presensi", presensiMahasiswa);
+        model.addAttribute("detail", krsDetails);
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi",sesiKuliah.getId());
         model.addAttribute("statusPresensi", StatusPresensi.values());
@@ -287,6 +292,29 @@ public class StudiesActivityController {
         }
 
         return "redirect:detail?jadwal="+j.getId();
+    }
+
+    @PostMapping("/studiesActivity/attendance/sesi")
+    public String saveSesiBaru(@RequestParam Jadwal jadwal, @RequestParam SesiKuliah sesi,HttpServletRequest request){
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(sesi.getJadwal(),StatusRecord.AKTIF);
+        for (KrsDetail kd : krsDetail){
+            String pilihan = request.getParameter(kd.getMahasiswa().getNim() + "nim");
+            if (pilihan == null || pilihan.isEmpty()){
+                System.out.println("gaada");
+            }else {
+                PresensiMahasiswa presensiMahasiswa = new PresensiMahasiswa();
+                presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
+                StatusPresensi statusPresensi = StatusPresensi.valueOf(pilihan);
+                presensiMahasiswa.setStatusPresensi(statusPresensi);
+                presensiMahasiswa.setCatatan("Manual");
+                presensiMahasiswa.setKrsDetail(kd);
+                presensiMahasiswa.setWaktuKeluar(sesi.getWaktuSelesai());
+                presensiMahasiswa.setWaktuMasuk(sesi.getWaktuMulai());
+                presensiMahasiswa.setSesiKuliah(sesi);
+                presensiMahasiswaDao.save(presensiMahasiswa);
+            }
+        }
+        return "redirect:mahasiswa?id="+sesi.getId();
     }
 
     @PostMapping("/studiesActivity/attendance/save")

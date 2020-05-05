@@ -413,9 +413,19 @@ public class AcademicActivityController {
     }
 
     @GetMapping("/academic/curriculumCourses/form")
-    public void formCurriculumCourses(@RequestParam(required = false) String prodi,@RequestParam(required = false) String kurikulum,Model model){
-        model.addAttribute("prodi",prodiDao.findById(prodi).get());
-        model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
+    public void formCurriculumCourses(@RequestParam(required = false) String prodi,@RequestParam(required = false) String kurikulum,
+                                      @RequestParam(required = false)String id, Model model){
+
+        model.addAttribute("matakuliah", new MatakuliahKurikulum());
+
+        if (id != null){
+            model.addAttribute("matakuliah", matakuliahKurikulumDao.findById(id).get());
+            model.addAttribute("prodi",prodiDao.findById(prodi).get());
+            model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
+        }else {
+            model.addAttribute("prodi",prodiDao.findById(prodi).get());
+            model.addAttribute("kurikulum",kurikulumDao.findById(kurikulum).get());
+        }
     }
 
     @PostMapping("/academic/curriculumCourses/form")

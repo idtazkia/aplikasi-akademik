@@ -123,7 +123,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -201,7 +203,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -276,7 +280,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -351,7 +357,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -426,7 +434,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -502,7 +512,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -580,7 +592,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -657,7 +671,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -733,7 +749,9 @@
                                                     <td th:text="${data.matakuliah.namaMatakuliah}">Pengantar Aplikasi Komputer</td>
                                                     <td th:text="${data.matakuliah.singkatan}"></td>
                                                     <td th:text="${data.jumlahSks}">3</td>
-                                                    <td><a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
+                                                    <td>
+                                                        <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>

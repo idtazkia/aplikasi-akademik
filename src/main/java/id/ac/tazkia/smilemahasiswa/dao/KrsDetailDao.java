@@ -81,6 +81,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query("SELECT sum(kd.e5) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF'")
     Long jumlahE5 (@Param("jadwal") Jadwal jadwal);
 
+    List<KrsDetail> findByMahasiswaNotInAndJadwalAndStatus(List<Mahasiswa> mahasiswas, Jadwal jadwal,StatusRecord statusRecord);
+
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto (kd.mahasiswa.nim,kd.mahasiswa.nama,kd.mahasiswa.idProdi.namaProdi) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF' order by kd.mahasiswa.nim asc")
     List<StudentDto> cariJadwalMahasiswa(@Param("jadwal") Jadwal jadwal);
 

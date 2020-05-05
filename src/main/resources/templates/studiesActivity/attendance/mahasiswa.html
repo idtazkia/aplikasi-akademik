@@ -47,7 +47,7 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">List Kehadiran</h3>
+                                <h3 class="mb-0">List Attendance</h3>
                             </div>
                             <div class="col text-right">
                                 <form th:action="@{/studiesActivity/attendance/save (sesi= ${sesi})}" method="post">
@@ -61,7 +61,61 @@
                         </div>
                     </div>
                     <div class="col-md-12">
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-show"><i class="fas fa-eye"></i> Students are late in filling the krs</button>
+                    </div>
+                    <div class="modal fade" id="modal-show" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
 
+                                <div class="modal-body p-0">
+
+
+                                    <div class="card bg-secondary shadow border-0">
+                                        <form method="post" th:action="@{/studiesActivity/attendance/sesi(jadwal = ${jadwal},sesi = ${sesi})}">
+                                        <div class="card-header bg-transparent pb-5">
+                                            <div class="text-muted text-center mt-2 mb-3"><small>List Student</small></div>
+                                            <div class="btn-wrapper text-center">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>NIM</th>
+                                                        <th>Name</th>
+                                                        <th>Status</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                        <tr class="even pointer" th:each="data,row : ${detail}">
+                                                            <td th:text="${(row.index + 1)}">#</td>
+                                                            <td th:text="${data.mahasiswa.nim}">NIM</td>
+                                                            <td th:text="${data.mahasiswa.nama}">Name</td>
+                                                            <td>
+                                                                <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                                                <select th:name="${data.mahasiswa.nim + 'nim'}">
+                                                                    <option th:each="sp : ${statusPresensi}"
+                                                                            th:text="${sp}" th:value="${sp}"></option>
+                                                                </select>
+                                                            </td>
+                                                            <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                                            <input type="hidden" name="krsDetail" th:value="${data.id}">
+                                                            <input type="hidden" name="status" th:value="${data.status}">
+                                                            <input type="hidden" name="sesiKuliah" th:value="${sesi}">
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <br>
+                                            <div class="modal-footer bg-whitesmoke br">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form th:action="@{/studiesActivity/attendance/mahasiswa (jadwal = ${jadwal},sesi = ${sesi})}" method="post" th:object="${presensi}">
@@ -70,8 +124,8 @@
                                     <thead>
                                     <tr>
                                         <th>No.</th>
-                                        <th>Nim</th>
-                                        <th>Nama</th>
+                                        <th>NIM</th>
+                                        <th>Name</th>
                                         <th>Status</th>
 
                                     </tr>
