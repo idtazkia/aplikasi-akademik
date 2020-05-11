@@ -1062,8 +1062,15 @@ public class StudiesActivityController {
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("Tugas " + tugas.getNamaTugas());
-        rowi4.createCell(4).setCellValue("Bobot :");
-        rowi4.createCell(5).setCellValue(tugas.getBobot().toString());
+        rowi4.createCell(4).setCellValue("Kelas :");
+        rowi4.createCell(5).setCellValue(tugas.getJadwal().getKelas().getNamaKelas());
+
+        int rowInfo5 = 9 ;
+        Row rowi5 = sheet.createRow(rowInfo5);
+        rowi5.createCell(2).setCellValue("Bobot :");
+        rowi5.createCell(3).setCellValue(tugas.getBobot().toString());
+        rowi5.createCell(4).setCellValue("Prodi :");
+        rowi5.createCell(5).setCellValue(tugas.getJadwal().getProdi().getNamaProdi());
 
         /**/
         Row headerRow = sheet.createRow(11);
@@ -1163,8 +1170,15 @@ public class StudiesActivityController {
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("UTS");
-        rowi4.createCell(4).setCellValue("Bobot :");
-        rowi4.createCell(5).setCellValue(jadwal.getBobotUts().toString());
+        rowi4.createCell(4).setCellValue("Kelas :");
+        rowi4.createCell(5).setCellValue(jadwal.getKelas().getNamaKelas());
+
+        int rowInfo5 = 9 ;
+        Row rowi5 = sheet.createRow(rowInfo5);
+        rowi5.createCell(2).setCellValue("Bobot :");
+        rowi5.createCell(3).setCellValue(jadwal.getBobotUts().toString());
+        rowi5.createCell(4).setCellValue("Prodi :");
+        rowi5.createCell(5).setCellValue(jadwal.getProdi().getNamaProdi());
 
         /**/
         Row headerRow = sheet.createRow(11);
@@ -1265,8 +1279,19 @@ public class StudiesActivityController {
         Row rowi4 = sheet.createRow(rowInfo4);
         rowi4.createCell(2).setCellValue("Komponen :");
         rowi4.createCell(3).setCellValue("UAS");
-        rowi4.createCell(4).setCellValue("Bobot :");
-        rowi4.createCell(5).setCellValue(jadwal.getBobotUas().toString());
+        rowi4.createCell(4).setCellValue("Kelas :");
+        rowi4.createCell(5).setCellValue(jadwal.getKelas().getNamaKelas());
+
+        int rowInfo5 = 9 ;
+        Row rowi5 = sheet.createRow(rowInfo5);
+        rowi5.createCell(2).setCellValue("Bobot :");
+        rowi5.createCell(3).setCellValue(jadwal.getBobotUas().toString());
+        rowi5.createCell(4).setCellValue("Prodi :");
+        rowi5.createCell(5).setCellValue(jadwal.getProdi().getNamaProdi());
+
+
+
+
 
         /**/
         Row headerRow = sheet.createRow(11);
