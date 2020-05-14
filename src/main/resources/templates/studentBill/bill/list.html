@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Bill</title>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Bill List</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                                Bill List
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student</th>
+                                <th>Type of Bill</th>
+                                <th>Value</th>
+                                <th>Due Date</th>
+                                <th> </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="data,row : ${listBill}">
+                                <td th:text="${(row.index + 1) + (listBill.number * listBill.size)}">1</td>
+                                <td th:text="${data.mahasiswa.nama}">Senin</td>
+                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">Ini SKS</td>
+                                <td th:text="${data.nilaiTagihan}">Ruang 1.3</td>
+                                <td th:text="${data.tanggalPenangguhan}">Ruang 1.3</td>
+                                <td class="text-center" style="width: 15px;">
+                                    <a th:href="@{/studentBill/bill/date(id = ${data.id})}">
+                                        <button type="button" class="btn btn-dark waves-effect">
+                                            Suspension
+                                        </button>
+                                    </a>
+                                </td>
+                                <td class="text-center"  style="width: 15px;">
+                                    <a th:href="@{/studentBill/bill/instalment(id = ${data.id})}">
+                                        <button type="button" class="btn btn-secondary waves-effect">
+                                            Instalment
+                                        </button>
+                                    </a>
+                                </td>
+                                <td class="text-center" style="width: 15px;">
+                                    <a th:href="@{/studentBill/payment(tagihan = ${data.id})}">
+                                        <button type="button" class="btn btn-secondary waves-effect">
+                                            Payment
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

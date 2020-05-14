@@ -24,9 +24,8 @@ public class Pembayaran {
     @JoinColumn(name = "id_tagihan")
     private Tagihan tagihan;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate waktuBayar;
+    @NotNull
+    private LocalDate waktuBayar = LocalDate.now();
 
     @ManyToOne
     @JoinColumn(name = "id_bank")
@@ -36,10 +35,8 @@ public class Pembayaran {
     @NotEmpty
     private String nomorRekening;
 
-    @Min(0)
+    @Min(0) @NotNull
     private BigDecimal amount;
 
-    @NotNull
-    @NotEmpty
     private String referensi;
 }
