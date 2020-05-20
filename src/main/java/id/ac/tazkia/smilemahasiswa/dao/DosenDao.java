@@ -30,5 +30,5 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
 
     @Query("select d from Dosen d where d.status not in(:status) and d not in (:dosen)")
     Iterable<Dosen> validasiDosen(@Param("status") List<StatusRecord> statusRecord, @Param("dosen") List<Dosen> dosen);
-    List<Dosen> findByStatusNotInAndIdNotIn(List<StatusRecord> status, List<String> dosens);
+    List<Dosen> findByStatusNotInAndIdNotIn(List<StatusRecord> status, List<String> dosen);
 }
