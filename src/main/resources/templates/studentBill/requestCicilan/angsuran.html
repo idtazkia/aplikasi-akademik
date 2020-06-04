@@ -97,6 +97,27 @@
             <div class="row">
                 <form method="post" th:action="@{/studentBill/bill/cicilan(tagihan = ${bill.id})}" th:object="${cicilan}">
                     <div class="col-md-6">
+                        <div class="col-md-6">
+                            <div>
+                                <b>Type of bill</b>
+                                <span> : </span>
+                                <span th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></span>
+                            </div>
+                            <br>
+                            <div>
+                                <b>Value</b>
+                                <span> : </span>
+                                <span th:text="${bill.nilaiTagihan}"></span>
+                            </div>
+                            <br>
+                            <div>
+                                <b>Due Date</b>
+                                <span> : </span>
+                                <span th:text="${bill.tanggalJatuhTempo}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Banyak Cicilan</label>
                             <select name="banyakCicilan" class="form-control" th:field="*{banyakCicilan}" id="">
@@ -105,8 +126,6 @@
                                 <option value="3">3</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Description</label>
                             <input type="text" name="keterangan" class="form-control"

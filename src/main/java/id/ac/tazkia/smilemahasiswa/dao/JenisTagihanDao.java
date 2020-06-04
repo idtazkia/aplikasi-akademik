@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface JenisTagihanDao extends PagingAndSortingRepository<JenisTagihan, String> {
@@ -18,5 +20,5 @@ public interface JenisTagihanDao extends PagingAndSortingRepository<JenisTagihan
 
     List<JenisTagihan> findByStatusOrderByNama(StatusRecord statusRecord);
 
-    List<JenisTagihan> findByNamaAndStatus(String nama, StatusRecord statusRecord);
+    JenisTagihan findByNamaAndStatus(JenisTagihan jenisTagihan, StatusRecord statusRecord);
 }

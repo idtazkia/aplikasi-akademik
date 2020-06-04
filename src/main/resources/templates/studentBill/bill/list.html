@@ -54,7 +54,6 @@
                             <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Student</th>
                                 <th>Type of Bill</th>
                                 <th>Value</th>
                                 <th>Due Date</th>
@@ -65,7 +64,6 @@
 
                             <tr th:each="data,row : ${listBill}">
                                 <td th:text="${(row.index + 1) + (listBill.number * listBill.size)}">1</td>
-                                <td th:text="${data.mahasiswa.nama}">Senin</td>
                                 <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">Ini SKS</td>
                                 <td th:text="${data.nilaiTagihan}">Ruang 1.3</td>
                                 <td th:text="${data.tanggalPenangguhan}">Ruang 1.3</td>

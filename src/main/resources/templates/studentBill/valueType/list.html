@@ -60,6 +60,7 @@
                                 <th>Type of bill</th>
                                 <th>Academic Year</th>
                                 <th>Study Program</th>
+                                <th>Generation</th>
                                 <th>Value</th>
                                 <th></th>
                             </tr>
@@ -78,8 +79,9 @@
                                        th:text="${data.jenisTagihan.nama}">
                                     </a>
                                 </td>
-                                <td th:text="${data.tahunAkademik.tahun}">PATRICK STAR</td>
+                                <td th:text="${data.tahunAkademik.namaTahunAkademik}">PATRICK STAR</td>
                                 <td th:text="${data.prodi.namaProdi}">BANGUN DAN SEMANGAT</td>
+                                <td class="text-center" th:text="${data.angkatan}"></td>
                                 <td th:text="${data.nilai}">BANGUN DAN SEMANGAT</td>
                                 <td>
                                     <a th:href="@{/studentBill/valueType/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>

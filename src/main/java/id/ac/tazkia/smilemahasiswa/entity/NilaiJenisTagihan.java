@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -36,6 +37,7 @@ public class NilaiJenisTagihan {
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
 
+    @NotNull @NotEmpty
     private String angkatan;
 
 }

@@ -5,23 +5,34 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.kafka.common.metrics.Stat;
 import org.bouncycastle.ocsp.Req;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class StudentBillController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentBillController.class);
 
     @Autowired
     private BankDao bankDao;
@@ -40,6 +51,9 @@ public class StudentBillController {
 
     @Autowired
     private ProdiDao prodiDao;
+
+    @Value("classpath:sample/panduanPembayaran.pdf")
+    private Resource panduanPembayaran;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -64,6 +78,8 @@ public class StudentBillController {
 
     @Autowired
     private RequestCicilanDao requestCicilanDao;
+
+
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
@@ -159,7 +175,16 @@ public class StudentBillController {
     }
 
     @PostMapping("studentBill/typeBill/delete")
-    public String deleteType(@RequestParam JenisTagihan jenisTagihan){
+    public String deleteType(@RequestParam JenisTagihan jenisTagihan,
+                             RedirectAttributes attributes){
+
+        Integer njt = nilaiJenisTagihanDao.countByStatusAndJenisTagihan(StatusRecord.AKTIF, jenisTagihan);
+
+        if (njt > 0) {
+            attributes.addFlashAttribute("gagal");
+            return "redirect:../typeBill";
+        }
+
         jenisTagihan.setStatus(StatusRecord.HAPUS);
         jenisTagihanDao.save(jenisTagihan);
         return "redirect:../typeBill";
@@ -237,15 +262,23 @@ public class StudentBillController {
         return "/studentBill/billAdmin/list";
     }
 
-    @GetMapping("/studentBill/billAdmin/bill")
-    public String generateBill(Model model,
-                               @RequestParam(required = false) TahunAkademik tahunAkademik,
-                               @RequestParam(required = false) Prodi prodi){
+    @GetMapping("/studentBill/billAdmin/date")
+    public String formDate(Model model, @RequestParam(required = false) String id){
+
+        model.addAttribute("tagihan", tagihanDao.findById(id).get());
+
+        return "/studentBill/billAdmin/date";
+    }
+
+    @GetMapping("/studentBill/billAdmin/generate")
+    public void main(Model model, @PageableDefault(size = 10) Pageable page,
+                    @RequestParam(required = false) TahunAkademik tahunAkademik,
+                    @RequestParam(required = false) Prodi prodi){
 
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectProdi", prodi);
 
-        return "/studentBill/billAdmin/generate";
+
     }
 
 //    @GetMapping("/studentBill/bill/form")
@@ -273,43 +306,30 @@ public class StudentBillController {
 //        }
 //    }
 
-    @GetMapping("/studentBill/billAdmin/date")
-    public String formDate(Model model, @RequestParam(required = false) String id){
-
-        model.addAttribute("tagihan", tagihanDao.findById(id).get());
-
-        return "/studentBill/billAdmin/date";
-    }
-
     @PostMapping("/studentBill/billAdmin/generate")
-    private String generateTagihan(@RequestParam(required = false) TahunAkademik tahunAkademik,
-                                   @RequestParam(required = false) Prodi prodi){
+    public String generateTagihan(@RequestParam(required = false) TahunAkademik tahun,
+                                  @RequestParam(required = false) Prodi prodi){
 
-        List<Mahasiswa> mahasiswa = mahasiswaDao.findByIdProdiAndStatus(prodi, StatusRecord.AKTIF);
-        for (Mahasiswa mhs : mahasiswa){
-            List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndStatus(tahunAkademik, StatusRecord.AKTIF);
-            if (nilaiJenisTagihans != null){
-                for (NilaiJenisTagihan njt : nilaiJenisTagihans){
-                    List<JenisTagihan> jenisTagihan = jenisTagihanDao.findByNamaAndStatus(njt.getJenisTagihan().getNama(), StatusRecord.AKTIF);
-                    if (jenisTagihan != null) {
-                        Tagihan tgh = (Tagihan) tagihanDao.findByTahunAkademikAndNilaiJenisTagihanAndStatus(tahunAkademik, njt, StatusRecord.AKTIF);
-                        if (tgh == null){
-                            Tagihan tagihan = new Tagihan();
-                            tagihan.setNilaiJenisTagihan(njt);
-                            tagihan.setMahasiswa(mhs);
-                            tagihan.setNilaiTagihan(njt.getNilai());
-                            tagihan.setTanggalPembuatan(LocalDate.now());
-                            tagihan.setTanggalJatuhTempo(LocalDate.now());
-                            tagihan.setTanggalPenangguhan(LocalDate.now());
-                            tagihan.setTahunAkademik(tahunAkademik);
-                            tagihan.setStatus(StatusRecord.AKTIF);
-                            tagihanDao.save(tagihan);
-                        }
-                    }
+        List<Mahasiswa> mahasiswas = mahasiswaDao.findByIdProdiAndStatus(prodi, StatusRecord.AKTIF);
+        for (Mahasiswa mhs : mahasiswas){
+            List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByAngkatanAndProdiAndStatus(mhs.getAngkatan(), mhs.getIdProdi(), StatusRecord.AKTIF);
+            for (NilaiJenisTagihan njt : nilaiJenisTagihans){
+                Tagihan tg = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndStatus(mhs, njt, StatusRecord.AKTIF);
+                if (tg == null) {
+                    Tagihan tagihan = new Tagihan();
+                    tagihan.setMahasiswa(mhs);
+                    tagihan.setNilaiJenisTagihan(njt);
+                    tagihan.setKeterangan("-");
+                    tagihan.setNilaiTagihan(njt.getNilai());
+                    tagihan.setTanggalPembuatan(LocalDate.now());
+                    tagihan.setTanggalJatuhTempo(LocalDate.now());
+                    tagihan.setTanggalPenangguhan(LocalDate.now());
+                    tagihan.setTahunAkademik(tahun);
+                    tagihan.setStatus(StatusRecord.AKTIF);
+                    tagihanDao.save(tagihan);
                 }
             }
         }
-
         return "redirect:";
     }
 
@@ -470,11 +490,19 @@ public class StudentBillController {
     public String formPayment(Model model, @RequestParam(required = false) String tagihan){
         Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
 
-        model.addAttribute("pembayaran", new Pembayaran());
+        model.addAttribute("pembayaran", pembayaranDao.findByTagihan(tagihan1));
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("tagihan", tagihan1);
 
         return "/studentBill/payment/form";
+    }
+
+    @GetMapping("/panduanPembayaran")
+    public void getPanduanPembayaran(HttpServletResponse response) throws Exception{
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=Panduan_Pembayaran.pdf");
+        FileCopyUtils.copy(panduanPembayaran.getInputStream(), response.getOutputStream());
+        response.getOutputStream().flush();
     }
 
     @PostMapping("/studentBill/payment/pay")
@@ -486,5 +514,12 @@ public class StudentBillController {
         tagihan.setStatus(StatusRecord.NONAKTIF);
         tagihanDao.save(tagihan);
         return "redirect:../bill";
+    }
+
+//    Report
+
+    @GetMapping("/studentBill/payment/report")
+    public void report(){
+
     }
 }

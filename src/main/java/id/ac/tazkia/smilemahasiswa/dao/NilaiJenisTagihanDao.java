@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.JenisTagihan;
-import id.ac.tazkia.smilemahasiswa.entity.NilaiJenisTagihan;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -18,6 +15,8 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
 
     List<NilaiJenisTagihan> findByStatusOrderByJenisTagihan(StatusRecord statusRecord);
 
-    List<NilaiJenisTagihan> findByTahunAkademikAndStatus(TahunAkademik tahunAkademik, StatusRecord statusRecord);
+    Integer countByStatusAndJenisTagihan(StatusRecord statusRecord, JenisTagihan jenisTagihan);
+
+    List<NilaiJenisTagihan> findByAngkatanAndProdiAndStatus(String angkatan , Prodi prodi, StatusRecord statusRecord);
 
 }

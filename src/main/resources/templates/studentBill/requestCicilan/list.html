@@ -62,58 +62,266 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="data,row : ${listCicilan}">
-                                <td th:text="${(row.index + 1) + (listCicilan.number * listCicilan.size)}">1</td>
-                                <td th:text="${data.tagihan.mahasiswa.nama}"></td>
-                                <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
-                                <td th:text="${data.banyakCicilan}">PATRICK STAR</td>
-                                <td th:text="${data.statusApprove}">BANGUN DAN SEMANGAT</td>
-                                <td class="d-flex flex-row bd-highlight mb-3">
-                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/approve(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">
-                                        <button class="btn btn-sm btn-success">Approve</button>
-                                    </form>
-                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/reject(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">
-                                        <button class="btn btn-sm btn-danger">Reject</button>
-                                    </form>
-<!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+<!--                            <tr th:each="data,row : ${listCicilan}">-->
+<!--                                <td th:text="${(row.index + 1) + (listCicilan.number * listCicilan.size)}">1</td>-->
+<!--                                <td th:text="${data.tagihan.mahasiswa.nama}"></td>-->
+<!--                                <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>-->
+<!--                                <td th:text="${data.banyakCicilan}">PATRICK STAR</td>-->
+<!--                                <td th:text="${data.statusApprove}">BANGUN DAN SEMANGAT</td>-->
+<!--                                <td class="d-flex flex-row bd-highlight mb-3">-->
+<!--                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/approve(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">-->
+<!--                                        <button class="btn btn-sm btn-success">Approve</button>-->
+<!--                                    </form>-->
+<!--                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/reject(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">-->
+<!--                                        <button class="btn btn-sm btn-danger">Reject</button>-->
+<!--                                    </form>-->
+<!--&lt;!&ndash;                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>&ndash;&gt;-->
 
-                                    <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
-                                    <!--                                        <i class="fas fa-trash"></i>-->
-                                    <!--                                    </button>-->
+<!--                                    &lt;!&ndash;                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                        <i class="fas fa-trash"></i>&ndash;&gt;-->
+<!--                                    &lt;!&ndash;                                    </button>&ndash;&gt;-->
 
-                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-                                            <div class="modal-content bg-gradient-danger">
+<!--                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">-->
+<!--                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">-->
+<!--                                            <div class="modal-content bg-gradient-danger">-->
 
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
+<!--                                                <div class="modal-header">-->
+<!--                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>-->
+<!--                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                                        <span aria-hidden="true">×</span>-->
+<!--                                                    </button>-->
+<!--                                                </div>-->
 
-                                                <div class="modal-body">
+<!--                                                <div class="modal-body">-->
 
-                                                    <div class="py-3 text-center">
-                                                        <i class="far fa-trash-alt fa-3x"></i>
-                                                        <h4 class="heading mt-4">Are you sure ?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                    </div>
+<!--                                                    <div class="py-3 text-center">-->
+<!--                                                        <i class="far fa-trash-alt fa-3x"></i>-->
+<!--                                                        <h4 class="heading mt-4">Are you sure ?</h4>-->
+<!--                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>-->
+<!--                                                    </div>-->
 
-                                                </div>
+<!--                                                </div>-->
 
-                                                <div class="modal-footer">
-                                                    <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
-                                                </div>
+<!--                                                <div class="modal-footer">-->
+<!--                                                    <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data.id})}">-->
+<!--                                                        <button type="submit" class="btn btn-white">Delete</button>-->
+<!--                                                    </form>-->
+<!--                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>-->
+<!--                                                </div>-->
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<tr>
+    <td>1</td>
+    <td>PATRICK STAR</td>
+    <td>UAS</td>
+    <td>2</td>
+    <td>AKTIF</td>
+    <td class="d-flex flex-row bd-highlight mb-3">
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-danger">Reject</button>
+        </form>
+        <!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+
+        <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
+        <!--                                        <i class="fas fa-trash"></i>-->
+        <!--                                    </button>-->
+
+        <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                <div class="modal-content bg-gradient-danger">
+
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="py-3 text-center">
+                            <i class="far fa-trash-alt fa-3x"></i>
+                            <h4 class="heading mt-4">Are you sure ?</h4>
+                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <form method="post">
+                            <button type="submit" class="btn btn-white">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>PATRICK STAR</td>
+    <td>UAS</td>
+    <td>2</td>
+    <td>AKTIF</td>
+    <td class="d-flex flex-row bd-highlight mb-3">
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-danger">Reject</button>
+        </form>
+        <!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+
+        <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
+        <!--                                        <i class="fas fa-trash"></i>-->
+        <!--                                    </button>-->
+
+        <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                <div class="modal-content bg-gradient-danger">
+
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="py-3 text-center">
+                            <i class="far fa-trash-alt fa-3x"></i>
+                            <h4 class="heading mt-4">Are you sure ?</h4>
+                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <form method="post">
+                            <button type="submit" class="btn btn-white">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>PATRICK STAR</td>
+    <td>UAS</td>
+    <td>2</td>
+    <td>AKTIF</td>
+    <td class="d-flex flex-row bd-highlight mb-3">
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-danger">Reject</button>
+        </form>
+        <!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+
+        <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
+        <!--                                        <i class="fas fa-trash"></i>-->
+        <!--                                    </button>-->
+
+        <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                <div class="modal-content bg-gradient-danger">
+
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="py-3 text-center">
+                            <i class="far fa-trash-alt fa-3x"></i>
+                            <h4 class="heading mt-4">Are you sure ?</h4>
+                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <form method="post">
+                            <button type="submit" class="btn btn-white">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>PATRICK STAR</td>
+    <td>UTS</td>
+    <td>3</td>
+    <td>AKTIF</td>
+    <td class="d-flex flex-row bd-highlight mb-3">
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+        <form class="p-2 bd-highlight">
+            <button class="btn btn-sm btn-danger">Reject</button>
+        </form>
+        <!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+
+        <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
+        <!--                                        <i class="fas fa-trash"></i>-->
+        <!--                                    </button>-->
+
+        <div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                <div class="modal-content bg-gradient-danger">
+
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="py-3 text-center">
+                            <i class="far fa-trash-alt fa-3x"></i>
+                            <h4 class="heading mt-4">Are you sure ?</h4>
+                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <form method="post">
+                            <button type="submit" class="btn btn-white">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
                             </tbody>
                         </table>
                     </div>

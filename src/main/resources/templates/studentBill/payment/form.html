@@ -74,7 +74,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Request Penangguhan Tagihan Mahasiswa</h2>
+                                        <h2>Pembayaran Tagihan Mahasiswa</h2>
                                         <p></p>
                                     </div>
                                 </div>
@@ -95,50 +95,50 @@
     <div class="contact-area">
         <div class="container">
             <div class="row">
-                <form method="post" th:action="@{/studentBill/payment/pay(tagihan = ${tagihan.id})}"  th:object="${pembayaran}">
-                    <div class="col-md-6 col-xl-12">
-                        <div class="form-group">
-                            <label>Bank</label>
-                            <select name="bank" class="form-control" th:field="*{bank}">
-                                <option value=""></option>
-                                <option th:each="data : ${bank}"
-                                        th:text="${data.nama}"
-                                        th:value="${data.id}"></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Account Number</label>
-                            <input type="text" name="nomorRekening"
-                                   class="form-control" placeholder="0" th:field="*{nomorRekening}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Reference</label>
-                            <input type="text" name="referensi"
-                                   class="form-control" th:field="*{referensi}">
-                        </div>
-
-                        <input type="hidden" name="id" th:field="*{id}">
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <a th:href="@{/studentBill/bill}" class="btn btn-danger">Cancel</a>
-                        </div>
+                <div class="col-sm-7">
+                    <address>
+                        <table>
+                            <tr>
+                                <td>Nama</td>
+                                <td> : </td>
+                                <td th:text="${tagihan.mahasiswa.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Tagihan</td>
+                                <td> : </td>
+                                <td th:text="${tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td>Nilai Tagihan</td>
+                                <td> : </td>
+                                <td th:text="${tagihan.nilaiTagihan}"></td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Jatuh Tempo</td>
+                                <td> : </td>
+                                <td th:text="${tagihan.tanggalJatuhTempo}"></td>
+                            </tr>
+                            <tr>
+                                <td>Keterangan</td>
+                                <td> : </td>
+                                <td th:text="${tagihan.keterangan}"></td>
+                            </tr>
+                        </table>
+                    </address>
+                </div>
+                <div class="col-sm-5">
+                    <div th:if="${pembayaran} != null" style="width: 200px; height: 75px; border: 8px solid #195e83; text-align: center; padding-top: 7px;">
+                        <h1>Lunas</h1>
                     </div>
-                    <div class="col-md-6 col-xl-12">
-                        <div class="form-group">
-                            <label>Pay Time</label>
-                            <input type="date" name="waktuBayar" class="form-control"
-                                   placeholder="yyyy-MM-dd" th:field="*{waktuBayar}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="amount" class="form-control"
-                                   placeholder="0.00" th:field="*{amount}">
-                        </div>
+                    <div th:if="${pembayaran} == null"  style="width: 200px; height: 60px; border: 8px solid #195e83; text-align: center; padding-top: 7px;">
+                        <h1>Belum Lunas</h1>
                     </div>
-                </form>
+                </div>
+            </div>
+            <div class="row no-print" th:if="${pembayaran} == null">
+                <div class="col-xs-12" th:if="${tagihan} != null">
+                    <a th:href="@{/panduanPembayaran}" class="btn btn-success"></i>Panduan Pembayaran</a>
+                </div>
             </div>
         </div>
     </div>

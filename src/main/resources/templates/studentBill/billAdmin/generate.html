@@ -46,7 +46,7 @@
                         <h3 class="mb-0">Form</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" th:action="@{/studentBill/billAdmin/generate(tahunAkademik = ${selectTahun}, prodi = ${selectProdi})}">
+                        <form method="get">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -76,11 +76,21 @@
                             <div class="row">
                                 <div class="col-md-12" style="text-align: center">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary"> Generate Bill</button>
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+
+                        <div class="card-shadow" th:if="${selectTahun != null || (id != null && !id.isEmpty() )}">
+                            <form method="post" th:action="@{/studentBill/billAdmin/generate(tahun=${selectTahun.id}, prodi=${selectProdi.id})}">
+                                <div class="col">
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Generate</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
                     </div>
                 </div>
