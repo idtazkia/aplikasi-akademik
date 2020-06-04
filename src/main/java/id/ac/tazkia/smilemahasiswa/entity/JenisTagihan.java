@@ -3,15 +3,14 @@ package id.ac.tazkia.smilemahasiswa.entity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
-public class JenisDiskon {
+@Table(name = "jenis_tagihan")
+public class JenisTagihan {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -19,7 +18,14 @@ public class JenisDiskon {
 
     @NotNull
     @NotEmpty
+    private String kode;
+
+    @NotNull
+    @NotEmpty
     private String nama;
 
     private String keterangan;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
 }

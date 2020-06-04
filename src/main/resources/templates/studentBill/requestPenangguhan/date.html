@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Profile</title>
+    <style type="text/css">
+        .card{
+            background-color: #ffffff;
+            padding: 0px;
+            border-radius: 10px;
+
+        }
+        .card-content{
+            background-color: #f49c6c;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .card-body{
+            padding: 15px;
+        }
+
+        .txt-profile{
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            color: white;
+        }
+
+        .card-body-content{
+            text-align: center;
+            padding: 5px;
+        }
+
+        .bt-edit{
+            width: 220px;
+            background-color: #f49c6c;
+            border: 2px solid white;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        .txt-title{
+            color: #292928;
+        }
+        .txt-warning{
+            color: red;
+            font-size: 10px;
+        }
+        .ohide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Request Penangguhan Tagihan Mahasiswa</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="contact-area">
+            <div class="container">
+                <div class="row">
+                    <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
+                        <div class="col-md-6">
+                            <div>
+                                <b>Type of bill</b>
+                                <span> : </span>
+                                <span th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></span>
+                            </div>
+                            <br>
+                            <div>
+                                <b>Value</b>
+                                <span> : </span>
+                                <span th:text="${bill.nilaiTagihan}"></span>
+                            </div>
+                            <br>
+                            <div>
+                                <b>Due Date</b>
+                                <span> : </span>
+                                <span th:text="${bill.tanggalJatuhTempo}"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Due Date</label>
+                                <input type="date" name="tanggalPenangguhan" class="form-control"
+                                       placeholder="yyyy-MM-dd" th:field="*{tanggalPenangguhan}">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" name="keterangan" class="form-control"
+                                        th:field="*{keterangan}">
+                            </div>
+                        </div>
+                        <input type="hidden" name="id" th:field="*{id}">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a th:href="@{/studentBill/bill}" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+</section>
+</body>
+</html>

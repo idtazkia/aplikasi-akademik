@@ -7,22 +7,28 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Data
 @Entity
-public class KomponenBiaya {
-    @Id
-    @GeneratedValue(generator = "uuid")
+@Data
+public class RequestCicilan {
+
+    @Id @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @NotNull
-    @NotEmpty
-    private String nama;
+    @ManyToOne
+    @JoinColumn(name = "id_tagihan")
+    private Tagihan tagihan;
 
-    private String keterangan;
+    @NotNull @NotEmpty
+    private String banyakCicilan;
+
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusApprove = StatusApprove.WAITING;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
-    private String satuan;
+    private String keterangan;
+    private String keteranganReject;
+
 }

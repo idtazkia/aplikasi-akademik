@@ -21,4 +21,5 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
     Page<Karyawan> findByStatusAndNamaKaryawanContainingIgnoreCaseOrderByNamaKaryawan(StatusRecord aktif, String search, Pageable page);
 
     Page<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif, Pageable page);
+
 }
