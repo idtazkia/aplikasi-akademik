@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Recapitulation Lecturer</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group text-center">
+                                        <label>Tahun</label>
+                                        <input th:value="${selectedTahun}" required type="text" class="form-control" name="tahun">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-center">
+                                        <label>Semester</label>
+                                        <select th:value="${selectedBulan}" required class="form-control js-example-placeholder-single"
+                                                style="width: 100%!important;" name="bulan">
+                                            <option value="01">Januari</option>
+                                            <option value="02">Februari</option>
+                                            <option value="03">Maret</option>
+                                            <option value="04">April</option>
+                                            <option value="05">Mei</option>
+                                            <option value="06">Juni</option>
+                                            <option value="07">Juli</option>
+                                            <option value="08">Agustus</option>
+                                            <option value="09">September</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
+                                            <option value="12">Desember</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-info">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer" th:if="${selectedTahun != null}">
+                        <div class="card shadow" th:each="rekap, row : ${rekapJumlahSks}" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0"><i class="fas fa-user"></i> &nbsp; <span th:text="${rekap.value.namaDosen}"></span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Matakuliah</th>
+                                        <th>SKS</th>
+                                        <th>Kelas</th>
+                                        <th>Tanggal Mengajar</th>
+                                        <th>Total Mengajar</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="jd : ${rekapJadwalPerDosen.get(rekap.key)}">
+                                        <td th:text="${jd.matkul}">1</td>
+                                        <td th:text="${jd.sks}">Call of Duty</td>
+                                        <td th:text="${jd.kelas}">Call of Duty</td>
+                                        <td th:text="${jd.tanggal}">$64.50</td>
+                                        <td th:text="${jd.hadir}">$64.50</td>
+                                        <td>
+
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

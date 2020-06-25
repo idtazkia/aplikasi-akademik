@@ -4,6 +4,8 @@ import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
 import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
 import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
@@ -76,6 +78,49 @@ public class ReportController {
             if (rd == null) {
                 rd = new ArrayList<>();
                 detailJadwalPerDosen.put(r.getIdDosen(), rd);
+            }
+
+            rd.add(r);
+        }
+
+        model.addAttribute("rekapJumlahSks", rekapJumlahSks);
+        model.addAttribute("rekapJadwalDosen", rekap);
+        model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
+
+    }
+
+    @GetMapping("/report/recapitulation/salary")
+    public void rekapGajiDosen(Model model, @RequestParam(required = false) Integer tahun,@RequestParam(required = false) Integer bulan, @PageableDefault(size = Integer.MAX_VALUE) Pageable page){
+
+        List<RekapDosenDto> rekap = jadwalDosenDao
+                .rekapDosen(tahun,bulan);
+        model.addAttribute("selectedTahun", tahun);
+        model.addAttribute("selectedBulan", bulan);
+
+        Map<String, RekapDetailDosenDto> rekapJumlahSks = new LinkedHashMap<>();
+        Map<String, List<RekapDosenDto>> detailJadwalPerDosen = new LinkedHashMap<>();
+
+        for (RekapDosenDto r : rekap) {
+
+            // hitung total sks
+            RekapDetailDosenDto rsks = rekapJumlahSks.get(r.getId());
+            if (rsks == null) {
+                rsks = new RekapDetailDosenDto();
+                rsks.setNamaDosen(r.getNama());
+                rsks.setIdDosen(r.getId());
+                rsks.setSks1(r.getSks());
+                rsks.setJumlah(r.getHadir());
+
+            }
+
+            rsks.tambahSks(r.getSks());
+            rekapJumlahSks.put(r.getId(), rsks);
+
+            // jadwal per dosen
+            List<RekapDosenDto> rd = detailJadwalPerDosen.get(r.getId());
+            if (rd == null) {
+                rd = new ArrayList<>();
+                detailJadwalPerDosen.put(r.getId(), rd);
             }
 
             rd.add(r);

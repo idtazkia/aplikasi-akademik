@@ -285,6 +285,41 @@
                         </ul>
                     </div>
                 </li>
+                
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
+                    <a class="nav-link" href="#studentBill" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
+                        <i class="ni ni-align-left-2 ni-check-bold text-pink"></i>
+                        <span class="nav-link-text">Student Bill</span>
+                    </a>
+                    <div class="collapse" id="studentBill">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/bank}" class="nav-link">Bank</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/penangguhan}" class="nav-link">Request Penangguhan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/cicilan}" class="nav-link">Request Cicilan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/billAdmin}" class="nav-link">Bill</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/typeBill}" class="nav-link">Type of Bill</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/valueType}" class="nav-link">Value of Bill Type</a>
+                            </li>
+                            <li class="nav-item">
+                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report Payment</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-grad" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
@@ -326,7 +361,7 @@
                                 <a th:href="@{/humanResources/lecturer/list}" class="nav-link">Lecture</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../../pages/tables/datatables.html" class="nav-link">Salary Lecture</a>
+                                <a th:href="@{/report/recapitulation/salary}" class="nav-link">Salary Lecture</a>
                             </li>
                         </ul>
                     </div>

@@ -769,9 +769,6 @@ public class GraduationController {
         model.addAttribute("seminar",seminar);
         List<String> dosenList = new ArrayList<>();
         dosenList.add(seminar.getNote().getDosen().getId());
-        if (seminar.getNote().getDosen2() != null) {
-            dosenList.add(seminar.getNote().getDosen2().getId());
-        }
         model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS),dosenList));
 
     }

@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.machine.JadwalDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -30,4 +31,7 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
 
     @Query(REKAP_JADWAL_DOSEN)
     Page<RekapJadwalDosenDto> rekapJadwalDosen(@Param("statusJadwalDosen")StatusJadwalDosen sjd, @Param("ta")TahunAkademik ta, @Param("statusJadwal")StatusRecord statusJadwal, Pageable page);
+
+    @Query(value = "select c.id,d.nama_karyawan as nama,c.status_dosen as status,f.nama_matakuliah as matkul ,g.nama_kelas as kelas,group_concat(DAYOFMONTH(waktu_masuk))as tanggal,e.jumlah_sks as sks,count(a.id)as hadir from presensi_dosen as a inner join jadwal as b on a.id_jadwal=b.id inner join dosen as c on a.id_dosen=c.id inner join karyawan as d on c.id_karyawan=d.id inner join matakuliah_kurikulum as e on b.id_matakuliah_kurikulum=e.id inner join matakuliah as f on e.id_matakuliah=f.id inner join kelas as g on b.id_kelas = g.id where year(waktu_masuk)=?1 and month(waktu_masuk)=?2 and a.status='AKTIF' group by a.id_dosen,a.id_jadwal order by d.nama_karyawan", nativeQuery = true)
+    List<RekapDosenDto> rekapDosen(Integer tahun,Integer bulan);
 }
