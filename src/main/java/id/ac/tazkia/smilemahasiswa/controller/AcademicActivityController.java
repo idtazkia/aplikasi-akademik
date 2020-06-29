@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -224,10 +226,66 @@ public class AcademicActivityController {
     }
 
     @PostMapping("/academic/year/form")
-    public String prosesAcademic(@ModelAttribute @Valid TahunAkademik tahunAkademik, @RequestParam String kodeTahunAkademik) {
-        tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
-        System.out.println(kodeTahunAkademik);
-        tahunAkademikDao.save(tahunAkademik);
+    public String prosesForm(@RequestParam String kodeTahunAkademik,
+                             @RequestParam String tanggalMulai, @RequestParam String tanggalMulaiKrs, @RequestParam String tanggalMulaiKuliah,
+                             @RequestParam String tanggalMulaiUts, @RequestParam String tanggalMulaiUas,
+                             @RequestParam String tanggalMulaiNilai, @RequestParam StatusRecord jenis, @RequestParam String namaTahunAkademik,
+                             @RequestParam String tanggalSelesai, @RequestParam String tanggalSelesaiKrs,
+                             @RequestParam String tanggalSelesaiKuliah, @RequestParam String tanggalSelesaiUts,
+                             @RequestParam String tanggalSelesaiUas, @RequestParam String tanggalSelesaiNilai,
+                             @RequestParam String tahun, @RequestParam StatusRecord status, @RequestParam String id){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        System.out.println(tanggalMulai);
+
+        if (id.isEmpty() || id == null){
+            TahunAkademik tahunAkademik = new TahunAkademik();
+            tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
+            tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
+            tahunAkademik.setTanggalMulaiKrs(LocalDate.parse(tanggalMulaiKrs, formatter));
+            tahunAkademik.setTanggalMulaiKuliah(LocalDate.parse(tanggalMulaiKuliah, formatter));
+            tahunAkademik.setTanggalMulaiUts(LocalDate.parse(tanggalMulaiUts, formatter));
+            tahunAkademik.setTanggalMulaiUas(LocalDate.parse(tanggalMulaiUas, formatter));
+            tahunAkademik.setTanggalMulaiNilai(LocalDate.parse(tanggalMulaiNilai, formatter));
+            tahunAkademik.setJenis(jenis);
+            tahunAkademik.setNamaTahunAkademik(namaTahunAkademik);
+            tahunAkademik.setTanggalSelesai(LocalDate.parse(tanggalSelesai, formatter));
+            tahunAkademik.setTanggalSelesaiKrs(LocalDate.parse(tanggalSelesaiKrs, formatter));
+            tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiKuliah, formatter));
+            tahunAkademik.setTanggalSelesaiUas(LocalDate.parse(tanggalSelesaiUas, formatter));
+            tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
+            tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
+            tahunAkademik.setTahun(tahun);
+            tahunAkademik.setStatus(status);
+
+
+            tahunAkademikDao.save(tahunAkademik);
+        }
+
+        if (!id.isEmpty() || id != null){
+            TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
+            tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
+            tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
+            tahunAkademik.setTanggalMulaiKrs(LocalDate.parse(tanggalMulaiKrs, formatter));
+            tahunAkademik.setTanggalMulaiKuliah(LocalDate.parse(tanggalMulaiKuliah, formatter));
+            tahunAkademik.setTanggalMulaiUts(LocalDate.parse(tanggalMulaiUts, formatter));
+            tahunAkademik.setTanggalMulaiUas(LocalDate.parse(tanggalMulaiUas, formatter));
+            tahunAkademik.setTanggalMulaiNilai(LocalDate.parse(tanggalMulaiNilai, formatter));
+            tahunAkademik.setJenis(jenis);
+            tahunAkademik.setNamaTahunAkademik(namaTahunAkademik);
+            tahunAkademik.setTanggalSelesai(LocalDate.parse(tanggalSelesai, formatter));
+            tahunAkademik.setTanggalSelesaiKrs(LocalDate.parse(tanggalSelesaiKrs, formatter));
+            tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiKuliah, formatter));
+            tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiUas, formatter));
+            tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
+            tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
+            tahunAkademik.setTahun(tahun);
+            tahunAkademik.setStatus(status);
+
+
+            tahunAkademikDao.save(tahunAkademik);
+        }
 
         return "redirect:list";
     }
