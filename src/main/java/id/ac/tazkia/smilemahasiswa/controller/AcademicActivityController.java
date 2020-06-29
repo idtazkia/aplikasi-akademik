@@ -881,10 +881,20 @@ public class AcademicActivityController {
 
     //    Uts & Uas
     @GetMapping("/academic/schedule/uts")
-    public void absenUas(@RequestParam Jadwal jadwal,Model model){
+    public void absenUts(@RequestParam Jadwal jadwal,Model model){
 
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("absen", krsDetailDao.absenUts(jadwal,jadwal.getTahunAkademik()));
+
+    }
+
+    @GetMapping("/academic/schedule/uas")
+    public void absenUas(@RequestParam Jadwal jadwal,Model model){
+
+//        Integer tahun = Integer.parseInt(jadwal.getTahunAkademik().getTahun()) + 1;
+        model.addAttribute("jadwal", jadwal);
+//        model.addAttribute("tahun", tahun);
+        model.addAttribute("absen", krsDetailDao.absenUas(jadwal,jadwal.getTahunAkademik()));
 
     }
 }
