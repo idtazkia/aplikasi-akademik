@@ -39,4 +39,8 @@ public class Pembayaran {
     private BigDecimal amount;
 
     private String referensi;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord status = StatusRecord.AKTIF;
+
 }

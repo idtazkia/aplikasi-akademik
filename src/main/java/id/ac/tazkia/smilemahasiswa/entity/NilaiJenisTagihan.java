@@ -2,12 +2,14 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -39,5 +41,10 @@ public class NilaiJenisTagihan {
 
     @NotNull @NotEmpty
     private String angkatan;
+
+    @NotNull
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalJatuhTempo;
 
 }

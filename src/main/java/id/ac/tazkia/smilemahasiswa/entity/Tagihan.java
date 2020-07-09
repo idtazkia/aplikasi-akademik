@@ -65,4 +65,6 @@ public class Tagihan {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private String idTagihanSebelumnya;
+
 }
