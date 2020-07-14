@@ -48,4 +48,7 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
     @Query(value = "select round(sum(nilai_a+nilai_b+nilai_c+nilai_d+nilai_e+nilai_f),2) from seminar where id = ?1", nativeQuery = true)
     BigDecimal totalAkhirSkb(Seminar seminar);
 
+    List<Seminar> findByNoteMahasiswaAndStatusSemproNotInAndStatus(Mahasiswa mahasiswa,List<StatusApprove> statusSempro,StatusApprove statusApprove);
+
+
 }

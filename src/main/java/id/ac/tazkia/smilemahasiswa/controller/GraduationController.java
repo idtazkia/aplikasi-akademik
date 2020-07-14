@@ -634,8 +634,23 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/seminar/success")
-    public void successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+    public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
         model.addAttribute("seminar", seminar);
+
+        if (seminar.getPublish() != null) {
+
+            if (seminar.getPublish().equals("AKTIF")) {
+                return "redirect:nilai?id="+seminar.getId();
+            }
+        }
+
+        return "graduation/seminar/success";
+    }
+
+    @GetMapping("/graduation/seminar/nilai")
+    public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+        model.addAttribute("seminar", seminar);
+
 
     }
 
@@ -739,6 +754,7 @@ public class GraduationController {
         seminar.setTanggalInput(LocalDate.now());
         seminar.setStatus(StatusApprove.WAITING);
         seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setPublish(StatusRecord.NONAKTIF.toString());
         seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         seminarDao.save(seminar);
 
@@ -917,6 +933,7 @@ public class GraduationController {
         if(tahunAkademik != null){
             model.addAttribute("akademik", tahunAkademik);
             model.addAttribute("list", seminarDao.cariSeminar(dosen,dosen,dosen,tahunAkademik));
+            model.addAttribute("dosen", dosen);
         }
     }
 
@@ -1103,5 +1120,34 @@ public class GraduationController {
 
         return "redirect:detail?seminar="+seminar.getId();
     }
+
+    @GetMapping("/graduation/seminar/mahasiswa")
+    public void seminarMahasiswa(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa" , mahasiswa);
+
+        List<Seminar> seminars = seminarDao.findByNoteMahasiswaAndStatusSemproNotInAndStatus(mahasiswa,Arrays.asList(StatusApprove.WAITING),StatusApprove.APPROVED);
+        model.addAttribute("seminar", seminars);
+
+    }
+
+    @GetMapping("/graduation/lecture/finalisasi")
+    public String finalisasiSeminar(Model model, Authentication authentication, @RequestParam Seminar seminar){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        model.addAttribute("dosen" , dosen);
+
+        if (seminar.getKetuaPenguji() == dosen){
+            seminar.setPublish(StatusRecord.AKTIF.toString());
+            seminarDao.save(seminar);
+        }
+
+        return "redirect:sempro?tahunAkademik="+seminar.getTahunAkademik().getId();
+
+    }
+
+
 
 }
