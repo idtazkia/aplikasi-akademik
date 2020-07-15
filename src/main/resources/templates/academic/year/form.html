@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id" th:field="*{id}">
+                            <input th:if="${stringId != null}" type="hidden" name="id" th:field="*{id}">
                             <input type="hidden" name="status" th:field="*{status}">
 
                             <div class="form-group">
