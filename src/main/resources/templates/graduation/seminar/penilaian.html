@@ -44,10 +44,10 @@
                 <div class="nav-wrapper">
                     <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Penilaian</a>
+                            <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Assesment</a>
                         </li>
                         <li class="nav-item" th:if="${seminar.ketuaPenguji == dosen}">
-                            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">Detail Nilai</a>
+                            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">Detail & Publish </a>
                         </li>
 
                     </ul>
@@ -245,7 +245,7 @@
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col text-center">
-                                                    <button class="btn btn-success" type="submit">Simpan</button>
+                                                    <button class="btn btn-success" type="submit">Save</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -552,9 +552,157 @@
 
 
                             <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card-shadow">
+                                            <div class="card-body">
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-4">
+                                                        <center>
+                                                            <b>Main Examiner </b>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((seminar.ka * 0.25) + (seminar.kb * 0.15) + (seminar.kc * 0.2) + (seminar.kd * 0.1) + (seminar.ke * 0.15) + (seminar.kf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.ua * 0.3) + (seminar.ub * 0.25) + (seminar.uc * 0.2) + (seminar.ud * 0.15) + (seminar.ke * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                        </center>
+                                                    </div>
 
-                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
+                                                        <center>
+                                                            <b>Co-examiner 1</b>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((seminar.ua * 0.25) + (seminar.ub * 0.15) + (seminar.uc * 0.2) + (seminar.ud * 0.1) + (seminar.ue * 0.15) + (seminar.uf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.ua * 0.3) + (seminar.ub * 0.25) + (seminar.uc * 0.2) + (seminar.ud * 0.15) + (seminar.ue * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+
+                                                        </center>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <center>
+                                                            <b>Co-examiner 2</b>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((seminar.pa * 0.25) + (seminar.pb * 0.15) + (seminar.pc * 0.2) + (seminar.pd * 0.1) + (seminar.pe * 0.15) + (seminar.pf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.pa * 0.3) + (seminar.pb * 0.25) + (seminar.pc * 0.2) + (seminar.pd * 0.15) + (seminar.pe * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                        </center>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-4">
+                                                        <center>
+
+                                                        </center>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <center th:if="${seminar.status == seminar.status.APPROVED}">
+                                                            <b>Total Score</b>
+                                                            <p th:text="${seminar.nilai}">Abu Hanifah 1</p>
+                                                        </center>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-4">
+                                                        <center>
+
+                                                        </center>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="col text-center">
+                                                            <a type="button" th:href="@{/graduation/lecture/finalisasi(seminar = ${seminar.id})}" class="btn btn-primary btn-outline-primary" th:if="${seminar.ketuaPenguji == dosen}">
+                                                                <i class="fas fa-check"></i> Publish
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card shadow">
+                                            <div class="card-body">
+                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Main Examiner</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Inovasi Produk</label>
+                                                        <input th:field="*{ka}" disabled type="text" name="ua" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Manfaat Produk/Bisnis</label>
+                                                        <input th:field="*{kb}" disabled type="text" name="ub" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Kelayakan Bisnis</label>
+                                                        <input th:field="*{kc}" disabled type="text" name="uc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tinjauan Syariah</label>
+                                                        <input th:field="*{kd}" disabled type="text" name="ud" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tinajauan Pustaka</label>
+                                                        <input th:field="*{ke}"  disabled type="text" name="ue" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </form>
+
+                                                <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Main Examiner</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Perumusan Masalah</label>
+                                                        <input th:field="*{ka}" disabled type="text" name="ka" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tinjauan Pustaka</label>
+                                                        <input th:field="*{kb}" disabled type="text" name="kb" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Metode Penelitian</label>
+                                                        <input th:field="*{kc}" disabled type="text" name="kc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Manfaat Tugas Akhir</label>
+                                                        <input th:field="*{kd}" disabled type="text" name="kd" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Kelayakan Tugas Akhir</label>
+                                                        <input th:field="*{ke}" disabled type="text" name="ke" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Kedalaman Tinjauan Syariah</label>
+                                                        <input th:field="*{kf}" disabled type="text" name="kf" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
                                         <div class="card shadow">
                                             <div class="card-body">
                                                 <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}">
@@ -633,7 +781,7 @@
 
 <!--                                    -->
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="card shadow">
                                             <div class="card-body">
                                                 <form action="" th:object="${seminar}" th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}">
@@ -711,6 +859,16 @@
                                     </div>
 
                                 </div>
+                                <br><br>
+                                <div class="container">
+                                    <div class="row">
+<!--                                        <div class="col text-center">-->
+<!--                                            <a type="button" th:href="@{/graduation/lecture/finalisasi(seminar = ${seminar.id})}" class="btn btn-primary btn-outline-primary btn-sm" th:if="${seminar.ketuaPenguji == dosen}">-->
+<!--                                                <i class="fas fa-check"></i> Publish-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
                                 <embed src="https://karfianto.files.wordpress.com/2017/05/77-tanya-jawab-shalat.pdf"  width="100%" height="670px">
@@ -721,11 +879,10 @@
             </div>
         </div>
     </div>
-
     <div class="container-fluid mt--7">
 
     </div>
-
+    <br>
 </div>
 </body>
 </html>
