@@ -87,18 +87,19 @@ public class ReportMahasiswaController {
         List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
         model.addAttribute("detail", krsDetail);
+        model.addAttribute("tahun", tahunAkademik);
     }
 
     @PostMapping("/report/edom")
-    public String prosesForm(Authentication authentication, HttpServletRequest request, RedirectAttributes attributes) {
+    public String prosesForm(Authentication authentication, HttpServletRequest request,@RequestParam TahunAkademik tahunAkademik,
+                             RedirectAttributes attributes) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF,StatusRecord.UNDONE);
+        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF,StatusRecord.UNDONE);
 
 
-        Map<String, BigInteger> mapNilaiKpi = new HashMap<>();
         for(KrsDetail daftarEdom : krsDetail) {
             String pertanyaan1 = request.getParameter(daftarEdom.getId() + "1");
             String pertanyaan2 = request.getParameter(daftarEdom.getId() + "2");
