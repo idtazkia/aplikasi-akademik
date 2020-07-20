@@ -48,10 +48,11 @@ public class ReportMahasiswaController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF, StatusRecord.UNDONE);
         List<TugasDto> tugasDtos = new ArrayList<>();
         model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
+            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF, StatusRecord.UNDONE);
+
             model.addAttribute("selectedTahun" , tahunAkademik);
 
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
@@ -63,24 +64,16 @@ public class ReportMahasiswaController {
             model.addAttribute("khs",krsDetail);
             model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
             model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
-        } else {
-            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
-            for (DataKhsDto data : krsDetail) {
-                List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
-                tugasDtos.addAll(nilaiTugas);
+
+            if (validasiEdom.isEmpty() || validasiEdom == null){
+                return "report/khs";
+            }else {
+                return "redirect:edom";
             }
-            model.addAttribute("khs",krsDetail);
-            model.addAttribute("tugas",tugasDtos);
-            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
-            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         }
 
+        return "report/khs";
 
-        if (validasiEdom.isEmpty() || validasiEdom == null){
-            return "report/khs";
-        }else {
-            return "redirect:edom";
-        }
 
     }
 
