@@ -68,7 +68,7 @@ public class ReportMahasiswaController {
             if (validasiEdom.isEmpty() || validasiEdom == null){
                 return "report/khs";
             }else {
-                return "redirect:edom";
+                return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
             }
         }
 
@@ -78,13 +78,13 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/report/edom")
-    public void edom(Authentication authentication, Model model) {
+    public void edom(Authentication authentication, Model model,@RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), StatusRecord.AKTIF, StatusRecord.UNDONE);
+        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
         model.addAttribute("detail", krsDetail);
     }
