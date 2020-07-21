@@ -11,6 +11,7 @@ public interface RpsDao extends PagingAndSortingRepository<Rps, String> {
 
     Rps findByJadwalAndStatus(Jadwal jadwal, StatusRecord aktif);
     Iterable<Rps> findByStatusAndJadwal(StatusRecord aktif, Jadwal jadwal);
+    Rps findByFilename (String filename);
 
 
 }

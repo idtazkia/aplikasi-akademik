@@ -69,6 +69,9 @@
                                 <h3 class="mb-0">Upload Nilai</h3>
                             </div>
                             <div class="card-body">
+                                <div class="alert alert-success" role="alert" th:text="${messageTUGAS}" th:if="${messageTUGAS}"></div>
+                                <div class="alert alert-success" role="alert" th:text="${messageUTS}" th:if="${messageUTS}"></div>
+                                <div class="alert alert-success" role="alert" th:text="${messageUAS}" th:if="${messageUAS}"></div>
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <tr th:each="data : ${listTugas}">
@@ -80,7 +83,7 @@
                                             <td>
                                                 <form th:action="@{/studiesActivity/assesment/formTugas (jadwal = ${data.id})}"
                                                       method="post" enctype="multipart/form-data">
-                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadTugasFile">
+                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadTugasFile" required>
                                                     <button class="btn btn-success btn-sm simpan" type="submit" id="uploadTugas">Upload Nilai</button>
                                                 </form>
                                             </td>
@@ -98,7 +101,7 @@
                                                 <form th:action="@{/studiesActivity/assesment/formUTS (jadwal = ${jadwal.id})}"
                                                       method="post" enctype="multipart/form-data">
 
-                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUTSFile">
+                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUTSFile" required>
                                                     <button class="btn btn-success btn-sm simpan" type="submit" id="uploadUTS">Upload Nilai</button>
 
                                                 </form>
@@ -117,7 +120,7 @@
                                                 <form th:action="@{/studiesActivity/assesment/formUAS (jadwal = ${jadwal.id})}"
                                                       method="post" enctype="multipart/form-data">
 
-                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUASFile">
+                                                    <input class="btn btn-success btn-sm" type="file" name="file" id="uploadUASFile" required>
                                                     <button class="btn btn-success btn-sm simpan" type="submit" id="uploadUAS">Upload Nilai</button>
 
                                                 </form>

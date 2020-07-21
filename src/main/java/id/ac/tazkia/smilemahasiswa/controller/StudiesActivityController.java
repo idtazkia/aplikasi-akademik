@@ -23,8 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -952,11 +957,28 @@ public class StudiesActivityController {
 
 
     @GetMapping("/studiesActivity/assesment/uploadnilai")
-    public void upload(Model model,@RequestParam Jadwal jadwal){
+    public String upload(Model model, @RequestParam Jadwal jadwal, RedirectAttributes attributes){
+
+        if (jadwal.getMatakuliahKurikulum().getSds() != null){
+            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+            if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                return "redirect:weight ?jadwal="+jadwal.getId();
+            }
+        }else {
+            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+            if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                return "redirect:weight?jadwal="+jadwal.getId();
+            }
+        }
+
 
         List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("listTugas",listTugas);
+
+        return null;
 
     }
 
@@ -1307,6 +1329,7 @@ public class StudiesActivityController {
 
 
 
+
         int rowNum = 12 ;
         int no = 1;
         for (KrsDetail kd : krsDetail) {
@@ -1332,7 +1355,8 @@ public class StudiesActivityController {
 
     //post.excel.Tugas
     @PostMapping("/studiesActivity/assesment/formTugas")
-    public String prosesFormUploadTugas(MultipartFile file, @RequestParam(name = "jadwal",value = "jadwal") BobotTugas bobotTugas) {
+    public String prosesFormUploadTugas(MultipartFile file, @RequestParam(name = "jadwal",value = "jadwal") BobotTugas bobotTugas,
+                                        RedirectAttributes redirAttrs) {
 
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
@@ -1405,14 +1429,14 @@ public class StudiesActivityController {
 
 
         }
-
+        redirAttrs.addFlashAttribute("messageTUGAS", "Upload TUGAS berhasil!");
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + bobotTugas.getJadwal().getId();
 
     }
 
     //post.excel.UTS
     @PostMapping("/studiesActivity/assesment/formUTS")
-    public String prosesFormUploadUTS(MultipartFile file, @RequestParam Jadwal jadwal) {
+    public String prosesFormUploadUTS(MultipartFile file, @RequestParam Jadwal jadwal,RedirectAttributes redirAttrs) {
 
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
@@ -1479,14 +1503,14 @@ public class StudiesActivityController {
         }
 
 
-
+        redirAttrs.addFlashAttribute("messageUTS", "Upload UTS berhasil!");
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
 
     //post.excel.UAS
     @PostMapping("/studiesActivity/assesment/formUAS")
-    public String prosesFormUploadUAS(MultipartFile file, @RequestParam Jadwal jadwal) {
+    public String prosesFormUploadUAS(MultipartFile file, @RequestParam Jadwal jadwal,RedirectAttributes redirAttrs) {
 
         LOGGER.debug("Nama file : {}", file.getOriginalFilename());
         LOGGER.debug("Ukuran file : {} bytes", file.getSize());
@@ -1550,7 +1574,7 @@ public class StudiesActivityController {
 
 
         }
-
+        redirAttrs.addFlashAttribute("messageUAS", "Upload UAS berhasil!");
         return "redirect:/studiesActivity/assesment/uploadnilai?jadwal=" + jadwal.getId();
 
     }
@@ -1966,7 +1990,7 @@ public class StudiesActivityController {
 
 
     @PostMapping("/studiesActivity/assesment/upload/rps")
-    public String uploadRps(@Valid Rps rps,MultipartFile file, @RequestParam Jadwal jadwal) throws Exception {
+    public String uploadRps(@Valid Rps rps,MultipartFile file, @RequestParam Jadwal jadwal, RedirectAttributes redirAttrs) throws Exception {
 
 
         String namaFile = file.getName();
@@ -2015,8 +2039,27 @@ public class StudiesActivityController {
             rpsDao.save(rps);
         }
 
+        redirAttrs.addFlashAttribute("messageRPS", "RPS Berhasil diupload!");
         return "redirect:/studiesActivity/assesment/upload/rps?jadwal=" + rps.getJadwal().getId();
 
+
+    }
+
+
+
+    @GetMapping("/download/rps")
+    public ResponseEntity downloadFileFromLocal(Rps rps) {
+        Path path = Paths.get(uploadRps + File.separator + rps.getJadwal().getId() + File.separator  + rps.getFilename());
+        Resource resource = null;
+        try {
+            resource = new UrlResource(path.toUri());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
 

@@ -72,6 +72,8 @@
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Detail Data</h3>
                             </div>
+                            <div class="card-body">
+                            <div class="alert alert-success" role="alert" th:text="${messageRPS}" th:if="${messageRPS}"></div>
                             <div class="table-responsive">
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
@@ -80,6 +82,7 @@
                                         <th>Course</th>
                                         <th>File Name</th>
                                         <th>Uploaded Date</th>
+                                        <th></th>
 
                                     </tr>
                                     </thead>
@@ -89,10 +92,14 @@
                                         <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Pajak</td>
                                         <td th:text="${data.filename}"></td>
                                         <td th:text="${data.tanggalUpload}">10-10-2019</td>
-
+                                        <td>
+                                            <a th:href="@{/download/rps(rps=${data.id})}"
+                                               class="btn btn-info" type="submit">Download</a>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
                             </div>
                         </div>
                     </div>
