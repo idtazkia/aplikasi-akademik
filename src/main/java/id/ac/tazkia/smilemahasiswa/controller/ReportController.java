@@ -1,17 +1,11 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +32,9 @@ public class ReportController {
     @Autowired
     private MahasiswaDao mahasiswaDao;
 
+    @Autowired
+    private ProdiDao prodiDao;
+
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
@@ -46,6 +43,11 @@ public class ReportController {
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
         return mahasiswaDao.cariAngkatan();
+    }
+
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
 
 
@@ -141,5 +143,17 @@ public class ReportController {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan));
         }
+    }
+
+    @GetMapping("/report/recapitulation/edom")
+    public void rekapEdom(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                          @RequestParam(required = false) Prodi prodi){
+
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("rekapEdom",krsDetailDao.rekapEdom(tahunAkademik,prodi));
+        }
+
     }
 }
