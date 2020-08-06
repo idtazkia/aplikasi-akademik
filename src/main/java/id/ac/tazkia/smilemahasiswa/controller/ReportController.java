@@ -5,11 +5,14 @@ import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,18 @@ import java.util.*;
 public class ReportController {
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private JadwalDao jadwalDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private DosenDao dosenDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -156,4 +171,22 @@ public class ReportController {
         }
 
     }
+
+    @GetMapping("/report/recapitulation/bkd")
+    public void rekapBkdDosen(Model model, Authentication authentication, @RequestParam(required = false)TahunAkademik tahunAkademik){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+
+            List<ScheduleDto> jadwal = jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahunAkademik);
+            model.addAttribute("jadwal", jadwal);
+        }
+
+
+    }
+
+
 }
