@@ -17,6 +17,8 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     TahunAkademik findByNamaTahunAkademikAndStatus(String nama, StatusRecord statusRecord);
 
+    List<TahunAkademik> findByStatusOrderByKodeTahunAkademikDesc(StatusRecord statusRecord);
+
     Iterable<TahunAkademik> findByStatusNotInOrderByTahunDesc(List<StatusRecord> statusRecords);
 
     @Query(value = "select tahun.id,tahun.nama_tahun_akademik from tahun_akademik as tahun where status not in(?1) order by nama_tahun_akademik desc", nativeQuery = true)

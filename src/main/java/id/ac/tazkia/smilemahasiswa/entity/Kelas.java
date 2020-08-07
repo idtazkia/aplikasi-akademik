@@ -34,6 +34,8 @@ public class Kelas {
     @JoinColumn(name = "id_kurikulum")
     private Kurikulum kurikulum;
 
+    private String bahasa;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord konsentrasi;
 

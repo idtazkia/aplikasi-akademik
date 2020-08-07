@@ -1,10 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Edom Questions</title>
 </head>
 <body>
-$END$
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Edom Questions </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/setting/edom/question/save}" th:object="${edomQuestion}">
+
+                            <div class="form-group">
+                                <label>Academic Years</label>
+                                <select style="width:100%!important;" name="tahunAkademik" th:field="*{tahunAkademik}" class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:text="${data.namaTahunAkademik}" th:value="${data.id}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Language</label>
+                                <select style="width:100%!important;" name="bahasa" th:field="*{bahasa}" class="form-control js-example-placeholder-single">
+                                    <option value=""></option>
+                                    <option th:each="data : ${bahasa}"
+                                            th:text="${data.keterangan}" th:value="${data.bahasa}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Number</label>
+                                <input type="text" th:field="*{nomor}" name="nomor" class="form-control" placeholder="Number">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Question</label>
+                                <input type="text" th:field="*{pertanyaan}" name="pertanyaan" class="form-control" placeholder="Question">
+                            </div>
+
+                            <input type="hidden" name="id" th:field="*{id}">
+                            <div class="form-group">
+                                <input class="btn btn-primary" type="submit" value="Save">
+                                <a th:href="@{/setting/edom/question}" class="btn btn-primary" role="button">
+                                    <span aria-hidden="true"></span>Cancel
+                                </a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

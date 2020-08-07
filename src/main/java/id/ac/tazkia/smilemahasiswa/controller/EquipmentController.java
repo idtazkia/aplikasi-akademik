@@ -49,6 +49,9 @@ public class EquipmentController {
     @Autowired
     private RuanganDao ruanganDao;
 
+    @Autowired
+    private BahasaDao bahasaDao;
+
     //    Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -264,6 +267,7 @@ public class EquipmentController {
         if (id != null && !id.isEmpty()) {
             Kelas kelas = kelasDao.findById(id).get();
             if (kelas != null) {
+                model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
                 model.addAttribute("kelas", kelas);
                 if (kelas.getStatus() == null){
                     kelas.setStatus(StatusRecord.NONAKTIF);

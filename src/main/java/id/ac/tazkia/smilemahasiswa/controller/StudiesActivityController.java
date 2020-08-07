@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
@@ -13,6 +14,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -50,7 +52,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Controller
+@Controller @Slf4j
 public class StudiesActivityController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudiesActivityController.class);
@@ -1601,6 +1603,8 @@ public class StudiesActivityController {
         model.addAttribute("tahun", tahun);
         model.addAttribute("topic", presensiDosenDao.bkdBeritaAcara(jadwal));
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
     }
 
     @GetMapping("/studiesActivity/assesment/nilai")
@@ -1609,6 +1613,7 @@ public class StudiesActivityController {
 
         model.addAttribute("tahun", tahun);
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
         model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
     }
 
@@ -1618,8 +1623,23 @@ public class StudiesActivityController {
 
         model.addAttribute("tahun", tahun);
 
+//        JadwalDosenDto jadwalDosenDto = (JadwalDosenDto) jadwalDosenDao.headerJadwal(jadwal.getId());
+
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("attendance", presensiMahasiswaDao.bkdAttendance(jadwal));
+
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
+        List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        log.debug("BKD Attendance : {}", hasil.size());
+
+        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        log.debug("BKD Attendance : {}", hasil.size());
+
+        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        log.debug("BKD Attendance : {}", hasil.size());
+
+        model.addAttribute("attendance", hasil);
+
 
     }
 
