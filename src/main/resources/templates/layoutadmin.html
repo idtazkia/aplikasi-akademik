@@ -370,17 +370,23 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-report" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-folder-17 text-danger"></i>
                         <span class="nav-link-text">Report</span>
                     </a>
                     <div class="collapse" id="navbar-report">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/report/recapitulation/lecturer}" class="nav-link">Lecturer Report</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/report/recapitulation/bkd}" class="nav-link">BKD Report</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/report/recapitulation/edom}" class="nav-link">Edom Report</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/report/recapitulation/ipk}" class="nav-link">IPK</a>
                             </li>
                         </ul>
