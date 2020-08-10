@@ -27,7 +27,7 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     @Query("select m from Mahasiswa m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi")
     Iterable<Mahasiswa> carikelas(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi);
 
-    Mahasiswa findByStatusAndIdProdiAndAngkatan(StatusRecord statusRecord, Prodi prodi, String angkatan);
+    List<Mahasiswa> findByStatusAndIdProdi(StatusRecord statusRecord, Prodi prodi);
     Page<Mahasiswa> findByAngkatanAndIdProdiAndStatus(String angkatan, Prodi prodi, StatusRecord statusRecord, Pageable page);
 
     List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);

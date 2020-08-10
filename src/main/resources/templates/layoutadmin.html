@@ -293,28 +293,28 @@
                     </a>
                     <div class="collapse" id="studentBill">
                         <ul class="nav nav-sm flex-column">
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">-->
+<!--                                <a th:href="@{/studentBill/bank/list}" class="nav-link">Bank</a>-->
+<!--                            </li>-->
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
-                                <a th:href="@{/studentBill/bank/list}" class="nav-link">Bank</a>
-                            </li>
-                            <li class="nav-item">
                                 <a th:href="@{/studentBill/requestPenangguhan/list}" class="nav-link">Request Penangguhan</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/requestCicilan/list}" class="nav-link">Request Cicilan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/billAdmin/list}" class="nav-link">Bill</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/typeBill/list}" class="nav-link">Type of Bill</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Value of Bill Type</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/payment/report}" class="nav-link">Report Payment</a>
                             </li>
                         </ul>

@@ -62,6 +62,18 @@
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getnilai_tagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}"></td>
                                 </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><h5>Total : </h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><h5>Sisa : </h5></td>
+                                    <td></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -69,25 +81,25 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-5 col-xs-6">
-                <h5 style="margin-right: 50px" class="text-right">Total : </h5>
-            </div>
-            <div class="col-md-3 col-xs-6">
-                <h5 style="margin-right: 11px" class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>
-            </div>
-            <div class="col-md-3 col-xs-6">
-                <h5 style="margin-right: 80px" class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-5 col-xs-6">
-                <h5 style="margin-right: 50px;" class="text-right">Sisa : </h5>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <h5 class="text-right" style="margin-right: 80px" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
-            </div>
-        </div>
+<!--        <div class="row">-->
+<!--            <div class="col-md-5 col-xs-6">-->
+<!--                <h5 style="margin-right: 65px;" class="text-right">Total : </h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-push-1 col-md-3 col-xs-6 ml-5">-->
+<!--                <h5 style="margin-left: 69px;" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--            </div>-->
+<!--            <div class=" col-md-3 col-xs-6">-->
+<!--                <h5 style="margin-left: 90px; width: 100%;" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-5 col-xs-6">-->
+<!--                <h5 style="margin-right: 65px;" class="text-right">Sisa : </h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-push-4 col-md-2 col-xs-6">-->
+<!--                <h5 style="margin-left: -7px;" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <div class="row">
             <div class="col-md-12 col-xs-12">
@@ -98,8 +110,8 @@
                             <thead class="thead-dark">
                             <tr>
                                 <th>Tahun Akademik</th>
+                                <th>Jenis Tagihan</th>
                                 <th>Tanggal</th>
-                                <th>Keterangan</th>
                                 <th>Dibayar</th>
                                 <th> </th>
                             </tr>

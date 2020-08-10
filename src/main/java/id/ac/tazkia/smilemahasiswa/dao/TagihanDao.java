@@ -60,4 +60,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     List<BiayaMahasiswaDto> biayaMahasiswa(String idMahasiswa);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanAndStatus(Mahasiswa mhs, NilaiJenisTagihan nilaiJenisTagihan, StatusRecord statusRecord);
+
+    Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mhs, NilaiJenisTagihan nilaiJenisTagihan);
+
 }

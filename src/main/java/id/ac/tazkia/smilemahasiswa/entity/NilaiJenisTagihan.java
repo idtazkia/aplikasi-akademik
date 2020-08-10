@@ -42,9 +42,4 @@ public class NilaiJenisTagihan {
     @NotNull @NotEmpty
     private String angkatan;
 
-    @NotNull
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tanggalJatuhTempo;
-
 }

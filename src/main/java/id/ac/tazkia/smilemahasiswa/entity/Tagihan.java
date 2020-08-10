@@ -32,7 +32,6 @@ public class Tagihan {
     @ManyToOne @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
-    @NotNull @NotEmpty
     private String keterangan;
 
     @NotNull @Min(1000)

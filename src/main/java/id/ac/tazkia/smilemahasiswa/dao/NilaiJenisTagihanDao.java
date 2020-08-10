@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.objenesis.instantiator.basic.NewInstanceInstantiator;
 
 import java.util.List;
 
@@ -20,5 +21,7 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
     List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndStatus(TahunAkademik tahunAkademik, String angkatan , Prodi prodi, StatusRecord statusRecord);
 
     List<NilaiJenisTagihan> findByTahunAkademikAndProdi(TahunAkademik tahunAkademik, Prodi prodi);
+
+    NilaiJenisTagihan findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndStatus(String jenisTagihan, TahunAkademik tahunAkademik, Prodi prodi, String angkatan, StatusRecord statusRecord);
 
 }
