@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
+      layout:decorate="~{layoutadmin}"
+      sec:authorize="hasAuthority('VIEW_FINANCE')">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -62,6 +63,7 @@
                                 <th>Study Program</th>
                                 <th>Generation</th>
                                 <th>Value</th>
+                                <th>Due Date</th>
                                 <th></th>
                             </tr>
                             </thead>

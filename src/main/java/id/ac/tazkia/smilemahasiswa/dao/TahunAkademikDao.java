@@ -30,4 +30,5 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
     Page<TahunAkademik> cariTahunAkademik(@Param("status") StatusRecord hapus, Pageable page);
 
     List<TahunAkademik> findByStatusNotInOrderByNamaTahunAkademikDesc(List<StatusRecord> asList);
+
 }

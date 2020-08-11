@@ -1,149 +1,252 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layoutadmin}">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div layout:fragment="main">
-    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-        <div class="container-fluid">
-            <div class="header-body">
-                <!-- Card stats -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card card-stats mb-4 mb-xl-0">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Bill </span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
-                                            <i class="fas fa-calendar"></i>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Title</title>
+    </head>
+    <body>
+        <div layout:fragment="main">
+            <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+                <div class="container-fluid">
+                    <div class="header-body">
+                        <!-- Card stats -->
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card card-stats mb-4 mb-xl-0">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                                <span class="h2 font-weight-bold mb-0">List </span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                                    <i class="fas fa-calendar"></i>
+                                                </div>
+                                            </div>
                                         </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid mt--7">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List</h3>
+                            </div>
+                            <div class="card-body">
+                                <form method="get">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tahun Akademik</label>
+                                                <select name="tahunAkademik" required class="form-control">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${tahunAkademik}"
+                                                            th:selected="(${data} == *{selectTahun})"
+                                                            th:text="${data.namaTahunAkademik}"
+                                                            th:value="${data.id}">STEI TAZKIA</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>NIM</label>
+                                                <input type="number" name="nim" required class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary"> Show</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body" th:if="${selectTahun != null || (id != null && !id.isEmpty() )}">
+                                <div class="card shadow">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="table-responsive">
+                                                <table class="table align-items-center table-flush">
+                                                    <tr>
+                                                        <td class="text-right">Mahasiswa</td>
+                                                        <td>:</td>
+                                                        <td th:text="${mahasiswa.nama}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right">Program Studi</td>
+                                                        <td style="width: 5px;">:</td>
+                                                        <td th:text="${mahasiswa.idProdi.namaProdi}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right">Jumlah Sks</td>
+                                                        <td>:</td>
+                                                        <td th:text="${jumlahSks}"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="table-responsive">
+                                                <table class="table align-items-center table-flush">
+                                                    <tr>
+                                                        <td class="text-right">NIM</td>
+                                                        <td >:</td>
+                                                        <td th:text="${mahasiswa.nim}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" >Program Pendidikan</td>
+                                                        <td style="width: 5px;">:</td>
+                                                        <td th:text="${mahasiswa.idProgram.namaProgram}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right">Status Semester</td>
+                                                        <td>:</td>
+                                                        <td th:if="${status == null}">Nonaktif</td>
+                                                        <td th:if="${status}">Aktif</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <thead class="thead-light">
+                                                    <tr class="text-right">
+                                                        <th>Tahun Akademik</th>
+                                                        <th>Bipot</th>
+                                                        <th>Total Biaya</th>
+                                                        <th>Total Potongan</th>
+                                                        <th>Total Bayar</th>
+                                                        <th>Total Penarikan</th>
+                                                        <th>Sisa</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="data, row : ${sisaTagihan}">
+                                                        <td th:text="${data.getNamaTahun()}"></td>
+                                                        <td></td>
+                                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getTagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getPotongan(), 0, 'POINT', 2, 'COMMA')}">0</td>
+                                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}">0</td>
+                                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getPenarikan(), 0, 'POINT', 2, 'COMMA')}">0</td>
+                                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getSisa(), 0, 'POINT', 2, 'COMMA')}">0</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card shadow mt-5">
+                                    <div class="bg-primary text-white text-center">Daftar Biaya & Potongan (BIPOT)</div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <td class="text-center">#</td>
+                                                    <td class="text-center">Keterangan</td>
+                                                    <td class="text-center">Total</td>
+                                                    <td class="text-center">Dibayar</td>
+                                                    <td class="text-center">Catatan</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="data, row:${daftarBiaya}">
+                                                    <td th:text="${(row.index + 1)}">1</td>
+                                                    <td th:text="${data.getNamaTagihan()}"></td>
+                                                    <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getTagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                                    <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 col-xs-12">
+                                            <h4 class="text-right">
+                                                Total:
+                                            </h4>
+                                        </div>
+                                        <div class="col-md-3 ml-2 col-xs-6">
+                                            <div class="text-right" >
+                                                <h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xs-6">
+                                            <div class="text-right">
+                                                <h5 class="mr-3" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 col-xs-6">
+                                            <h4 class="text-right">
+                                                Sisa:
+                                            </h4>
+                                        </div>
+                                        <div class="col-md-6 col-xs-6">
+                                            <div class="text-right">
+                                                <h5 class="mr-2" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+
+                                <div class="card shadow mt-5">
+                                    <div class="bg-primary text-white text-center">Daftar Pembayaran dan Penarikan</div>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-dark">
+                                                <tr class="text-center">
+                                                    <td>#</td>
+                                                    <td>Tanggal</td>
+                                                    <td>Nomor Bukti</td>
+                                                    <td>Jumlah</td>
+                                                    <td>Keterangan</td>
+                                                    <td class="text-center">Cetak <br> BPM</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="data, row:${daftarPembayaran}">
+                                                    <td class="text-right" th:text="${(row.index + 1)}">1</td>
+                                                    <td class="text-center" th:text="${data.getTanggal()}"></td>
+                                                    <td class="text-center" th:text="${data.getNomorBukti()}"></td>
+                                                    <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getJumlah(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                                    <td th:text="${data.getKeterangan()}"></td>
+                                                    <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.getNomorBukti()})}" class="fas fa-print text-lg"></a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+
         </div>
-    </div>
-
-    <div class="container-fluid mt--7">
-        <div class="row">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">Data List</h3>
-                            </div>
-                            <div class="col text-right">
-<!--                                <a th:href="@{/studentBill/bill/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>-->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Student</th>
-                                <th>Type of bill</th>
-                                <th>Value</th>
-                                <th>Due Date</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="data, row : ${listBill}">
-                                <td th:text="${(row.index + 1) + (listBill.number * listBill.size)}">1</td>
-                                <td th:text="${data.mahasiswa.nama}">PATRICK STAR</td>
-                                <td>
-                                    <a  class="btn btn-success btn-sm" href="form"
-                                        th:if="${data.status.AKTIF} == ${data.status}"
-                                        th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">
-                                    </a>
-
-                                    <a type="button" class="btn btn-danger btn-sm" href="form"
-                                       th:if="${data.status.NONAKTIF} == ${data.status}"
-                                       th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">
-                                    </a>
-                                </td>
-                                <td th:text="${data.nilaiTagihan}"></td>
-                                <td th:text="${data.tanggalPenangguhan}"></td>
-                                <td>
-
-                                    <a th:href="@{/studentBill/billAdmin/date(id = ${data.id})}" class="btn btn-info btn-sm"><i class="far fa-calendar-plus"></i></a>
-
-                                    <!--                                    <a th:href="@{/studentBill/bill/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>-->
-
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-
-<!--                                    <a th:href="@{/studentBill/payment(tagihan = ${data.id})}" class="btn btn-success btn-sm" ><i class="far fa-money-bill-alt"></i></a>-->
-
-                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-                                            <div class="modal-content bg-gradient-danger">
-
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-
-                                                <div class="modal-body">
-
-                                                    <div class="py-3 text-center">
-                                                        <i class="far fa-trash-alt fa-3x"></i>
-                                                        <h4 class="heading mt-4">Are you sure ?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <form method="post" th:action="@{/studentBill/bill/delete(bank = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
-                                <li class="disabled"><a href="#" aria-label="Previous"><span
-                                        aria-hidden="true">&laquo;</span></a>
-                                </li>
-                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>
