@@ -840,19 +840,30 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/task")
-    public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas){
-        bobotTugasDao.save(bobotTugas);
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail){
-            NilaiTugas nilaiTugas = new NilaiTugas();
-            nilaiTugas.setNilai(BigDecimal.ZERO);
-            nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
-            nilaiTugas.setKrsDetail(kd);
-            nilaiTugas.setBobotTugas(bobotTugas);
-            nilaiTugas.setStatus(StatusRecord.AKTIF);
-            nilaiTugasDao.save(nilaiTugas);
+    public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas,
+                              RedirectAttributes redirectAttributes){
+
+        BigDecimal totalBobotUtama = jadwalDao.bobotUtsUas(bobotTugas.getJadwal().getId());
+        BigDecimal totalBobotTugas = bobotTugasDao.totalBobotTugas(bobotTugas.getJadwal().getId());
+        BigDecimal total = totalBobotTugas.add(totalBobotUtama.add(bobotTugas.getBobot()));
+
+        if (total.compareTo(new BigDecimal(100)) >= 0){
+            redirectAttributes.addFlashAttribute("gagal", "Save Data Gagal");
+            return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
+        }else {
+            bobotTugasDao.save(bobotTugas);
+            List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
+                NilaiTugas nilaiTugas = new NilaiTugas();
+                nilaiTugas.setNilai(BigDecimal.ZERO);
+                nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
+                nilaiTugas.setKrsDetail(kd);
+                nilaiTugas.setBobotTugas(bobotTugas);
+                nilaiTugas.setStatus(StatusRecord.AKTIF);
+                nilaiTugasDao.save(nilaiTugas);
+            }
+            return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
         }
-        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
 
     }
 
@@ -867,6 +878,10 @@ public class StudiesActivityController {
         }else {
             BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
             if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                return "redirect:weight?jadwal="+jadwal.getId();
+            }
+            if (totalBobot.toBigInteger().intValueExact() > 100) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 return "redirect:weight?jadwal="+jadwal.getId();
             }
@@ -1631,12 +1646,12 @@ public class StudiesActivityController {
 
         List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
         log.debug("BKD Attendance : {}", hasil.size());
-
-        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
-        log.debug("BKD Attendance : {}", hasil.size());
-
-        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
-        log.debug("BKD Attendance : {}", hasil.size());
+//
+//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+//        log.debug("BKD Attendance : {}", hasil.size());
+//
+//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+//        log.debug("BKD Attendance : {}", hasil.size());
 
         model.addAttribute("attendance", hasil);
 
