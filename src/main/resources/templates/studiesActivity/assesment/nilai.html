@@ -102,11 +102,18 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-9">
-
-        </div>
-        <div class="col-md-3" style="font-size: 20px;">
+        <div class="col-md-4">
             <span th:text="${'Bogor, ' + #calendars.format(#calendars.createNow(), 'dd MMM yyyy')}">Bogor, 13 Feb 2020</span>
+            <br>
+            <span th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah,</span>
+            <br>
+            <br>
+            <br>
+            <b  th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Abdul Mughni, Lc. M.H.I,</b>
+        </div>
+        <div class="col-md-5"></div>
+        <div class="col-md-3" style="font-size: 20px;">
+            <span></span>
             <br>
             <span>Dosen Pengasuh,</span>
             <br>
