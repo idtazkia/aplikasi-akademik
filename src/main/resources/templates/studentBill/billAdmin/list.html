@@ -45,8 +45,13 @@
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
                         <div class="card shadow">
+
                             <div class="card-header border-0">
-                                <h3 class="mb-0">List</h3>
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0"> List</h3>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <form method="get">
@@ -66,7 +71,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>NIM</label>
-                                                <input type="number" name="nim" required class="form-control">
+                                                <input type="number" name="nim" th:value="${selectNim}" required class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -155,8 +160,12 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="card shadow mt-5">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn btn-success btn-sm mb-2" th:href="@{/studentBill/billAdmin/form(tahunAkademik = ${selectTahun.id}, nim = ${selectNim})}"><i class="fa fa-plus-square"></i> Tambah Tagihan</a>
+                                        </div>
+                                    </div>
                                     <div class="bg-primary text-white text-center">Daftar Biaya & Potongan (BIPOT)</div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
@@ -167,6 +176,7 @@
                                                     <td class="text-center">Total</td>
                                                     <td class="text-center">Dibayar</td>
                                                     <td class="text-center">Catatan</td>
+                                                    <td class="text-center"></td>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -176,41 +186,87 @@
                                                     <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getTagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
                                                     <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}"></td>
                                                     <td></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.getId()}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" th:id="${'modal-notification' + data.getId()}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                <div class="modal-content bg-gradient-danger">
+
+                                                                    <div class="modal-header">
+                                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <div class="py-3 text-center">
+                                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <form method="post" th:action="@{/studentBill/billAdmin/delete(tagihan = ${data.getId()})}">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                                        </form>
+                                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center" colspan="2"><h5>Total : </h5></td>
+                                                    <td class="text-right"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                    <td class="text-right"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center" colspan="2"><h5>Sisa : </h5></td>
+                                                    <td colspan="2" class="text-right"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-12">
-                                            <h4 class="text-right">
-                                                Total:
-                                            </h4>
-                                        </div>
-                                        <div class="col-md-3 ml-2 col-xs-6">
-                                            <div class="text-right" >
-                                                <h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <div class="text-right">
-                                                <h5 class="mr-3" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2"></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-6">
-                                            <h4 class="text-right">
-                                                Sisa:
-                                            </h4>
-                                        </div>
-                                        <div class="col-md-6 col-xs-6">
-                                            <div class="text-right">
-                                                <h5 class="mr-2" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2"></div>
-                                    </div>
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-md-4 col-xs-12">-->
+<!--                                            <h4 class="text-right">-->
+<!--                                                Total:-->
+<!--                                            </h4>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 ml-2 col-xs-6">-->
+<!--                                            <div class="text-right" >-->
+<!--                                                <h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-xs-6">-->
+<!--                                            <div class="text-right">-->
+<!--                                                <h5 class="mr-3" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-2"></div>-->
+<!--                                    </div>-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-md-4 col-xs-6">-->
+<!--                                            <h4 class="text-right">-->
+<!--                                                Sisa:-->
+<!--                                            </h4>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-6 col-xs-6">-->
+<!--                                            <div class="text-right">-->
+<!--                                                <h5 class="mr-2" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-2"></div>-->
+<!--                                    </div>-->
                                 </div>
 
                                 <div class="card shadow mt-5">
@@ -233,7 +289,7 @@
                                                     <td class="text-center" th:text="${data.getTanggal()}"></td>
                                                     <td class="text-center" th:text="${data.getNomorBukti()}"></td>
                                                     <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getJumlah(), 0, 'POINT', 2, 'COMMA')}"></td>
-                                                    <td th:text="${data.getKeterangan()}"></td>
+                                                    <td></td>
                                                     <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.getNomorBukti()})}" class="fas fa-print text-lg"></a></td>
                                                 </tr>
                                             </tbody>

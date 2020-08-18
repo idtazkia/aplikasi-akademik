@@ -28,7 +28,6 @@ public class Tagihan {
     @ManyToOne @JoinColumn(name = "id_nilai_jenis_tagihan")
     private NilaiJenisTagihan nilaiJenisTagihan;
 
-    @NotNull
     @ManyToOne @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
@@ -41,7 +40,6 @@ public class Tagihan {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPembuatan;
 
-    @NotNull
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalJatuhTempo;

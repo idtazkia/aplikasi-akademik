@@ -47,24 +47,32 @@
                     </div>
                     <div class="card-body">
                         <div class="card-shadow">
-                            <form method="post" th:action="@{/studentBill/billAdmin/new(tahunAkademik = ${tahun.id})}" th:object="${newTagihan}">
+                            <form method="post" th:action="@{/studentBill/billAdmin/form(tahunAkademik = ${tahun.id}, nim = ${mhs.id})}" th:object="${newTagihan}">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Student</label>
-                                            <select name="mahasiswa" th:field="*{mahasiswa}"
-                                                    required class="form-control js-example-placeholder-single">
-                                                <option value=""></option>
-                                                <option th:each="data : ${mhs}"
-                                                        th:text="${data.nama}"
-                                                        th:value="${data.id}"></option>
-                                            </select>
+                                            <input type="text" readonly th:value="${mhs.nama}" class="form-control">
                                         </div>
 
-                                        <div class="mt-5 form-group">
-                                            <label>Due Date</label>
-                                            <input type="date" readonly id="tanggalJatuhTempo" th:field="*{tanggalJatuhTempo}"  name="tanggalJatuhTempo" class="form-control"
-                                                   placeholder="yyyy-MM-dd" >
+                                        <div class="form-group">
+                                            <label>Value of bill type</label>
+                                            <select id="select2-jenis" onchange="jenisTagihan()"
+                                                    th:field="*{nilaiJenisTagihan}" required class="form-control" >
+                                                <option value=""></option>
+                                                <option th:each="data : ${nilaiJenisTagihan}"
+                                                        th:text="${(data.jenisTagihan.nama)}"
+                                                        th:value="${data.id}">STEI TAZKIA</option>
+                                            </select>
+                                            <input type="hidden" id="isiJenis" name="nilaiJenisTagihan" th:field="*{nilaiJenisTagihan}">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label>Academic Year</label>
+                                            <input type="text" readonly th:value="${tahun.namaTahunAkademik}" name="tahunAkademik" class="form-control">
                                         </div>
 
                                         <div class="form-group">
@@ -72,26 +80,7 @@
                                             <input type="text" readonly id="nilaiTagihan" th:field="*{nilaiTagihan}" name="nilaiTagihan" class="form-control"
                                                    placeholder="0.00" >
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
 
-                                        <div class="form-group">
-                                            <label>Value of bill type</label>
-                                            <select id="select2-jenis" onchange="jenisTagihan()"
-                                                    th:field="*{nilaiJenisTagihan}" required class="form-control" >
-                                                <option value=""></option>
-                                                <option th:each="data : ${listNjt}"
-                                                        th:text="${(data.jenisTagihan.nama) + ' - ' + (data.angkatan)}"
-                                                        th:value="${data.id}">STEI TAZKIA</option>
-                                            </select>
-                                            <input type="hidden" id="isiJenis" name="nilaiJenisTagihan" th:field="*{nilaiJenisTagihan}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="">Description</label>
-                                            <textarea name="keterangan"  class="form-control"
-                                                      id="" cols="30" rows="6"></textarea>
-                                        </div>
                                     </div>
 
                                 </div>
@@ -99,7 +88,7 @@
                                 <input type="hidden" name="id" >
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a th:href="@{/studentBill/billAdmin/generate}" class="btn btn-danger">Cancel</a>
+                                    <a th:href="@{/studentBill/billAdmin/list(tahunAkademik = ${tahun.id}, nim = ${nim})}" class="btn btn-danger">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -118,21 +107,22 @@
         allowClear: true
     });
 
-    // (function($){
-    //     $('#select2-jenis').select2();
-    //
-    //     $('#select2-jenis').on('select2:selecting', function (e) {
-    //         console.log('Selecting: ', e.params.args.data.id);
-    //         $('#isiJenis').val(e.params.args.data.id);
-    //     });
-    // })(jquery);
+    (function($){
+        $('#select2-jenis').select2();
+
+        $('#select2-jenis').on('select2:selecting', function (e) {
+            console.log('Selecting: ', e.params.args.data.id);
+            $('#isiJenis').val(e.params.args.data.id);
+        });
+    })(jquery);
 
     function jenisTagihan(){
         var x = document.getElementById("select2-jenis").value;
         console.log(x);
         const url = '/api/jenis?id='+x;
         $.getJSON(url, function (data) {
-
+            $('#nilaiTagihan').val(data.nilai);
+            document.getElementById("nilaiTagihan").value = data.nilai;
         });
     }
 
