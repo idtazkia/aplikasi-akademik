@@ -847,7 +847,7 @@ public class StudiesActivityController {
         BigDecimal totalBobotTugas = bobotTugasDao.totalBobotTugas(bobotTugas.getJadwal().getId());
         BigDecimal total = totalBobotTugas.add(totalBobotUtama.add(bobotTugas.getBobot()));
 
-        if (total.compareTo(new BigDecimal(100)) >= 0){
+        if (total.compareTo(new BigDecimal(100)) > 0){
             redirectAttributes.addFlashAttribute("gagal", "Save Data Gagal");
             return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
         }else {
