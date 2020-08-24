@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface BobotTugasDao extends PagingAndSortingRepository<BobotTugas, String> {
@@ -20,4 +21,8 @@ public interface BobotTugasDao extends PagingAndSortingRepository<BobotTugas, St
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto(bt.id,bt.pertemuan,bt.bobot) from BobotTugas bt where bt.jadwal.id= :jadwal and bt.status = :status order by bt.pertemuan asc")
     List<BobotDto> Tugas(@Param("jadwal")String jadwal, @Param("status")StatusRecord statusRecord);
+
+    @Query(value = "select sum(bobot) as bobot from jadwal_bobot_tugas where id_jadwal=?1 and status='AKTIF'", nativeQuery = true)
+    BigDecimal totalBobotTugas(String idJadwal);
+
 }
