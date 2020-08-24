@@ -844,7 +844,15 @@ public class StudiesActivityController {
                               RedirectAttributes redirectAttributes){
 
         BigDecimal totalBobotUtama = jadwalDao.bobotUtsUas(bobotTugas.getJadwal().getId());
+        if (totalBobotUtama == null){
+            totalBobotUtama = BigDecimal.ZERO;
+        }
+
         BigDecimal totalBobotTugas = bobotTugasDao.totalBobotTugas(bobotTugas.getJadwal().getId());
+        if (totalBobotTugas == null){
+            totalBobotTugas = BigDecimal.ZERO;
+        }
+
         BigDecimal total = totalBobotTugas.add(totalBobotUtama.add(bobotTugas.getBobot()));
 
         if (total.compareTo(new BigDecimal(100)) > 0){
