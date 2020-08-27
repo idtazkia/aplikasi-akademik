@@ -20,6 +20,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -349,11 +351,38 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/form")
-    public String prosesEdit(@ModelAttribute @Valid JadwalDto jadwalDto){
+    public String prosesEdit(@ModelAttribute JadwalDto jadwalDto){
+
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+
+//        String date = jadwalDto.getTanggal().toString();
+//        String time1 = jadwalDto.getWaktuMulai();
+//        String time2 = jadwalDto.getWaktuSelesai();
+
+//        String jammulai = time1.substring(0,5) + ":00";
+//        String jamselsai = time2.substring(0,5) + ":00";
+//
+//        LocalTime jammu = LocalTime.parse(jammulai);
+//        LocalTime jamse = LocalTime.parse(jamselsai);
+//
+//        String tanggalan = date + ' ' + time1 + ':' + "00";
+//        String tanggalan2 = date + ' ' + time2 + ':' + "00";
+//
+//        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime localDate1 = LocalDateTime.parse(tanggalan, formatter1);
+//        LocalDateTime localDate2 = LocalDateTime.parse(tanggalan2, formatter1);
+////        pejabatMatrikulasi.setTanggalSelesai(localDate1.plusDays(0));
+//
+
+//        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jammu));
+//        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jamse));
+
         sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
+
+//        sesiKuliah.setWaktuMulai(localDate1);
+//        sesiKuliah.setWaktuSelesai(localDate2);
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());

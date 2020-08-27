@@ -25,9 +25,9 @@ public class JadwalDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(columnDefinition = "DATE")
     private LocalDate tanggal;
-    @DateTimeFormat(pattern = "HH:mm:ss")
+//    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamMulai;
-    @DateTimeFormat(pattern = "HH:mm:ss")
+//    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime jamSelesai;
     private TahunAkademik tahunAkademik;
     private KrsDetail krsDetail;
