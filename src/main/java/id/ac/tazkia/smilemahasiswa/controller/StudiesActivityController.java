@@ -234,12 +234,24 @@ public class StudiesActivityController {
         model.addAttribute("detail", detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
+
+//        String jamMulai1 = jadwal.getJamMulai().toString().substring(0,5);
+//        String jamSelesai1 = jadwal.getJamSelesai().toString().substring(0,5);
+//        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
+//        LocalTime jamSelesai2 = LocalTime.parse(jamSelesai1);
+//        DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
+//        jadwal.setJamMulai(LocalTime.parse(jamMulai1).);
+//        jadwal.setJamSelesai(LocalTime.parse(jamSelesai1));
         model.addAttribute("jadwal", jadwal);
 
     }
 
     @PostMapping("/studiesActivity/attendance/detail")
     public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto){
+
+        String jamMulai1 = jadwalDto.getJamMulai().toString().substring(0,5);
+        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
+        DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
 
         presensiService.inputPresensi(jadwalDto.getDosen(),
                 jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
