@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Academic Years </span>
+                                        <span class="h2 font-weight-bold mb-0">Academic Years (Program Studi) </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -41,6 +41,12 @@
         <!-- Table -->
         <div class="row">
             <div class="col">
+                <div class="alert alert-danger" th:if="${gagal != null}">
+                    Save data gagal
+                </div>
+                <div class="alert alert-success" th:if="${success != null}">
+                    Save data berhasil
+                </div>
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
@@ -61,7 +67,6 @@
                                 <th scope="col">Code</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Year</th>
-                                <th scope="col">Active</th>
                                 <th scope="col" width="30px;"></th>
                                 <th scope="col"></th>
 
@@ -71,6 +76,7 @@
                             <tr th:each="data,row : ${listTahunAkademikProdi}">
                                 <td th:text="${(row.index + 1) + (listTahunAkademikProdi.number * listTahunAkademikProdi.size)}">1</td>
                                 <td th:text="${data.prodi.namaProdi}">12</td>
+                                <td th:text="${data.tahunAkademik.kodeTahunAkademik}">2020</td>
                                 <td><button type="button" class="btn btn-outline-success btn-sm" th:text="${data.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Genap</button></td>
                                 <td th:text="${data.tahunAkademik.tahun}">2020</td>
                                 <td th:if="${data.tahunAkademik.status == data.tahunAkademik.status.AKTIF}"></td>
@@ -84,41 +90,41 @@
                                 </td>
                                 <td>
                                     <!--button-->
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+<!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">-->
+<!--                                        <i class="fas fa-trash"></i>-->
+<!--                                    </button>-->
 
-                                    <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-                                            <div class="modal-content bg-gradient-danger">
+<!--                                    <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">-->
+<!--                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">-->
+<!--                                            <div class="modal-content bg-gradient-danger">-->
 
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
+<!--                                                <div class="modal-header">-->
+<!--                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>-->
+<!--                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                                        <span aria-hidden="true">×</span>-->
+<!--                                                    </button>-->
+<!--                                                </div>-->
 
-                                                <div class="modal-body">
+<!--                                                <div class="modal-body">-->
 
-                                                    <div class="py-3 text-center">
-                                                        <i class="far fa-trash-alt fa-3x"></i>
-                                                        <h4 class="heading mt-4">Are you sure ?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                    </div>
+<!--                                                    <div class="py-3 text-center">-->
+<!--                                                        <i class="far fa-trash-alt fa-3x"></i>-->
+<!--                                                        <h4 class="heading mt-4">Are you sure ?</h4>-->
+<!--                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>-->
+<!--                                                    </div>-->
 
-                                                </div>
+<!--                                                </div>-->
 
-                                                <div class="modal-footer">
-                                                    <form th:action="@{/prodi/tahun/delete (tahunAkademikProdi = ${data.id})}" method="post">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
-                                                </div>
+<!--                                                <div class="modal-footer">-->
+<!--                                                    <form th:action="@{/prodi/tahun/delete (tahunAkademikProdi = ${data.id})}" method="post">-->
+<!--                                                        <button type="submit" class="btn btn-white">Delete</button>-->
+<!--                                                    </form>-->
+<!--                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>-->
+<!--                                                </div>-->
 
-                                            </div>
-                                        </div>
-                                    </div>
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </td>
                             </tr>
                             </tbody>
