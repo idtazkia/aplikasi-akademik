@@ -40,6 +40,9 @@ public class StudyActivityController {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
+    private TahunProdiDao tahunProdiDao;
+
+    @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
@@ -49,18 +52,24 @@ public class StudyActivityController {
     private JadwalDao jadwalDao;
 
     @GetMapping("/study/comingsoon")
-    public String comingsoon(Model model){
+    public String comingsoon(Model model,
+                             Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
 
-
-        if (tahunAkademik.getTanggalMulaiKrs().compareTo(LocalDate.now()) > 0){
-            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademik.getTanggalMulaiKrs());
+        if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
+            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getMulaiKrs());
             model.addAttribute("hari", day);
             return "study/comingsoon";
 
         }else {
             return "redirect:krs";
         }
+
     }
 
     @GetMapping("/study/krs")
