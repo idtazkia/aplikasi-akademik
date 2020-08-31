@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.SplittableRandom;
 
 @Controller
 public class HumanResourcesController {
@@ -121,12 +123,21 @@ public class HumanResourcesController {
 
     @PostMapping("/humanResources/lecturer/form")
     public String prosesForm(@Valid DosenDto dosenDto){
+
+        Integer idAbesen = karyawanDao.cariIDAbesen();
+
         if (dosenDto.getId() == null || dosenDto.getId().isEmpty()) {
             User user = new User();
             user.setActive(Boolean.TRUE);
             user.setRole(roleDao.findById("dosen").get());
             user.setUsername(dosenDto.getEmail());
             userDao.save(user);
+
+//            SplittableRandom splittableRandom = new SplittableRandom();
+//            int randomWithSplittableRandom = splittableRandom.nextInt(1, 999999);
+
+
+
 
             Karyawan karyawan = new Karyawan();
             karyawan.setEmail(dosenDto.getEmail());
@@ -138,6 +149,7 @@ public class HumanResourcesController {
             karyawan.setNik(dosenDto.getNik());
             karyawan.setRfid(dosenDto.getRfid());
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
+            karyawan.setIdAbsen(idAbesen);
             karyawanDao.save(karyawan);
 
             Dosen d = new Dosen();
@@ -163,6 +175,11 @@ public class HumanResourcesController {
                 user.setUsername(dosenDto.getEmail());
                 userDao.save(user);
             }
+
+//            SplittableRandom splittableRandom = new SplittableRandom();
+//            int randomWithSplittableRandom = splittableRandom.nextInt(1, 999999);
+
+
             karyawan.setEmail(dosenDto.getEmail());
             karyawan.setGelar(dosenDto.getGelar());
             karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
@@ -171,6 +188,7 @@ public class HumanResourcesController {
             karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
             karyawan.setRfid(dosenDto.getRfid());
             karyawan.setNik(dosenDto.getNik());
+
             karyawan.setIdAbsen(dosenDto.getAbsen());
 
             karyawanDao.save(karyawan);

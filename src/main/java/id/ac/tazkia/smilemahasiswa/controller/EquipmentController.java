@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -295,7 +296,11 @@ public class EquipmentController {
     public String deleteKelas(@RequestParam Kelas kelas,
                               RedirectAttributes attributes){
 
-        Double jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
+        Integer jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
+
+        if (jmlJdwal == null){
+            jmlJdwal = 0;
+        }
 
         if (jmlJdwal > 0){
             attributes.addFlashAttribute("gagal", "Save Data Berhasil");

@@ -54,7 +54,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
 
     @Query(value = "select count(id) as jmljadwal from jadwal where id_kelas = ?1 and status = 'AKTIF'", nativeQuery = true)
-    Double jmlJadwal(String idJadwal);
+    Integer jmlJadwal(String idJadwal);
 
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord aktif, TahunAkademik tahun, Dosen dosen);
 
