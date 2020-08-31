@@ -52,6 +52,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     @Query(value = "select bobot_uts + bobot_uas as bobot from jadwal where id=?1 and status='AKTIF'", nativeQuery = true)
     BigDecimal bobotUtsUas(String idJadwal);
 
+
+    @Query(value = "select count(id) as jmljadwal from jadwal where id_kelas = ?1 and status = 'AKTIF'", nativeQuery = true)
+    Double jmlJadwal(String idJadwal);
+
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord aktif, TahunAkademik tahun, Dosen dosen);
 
     List<Jadwal> findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord aktif, TahunAkademik byStatus, Kelas kelas);

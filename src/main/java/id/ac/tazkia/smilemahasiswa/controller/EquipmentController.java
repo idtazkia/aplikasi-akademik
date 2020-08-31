@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class EquipmentController {
 
     @Autowired
     private BahasaDao bahasaDao;
+
+    @Autowired
+    private JadwalDao jadwalDao;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -288,11 +292,21 @@ public class EquipmentController {
     }
 
     @PostMapping("/equipment/class/delete")
-    public String deleteKelas(@RequestParam Kelas kelas){
-        kelas.setStatus(StatusRecord.HAPUS);
-        kelasDao.save(kelas);
+    public String deleteKelas(@RequestParam Kelas kelas,
+                              RedirectAttributes attributes){
 
+        Double jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
+
+        if (jmlJdwal > 0){
+            attributes.addFlashAttribute("gagal", "Save Data Berhasil");
+            return "redirect:list";
+        }else{
+            kelas.setStatus(StatusRecord.HAPUS);
+            kelasDao.save(kelas);
+        }
+        attributes.addFlashAttribute("success", "Save Data Berhasil");
         return "redirect:list";
+
     }
 
     @GetMapping("/equipment/class/view")

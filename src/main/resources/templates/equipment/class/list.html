@@ -41,6 +41,15 @@
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col">
+
+                <div class="alert alert-danger" th:if="${gagal != null}">
+                    Save data gagal, Kelas tidak bisa dihapus karena sudah terdaftar di jadwal
+                </div>
+                <div class="alert alert-success" th:if="${success != null}">
+                    Save data berhasil
+                </div>
+
+
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
