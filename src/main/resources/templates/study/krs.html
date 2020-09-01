@@ -91,7 +91,7 @@
                                     </a>
 
                                 </td>
-                                <td th:if="${validasi == null}">
+                                <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" th:if="${validasi == null}">
                                     <form th:action="@{/study/deleteKrs(id = ${data.id})}" method="post">
                                         <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
                                             <i class="fa fa-trash"></i>
