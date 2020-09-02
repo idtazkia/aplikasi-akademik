@@ -131,8 +131,8 @@ public class StudyActivityController {
             TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
             IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
-            System.out.println(tahun.getKodeTahunAkademik());
-            System.out.println(ipk.getIpk());
+//            System.out.println(tahun.getKodeTahunAkademik());
+//            System.out.println(ipk.getIpk());
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
