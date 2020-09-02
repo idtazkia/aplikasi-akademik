@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.management.Query;
+import java.util.Collections;
+import java.util.List;
+
 @Controller
 public class TahunAkademikProdiController {
 
@@ -35,7 +39,8 @@ public class TahunAkademikProdiController {
     public String tahunAkademikProdi(Model model,
                                      @PageableDefault(size = 10) Pageable page){
 
-        model.addAttribute("listTahunAkademikProdi" , tahunProdiDao.findByStatusOrderByTahunAkademikKodeTahunAkademikDesc(StatusRecord.AKTIF, page));
+
+        model.addAttribute("listTahunAkademikProdi" , tahunProdiDao.findByTahunAkademikKodeTahunAkademikContainingOrderByTahunAkademikKodeTahunAkademikDesc("2", page));
 
         return "prodi/tahun_akademik/list";
 
@@ -59,6 +64,33 @@ public class TahunAkademikProdiController {
 
         tahunAkademikProdi.setStatus(StatusRecord.AKTIF);
         tahunProdiDao.save(tahunAkademikProdi);
+
+        redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
+        return "redirect:../tahun";
+
+    }
+
+    @PostMapping("/prodi/tahun/active")
+    public String activeTahunAkademikProdi(@RequestParam (required = false) String tahunAkademikProdi,
+                                         RedirectAttributes redirectAttributes){
+
+        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findById(tahunAkademikProdi).get();
+//        tahunProdiDao.updateDataTahunAkademikProdi(tahunAkademikProdi, tahunAkademikProdi1.getProdi().getId());
+        tahunAkademikProdi1.setStatus(StatusRecord.AKTIF);
+        tahunProdiDao.save(tahunAkademikProdi1);
+
+        redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
+        return "redirect:../tahun";
+
+    }
+
+    @PostMapping("/prodi/tahun/deactive")
+    public String deactiveTahunAkademikProdi(@RequestParam (required = false) String tahunAkademikProdi,
+                                         RedirectAttributes redirectAttributes){
+
+        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findById(tahunAkademikProdi).get();
+        tahunAkademikProdi1.setStatus(StatusRecord.NONAKTIF);
+        tahunProdiDao.save(tahunAkademikProdi1);
 
         redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
         return "redirect:../tahun";

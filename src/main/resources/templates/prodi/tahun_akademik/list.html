@@ -69,6 +69,8 @@
                                 <th scope="col">Year</th>
                                 <th scope="col" width="30px;"></th>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
+
 
                             </tr>
                             </thead>
@@ -79,10 +81,14 @@
                                 <td th:text="${data.tahunAkademik.kodeTahunAkademik}">2020</td>
                                 <td><button type="button" class="btn btn-outline-success btn-sm" th:text="${data.tahunAkademik.namaTahunAkademik}">2019/2020 Semester Genap</button></td>
                                 <td th:text="${data.tahunAkademik.tahun}">2020</td>
-                                <td th:if="${data.tahunAkademik.status == data.tahunAkademik.status.AKTIF}"></td>
-                                <td th:if="${data.tahunAkademik.status == data.tahunAkademik.status.NONAKTIF}">
+                                <td th:if="${data.status == data.status.AKTIF}">
+                                    <form th:action="@{/prodi/tahun/deactive (tahunAkademikProdi = ${data.id})}" method="post">
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Enabled</button>
+                                    </form>
+                                </td>
+                                <td th:if="${data.status == data.status.NONAKTIF}">
                                     <form th:action="@{/prodi/tahun/active (tahunAkademikProdi = ${data.id})}" method="post">
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
+                                        <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Disabled</button>
                                     </form>
                                 </td>
                                 <td>

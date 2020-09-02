@@ -585,6 +585,9 @@ public class AcademicActivityController {
                                 @RequestParam Prodi prodi,@RequestParam Integer semester){
         List<Object[]> matakuliahKurikulum = matakuliahKurikulumDao.plotingDosen(prodi, angkatan, semester);
 
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, prodi);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
+
         for (Object[] mk : matakuliahKurikulum){
             String pilihan = request.getParameter(mk[0].toString()+mk[2].toString()+mk[3].toString());
             if (pilihan != null && !pilihan.trim().isEmpty()) {
@@ -597,8 +600,8 @@ public class AcademicActivityController {
                 jadwal.setKelas(kelasDao.findById(mk[5].toString()).get());
                 jadwal.setProdi(prodi);
                 jadwal.setDosen(dosenDao.findById(pilihan).get());
-                jadwal.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-                jadwal.setTahunAkademikProdi(tahunProdiDao.findByStatusAndTahunAkademikAndProdi(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),prodi));
+                jadwal.setTahunAkademik(tahunAkademik);
+                jadwal.setTahunAkademikProdi(tahunAkademikProdi);
                 jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(mk[1].toString()).get());
                 jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
                 jadwal.setProgram(programDao.findById("01").get());
