@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -38,5 +39,10 @@ public interface TahunProdiDao extends PagingAndSortingRepository<TahunAkademikP
     @Query(value = "update tahun_akademik_prodi set status = 'NONAKTIF' where id <> ?1 and id_prodi = ?2 and status = 'AKTIF'" , nativeQuery = true)
     int updateDataTahunAkademikProdi(String idTahunAkademikProdi, String idProdi);
 
+    @Modifying
+    @Query("UPDATE TahunAkademikProdi c SET c.status = :status WHERE c.id = :tahunAKademikProdi and c.prodi = :prodi")
+    int updateTahunAKademikProdi2(@Param("tahunAKademikProdi") String tahunAKademikProdi, @Param("prodi") Prodi prodi, @Param("status") StatusRecord statusRecord);
 
+
+    List<TahunAkademikProdi> findByTahunAkademikAndProdiAndStatus(TahunAkademik tahunAkademik, Prodi prodi, StatusRecord statusRecord);
 }

@@ -745,22 +745,25 @@ public class AcademicActivityController {
     }
 
     @PostMapping("/academic/schedule/delete")
-    public String deleteSchedule(@RequestParam Jadwal jadwal){
-        jadwal.setStatus(StatusRecord.HAPUS);
-        jadwalDao.save(jadwal);
+    public String deleteSchedule(@RequestParam String jadwal){
 
-        List<JadwalDosen> jadwalDosen = jadwalDosenDao.findByJadwal(jadwal);
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+
+        jadwal1.setStatus(StatusRecord.HAPUS);
+        jadwalDao.save(jadwal1);
+
+        List<JadwalDosen> jadwalDosen = jadwalDosenDao.findByJadwal(jadwal1);
         for (JadwalDosen jd : jadwalDosen){
             jadwalDosenDao.delete(jd);
         }
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF);
+        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal1,StatusRecord.AKTIF);
         for (KrsDetail kd : krsDetail){
             kd.setStatus(StatusRecord.HAPUS);
             krsDetailDao.save(kd);
         }
 
-        return "redirect:list?tahunAkademik="+ jadwal.getTahunAkademik().getId() +"&prodi="+jadwal.getProdi().getId();
+        return "redirect:list?tahunAkademik="+ jadwal1.getTahunAkademik().getId() +"&prodi="+jadwal1.getProdi().getId();
     }
 
     @GetMapping("/academic/schedule/team")

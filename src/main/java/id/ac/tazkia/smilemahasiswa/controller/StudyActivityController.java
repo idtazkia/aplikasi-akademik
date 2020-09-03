@@ -51,6 +51,9 @@ public class StudyActivityController {
     @Autowired
     private JadwalDao jadwalDao;
 
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+
     @GetMapping("/study/comingsoon")
     public String comingsoon(Model model,
                              Authentication authentication){
@@ -78,7 +81,11 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
+
+//        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        TahunAkademik ta = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
@@ -86,6 +93,14 @@ public class StudyActivityController {
             model.addAttribute("validasi", ta);
         }
 
+        Integer semester = krsDetailDao.cariSemester(mahasiswa.getId());
+
+        if(semester == null){
+            semester = 0;
+        }
+
+        model.addAttribute("semester", semester);
+        model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
         model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
 
 
@@ -255,9 +270,27 @@ public class StudyActivityController {
     }
 
     @PostMapping("/study/deleteKrs")
-    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail){
-        krsDetail.setStatus(StatusRecord.HAPUS);
-        krsDetailDao.save(krsDetail);
+    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail,
+                            RedirectAttributes redirectAttributes){
+
+
+        Integer jmlpresensi = presensiMahasiswaDao.jumlahPresensi(krsDetail.getId());
+
+        if (jmlpresensi == null){
+            jmlpresensi = 0;
+        }
+
+        if(jmlpresensi > 0){
+
+            redirectAttributes.addFlashAttribute("gagal", "Save Data Berhasil");
+
+        }else {
+
+            krsDetail.setStatus(StatusRecord.HAPUS);
+            krsDetailDao.save(krsDetail);
+            redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
+
+        }
 
         return "redirect:krs";
 

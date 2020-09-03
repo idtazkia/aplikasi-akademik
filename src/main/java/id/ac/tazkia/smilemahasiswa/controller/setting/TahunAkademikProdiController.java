@@ -3,10 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller.setting;
 import id.ac.tazkia.smilemahasiswa.dao.ProdiDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
 import id.ac.tazkia.smilemahasiswa.dao.TahunProdiDao;
-import id.ac.tazkia.smilemahasiswa.entity.EdomQuestion;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademikProdi;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -75,7 +72,15 @@ public class TahunAkademikProdiController {
                                          RedirectAttributes redirectAttributes){
 
         TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findById(tahunAkademikProdi).get();
-//        tahunProdiDao.updateDataTahunAkademikProdi(tahunAkademikProdi, tahunAkademikProdi1.getProdi().getId());
+//        int sda = tahunProdiDao.updateTahunAKademikProdi2(tahunAkademikProdi, tahunAkademikProdi1.getProdi(), StatusRecord.NONAKTIF);
+
+        List<TahunAkademikProdi> tahunAkademikProdis = tahunProdiDao.findByTahunAkademikAndProdiAndStatus(tahunAkademikProdi1.getTahunAkademik(), tahunAkademikProdi1.getProdi(), StatusRecord.AKTIF);
+
+        for (TahunAkademikProdi tap : tahunAkademikProdis){
+            tap.setStatus(StatusRecord.NONAKTIF);
+            tahunProdiDao.save(tap);
+        }
+
         tahunAkademikProdi1.setStatus(StatusRecord.AKTIF);
         tahunProdiDao.save(tahunAkademikProdi1);
 

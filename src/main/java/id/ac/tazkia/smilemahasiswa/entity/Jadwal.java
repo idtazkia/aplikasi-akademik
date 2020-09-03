@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Entity
 @Data
-public class Jadwal extends Auditable {
+public class Jadwal {
 
     @Id
     @GeneratedValue(generator = "uuid" )

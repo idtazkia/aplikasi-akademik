@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>KRS List</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik + ' (Semester ' + semester +').'}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                                     </div>
                                 </div>
                             </div>
@@ -53,6 +53,12 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+                    <div class="alert alert-danger" th:if="${gagal != null}">
+                        Delete data gagal, Krs sudah tidak dapat dihapus karena sudah ada aktifitas perkuliahan yang anda lakukan dengan matakuliah ini...
+                    </div>
+                    <div class="alert alert-success" th:if="${success != null}">
+                        Delete data berhasil
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
@@ -91,7 +97,7 @@
                                     </a>
 
                                 </td>
-                                <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" th:if="${validasi == null}">
+                                <td th:if="${validasi == null}">
                                     <form th:action="@{/study/deleteKrs(id = ${data.id})}" method="post">
                                         <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
                                             <i class="fa fa-trash"></i>

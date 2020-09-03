@@ -174,4 +174,11 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "group by a.id_mahasiswa", nativeQuery = true)
     Long jumlahSksMahasiswa(String idMahasiswa, String idTahunAkademik);
 
+    @Query(value = "SELECT COUNT(id_tahun_akademik)AS semester FROM\n" +
+            "(SELECT a.* FROM krs_detail AS a \n" +
+            "INNER JOIN krs AS b ON a.id_krs = b.id\n" +
+            "WHERE a.id_mahasiswa = ?1 AND a.status = 'AKTIF' AND b.status = 'AKTIF'\n" +
+            "GROUP BY a.id_tahun_akademik)aa", nativeQuery = true)
+    Integer cariSemester(String idMahasiswa);
+
 }
