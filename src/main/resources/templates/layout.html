@@ -155,7 +155,7 @@
                                 <!--</div>-->
                             <!--</div>-->
                         <!--</li>-->
-                        <li class="nav-item"><a th:href="@{/user/profile}" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span><i class="fa fa-user"></i></span>
+                        <li class="nav-item"><a th:href="@{/user/profile}" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span th:text="${#authentication.principal.fullName}"><i class="fa fa-user"></i></span>
                             <!--<div class="spinner4 spinner-4"></div>-->
                             <!--<div class="ntd-ctn"><span>2</span></div> -->
                             </a>

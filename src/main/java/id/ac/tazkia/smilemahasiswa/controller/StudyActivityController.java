@@ -87,20 +87,32 @@ public class StudyActivityController {
 
         TahunAkademik ta = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
 
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
         if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) >= 0) {
             model.addAttribute("validasi", ta);
         }
 
-        Integer semester = krsDetailDao.cariSemester(mahasiswa.getId());
+        Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
+        Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
 
         if(semester == null){
             semester = 0;
         }
 
-        model.addAttribute("semester", semester);
+        if(semesterSekarang == null){
+            semesterSekarang = 0;
+        }
+
+        Integer semesterTotal = semester + semesterSekarang;
+
+        model.addAttribute("semester", semesterTotal);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("kelas",kelasMahasiswa);
         model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
+
         model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
 
 
