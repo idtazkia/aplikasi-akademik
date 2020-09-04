@@ -91,6 +91,12 @@ public class StudyActivityController {
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
+        Long jumlahSks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+        if (jumlahSks == null){
+            jumlahSks = Long.valueOf(0);
+        }
+
         if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) >= 0) {
             model.addAttribute("validasi", ta);
         }
@@ -111,6 +117,7 @@ public class StudyActivityController {
         model.addAttribute("semester", semesterTotal);
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("kelas",kelasMahasiswa);
+        model.addAttribute("sks", jumlahSks);
         model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 
         model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
