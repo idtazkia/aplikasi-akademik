@@ -62,15 +62,20 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
 
         if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
             Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getMulaiKrs());
+
+            model.addAttribute("krs", tahunAkademikProdi);
             model.addAttribute("hari", day);
             return "study/comingsoon";
 
         }else {
+
             return "redirect:krs";
+
         }
 
     }

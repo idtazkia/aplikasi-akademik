@@ -79,9 +79,14 @@
                                                     <option value=""></option>
                                                     <option th:each="data : ${angkatan}"
                                                             th:selected="(${data} == *{selectedAngkatan})"
-                                                            th:text="${data.angkatan}"
-                                                            th:value="${data.angkatan}">sdasd</option>
+                                                            th:text="${data[0] + ' - ' + data[1]}"
+                                                            th:value="${data[0]}">sdasd</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn-success">Search</button>
                                             </div>
                                         </div>
                                     </div>

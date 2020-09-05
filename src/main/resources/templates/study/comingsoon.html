@@ -55,6 +55,10 @@
         <h1>COMING SOON</h1>
         <hr>
         <p th:text="${hari + ' days remaining before study activity started'}">35 days remaining before study activity started</p>
+        <p th:text="${hari + ' hari menuju waktu pengisian KRS'}">35 days remaining before study activity started</p>
+        <P th:text="${' Pengisian krs dimulai pada tanggal : ' + #temporals.format(krs.getMulaiKrs(),'dd-MMMM-yyyy')}"></P>
+        <p> Untuk Info lebih lanjut silahkan hubungi bagian akademik. </p>
+        <p> 08119966772 (WhatsApp Only)</p>
     </div>
     <div class="bottomleft">
         <p>Please fulfill the payment</p>

@@ -41,7 +41,7 @@ public class MahasiswaDosenWaliController {
                                             @RequestParam(required = false) Prodi prodi){
 
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("angkatan");
+        model.addAttribute("angkatan", mahasiswaDao.angkatanMahasiswa());
 
         if(prodi == null){
 
