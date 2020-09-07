@@ -91,6 +91,9 @@ public class StudentBillController {
     @Autowired
     private RequestCicilanDao requestCicilanDao;
 
+    @Autowired
+    private VirtualAccountDao virtualAccountDao;
+
     @Value("classpath:kwitansi.odt")
     private Resource templateKwitansi;
 
@@ -214,6 +217,7 @@ public class StudentBillController {
         model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByNama(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatusOrderByNamaProdi(StatusRecord.AKTIF));
+        model.addAttribute("selectAngkatan", angkatan());
 
         if (id != null && !id.isEmpty()){
             NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findById(id).get();
@@ -323,6 +327,19 @@ public class StudentBillController {
 
     }
 
+    @GetMapping("/studentBill/billAdmin/detail")
+    public void detailBill(Model model, @RequestParam(required = false) String tagihan,
+                           @PageableDefault(size = 10) Pageable page){
+
+        Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
+
+        model.addAttribute("tagihan", tagihan1);
+        model.addAttribute("pembayaran", pembayaranDao.findByTagihan(tagihan1));
+        model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("virtualAccount", virtualAccountDao.findByTagihan(tagihan1, page));
+
+    }
+
     @GetMapping("/api/jenis")
     @ResponseBody
     public NilaiJenisTagihan njt(@RequestParam(required = false) String id){
@@ -339,8 +356,8 @@ public class StudentBillController {
         for (Mahasiswa mhs : mahasiswas){
             List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndProdiAndStatus(tahun, mhs.getAngkatan(), mhs.getIdProdi(), StatusRecord.AKTIF);
             for (NilaiJenisTagihan njt : nilaiJenisTagihans){
-                Tagihan tg = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndStatus(mhs, njt, StatusRecord.AKTIF);
-                if (tg == null) {
+                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(mhs, njt, tahun, StatusRecord.AKTIF);
+                if (tagihan1 == null){
                     Tagihan tagihan = new Tagihan();
                     tagihan.setMahasiswa(mhs);
                     tagihan.setNilaiJenisTagihan(njt);
@@ -354,25 +371,6 @@ public class StudentBillController {
                     tagihanDao.save(tagihan);
 
                     tagihanService.createTagihan(tagihan);
-
-                }else {
-                    Tagihan tagihan = new Tagihan();
-                    tagihan.setMahasiswa(mhs);
-                    tagihan.setNilaiJenisTagihan(njt);
-                    tagihan.setNilaiTagihan(tg.getNilaiTagihan().add(njt.getNilai()));
-                    tagihan.setTanggalPembuatan(LocalDate.now());
-                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
-                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
-                    tagihan.setTahunAkademik(tahun);
-                    tagihan.setStatus(StatusRecord.AKTIF);
-                    tagihan.setIdTagihanSebelumnya(tg.getId());
-                    tagihanDao.save(tagihan);
-
-                    tg.setStatus(StatusRecord.NONAKTIF);
-                    tagihanDao.save(tg);
-
-                    tagihanService.createTagihan(tagihan);
-
                 }
             }
         }
@@ -508,9 +506,8 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/cicilan/approve")
-    public String approvalCicilan(@RequestParam RequestCicilan requestCicilan,
+    public String approvalCicilan(@Valid RequestCicilan requestCicilan,
                                   @RequestParam(required = false) Tagihan tagihan){
-
 
 
         requestCicilan.setStatus(StatusRecord.AKTIF);
@@ -533,11 +530,12 @@ public class StudentBillController {
 //    Pembayaran
 
     @GetMapping("/studentBill/payment/form")
-    public void formPayment(Model model, @RequestParam(required = false) String tagihan){
+    public void formPayment(Model model, @RequestParam(required = false) String tagihan, @PageableDefault(size = 10) Pageable page ){
         Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
 
         model.addAttribute("pembayaran", pembayaranDao.findByTagihan(tagihan1));
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("virtualAccount", virtualAccountDao.findByTagihan(tagihan1, page));
         model.addAttribute("tagihan", tagihan1);
 
     }

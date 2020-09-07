@@ -84,7 +84,7 @@
                                 <td th:text="${data.tahunAkademik.namaTahunAkademik}">PATRICK STAR</td>
                                 <td th:text="${data.prodi.namaProdi}">BANGUN DAN SEMANGAT</td>
                                 <td class="text-center" th:text="${data.angkatan}"></td>
-                                <td th:text="${data.nilai}">BANGUN DAN SEMANGAT</td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilai, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
                                 <td>
                                     <a th:href="@{/studentBill/valueType/form(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
 
