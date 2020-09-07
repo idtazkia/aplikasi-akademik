@@ -5,7 +5,6 @@ import id.ac.tazkia.smilemahasiswa.entity.Pembayaran;
 import id.ac.tazkia.smilemahasiswa.entity.Tagihan;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import sun.security.util.Pem;
 
 import java.math.BigDecimal;
 import java.util.List;

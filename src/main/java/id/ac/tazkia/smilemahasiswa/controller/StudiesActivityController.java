@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
@@ -13,11 +14,13 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +50,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Controller
+@Controller @Slf4j
 public class StudiesActivityController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudiesActivityController.class);
@@ -230,12 +234,24 @@ public class StudiesActivityController {
         model.addAttribute("detail", detail);
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
+
+//        String jamMulai1 = jadwal.getJamMulai().toString().substring(0,5);
+//        String jamSelesai1 = jadwal.getJamSelesai().toString().substring(0,5);
+//        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
+//        LocalTime jamSelesai2 = LocalTime.parse(jamSelesai1);
+//        DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
+//        jadwal.setJamMulai(LocalTime.parse(jamMulai1).);
+//        jadwal.setJamSelesai(LocalTime.parse(jamSelesai1));
         model.addAttribute("jadwal", jadwal);
 
     }
 
     @PostMapping("/studiesActivity/attendance/detail")
     public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto){
+
+        String jamMulai1 = jadwalDto.getJamMulai().toString().substring(0,5);
+        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
+        DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
 
         presensiService.inputPresensi(jadwalDto.getDosen(),
                 jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
@@ -347,11 +363,38 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/form")
-    public String prosesEdit(@ModelAttribute @Valid JadwalDto jadwalDto){
+    public String prosesEdit(@ModelAttribute JadwalDto jadwalDto){
+
         SesiKuliah sesiKuliah = sesiKuliahDao.findById(jadwalDto.getId()).get();
         sesiKuliah.setBeritaAcara(jadwalDto.getBeritaAcara());
+
+//        String date = jadwalDto.getTanggal().toString();
+//        String time1 = jadwalDto.getWaktuMulai();
+//        String time2 = jadwalDto.getWaktuSelesai();
+
+//        String jammulai = time1.substring(0,5) + ":00";
+//        String jamselsai = time2.substring(0,5) + ":00";
+//
+//        LocalTime jammu = LocalTime.parse(jammulai);
+//        LocalTime jamse = LocalTime.parse(jamselsai);
+//
+//        String tanggalan = date + ' ' + time1 + ':' + "00";
+//        String tanggalan2 = date + ' ' + time2 + ':' + "00";
+//
+//        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime localDate1 = LocalDateTime.parse(tanggalan, formatter1);
+//        LocalDateTime localDate2 = LocalDateTime.parse(tanggalan2, formatter1);
+////        pejabatMatrikulasi.setTanggalSelesai(localDate1.plusDays(0));
+//
+
+//        sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jammu));
+//        sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jamse));
+
         sesiKuliah.setWaktuMulai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
         sesiKuliah.setWaktuSelesai(LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamSelesai()));
+
+//        sesiKuliah.setWaktuMulai(localDate1);
+//        sesiKuliah.setWaktuSelesai(localDate2);
 
         PresensiDosen presensiDosen = presensiDosenDao.findById(sesiKuliah.getPresensiDosen().getId()).get();
         presensiDosen.setDosen(jadwalDto.getDosen());
@@ -838,19 +881,38 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/assesment/task")
-    public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas){
-        bobotTugasDao.save(bobotTugas);
-        List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(),StatusRecord.AKTIF);
-        for (KrsDetail kd : krsDetail){
-            NilaiTugas nilaiTugas = new NilaiTugas();
-            nilaiTugas.setNilai(BigDecimal.ZERO);
-            nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
-            nilaiTugas.setKrsDetail(kd);
-            nilaiTugas.setBobotTugas(bobotTugas);
-            nilaiTugas.setStatus(StatusRecord.AKTIF);
-            nilaiTugasDao.save(nilaiTugas);
+    public String tambahTugas(@ModelAttribute @Valid BobotTugas bobotTugas,
+                              RedirectAttributes redirectAttributes){
+
+        BigDecimal totalBobotUtama = jadwalDao.bobotUtsUas(bobotTugas.getJadwal().getId());
+        if (totalBobotUtama == null){
+            totalBobotUtama = BigDecimal.ZERO;
         }
-        return "redirect:weight?jadwal="+bobotTugas.getJadwal().getId();
+
+        BigDecimal totalBobotTugas = bobotTugasDao.totalBobotTugas(bobotTugas.getJadwal().getId());
+        if (totalBobotTugas == null){
+            totalBobotTugas = BigDecimal.ZERO;
+        }
+
+        BigDecimal total = totalBobotTugas.add(totalBobotUtama.add(bobotTugas.getBobot()));
+
+        if (total.compareTo(new BigDecimal(100)) > 0){
+            redirectAttributes.addFlashAttribute("gagal", "Save Data Gagal");
+            return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
+        }else {
+            bobotTugasDao.save(bobotTugas);
+            List<KrsDetail> krsDetail = krsDetailDao.findByJadwalAndStatus(bobotTugas.getJadwal(), StatusRecord.AKTIF);
+            for (KrsDetail kd : krsDetail) {
+                NilaiTugas nilaiTugas = new NilaiTugas();
+                nilaiTugas.setNilai(BigDecimal.ZERO);
+                nilaiTugas.setNilaiAkhir(BigDecimal.ZERO);
+                nilaiTugas.setKrsDetail(kd);
+                nilaiTugas.setBobotTugas(bobotTugas);
+                nilaiTugas.setStatus(StatusRecord.AKTIF);
+                nilaiTugasDao.save(nilaiTugas);
+            }
+            return "redirect:weight?jadwal=" + bobotTugas.getJadwal().getId();
+        }
 
     }
 
@@ -865,6 +927,10 @@ public class StudiesActivityController {
         }else {
             BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
             if (totalBobot.toBigInteger().intValueExact() < 100) {
+                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                return "redirect:weight?jadwal="+jadwal.getId();
+            }
+            if (totalBobot.toBigInteger().intValueExact() > 100) {
                 attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
                 return "redirect:weight?jadwal="+jadwal.getId();
             }
@@ -1601,6 +1667,8 @@ public class StudiesActivityController {
         model.addAttribute("tahun", tahun);
         model.addAttribute("topic", presensiDosenDao.bkdBeritaAcara(jadwal));
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
     }
 
     @GetMapping("/studiesActivity/assesment/nilai")
@@ -1609,6 +1677,7 @@ public class StudiesActivityController {
 
         model.addAttribute("tahun", tahun);
         model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
         model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
     }
 
@@ -1618,8 +1687,23 @@ public class StudiesActivityController {
 
         model.addAttribute("tahun", tahun);
 
+//        JadwalDosenDto jadwalDosenDto = (JadwalDosenDto) jadwalDosenDao.headerJadwal(jadwal.getId());
+
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("attendance", presensiMahasiswaDao.bkdAttendance(jadwal));
+
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
+        List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+        log.debug("BKD Attendance : {}", hasil.size());
+//
+//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+//        log.debug("BKD Attendance : {}", hasil.size());
+//
+//        hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+//        log.debug("BKD Attendance : {}", hasil.size());
+
+        model.addAttribute("attendance", hasil);
+
 
     }
 

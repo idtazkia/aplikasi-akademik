@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
@@ -47,6 +48,13 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     @Query(value = "SELECT a.*  FROM (SELECT a.id,a.id_mahasiswa,b.nim,b.nama,c.nama_prodi FROM krs AS a INNER JOIN mahasiswa AS b ON a.id_mahasiswa=b.id INNER JOIN prodi AS c ON a.id_prodi=c.id WHERE a.id_tahun_akademik=?2 AND a.status='AKTIF' AND a.id_prodi=?1 GROUP BY id_mahasiswa)a LEFT JOIN (SELECT a.* FROM krs AS a INNER JOIN krs_detail AS b ON a.id=b.id_krs INNER JOIN jadwal AS c ON b.id_jadwal=c.id INNER JOIN matakuliah_kurikulum AS d ON c.id_matakuliah_kurikulum=d.id  INNER JOIN (SELECT * FROM matakuliah WHERE LEFT(kode_matakuliah,3)='SDS') e ON d.id_matakuliah=e.id WHERE a.id_tahun_akademik=?2 AND a.status='AKTIF' AND a.id_prodi=?1 GROUP BY a.id)b ON a.id=b.id WHERE b.id IS NULL ORDER BY a.nim",nativeQuery = true)
     List<Object[]> cariMahasiswaBelumSds(Prodi prodi, TahunAkademik tahunAkademik);
+
+    @Query(value = "select bobot_uts + bobot_uas as bobot from jadwal where id=?1 and status='AKTIF'", nativeQuery = true)
+    BigDecimal bobotUtsUas(String idJadwal);
+
+
+    @Query(value = "select count(id) as jmljadwal from jadwal where id_kelas = ?1 and status = 'AKTIF'", nativeQuery = true)
+    Integer jmlJadwal(String idJadwal);
 
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord aktif, TahunAkademik tahun, Dosen dosen);
 

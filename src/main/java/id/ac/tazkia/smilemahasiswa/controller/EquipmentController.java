@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +50,12 @@ public class EquipmentController {
 
     @Autowired
     private RuanganDao ruanganDao;
+
+    @Autowired
+    private BahasaDao bahasaDao;
+
+    @Autowired
+    private JadwalDao jadwalDao;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -264,6 +272,7 @@ public class EquipmentController {
         if (id != null && !id.isEmpty()) {
             Kelas kelas = kelasDao.findById(id).get();
             if (kelas != null) {
+                model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
                 model.addAttribute("kelas", kelas);
                 if (kelas.getStatus() == null){
                     kelas.setStatus(StatusRecord.NONAKTIF);
@@ -284,11 +293,25 @@ public class EquipmentController {
     }
 
     @PostMapping("/equipment/class/delete")
-    public String deleteKelas(@RequestParam Kelas kelas){
-        kelas.setStatus(StatusRecord.HAPUS);
-        kelasDao.save(kelas);
+    public String deleteKelas(@RequestParam Kelas kelas,
+                              RedirectAttributes attributes){
 
+        Integer jmlJdwal = jadwalDao.jmlJadwal(kelas.getId());
+
+        if (jmlJdwal == null){
+            jmlJdwal = 0;
+        }
+
+        if (jmlJdwal > 0){
+            attributes.addFlashAttribute("gagal", "Save Data Berhasil");
+            return "redirect:list";
+        }else{
+            kelas.setStatus(StatusRecord.HAPUS);
+            kelasDao.save(kelas);
+        }
+        attributes.addFlashAttribute("success", "Save Data Berhasil");
         return "redirect:list";
+
     }
 
     @GetMapping("/equipment/class/view")

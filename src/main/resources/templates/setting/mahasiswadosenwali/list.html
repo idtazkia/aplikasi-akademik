@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Setting Mahasiswa Dosen Wali</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Setting</h5>
+                                        <span class="h2 font-weight-bold mb-0">Mahasiswa Dosen Wali </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/setting/mahasiswa/dosen_wali/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form method="get">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Prody</label>
+                                                <select name="prodi" required class="form-control">
+                                                    <option value="" disabled selected>-- Select One --</option>
+                                                    <option th:each="data : ${prodi}"
+                                                            th:selected="(${data} == *{selectedProdi})"
+                                                            th:text="${data.namaProdi}"
+                                                            th:value="${data.id}">sdasd</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Angkatan</label>
+                                                <select name="angkatan" class="form-control">
+                                                    <option value="" disabled selected>-- Select One --</option>
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${angkatan}"
+                                                            th:selected="(${data} == *{selectedAngkatan})"
+                                                            th:text="${data[0] + ' - ' + data[1]}"
+                                                            th:value="${data[0]}">sdasd</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn-success">Search</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+
+
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Nim</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Prodi</th>
+                                <th scope="col">Coach</th>
+                                <th scope="col"></th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="dataMahasiswaDosenWali,row : ${listMahasiswaDosenWali}">
+                                <td th:text="${(row.index + 1) + (listMahasiswaDosenWali.number * listMahasiswaDosenWali.size)}">1.</td>
+
+                                <td th:text="${dataMahasiswaDosenWali.getNim()}">BEASISWA</td>
+                                <td th:text="${dataMahasiswaDosenWali.getNamaMahasiswa()}">Pendapatan dari Beasiswa</td>
+                                <td th:text="${dataMahasiswaDosenWali.getNamaProdi()}">-</td>
+                                <td th:text="${dataMahasiswaDosenWali.getDosenWali()}">AKTIF</td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+
+</div>
+</body>
+</html>

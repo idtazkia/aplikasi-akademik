@@ -87,6 +87,14 @@
                             </div>
 
                             <div class="form-group">
+                                <label>Bahasa Pengantar</label>
+                                <select name="angkatan" class="form-control" th:field="*{bahasa}">
+                                    <option value="">Select One</option>
+                                    <option th:each="data: ${bahasa}" th:text="${data.getKeterangan()}" th:value="${data.getBahasa()}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label>Description</label>
                                 <textarea class="form-control" name="keterangan" th:field="*{keterangan}" rows="3"></textarea>
                             </div>

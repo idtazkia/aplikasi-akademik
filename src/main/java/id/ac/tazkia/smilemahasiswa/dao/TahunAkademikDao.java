@@ -11,11 +11,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
+
+
     TahunAkademik findByStatus(StatusRecord aktif);
 
     TahunAkademik findByKodeTahunAkademikAndJenis(String kode,StatusRecord statusRecord);
 
     TahunAkademik findByNamaTahunAkademikAndStatus(String nama, StatusRecord statusRecord);
+
+    List<TahunAkademik> findByStatusOrderByKodeTahunAkademikDesc(StatusRecord statusRecord);
 
     Iterable<TahunAkademik> findByStatusNotInOrderByTahunDesc(List<StatusRecord> statusRecords);
 
@@ -28,5 +32,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
     Page<TahunAkademik> cariTahunAkademik(@Param("status") StatusRecord hapus, Pageable page);
 
     List<TahunAkademik> findByStatusNotInOrderByNamaTahunAkademikDesc(List<StatusRecord> asList);
+
 
 }

@@ -40,6 +40,9 @@ public class StudyActivityController {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
+    private TahunProdiDao tahunProdiDao;
+
+    @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
@@ -48,19 +51,33 @@ public class StudyActivityController {
     @Autowired
     private JadwalDao jadwalDao;
 
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+
     @GetMapping("/study/comingsoon")
-    public String comingsoon(Model model){
+    public String comingsoon(Model model,
+                             Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
 
+        if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
+            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getMulaiKrs());
 
-        if (tahunAkademik.getTanggalMulaiKrs().compareTo(LocalDate.now()) > 0){
-            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademik.getTanggalMulaiKrs());
+            model.addAttribute("krs", tahunAkademikProdi);
             model.addAttribute("hari", day);
             return "study/comingsoon";
 
         }else {
+
             return "redirect:krs";
+
         }
+
     }
 
     @GetMapping("/study/krs")
@@ -69,13 +86,44 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
+
+//        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        TahunAkademik ta = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
+
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+
+        Long jumlahSks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+        if (jumlahSks == null){
+            jumlahSks = Long.valueOf(0);
+        }
 
         if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) >= 0) {
             model.addAttribute("validasi", ta);
         }
+
+        Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
+        Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
+
+        if(semester == null){
+            semester = 0;
+        }
+
+        if(semesterSekarang == null){
+            semesterSekarang = 0;
+        }
+
+        Integer semesterTotal = semester + semesterSekarang;
+
+        model.addAttribute("semester", semesterTotal);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("kelas",kelasMahasiswa);
+        model.addAttribute("sks", jumlahSks);
+        model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 
         model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
 
@@ -122,8 +170,8 @@ public class StudyActivityController {
             TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
             IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
-            System.out.println(tahun.getKodeTahunAkademik());
-            System.out.println(ipk.getIpk());
+//            System.out.println(tahun.getKodeTahunAkademik());
+//            System.out.println(ipk.getIpk());
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
@@ -246,9 +294,27 @@ public class StudyActivityController {
     }
 
     @PostMapping("/study/deleteKrs")
-    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail){
-        krsDetail.setStatus(StatusRecord.HAPUS);
-        krsDetailDao.save(krsDetail);
+    public String deleteKrs(@RequestParam(name = "id", value = "id") KrsDetail krsDetail,
+                            RedirectAttributes redirectAttributes){
+
+
+        Integer jmlpresensi = presensiMahasiswaDao.jumlahPresensi(krsDetail.getId());
+
+        if (jmlpresensi == null){
+            jmlpresensi = 0;
+        }
+
+        if(jmlpresensi > 0){
+
+            redirectAttributes.addFlashAttribute("gagal", "Save Data Berhasil");
+
+        }else {
+
+            krsDetail.setStatus(StatusRecord.HAPUS);
+            krsDetailDao.save(krsDetail);
+            redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
+
+        }
 
         return "redirect:krs";
 

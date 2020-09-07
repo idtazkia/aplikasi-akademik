@@ -23,4 +23,10 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
 
     @Query(value = "select mahasiswa.nim, mahasiswa.nama, krs_detail.nilai_akhir, krs_detail.grade, krs_detail.bobot from krs_detail inner join mahasiswa on mahasiswa.id = krs_detail.id_mahasiswa where krs_detail.id_jadwal =?1 and krs_detail.status = 'AKTIF' order by mahasiswa.nim", nativeQuery = true)
     List<Object[]> bkdNilai(Jadwal jadwal);
+
+    @Query(value = "SELECT COUNT(a.id) AS presensiMahasiswa FROM presensi_mahasiswa AS a \n" +
+            "INNER JOIN sesi_kuliah AS b ON a.id_sesi_kuliah = b.id \n" +
+            "INNER JOIN presensi_dosen AS c ON b.id_presensi_dosen = c.id WHERE c.status='AKTIF' AND a.status ='AKTIF' AND a.id_krs_detail = ?1", nativeQuery = true)
+    Integer jumlahPresensi(String idKrsDetail);
+
 }

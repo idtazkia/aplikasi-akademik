@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>EDOM</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Recapitulation</h5>
+                                        <span class="h2 font-weight-bold mb-0">Edom</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="card-body">
+                            <form method="get">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Tahun Akademik</label>
+                                            <select name="tahunAkademik"class="form-control">
+                                                <option th:each="data : ${tahunAkademik}"
+                                                        th:text="${data.namaTahunAkademik}"
+                                                        th:selected="(${data} == *{selectedTahun})"
+                                                        th:value="${data.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Prodi</label>
+                                            <select name="prodi"class="form-control">
+                                                 <option th:each="data : ${prodi}"
+                                                        th:text="${data.namaProdi}"
+                                                        th:selected="(${data} == *{selectedProdi})"
+                                                        th:value="${data.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <span th:if="${selectedTahun != null}">
+                        <div class="card-body" th:each="data : ${rekapEdom}">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <table>
+                                        <tr>
+                                            <td>Lecturer Name</td>
+                                            <td>&nbsp; :</td>
+                                            <td style="padding-left: 5px;" th:text="${data[2]}">Ahmad Masykur</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Course Name</td>
+                                            <td>&nbsp; :</td>
+                                            <td style="padding-left: 5px;" th:text="${data[1]}">Ushul Fiqh II</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Class</td>
+                                            <td>&nbsp; :</td>
+                                            <td style="padding-left: 5px;" th:text="${data[3]}">Ushul Fiqh II</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Number of Students</td>
+                                            <td>&nbsp; :</td>
+                                            <td style="padding-left: 5px;" th:text="${data[4]}">24</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Number of students who have filled in</td>
+                                            <td>&nbsp; :</td>
+                                            <td style="padding-left: 5px;" th:text="${data[5]}">24</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col"><center>No</center></th>
+                                            <th scope="col">Score Point</th>
+                                            <th scope="col">Score</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td><center>1</center></td>
+                                            <td>Metelogi Pembelajaran</td>
+                                            <td th:text="${data[6]}"><center>4.2</center></td>
+                                        </tr>
+                                        <tr>
+                                            <td><center>2</center></td>
+                                            <td>Materi Yang Disampaikan</td>
+                                            <td th:text="${data[7]}"><center>4.2</center></td>
+                                        </tr>
+                                        <tr>
+                                            <td><center>3</center></td>
+                                            <td>Etika dalam pembelajaran</td>
+                                            <td th:text="${data[8]}"><center>4.2</center></td>
+                                        </tr>
+                                        <tr>
+                                            <td><center>4</center></td>
+                                            <td>Kedisiplinan</td>
+                                            <td th:text="${data[9]}"><center>4.2</center></td>
+                                        </tr>
+                                        <tr>
+                                            <td><center>5</center></td>
+                                            <td>Perhatian kepada Mahasiswa</td>
+                                            <td th:text="${data[10]}"><center>4.2</center></td>
+                                        </tr>
+                                        </tbody>
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th colspan="2"><center>Average</center></th>
+                                            <th th:text="${#numbers.formatDecimal(data[11], 0, 'COMMA', 2, 'POINT')}">4.2</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

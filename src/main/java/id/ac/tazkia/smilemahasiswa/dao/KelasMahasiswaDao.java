@@ -18,4 +18,6 @@ public interface KelasMahasiswaDao extends PagingAndSortingRepository<KelasMahas
 
     @Query("select distinct km.kelas from KelasMahasiswa km")
     List<Kelas> carikelasMahasiswa ();
+
+
 }

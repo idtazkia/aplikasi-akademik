@@ -84,7 +84,7 @@
                             </div>
                             <div class="card-header border-0">
                                 <center>
-                                    <h3 class="mb-0">2018/2019 Semester Genap</h3>
+                                    <h3 class="mb-0" th:text="${tahun.namaTahunAkademik}">2018/2019 Semester Genap</h3>
                                 </center>
                             </div>
                             <div class="table-responsive">
@@ -136,12 +136,12 @@
 
                                         </td>
                                         <td>
-                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                                <button sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
 
                                                 <!--modal-->
-                                                <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                <div sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
                                                     <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
                                                         <div class="modal-content bg-gradient-danger">
 

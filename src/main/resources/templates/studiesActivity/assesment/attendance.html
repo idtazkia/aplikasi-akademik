@@ -27,11 +27,11 @@
             <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
         </div>
         <div class="col-md-11 text-center">
-            <b>ATTENDANCE LIST OF FIRST SEMESTER</b>
+            <b>ATTENDANCE LIST</b>
             <br>
             <b>TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS</b>
             <br>
-            <b>ACADEMIC YEAR 2018/2019</b>
+            <b th:text="${'ACADEMIC YEAR ' + tahun}">ACADEMIC YEAR 2018/2019</b>
         </div>
     </div>
     <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
@@ -50,7 +50,7 @@
                 <tr>
                     <td class="text"><b>Lecture</b></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
-                    <td class="text"><b th:text="${jadwal.dosen.karyawan.namaKaryawan}">KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
+                    <td class="text"><b th:text="${dosen}">KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
                 </tr>
             </table>
         </div>
@@ -127,6 +127,26 @@
                 </tr>
 
                 </thead>
+            </table>
+
+            <table>
+                <thead>
+                <tr>
+                    <td id="tanggal">&nbsp;&nbsp;</td>
+                </tr>
+                </thead>
+                <tr>
+                    <td th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>
+                </tr>
             </table>
         </div>
     </div>

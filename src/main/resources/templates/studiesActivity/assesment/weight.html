@@ -112,12 +112,17 @@
                     </div>
 
                     <div class="card-body">
+
                         <div class="alert alert-danger" th:if="${tidakvalid != null}">
-                            Data bobot umum / bobot tugas yang Anda masukan kurang dari 100%, Silahkan lengkapi!
+                            Data bobot umum / bobot tugas yang Anda masukan kurang atau lebih dari 100%, Silahkan lengkapi!
                         </div>
                         <div class="alert alert-danger" th:if="${gaadapres != null}">
                             Anda belum pernah masuk untuk mengajar
                         </div>
+                        <div class="alert alert-danger" th:if="${gagal != null}">
+                            Save data gagal, total bobot tidak boleh lebih dari 100%....
+                        </div>
+
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Bobot Penilaian</h3>

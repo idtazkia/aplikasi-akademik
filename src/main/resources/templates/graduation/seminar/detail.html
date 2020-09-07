@@ -63,27 +63,27 @@
                                 <p th:text="${seminar.note.judulInggris}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus error eveniet incidunt itaque mollitia obcaecati quas sed!</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Mentor</b></label>
+                                <label><b class="font">Co-examiner 2</b></label>
                                 <p th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Chairman</b></label>
+                                <label><b class="font">Main Examiner 1</b></label>
                                 <p th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
                             <div class="form-group">
-                                <label><b class="font">Examiner</b></label>
+                                <label><b class="font">Co-examiner 1</b></label>
                                 <p th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
                             <div class="form-group" th:if="${seminar.ketuaPenguji == dosen}">
-                                <label><b class="font">Comment Ketua</b></label>
+                                <label><b class="font">Comment</b></label>
                                 <textarea name="komentarDosen1" th:field="*{komentarDosen1}" class="form-control"></textarea>
                             </div>
                             <div class="form-group" th:if="${seminar.dosenPenguji == dosen}">
-                                <label><b class="font">Comment Dosen</b></label>
+                                <label><b class="font">Comment</b></label>
                                 <textarea name="komentarDosen2" th:field="*{komentarDosen2}" class="form-control"></textarea>
                             </div>
                             <div class="form-group" th:if="${seminar.note.dosen == dosen}">
-                                <label><b class="font">Comment Pembimbing</b></label>
+                                <label><b class="font">Comment</b></label>
                                 <textarea name="komentarDosen3" th:field="*{komentarDosen3}" class="form-control"></textarea>
                             </div>
                             <div class="form-group">

@@ -1,21 +1,18 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.JadwalDosenDao;
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.StatusJadwalDosen;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
+import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +27,18 @@ public class ReportController {
     private JadwalDosenDao jadwalDosenDao;
 
     @Autowired
+    private JadwalDao jadwalDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
@@ -37,6 +46,9 @@ public class ReportController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private ProdiDao prodiDao;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
@@ -46,6 +58,11 @@ public class ReportController {
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
         return mahasiswaDao.cariAngkatan();
+    }
+
+    @ModelAttribute("prodi")
+    public Iterable<Prodi> prodi() {
+        return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
 
 
@@ -142,4 +159,34 @@ public class ReportController {
             model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan));
         }
     }
+
+    @GetMapping("/report/recapitulation/edom")
+    public void rekapEdom(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                          @RequestParam(required = false) Prodi prodi){
+
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedProdi", prodi);
+            model.addAttribute("rekapEdom",krsDetailDao.rekapEdom(tahunAkademik,prodi));
+        }
+
+    }
+
+    @GetMapping("/report/recapitulation/bkd")
+    public void rekapBkdDosen(Model model, Authentication authentication, @RequestParam(required = false)TahunAkademik tahunAkademik){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+
+            List<ScheduleDto> jadwal = jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahunAkademik);
+            model.addAttribute("jadwal", jadwal);
+        }
+
+
+    }
+
+
 }

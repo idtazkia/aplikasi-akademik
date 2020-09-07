@@ -22,4 +22,7 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
 
     Page<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif, Pageable page);
 
+    @Query(value = "SELECT COALESCE(id_absen,0) + 1 AS id_absen FROM karyawan ORDER BY id_absen DESC LIMIT 1" , nativeQuery = true)
+    Integer cariIDAbesen();
+
 }

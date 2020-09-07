@@ -48,10 +48,11 @@ public class ReportMahasiswaController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF, StatusRecord.UNDONE);
         List<TugasDto> tugasDtos = new ArrayList<>();
         model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
+            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF, StatusRecord.UNDONE);
+
             model.addAttribute("selectedTahun" , tahunAkademik);
 
             List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
@@ -63,49 +64,42 @@ public class ReportMahasiswaController {
             model.addAttribute("khs",krsDetail);
             model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
             model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
-        } else {
-            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
-            for (DataKhsDto data : krsDetail) {
-                List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
-                tugasDtos.addAll(nilaiTugas);
+
+            if (validasiEdom.isEmpty() || validasiEdom == null){
+                return "report/khs";
+            }else {
+                return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
             }
-            model.addAttribute("khs",krsDetail);
-            model.addAttribute("tugas",tugasDtos);
-            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
-            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
         }
 
+        return "report/khs";
 
-        if (validasiEdom.isEmpty() || validasiEdom == null){
-            return "report/khs";
-        }else {
-            return "redirect:edom";
-        }
 
     }
 
     @GetMapping("/report/edom")
-    public void edom(Authentication authentication, Model model) {
+    public void edom(Authentication authentication, Model model,@RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mahasiswa", mahasiswa);
 
-        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), StatusRecord.AKTIF, StatusRecord.UNDONE);
+        List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
         model.addAttribute("detail", krsDetail);
+        model.addAttribute("tahun", tahunAkademik);
     }
 
     @PostMapping("/report/edom")
-    public String prosesForm(Authentication authentication, HttpServletRequest request, RedirectAttributes attributes) {
+    public String prosesForm(Authentication authentication, HttpServletRequest request,@RequestParam TahunAkademik tahunAkademik,
+                             RedirectAttributes attributes) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF),StatusRecord.AKTIF,StatusRecord.UNDONE);
+        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF,StatusRecord.UNDONE);
 
 
-        Map<String, BigInteger> mapNilaiKpi = new HashMap<>();
         for(KrsDetail daftarEdom : krsDetail) {
             String pertanyaan1 = request.getParameter(daftarEdom.getId() + "1");
             String pertanyaan2 = request.getParameter(daftarEdom.getId() + "2");

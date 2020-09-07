@@ -22,7 +22,9 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>KRS List</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik + ' ( Semester ' + semester +' ).'}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )'}"></p>
+                                        <p th:text="${mahasiswa.idProdi.namaProdi + ' - Kelas : ' + kelas.kelas.namaKelas}"></p>
                                     </div>
                                 </div>
                             </div>
@@ -53,6 +55,12 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+                    <div class="alert alert-danger" th:if="${gagal != null}">
+                        Delete data gagal, Krs sudah tidak dapat dihapus karena sudah ada aktifitas perkuliahan yang anda lakukan dengan matakuliah ini...
+                    </div>
+                    <div class="alert alert-success" th:if="${success != null}">
+                        Delete data berhasil
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
