@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
+      layout:decorate="~{layoutadmin}"
+      sec:authorize="hasAuthority('VIEW_FINANCE')">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -48,19 +49,7 @@
                     <div class="card-body">
                         <form method="get">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Academic Year</label>
-                                        <select name="tahunAkademik" required class="form-control">
-                                            <option value=""></option>
-                                            <option th:each="data : ${tahunAkademik}"
-                                                    th:selected="(${data} == *{selectTahun})"
-                                                    th:text="${data.namaTahunAkademik}"
-                                                    th:value="${data.id}">STEI TAZKIA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Prody</label>
                                         <select name="prodi" required class="form-control">
@@ -82,8 +71,13 @@
                             </div>
                         </form>
 
-                        <div class="card-shadow" th:if="${selectTahun != null || (id != null && !id.isEmpty() )}">
-                            <form method="post" th:action="@{/studentBill/billAdmin/generate(tahun=${selectTahun.id}, prodi=${selectProdi.id})}">
+                        <div class="card-shadow" th:if="${selectProdi != null || (id != null && !id.isEmpty() )}">
+<!--                            <div class="row">-->
+<!--                                <div class="text-center col-md-12 mb-4">-->
+<!--                                    <a class="btn btn-success" th:href="@{/studentBill/billAdmin/form( prodi = ${selectProdi.id})}"><i class="fa fa-plus"></i> One Student Added</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <form method="post" th:action="@{/studentBill/billAdmin/generate( prodi=${selectProdi.id})}">
                                 <div class="col">
                                     <div class="form-group text-center">
                                         <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Generate</button>

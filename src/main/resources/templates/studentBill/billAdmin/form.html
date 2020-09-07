@@ -46,101 +46,49 @@
                         <h3 class="mb-0">Form</h3>
                     </div>
                     <div class="card-body">
-                        <form method="get">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Academic Year</label>
-                                        <select name="tahunAkademik" required class="form-control">
-                                            <option value=""></option>
-                                            <option th:each="data : ${tahunAkademik}"
-                                                    th:selected="(${data} == *{selectTahun})"
-                                                    th:text="${data.namaTahunAkademik}"
-                                                    th:value="${data.id}">STEI TAZKIA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Prody</label>
-                                        <select name="prodi" required class="form-control">
-                                            <option value=""></option>
-                                            <option th:each="data : ${prodi}"
-                                                    th:selected="(${data} == *{selectProdi})"
-                                                    th:text="${data.namaProdi}"
-                                                    th:value="${data.id}">STEI TAZKIA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12" style="text-align: center">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i> Show</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div class="card-shadow" th:if="${selectTahun != null || (id != null && !id.isEmpty() )}">
-                            <form method="post" th:action="@{/studentBill/bill/new(tahun=${selectTahun.id})}" th:object="${bill}">
-
+                        <div class="card-shadow">
+                            <form method="post" th:action="@{/studentBill/billAdmin/form(tahunAkademik = ${tahun.id}, nim = ${mhs.id})}" th:object="${newTagihan}">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Student</label>
-                                            <select name="" required class="form-control" th:field="*{mahasiswa}">
+                                            <input type="text" readonly th:value="${mhs.nama}" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Value of bill type</label>
+                                            <select id="select2-jenis" onchange="jenisTagihan()"
+                                                    th:field="*{nilaiJenisTagihan}" required class="form-control" >
                                                 <option value=""></option>
-                                                <option th:each="data : ${krs}"
-                                                        th:text="${data.mahasiswa.nama}"
-                                                        th:value="${data.mahasiswa.id}"></option>
+                                                <option th:each="data : ${nilaiJenisTagihan}"
+                                                        th:text="${(data.jenisTagihan.nama)}"
+                                                        th:value="${data.id}">STEI TAZKIA</option>
                                             </select>
+                                            <input type="hidden" id="isiJenis" name="nilaiJenisTagihan" th:field="*{nilaiJenisTagihan}">
                                         </div>
 
-                                        <div class="form-group">
-                                            <label>Due Date</label>
-                                            <input type="date" name="tanggalJatuhTempo" class="form-control"
-                                                   placeholder="yyyy-MM-dd" th:field="*{tanggalJatuhTempo}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Value</label>
-                                            <input type="text" name="nilaiTagihan" class="form-control"
-                                                   placeholder="0.00" th:field="*{nilaiTagihan}">
-                                        </div>
                                     </div>
                                     <div class="col-md-6">
 
                                         <div class="form-group">
-                                            <label>Value of bill type</label>
-                                            <select name="" required class="form-control" th:field="*{nilaiJenisTagihan}">
-                                                <option value=""></option>
-                                                <option th:each="data : ${valueBill}"
-                                                        th:text="${data.jenisTagihan.nama}"
-                                                        th:value="${data.id}">STEI TAZKIA</option>
-                                            </select>
+                                            <label>Academic Year</label>
+                                            <input type="text" readonly th:value="${tahun.namaTahunAkademik}" name="tahunAkademik" class="form-control">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="">Description</label>
-                                            <textarea name="keterangan" th:field="*{keterangan}" class="form-control"
-                                                      id="" cols="30" rows="6"></textarea>
+                                            <label>Value</label>
+                                            <input type="text" readonly id="nilaiTagihan" th:field="*{nilaiTagihan}" name="nilaiTagihan" class="form-control"
+                                                   placeholder="0.00" >
                                         </div>
+
                                     </div>
 
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Status</label><br>
-                                    <label>
-                                        <input name="status" th:field="*{status}" type="checkbox" value="AKTIF" class="js-switch" />
-                                    </label >
-                                </div>
-
-                                <input type="hidden" name="id" th:field="*{id}">
+                                <input type="hidden" name="id" >
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a th:href="@{/studentBill/billAdmin}" class="btn btn-danger">Cancel</a>
+                                    <a th:href="@{/studentBill/billAdmin/list(tahunAkademik = ${tahun.id}, nim = ${nim})}" class="btn btn-danger">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -153,3 +101,29 @@
 </div>
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih salah satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#select2-jenis').select2();
+
+        $('#select2-jenis').on('select2:selecting', function (e) {
+            console.log('Selecting: ', e.params.args.data.id);
+            $('#isiJenis').val(e.params.args.data.id);
+        });
+    })(jquery);
+
+    function jenisTagihan(){
+        var x = document.getElementById("select2-jenis").value;
+        console.log(x);
+        const url = '/api/jenis?id='+x;
+        $.getJSON(url, function (data) {
+            $('#nilaiTagihan').val(data.nilai);
+            document.getElementById("nilaiTagihan").value = data.nilai;
+        });
+    }
+
+</script>

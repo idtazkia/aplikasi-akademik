@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layoutadmin}">
+      layout:decorate="~{layoutadmin}"
+      sec:authorize="hasAuthority('VIEW_FINANCE')">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -69,43 +70,11 @@
                                 <td th:text="${data.tanggalPenangguhan}">PATRICK STAR</td>
                                 <td th:text="${data.statusApprove}">BANGUN DAN SEMANGAT</td>
                                 <td>
-                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/penangguhan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>
+                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/requestPenangguhan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>
 
 <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
 <!--                                        <i class="fas fa-trash"></i>-->
 <!--                                    </button>-->
-
-                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-                                            <div class="modal-content bg-gradient-danger">
-
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-
-                                                <div class="modal-body">
-
-                                                    <div class="py-3 text-center">
-                                                        <i class="far fa-trash-alt fa-3x"></i>
-                                                        <h4 class="heading mt-4">Are you sure ?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
                                 </td>
                             </tr>
                             </tbody>

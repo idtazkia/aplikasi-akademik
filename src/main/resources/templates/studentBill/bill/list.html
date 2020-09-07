@@ -42,52 +42,88 @@
         <div class="row">
             <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list mg-t-30">
-                    <div class="basic-tb-hd">
-                        <div class="row">
-                            <div class="col-md-6 col-xs-12">
-                                Bill List
-                            </div>
-                        </div>
-                    </div>
+                    <h4 class="bg-primary text-center">Daftar Biaya dan Potongan</h4>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
-                            <thead>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Tahun Akademik</th>
+                                    <th>Type of Bill</th>
+                                    <th>Subtotal</th>
+                                    <th>Dibayar</th>
+                                    <th> </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr th:each="data, row : ${biayaMahasiswa}">
+                                    <td th:text="${data.getNamaTahun()}">1</td>
+                                    <td th:text="${data.getNamaTagihan()}">Ini SKS</td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getnilai_tagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td><a class="btn btn-primary" th:href="@{/studentBill/payment/form(tagihan = ${data.getId()})}">Cek</a></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><h5>Total : </h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><h5>Sisa : </h5></td>
+                                    <td></td>
+                                    <td><h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        <div class="row">-->
+<!--            <div class="col-md-5 col-xs-6">-->
+<!--                <h5 style="margin-right: 65px;" class="text-right">Total : </h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-push-1 col-md-3 col-xs-6 ml-5">-->
+<!--                <h5 style="margin-left: 69px;" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--            </div>-->
+<!--            <div class=" col-md-3 col-xs-6">-->
+<!--                <h5 style="margin-left: 90px; width: 100%;" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-5 col-xs-6">-->
+<!--                <h5 style="margin-right: 65px;" class="text-right">Sisa : </h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-push-4 col-md-2 col-xs-6">-->
+<!--                <h5 style="margin-left: -7px;" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}">Rp. 1.000.000,00</h5>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <h4 class="bg-primary text-center">Pembayaran</h4>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
                             <tr>
-                                <th>No.</th>
-                                <th>Type of Bill</th>
-                                <th>Value</th>
-                                <th>Due Date</th>
+                                <th>Tahun Akademik</th>
+                                <th>Jenis Tagihan</th>
+                                <th>Tanggal</th>
+                                <th>Dibayar</th>
                                 <th> </th>
                             </tr>
                             </thead>
                             <tbody>
 
-                            <tr th:each="data,row : ${listBill}">
-                                <td th:text="${(row.index + 1) + (listBill.number * listBill.size)}">1</td>
-                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}">Ini SKS</td>
-                                <td th:text="${data.nilaiTagihan}">Ruang 1.3</td>
-                                <td th:text="${data.tanggalPenangguhan}">Ruang 1.3</td>
-                                <td class="text-center" style="width: 15px;">
-                                    <a th:href="@{/studentBill/bill/date(id = ${data.id})}">
-                                        <button type="button" class="btn btn-dark waves-effect">
-                                            Suspension
-                                        </button>
-                                    </a>
-                                </td>
-                                <td class="text-center"  style="width: 15px;">
-                                    <a th:href="@{/studentBill/bill/instalment(id = ${data.id})}">
-                                        <button type="button" class="btn btn-secondary waves-effect">
-                                            Instalment
-                                        </button>
-                                    </a>
-                                </td>
-                                <td class="text-center" style="width: 15px;">
-                                    <a th:href="@{/studentBill/payment(tagihan = ${data.id})}">
-                                        <button type="button" class="btn btn-secondary waves-effect">
-                                            Payment
-                                        </button>
-                                    </a>
-                                </td>
+                            <tr th:each="data,row : ${pembayaran}">
+                                <td th:text="${data[1]}">1</td>
+                                <td th:text="${data[2]}">Ini SKS</td>
+                                <td th:text="${data[3]}"></td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[4], 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -95,6 +131,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 </body>

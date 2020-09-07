@@ -20,7 +20,7 @@ public class RequestCicilan {
     private Tagihan tagihan;
 
     @NotNull @NotEmpty
-    private String banyakCicilan;
+    private Integer banyakCicilan;
 
     @Enumerated(EnumType.STRING)
     private StatusApprove statusApprove = StatusApprove.WAITING;

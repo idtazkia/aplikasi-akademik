@@ -28,11 +28,9 @@ public class Tagihan {
     @ManyToOne @JoinColumn(name = "id_nilai_jenis_tagihan")
     private NilaiJenisTagihan nilaiJenisTagihan;
 
-    @NotNull
     @ManyToOne @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
-    @NotNull @NotEmpty
     private String keterangan;
 
     @NotNull @Min(1000)
@@ -42,7 +40,6 @@ public class Tagihan {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPembuatan;
 
-    @NotNull
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalJatuhTempo;
@@ -64,5 +61,7 @@ public class Tagihan {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    private String idTagihanSebelumnya;
 
 }

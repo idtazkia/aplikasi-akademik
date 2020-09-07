@@ -163,4 +163,12 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "SELECT id_mahasiswa as nim,nama,kode_uts as kode FROM (SELECT a.*,d.nama,COALESCE(b.mangkir,0) AS mangkir,c.fitur FROM (SELECT * FROM krs_detail WHERE id_jadwal=?1 AND STATUS='AKTIF')a LEFT JOIN (SELECT COUNT(aa.id)AS mangkir,aa.id AS id_krs FROM presensi_mahasiswa AS aa INNER JOIN sesi_kuliah AS bb ON aa.id_sesi_kuliah=bb.id  INNER JOIN presensi_dosen AS cc ON bb.id_presensi_dosen=cc.id WHERE aa.status='AKTIF' AND aa.status_presensi IN ('MANGKIR','TERLAMBAT') GROUP BY aa.id)b  ON a.id= b.id_krs LEFT JOIN (SELECT * FROM enable_fiture WHERE ENABLE='1' AND fitur='UAS' AND id_tahun_akademik =?2)c ON a.id_mahasiswa = c.id_mahasiswa INNER JOIN mahasiswa AS d ON a.id_mahasiswa=d.id)aaa WHERE mangkir < 4 AND fitur='UAS' ORDER BY id_mahasiswa" , nativeQuery = true)
     List<Object[]> absenUts(Jadwal jadwal, TahunAkademik tahunAkademik);
 
+    @Query(value = "select sum(jumlah_sks)as jml from krs_detail as a \n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id \n" +
+            "where a.id_mahasiswa=?1 and a.status='AKTIF' \n" +
+            "and b.id_tahun_akademik=?2 \n" +
+            "group by a.id_mahasiswa", nativeQuery = true)
+    Long jumlahSksMahasiswa(String idMahasiswa, String idTahunAkademik);
+
 }
