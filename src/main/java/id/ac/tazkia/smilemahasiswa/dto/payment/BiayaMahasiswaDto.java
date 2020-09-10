@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public interface BiayaMahasiswaDto {
 
-    String getIdTagihan();
+    String getId();
     String getNamaTagihan();
     String getNamaTahun();
     BigDecimal getnilai_tagihan();

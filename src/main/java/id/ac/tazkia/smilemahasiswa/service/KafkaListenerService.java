@@ -94,14 +94,14 @@ public class KafkaListenerService {
             LOGGER.debug("Terima message : {}", message);
 
             if (!response.getSukses()) {
-                LOGGER.warn("Create tagihan gagal : {}", response.getDebitur());
+                LOGGER.warn("Update tagihan gagal : {}", response.getDebitur());
                 return;
             }
 
-            LOGGER.debug("Create tagihan untuk mahasiswa {} sukses dengan nomor {}",
+            LOGGER.debug("Update tagihan untuk mahasiswa {} sukses dengan nomor {}",
                     response.getDebitur(), response.getNomorTagihan());
 
-            insertTagihan(response);
+            updateTagihan(response);
 
         }catch (Exception err){
             LOGGER.warn(err.getMessage(), err);
@@ -124,11 +124,15 @@ public class KafkaListenerService {
         }
     }
 
-    private void insertTagihan(TagihanResponse tagihanResponse){
+    private void updateTagihan(TagihanResponse tagihanResponse){
         LOGGER.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndStatus(tagihanResponse.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), StatusRecord.AKTIF);
+        LOGGER.debug(tagihanResponse.getJenisTagihan());
+        LOGGER.debug(String.valueOf(tahunAkademik));
+        LOGGER.debug(String.valueOf(mahasiswa.getIdProdi()));
+        LOGGER.debug(mahasiswa.getAngkatan());
         Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan);
 //        Tagihan tagihan = new Tagihan();
         tagihan.setNomor(tagihanResponse.getNomorTagihan());

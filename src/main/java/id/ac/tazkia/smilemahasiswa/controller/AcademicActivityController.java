@@ -258,8 +258,6 @@ public class AcademicActivityController {
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
             tahunAkademik.setTahun(tahun);
             tahunAkademik.setStatus(status);
-
-
             tahunAkademikDao.save(tahunAkademik);
         }else {
             TahunAkademik tahunAkademik = new TahunAkademik();
@@ -280,8 +278,6 @@ public class AcademicActivityController {
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
             tahunAkademik.setTahun(tahun);
             tahunAkademik.setStatus(status);
-
-
             tahunAkademikDao.save(tahunAkademik);
         }
 

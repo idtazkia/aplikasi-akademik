@@ -85,8 +85,13 @@
 
                             <div class="form-group">
                                 <label>Generation</label>
-                                <input type="text" name="angkatan" class="form-control"
-                                       th:field="*{angkatan}">
+                                <select name="" required id="" class="form-control" th:field="*{angkatan}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${angkatan}"
+                                            th:text="${data}"
+                                            th:selected="(${data} == *{angkatan})"
+                                            th:value="${data}"></option>
+                                </select>
                             </div>
 
                             <div class="form-group">
