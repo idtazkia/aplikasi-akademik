@@ -560,7 +560,7 @@ public class AcademicActivityController {
 
         prasyarat.setStatus(StatusRecord.HAPUS);
         prasyaratDao.save(prasyarat);
-        return "redirect:prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
+        return "redirect:../prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
     }
 
     //    Ploting

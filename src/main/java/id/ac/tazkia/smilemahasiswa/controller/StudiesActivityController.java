@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
@@ -93,6 +94,9 @@ public class StudiesActivityController {
     private KrsDao krsDao;
 
     @Autowired
+    private NilaiTugasDao nilaiTugasDao;
+
+    @Autowired
     private KrsDetailDao krsDetailDao;
 
     @Autowired
@@ -103,9 +107,6 @@ public class StudiesActivityController {
 
     @Autowired
     private BobotTugasDao bobotTugasDao;
-
-    @Autowired
-    private NilaiTugasDao nilaiTugasDao;
 
     @Autowired
     private GradeDao gradeDao;
@@ -918,6 +919,26 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/assesment/score")
     public String assesmentScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
+
+
+//            krsDetailDao.insertNilaiTugas(jadwal.getId());
+
+        List<KrsNilaiTugasDto> krsNilaiTugasDtos = krsDetailDao.listKrsNilaiTugas(jadwal.getId());
+        if (krsNilaiTugasDtos != null){
+            for (KrsNilaiTugasDto kd : krsNilaiTugasDtos) {
+
+                NilaiTugas nilaiTugas = new NilaiTugas();
+                nilaiTugas.setKrsDetail(krsDetailDao.findById(kd.getKrsDetail()).get());
+                nilaiTugas.setBobotTugas(bobotTugasDao.findById(kd.getJadwalBobotTugas()).get());
+                nilaiTugas.setNilai(kd.getNilai());
+                nilaiTugas.setNilaiAkhir(kd.getNilaiAkhir());
+                nilaiTugas.setStatus(StatusRecord.AKTIF);
+                nilaiTugasDao.save(nilaiTugas);
+
+            }
+        }
+
+
         if (jadwal.getMatakuliahKurikulum().getSds() != null){
             BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
             if (totalBobot.toBigInteger().intValueExact() < 100) {
@@ -1663,6 +1684,8 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/assesment/topic")
     public void topic(Model model,@RequestParam Jadwal jadwal){
         String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+
 
         model.addAttribute("tahun", tahun);
         model.addAttribute("topic", presensiDosenDao.bkdBeritaAcara(jadwal));

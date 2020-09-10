@@ -1,10 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -184,4 +186,28 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "select count(id) as semester from krs where status = 'AKTIF' and id_mahasiswa = ?1 and id_tahun_akademik = ?2",nativeQuery = true)
     Integer cariSemesterSekarang (String idMaasiswa, String idTahunAKademik);
 
+
+
+    @Modifying
+    @Query(value = "INSERT INTO krs_nilai_tugas (id,id_krs_detail,id_bobot_tugas,nilai,STATUS,nilai_akhir)\n" +
+            "(SELECT UUID() AS id,aa.*,0 AS nilai,'AKTIF' AS STATUS,0 AS nilai_akhir FROM\n" +
+            "(SELECT a.id AS krs_detail, c.id AS jadwal_bobot_tugas FROM krs_detail AS a\n" +
+            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
+            "INNER JOIN jadwal_bobot_tugas AS c ON b.id = c.id_jadwal\n" +
+            "WHERE b.id= ?1 AND a.status='AKTIF')aa\n" +
+            "LEFT JOIN \n" +
+            "(SELECT * FROM krs_nilai_tugas WHERE STATUS='AKTIF') bb ON aa.krs_detail = bb.id_krs_detail AND aa.jadwal_bobot_tugas = bb.id_bobot_tugas\n" +
+            "WHERE bb.id IS NULL)", nativeQuery = true)
+    int insertNilaiTugas(String idJadwal);
+
+    @Query(value = "\n" +
+            "SELECT UUID() AS id,aa.krs_detail AS krsDetail,jadwal_bobot_tugas AS jadwalBobotTugas,0 AS nilai,'AKTIF' AS STATUS,0 AS nilaiAkhir FROM\n" +
+            "(SELECT a.id AS krs_detail, c.id AS jadwal_bobot_tugas FROM krs_detail AS a\n" +
+            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
+            "INNER JOIN jadwal_bobot_tugas AS c ON b.id = c.id_jadwal\n" +
+            "WHERE b.id=?1 AND a.status='AKTIF')aa\n" +
+            "LEFT JOIN \n" +
+            "(SELECT * FROM krs_nilai_tugas WHERE STATUS='AKTIF') bb ON aa.krs_detail = bb.id_krs_detail AND aa.jadwal_bobot_tugas = bb.id_bobot_tugas\n" +
+            "WHERE bb.id IS NULL", nativeQuery = true)
+    List<KrsNilaiTugasDto> listKrsNilaiTugas(String idJadwal);
 }
