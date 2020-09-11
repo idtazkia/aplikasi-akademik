@@ -144,7 +144,14 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "SELECT b.semester, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     List<Object[]> transkrip(Mahasiswa mahasiswa);
 
-    @Query(value = "SELECT b.semester, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 ORDER BY b.semester", nativeQuery = true)
+    @Query(value = "\n" +
+            "SELECT b.semester, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,\n" +
+            "COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu \n" +
+            "FROM krs_detail AS a \n" +
+            "INNER JOIN jadwal AS g ON a.id_jadwal = g.id\n" +
+            "INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id \n" +
+            "INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
+            "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 ORDER BY b.semester", nativeQuery = true)
     List<Object[]> transkripSem(Mahasiswa mahasiswa, String semester);
 
     @Query(value = "select semester,kode_matakuliah,nama_matakuliah,jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu from ((select id_matakuliah,id_mahasiswa,max(nilai_akhir) as nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a  inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.semester='1' and b.jumlah_sks > 0  and bobot > 0 and a.status = 'AKTIF'  group by c.kode_matakuliah) union (select id_matakuliah,id_mahasiswa,nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.semester='1' and a.status='AKTIF' and jumlah_sks > 0))aa where grade <> 'E'  group by kode_matakuliah order by semester", nativeQuery = true)
