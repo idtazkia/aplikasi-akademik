@@ -28,4 +28,15 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
 
 
 
+    @Query(value="select a.id, b.kode_tahun_akademik, b.nama_tahun_akademik,b.jenis from krs as a \n" +
+            "inner join krs_detail as g on a.id = g.id_krs\n" +
+            "inner join jadwal as h on g.id_jadwal = h.id\n" +
+            "inner join matakuliah_kurikulum as i on h.id_matakuliah_kurikulum = i.id\n" +
+            "inner join tahun_akademik as b on a.id_tahun_akademik = b.id\n" +
+            "where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id \n" +
+            "order by b.kode_tahun_akademik", nativeQuery = true)
+    List<Object[]> semesterTranskript(String idMahasiswa);
+
+
+
 }

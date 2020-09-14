@@ -154,6 +154,19 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 ORDER BY b.semester", nativeQuery = true)
     List<Object[]> transkripSem(Mahasiswa mahasiswa, String semester);
 
+
+
+    @Query(value="SELECT h.id, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,\n" +
+            "            COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu ,kode_tahun_akademik, nama_tahun_akademik\n" +
+            "            FROM krs_detail AS a \n" +
+            "            inner join krs as h on a.id_krs = h.id\n" +
+            "            inner join tahun_akademik as i on h.id_tahun_akademik = i.id\n" +
+            "            INNER JOIN jadwal AS g ON a.id_jadwal = g.id\n" +
+            "            INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id \n" +
+            "            INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id \n" +
+            "            WHERE a.status='AKTIF' AND a.id_mahasiswa=?1 AND b.jumlah_sks > 0", nativeQuery = true)
+    List<Object[]> transkriptTampil(String idMahasiswa);
+
     @Query(value = "select semester,kode_matakuliah,nama_matakuliah,jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu from ((select id_matakuliah,id_mahasiswa,max(nilai_akhir) as nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join jadwal as g on a.id_jadwal = g.id inner join matakuliah_kurikulum as b on g.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.semester='1' and b.jumlah_sks > 0  and bobot > 0 and a.status = 'AKTIF'  group by c.kode_matakuliah) union (select id_matakuliah,id_mahasiswa,nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.semester='1' and a.status='AKTIF' and jumlah_sks > 0))aa where grade <> 'E'  group by kode_matakuliah order by semester", nativeQuery = true)
     List<Object[]> transkripAKhirSem1(Mahasiswa mahasiswa);
 
@@ -259,4 +272,92 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "(SELECT * FROM krs_nilai_tugas WHERE STATUS='AKTIF') bb ON aa.krs_detail = bb.id_krs_detail AND aa.jadwal_bobot_tugas = bb.id_bobot_tugas\n" +
             "WHERE bb.id IS NULL", nativeQuery = true)
     List<KrsNilaiTugasDto> listKrsNilaiTugas(String idJadwal);
+
+
+    @Query(value="select aa.*,bb.id, bb.kode_tahun_akademik,bb.nama_tahun_akademik,jenis from\n" +
+            "(select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots order by kode_tahun_akademik)aa\n" +
+            "inner join tahun_akademik as bb on aa.id_tahun_akademik = bb.id \n" +
+            "order by kode_tahun_akademik\n", nativeQuery = true)
+    List<Object[]> transkriptPrint1(String idMahasiswa);
+
+    @Query(value="select bb.id, bb.kode_tahun_akademik,bb.nama_tahun_akademik,jenis,count(bb.id) as rowspan from\n" +
+            "(select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots order by kode_tahun_akademik)aa\n" +
+            "inner join tahun_akademik as bb on aa.id_tahun_akademik = bb.id \n" +
+            "group by bb.id order by kode_tahun_akademik", nativeQuery = true)
+    List<Object[]> semesterTraskripPrint1(String idMahasiswa);
+
+
+
+    @Query(value = "select bbb.*,aaa.* from\n" +
+            "(select bb.id, bb.kode_tahun_akademik,bb.nama_tahun_akademik,jenis,count(bb.id) as rowspan from\n" +
+            "(select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots order by kode_tahun_akademik)aa\n" +
+            "inner join tahun_akademik as bb on aa.id_tahun_akademik = bb.id \n" +
+            "group by bb.id order by kode_tahun_akademik)aaa\n" +
+            "left join\n" +
+            "(select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots order by kode_tahun_akademik) bbb on aaa.id = bbb.id_tahun_akademik", nativeQuery = true)
+    List<Object[]> transkriptAkhir(String idMahasiswa);
 }

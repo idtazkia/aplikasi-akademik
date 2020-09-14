@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class AcademicActivityController {
+public class  AcademicActivityController {
 
     @Value("${upload.silabus}")
     private String uploadFolder;
