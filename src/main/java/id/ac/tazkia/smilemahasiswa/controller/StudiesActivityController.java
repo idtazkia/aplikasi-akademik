@@ -1783,15 +1783,22 @@ public class StudiesActivityController {
     public void printTranskript1(Model model, @RequestParam(required = false)String nim){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
-        model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
+//        model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
 
+        Long totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+        Long totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
+        BigDecimal Ipk = BigDecimal.valueOf(totalMuti/totalSKS);
+        BigDecimal Ipk2 = Ipk.setScale(2, BigDecimal.ROUND_HALF_DOWN);
 
-        model.addAttribute("sks", krsDetailDao.totalSksAkhir(mahasiswa.getId()));
-        model.addAttribute("mutu", krsDetailDao.totalMutuAkhir(mahasiswa.getId()));
+        model.addAttribute("sks", totalSKS);
+        model.addAttribute("mutu", totalMuti);
+        model.addAttribute("ipk", Ipk2);
+
 //        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
 //        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
 //        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
 //        model.addAttribute("transkrip", krsDetailDao.transkripAKhir(mahasiswa));
+
         model.addAttribute("transkrip1", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"1"));
         model.addAttribute("transkrip2", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"2"));
         model.addAttribute("transkrip3", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"3"));
