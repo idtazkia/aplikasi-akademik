@@ -227,7 +227,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
             "where bobot > bobots\n" +
             "order by kode_matakuliah", nativeQuery = true)
-    Long totalSksAkhir(String mahasiswa);
+    BigDecimal totalSksAkhir(String mahasiswa);
 
     @Query(value = "SELECT sum(b.jumlah_sks*a.bobot) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     Long totalMutu(Mahasiswa mahasiswa);
@@ -250,7 +250,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
             "where bobot > bobots\n" +
             "order by kode_matakuliah", nativeQuery = true)
-    Long totalMutuAkhir(String mahasiswa);
+    BigDecimal totalMutuAkhir(String mahasiswa);
 
     @Query(value = "select d.nim,d.nama,e.nama_prodi,f.nama_tahun_akademik,c.nama_matakuliah,a.kode_uts from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join mahasiswa as d on a.id_mahasiswa=d.id inner join prodi as e on d.id_prodi=e.id inner join tahun_akademik as f on a.id_tahun_akademik=f.id left join (select count(a.id)as presensi,id_krs_detail from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah=b.id inner join presensi_dosen as c on b.id_presensi_dosen=c.id inner join jadwal as d on c.id_jadwal=d.id where a.id_mahasiswa=?1 and d.id_tahun_akademik=?2 and a.status_presensi in ('MANGKIR','TERLAMBAT') and a.status='AKTIF' group by d.id) g on a.id=g.id_krs_detail where a.id_mahasiswa=?1 and a.id_tahun_akademik=?2 and coalesce(presensi,0) < 4", nativeQuery = true)
     List<Object[]> listKartu(Mahasiswa mahasiswa,TahunAkademik tahunAkademik);

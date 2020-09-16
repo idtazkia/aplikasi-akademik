@@ -1785,14 +1785,14 @@ public class StudiesActivityController {
         model.addAttribute("mhsw",mahasiswa);
 //        model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
 
-        Long totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
-        Long totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
-        BigDecimal Ipk = BigDecimal.valueOf(totalMuti/totalSKS);
-        BigDecimal Ipk2 = Ipk.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+        BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
+
+        BigDecimal Ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
         model.addAttribute("sks", totalSKS);
         model.addAttribute("mutu", totalMuti);
-        model.addAttribute("ipk", Ipk2);
+        model.addAttribute("ipk", Ipk);
 
 //        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
 //        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
