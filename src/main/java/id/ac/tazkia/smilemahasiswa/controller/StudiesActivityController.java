@@ -1786,20 +1786,20 @@ public class StudiesActivityController {
         model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
 
 
-        model.addAttribute("sks", krsDetailDao.totalSksAkhir(mahasiswa));
-        model.addAttribute("mutu", krsDetailDao.totalMutuAkhir(mahasiswa));
-        model.addAttribute("transkriptPrint", krsDetailDao.transkriptPrint1(mahasiswa.getId()));
-        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
+        model.addAttribute("sks", krsDetailDao.totalSksAkhir(mahasiswa.getId()));
+        model.addAttribute("mutu", krsDetailDao.totalMutuAkhir(mahasiswa.getId()));
+//        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
+//        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
 //        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
-//        model.addAttribute("transkrip1", krsDetailDao.transkripAKhirSem1(mahasiswa));
 //        model.addAttribute("transkrip", krsDetailDao.transkripAKhir(mahasiswa));
-//        model.addAttribute("transkrip2", krsDetailDao.transkripAKhirSem2(mahasiswa));
-//        model.addAttribute("transkrip3", krsDetailDao.transkripAKhirSem3(mahasiswa));
-//        model.addAttribute("transkrip4", krsDetailDao.transkripAKhirSem4(mahasiswa));
-//        model.addAttribute("transkrip5", krsDetailDao.transkripAKhirSem5(mahasiswa));
-//        model.addAttribute("transkrip6", krsDetailDao.transkripAKhirSem6(mahasiswa));
-//        model.addAttribute("transkrip7", krsDetailDao.transkripAKhirSem7(mahasiswa));
-//        model.addAttribute("transkrip8", krsDetailDao.transkripAKhirSem8(mahasiswa));
+        model.addAttribute("transkrip1", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"1"));
+        model.addAttribute("transkrip2", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"2"));
+        model.addAttribute("transkrip3", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"3"));
+        model.addAttribute("transkrip4", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"4"));
+        model.addAttribute("transkrip5", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"5"));
+        model.addAttribute("transkrip6", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"6"));
+        model.addAttribute("transkrip7", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"7"));
+        model.addAttribute("transkrip8", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"8"));
     }
 
 

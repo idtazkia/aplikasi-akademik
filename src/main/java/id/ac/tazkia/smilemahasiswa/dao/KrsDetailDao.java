@@ -209,14 +209,48 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     Long totalSks(Mahasiswa mahasiswa);
     
-    @Query(value = "select sum(jumlah_sks) from (select semester,kode_matakuliah,nama_matakuliah,jumlah_sks,max(nilai_akhir),bobot,grade,bobot*jumlah_sks as mutu from ((select id_matakuliah,id_mahasiswa,max(nilai_akhir) as nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join jadwal as g on a.id_jadwal = g.id inner join matakuliah_kurikulum as b on g.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.jumlah_sks > 0  and bobot > 0 and a.status = 'AKTIF'  group by c.kode_matakuliah) union (select id_matakuliah,id_mahasiswa,nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and a.status='AKTIF' and jumlah_sks > 0))aa where grade <> 'E'  group by kode_matakuliah order by semester) t1", nativeQuery = true)
-    Long totalSksAkhir(Mahasiswa mahasiswa);
+    @Query(value = "select coalesce(sum(jumlah_sks),0.00)as jumlah_sks from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots\n" +
+            "order by kode_matakuliah", nativeQuery = true)
+    Long totalSksAkhir(String mahasiswa);
 
     @Query(value = "SELECT sum(b.jumlah_sks*a.bobot) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     Long totalMutu(Mahasiswa mahasiswa);
 
-    @Query(value = "select sum(bobot*jumlah_sks) from (select semester,kode_matakuliah,nama_matakuliah,jumlah_sks,max(nilai_akhir),bobot,grade,bobot*jumlah_sks as mutu from ((select id_matakuliah,id_mahasiswa,max(nilai_akhir) as nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join jadwal as g on a.id_jadwal = g.id inner join matakuliah_kurikulum as b on g.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and b.jumlah_sks > 0  and bobot > 0 and a.status = 'AKTIF'  group by c.kode_matakuliah) union (select id_matakuliah,id_mahasiswa,nilai_akhir,bobot,a.id as id_krs,c.kode_matakuliah,c.nama_matakuliah,b.jumlah_sks,grade,semester from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah=c.id where a.id_mahasiswa=?1 and a.status='AKTIF' and jumlah_sks > 0))aa where grade <> 'E'  group by kode_matakuliah order by semester) t1", nativeQuery = true)
-    Long totalMutuAkhir(Mahasiswa mahasiswa);
+    @Query(value = "select coalesce(sum(mutu),0.00) as mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots\n" +
+            "order by kode_matakuliah", nativeQuery = true)
+    Long totalMutuAkhir(String mahasiswa);
 
     @Query(value = "select d.nim,d.nama,e.nama_prodi,f.nama_tahun_akademik,c.nama_matakuliah,a.kode_uts from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join mahasiswa as d on a.id_mahasiswa=d.id inner join prodi as e on d.id_prodi=e.id inner join tahun_akademik as f on a.id_tahun_akademik=f.id left join (select count(a.id)as presensi,id_krs_detail from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah=b.id inner join presensi_dosen as c on b.id_presensi_dosen=c.id inner join jadwal as d on c.id_jadwal=d.id where a.id_mahasiswa=?1 and d.id_tahun_akademik=?2 and a.status_presensi in ('MANGKIR','TERLAMBAT') and a.status='AKTIF' group by d.id) g on a.id=g.id_krs_detail where a.id_mahasiswa=?1 and a.id_tahun_akademik=?2 and coalesce(presensi,0) < 4", nativeQuery = true)
     List<Object[]> listKartu(Mahasiswa mahasiswa,TahunAkademik tahunAkademik);
@@ -295,6 +329,26 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join tahun_akademik as bb on aa.id_tahun_akademik = bb.id \n" +
             "order by kode_tahun_akademik\n", nativeQuery = true)
     List<Object[]> transkriptPrint1(String idMahasiswa);
+
+    @Query(value="select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where e.semester = ?2 and a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots\n" +
+            "order by kode_matakuliah", nativeQuery = true)
+    List<Object[]> transkriptAkhir(String idMahasiswa, String semester);
 
     @Query(value="select bb.id, bb.kode_tahun_akademik,bb.nama_tahun_akademik,jenis,count(bb.id) as rowspan from\n" +
             "(select id_tahun_akademik,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,jumlah_sks,bobot,grade,mutu from\n" +

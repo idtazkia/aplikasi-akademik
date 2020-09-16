@@ -54,8 +54,64 @@
             </tr>
             </thead>
 
-            <tr th:each="data, row : ${transkriptPrint}">
-                <td th:text="${data[10]}"></td>
+
+<!--            <tr th:each="data, row : ${transkriptPrint}">-->
+<!--                <td th:if="${data[0] != }" th:rowspan="${data[12]}" th:text="${data[10]}"></td>-->
+<!--                <td><center th:text="${data[1]}"></center></td>-->
+<!--                <td th:text="${data[2]}"></td>-->
+<!--                <td><center th:text="${data[4]}"></center></td>-->
+<!--                <td><center th:text="${data[5]}"></center></td>-->
+<!--                <td><center th:text="${data[6]}"></center></td>-->
+<!--                <td><center th:text="${data[7]}"></center></td>-->
+<!--            </tr>-->
+
+            <tr th:each="data, row : ${transkrip1}" th:if="${not #lists.isEmpty(transkrip1)}">
+                <td th:rowspan="${#lists.size(transkrip1)}" th:if="${row.index == 0}"><center>1</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip2}" th:if="${not #lists.isEmpty(transkrip2)}">
+                <td th:rowspan="${#lists.size(transkrip2)}" th:if="${row.index == 0}"><center>2</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip3}" th:if="${not #lists.isEmpty(transkrip3)}">
+                <td th:rowspan="${#lists.size(transkrip3)}" th:if="${row.index == 0}"><center>3</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip4}" th:if="${not #lists.isEmpty(transkrip4)}">
+                <td th:rowspan="${#lists.size(transkrip4)}" th:if="${row.index == 0}"><center>4</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip5}" th:if="${not #lists.isEmpty(transkrip5)}">
+                <td th:rowspan="${#lists.size(transkrip5)}" th:if="${row.index == 0}"><center>5</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip6}" th:if="${not #lists.isEmpty(transkrip6)}">
+                <td th:rowspan="${#lists.size(transkrip6)}" th:if="${row.index == 0}"><center>6</center></td>
                 <td><center th:text="${data[1]}"></center></td>
                 <td th:text="${data[2]}"></td>
                 <td><center th:text="${data[4]}"></center></td>
@@ -64,79 +120,25 @@
                 <td><center th:text="${data[7]}"></center></td>
             </tr>
 
-<!--            <tr th:each="data, row : ${transkrip1}" th:if="${not #lists.isEmpty(transkrip1)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip1)}" th:if="${row.index == 0}"><center>1</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip2}" th:if="${not #lists.isEmpty(transkrip2)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip2)}" th:if="${row.index == 0}"><center>2</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip3}" th:if="${not #lists.isEmpty(transkrip3)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip3)}" th:if="${row.index == 0}"><center>3</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip4}" th:if="${not #lists.isEmpty(transkrip4)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip4)}" th:if="${row.index == 0}"><center>4</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip5}" th:if="${not #lists.isEmpty(transkrip5)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip5)}" th:if="${row.index == 0}"><center>5</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip6}" th:if="${not #lists.isEmpty(transkrip6)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip6)}" th:if="${row.index == 0}"><center>6</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
+            <tr th:each="data, row : ${transkrip7}" th:if="${not #lists.isEmpty(transkrip7)}">
+                <td th:rowspan="${#lists.size(transkrip7)}" th:if="${row.index == 0}"><center>7</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
+            <tr th:each="data, row : ${transkrip8}" th:if="${not #lists.isEmpty(transkrip8)}">
+                <td th:rowspan="${#lists.size(transkrip8)}" th:if="${row.index == 0}"><center>8</center></td>
+                <td><center th:text="${data[1]}"></center></td>
+                <td th:text="${data[2]}"></td>
+                <td><center th:text="${data[4]}"></center></td>
+                <td><center th:text="${data[5]}"></center></td>
+                <td><center th:text="${data[6]}"></center></td>
+                <td><center th:text="${data[7]}"></center></td>
+            </tr>
 
-<!--            <tr th:each="data, row : ${transkrip7}" th:if="${not #lists.isEmpty(transkrip7)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip7)}" th:if="${row.index == 0}"><center>7</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
-<!--            <tr th:each="data, row : ${transkrip8}" th:if="${not #lists.isEmpty(transkrip8)}">-->
-<!--                <td th:rowspan="${#lists.size(transkrip8)}" th:if="${row.index == 0}"><center>8</center></td>-->
-<!--                <td><center th:text="${data[1]}"></center></td>-->
-<!--                <td th:text="${data[2]}"></td>-->
-<!--                <td><center th:text="${data[3]}"></center></td>-->
-<!--                <td><center th:text="${data[4]}"></center></td>-->
-<!--                <td><center th:text="${data[5]}"></center></td>-->
-<!--                <td><center th:text="${data[6]}"></center></td>-->
-<!--            </tr>-->
             <tr>
                 <td colspan="3" style="text-align: right;"><b>Jumlah :</b></td>
                 <td style="text-align: center;" th:text="${sks}">1221</td>
