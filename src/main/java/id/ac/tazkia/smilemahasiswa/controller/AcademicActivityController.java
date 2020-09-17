@@ -712,9 +712,14 @@ public class  AcademicActivityController {
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
         System.out.println(sesii);
 
+        Integer jumlahBentrok = jadwalDao.jumlahBentrok(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
         List<Object[]> listBentrok = jadwalDao.cariJadwalAKtifDosen(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
 
-        if (listBentrok != null){
+        if(jumlahBentrok == null){
+            jumlahBentrok = 0;
+        }
+
+        if (jumlahBentrok > 0){
 
             model.addAttribute("bentrokJadwal", listBentrok);
             model.addAttribute("jadwal", jadwal);
