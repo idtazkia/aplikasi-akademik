@@ -1807,8 +1807,8 @@ public class StudiesActivityController {
         model.addAttribute("transkrip6", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"6"));
         model.addAttribute("transkrip7", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"7"));
         model.addAttribute("transkrip8", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"8"));
-    }
 
+    }
 
 //    Exam Validation
 

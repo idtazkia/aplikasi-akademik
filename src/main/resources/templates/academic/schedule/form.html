@@ -54,6 +54,26 @@
                         </div>
                     </div>
                     <div class="card-body">
+
+                        <div class="alert alert-danger" th:if="${bentrokJadwal != null}">
+                            Data Jadwal bentrok.. dengan
+                            <table>
+                                <tr th:each="dataBentrok,row : ${bentrokJadwal}">
+                                    <td th:text="${dataBentrok[31]}"></td>
+                                    <td> - </td>
+                                    <td th:text="${dataBentrok[28]}"></td>
+                                    <td> - </td>
+                                    <td th:text="${dataBentrok[29]}"></td>
+                                    <td> - </td>
+                                    <td th:text="${dataBentrok[30]}"></td>
+                                    <td> - </td>
+                                    <td th:text="${dataBentrok[3]}"></td>
+                                    <td> - </td>
+                                    <td th:text="${dataBentrok[4]}"></td>
+                                </tr>
+                            </table>
+                        </div>
+
                         <div class="alert alert-warning" th:if="${validJadwal != null}">
                             <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
                             <span class="alert-inner--text">Sorry, Your selected schedule has been used, please another schedule</span>

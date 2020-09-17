@@ -24,10 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class  AcademicActivityController {
@@ -707,10 +704,25 @@ public class  AcademicActivityController {
     }
 
     @PostMapping("/academic/schedule/form")
-    public String prosesSchedule(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes,@RequestParam Sesi sesii){
+    public String prosesSchedule(Model model,
+                                 @ModelAttribute @Valid Jadwal jadwal,
+                                 RedirectAttributes attributes,
+                                 @RequestParam Sesi sesii){
 
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
         System.out.println(sesii);
+
+        List<Object[]> listBentrok = jadwalDao.cariJadwalAKtifDosen(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
+
+        if (listBentrok != null){
+
+            model.addAttribute("bentrokJadwal", listBentrok);
+            model.addAttribute("jadwal", jadwal);
+
+            attributes.addFlashAttribute("bentrokJadwal", listBentrok);
+            return "redirect:form?id="+ jadwal.getId();
+
+        }
 
         if (jdwl == null | jdwl.isEmpty()){
 //            jadwal.setJamMulai(sesii.getJamMulai());
