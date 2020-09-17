@@ -1790,8 +1790,11 @@ public class StudiesActivityController {
 
         BigDecimal Ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
-        model.addAttribute("sks", totalSKS);
-        model.addAttribute("mutu", totalMuti);
+        Long totalSKS2 = totalSKS.longValue();
+        Long totalMuti1 = totalMuti.longValue();
+
+        model.addAttribute("sks", totalSKS2);
+        model.addAttribute("mutu", totalMuti1);
         model.addAttribute("ipk", Ipk);
 
 //        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
