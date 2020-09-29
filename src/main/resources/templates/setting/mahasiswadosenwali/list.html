@@ -49,7 +49,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/setting/mahasiswa/dosen_wali/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal" th:if="${selectedMahasiswa != null}">Tambah Dosen Wali</button>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                             <div class="col-md-12">
                                 <form method="get">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Prody</label>
                                                 <select name="prodi" required class="form-control">
@@ -71,24 +71,27 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Angkatan</label>
-                                                <select name="angkatan" class="form-control">
+                                                <select name="angkatan" class="form-control" required>
                                                     <option value="" disabled selected>-- Select One --</option>
                                                     <option value=""></option>
                                                     <option th:each="data : ${angkatan}"
                                                             th:selected="(${data} == *{selectedAngkatan})"
-                                                            th:text="${data[0] + ' - ' + data[1]}"
-                                                            th:value="${data[0]}">sdasd</option>
+                                                            th:text="${data}"
+                                                            th:value="${data}">sdasd</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;">
                                             <div class="form-group">
-                                                <button type="submit" class="btn-success">Search</button>
+                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
                                             </div>
                                         </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -140,6 +143,49 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" role="dialog" id="exampleModal">
+            <form th:action="@{/setting/mahasiswa/save}" method="post">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Input Dosen Wali</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-header bg-transparent pb-5">
+                                <div class="text-muted text-center mt-2 mb-3"><strong>Nama Dosen</strong></div>
+                                    <div class="btn-wrapper text-center">
+                                        <select class="js-example-basic-single form-control" style="width: 100%" name="dosens" required data-live-search="true">
+                                            <option value=""></option>
+                                            <option th:each="data : ${dosen}"
+                                                    th:value="${data.id}"
+                                                    th:text="${data.karyawan.namaKaryawan}"></option>
+                                        </select>
+                                    </div>
+                            </div>
+                            <div class="card-header bg-transparent pb-5">
+                                <div class="text-muted text-center mt-2 mb-3"><strong>Mahasiswa</strong></div>
+                                    <div class="btn-wrapper text-center">
+                                        <select class="js-example-basic-multiple form-control" style="width: 100%" name="mahasiswas" multiple="multiple">
+                                            <option value=""></option>
+                                            <option th:each="data : ${selectedMahasiswa}"
+                                                    th:value="${data[0]}"
+                                                    th:text="${data[1] + ' - ' + data[2]}"></option>
+                                        </select>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-whitesmoke br">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
         <!-- Dark table -->
 
 
@@ -148,3 +194,13 @@
 </div>
 </body>
 </html>
+<script>
+    $(document).ready(function() {
+        // $('.js-example-basic-multiple').select2();
+        $('.js-example-basic-multiple').select2({ dropdownParent: "#exampleModal",minimumInputLength: 3 });
+    });
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({ dropdownParent: "#exampleModal"});
+    });
+
+</script>
