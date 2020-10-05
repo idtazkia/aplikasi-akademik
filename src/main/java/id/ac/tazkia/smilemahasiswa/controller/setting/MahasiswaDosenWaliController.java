@@ -44,6 +44,7 @@ public class MahasiswaDosenWaliController {
     public String settingMahasiswaDosenWali(Model model,
                                             @PageableDefault(size = 20) Pageable page,
                                             @RequestParam(required = false) Prodi prodi,
+                                            @RequestParam(required = false) Dosen dosen,
                                             @RequestParam(required = false) String angkatan){
 
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
@@ -51,12 +52,13 @@ public class MahasiswaDosenWaliController {
 
         if(prodi == null){
 
-            model.addAttribute("listMahasiswaDosenWali", mahasiswaDosenWaliDao.listMahasiswaDosenWali(page));
+//            model.addAttribute("listMahasiswaDosenWali", mahasiswaDosenWaliDao.listMahasiswaDosenWali(page));
 
         }else{
             model.addAttribute("listMahasiswaDosenWali", mahasiswaDosenWaliDao.listMahasiswaDosenWaliProdi(prodi.getId(),page));
             model.addAttribute("selectedProdi",prodi);
             model.addAttribute("selectedAngkatan",angkatan);
+            model.addAttribute("selectedDosen",dosen    );
             model.addAttribute("selectedMahasiswa",mahasiswaDosenWaliDao.listMahasiswa(angkatan,prodi));
         }
 

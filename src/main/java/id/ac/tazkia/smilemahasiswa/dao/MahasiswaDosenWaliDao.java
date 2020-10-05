@@ -33,7 +33,7 @@ public interface MahasiswaDosenWaliDao extends PagingAndSortingRepository <Mahas
             "ORDER BY a.angkatan DESC, a.nim\n" , nativeQuery = true ,countQuery = "select count(id) as jml from mahasiswa where status = 'AKTIF' and id_prodi = ?1")
     Page<MahasiswaDosenWaliDto> listMahasiswaDosenWaliProdi(String idProdi, Pageable page);
 
-    @Query(value = "select m.id,m.nim,m.nama from mahasiswa as m where status = 'AKTIF' and angkatan = ?1 and id_prodi = ?2" , nativeQuery = true)
+    @Query(value = "select m.id,m.nim,m.nama,k.nama_karyawan from mahasiswa as m inner join dosen as d on m.id_dosen_wali = d.id inner join karyawan as k on d.id_karyawan = k.id where m.status = 'AKTIF' and m.angkatan = ?1 and m.id_prodi = ?2 order by m.nim asc " , nativeQuery = true)
     List<Object[]> listMahasiswa(String angkatan, Prodi prodi);
 
 
