@@ -160,35 +160,35 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                     <a class="nav-link" href="#navbar-setting" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-settings text-danger"></i>
                         <span class="nav-link-text">Setting</span>
                     </a>
                     <div class="collapse" id="navbar-setting">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" class="nav-item">
                                 <a th:href="@{/setting/program/list}" class="nav-link">Program</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/level/list}" class="nav-link">Level</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/faculty/list}" class="nav-link">Faculty</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/major/list}" class="nav-link">Jurusan</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/prody/list}" class="nav-link">Program Study</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/concentration/list}" class="nav-link">Concentration</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/edom/questions}" class="nav-link">EDOM Questions</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/setting/mahasiswa/dosen_wali}" class="nav-link">Perwalian</a>
                             </li>
                         </ul>
