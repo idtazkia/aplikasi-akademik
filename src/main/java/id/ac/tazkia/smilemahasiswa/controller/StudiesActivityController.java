@@ -997,14 +997,13 @@ public class StudiesActivityController {
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     System.out.println(sum);
                     KrsDetail kd = krsDetailDao.findById(validasi.getKrsDetail().getId()).get();
-
                     BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
                     BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                     kd.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                     kd.setNilaiTugas(sum);
                     kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
-
                     scoreService.hitungNilaiAkhir(kd);
+
                 }
             }
 
@@ -1014,9 +1013,7 @@ public class StudiesActivityController {
                 BigDecimal nilaiUas = new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
                 BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                 krsDetail.setNilaiUas(new BigDecimal(in.getUas()));
-
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
-
                 scoreService.hitungNilaiAkhir(krsDetail);
 
             }
@@ -1028,7 +1025,6 @@ public class StudiesActivityController {
                 krsDetail.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                 krsDetail.setNilaiUts(new BigDecimal(in.getUts()));
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
-
                 scoreService.hitungNilaiAkhir(krsDetail);
 
             }
