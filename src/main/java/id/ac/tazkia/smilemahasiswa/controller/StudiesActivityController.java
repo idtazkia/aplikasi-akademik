@@ -1696,10 +1696,7 @@ public class StudiesActivityController {
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
         Object bobot =  krsDetailDao.ip(mahasiswa,tahunAkademik);
 
-        URL res = getClass().getClassLoader().getResource("sampleKhs.xlsx");
-        File filess = Paths.get(res.toURI()).toFile();
-        String absolutePath = filess.getAbsolutePath();
-        FileInputStream file = new FileInputStream(new File(absolutePath));
+        FileInputStream file = new FileInputStream(new File(contohExcelKhs.getURI().getPath()));
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
