@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import fr.opensagres.xdocreport.core.io.IOUtils;
+import id.ac.tazkia.smilemahasiswa.SmilemahasiswaApplication;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
@@ -7,7 +9,6 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
-import id.ac.tazkia.smilemahasiswa.dto.jadwaldosen.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
@@ -19,9 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -131,8 +135,20 @@ public class StudiesActivityController {
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
+    @Value("classpath:sample/sampleKhs.xlsx")
+    private Resource contohExcelKhs;
+
     @Value("classpath:sample/uas.doc")
     private Resource contohSoalUas;
+
+    @Value("classpath:tazkia.png")
+    private Resource logoTazkia;
+
+    @Value("classpath:tazkia1.png")
+    private Resource logoTazkia1;
+
+    @Value("classpath:tazkia2.png")
+    private Resource logoTazkia2;
 
     @Value("${upload.soal}")
     private String uploadFolder;
@@ -997,13 +1013,14 @@ public class StudiesActivityController {
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     System.out.println(sum);
                     KrsDetail kd = krsDetailDao.findById(validasi.getKrsDetail().getId()).get();
+
                     BigDecimal nilaiUas = krsDetail.getNilaiUas().multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
                     BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                     kd.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                     kd.setNilaiTugas(sum);
                     kd.setNilaiAkhir(kd.getNilaiTugas().add(nilaiUts).add(kd.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
-                    scoreService.hitungNilaiAkhir(kd);
 
+                    scoreService.hitungNilaiAkhir(kd);
                 }
             }
 
@@ -1013,7 +1030,9 @@ public class StudiesActivityController {
                 BigDecimal nilaiUas = new BigDecimal(in.getUas()).multiply(krsDetail.getJadwal().getBobotUas()).divide(new BigDecimal(100));
                 BigDecimal nilaiUts = krsDetail.getNilaiUts().multiply(krsDetail.getJadwal().getBobotUts()).divide(new BigDecimal(100));
                 krsDetail.setNilaiUas(new BigDecimal(in.getUas()));
+
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
+
                 scoreService.hitungNilaiAkhir(krsDetail);
 
             }
@@ -1025,6 +1044,7 @@ public class StudiesActivityController {
                 krsDetail.setNilaiPresensi(new BigDecimal(in.getAbsen()));
                 krsDetail.setNilaiUts(new BigDecimal(in.getUts()));
                 krsDetail.setNilaiAkhir(krsDetail.getNilaiTugas().add(nilaiUts).add(krsDetail.getNilaiPresensi()).add(nilaiUas).add(new BigDecimal(in.getSds())));
+
                 scoreService.hitungNilaiAkhir(krsDetail);
 
             }
@@ -1627,16 +1647,197 @@ public class StudiesActivityController {
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
                 model.addAttribute("khs",krsDetail);
-                model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+                model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
                 model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
             } else {
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);
                 model.addAttribute("khs",krsDetail);
-                model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+                model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF).getKodeTahunAkademik()));
                 model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
             }
         }
+    }
+
+    @GetMapping("/studiesActivity/khs/download")
+    public void downloadKhs(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                            @RequestParam(required = false) String nim){
+
+        if (tahunAkademik != null) {
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            model.addAttribute("selectedTahun" , tahunAkademik);
+            model.addAttribute("selectedNim" , nim);
+            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+            int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
+            Double sumBobot = krsDetail.stream().mapToDouble(DataKhsDto::getTotal).sum();
+            model.addAttribute("khs",krsDetail);
+            model.addAttribute("sks",sumSks);
+            model.addAttribute("bobot",sumBobot);
+            model.addAttribute("mahasiswa",mahasiswa);
+            model.addAttribute("tahun",tahunAkademik);
+            model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
+            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+        }
+
+    }
+
+    @GetMapping("/studiesActivity/khs/downloadexcel")
+    public void khsExcel (Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
+                                    @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
+
+
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+
+        List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+        int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
+        Double sumBobot = krsDetail.stream().mapToDouble(DataKhsDto::getTotal).sum();
+        IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
+        IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
+        Object bobot =  krsDetailDao.ip(mahasiswa,tahunAkademik);
+
+        FileInputStream file = new FileInputStream(new File("src/main/resources/sampleKhs.xlsx"));
+
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+
+        sheet.addMergedRegion(CellRangeAddress.valueOf("D3:E3"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("D4:E4"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A7:C7"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("D5:E5"));
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 20);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        Font subHeaderFont = workbook.createFont();
+        subHeaderFont.setFontHeightInPoints((short) 14);
+        subHeaderFont.setFontName("Arial");
+
+        Font semesterFont = workbook.createFont();
+        semesterFont.setFontHeightInPoints((short) 11);
+        semesterFont.setFontName("Arial");
+        semesterFont.setBold(true);
+
+        Font dataFont = workbook.createFont();
+        dataFont.setFontHeightInPoints((short) 11);
+        dataFont.setFontName("Arial");
+
+        Font prodiFont = workbook.createFont();
+        prodiFont.setBold(true);
+        prodiFont.setFontHeightInPoints((short) 12);
+        prodiFont.setFontName("Times New Roman");
+
+        Font ipFont = workbook.createFont();
+        ipFont.setBold(true);
+        ipFont.setFontHeightInPoints((short) 10);
+        ipFont.setFontName("Inherit");
+
+        CellStyle styleHeader = workbook.createCellStyle();
+        styleHeader.setFont(subHeaderFont);
+
+        CellStyle styleData = workbook.createCellStyle();
+        styleData.setFont(dataFont);
+
+        CellStyle footer = workbook.createCellStyle();
+        footer.setAlignment(HorizontalAlignment.CENTER);
+        footer.setFont(dataFont);
+
+        CellStyle styleIp = workbook.createCellStyle();
+        styleIp.setAlignment(HorizontalAlignment.CENTER);
+        styleIp.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleIp.setFont(ipFont);
+
+        CellStyle semester = workbook.createCellStyle();
+        semester.setFont(semesterFont);
+
+        CellStyle styleProdi = workbook.createCellStyle();
+        styleProdi.setFont(ipFont);
+
+        int rowInfo = 2 ;
+        Row rowi1 = sheet.createRow(rowInfo);
+        rowi1.createCell(3).setCellValue("Nama");
+        rowi1.createCell(5).setCellValue(" : " + mahasiswa.getNama());
+        rowi1.getCell(3).setCellStyle(styleHeader);
+        rowi1.getCell(5).setCellStyle(styleHeader);
+
+        int rowInfo2 = 3 ;
+        Row rowi2 = sheet.createRow(rowInfo2);
+        rowi2.createCell(3).setCellValue("NIM");
+        rowi2.createCell(5).setCellValue(" : " + mahasiswa.getNim());
+        rowi2.getCell(3).setCellStyle(styleHeader);
+        rowi2.getCell(5).setCellStyle(styleHeader);
+
+
+        int rowInfo3 = 4 ;
+        Row rowi3 = sheet.createRow(rowInfo3);
+        rowi3.createCell(3).setCellValue("Program Studi");
+        rowi3.createCell(5).setCellValue(" : " + mahasiswa.getIdProdi().getNamaProdi());
+        rowi3.getCell(3).setCellStyle(styleHeader);
+        rowi3.getCell(5).setCellStyle(styleHeader);
+
+        int rowInfo4 = 6 ;
+        Row rowi4 = sheet.createRow(rowInfo4);
+        rowi4.createCell(0).setCellValue(tahunAkademik.getNamaTahunAkademik());
+        rowi4.getCell(0).setCellStyle(semester);
+
+        int rowNum = 8 ;
+        int no = 1;
+        for (DataKhsDto kd : krsDetail) {
+            int kolom = 0;
+            Row row = sheet.createRow(rowNum);
+            row.setRowStyle(styleData);
+            row.createCell(kolom++).setCellValue(String.valueOf(no));
+            row.createCell(kolom++).setCellValue(kd.getKode());
+            row.createCell(kolom++).setCellValue(kd.getMatakuliah());
+            row.createCell(kolom++).setCellValue(kd.getSks().toString());
+            if (kd.getMatakuliah().equals("Student Dynamic Session")){
+                row.createCell(kolom++).setCellValue("-");
+                row.createCell(kolom++).setCellValue("-");
+                row.createCell(kolom++).setCellValue("-");
+            }else {
+                row.createCell(kolom++).setCellValue(kd.getBobot().toString());
+                row.createCell(kolom++).setCellValue(kd.getGrade());
+                row.createCell(kolom++).setCellValue(kd.getBobot().multiply(BigDecimal.valueOf(kd.getSks())).toString());
+            }
+            no++;
+            rowNum++;
+        }
+
+        int rowTotalSks = 8 + krsDetail.size() ;
+        Row totalSks = sheet.createRow(rowTotalSks);
+        totalSks.setRowStyle(footer);
+        totalSks.createCell(3).setCellValue(String.valueOf(sumSks));
+
+        int ipSemester = 9 + krsDetail.size() ;
+        Row ipSem = sheet.createRow(ipSemester);
+        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,0,2));
+        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,3,3));
+        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,4,5));
+        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,6,6));
+        ipSem.setRowStyle(styleIp);
+        ipSem.createCell(0).setCellValue("IP SEMESTER   :");
+        ipSem.createCell(3).setCellValue(ip.getIpk().toString());
+        ipSem.createCell(4).setCellValue("IPK   :");
+        ipSem.createCell(6).setCellValue(ipk.getIpk().toString());
+
+        int footerProdi = 25;
+        Row namaProdi = sheet.createRow(footerProdi);
+        namaProdi.setRowStyle(styleProdi);
+        namaProdi.createCell(6).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+
+        int footerDekan = 30;
+        Row namaDekan = sheet.createRow(footerDekan);
+        namaDekan.setRowStyle(styleProdi);
+        namaDekan.createCell(6).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
+
+
+        String namaFile = "Kartu Hasil Studi " + mahasiswa.getNama();
+        String extentionX = ".xlsx";
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 
     //Edom
