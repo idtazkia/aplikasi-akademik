@@ -1691,12 +1691,10 @@ public class StudiesActivityController {
 
         List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
         int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
-        Double sumBobot = krsDetail.stream().mapToDouble(DataKhsDto::getTotal).sum();
         IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
-        Object bobot =  krsDetailDao.ip(mahasiswa,tahunAkademik);
 
-        FileInputStream file = new FileInputStream(new File(contohExcelKhs.getFile().getAbsolutePath()));
+        FileInputStream file = new FileInputStream(contohExcelKhs.getFile());
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
