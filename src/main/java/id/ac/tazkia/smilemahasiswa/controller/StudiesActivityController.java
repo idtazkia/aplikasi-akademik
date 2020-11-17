@@ -1695,7 +1695,6 @@ public class StudiesActivityController {
         IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
         Object bobot =  krsDetailDao.ip(mahasiswa,tahunAkademik);
-
         FileInputStream file = new FileInputStream(new File(contohExcelKhs.getURI().getPath()));
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
