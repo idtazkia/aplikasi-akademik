@@ -1700,7 +1700,6 @@ public class StudiesActivityController {
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
-
         sheet.addMergedRegion(CellRangeAddress.valueOf("D3:E3"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("D4:E4"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A7:C7"));
