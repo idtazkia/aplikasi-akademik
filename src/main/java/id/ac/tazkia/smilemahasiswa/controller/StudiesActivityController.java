@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1683,7 +1684,7 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/khs/downloadexcel")
     public void khsExcel (Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
-                                    @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
+                                    @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException, URISyntaxException {
 
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
@@ -1695,7 +1696,10 @@ public class StudiesActivityController {
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
         Object bobot =  krsDetailDao.ip(mahasiswa,tahunAkademik);
 
-        FileInputStream file = new FileInputStream(new File("src/main/resources/sampleKhs.xlsx"));
+        URL res = getClass().getClassLoader().getResource("sampleKhs.xlsx");
+        File filess = Paths.get(res.toURI()).toFile();
+        String absolutePath = filess.getAbsolutePath();
+        FileInputStream file = new FileInputStream(new File(absolutePath));
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
