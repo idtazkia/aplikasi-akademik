@@ -34,7 +34,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -1695,8 +1694,7 @@ public class StudiesActivityController {
         IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
 
-        File files = ResourceUtils.getFile("classpath:sampleKhs.xlsx");
-        FileInputStream file = new FileInputStream(files);
+        InputStream file = contohExcelKhs.getInputStream();
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
