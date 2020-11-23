@@ -1851,7 +1851,7 @@ public class StudiesActivityController {
 
         int rowDosen = 13 + krsDetail.size() + 11;
         Row namaDosen = sheet.createRow(rowDosen);
-        namaDosen.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        namaDosen.createCell(4).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         namaDosen.getCell(4).setCellStyle(styleManajemen);
 
 
