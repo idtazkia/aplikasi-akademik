@@ -136,7 +136,7 @@ public class StudiesActivityController {
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
-    @Value("classpath:/sample/sampleKhs.xlsx")
+    @Value("classpath:/sample/khs.xlsx")
     private Resource contohExcelKhs;
 
     @Value("classpath:sample/uas.doc")
@@ -1690,6 +1690,7 @@ public class StudiesActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
         List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+
         int sumSks = krsDetail.stream().mapToInt(DataKhsDto::getSks).sum();
         IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
         IpkDto ip =  krsDetailDao.ip(mahasiswa,tahunAkademik);
@@ -1698,139 +1699,163 @@ public class StudiesActivityController {
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
-        sheet.addMergedRegion(CellRangeAddress.valueOf("D3:E3"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("D4:E4"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A7:C7"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("D5:E5"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A8:B8"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A9:B9"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A10:B10"));
 
-        Font headerFont = workbook.createFont();
-        headerFont.setBold(true);
-        headerFont.setFontHeightInPoints((short) 20);
-        headerFont.setColor(IndexedColors.BLACK.getIndex());
+        Font manajemenFont = workbook.createFont();
+        manajemenFont.setBold(true);
+        manajemenFont.setFontHeightInPoints((short) 12);
+
+        Font dataManajemenFont = workbook.createFont();
+        dataManajemenFont.setFontHeightInPoints((short) 12);
 
         Font subHeaderFont = workbook.createFont();
         subHeaderFont.setFontHeightInPoints((short) 14);
-        subHeaderFont.setFontName("Arial");
+        subHeaderFont.setFontName("Cambria");
+        subHeaderFont.setBold(true);
 
-        Font semesterFont = workbook.createFont();
-        semesterFont.setFontHeightInPoints((short) 11);
-        semesterFont.setFontName("Arial");
-        semesterFont.setBold(true);
+        Font symbolFont = workbook.createFont();
+        symbolFont.setFontHeightInPoints((short) 12);
+        symbolFont.setFontName("Cambria");
 
         Font dataFont = workbook.createFont();
-        dataFont.setFontHeightInPoints((short) 11);
-        dataFont.setFontName("Arial");
+        dataFont.setFontHeightInPoints((short) 12);
+        dataFont.setFontName("Cambria");
 
         Font prodiFont = workbook.createFont();
         prodiFont.setBold(true);
         prodiFont.setFontHeightInPoints((short) 12);
-        prodiFont.setFontName("Times New Roman");
+        prodiFont.setFontName("Cambria");
 
         Font ipFont = workbook.createFont();
         ipFont.setBold(true);
-        ipFont.setFontHeightInPoints((short) 10);
-        ipFont.setFontName("Inherit");
+        ipFont.setFontHeightInPoints((short) 12);
+        ipFont.setFontName("Cambria");
 
-        CellStyle styleHeader = workbook.createCellStyle();
-        styleHeader.setFont(subHeaderFont);
+        CellStyle styleManajemen = workbook.createCellStyle();
+        styleManajemen.setFont(manajemenFont);
+
+        CellStyle styleProdi = workbook.createCellStyle();
+        styleProdi.setFont(dataManajemenFont);
+
+        CellStyle styleSubHeader = workbook.createCellStyle();
+        styleSubHeader.setFont(subHeaderFont);
+        styleSubHeader.setAlignment(HorizontalAlignment.CENTER);
+        styleSubHeader.setVerticalAlignment(VerticalAlignment.CENTER);
 
         CellStyle styleData = workbook.createCellStyle();
         styleData.setFont(dataFont);
 
-        CellStyle footer = workbook.createCellStyle();
-        footer.setAlignment(HorizontalAlignment.CENTER);
-        footer.setFont(dataFont);
+        CellStyle styleSymbol = workbook.createCellStyle();
+        styleSymbol.setAlignment(HorizontalAlignment.CENTER);
+        styleSymbol.setFont(symbolFont);
 
         CellStyle styleIp = workbook.createCellStyle();
-        styleIp.setAlignment(HorizontalAlignment.CENTER);
+        styleIp.setAlignment(HorizontalAlignment.RIGHT);
         styleIp.setVerticalAlignment(VerticalAlignment.CENTER);
         styleIp.setFont(ipFont);
 
-        CellStyle semester = workbook.createCellStyle();
-        semester.setFont(semesterFont);
-
-        CellStyle styleProdi = workbook.createCellStyle();
-        styleProdi.setFont(ipFont);
-
-        int rowInfo = 2 ;
-        Row rowi1 = sheet.createRow(rowInfo);
-        rowi1.createCell(3).setCellValue("Nama");
-        rowi1.createCell(5).setCellValue(" : " + mahasiswa.getNama());
-        rowi1.getCell(3).setCellStyle(styleHeader);
-        rowi1.getCell(5).setCellStyle(styleHeader);
-
-        int rowInfo2 = 3 ;
-        Row rowi2 = sheet.createRow(rowInfo2);
-        rowi2.createCell(3).setCellValue("NIM");
-        rowi2.createCell(5).setCellValue(" : " + mahasiswa.getNim());
-        rowi2.getCell(3).setCellStyle(styleHeader);
-        rowi2.getCell(5).setCellStyle(styleHeader);
+        CellStyle styleIpk = workbook.createCellStyle();
+        styleIpk.setFont(prodiFont);
+        styleIpk.setAlignment(HorizontalAlignment.CENTER);
 
 
-        int rowInfo3 = 4 ;
+
+        int rowInfoTahun = 2 ;
+        Row rowTahun = sheet.createRow(rowInfoTahun);
+        rowTahun.createCell(0).setCellValue(tahunAkademik.getNamaTahunAkademik());
+        rowTahun.getCell(0).setCellStyle(styleSubHeader);
+
+        int rowInfoNama = 7 ;
+        Row rowNama = sheet.createRow(rowInfoNama);
+        rowNama.createCell(0).setCellValue("Nama");
+        rowNama.createCell(2).setCellValue(":");
+        rowNama.createCell(3).setCellValue(mahasiswa.getNama());
+        rowNama.getCell(0).setCellStyle(styleData);
+        rowNama.getCell(2).setCellStyle(styleSymbol);
+        rowNama.getCell(3).setCellStyle(styleData);
+
+        int rowInfoNim = 8 ;
+        Row rowNim = sheet.createRow(rowInfoNim);
+        rowNim.createCell(0).setCellValue("NIM");
+        rowNim.createCell(2).setCellValue(":");
+        rowNim.createCell(3).setCellValue(mahasiswa.getNim());
+        rowNim.getCell(0).setCellStyle(styleData);
+        rowNim.getCell(2).setCellStyle(styleSymbol);
+        rowNim.getCell(3).setCellStyle(styleData);
+
+        int rowInfo3 = 9 ;
         Row rowi3 = sheet.createRow(rowInfo3);
-        rowi3.createCell(3).setCellValue("Program Studi");
-        rowi3.createCell(5).setCellValue(" : " + mahasiswa.getIdProdi().getNamaProdi());
-        rowi3.getCell(3).setCellStyle(styleHeader);
-        rowi3.getCell(5).setCellStyle(styleHeader);
+        rowi3.createCell(0).setCellValue("Program Studi");
+        rowi3.createCell(2).setCellValue(":");
+        rowi3.createCell(3).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        rowi3.getCell(0).setCellStyle(styleData);
+        rowi3.getCell(2).setCellStyle(styleSymbol);
+        rowi3.getCell(3).setCellStyle(styleData);
 
-        int rowInfo4 = 6 ;
-        Row rowi4 = sheet.createRow(rowInfo4);
-        rowi4.createCell(0).setCellValue(tahunAkademik.getNamaTahunAkademik());
-        rowi4.getCell(0).setCellStyle(semester);
-
-        int rowNum = 8 ;
+        int rowNum = 13 ;
         int no = 1;
         for (DataKhsDto kd : krsDetail) {
             int kolom = 0;
             Row row = sheet.createRow(rowNum);
-            row.setRowStyle(styleData);
-            row.createCell(kolom++).setCellValue(String.valueOf(no));
-            row.createCell(kolom++).setCellValue(kd.getKode());
-            row.createCell(kolom++).setCellValue(kd.getMatakuliah());
-            row.createCell(kolom++).setCellValue(kd.getSks().toString());
+            sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum,2,3));
+
+            row.setRowStyle(styleSymbol);
+            row.createCell(0).setCellValue(no);
+            row.createCell(1).setCellValue(kd.getKode());
+            row.createCell(2).setCellValue(kd.getMatakuliah());
+            row.createCell(4).setCellValue(kd.getSks());
             if (kd.getMatakuliah().equals("Student Dynamic Session")){
-                row.createCell(kolom++).setCellValue("-");
-                row.createCell(kolom++).setCellValue("-");
-                row.createCell(kolom++).setCellValue("-");
+                row.createCell(5).setCellValue("-");
+                row.createCell(6).setCellValue("-");
+                row.createCell(7).setCellValue("-");
             }else {
-                row.createCell(kolom++).setCellValue(kd.getBobot().toString());
-                row.createCell(kolom++).setCellValue(kd.getGrade());
-                row.createCell(kolom++).setCellValue(kd.getBobot().multiply(BigDecimal.valueOf(kd.getSks())).toString());
+                row.createCell(5).setCellValue(kd.getBobot().toString());
+                row.createCell(6).setCellValue(kd.getGrade());
+                row.createCell(7).setCellValue(kd.getBobot().multiply(BigDecimal.valueOf(kd.getSks())).toString());
             }
             no++;
             rowNum++;
         }
 
-        int rowTotalSks = 8 + krsDetail.size() ;
+        int rowTotalSks = 13 + krsDetail.size() ;
         Row totalSks = sheet.createRow(rowTotalSks);
-        totalSks.setRowStyle(footer);
-        totalSks.createCell(3).setCellValue(String.valueOf(sumSks));
+        totalSks.createCell(3).setCellValue("Jumlah SKS  :");
+        totalSks.createCell(4).setCellValue(sumSks);
+        totalSks.createCell(5).setCellValue("IP Semester  :");
+        totalSks.createCell(7).setCellValue(ip.getIpk().toString());
+        totalSks.getCell(3).setCellStyle(styleIp);
+        totalSks.getCell(5).setCellStyle(styleIp);
+        totalSks.getCell(4).setCellStyle(styleIpk);
+        totalSks.getCell(7).setCellStyle(styleIpk);
+        sheet.addMergedRegion(new CellRangeAddress(rowTotalSks,rowTotalSks,5,6));
 
-        int ipSemester = 9 + krsDetail.size() ;
-        Row ipSem = sheet.createRow(ipSemester);
-        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,0,2));
-        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,3,3));
-        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,4,5));
-        sheet.addMergedRegion(new CellRangeAddress(ipSemester,ipSemester+1,6,6));
-        ipSem.setRowStyle(styleIp);
-        ipSem.createCell(0).setCellValue("IP SEMESTER   :");
-        ipSem.createCell(3).setCellValue(ip.getIpk().toString());
-        ipSem.createCell(4).setCellValue("IPK   :");
-        ipSem.createCell(6).setCellValue(ipk.getIpk().toString());
+        int rowTotalIpk = 13 + krsDetail.size() + 1;
+        Row totalIpk = sheet.createRow(rowTotalIpk);
+        totalIpk.createCell(5).setCellValue("IPK   :");
+        totalIpk.createCell(7).setCellValue(ipk.getIpk().toString());
+        totalIpk.getCell(5).setCellStyle(styleIp);
+        totalIpk.getCell(7).setCellStyle(styleIpk);
+        sheet.addMergedRegion(new CellRangeAddress(rowTotalIpk,rowTotalIpk,5,6));
 
-        int footerProdi = 25;
-        Row namaProdi = sheet.createRow(footerProdi);
-        namaProdi.setRowStyle(styleProdi);
-        namaProdi.createCell(6).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        int rowKoor = 13 + krsDetail.size() + 5;
+        Row koor = sheet.createRow(rowKoor);
+        koor.createCell(4).setCellValue("Koordinator Program Studi ");
+        koor.getCell(4).setCellStyle(styleManajemen);
 
-        int footerDekan = 30;
-        Row namaDekan = sheet.createRow(footerDekan);
-        namaDekan.setRowStyle(styleProdi);
-        namaDekan.createCell(6).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
+        int rowProdi = 13 + krsDetail.size() + 6;
+        Row prodi = sheet.createRow(rowProdi);
+        prodi.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        prodi.getCell(4).setCellStyle(styleProdi);
+
+        int rowDosen = 13 + krsDetail.size() + 11;
+        Row namaDosen = sheet.createRow(rowDosen);
+        namaDosen.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        namaDosen.getCell(4).setCellStyle(styleManajemen);
 
 
-        String namaFile = "Kartu Hasil Studi " + mahasiswa.getNama();
+        String namaFile = "KHS-" +mahasiswa.getNim()+"-"+mahasiswa.getNama();
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
