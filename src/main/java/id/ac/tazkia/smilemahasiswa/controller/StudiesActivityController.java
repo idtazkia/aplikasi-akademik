@@ -1699,6 +1699,7 @@ public class StudiesActivityController {
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
+        workbook.setSheetName(workbook.getSheetIndex(sheet), mahasiswa.getNama());
         sheet.addMergedRegion(CellRangeAddress.valueOf("A8:B8"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A9:B9"));
         sheet.addMergedRegion(CellRangeAddress.valueOf("A10:B10"));
@@ -1746,6 +1747,14 @@ public class StudiesActivityController {
 
         CellStyle styleData = workbook.createCellStyle();
         styleData.setFont(dataFont);
+
+        CellStyle styleDataKhs = workbook.createCellStyle();
+        styleDataKhs.setAlignment(HorizontalAlignment.CENTER);
+        styleDataKhs.setBorderTop(BorderStyle.THIN);
+        styleDataKhs.setBorderBottom(BorderStyle.THIN);
+        styleDataKhs.setBorderLeft(BorderStyle.THIN);
+        styleDataKhs.setBorderRight(BorderStyle.THIN);
+        styleDataKhs.setFont(dataFont);
 
         CellStyle styleSymbol = workbook.createCellStyle();
         styleSymbol.setAlignment(HorizontalAlignment.CENTER);
@@ -1797,23 +1806,31 @@ public class StudiesActivityController {
         int rowNum = 13 ;
         int no = 1;
         for (DataKhsDto kd : krsDetail) {
-            int kolom = 0;
             Row row = sheet.createRow(rowNum);
             sheet.addMergedRegion(new CellRangeAddress(rowNum,rowNum,2,3));
 
-            row.setRowStyle(styleSymbol);
             row.createCell(0).setCellValue(no);
+            row.getCell(0).setCellStyle(styleDataKhs);
             row.createCell(1).setCellValue(kd.getKode());
+            row.getCell(1).setCellStyle(styleDataKhs);
             row.createCell(2).setCellValue(kd.getMatakuliah());
+            row.getCell(2).setCellStyle(styleDataKhs);
             row.createCell(4).setCellValue(kd.getSks());
+            row.getCell(4).setCellStyle(styleDataKhs);
             if (kd.getMatakuliah().equals("Student Dynamic Session")){
                 row.createCell(5).setCellValue("-");
+                row.getCell(5).setCellStyle(styleDataKhs);
                 row.createCell(6).setCellValue("-");
+                row.getCell(6).setCellStyle(styleDataKhs);
                 row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleDataKhs);
             }else {
                 row.createCell(5).setCellValue(kd.getBobot().toString());
+                row.getCell(5).setCellStyle(styleDataKhs);
                 row.createCell(6).setCellValue(kd.getGrade());
+                row.getCell(6).setCellStyle(styleDataKhs);
                 row.createCell(7).setCellValue(kd.getBobot().multiply(BigDecimal.valueOf(kd.getSks())).toString());
+                row.getCell(7).setCellStyle(styleDataKhs);
             }
             no++;
             rowNum++;
