@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Modifying;
@@ -417,4 +418,24 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     @Query(value = "SELECT ROUND(SUM(mutu)/SUM(jumlah_sks),2) AS ipk FROM (SELECT nilai_akhir,f.bobot,f.nama AS grade,jumlah_sks, f.bobot * jumlah_sks AS mutu FROM krs_detail AS a INNER JOIN krs AS b ON a.id_krs = b.id INNER JOIN tahun_akademik AS c ON b.id_tahun_akademik = c.id INNER JOIN jadwal AS d ON a.id_jadwal = d.id INNER JOIN matakuliah_kurikulum AS e ON d.id_matakuliah_kurikulum = e.id INNER JOIN grade AS f ON a.nilai_akhir <= f.atas AND a.nilai_akhir >= f.bawah WHERE a.id_mahasiswa = ?1 AND a.status = 'AKTIF' AND b.status='AKTIF' AND c.kode_tahun_akademik <= ?2 AND e.jumlah_sks > 0 AND nilai_akhir IS NOT NULL)ss", nativeQuery = true)
     IpkDto ipkTahunAkademik(Mahasiswa mahasiswa,String tahunAkademik);
+
+    @Query(value="select id_tahun_akademik as tahun,kode_matakuliah as kode,nama_matakuliah as matakuliah,nama_matakuliah_english as courses,jumlah_sks as sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where e.semester = ?2 and a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots\n" +
+            "order by kode_matakuliah", nativeQuery = true)
+    List<TranskriptDto> excelTranskript(String idMahasiswa, String semester);
 }
