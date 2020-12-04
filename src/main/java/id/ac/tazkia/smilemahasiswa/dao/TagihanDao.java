@@ -1,15 +1,14 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import ch.qos.logback.core.boolex.EvaluationException;
 import id.ac.tazkia.smilemahasiswa.dto.payment.BiayaMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarBiayaDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.NilaiCicilanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -59,8 +58,15 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "bb.id_mahasiswa=?1 and bb.status='AKTIF' and aa.status='AKTIf' group by id_tagihan)bbb on aaa.id=bbb.id_tagihan" , nativeQuery = true)
     List<BiayaMahasiswaDto> biayaMahasiswa(String idMahasiswa);
 
+    @Query(value = "select a.id as idTagihan, b.id as idCicilan, a.nilai_tagihan as nilai, round(a.nilai_tagihan / b.banyak_cicilan, 0) \n" +
+            "as nilaiCicilan, a.tanggal_jatuh_tempo as jatuhTempo from tagihan as a inner join request_cicilan as b \n" +
+            "on a.id=b.id_tagihan where a.id=?1 and a.status='AKTIF' and b.status='AKTIF'", nativeQuery = true)
+    NilaiCicilanDto pembagianNilaiCicilan(String idTagihan);
+
     Tagihan findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
-    Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mhs, NilaiJenisTagihan nilaiJenisTagihan);
+    Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan);
+
+    Tagihan findByNilaiJenisTagihanAndStatus(NilaiJenisTagihan nilaiJenisTagihan, StatusRecord statusRecord);
 
 }

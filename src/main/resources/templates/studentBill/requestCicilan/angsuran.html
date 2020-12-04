@@ -95,47 +95,37 @@
     <div class="contact-area">
         <div class="container">
             <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td> Type of bill </td>
+                            <td class="text-center"> : </td>
+                            <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                        </tr>
+                        <tr>
+                            <td> Value </td>
+                            <td class="text-center"> : </td>
+                            <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                        </tr>
+                        <tr>
+                            <td> Due date </td>
+                            <td class="text-center"> : </td>
+                            <td th:text="${bill.tanggalPenangguhan}"></td>
+                        </tr>
+                    </table>
+                </div>
                 <form method="post" th:action="@{/studentBill/bill/cicilan(tagihan = ${bill.id})}" th:object="${cicilan}">
-                    <div class="col-md-6">
-                        <div class="col-md-6">
-                            <div>
-                                <b>Type of bill</b>
-                                <span> : </span>
-                                <span th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></span>
-                            </div>
-                            <br>
-                            <div>
-                                <b>Value</b>
-                                <span> : </span>
-                                <span th:text="${bill.nilaiTagihan}"></span>
-                            </div>
-                            <br>
-                            <div>
-                                <b>Due Date</b>
-                                <span> : </span>
-                                <span th:text="${bill.tanggalJatuhTempo}"></span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Banyak Cicilan</label>
-                            <select name="banyakCicilan" class="form-control" th:field="*{banyakCicilan}" id="">
-                                <option selected hidden="" value=""></option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
+                            <input type="number" max="3" name="banyakCicilan" class="form-control" th:field="*{banyakCicilan}">
+                            <p class="text-danger">Maksimal 3x cicilan</p>
                         </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <input type="text" name="keterangan" class="form-control"
-                                   th:field="*{keterangan}">
+                        <input type="hidden" name="id" th:field="*{id}">
+                        <div style="margin-top: 30px;" class="form-group">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}" class="btn btn-danger">Cancel</a>
                         </div>
-                    </div>
-                    <input type="hidden" name="id" th:field="*{id}">
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <a th:href="@{/studentBill/bill}" class="btn btn-danger">Cancel</a>
                     </div>
                 </form>
             </div>

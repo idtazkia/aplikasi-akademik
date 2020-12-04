@@ -22,12 +22,10 @@ import javax.validation.Valid;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class AcademicActivityController {
@@ -97,6 +95,9 @@ public class AcademicActivityController {
 
     @Autowired
     private KrsDao krsDao;
+
+    @Autowired
+    private KonversiDao konversiDao;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -196,6 +197,35 @@ public class AcademicActivityController {
         return sesiDao.findById(id).get();
 
     }
+
+    @GetMapping("/api/tahun")
+    @ResponseBody
+    public List<Jadwal> tahun(@RequestParam(required = false) String idTahun,
+                              @RequestParam(required = false) String idProdi) {
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
+        Prodi p = prodiDao.findById(idProdi).get();
+        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndProdi(tahunAkademik, p);
+
+
+        return jadwal;
+    }
+
+    @GetMapping("/api/jadwal")
+    @ResponseBody
+    public KrsDetail krsDetail(@RequestParam(required = false) String id,
+                               @RequestParam(required = false) String idTahun,
+                               @RequestParam(required = false) String idMahasiswa){
+
+        Jadwal jadwal = jadwalDao.findById(id).get();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
+        Mahasiswa mhs = mahasiswaDao.findByNim(idMahasiswa);
+        KrsDetail krsDetail = krsDetailDao.findByJadwalAndTahunAkademikAndMahasiswaAndStatus(jadwal, tahunAkademik, mhs, StatusRecord.AKTIF);
+
+        return krsDetail;
+
+    }
+
 
 //    Academic Year
 
@@ -897,4 +927,208 @@ public class AcademicActivityController {
         model.addAttribute("absen", krsDetailDao.absenUas(jadwal,jadwal.getTahunAkademik()));
 
     }
+
+
+// Conversion
+
+    @GetMapping("/academic/conversion/list")
+    public void list(Model model, @RequestParam(required = false)String nim){
+
+        if (nim != null){
+            model.addAttribute("nim", nim);
+            model.addAttribute("list", krsDetailDao.listKrsDetail(nim));
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            model.addAttribute("mhs", mahasiswa);
+        }
+
+    }
+
+    @GetMapping("/academic/conversion/form")
+    public void form(Model model, @RequestParam(required = false) String nim,
+                     @RequestParam(required = false) Jadwal jadwal){
+
+        model.addAttribute("krsDetail", new KrsDetail());
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+//        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
+        model.addAttribute("mahasiswa", mhs);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+
+    }
+
+    @PostMapping("/academic/conversion/form")
+    public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
+                            @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
+                            @RequestParam(required = false) BigDecimal nilaiAkhir, RedirectAttributes attributes){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
+        Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
+        KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
+        Grade a = gradeDao.findById("1").get();
+        Grade amin = gradeDao.findById("2").get();
+        Grade bplus = gradeDao.findById("3").get();
+        Grade b = gradeDao.findById("4").get();
+        Grade bmin = gradeDao.findById("5").get();
+        Grade cplus = gradeDao.findById("6").get();
+        Grade c = gradeDao.findById("7").get();
+        Grade d = gradeDao.findById("8").get();
+        Grade e = gradeDao.findById("9").get();
+        if (krsDetail == null){
+            if (krs != null){
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiAkhir(nilaiAkhir);
+                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
+                    kd.setGrade(amin.getNama());
+                    kd.setBobot(amin.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
+                    kd.setGrade(bplus.getNama());
+                    kd.setBobot(bplus.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
+                    kd.setGrade(b.getNama());
+                    kd.setBobot(b.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
+                    kd.setGrade(bmin.getNama());
+                    kd.setBobot(bmin.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
+                    kd.setGrade(cplus.getNama());
+                    kd.setBobot(cplus.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
+                    kd.setGrade(c.getNama());
+                    kd.setBobot(c.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
+                    kd.setGrade(d.getNama());
+                    kd.setBobot(d.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
+                    kd.setGrade(e.getNama());
+                    kd.setBobot(e.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 85){
+                    kd.setGrade(a.getNama());
+                    kd.setBobot(a.getBobot());
+                }
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                krsDetailDao.save(kd);
+
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.AKTIF);
+                konversiDao.save(konversi);
+
+            }else{
+
+                Krs krs1 = new Krs();
+                krs1.setTahunAkademik(tahunAkademik);
+                krs1.setTahunAkademikProdi(tahunAkademikProdi);
+                krs1.setProdi(mhs.getIdProdi());
+                krs1.setMahasiswa(mhs);
+                krs1.setNim(mhs.getNim());
+                krs1.setTanggalTransaksi(LocalDateTime.now());
+                krs1.setStatus(StatusRecord.AKTIF);
+                krsDao.save(krs1);
+
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs1);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiAkhir(nilaiAkhir);
+                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
+                    kd.setGrade(amin.getNama());
+                    kd.setBobot(amin.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
+                    kd.setGrade(bplus.getNama());
+                    kd.setBobot(bplus.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
+                    kd.setGrade(b.getNama());
+                    kd.setBobot(b.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
+                    kd.setGrade(bmin.getNama());
+                    kd.setBobot(bmin.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
+                    kd.setGrade(cplus.getNama());
+                    kd.setBobot(cplus.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
+                    kd.setGrade(c.getNama());
+                    kd.setBobot(c.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
+                    kd.setGrade(d.getNama());
+                    kd.setBobot(d.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
+                    kd.setGrade(e.getNama());
+                    kd.setBobot(e.getBobot());
+                }
+                if (nilaiAkhir.toBigInteger().intValue() >= 85){
+                    kd.setGrade(a.getNama());
+                    kd.setBobot(a.getBobot());
+                }
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                krsDetailDao.save(kd);
+
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.AKTIF);
+                konversiDao.save(konversi);
+
+            }
+        }else{
+            attributes.addFlashAttribute("gagal", "Data sudah ada!");
+            return "redirect:form?nim="+mhs.getNim()+"&jadwal="+jadwal.getId();
+        }
+
+
+        return "redirect:list?nim="+mhs.getNim();
+
+    }
+
+
 }

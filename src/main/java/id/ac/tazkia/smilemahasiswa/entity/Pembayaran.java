@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -25,7 +26,7 @@ public class Pembayaran {
     private Tagihan tagihan;
 
     @NotNull
-    private LocalDate waktuBayar = LocalDate.now();
+    private LocalDateTime waktuBayar = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "id_bank")

@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Approval Suspension </span>
+                                        <span class="h2 font-weight-bold mb-0">Approval Penangguhan </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -43,18 +43,69 @@
             <div class="col-md-6 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Form Approve</h3>
+                        <h3 class="mb-0">Keterangan Tagihan</h3>
+                    </div>
+                    <div class="card-body">
+                        <address>
+                            <table class="table-responsive table">
+                                <tr>
+                                    <td><b>Request Tanggal Penangguhan</b></td>
+                                    <td> : </td>
+                                    <td><b th:text="${penangguhan.tanggalPenangguhan}"></b></td>
+                                </tr>
+                                <tr>
+                                    <td>Nomor Tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.nomor}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nama Mahasiswa</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.mahasiswa.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nilai Tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tahun Akademik</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.tahunAkademik.namaTahunAkademik}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Jatuh Tempo</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.tanggalJatuhTempo}"></td>
+                                </tr>
+                            </table>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form Approve</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form method="post" th:action="@{/studentBill/penangguhan/approve(requestPenangguhan = ${penangguhan.id}, tagihan = ${bill.id})}"  th:object="${penangguhan}">
                             <div class="form-group">
-                                <label>Suspension Date</label>
-                                <input type="date" class="form-control" name="tanggalPenangguhan" th:field="*{tanggalPenangguhan}">
-                            </div>
-                            <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <input type="text" name="keterangan" class="form-control"
-                                       placeholder="Keterangan" readonly th:field="*{keterangan}">
+                                       placeholder="Keterangan Approve" th:field="*{keterangan}">
                                 <input type="hidden" th:field="*{tagihan}">
                                 <input type="hidden" th:field="*{keterangan}">
                             </div>
@@ -62,21 +113,11 @@
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success">Approve</button>
-
                             </div>
                         </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-xs-12">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <h3 class="mb-0">Form Reject</h3>
-                    </div>
-                    <div class="card-body">
                         <form method="post" th:action="@{/studentBill/penangguhan/reject(requestPenangguhan = ${penangguhan.id})}"  th:object="${penangguhan}">
                             <div class="form-group">
-                                <label>Description Reject</label>
+                                <label>Keterangan</label>
                                 <input type="text" name="keteranganReject" class="form-control"
                                 placeholder="Keterangan Reject" th:field="*{keteranganReject}">
                                 <input type="hidden" th:field="*{tagihan}">

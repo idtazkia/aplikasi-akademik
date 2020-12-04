@@ -81,7 +81,7 @@
                                               <tr>
                                                   <td>Nilai Tagihan</td>
                                                   <td> : </td>
-                                                  <td th:text="${tagihan.nilaiTagihan}"></td>
+                                                  <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                               </tr>
                                               <tr th:if="${pembayaran} != null">
                                                   <td>Waktu Pembayaran</td>

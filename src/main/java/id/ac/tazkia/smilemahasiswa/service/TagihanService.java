@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.Bidi;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -67,7 +68,7 @@ public class TagihanService {
         pembayaran.setTagihan(tagihan);
         pembayaran.setNomorRekening(va.getNomor());
         pembayaran.setAmount(pt.getNilaiPembayaran());
-        pembayaran.setWaktuBayar(LocalDate.parse(pt.getWaktuPembayaran(), FORMATTER_ISO_DATE_TIME));
+        pembayaran.setWaktuBayar(LocalDateTime.parse(pt.getWaktuPembayaran(), FORMATTER_ISO_DATE_TIME));
         pembayaran.setReferensi(pt.getReferensiPembayaran());
 
         Bank bank = new Bank();

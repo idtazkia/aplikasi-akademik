@@ -24,7 +24,6 @@ public class Tagihan {
 
     private String nomor;
 
-    @NotNull
     @ManyToOne @JoinColumn(name = "id_nilai_jenis_tagihan")
     private NilaiJenisTagihan nilaiJenisTagihan;
 
@@ -33,7 +32,7 @@ public class Tagihan {
 
     private String keterangan;
 
-    @NotNull @Min(1000)
+    @Min(1000)
     private BigDecimal nilaiTagihan;
 
     @Column(columnDefinition = "DATE")

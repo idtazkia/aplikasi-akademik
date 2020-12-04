@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Transcript</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Conversion </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">List</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+
+
+                                <div class="col-md-12">
+                                    <b>Nim</b><br>
+                                    <div class="input-group mb-3" style="margin-top: 10px;">
+                                        <input type="text" name="nim" class="form-control" placeholder="NIM" th:value="${nim}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body" th:if="${nim != null}">
+                        <div class="card shadow">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <tr>
+                                                <td class="text-right">Mahasiswa</td>
+                                                <td>:</td>
+                                                <td th:text="${mhs.nama}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right">Program Studi</td>
+                                                <td style="width: 5px;">:</td>
+                                                <td th:text="${mhs.idProdi.namaProdi}"></td>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <tr>
+                                                <td class="text-right">Nim</td>
+                                                <td> : </td>
+                                                <td th:text="${mhs.nim}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right">Program Pendidikan</td>
+                                                <td> : </td>
+                                                <td th:text="${mhs.idProgram.namaProgram}"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div th:if="${nim != null}" class="col-md-12 col-xs-12">
+                <div class="card shadow mt-5">
+                    <div class="card-header border-0">
+                        <div class="col-md-12 text-right">
+                            <a class="btn btn-success btn-sm text-white mr-4 mb--5 mt--5" th:href="@{/academic/conversion/form(nim = ${nim})}"><i class="fa fa-plus-square"></i> Add Conversion</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama Matakuliah</th>
+                                    <th scope="col">Dosen</th>
+                                    <th scope="col">Nilai</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${list}">
+                                    <td th:text="${(row.index + 1)}">1</td>
+                                    <td th:text="${data[1]}"></td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td th:text="${data[3]}"></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

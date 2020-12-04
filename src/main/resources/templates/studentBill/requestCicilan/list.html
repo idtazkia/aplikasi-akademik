@@ -21,7 +21,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Request Instalment </span>
+                                        <span class="h2 font-weight-bold mb-0">Request Cicilan </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -50,13 +50,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-danger" th:if="${gagal != null}">
+                        Nilai tidak sesuai dengan tagihan sebelumnya!
+                    </div>
                     <div class="table-responsive">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Bill</th>
+                                <th>Nama</th>
+                                <th>Tagihan</th>
                                 <th>Banyak Cicilan</th>
                                 <th>Status</th>
                                 <th></th>
@@ -68,19 +71,17 @@
                                 <td th:text="${data.tagihan.mahasiswa.nama}"></td>
                                 <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                 <td th:text="${data.banyakCicilan}">PATRICK STAR</td>
-                                <td th:text="${data.statusApprove}">BANGUN DAN SEMANGAT</td>
-                                <td class="d-flex flex-row bd-highlight mb-3">
-                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/approve(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">
-                                        <button class="btn btn-sm btn-success">Approve</button>
-                                    </form>
-                                    <form class="p-2 bd-highlight" th:action="@{/studentBill/cicilan/reject(requestCicilan = ${data.id}, tagihan = ${data.tagihan.id})}">
-                                        <button class="btn btn-sm btn-danger">Reject</button>
-                                    </form>
-<!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
+                                <td th:if="${data.statusApprove.WAITING} == ${data.statusApprove} "><a href="#!" class="btn btn-primary btn-sm">WAITING</a></td>
+                                <td th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}"><a href="#!" class="btn btn-danger btn-sm">REJECT</a></td>
+                                <td th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"><a href="#!" class="btn btn-success btn-sm">APPROVED</a></td>
+                                <td>
+                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/requestCicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>
+                                    <a th:if="${data.statusApprove.WAITING} != ${data.statusApprove}" href="#!" class="text-green text-sm">Done</a>
+                                    <!--                                    <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" th:href="@{/studentBill/cicilan/approval(id = ${data.id}, tagihan = ${data.tagihan.id})}" class="btn btn-info btn-sm">Approval</a>-->
 
-<!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
-<!--                                        <i class="fas fa-trash"></i>-->
-<!--                                    </button>-->
+                                    <!--                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">-->
+                                    <!--                                        <i class="fas fa-trash"></i>-->
+                                    <!--                                    </button>-->
                                 </td>
                             </tr>
                             </tbody>
