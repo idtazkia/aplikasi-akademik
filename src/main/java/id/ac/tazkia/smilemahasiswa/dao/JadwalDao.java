@@ -56,6 +56,31 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     @Query(value = "select count(id) as jmljadwal from jadwal where id_kelas = ?1 and status = 'AKTIF'", nativeQuery = true)
     Integer jmlJadwal(String idJadwal);
 
+
+    @Query(value = "SELECT b.*,d.nama_matakuliah,d.nama_matakuliah_english,e.nama_kelas,g.nama_karyawan FROM jadwal_dosen AS a\n" +
+            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
+            "INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
+            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
+            "INNER JOIN kelas AS e ON b.id_kelas = e.id\n" +
+            "INNER JOIN dosen AS f ON a.id_dosen = f.id\n" +
+            "INNER JOIN karyawan AS g ON f.id_karyawan = g.id\n" +
+            "WHERE a.status_jadwal_dosen = 'PENGAMPU' AND b.status = 'AKTIF' AND a.id_dosen = ?1\n" +
+            "AND b.sesi = ?2 AND b.id_tahun_akademik = ?3\n" +
+            "AND b.id_hari = ?4 and b.id <> ?5", nativeQuery = true)
+    List<Object[]> cariJadwalAKtifDosen(String idDosen, String idSesi, String idTahunAKademik, String idHari, String idJadwal);
+
+    @Query(value = "SELECT COUNT(b.id)AS jml FROM jadwal_dosen AS a\n" +
+            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
+            "INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
+            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
+            "INNER JOIN kelas AS e ON b.id_kelas = e.id\n" +
+            "WHERE a.status_jadwal_dosen = 'PENGAMPU' AND b.status = 'AKTIF' AND a.id_dosen = ?1\n" +
+            "AND b.sesi = ?2 AND b.id_tahun_akademik = ?3\n" +
+            "AND b.id_hari = ?4 AND id_jadwal <> ?5", nativeQuery = true)
+    Integer jumlahBentrok(String idDosen, String idSesi, String idTahunAKademik, String idHari, String idJadwal);
+
+
+
     List<Jadwal> findByStatusAndTahunAkademikAndDosenAndHariNotNull(StatusRecord aktif, TahunAkademik tahun, Dosen dosen);
 
     List<Jadwal> findByStatusAndTahunAkademikAndKelasAndHariNotNull(StatusRecord aktif, TahunAkademik byStatus, Kelas kelas);

@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
-public class AcademicActivityController {
+public class  AcademicActivityController {
 
     @Value("${upload.silabus}")
     private String uploadFolder;
@@ -586,7 +586,7 @@ public class AcademicActivityController {
 
         prasyarat.setStatus(StatusRecord.HAPUS);
         prasyaratDao.save(prasyarat);
-        return "redirect:prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
+        return "redirect:../prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
     }
 
     //    Ploting
@@ -737,10 +737,30 @@ public class AcademicActivityController {
     }
 
     @PostMapping("/academic/schedule/form")
-    public String prosesSchedule(@ModelAttribute @Valid Jadwal jadwal, RedirectAttributes attributes,@RequestParam Sesi sesii){
+    public String prosesSchedule(Model model,
+                                 @ModelAttribute @Valid Jadwal jadwal,
+                                 RedirectAttributes attributes,
+                                 @RequestParam Sesi sesii){
 
         List<Jadwal> jdwl = jadwalDao.cariJadwal(Arrays.asList(jadwal.getId()),jadwal.getTahunAkademik(),jadwal.getHari(),jadwal.getRuangan(),jadwal.getSesi(),StatusRecord.AKTIF);
         System.out.println(sesii);
+
+        Integer jumlahBentrok = jadwalDao.jumlahBentrok(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
+        List<Object[]> listBentrok = jadwalDao.cariJadwalAKtifDosen(jadwal.getDosen().getId(), jadwal.getSesi(), jadwal.getTahunAkademik().getId(), jadwal.getHari().getId(), jadwal.getId());
+
+        if(jumlahBentrok == null){
+            jumlahBentrok = 0;
+        }
+
+        if (jumlahBentrok > 0){
+
+            model.addAttribute("bentrokJadwal", listBentrok);
+            model.addAttribute("jadwal", jadwal);
+
+            attributes.addFlashAttribute("bentrokJadwal", listBentrok);
+            return "redirect:form?id="+ jadwal.getId();
+
+        }
 
         if (jdwl == null | jdwl.isEmpty()){
 //            jadwal.setJamMulai(sesii.getJamMulai());

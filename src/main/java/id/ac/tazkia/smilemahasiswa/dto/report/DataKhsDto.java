@@ -13,4 +13,6 @@ public interface DataKhsDto {
     BigDecimal getNilaiAkhir();
     BigDecimal getBobot();
     String getGrade();
+    Integer getSks();
+    Double getTotal();
 }

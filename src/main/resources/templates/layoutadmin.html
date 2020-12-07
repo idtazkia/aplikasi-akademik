@@ -33,7 +33,7 @@
     <link th:href="@{/css/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css}" rel="stylesheet" />
     <!-- CSS Files -->
     <link th:href="@{/css/assets/css/argon-dashboard.css?v=1.1.1}" rel="stylesheet" />
-    <link th:href="@{/css/select2/css/select2.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}">
     <link rel="stylesheet" th:href="@{/css/js/jquery-clockpicker.min.css}">
     <link rel="stylesheet" href="css/timePicker.css">
@@ -153,39 +153,42 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/equipment/class/list}" class="nav-link">Class</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/setting/mahasiswa/dosen_wali}" class="nav-link">Perwalian</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                     <a class="nav-link" href="#navbar-setting" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-settings text-danger"></i>
                         <span class="nav-link-text">Setting</span>
                     </a>
                     <div class="collapse" id="navbar-setting">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
+                            <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" class="nav-item">
                                 <a th:href="@{/setting/program/list}" class="nav-link">Program</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/level/list}" class="nav-link">Level</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/faculty/list}" class="nav-link">Faculty</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/major/list}" class="nav-link">Jurusan</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/prody/list}" class="nav-link">Program Study</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/concentration/list}" class="nav-link">Concentration</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/edom/questions}" class="nav-link">EDOM Questions</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/setting/mahasiswa/dosen_wali}" class="nav-link">Perwalian</a>
                             </li>
                         </ul>
@@ -522,7 +525,7 @@
 <script th:src="@{/css/assets/js/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<script th:src="@{/css/select2/js/select2.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.rawgit.com/bassjobsen/Bootstrap-3-Typeahead/master/bootstrap3-typeahead.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
 <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>

@@ -120,6 +120,7 @@ public class MahasiswaController {
         if (mahasiswa != null){
             model.addAttribute("mahasiswa", mahasiswa);
         }
+
     }
 
     @PostMapping("/mahasiswa/rfid")

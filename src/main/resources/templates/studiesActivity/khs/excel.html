@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Topic</title>
+    <style type="text/css">
+        body {
+            font-size: small;
+        }
+
+        .container{
+            padding-top: 30px;
+        }
+        .text{
+            font-size: 18px;
+        }
+        td{
+            font-size: 18px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <table>
+        <tr>
+            <td style="width: 60%"><img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt=""></td>
+            <td style="width: 50%"><h2><u>KARTU HASIL STUDI</u></h2></td>
+        </tr>
+        <tr>
+            
+        </tr>
+    </table>
+<!--    <div class="row" style="padding-left: 30px; padding-left: 30px;">-->
+<!--        <div class="col-md-1">-->
+<!--            <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">-->
+<!--        </div>-->
+<!--        <div class="col-md-11 text-center">-->
+<!--            <h2><u>KARTU HASIL STUDI</u></h2>-->
+<!--            <b></b>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <span><b>Nama  &nbsp;: </b></span> <span> <b th:text="${mahasiswa.nama}">Sherly novianti</b> </span>
+                </div>
+
+                <div class="col-md-6">
+                    <span><b>Semester/Tahun Akademik  &nbsp;&nbsp;: </b></span> <span> <b th:text="${tahun.namaTahunAkademik}">2018/2019 Semester Ganjil</b> </span>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <span><b>NIM &nbsp;&nbsp;&nbsp;  : </b></span> <span> <b th:text="${mahasiswa.nim}">S.1810.1199 </b> </span>
+
+                </div>
+
+                <div class="col-md-6">
+                    <span><b>Program Studi  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </b></span> <span> <b th:text="${mahasiswa.idProdi.namaProdi}">Manajemen Bisnis Syariah</b> </span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <table border="1" width="100%" style="font-size: 10px;">
+            <thead>
+            <tr>
+                <td rowspan="2" style="text-align: center;">NO</td>
+                <td rowspan="2" style="text-align: center;">Kode</td>
+                <td rowspan="2" style="text-align: center;">Mata Kuliah</td>
+                <td rowspan="2" style="text-align: center;">SKS</td>
+                <td rowspan="2" style="text-align: center;">Hurup Mutu</td>
+                <td rowspan="2" style="text-align: center;">Angka Mutu</td>
+                <td rowspan="2" style="text-align: center;">SKS * AM</td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data,row : ${khs}">
+                <td style="text-align: center;" th:text="${row.index + 1}">1</td>
+                <span th:if="${data.matakuliah == 'Student Dynamic Session'}">
+                    <td style="text-align: center;" th:text="${data.kode}">2018-09-10</td>
+                    <td style="text-align: center;" th:text="${data.matakuliah}">09:31:00</td>
+                    <td style="text-align: center;" th:text="${data.sks}">12:00:00</td>
+                    <td style="text-align: center;" >-</td>
+                    <td style="text-align: center;" >-</td>
+                    <td style="text-align: center;" >-</td>
+                </span>
+
+                <span th:if="${data.matakuliah != 'Student Dynamic Session'}">
+                    <td style="text-align: center;" th:text="${data.kode}">2018-09-10</td>
+                    <td style="text-align: center;" th:text="${data.matakuliah}">09:31:00</td>
+                    <td style="text-align: center;" th:text="${data.sks}">12:00:00</td>
+                    <td style="text-align: center;" th:text="${data.grade}">12:00:00</td>
+                    <td style="text-align: center;" th:text="${data.bobot}">42</td>
+                    <td style="text-align: center;" th:text="${data.sks * data.bobot}">42</td>
+                </span>
+
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="3"><b>Total</b></td>
+                <td style="text-align: center;" th:text="${sks}"></td>
+                <td colspan="2"></td>
+                <td style="text-align: center;" th:text="${bobot}"></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <table>
+            <tr>
+                <td>&nbsp;Index Prestasi Semester  &nbsp;&nbsp;&nbsp;&nbsp;: &nbsp; <span>23</span></td>
+            </tr>
+            <tr>
+                <td>&nbsp;Index Prestasi Komulatif  &nbsp;&nbsp;&nbsp;&nbsp;: &nbsp; <span>23</span></td>
+            </tr>
+            <tr>
+                <td>&nbsp;ax SKS Semester Depan    : &nbsp; <span>23</span></td>
+            </tr>
+            <tr>
+<!--                <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>-->
+            </tr>
+        </table>
+    </div>
+</div>
+<style type="text/css">
+    @page
+    {
+
+        size: auto;   /* auto is the current printer page size */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
+    @media print {
+        #printbtn {
+            display :  none;
+        }
+    }
+</style>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script>
+    function printpage()
+    {
+        window.print()
+    }
+
+    var doc = new jsPDF('p','pt','letter');
+    var img = new Image;
+    var content = $('#content');
+    // var width = doc.internal.pageSize.getWidth();
+    // var height = doc.internal.pageSize.getHeight();
+    var imgData = 'https://i1.wp.com/tazkia.ac.id/wp-content/uploads/2019/11/faicon.jpg?fit=512%2C512&ssl=1';
+    doc.addHTML(document.body,function() {
+        doc.addImage(imgData, 'JPEG', 0, 0, 50, 20);
+        doc.save('Topic-BKD.pdf');
+    });
+
+</script>
+
+<script language=javascript>
+    function closemyself() {
+        window.opener=self;
+        window.close();
+        self.close();
+    }
+</script>
+</html>

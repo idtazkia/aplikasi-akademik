@@ -17,11 +17,11 @@ public class MahasiswaDosenWali {
 
     @ManyToOne
     @JoinColumn(name = "id_mahasiswa")
-    private Prodi mahasiswa;
+    private Mahasiswa mahasiswa;
 
     @ManyToOne
     @JoinColumn(name = "id_dosen")
-    private Prodi dosen;
+    private Dosen dosen;
 
     @NotNull
     @Enumerated(EnumType.STRING)

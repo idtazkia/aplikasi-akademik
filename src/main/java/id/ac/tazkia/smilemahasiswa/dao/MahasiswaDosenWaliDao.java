@@ -1,15 +1,16 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.MahasiswaDosenWaliDto;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.MahasiswaDosenWali;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
+
 public interface MahasiswaDosenWaliDao extends PagingAndSortingRepository <MahasiswaDosenWali, String> {
+    MahasiswaDosenWali findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusRecord statusRecord);
 
 //    Page<MahasiswaDosenWali> findByStatusAndDosenOrderByMahasiswaNimDesc(StatusRecord statusRecord, Dosen dosen, Pageable page);
 
@@ -31,6 +32,9 @@ public interface MahasiswaDosenWaliDao extends PagingAndSortingRepository <Mahas
             "WHERE a.status = 'AKTIF' AND a.id_prodi = ?1 \n" +
             "ORDER BY a.angkatan DESC, a.nim\n" , nativeQuery = true ,countQuery = "select count(id) as jml from mahasiswa where status = 'AKTIF' and id_prodi = ?1")
     Page<MahasiswaDosenWaliDto> listMahasiswaDosenWaliProdi(String idProdi, Pageable page);
+
+    @Query(value = "select m.id,m.nim,m.nama,k.nama_karyawan from mahasiswa as m inner join dosen as d on m.id_dosen_wali = d.id inner join karyawan as k on d.id_karyawan = k.id where m.status = 'AKTIF' and m.angkatan = ?1 and m.id_prodi = ?2 order by m.nim asc " , nativeQuery = true)
+    List<Object[]> listMahasiswa(String angkatan, Prodi prodi);
 
 
 }
