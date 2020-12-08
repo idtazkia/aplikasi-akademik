@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Approval Cicilan  </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Keterangan Tagihan</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-responsive">
+                            <tr>
+                                <td>Nomor Tagihan</td>
+                                <td> : </td>
+                                <td th:text="${bill.nomor}"></td>
+                            </tr>
+                            <tr>
+                                <td>Nama Mahasiswa</td>
+                                <td> : </td>
+                                <td th:text="${bill.mahasiswa.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Tagihan</td>
+                                <td> : </td>
+                                <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td>Nilai Tagihan</td>
+                                <td> : </td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td>Request Cicilan</td>
+                                <td> : </td>
+                                <td th:text="${cicilan.banyakCicilan}"></td>
+                            </tr>
+                            <tr>
+                                <td>Tahun Akademik</td>
+                                <td> : </td>
+                                <td th:text="${bill.tahunAkademik.namaTahunAkademik}"></td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Jatuh Tempo</td>
+                                <td> : </td>
+                                <td th:text="${bill.tanggalPenangguhan}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow" th:object="${cicilan}">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form Approve</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studentBill/requestCicilan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="id" th:field="*{id}">
+                        <div class="form-group">
+                            <button id="approve" type="button" class="btn btn-success" data-toggle="modal" th:data-target="${'#modal-notification' + cicilan.id}">Approve</button>
+
+                            <div class="modal fade" th:id="${'modal-notification' + cicilan.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                <div class="modal-dialog modal- modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body p-0">
+                                            <div class="card bg-secondary border-0 mb-0">
+                                                <div class="card-header bg-transparent pb-5">
+                                                    <div class="text-muted text-center mt-2 mb-2"><small>Nilai Tagihan</small></div>
+                                                    <div class="btn-wrapper text-center">
+                                                        <input type="hidden" id="nilai" th:value="${bill.nilaiTagihan}">
+                                                        <div th:text="${'Rp. ' + #numbers.formatDecimal(nilaiCicilan.getNilai(), 0, 'POINT', 2, 'COMMA')}"></div>
+                                                    </div>
+                                                    <div class="text-muted text-center mt-3 mb-2"><small>Tanggal Jatuh Tempo</small></div>
+                                                    <div class="btn-wrapper text-center">
+                                                        <div th:text="${nilaiCicilan.getJatuhTempo()}"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center text-muted mb-4">
+                                                    <small>Set Nilai Tagihan dan Tanggal Jatuh Tempo</small>
+                                                </div>
+                                                <div class="card-body px-lg-5 py-lg-5">
+                                                    <form method="post" th:action="@{/studentBill/cicilan/approve}" th:object="${tagihan}">
+                                                        <div class="row">
+                                                            <input type="hidden" name="bill" th:value="${bill.id}">
+                                                            <input type="hidden" name="requestCicilan" th:value="${cicilan.id}">
+                                                            <input type="hidden" class="form-control" id="answer">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <!-- tagihan 1 -->
+                                                                <div class="form-group mb-3">
+                                                                    <label >Nilai Tagihan 1</label>
+                                                                    <div class="input-group input-group-merge input-group-alternative">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                                        </div>
+                                                                        <input class="form-control" id="nilai1" type="number" required name="nilaiTagihan1"
+                                                                               th:value="${nilaiCicilan.NilaiCicilan}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Tanggal Jatuh Tempo 1</label>
+                                                                    <div class="input-group input-group-merge input-group-alternative">
+                                                                        <input class="form-control" required type="date" name="tanggalJatuhTempo1">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <!-- tagihan 2 -->
+                                                                <div class="form-group mb-3">
+                                                                    <label >Nilai Tagihan 2</label>
+                                                                    <div class="input-group input-group-merge input-group-alternative">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                                        </div>
+                                                                        <input class="form-control" id="nilai2" type="number" required name="nilaiTagihan2"
+                                                                               th:value="${nilaiCicilan.NilaiCicilan}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Tanggal Jatuh Tempo 2</label>
+                                                                    <div class="input-group input-group-merge input-group-alternative">
+                                                                        <input class="form-control" required type="date" name="tanggalJatuhTempo2">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <!-- tagihan 3-->
+                                                                <div th:if="${cicilan.banyakCicilan} == 3">
+                                                                    <div class="row">
+                                                                        <div class="center col-md-6">
+                                                                            <div class="form-group mb-3">
+                                                                                <label >Nilai Tagihan 3</label>
+                                                                                <div class="input-group input-group-merge input-group-alternative">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                                                    </div>
+                                                                                    <input class="form-control" id="nilai3" type="number" name="nilaiTagihan3"
+                                                                                           th:value="${nilaiCicilan.NilaiCicilan}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Tanggal Jatuh Tempo 3</label>
+                                                                                <div class="input-group input-group-merge input-group-alternative">
+                                                                                    <input class="form-control" type="date" name="tanggalJatuhTempo3">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" name="cicilan" id="bnykCicilan" th:value="${cicilan.banyakCicilan}">
+                                                        <div class="form-group">
+                                                            <div class="messageError"></div>
+                                                            <button type="submit" id="submit" class="btn btn-success my-4">Submit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <form method="post" th:action="@{/studentBill/cicilan/reject(requestCicilan = ${cicilan.id})}"  th:object="${cicilan}">
+                            <div class="form-group">
+                                <label>Description Reject</label>
+                                <input type="text" name="keteranganReject" class="form-control"
+                                       placeholder="Keterangan Reject" th:field="*{keteranganReject}">
+                            </div>
+
+                            <input type="hidden" name="id" th:field="*{id}">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-danger">Reject</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+
+    $(document).ready(function (){
+        $("#nilai1").keyup(function (){
+            var1s = $("#nilai1").val();
+            if(var1s.match(/^\d+$/)){
+                $('.messageError').html('');
+                sums();
+            }else{
+                $('.messageError').html('Hanya bisa memasukan angka!');
+                $('#submit').hide();
+            }
+        });
+
+        $("#nilai2").keyup(function (){
+            var2s = $("#nilai2").val();
+            if(var2s.match(/^\d+$/)){
+                $('.messageError').html('');
+                sums();
+            }else{
+                $('.messageError').html('Hanya bisa memasukan angka!');
+                $('#submit').hide();
+            }
+        });
+
+        $("#nilai3").keyup(function (){
+            var3s = $("#nilai3").val();
+            if(var3s.match(/^\d+$/)){
+                $('.messageError').html('');
+                sums();
+            }else{
+                $('.messageError').html('Hanya bisa memasukan angka!');
+                $('#submit').hide();
+            }
+        });
+
+        $('#approve').click(function (){
+            $('#submit').show();
+            sums();
+        });
+
+        function sums(){
+            varn = parseInt($("#nilai").val());
+            var1 = parseInt($("#nilai1").val());
+            var2 = parseInt($("#nilai2").val());
+            var3 = parseInt($("#nilai3").val());
+            var cicilan = document.getElementById("bnykCicilan").value;
+            if(cicilan == 2){
+                sum = (var1 + var2);
+            }else{
+                sum = (var1 + var2 + var3);
+            }
+            console.log(sum);
+            if (sum != varn){
+                $('#submit').hide();
+                $('.messageError').html("Jumlah nilai yang di masukan tidak sesuai dengan nilai tagihan sebelumnya!");
+            }else{
+                $('#submit').show();
+            }
+        }
+    })
+
+</script>

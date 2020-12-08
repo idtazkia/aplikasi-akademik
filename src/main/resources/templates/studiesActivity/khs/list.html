@@ -78,6 +78,17 @@
                         </form>
                     </div>
                     <div class="table-responsive" th:if="${selectedNim != null  }">
+                        <div class="col-md-12 text-right">
+                            <div class="dropdown">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Download
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" th:href="@{/studiesActivity/khs/downloadexcel (nim = ${selectedNim}, tahunAkademik = ${selectedTahun.id})}">Download Excel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <br><br>
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
@@ -90,6 +101,7 @@
                                 <th>Mid Term</th>
                                 <th>End Semester Exam</th>
                                 <th>Weight</th>
+                                <th>SKS</th>
                                 <th>Grade</th>
                                 <th>Total</th>
                             </tr>
@@ -97,14 +109,29 @@
                                 <td th:text="${(row.index + 1)}"></td>
                                 <td th:text="${data.kode}"></td>
                                 <td th:text="${data.matakuliah}"></td>
+                                <span th:if="${data.matakuliah != 'Student Dynamic Session'}">
+                                    <td th:text="${data.presensi}"></td>
+                                    <td th:text="${data.tugas}"></td>
+                                    <td th:text="${data.uts}"></td>
+                                    <td th:text="${data.uas}"></td>
+                                    <td th:text="${data.bobot}"></td>
+                                    <td th:text="${data.sks}"></td>
+                                    <td th:text="${data.grade}"></td>
+                                    <td th:text="${data.nilaiAkhir}"></td>
+                                </span>
+
+                                <span th:if="${data.matakuliah == 'Student Dynamic Session'}">
+                                    <td th:text="${data.presensi}"></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td th:text="${data.sks}"></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </span>
                                 <!--<td th:text="${data.sks}"></td>-->
-                                <td th:text="${data.presensi}"></td>
-                                <td th:text="${data.tugas}"></td>
-                                <td th:text="${data.uts}"></td>
-                                <td th:text="${data.uas}"></td>
-                                <td th:text="${data.bobot}"></td>
-                                <td th:text="${data.grade}"></td>
-                                <td th:text="${data.nilaiAkhir}"></td>
+
                             </tr>
 
                             </tbody>

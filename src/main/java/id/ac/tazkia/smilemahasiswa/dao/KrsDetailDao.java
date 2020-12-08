@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Modifying;
@@ -70,7 +71,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.report.EdomDto (kd.id,kd.jadwal.dosen.karyawan.namaKaryawan,kd.matakuliahKurikulum.matakuliah.namaMatakuliah) from KrsDetail kd where kd.mahasiswa = :mahasiswa and kd.krs.tahunAkademik = :akademik and kd.status = :status and kd.statusEdom = :edom")
     List<EdomDto>cariEdom(@Param("mahasiswa")Mahasiswa mahasiswa,@Param("akademik")TahunAkademik tahunAkademik,@Param("status")StatusRecord status,@Param("edom") StatusRecord edom);
 
-    @Query(value = "select b.id,mk.kode_matakuliah as kode ,mk.nama_matakuliah_english as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas,coalesce (b.nilai_akhir,0) as nilaiAkhir,coalesce(c.bobot,0)  as bobot,coalesce (c.nama,'E') as grade from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas inner join matakuliah_kurikulum as m on b.id_matakuliah_kurikulum = m.id inner join matakuliah as mk on m.id_matakuliah = mk.id where a.id_tahun_akademik= ?1 and a.id_mahasiswa= ?2 and a.status='AKTIF' and b.status='aktif'", nativeQuery = true)
+    @Query(value = "select b.id,mk.kode_matakuliah as kode ,mk.nama_matakuliah_english as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas,coalesce (b.nilai_akhir,0) as nilaiAkhir,coalesce(c.bobot,0)  as bobot,coalesce (c.nama,'E') as grade, jumlah_sks as sks, jumlah_sks * c.bobot as total from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas inner join matakuliah_kurikulum as m on b.id_matakuliah_kurikulum = m.id inner join matakuliah as mk on m.id_matakuliah = mk.id where a.id_tahun_akademik= ?1 and a.id_mahasiswa= ?2 and a.status='AKTIF' and b.status='aktif'", nativeQuery = true)
     List<DataKhsDto> getKhs(TahunAkademik tahunAkademik, Mahasiswa mahasiswa);
 
     @Query("select kd.nilaiAkhir from KrsDetail kd where kd.status = :status and kd.mahasiswa = :mahasiswa and kd.matakuliahKurikulum.matakuliah.namaMatakuliah = :nama and kd.nilaiAkhir >= 55")
@@ -283,6 +284,14 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     Integer cariSemesterSekarang (String idMaasiswa, String idTahunAKademik);
 
 
+    @Query(value = "select a.id, c.nama_matakuliah, f.nama_karyawan, a.nilai_akhir from krs_detail as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join jadwal as d on d.id=a.id_jadwal inner join dosen as e on d.id_dosen_pengampu=e.id inner join karyawan as f on e.id_karyawan=f.id where a.id_mahasiswa=?1", nativeQuery = true)
+    List<Object[]> listKrsDetail(String idMahasiswa);
+
+    KrsDetail findByJadwalAndTahunAkademikAndMahasiswaAndStatus(Jadwal jadwal, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, StatusRecord aktif);
+
+    KrsDetail findByMahasiswaAndTahunAkademikAndJadwalAndStatus(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, Jadwal jadwal, StatusRecord aktif);
+
+
 
     @Modifying
     @Query(value = "INSERT INTO krs_nilai_tugas (id,id_krs_detail,id_bobot_tugas,nilai,STATUS,nilai_akhir)\n" +
@@ -415,6 +424,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "where bobot > bobots order by kode_tahun_akademik) bbb on aaa.id = bbb.id_tahun_akademik", nativeQuery = true)
     List<Object[]> transkriptAkhir(String idMahasiswa);
 
+
     @Query(value = "select c.nama_tahun_akademik, sum(e.jumlah_sks), ROUND(SUM(COALESCE(a.bobot,0)*e.jumlah_sks)/SUM(e.jumlah_sks),2)AS ipk from krs_detail as a inner join krs as b on b.id = a.id_krs inner join tahun_akademik as c on c.id = b.id_tahun_akademik inner join jadwal as d on d.id = a.id_jadwal inner join matakuliah_kurikulum as e on e.id = d.id_matakuliah_kurikulum where b.id_mahasiswa =?1 and a.status = 'AKTIF' and e.jumlah_sks > 0 group by c.nama_tahun_akademik", nativeQuery = true)
     List<Object[]> historyMahasiswa(Mahasiswa mahasiswa);
 
@@ -423,4 +433,27 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     @Query(value = "select d.id as kodeakademik ,b.id,mk.kode_matakuliah as kode ,mk.nama_matakuliah_english as matakuliah,b.nilai_presensi as presensi ,b.nilai_tugas as tugas,b.nilai_uts as uts,b.nilai_uas as uas, coalesce (b.nilai_akhir,0) as nilaiAkhir,coalesce(c.bobot,0)  as bobot,coalesce (c.nama,'E') as grade from krs as a inner join krs_detail as b on a.id = b.id_krs left join grade as c on b.nilai_akhir >= c.bawah and b.nilai_akhir <= c.atas inner join matakuliah_kurikulum as m on b.id_matakuliah_kurikulum = m.id inner join matakuliah as mk on m.id_matakuliah = mk.id inner join tahun_akademik as d on d.id = a.id_tahun_akademik where a.id_mahasiswa= ?1 and a.status='AKTIF' and b.status='aktif' order by d.id desc", nativeQuery = true)
     List<Object[]> khsHistoty(Mahasiswa mahasiswa);
+
+    @Query(value = "SELECT ROUND(SUM(mutu)/SUM(jumlah_sks),2) AS ipk FROM (SELECT nilai_akhir,f.bobot,f.nama AS grade,jumlah_sks, f.bobot * jumlah_sks AS mutu FROM krs_detail AS a INNER JOIN krs AS b ON a.id_krs = b.id INNER JOIN tahun_akademik AS c ON b.id_tahun_akademik = c.id INNER JOIN jadwal AS d ON a.id_jadwal = d.id INNER JOIN matakuliah_kurikulum AS e ON d.id_matakuliah_kurikulum = e.id INNER JOIN grade AS f ON a.nilai_akhir <= f.atas AND a.nilai_akhir >= f.bawah WHERE a.id_mahasiswa = ?1 AND a.status = 'AKTIF' AND b.status='AKTIF' AND c.kode_tahun_akademik <= ?2 AND e.jumlah_sks > 0 AND nilai_akhir IS NOT NULL)ss", nativeQuery = true)
+    IpkDto ipkTahunAkademik(Mahasiswa mahasiswa,String tahunAkademik);
+
+    @Query(value="select id_tahun_akademik as tahun,kode_matakuliah as kode,nama_matakuliah as matakuliah,nama_matakuliah_english as courses,jumlah_sks as sks,bobot,grade,mutu from\n" +
+            "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
+            "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join jadwal as d on a.id_jadwal = d.id\n" +
+            "inner join matakuliah_kurikulum as e on d.id_matakuliah_kurikulum = e.id\n" +
+            "inner join matakuliah as f on e.id_matakuliah = f.id\n" +
+            "where e.semester = ?2 and a.id_mahasiswa=?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 and grade <> 'E')aa\n" +
+            "left join\n" +
+            "(select a.id_krs,d.kode_matakuliah,d.nama_matakuliah,d.nama_matakuliah_english,bobot from krs_detail as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id\n" +
+            "inner join matakuliah as d on c.id_matakuliah = d.id\n" +
+            "where a.id_mahasiswa=?1 and a.status = 'AKTIF' and c.jumlah_sks > 0 and grade <> 'E')bb\n" +
+            "on aa.kode_matakuliah = bb.kode_matakuliah and aa.id_krs <> bb.id_krs)aa \n" +
+            "where bobot > bobots\n" +
+            "order by kode_matakuliah", nativeQuery = true)
+    List<TranskriptDto> excelTranskript(String idMahasiswa, String semester);
 }

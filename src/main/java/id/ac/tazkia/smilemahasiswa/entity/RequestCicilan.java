@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -19,11 +20,17 @@ public class RequestCicilan {
     @JoinColumn(name = "id_tagihan")
     private Tagihan tagihan;
 
-    @NotNull @NotEmpty
+    @NotNull
     private Integer banyakCicilan;
 
     @Enumerated(EnumType.STRING)
     private StatusApprove statusApprove = StatusApprove.WAITING;
+
+    private LocalDate tanggalApprove;
+
+    @ManyToOne
+    @JoinColumn(name = "user_approve")
+    private Karyawan userApprove;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;

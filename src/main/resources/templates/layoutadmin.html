@@ -226,6 +226,9 @@
                             <li class="nav-item">
                                 <a th:href="@{/academic/schedule/list}" class="nav-link">Studies Schedule</a>
                             </li>
+                            <li class="nav-item">
+                                <a th:href="@{/academic/conversion/list}" class="nav-link">Value Conversion</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -317,9 +320,6 @@
                     </a>
                     <div class="collapse" id="studentBill">
                         <ul class="nav nav-sm flex-column">
-<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">-->
-<!--                                <a th:href="@{/studentBill/bank/list}" class="nav-link">Bank</a>-->
-<!--                            </li>-->
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/requestPenangguhan/list}" class="nav-link">Request Penangguhan</a>
                             </li>

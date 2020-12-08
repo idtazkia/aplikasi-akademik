@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Value Conversion </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Student Description</h3>
+                    </div>
+                    <div class="card-body">
+                        <address>
+                            <table class="table-responsive table">
+                                <tr>
+                                    <td>NIM</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.nim}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Generation</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.angkatan}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Prodi</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.idProdi.namaProdi}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lecturer</td>
+                                    <td> : </td>
+                                    <td th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></td>
+                                </tr>
+                            </table>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form Conversion</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/academic/conversion/list(nim=${mahasiswa.nim})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/academic/conversion/form}" method="post" th:object="${krsDetail}">
+                            <input type="hidden" name="p" id="isiProdi" th:value="${mahasiswa.idProdi.id}">
+                            <input type="hidden" name="nim" id="isiMahasiswa" th:value="${mahasiswa.nim}">
+                            <div class="form-group">
+                                <label >Tahun Akademik</label>
+                                <select class="form-control" onchange="myTahun()"
+                                        id="select2-tahun" th:field="*{tahunAkademik}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}">STEI Tazkia</option>
+                                </select>
+                                <input type="hidden" name="ta" id="isiTahun">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama matakuliah</label>
+                                <select class="form-control" id="locality-dropdown" onchange="myJadwal()">
+                                </select>
+                                <input type="hidden" id="isiJadwal" name="jadwal">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Nama matakuliah lama</label>
+                                        <input type="text" name="matakuliahLama" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label >Nilai akhir</label>
+                                        <input type="text" name="nilaiAkhir" class="form-control" placeholder="00.00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="alert alert-warning" id="notif" th:if="${gagal != null}">
+                                    <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                    <span class="alert-inner--text" >Mahasiswa atas nama <text th:text="${mahasiswa.nama}"></text> sudah ada matakuliah <text th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></text></span>
+                                </div>
+                                <div class="form-group text-center" id="submit" style="display: none;">
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#locality-dropdown').select2();
+        $('#select2-tahun').select2();
+
+        $('#select2-tahun').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiTahun').val(e.params.args.data.id);
+        });
+
+        $('#locality-dropdown').on('select2:selecting', function (e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiJadwal').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+
+    function myTahun(){
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Matakuliah</option>')
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiTahun').val());
+        const url = '/api/tahun?idTahun='+$('#isiTahun').val()+'&idProdi='+$('#isiProdi').val()+'&idMahasiswa='+$('#isiMahasiswa').val();
+
+        $.getJSON(url, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliahKurikulum.matakuliah.namaMatakuliah + ' - ' + entry.dosen.karyawan.namaKaryawan))
+            })
+
+        });
+    }
+
+    function myJadwal(){
+        $('#submit').show();
+        $('#notif').hide();
+
+        var x = document.getElementById('locality-dropdown').value;
+        console.log(x);
+        const url = '/api/jadwal?id='+x+'&idTahun='+$('#isiTahun').val()+'&idMahasiswa='+$('#isiMahasiswa').val();
+        $.getJSON(url, function (data){
+
+            // var y = document.getElementById('notification');
+            // var z = document.getElementById('submit');
+            // if(isEmpty(data)){
+            //     y.style.display = 'none';
+            //     z.style.display = 'block';
+            // }else{
+            //     y.style.display = 'block';
+            //     z.style.display = 'none';
+            //     document.getElementById("mySpan").innerText = "Matakuliah " + data.matakuliahKurikulum.matakuliah.namaMatakuliah;
+            // }
+        });
+    }
+
+</script>
