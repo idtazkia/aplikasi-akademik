@@ -2003,6 +2003,11 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/transcript/cetaktranscript")
+    public void cetakTranscript(){
+
+    }
+
     @GetMapping("/studiesActivity/khs/transkriptexcel")
     public void transkriptExcel (Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
                                  @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException, URISyntaxException {
