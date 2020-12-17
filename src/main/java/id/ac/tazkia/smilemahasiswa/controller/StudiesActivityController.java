@@ -2004,13 +2004,17 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/transcript/cetaktranscript")
-    public void cetakTranscript(){
+    public void cetakTranscript(Model model,@RequestParam(required = false) String nim){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
+        if (mahasiswa != null){
+            model.addAttribute("mahasiswa",mahasiswa);
+
+        }
     }
 
-    @GetMapping("/studiesActivity/khs/transkriptexcel")
-    public void transkriptExcel (Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
-                                 @RequestParam(required = false) String nim, HttpServletResponse response) throws IOException, URISyntaxException {
+    @GetMapping("/studiesActivity/transcript/transkriptexcel")
+    public void transkriptExcel (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
 
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
@@ -2026,7 +2030,7 @@ public class StudiesActivityController {
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
-        IpkDto ipk = krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik());
+        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
 
         InputStream file = contohExcelTranskript.getInputStream();
@@ -2079,10 +2083,21 @@ public class StudiesActivityController {
         ipFont.setFontHeightInPoints((short) 10);
         ipFont.setFontName("Cambria");
 
+        Font lectureFont = workbook.createFont();
+        lectureFont.setBold(true);
+        lectureFont.setFontName("Cambria");
+        lectureFont.setUnderline(XSSFFont.U_DOUBLE);
+        lectureFont.setFontHeightInPoints((short) 10);
+
+
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
         styleManajemen.setAlignment(HorizontalAlignment.CENTER);
         styleManajemen.setFont(manajemenFont);
+
+        CellStyle styleDosen = workbook.createCellStyle();
+        styleDosen.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleDosen.setFont(lectureFont);
 
         CellStyle styleProdi = workbook.createCellStyle();
         styleProdi.setBorderTop(BorderStyle.MEDIUM);
@@ -2399,7 +2414,7 @@ public class StudiesActivityController {
         Row rowIpk = sheet.createRow(ipKomulatif);
         sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
         rowIpk.createCell(0).setCellValue("Cumulative Grade Point Average");
-        rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
+        rowIpk.createCell(5).setCellValue(ipk.toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
@@ -2549,10 +2564,26 @@ public class StudiesActivityController {
         failRow.getCell(6).setCellStyle(styleDataKhs);
         failRow.getCell(7).setCellStyle(styleManajemen);
 
-        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+20;
+        int createDate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
         Row createDateRow = sheet.createRow(createDate);
         createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on 17 November 2015 H");
         createDateRow.getCell(0).setCellStyle(styleData);
+
+        int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        Row facultyRow = sheet.createRow(faculty);
+        facultyRow.createCell(0).setCellValue("Dean of " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultasEnglish());
+        facultyRow.getCell(0).setCellStyle(styleData);
+        facultyRow.createCell(5).setCellValue("Coordinator of " + mahasiswa.getIdProdi().getNamaProdiEnglish());
+        facultyRow.getCell(5).setCellStyle(styleData);
+
+        int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        Row lectureRow = sheet.createRow(lecture);
+        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getPejabat().getKaryawan().getNamaKaryawan());
+        lectureRow.getCell(0).setCellStyle(styleDosen);
+        lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.getCell(5).setCellStyle(styleDosen);
+
+
 
 
 
