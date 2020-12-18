@@ -49,7 +49,7 @@
                         <form method="post" th:action="@{/setting/faculty/form}" th:object="${fakultas}">
 
                             <div class="form-group">
-                                <label>Select Institution</label>
+                                <label>Pilih Lembaga</label>
                                 <select style="width:100%!important;" name="idLembaga" th:field="*{idLembaga}" class="form-control js-example-placeholder-single">
                                     <option value=""></option>
                                     <option th:each="data : ${lembaga}"
@@ -58,18 +58,34 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Faculty Code</label>
+                                <label>Kode Fakultas</label>
                                 <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Faculty Code">
                             </div>
 
                             <div class="form-group">
-                                <label>Faculty Name</label>
+                                <label>Nama Fakultas</label>
                                 <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Faculty Name">
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Nama Fakultas Inggris</label>
+                                <input type="text" th:field="*{namaFakultasEnglish}" name="namaFakultasEnglish" class="form-control" placeholder="Faculty Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Keterangan</label>
                                 <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Faculty Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama Pejabat</label>
+                                <select class="form-control js-example-placeholder-single" id="select2-dosen"
+                                        style="width: 100%!important;" name="dosen"  th:field="*{dosen}">
+                                    <option value=""></option>
+                                    <option th:each="data: ${dosen}"
+                                            th:text="${data.karyawan.namaKaryawan}"
+                                            th:value="${data.id}">sdasd</option>
+                                </select>
                             </div>
 
                             <input type="hidden" name="id" th:field="*{id}">

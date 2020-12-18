@@ -34,6 +34,8 @@ import javax.persistence.*;
 
         private String namaProdi;
 
+        private String namaProdiEnglish;
+
         private String keterangan;
 
         private String jabatan;
@@ -41,7 +43,6 @@ import javax.persistence.*;
         @ManyToOne
         @JoinColumn(name = "id_dosen")
         private Dosen dosen;
-
 
         @Enumerated(EnumType.STRING)
         private StatusRecord status = StatusRecord.AKTIF;

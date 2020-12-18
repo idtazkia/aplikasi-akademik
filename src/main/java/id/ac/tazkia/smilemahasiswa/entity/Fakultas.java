@@ -26,7 +26,14 @@ public class Fakultas {
     @NotNull
     private String namaFakultas;
 
+    @NotNull
+    private String namaFakultasEnglish;
+
     private String keterangan;
+
+    @ManyToOne
+    @JoinColumn(name = "id_dosen")
+    private Dosen dosen;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
