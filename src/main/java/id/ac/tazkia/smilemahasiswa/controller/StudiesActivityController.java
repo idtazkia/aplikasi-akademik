@@ -2578,7 +2578,7 @@ public class StudiesActivityController {
 
         int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getPejabat().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
