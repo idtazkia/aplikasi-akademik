@@ -2013,6 +2013,15 @@ public class StudiesActivityController {
         }
     }
 
+    @PostMapping("/studiesActivity/transcript/cetaktranscript")
+    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa){
+
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:transkriptexcel?nim=" + mahasiswa.getNim();
+
+    }
+
     @GetMapping("/studiesActivity/transcript/transkriptexcel")
     public void transkriptExcel (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
 
@@ -2156,7 +2165,7 @@ public class StudiesActivityController {
         Row entry = sheet.createRow(rowInfoEntry);
         entry.createCell(0).setCellValue("Entry Matric No / Graduated Matric No");
         entry.createCell(3).setCellValue(":");
-        entry.createCell(4).setCellValue("-");
+        entry.createCell(4).setCellValue(mahasiswa.getNirm() + " / " + mahasiswa.getNirl());
         entry.getCell(0).setCellStyle(styleData);
         entry.getCell(3).setCellStyle(styleSymbol);
         entry.getCell(4).setCellStyle(styleData);
@@ -2183,7 +2192,7 @@ public class StudiesActivityController {
         Row department = sheet.createRow(rowInfoDepartment);
         department.createCell(0).setCellValue("Department");
         department.createCell(3).setCellValue(":");
-        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        department.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdiEnglish());
         department.getCell(0).setCellStyle(styleData);
         department.getCell(3).setCellStyle(styleSymbol);
         department.getCell(4).setCellStyle(styleData);
@@ -2210,7 +2219,7 @@ public class StudiesActivityController {
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Graduated Date");
         graduatedDate.createCell(3).setCellValue(":");
-        graduatedDate.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().toString());
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
         graduatedDate.getCell(4).setCellStyle(styleData);
@@ -2219,7 +2228,7 @@ public class StudiesActivityController {
         Row transcript = sheet.createRow(rowInfoTranscript);
         transcript.createCell(0).setCellValue("No of Transcript");
         transcript.createCell(3).setCellValue(":");
-        transcript.createCell(4).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        transcript.createCell(4).setCellValue(mahasiswa.getNoTranskript());
         transcript.getCell(0).setCellStyle(styleData);
         transcript.getCell(3).setCellStyle(styleSymbol);
         transcript.getCell(4).setCellStyle(styleData);

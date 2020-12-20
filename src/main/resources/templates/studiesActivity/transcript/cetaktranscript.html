@@ -46,10 +46,10 @@
                         <h3 class="mb-0">Cetak Transkrip Nilai</h3>
                     </div>
                     <div class="card-body">
-                        <form action="">
+                        <form method="get">
                             <div class="form-group">
                                 <label>Nim</label>
-                                <input type="text" class="form-control">
+                                <input type="text" name="nim" class="form-control">
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary">Search</button>
@@ -66,19 +66,34 @@
                     <div class="card-header border-0">
                         <h3 class="mb-0">Result Search</h3>
                     </div>
-                    <div class="card-body">
-                        <form action="">
+                    <div class="card-body" th:if="${mahasiswa != nulls}">
+                        <form method="post" th:action="@{/studiesActivity/transcript/cetaktranscript (mahasiswa = ${mahasiswa.id})}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Tanggal</label>
-                                        <input type="date" class="form-control"/>
+                                        <label>NIM</label>
+                                        <input type="text" readonly th:value="${mahasiswa.nim}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Tanggal Hijriah (<span style="color: red; font-size: 12px;">Contoh :  11 Rabi'ul-Akhir 1442 H</span>)</label>
-                                        <input type="text" class="form-control"/>
+                                        <label>Nama</label>
+                                        <input type="text" readonly th:value="${mahasiswa.nama}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tanggal</label>
+                                        <input type="date" name="tanggalLulus" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>No Transkript</label>
+                                        <input type="text" name="noTranskript" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -87,13 +102,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Judul Skripsi</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" name="judul" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Thesis Title</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" name="title" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -101,41 +116,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>NIMKO</label>
-                                        <input type="text" class="form-control">
+                                        <label>NIRM</label>
+                                        <input type="text" name="nirm" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>NIRL</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" name="nirl" class="form-control">
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Lulus</label>
-                                        <input type="date" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>No Transkrip</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-
 
 
                             <div class="form-group">
-                                <button class="btn btn-success">Print S1 ID</button>
-                                <button class="btn btn-danger">Print D3 ID</button>
-                                <button class="btn btn-info">Print S1 Eng</button>
-                                <button class="btn btn-warning">Print S1 Eng</button>
+                                <center>
+                                    <button type="submit" class="btn btn-warning">Print Eng</button>
+                                </center>
                             </div>
                         </form>
                     </div>
