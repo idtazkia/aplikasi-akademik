@@ -2308,7 +2308,7 @@ public class StudiesActivityController {
         }
 
         if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Desember" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " December" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
             dateAccreditation.getCell(4).setCellStyle(styleData);
 
         }
@@ -2387,7 +2387,7 @@ public class StudiesActivityController {
         }
 
         if (mahasiswa.getTanggalLulus().getMonthValue() == 12){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLulus().getYear());
+            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " December" + " " + mahasiswa.getTanggalLulus().getYear());
             graduatedDate.getCell(4).setCellStyle(styleData);
 
         }
@@ -2855,6 +2855,13 @@ public class StudiesActivityController {
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
+
+        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        Row nikRow = sheet.createRow(nik);
+        nikRow.createCell(0).setCellValue("NIK " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
+        nikRow.getCell(0).setCellStyle(styleDosen);
+        nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
+        nikRow.getCell(5).setCellStyle(styleDosen);
 
 
 
@@ -3825,7 +3832,12 @@ public class StudiesActivityController {
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
-
+        int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        Row nikRow = sheet.createRow(nik);
+        nikRow.createCell(0).setCellValue("NIK " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
+        nikRow.getCell(0).setCellStyle(styleDosen);
+        nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
+        nikRow.getCell(5).setCellStyle(styleDosen);
 
 
 
