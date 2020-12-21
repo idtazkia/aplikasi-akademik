@@ -2027,7 +2027,7 @@ public class StudiesActivityController {
 
         mahasiswaDao.save(mahasiswa);
 
-        return "redirect:transkriptexcel?nim=" + mahasiswa.getNim();
+        return "redirect:cetaktranscript?nim=" + mahasiswa.getNim();
 
     }
 
