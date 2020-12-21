@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -46,6 +48,12 @@ import javax.persistence.*;
 
         @Enumerated(EnumType.STRING)
         private StatusRecord status = StatusRecord.AKTIF;
+
+        private String noSk;
+
+        @Column(columnDefinition = "DATE")
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate tanggalSk;
 
 //        @ManyToMany(fetch = FetchType.EAGER)
 //        @JoinTable(name = "prodi_program",
