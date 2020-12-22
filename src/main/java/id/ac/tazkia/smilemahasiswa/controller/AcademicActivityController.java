@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,6 +36,9 @@ public class  AcademicActivityController {
     private String uploadFolder;
 
     @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
@@ -50,6 +55,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -98,6 +106,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private KonversiDao konversiDao;
+
+    @Autowired
+    private MataKuliahSetaraDao mataKuliahSetaraDao;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -587,6 +598,55 @@ public class  AcademicActivityController {
         prasyarat.setStatus(StatusRecord.HAPUS);
         prasyaratDao.save(prasyarat);
         return "redirect:../prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
+    }
+
+    @GetMapping("/academic/curriculumCourses/matakuliahSetara/list")
+    public void listMatakuliahSetara(Model model, @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum, String prodi, String kurikulum){
+        model.addAttribute("kurikulum", kurikulum);
+        model.addAttribute("prodi", prodi);
+        model.addAttribute("matakuliahKurikulum", matakuliahKurikulumDao.findById(matakuliahKurikulum.getId()).get());
+        model.addAttribute("listMatakuliahSetara", mataKuliahSetaraDao.listMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId()));
+    }
+
+    @GetMapping("/academic/curriculumCourses/matakuliahSetara/form")
+    public void formMatakuliahSetara(Model model,
+                                     @PageableDefault(size = 1000) Pageable page,
+                                     @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum){
+
+        model.addAttribute("matakuliahKurikulum", matakuliahKurikulum);
+        model.addAttribute("listMatakuliah" , matakuliahDao.pilihMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId(), page));
+
+    }
+
+    @PostMapping("/academic/curriculumCourses/matakuliahSetara/form")
+    public String prosesMatakuliahSetara(MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, @RequestParam String idMatakuliah, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+
+        Matakuliah matakuliah = matakuliahDao.findById(idMatakuliah).get();
+
+        Matakuliah idMatakuliahKurikulum = matakuliahDao.findById(matakuliahKurikulum).get();
+        matakuliahSetara.setMatakuliah(matakuliah);
+        matakuliahSetara.setUserInsert(user.getUsername());
+        matakuliahSetara.setMatakuliahSetara(idMatakuliahKurikulum);
+        matakuliahSetara.setTanggalInsert(LocalDateTime.now());
+        mataKuliahSetaraDao.save(matakuliahSetara);
+
+
+        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;
+
+    }
+
+    @PostMapping("/academic/curriculumCourses/matakuliahSetara/delete")
+    public String hapusMatakuliahSetara(@RequestParam MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
+        matakuliahSetara.setStatus(StatusRecord.HAPUS);
+        matakuliahSetara.setTanggalDelete(LocalDateTime.now());
+        matakuliahSetara.setUserDelete(user.getUsername());
+        mataKuliahSetaraDao.save(matakuliahSetara);
+
+        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;
     }
 
     //    Ploting
