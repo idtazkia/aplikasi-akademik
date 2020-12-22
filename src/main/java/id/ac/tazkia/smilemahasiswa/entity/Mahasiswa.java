@@ -126,4 +126,16 @@ public class Mahasiswa {
     @NotNull
     private Integer idAbsen;
 
+    private String nirm;
+
+    private String nirl;
+
+    private String judul;
+    private String title;
+    private String noTranskript;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalLulus;
+
 }

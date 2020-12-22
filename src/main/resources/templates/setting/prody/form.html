@@ -59,6 +59,11 @@
                             </div>
 
                             <div class="form-group">
+                                <label>Nama Prodi Inggris</label>
+                                <input type="text" th:field="*{namaProdiEnglish}" class="form-control" placeholder="Study Program" name="namaProdiEnglish">
+                            </div>
+
+                            <div class="form-group">
                                 <label>Jurusan</label>
                                 <select name="idJurusan" style="width:100%!important;" th:field="*{idJurusan}" class="form-control js-example-placeholder-single">
                                     <option value=""></option>
@@ -90,6 +95,16 @@
                                             th:text="${data.karyawan.namaKaryawan}"
                                             th:value="${data.id}">sdasd</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>No SK BAN - PT</label>
+                                <input type="text" th:field="*{noSk}" class="form-control" placeholder="No SK BAN - PT" name="noSk">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tanggal SK BAN - PT</label>
+                                <input type="date" th:field="*{tanggalSk}" class="form-control" name="tanggalSk">
                             </div>
 
                             <div class="form-group">

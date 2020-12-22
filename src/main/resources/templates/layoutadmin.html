@@ -289,6 +289,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/transcript/list}" class="nav-link">Transcript</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                <a th:href="@{/studiesActivity/transcript/cetaktranscript}" class="nav-link">Transcript Akhir</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
