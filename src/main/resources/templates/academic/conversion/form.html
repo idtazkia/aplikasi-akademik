@@ -122,8 +122,13 @@
                                 </div>
                                 <div class="col-md-6 col-xs-12">
                                     <div class="form-group">
-                                        <label >Nilai akhir</label>
-                                        <input type="text" name="nilaiAkhir" class="form-control" placeholder="00.00">
+                                        <label >Grade nilai akhir</label>
+                                        <select required class="form-control" name="grade" id="">
+                                            <option value=""></option>
+                                            <option th:each="data : ${grade}"
+                                                    th:text="${data.nama}"
+                                                    th:value="${data.nama}"></option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

@@ -970,6 +970,7 @@ public class  AcademicActivityController {
         model.addAttribute("krsDetail", new KrsDetail());
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 //        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
+        model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
@@ -979,22 +980,14 @@ public class  AcademicActivityController {
     @PostMapping("/academic/conversion/form")
     public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
                             @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
-                            @RequestParam(required = false) BigDecimal nilaiAkhir, RedirectAttributes attributes){
+                            @RequestParam(required = false) String grade, RedirectAttributes attributes){
 
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
+        Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
         KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
-        Grade a = gradeDao.findById("1").get();
-        Grade amin = gradeDao.findById("2").get();
-        Grade bplus = gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus = gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade e = gradeDao.findById("9").get();
         if (krsDetail == null){
             if (krs != null){
                 KrsDetail kd = new KrsDetail();
@@ -1006,43 +999,9 @@ public class  AcademicActivityController {
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
                 kd.setFinalisasi("N");
-                kd.setNilaiAkhir(nilaiAkhir);
-                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
-                    kd.setGrade(amin.getNama());
-                    kd.setBobot(amin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
-                    kd.setGrade(bplus.getNama());
-                    kd.setBobot(bplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
-                    kd.setGrade(b.getNama());
-                    kd.setBobot(b.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
-                    kd.setGrade(bmin.getNama());
-                    kd.setBobot(bmin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
-                    kd.setGrade(cplus.getNama());
-                    kd.setBobot(cplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
-                    kd.setGrade(c.getNama());
-                    kd.setBobot(c.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
-                    kd.setGrade(d.getNama());
-                    kd.setBobot(d.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
-                    kd.setGrade(e.getNama());
-                    kd.setBobot(e.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 85){
-                    kd.setGrade(a.getNama());
-                    kd.setBobot(a.getBobot());
-                }
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
                 kd.setNilaiUas(BigDecimal.ZERO);
                 kd.setJumlahKehadiran(0);
                 kd.setJumlahMangkir(0);
@@ -1083,43 +1042,9 @@ public class  AcademicActivityController {
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
                 kd.setFinalisasi("N");
-                kd.setNilaiAkhir(nilaiAkhir);
-                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
-                    kd.setGrade(amin.getNama());
-                    kd.setBobot(amin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
-                    kd.setGrade(bplus.getNama());
-                    kd.setBobot(bplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
-                    kd.setGrade(b.getNama());
-                    kd.setBobot(b.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
-                    kd.setGrade(bmin.getNama());
-                    kd.setBobot(bmin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
-                    kd.setGrade(cplus.getNama());
-                    kd.setBobot(cplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
-                    kd.setGrade(c.getNama());
-                    kd.setBobot(c.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
-                    kd.setGrade(d.getNama());
-                    kd.setBobot(d.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
-                    kd.setGrade(e.getNama());
-                    kd.setBobot(e.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 85){
-                    kd.setGrade(a.getNama());
-                    kd.setBobot(a.getBobot());
-                }
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
                 kd.setNilaiUas(BigDecimal.ZERO);
                 kd.setJumlahKehadiran(0);
                 kd.setJumlahMangkir(0);
