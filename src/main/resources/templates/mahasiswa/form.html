@@ -185,9 +185,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Country of origin</label>
-                                                        <input type="text" th:field="*{kewarganegaraan}"
-                                                               name="kewarganegaraan" class="form-control"
-                                                               placeholder="Country of origin">
+                                                        <select th:field="*{kewarganegaraan}" name="kewarganegaraan" id="" class="form-control">
+                                                            <option value="WNI">WNI</option>
+                                                            <option value="WNA">WNA</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>

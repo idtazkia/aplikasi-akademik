@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
@@ -43,6 +44,12 @@ public class ReportController {
 
     @Autowired
     private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private KrsDao krsDao;
+
+    @Autowired
+    private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -188,5 +195,27 @@ public class ReportController {
 
     }
 
+    @GetMapping("/report/historymahasiswa")
+    public void historyMahasiswa(Model model, @RequestParam(required = false)String nim){
+        if (nim != null) {
+            model.addAttribute("nim", nim);
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            String URL =  "https://api.whatsapp.com/send?phone=" + mahasiswa.getTeleponSeluler();
+            String urlProdi = "https://smile.tazkia.ac.id/mahasiswa/form?mahasiswa=" + mahasiswa.getNim();
+            KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
 
+            model.addAttribute("mhs",mahasiswa);
+            model.addAttribute("kelas", kelasMahasiswa);
+            model.addAttribute("url", URL);
+            model.addAttribute("urlProdi", urlProdi);
+            model.addAttribute("history", krsDetailDao.historyMahasiswa(mahasiswa));
+            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+            model.addAttribute("sksTotal", krsDetailDao.totalSks(mahasiswa));
+            model.addAttribute("semester", krsDetailDao.semesterHistory(mahasiswa));
+            model.addAttribute("khsHistory", krsDetailDao.khsHistoty(mahasiswa));
+            model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+            model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+            model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+        }
+    }
 }

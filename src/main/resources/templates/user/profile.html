@@ -92,7 +92,7 @@
             </div>
         </div>
     </div>
-    <form action="" th:object="${mahasiswa}">
+    <form th:action="@{/user/profile}" method="post" th:object="${mahasiswa}">
         <div class="contact-area">
             <div class="container">
                 <div class="row" style="padding: 15px;">
@@ -214,7 +214,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
-                                                        <input type="text" name="lahir" th:field="*{lahir}" class="form-control">
+                                                        <input type="text" name="lahir" th:field="*{tempat}"  class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -237,15 +237,19 @@
 
                                                     </div>
                                                     <div class="nk-int-st">
-                                                        <label class="txt-title">Gender</label>
+                                                        <label class="txt-title">Cloth Size (Toga)</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="kelamin" th:field="*{kelamin}">
+                                                            <select class="selectpicker" name="toga" th:field="*{ukuranBaju}">
                                                                 <option value=""></option>
-                                                                <option value="PRIA">Male</option>
-                                                                <option value="WANITA">Female</option>
+                                                                <option value="S">S</option>
+                                                                <option value="M">M</option>
+                                                                <option value="L">L</option>
+                                                                <option value="XL">XL</option>
+                                                                <option value="XXL">XXL</option>
                                                             </select>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -281,7 +285,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Citizen</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="wargaNegara" th:field="*{wargaNegara}">
+                                                            <select class="selectpicker" name="wargaNegara" th:field="*{kewarganegaraan}">
                                                                 <option value=""></option>
                                                                 <option value="WNI">WNI</option>
                                                                 <option value="WNA">WNA</option>
@@ -298,7 +302,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Tranportation</span></label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="trasportasi" th:field="*{transportasi}">
+                                                            <select class="selectpicker" name="trasportasi" th:field="*{alatTransportasi}">
                                                                 <option value=""></option>
                                                                 <option th:each="transport : ${transportasi}"
                                                                         th:text="${transport.nama}"
@@ -317,7 +321,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Telephone</label>
-                                                        <input type="number" name="telepon" th:field="*{telepon}" class="form-control">                                                </div>
+                                                        <input maxlength="13" minlength="5" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponRumah" th:field="*{teleponRumah}" class="form-control">                                                </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -327,7 +331,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Phone</label>
-                                                        <input type="number" name="hp" th:field="*{hp}" class="form-control">
+                                                        <input maxlength="13" minlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponSeluler" th:field="*{teleponSeluler}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -340,7 +344,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Personal Email</label>
-                                                        <input type="text" name="email" th:field="*{email}" class="form-control">                                                </div>
+                                                        <input type="text" name="email" th:field="*{emailPribadi}" class="form-control">                                                </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -361,30 +365,7 @@
                                                     <div class="form-ic-cmp">
 
                                                     </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Cloth Size (Toga)</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="toga" th:field="*{toga}">
-                                                                <option value=""></option>
-                                                                <option value="S">S</option>
-                                                                <option value="M">M</option>
-                                                                <option value="L">L</option>
-                                                                <option value="XL">XL</option>
-                                                                <option value="XXL">XXL</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
 
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -400,7 +381,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Country</label>
-                                                        <input type="text" name="negara" th:field="*{negara}" class="form-control">
+                                                        <input type="text" name="negara" th:field="*{idNegara}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -411,12 +392,18 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Address</label>
-                                                        <input type="text" class="form-control" name="alamat" th:field="*{alamat}">
+                                                        <input type="text" required minlength="10" class="form-control" name="namaJalan" th:field="*{namaJalan}">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="id" th:value="${mahasiswa.id}">
+
+                                        <input type="hidden" name="id" th:field="*{id}">
+                                        <input type="hidden" name="idUser" th:field="*{idUser}">
+                                        <input type="hidden" name="ayah" th:field="*{ayah}">
+                                        <input type="hidden" name="ibu" th:field="*{ibu}">
+                                        <input type="hidden" name="wali" th:field="*{wali}">
+                                        <input type="hidden" name="rfid" th:field="*{rfid}">
 
 
                                     </div>
@@ -440,7 +427,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Father's Name</label>
-                                                        <input type="text" name="ayah" th:field="*{ayah}" class="form-control">
+                                                        <input type="text" name="ayah" th:field="*{namaAyah}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -455,7 +442,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Eductaion Level</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pendidikanAyah" th:field="*{pendidikanAyah}">
+                                                            <select class="selectpicker" name="pendidikanAyah" th:field="*{idJenjangPendidikan}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${pendidikan}"
                                                                         th:text="${data.nama}"
@@ -473,7 +460,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Place of Birth</label>
-                                                        <input type="text" name="lahirAyah" th:field="*{lahirAyah}" class="form-control">
+                                                        <input type="text" name="lahirAyah" th:field="*{tempatLahirAyah}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -499,7 +486,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Job</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pekerjaanAyah" th:field="*{pekerjaanAyah}">
+                                                            <select class="selectpicker" name="pekerjaanAyah" th:field="*{idPekerjaan}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${pekerjaan}"
                                                                         th:text="${data.nama}"
@@ -521,7 +508,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Revenue</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="penghasilanAyah" th:field="*{penghasilanAyah}">
+                                                            <select class="selectpicker" name="penghasilanAyah" th:field="*{penghasilan}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${penghasilan}"
                                                                         th:text="${data.nama}"
@@ -540,7 +527,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Religion</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="agamaAyah" th:field="*{agamaAyah}">
+                                                            <select class="selectpicker" name="agamaAyah" th:field="*{agama}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${agama}"
                                                                         th:value="${data.idAgama}"
@@ -562,7 +549,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Live Status</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="statusAyah" th:field="*{statusAyah}">
+                                                            <select class="selectpicker" name="statusAyah" th:field="*{hidup}">
                                                                 <option value=""></option>
                                                                 <option value="H">Hidup</option>
                                                                 <option value="M">Meninggal</option>
@@ -579,7 +566,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Special Needs</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="kebutuhanAyah" th:field="*{kebutuhanAyah}">
+                                                            <select class="selectpicker" name="kebutuhanAyah" th:field="*{kebutuhanKhusus}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${kebutuhan}"
                                                                         th:text="${data.kode + '  -  ' + data.nama}"
@@ -612,7 +599,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Mother's Name</label>
-                                                        <input type="text" name="ibu" th:field="*{ibu}" class="form-control">
+                                                        <input type="text" name="ibu" th:field="*{namaIbuKandung}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -627,7 +614,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Eductaion Level</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pendidikanIbu" th:field="*{pendidikanIbu}">
+                                                            <select class="selectpicker" name="pendidikanIbu" th:field="*{idJenjangPendidikanIbu}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${pendidikan}"
                                                                         th:text="${data.nama}"
@@ -645,7 +632,7 @@
                                                     </div>
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Place of Birth</label>
-                                                        <input type="text" name="lahirIbu" th:field="*{lahirIbu}" class="form-control">
+                                                        <input type="text" name="lahirIbu" th:field="*{tempatLahirIbu}" class="form-control">
                                                     </div>
                                                 </div>
                                             </div>
@@ -671,7 +658,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Job</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pekerjaanIbu" th:field="*{pekerjaanIbu}">
+                                                            <select class="selectpicker" name="pekerjaanIbu" th:field="*{idPekerjaanIbu}">
                                                                 <option value=""></option>
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${pekerjaan}"
@@ -735,7 +722,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Live Status</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="statusIbu" th:field="*{statusIbu}">
+                                                            <select class="selectpicker" name="statusIbu" th:field="*{statusHidupIbu}">
                                                                 <option value=""></option>
                                                                 <option value="H">Hidup</option>
                                                                 <option value="M">Meninggal</option>
@@ -752,7 +739,7 @@
                                                     <div class="nk-int-st">
                                                         <label class="txt-title">Special Needs</label>
                                                         <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="kebutuhanIbu" th:field="*{kebutuhanIbu}">
+                                                            <select class="selectpicker" name="kebutuhanIbu" th:field="*{kebutuhanKhususIbu}">
                                                                 <option value=""></option>
                                                                 <option th:each="data : ${kebutuhan}"
                                                                         th:text="${data.kode + '  -  ' + data.nama}"
@@ -774,13 +761,7 @@
                                         <div class="row">
                                             <div class="col-md-12 col-xs-12">
 
-                                                <p>
-                                                    <input type="checkbox" required>
-                                                    I hereby certify that the profile data that I have completed in the form
-                                                    above is appropriate and correct with my legality documents.
-                                                    Therefore, my data can be used for academic administratiion purpose such as
-                                                    <b>Creficate, Transcript, Correspondence and Academic Reporting to Goverment agencies.</b>
-                                                </p>
+
 
                                                 <button class="btn btn-primary notika-btn-primary btn-sm waves-effect">Save</button>
                                                 <a href="" class="btn btn-danger notika-btn-danger btn-sm waves-effect">Cancel</a>
@@ -797,4 +778,9 @@
     </form>
 </section>
 </body>
+<script>
+    $("#myField").keyup(function() {
+        $("#myField").val(this.value.match(/[0-9]*/));
+    });
+</script>
 </html>
