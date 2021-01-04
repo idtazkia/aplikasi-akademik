@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface GradeDao extends PagingAndSortingRepository<Grade,String> {
     List<Grade> findByStatus(StatusRecord aktif);
+
+    Grade findByNama(String nama);
 }

@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Type of bill </span>
+                                        <span class="h2 font-weight-bold mb-0">Diskon </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -46,23 +46,18 @@
                         <h3 class="mb-0">Form</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" th:action="@{/studentBill/typeBill/new}"  th:object="${typeBill}">
-                            <div class="form-group">
-                                <label>Code</label>
-                                <input type="text" name="kode" class="form-control"
-                                       placeholder="Type of bill Code" th:field="*{kode}">
-                            </div>
+                        <form method="post" th:action="@{/studentBill/jenisDiskon/new}"  th:object="${jenisDiskon}">
 
                             <div class="form-group">
-                                <label>Name</label>
+                                <label>Nama</label>
                                 <input type="text" name="nama" class="form-control"
-                                       placeholder="Type of bill Name" th:field="*{nama}">
+                                       placeholder="Nama diskon" th:field="*{nama}">
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <input type="text" name="keterangan" th:field="*{keterangan}"
-                                       class="form-control" placeholder="Description">
+                                       class="form-control" placeholder="Keterangan">
                             </div>
 
                             <div class="form-group">
@@ -74,7 +69,7 @@
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Save</button>
-                                <a th:href="@{/studentBill/typeBill/list}" class="btn btn-danger">Cancel</a>
+                                <a th:href="@{/studentBill/jenisDiskon/list}" class="btn btn-danger">Cancel</a>
                             </div>
                         </form>
                     </div>

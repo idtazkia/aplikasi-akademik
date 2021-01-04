@@ -341,6 +341,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Value of Bill Type</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
+                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>
+                            </li>
 <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">-->
 <!--                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report Payment</a>-->
 <!--                            </li>-->

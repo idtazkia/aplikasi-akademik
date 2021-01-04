@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,6 +36,9 @@ public class  AcademicActivityController {
     private String uploadFolder;
 
     @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
@@ -50,6 +55,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -98,6 +106,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private KonversiDao konversiDao;
+
+    @Autowired
+    private MataKuliahSetaraDao mataKuliahSetaraDao;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -589,6 +600,55 @@ public class  AcademicActivityController {
         return "redirect:../prasyarat?id="+prasyarat.getMatakuliahKurikulum().getId();
     }
 
+    @GetMapping("/academic/curriculumCourses/matakuliahSetara/list")
+    public void listMatakuliahSetara(Model model, @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum, String prodi, String kurikulum){
+        model.addAttribute("kurikulum", kurikulum);
+        model.addAttribute("prodi", prodi);
+        model.addAttribute("matakuliahKurikulum", matakuliahKurikulumDao.findById(matakuliahKurikulum.getId()).get());
+        model.addAttribute("listMatakuliahSetara", mataKuliahSetaraDao.listMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId()));
+    }
+
+    @GetMapping("/academic/curriculumCourses/matakuliahSetara/form")
+    public void formMatakuliahSetara(Model model,
+                                     @PageableDefault(size = 1000) Pageable page,
+                                     @RequestParam(required = false) MatakuliahKurikulum matakuliahKurikulum){
+
+        model.addAttribute("matakuliahKurikulum", matakuliahKurikulum);
+        model.addAttribute("listMatakuliah" , matakuliahDao.pilihMatakuliahSetara(matakuliahKurikulum.getMatakuliah().getId(), page));
+
+    }
+
+    @PostMapping("/academic/curriculumCourses/matakuliahSetara/form")
+    public String prosesMatakuliahSetara(MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, @RequestParam String idMatakuliah, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+
+        Matakuliah matakuliah = matakuliahDao.findById(idMatakuliah).get();
+
+        Matakuliah idMatakuliahKurikulum = matakuliahDao.findById(matakuliahKurikulum).get();
+        matakuliahSetara.setMatakuliah(matakuliah);
+        matakuliahSetara.setUserInsert(user.getUsername());
+        matakuliahSetara.setMatakuliahSetara(idMatakuliahKurikulum);
+        matakuliahSetara.setTanggalInsert(LocalDateTime.now());
+        mataKuliahSetaraDao.save(matakuliahSetara);
+
+
+        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;
+
+    }
+
+    @PostMapping("/academic/curriculumCourses/matakuliahSetara/delete")
+    public String hapusMatakuliahSetara(@RequestParam MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
+        matakuliahSetara.setStatus(StatusRecord.HAPUS);
+        matakuliahSetara.setTanggalDelete(LocalDateTime.now());
+        matakuliahSetara.setUserDelete(user.getUsername());
+        mataKuliahSetaraDao.save(matakuliahSetara);
+
+        return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;
+    }
+
     //    Ploting
 
 
@@ -970,6 +1030,7 @@ public class  AcademicActivityController {
         model.addAttribute("krsDetail", new KrsDetail());
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 //        Optional<Jadwal> jadwal1 = jadwalDao.findById(jadwal);
+        model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
@@ -979,22 +1040,14 @@ public class  AcademicActivityController {
     @PostMapping("/academic/conversion/form")
     public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
                             @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
-                            @RequestParam(required = false) BigDecimal nilaiAkhir, RedirectAttributes attributes){
+                            @RequestParam(required = false) String grade, RedirectAttributes attributes){
 
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
+        Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
         KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
-        Grade a = gradeDao.findById("1").get();
-        Grade amin = gradeDao.findById("2").get();
-        Grade bplus = gradeDao.findById("3").get();
-        Grade b = gradeDao.findById("4").get();
-        Grade bmin = gradeDao.findById("5").get();
-        Grade cplus = gradeDao.findById("6").get();
-        Grade c = gradeDao.findById("7").get();
-        Grade d = gradeDao.findById("8").get();
-        Grade e = gradeDao.findById("9").get();
         if (krsDetail == null){
             if (krs != null){
                 KrsDetail kd = new KrsDetail();
@@ -1006,43 +1059,9 @@ public class  AcademicActivityController {
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
                 kd.setFinalisasi("N");
-                kd.setNilaiAkhir(nilaiAkhir);
-                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
-                    kd.setGrade(amin.getNama());
-                    kd.setBobot(amin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
-                    kd.setGrade(bplus.getNama());
-                    kd.setBobot(bplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
-                    kd.setGrade(b.getNama());
-                    kd.setBobot(b.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
-                    kd.setGrade(bmin.getNama());
-                    kd.setBobot(bmin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
-                    kd.setGrade(cplus.getNama());
-                    kd.setBobot(cplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
-                    kd.setGrade(c.getNama());
-                    kd.setBobot(c.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
-                    kd.setGrade(d.getNama());
-                    kd.setBobot(d.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
-                    kd.setGrade(e.getNama());
-                    kd.setBobot(e.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 85){
-                    kd.setGrade(a.getNama());
-                    kd.setBobot(a.getBobot());
-                }
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
                 kd.setNilaiUas(BigDecimal.ZERO);
                 kd.setJumlahKehadiran(0);
                 kd.setJumlahMangkir(0);
@@ -1083,43 +1102,9 @@ public class  AcademicActivityController {
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
                 kd.setFinalisasi("N");
-                kd.setNilaiAkhir(nilaiAkhir);
-                if (nilaiAkhir.toBigInteger().intValue() >= 80 && nilaiAkhir.toBigInteger().intValue() < 85){
-                    kd.setGrade(amin.getNama());
-                    kd.setBobot(amin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 75 && nilaiAkhir.toBigInteger().intValue() < 80){
-                    kd.setGrade(bplus.getNama());
-                    kd.setBobot(bplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 70 && nilaiAkhir.toBigInteger().intValue() < 75){
-                    kd.setGrade(b.getNama());
-                    kd.setBobot(b.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 65 && nilaiAkhir.toBigInteger().intValue() < 70){
-                    kd.setGrade(bmin.getNama());
-                    kd.setBobot(bmin.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 60 && nilaiAkhir.toBigInteger().intValue() < 65){
-                    kd.setGrade(cplus.getNama());
-                    kd.setBobot(cplus.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 55 && nilaiAkhir.toBigInteger().intValue() < 60){
-                    kd.setGrade(c.getNama());
-                    kd.setBobot(c.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 50 && nilaiAkhir.toBigInteger().intValue() < 55){
-                    kd.setGrade(d.getNama());
-                    kd.setBobot(d.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 0 && nilaiAkhir.toBigInteger().intValue() < 50){
-                    kd.setGrade(e.getNama());
-                    kd.setBobot(e.getBobot());
-                }
-                if (nilaiAkhir.toBigInteger().intValue() >= 85){
-                    kd.setGrade(a.getNama());
-                    kd.setBobot(a.getBobot());
-                }
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
                 kd.setNilaiUas(BigDecimal.ZERO);
                 kd.setJumlahKehadiran(0);
                 kd.setJumlahMangkir(0);
