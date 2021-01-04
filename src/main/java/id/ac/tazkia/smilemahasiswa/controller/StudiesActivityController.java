@@ -2198,7 +2198,7 @@ public class StudiesActivityController {
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
-            level.createCell(4).setCellValue("Undergraduate");
+            level.createCell(4).setCellValue("Post Graduate");
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
@@ -3174,7 +3174,7 @@ public class StudiesActivityController {
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
-            level.createCell(4).setCellValue("Sarjana");
+            level.createCell(4).setCellValue("Magister");
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
