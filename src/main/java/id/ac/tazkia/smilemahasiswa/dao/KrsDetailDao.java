@@ -269,10 +269,10 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<Object[]> rekapEdom(TahunAkademik tahunAkademik, Prodi prodi);
 
     @Query(value = "select sum(jumlah_sks)as jml from krs_detail as a " +
-            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id \n" +
             "inner join matakuliah_kurikulum as c on b.id_matakuliah_kurikulum = c.id " +
             "where a.id_mahasiswa=?1 and a.status='AKTIF' " +
-            "and b.id_tahun_akademik=?2" +
+            "and b.id_tahun_akademik=?2 " +
             "group by a.id_mahasiswa", nativeQuery = true)
     Long jumlahSksMahasiswa(String idMahasiswa, String idTahunAkademik);
 

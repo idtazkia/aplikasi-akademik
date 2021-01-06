@@ -34,10 +34,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-<<<<<<< HEAD
-=======
-
->>>>>>> 32802020b54a0303777e0af5ba10060454911821
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -487,9 +483,6 @@ public class StudentBillController {
                     tagihan.setStatus(StatusRecord.AKTIF);
                     tagihan.setIdTagihanSebelumnya(tagihan1.getId());
                     tagihanDao.save(tagihan);
-
-                    tagihan1.setStatus(StatusRecord.NONAKTIF);
-                    tagihanDao.save(tagihan1);
 
                     tagihanService.createTagihan(tagihan);
                 }
