@@ -3105,6 +3105,13 @@ public class StudiesActivityController {
         facultyRow.createCell(5).setCellValue("Coordinator of " + mahasiswa.getIdProdi().getNamaProdiEnglish());
         facultyRow.getCell(5).setCellStyle(styleData);
 
+        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        Row facultyRow2 = sheet.createRow(faculty2);
+        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultasEnglish());
+        facultyRow2.getCell(0).setCellStyle(styleData);
+        facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdiEnglish());
+        facultyRow2.getCell(5).setCellStyle(styleData);
+
         int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
         Row lectureRow = sheet.createRow(lecture);
         lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNamaKaryawan());
@@ -3943,7 +3950,7 @@ public class StudiesActivityController {
         int thesis = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
         Row thesisRow = sheet.createRow(thesis);
         thesisRow.createCell(0).setCellValue("Judul skripsi :");
-        thesisRow.createCell(2).setCellValue(mahasiswa.getTitle());
+        thesisRow.createCell(2).setCellValue(mahasiswa.getJudul());
         thesisRow.getCell(0).setCellStyle(styleSubHeader);
         thesisRow.getCell(2).setCellStyle(styleData);
 
@@ -4329,10 +4336,17 @@ public class StudiesActivityController {
 
         int facultyy = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
         Row facultyRow = sheet.createRow(facultyy);
-        facultyRow.createCell(0).setCellValue("Dekan Fakultas " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultas());
+        facultyRow.createCell(0).setCellValue("Dekan Fakultas ");
         facultyRow.getCell(0).setCellStyle(styleData);
-        facultyRow.createCell(5).setCellValue("Koordinator Program Studi " + mahasiswa.getIdProdi().getNamaProdi());
+        facultyRow.createCell(5).setCellValue("Koordinator Program Studi ");
         facultyRow.getCell(5).setCellStyle(styleData);
+
+        int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        Row facultyRow2 = sheet.createRow(faculty2);
+        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultas());
+        facultyRow2.getCell(0).setCellStyle(styleData);
+        facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
+        facultyRow2.getCell(5).setCellStyle(styleData);
 
         int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
         Row lectureRow = sheet.createRow(lecture);
