@@ -2108,6 +2108,14 @@ public class StudiesActivityController {
         lectureFont.setUnderline(XSSFFont.U_DOUBLE);
         lectureFont.setFontHeightInPoints((short) 10);
 
+        Font nikFont = workbook.createFont();
+        nikFont.setBold(true);
+        nikFont.setFontName("Cambria");
+        nikFont.setFontHeightInPoints((short) 10);
+
+        CellStyle styleNik = workbook.createCellStyle();
+        styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleNik.setFont(nikFont);
 
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -2184,10 +2192,81 @@ public class StudiesActivityController {
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Place and Date of Birth");
         birthDay.createCell(3).setCellValue(":");
-        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir());
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " January" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " February" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " March" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " May" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " June" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " July" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " August" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " October" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " December" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
-        birthDay.getCell(4).setCellStyle(styleData);
 
         int rowInfoLevel = 9 ;
         Row level = sheet.createRow(rowInfoLevel);
@@ -2199,7 +2278,7 @@ public class StudiesActivityController {
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
-            level.createCell(4).setCellValue("Undergraduate");
+            level.createCell(4).setCellValue("Post Graduate");
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
@@ -3036,9 +3115,9 @@ public class StudiesActivityController {
         int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
         Row nikRow = sheet.createRow(nik);
         nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
-        nikRow.getCell(0).setCellStyle(styleDosen);
+        nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
-        nikRow.getCell(5).setCellStyle(styleDosen);
+        nikRow.getCell(5).setCellStyle(styleNik);
 
 
 
@@ -3260,6 +3339,15 @@ public class StudiesActivityController {
         lectureFont.setUnderline(XSSFFont.U_DOUBLE);
         lectureFont.setFontHeightInPoints((short) 10);
 
+        Font nikFont = workbook.createFont();
+        nikFont.setBold(true);
+        nikFont.setFontName("Cambria");
+        nikFont.setFontHeightInPoints((short) 10);
+
+        CellStyle styleNik = workbook.createCellStyle();
+        styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleNik.setFont(nikFont);
+
 
         CellStyle styleManajemen = workbook.createCellStyle();
         styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -3336,10 +3424,81 @@ public class StudiesActivityController {
         Row birthDay = sheet.createRow(rowInfoBirth);
         birthDay.createCell(0).setCellValue("Tempat, Tanggal lahir");
         birthDay.createCell(3).setCellValue(":");
-        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir());
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
+        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
+            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalLahir().getYear());
+            birthDay.getCell(4).setCellStyle(styleData);
+
+        }
+
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
-        birthDay.getCell(4).setCellStyle(styleData);
 
         int rowInfoLevel = 9 ;
         Row level = sheet.createRow(rowInfoLevel);
@@ -3351,7 +3510,7 @@ public class StudiesActivityController {
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
-            level.createCell(4).setCellValue("Sarjana");
+            level.createCell(4).setCellValue("Magister");
             level.getCell(4).setCellStyle(styleData);
         }
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("03").get()){
@@ -4185,9 +4344,9 @@ public class StudiesActivityController {
         int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
         Row nikRow = sheet.createRow(nik);
         nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
-        nikRow.getCell(0).setCellStyle(styleDosen);
+        nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
-        nikRow.getCell(5).setCellStyle(styleDosen);
+        nikRow.getCell(5).setCellStyle(styleNik);
 
 
 
