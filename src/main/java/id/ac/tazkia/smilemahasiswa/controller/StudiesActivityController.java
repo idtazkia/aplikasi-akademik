@@ -2302,7 +2302,7 @@ public class StudiesActivityController {
         Row facultyy = sheet.createRow(rowInfoFaculty);
         facultyy.createCell(0).setCellValue("Faculty");
         facultyy.createCell(3).setCellValue(":");
-        facultyy.createCell(4).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultasEnglish());
+        facultyy.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
         facultyy.getCell(0).setCellStyle(styleData);
         facultyy.getCell(3).setCellStyle(styleSymbol);
         facultyy.getCell(4).setCellStyle(styleData);
@@ -3100,28 +3100,28 @@ public class StudiesActivityController {
 
         int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
         Row facultyRow = sheet.createRow(faculty);
-        facultyRow.createCell(0).setCellValue("Dean of " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultasEnglish());
+        facultyRow.createCell(0).setCellValue("Dean of " + mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
         facultyRow.getCell(0).setCellStyle(styleData);
         facultyRow.createCell(5).setCellValue("Coordinator of " + mahasiswa.getIdProdi().getNamaProdiEnglish());
         facultyRow.getCell(5).setCellStyle(styleData);
 
         int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
         Row facultyRow2 = sheet.createRow(faculty2);
-        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultasEnglish());
+        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdiEnglish());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
         int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
         int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
@@ -3541,7 +3541,7 @@ public class StudiesActivityController {
         Row faculty = sheet.createRow(rowInfoFaculty);
         faculty.createCell(0).setCellValue("Fakultas");
         faculty.createCell(3).setCellValue(":");
-        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultas() );
+        faculty.createCell(4).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas() );
         faculty.getCell(0).setCellStyle(styleData);
         faculty.getCell(3).setCellStyle(styleSymbol);
         faculty.getCell(4).setCellStyle(styleData);
@@ -3934,13 +3934,13 @@ public class StudiesActivityController {
         }
 
         if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
-            predicateRow.createCell(2).setCellValue("Cum Laude");
+            predicateRow.createCell(2).setCellValue("Pujian");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
         if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
-            predicateRow.createCell(2).setCellValue("Summa Cum Laude");
+            predicateRow.createCell(2).setCellValue("Pujian Tertinggi");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
@@ -3981,7 +3981,7 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,1,3));
         sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,7,9));
         excellentRow.createCell(0).setCellValue("3,80-4,00");
-        excellentRow.createCell(1).setCellValue("Summa Cum Laude (Minimal B)");
+        excellentRow.createCell(1).setCellValue("Pujian Tertinggi");
         excellentRow.createCell(5).setCellValue("A");
         excellentRow.createCell(6).setCellValue("4");
         excellentRow.createCell(7).setCellValue("Baik Sekali");
@@ -3996,7 +3996,7 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
         sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
-        veryGoodRow.createCell(1).setCellValue("Cum Laude (Minimal B)");
+        veryGoodRow.createCell(1).setCellValue("Pujian");
         veryGoodRow.createCell(5).setCellValue("A-");
         veryGoodRow.createCell(6).setCellValue("3,7");
         veryGoodRow.createCell(7).setCellValue("Baik Sekali");
@@ -4343,21 +4343,21 @@ public class StudiesActivityController {
 
         int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
         Row facultyRow2 = sheet.createRow(faculty2);
-        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getNamaFakultas());
+        facultyRow2.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         facultyRow2.getCell(0).setCellStyle(styleData);
         facultyRow2.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdi());
         facultyRow2.getCell(5).setCellStyle(styleData);
 
         int lecture = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
         Row lectureRow = sheet.createRow(lecture);
-        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNamaKaryawan());
+        lectureRow.createCell(0).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(0).setCellStyle(styleDosen);
         lectureRow.createCell(5).setCellValue(mahasiswa.getIdProdi().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(5).setCellStyle(styleDosen);
 
         int nik = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
         Row nikRow = sheet.createRow(nik);
-        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getIdJurusan().getIdFakultas().getDosen().getKaryawan().getNik());
+        nikRow.createCell(0).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(0).setCellStyle(styleNik);
         nikRow.createCell(5).setCellValue("NIK : " + mahasiswa.getIdProdi().getDosen().getKaryawan().getNik());
         nikRow.getCell(5).setCellStyle(styleNik);
