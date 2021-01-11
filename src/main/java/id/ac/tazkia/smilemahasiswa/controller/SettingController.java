@@ -250,7 +250,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     @GetMapping("/setting/prody/form")
     public void  formProgramStudi(Model model,@RequestParam(required = false) String id){
         model.addAttribute("programStudy", new Prodi());
-        model.addAttribute("jurusan",jurusanDao.findByStatus(StatusRecord.AKTIF));
+            model.addAttribute("listFakultas",fakultasDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("jenjang",jenjangDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
 

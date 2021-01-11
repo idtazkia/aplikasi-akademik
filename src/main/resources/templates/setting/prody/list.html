@@ -57,10 +57,10 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Major</th>
-                                <th scope="col">Level</th>
-                                <th scope="col">Study Program</th>
-                                <th scope="col">Description</th>
+                                <th scope="col">Fakultas</th>
+                                <th scope="col">Jenjang</th>
+                                <th scope="col">Program Studi</th>
+                                <th scope="col">Keterangan</th>
                                 <th scope="col" width="30px"></th>
                                 <th scope="col" width="40px"></th>
                             </tr>
@@ -68,7 +68,7 @@
                             <tbody>
                             <tr th:each="data,row : ${list}">
                                 <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
-                                <td th:text="${data.idJurusan.namaJurusan}">Name Prodi</td>
+                                <td th:text="${data.fakultas.namaFakultas}">Name Prodi</td>
                                 <td th:text="${data.idJenjang.namaJenjang}">Name Prodi</td>
                                 <td>
                                     <a class="btn btn-success btn-outline-success btn-sm"
