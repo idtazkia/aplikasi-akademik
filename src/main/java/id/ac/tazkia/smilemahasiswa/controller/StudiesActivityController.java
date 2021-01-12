@@ -1,7 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import fr.opensagres.xdocreport.core.io.IOUtils;
-import id.ac.tazkia.smilemahasiswa.SmilemahasiswaApplication;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
@@ -47,13 +45,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -244,7 +240,7 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/attendance/detail")
-    public void detailAttendance(Model model, @RequestParam Jadwal jadwal, Pageable page) {
+    public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
         List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(jadwal, StatusRecord.AKTIF);
 
         List<JadwalDto> detail = new ArrayList<>();
@@ -3934,7 +3930,7 @@ public class StudiesActivityController {
         }
 
         if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
-            predicateRow.createCell(2).setCellValue("Pujian");
+            predicateRow.createCell(2).setCellValue("Pujian (Minimal B)");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
@@ -3996,7 +3992,7 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,1,3));
         sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,7,9));
         veryGoodRow.createCell(0).setCellValue("3,50-3,79");
-        veryGoodRow.createCell(1).setCellValue("Pujian");
+        veryGoodRow.createCell(1).setCellValue("Pujian (Minimal B)");
         veryGoodRow.createCell(5).setCellValue("A-");
         veryGoodRow.createCell(6).setCellValue("3,7");
         veryGoodRow.createCell(7).setCellValue("Baik Sekali");
