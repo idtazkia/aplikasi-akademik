@@ -10,5 +10,6 @@ public interface DaftarBiayaDto {
     String getNamaTagihan();
     BigDecimal getTagihan();
     BigDecimal getDibayar();
+    String getLunas();
 
 }

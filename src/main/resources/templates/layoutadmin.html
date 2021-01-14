@@ -255,14 +255,14 @@
                     </a>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_FINANCE')">
                     <a class="nav-link" href="#navbar-study" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-user-run text-green"></i>
                         <span class="nav-link-text">Studies Activity</span>
                     </a>
                     <div class="collapse" id="navbar-study">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studiesActivity/krs/list}" class="nav-link">KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
@@ -340,6 +340,9 @@
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Value of Bill Type</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
+                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>
                             </li>
 <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">-->
 <!--                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report Payment</a>-->

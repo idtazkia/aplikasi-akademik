@@ -66,7 +66,7 @@
                     <div class="card-header border-0">
                         <h3 class="mb-0">Result Search</h3>
                     </div>
-                    <div class="card-body" th:if="${mahasiswa != nulls}">
+                    <div class="card-body" th:if="${mahasiswa != null}">
                         <form method="post" th:action="@{/studiesActivity/transcript/cetaktranscript (mahasiswa = ${mahasiswa.id})}" th:object="${mahasiswa}">
                             <div class="row">
                                 <div class="col-md-6">
@@ -137,7 +137,12 @@
                                 </center>
                             </div>
                         </form>
-                        <div class="form-group" th:if="${mahasiswa.nirl != null}">
+                        <div class="alert alert-danger" th:if="${mahasiswa.tanggalLahir == null}">
+                            <center>
+                                <strong>Silahkan lengkapi tanggal lahir mahasiswa terlebih dahulu!</strong>
+                            </center>
+                        </div>
+                        <div class="form-group" th:if="${mahasiswa.nirl != null && mahasiswa.tanggalLahir != null}">
                             <center>
                                 <a  th:href="@{/studiesActivity/transcript/transkriptindo (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-warning">Indonesia</a>
                                 <a  th:href="@{/studiesActivity/transcript/transkriptexcel (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-primary">Inggris</a>
