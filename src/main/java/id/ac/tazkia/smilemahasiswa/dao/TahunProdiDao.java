@@ -45,4 +45,10 @@ public interface TahunProdiDao extends PagingAndSortingRepository<TahunAkademikP
 
 
     List<TahunAkademikProdi> findByTahunAkademikAndProdiAndStatus(TahunAkademik tahunAkademik, Prodi prodi, StatusRecord statusRecord);
+
+    @Query(value = "select a.id, c.nama_prodi, b.kode_tahun_akademik, b.nama_tahun_akademik, b.tahun, a.status from tahun_akademik_prodi as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id inner join prodi as c on c.id = a.id_prodi where b.status = 'AKTIF' order by c.nama_prodi asc", nativeQuery = true)
+    List<Object[]> listTahaunAkademikProdi();
+
+    @Query(value = "select a.id, c.nama_prodi, b.kode_tahun_akademik, b.nama_tahun_akademik, b.tahun, a.status from tahun_akademik_prodi as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id inner join prodi as c on c.id = a.id_prodi where b.id = ?1 order by c.nama_prodi asc", nativeQuery = true)
+    List<Object[]> tahunAkademikProdiGet(TahunAkademik tahunAkademik);
 }

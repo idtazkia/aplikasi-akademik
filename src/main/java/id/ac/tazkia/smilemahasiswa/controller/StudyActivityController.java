@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
+import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -52,7 +52,15 @@ public class StudyActivityController {
     private JadwalDao jadwalDao;
 
     @Autowired
+    private KonsentrasiDao konsentrasiDao;
+
+    @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
+
+    @ModelAttribute("konsentrasi")
+    public Iterable<Konsentrasi> konsentrasis() {
+        return konsentrasiDao.findByStatus(StatusRecord.AKTIF);
+    }
 
     @GetMapping("/study/comingsoon")
     public String comingsoon(Model model,
@@ -62,7 +70,7 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+//        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
 
         if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
@@ -336,4 +344,57 @@ public class StudyActivityController {
         model.addAttribute("jadwal", jadwal);
 
     }
+
+//    Daftar Ulang
+
+    @GetMapping("/du/konsentrasi")
+    public String formKonsentrasi(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String nim = mahasiswa.getNim();
+
+        Integer semester = krsDao.countSemester(nim);
+        if (semester == 5){
+            model.addAttribute("mahasiswa", mahasiswa);
+            return "du/konsentrasi";
+        }
+
+        return "/du/kelas";
+
+
+
+    }
+
+    @PostMapping("/du/konsentrasi")
+    public String prosesKonsentrasi(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        mahasiswa.setIdKonsentrasi(mahasiswaDto.getIdKonsentrasi());
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:/du/kelas";
+    }
+
+    @GetMapping("/du/alert")
+    public void alertDu(){
+
+    }
+
+    @GetMapping("/du/kelas")
+    public void getKelas(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+        model.addAttribute("kelasMahasiswa", kelasMahasiswa);
+
+    }
+
+    @GetMapping("/pendaftaran/form")
+    public void formPendaftaran(){
+
+    }
+
+
 }

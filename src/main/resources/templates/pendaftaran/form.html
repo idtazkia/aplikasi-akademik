@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-success{
+            background-color: #5cb85c;
+            border-radius: 10px;
+        }
+
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: #d9534f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body onload="myFunction()">
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Pendaftaran</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bounceIn">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Form</h2>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form action="">
+                                        <div class="form-group">
+                                            <label>Upload Sidang</label>
+                                            <input type="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Upload Form Pendaftaran</label>
+                                            <input type="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Upload ijazah</label>
+                                            <input type="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Upload KTP</label>
+                                            <input type="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Upload Kartu Bimbingan</label>
+                                            <input type="file" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-success">Upload</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Form Download</h2>
+                            <hr>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <a href="" class="btn btn-success">Download Kartu Bimbingan</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $("#save").click(function(){
+        $("#save").hide();
+    });
+</script>
+</body>
+</html>

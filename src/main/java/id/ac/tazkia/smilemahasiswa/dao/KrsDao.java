@@ -37,6 +37,7 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
             "order by b.kode_tahun_akademik", nativeQuery = true)
     List<Object[]> semesterTranskript(String idMahasiswa);
 
-
+    @Query(value = "select count(a.id) from krs as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and a.id_mahasiswa = ?1 and b.jenis != 'PENDEK'", nativeQuery = true)
+    Integer countSemester(String nim);
 
 }

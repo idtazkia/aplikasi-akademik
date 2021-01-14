@@ -184,6 +184,7 @@ public class DashboardController {
 
             mahasiswaDto.setIbu(mahasiswaDetailKeluarga.getIbu().getId());
             mahasiswaDto.setNamaIbuKandung(mahasiswaDetailKeluarga.getIbu().getNamaIbuKandung());
+            mahasiswaDto.setNikIbu(mahasiswaDetailKeluarga.getIbu().getNik());
             mahasiswaDto.setKebutuhanKhususIbu(mahasiswaDetailKeluarga.getIbu().getKebutuhanKhusus());
             mahasiswaDto.setTempatLahirIbu(mahasiswaDetailKeluarga.getIbu().getTempatLahir());
             mahasiswaDto.setTanggalLahirIbu(mahasiswaDetailKeluarga.getIbu().getTanggalLahir());
@@ -195,6 +196,7 @@ public class DashboardController {
 
             mahasiswaDto.setAyah(mahasiswaDetailKeluarga.getAyah().getId());
             mahasiswaDto.setNamaAyah(mahasiswaDetailKeluarga.getAyah().getNamaAyah());
+            mahasiswaDto.setNikAyah(mahasiswaDetailKeluarga.getAyah().getNik());
             mahasiswaDto.setKebutuhanKhusus(mahasiswaDetailKeluarga.getAyah().getKebutuhanKhusus());
             mahasiswaDto.setTempatLahirAyah(mahasiswaDetailKeluarga.getAyah().getTempatLahir());
             mahasiswaDto.setTanggalLahirAyah(mahasiswaDetailKeluarga.getAyah().getTanggalLahir());
