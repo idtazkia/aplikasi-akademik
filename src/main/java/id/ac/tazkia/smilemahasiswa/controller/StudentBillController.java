@@ -12,6 +12,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -284,9 +286,9 @@ public class StudentBillController {
     public void listNilai(Model model, @PageableDefault(size = 10) Pageable page, String search ){
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
-            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndJenisTagihanContainingIgnoreCaseOrderByJenisTagihan(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatan(Arrays.asList(StatusRecord.HAPUS), search, search, page));
         }else{
-            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInOrderByAngkatan(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
@@ -338,7 +340,7 @@ public class StudentBillController {
 
         model.addAttribute("biayaMahasiswa", tagihanDao.biayaMahasiswa(mhs.getId()));
         model.addAttribute("pembayaran", pembayaranDao.pembayaranMahasiswa(mhs.getId()));
-        model.addAttribute("totalTagihan", tagihanDao.totalTagihanMahasiswa(mhs.getId()));
+        model.addAttribute("totalTagihan", tagihanDao.totalTagihanPerMahasiswa(mhs.getId()));
         model.addAttribute("totalDibayar", pembayaranDao.totalDibayarMahasiswa(mhs.getId()));
 
     }
@@ -346,7 +348,12 @@ public class StudentBillController {
     @GetMapping("/studentBill/billAdmin/list")
     public void listBillAdmin(Model model,
                               @RequestParam(required = false) TahunAkademik tahunAkademik,
-                              @RequestParam(required = false) String nim){
+                              @RequestParam(required = false) String nim,
+                              @RequestParam(required = false) String date1, @RequestParam(required = false) String date2,
+                              @RequestParam(required = false) String date3, @RequestParam(required = false) String date4){
+
+
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // list untuk per mahasiswa
 
@@ -360,18 +367,25 @@ public class StudentBillController {
             model.addAttribute("status", krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mhs, StatusRecord.AKTIF));
             model.addAttribute("mahasiswa", mhs);
             model.addAttribute("jumlahSks", krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()));
-            model.addAttribute("totalTagihan", tagihanDao.totalTagihan(tahunAkademik.getId(), mhs.getId()));
-            model.addAttribute("totalDibayar", pembayaranDao.totalDibayar(tahunAkademik.getId(), mhs.getId()));
+            model.addAttribute("totalTagihan", tagihanDao.totalTagihanPerTahunAkademikDanMahasiswa(tahunAkademik.getId(), mhs.getId()));
+            model.addAttribute("totalDibayar", pembayaranDao.totalDibayarPerTahunDanMahasiswa(tahunAkademik.getId(), mhs.getId()));
         }
 
         // list per prodi
+        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi());
+        model.addAttribute("toTagihan", tagihanDao.totalTagihan());
+        model.addAttribute("toDibayar", pembayaranDao.totalDibayar());
 
-        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahun.getId()));
+        // list per prodi + date
+        model.addAttribute("tanggal1", date1);
+        model.addAttribute("tanggal2", date2);
+        model.addAttribute("listProdiDate", tagihanDao.listTagihanPerProdiAndDate(date1, date2));
 
-        // list per angkatan
-
-        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahun.getId()));
+        // list per angkatan + date
+        model.addAttribute("tanggal3", date3);
+        model.addAttribute("tanggal4", date4);
+        model.addAttribute("listAngkatanDate", tagihanDao.listTagihanPerAngkatanDate(date3, date4));
+        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan());
 
     }
 

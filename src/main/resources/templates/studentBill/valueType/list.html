@@ -53,6 +53,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">

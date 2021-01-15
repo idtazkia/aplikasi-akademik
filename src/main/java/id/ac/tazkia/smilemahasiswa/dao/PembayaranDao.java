@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarPembayaranDto;
 import id.ac.tazkia.smilemahasiswa.entity.Pembayaran;
 import id.ac.tazkia.smilemahasiswa.entity.Tagihan;
+import org.exolab.castor.types.DateTime;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -16,7 +17,10 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b\n" +
             "on a.id_tagihan=b.id\n" +
             "where b.id_tahun_akademik=?1 and b.id_mahasiswa=?2", nativeQuery = true)
-    BigDecimal totalDibayar(String idTahunAkademik, String idMahasiswa);
+    BigDecimal totalDibayarPerTahunDanMahasiswa(String idTahunAkademik, String idMahasiswa);
+
+    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id", nativeQuery = true)
+    BigDecimal totalDibayar();
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id\n" +
             "where b.id_mahasiswa=?1 and b.status = 'AKTIF'", nativeQuery = true)

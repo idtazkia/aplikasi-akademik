@@ -283,32 +283,97 @@
                                     </div>
                                     <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
                                         <div class="card-body">
+                                            <form method="get">
+                                                <div class="row">
+                                                    <div th:if="${tanggal1 != null}" class="col-md-1">
+                                                        <div class="btn btn-info"><a class="text-white" th:href="@{/studentBill/billAdmin/list}"><i class="fas fa-sync-alt"></i> Refresh</a></div>
+                                                    </div>
+                                                    <div th:if="${tanggal1 == null}" class="col-md-1"></div>
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group mb-3">
+                                                            <input type="date" name="date1" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal1}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="center input-group mt-2 ml-3">
+                                                            To
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group mb-3">
+                                                            <input type="date" name="date2" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal2}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
                                             <div class="card shadow">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <div class="bg-primary text-white text-center">Daftar Tagihan per Prodi</div>
-                                                        <div class="table-responsive">
-                                                            <table class="table align-items-center table-flush">
-                                                                <thead class="thead-dark">
-                                                                <tr>
-                                                                    <td>#</td>
-                                                                    <td class="text-center">Nama Prodi</td>
-                                                                    <td class="text-center">Total Tagihan</td>
-                                                                    <td class="text-center">Dibayar</td>
-                                                                    <td class="text-center">Sisa</td>
-                                                                    <td class="text-center"></td>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr th:each="data, row:${listProdi}">
-                                                                    <td th:text="${(row.index + 1)}">1</td>
-                                                                    <td class="text-center" th:text="${data[0]}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                        <div th:if="${tanggal1 == null && tanggal2 == null}">
+                                                            <div class="bg-primary text-white text-center">Daftar Tagihan per Prodi</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Nama Prodi</td>
+                                                                        <td class="text-center">Total Tagihan</td>
+                                                                        <td class="text-center">Dibayar</td>
+                                                                        <td class="text-center">Sisa</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listProdi}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-right" colspan="2"><h5>Total : </h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div th:if="${tanggal1 != null && tanggal2 != null}">
+                                                            <div class="bg-primary text-white text-center">Dartar Pemasukan per Prodi</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Nama Prodi</td>
+                                                                        <td class="text-center">Pemasukan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listProdiDate}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr th:if="${listProdiDate} == null">
+                                                                        <td class="text-center" th:text="Data Kosong"></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -317,32 +382,97 @@
                                     </div>
                                     <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
                                         <div class="card-body">
+                                            <form method="get">
+                                                <div class="row">
+                                                    <div th:if="${tanggal3 != null}" class="col-md-1">
+                                                        <div class="btn btn-info"><a class="text-white" th:href="@{/studentBill/billAdmin/list}"><i class="fas fa-sync-alt"></i> Refresh</a></div>
+                                                    </div>
+                                                    <div th:if="${tanggal3 == null}" class="col-md-1"></div>
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group mb-3">
+                                                            <input type="date" name="date3" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal3}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="center input-group mt-2 ml-3">
+                                                            To
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="input-group mb-3">
+                                                            <input type="date" name="date4" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal4}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
                                             <div class="card shadow">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <div class="bg-primary text-white text-center">Daftar Tagihan per Angkatan</div>
-                                                        <div class="table-responsive">
-                                                            <table class="table align-items-center table-flush">
-                                                                <thead class="thead-light">
-                                                                <tr>
-                                                                    <td>#</td>
-                                                                    <td class="text-center">Angkatan</td>
-                                                                    <td class="text-center">Total Tagihan</td>
-                                                                    <td class="text-center">Dibayar</td>
-                                                                    <td class="text-center">Sisa</td>
-                                                                    <td class="text-center"></td>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr th:each="data, row:${listAngkatan}">
-                                                                    <td th:text="${(row.index + 1)}">1</td>
-                                                                    <td class="text-center" th:text="${data[0]}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                    <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                        <div th:if="${tanggal3 == null && tanggal4 == null}">
+                                                            <div class="bg-primary text-white text-center">Daftar Tagihan per Angkatan</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-light">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Angkatan</td>
+                                                                        <td class="text-center">Total Tagihan</td>
+                                                                        <td class="text-center">Dibayar</td>
+                                                                        <td class="text-center">Sisa</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listAngkatan}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-right" colspan="2"><h5>Total : </h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div th:if="${tanggal3 != null && tanggal4 != null}">
+                                                            <div class="bg-primary text-white text-center">Dartar Pemasukan per Angkatan</div>
+                                                            <div class="table-responsive">
+                                                                <table class="table align-items-center table-flush">
+                                                                    <thead class="thead-dark">
+                                                                    <tr>
+                                                                        <td>#</td>
+                                                                        <td class="text-center">Angkatan</td>
+                                                                        <td class="text-center">Pemasukan</td>
+                                                                        <td class="text-center"></td>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr th:each="data, row:${listAngkatanDate}">
+                                                                        <td th:text="${(row.index + 1)}">1</td>
+                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                    </tr>
+                                                                    <tr th:if="${listProdiDate} == null">
+                                                                        <td class="text-center" th:text="Data Kosong"></td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -359,3 +489,15 @@
         </div>
     </body>
 </html>
+
+<script>
+    $(document).ready(function (){
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e){
+            localStorage.setItem('activeTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab){
+            $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
+        }
+    });
+</script>
