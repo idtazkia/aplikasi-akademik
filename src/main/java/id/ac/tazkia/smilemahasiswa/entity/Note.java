@@ -47,6 +47,8 @@ public class Note {
 
     private String fileUpload;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String keterangan;
 
     @Column(columnDefinition = "DATE")

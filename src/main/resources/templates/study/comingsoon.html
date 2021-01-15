@@ -10,7 +10,7 @@
     }
 
     .bgimg {
-        background-image: url('https://images.wallpaperscraft.com/image/road_marking_cloudy_124093_1920x1080.jpg');
+        background-color: black;
         height: 100%;
         background-position: center;
         background-size: cover;
@@ -44,6 +44,20 @@
         margin: auto;
         width: 40%;
     }
+
+    .btn-df{
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+        font-size: 20px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .btn-df:hover{
+        background-color: white;
+        color: black;
+    }
+    a { text-decoration: none; color: white; }
 </style>
 <body>
 
@@ -52,14 +66,17 @@
         <p></p>
     </div>
     <div class="middle">
-        <h1>COMING SOON</h1>
+        <h1>PENGUMUMAN</h1>
         <hr>
-        <p th:text="${hari + ' days remaining before study activity started'}">35 days remaining before study activity started</p>
+<!--        <p th:text="${hari + ' days remaining before study activity started'}">35 days remaining before study activity started</p>-->
         <p th:text="${hari + ' hari menuju waktu pengisian KRS'}">35 days remaining before study activity started</p>
         <P th:text="${' Pengisian krs dimulai pada tanggal : ' + #temporals.format(krs.getMulaiKrs(),'dd-MMMM-yyyy')}"></P>
         <p> Untuk Info lebih lanjut silahkan hubungi bagian akademik. </p>
         <p>(Program Sarjana) +62 811-9966-772 (WhatsApp Only)</p>
         <p>(Program Pascasarjana) +62 813-8070-9596 (WhatsApp Only)</p>
+        <a th:href="@{/du/konsentrasi}" class="btn-df">Daftar Ulang</a>
+
+
     </div>
     <div class="bottomleft">
 <!--        <p>Please fulfill the payment</p>-->

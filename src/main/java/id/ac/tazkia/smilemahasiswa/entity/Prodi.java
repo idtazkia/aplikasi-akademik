@@ -25,8 +25,8 @@ import java.time.LocalDate;
         private String id;
 
         @ManyToOne
-        @JoinColumn(name = "id_jurusan")
-        private Jurusan idJurusan;
+        @JoinColumn(name = "id_fakultas")
+        private Fakultas fakultas;
 
         @ManyToOne
         @JoinColumn(name = "id_jenjang")

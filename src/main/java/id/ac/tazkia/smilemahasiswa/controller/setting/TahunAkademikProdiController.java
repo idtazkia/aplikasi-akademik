@@ -63,7 +63,7 @@ public class TahunAkademikProdiController {
         tahunProdiDao.save(tahunAkademikProdi);
 
         redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
-        return "redirect:../tahun";
+        return "redirect:/academic/prodi/list";
 
     }
 

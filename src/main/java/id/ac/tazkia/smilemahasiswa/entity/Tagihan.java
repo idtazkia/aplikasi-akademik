@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -56,6 +57,8 @@ public class Tagihan {
     private Karyawan karyawan;
 
     @NotNull
+    @Column(columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean lunas = false;
 
     @Enumerated(EnumType.STRING)

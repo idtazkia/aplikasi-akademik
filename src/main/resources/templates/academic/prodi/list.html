@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Academic Years (Program Studi) </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-danger" th:if="${gagal != null}">
+                    Save data gagal
+                </div>
+                <div class="alert alert-success" th:if="${success != null}">
+                    Save data berhasil
+                </div>
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <!--                                <a th:href="@{/prodi/tahun/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <select name="tahunAkademik" id="" class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectedTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">sdasd</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div th:if="${search != null}">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Prodi</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Status</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data, row : ${prodiTahunAkademik}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data[1]}"></td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td><span class="btn btn-outline-success btn-sm" th:text="${data[3]}"></span></td>
+                                    <td th:text="${data[4]}"></td>
+                                    <td>
+                                        <div th:if="${data[5] == 'AKTIF'}">
+                                            <span class="btn btn-success btn-sm" th:text="${data[5]}"></span>
+                                        </div>
+                                        <div th:if="${data[5] == 'NONAKTIF'}">
+                                            <span class="btn btn-danger btn-sm" th:text="${data[5]}"></span>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/prodi/tahun/edit (tahunAkademikProdi = ${data[0]})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div th:if="${search == null}">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Prodi <span class="btn btn-warning btn-sm" style="font-size: 10px;"><i class="fa fa-check-circle"></i> Tahun Akademik Prodi Yang Aktif (<span th:text="${tahunAkademik1.namaTahunAkademik}"></span>)</span></th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Status</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data, row : ${listYearProdi}">
+                                    <td th:text="${row.index + 1}"></td>
+                                    <td th:text="${data[1]}"></td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td><span class="btn btn-outline-success btn-sm" th:text="${data[3]}"></span></td>
+                                    <td th:text="${data[4]}"></td>
+                                    <td><span class="btn btn-success btn-sm" th:text="${data[5]}"z></span></td>
+                                    <td>
+                                        <a th:href="@{/prodi/tahun/edit (tahunAkademikProdi = ${data[0]})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+
+<!--modal-->
+
+</body>
+</html>
