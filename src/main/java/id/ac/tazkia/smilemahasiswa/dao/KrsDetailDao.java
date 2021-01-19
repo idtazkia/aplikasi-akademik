@@ -459,4 +459,17 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "where bobot > bobots\n" +
             "order by kode_matakuliah", nativeQuery = true)
     List<TranskriptDto> excelTranskript(String idMahasiswa, String semester);
+
+    @Query(value = "select  id from krs_detail where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' order by nilai_akhir desc Limit 1", nativeQuery = true)
+    Object getKrsDetailId(Jadwal jadwal,Mahasiswa mahasiswa);
+
+    @Modifying
+    @Query(value = "update krs_detail set status = 'HAPUS' where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' and id not in(?3)", nativeQuery = true)
+    void updateKrsDetail(Jadwal jadwal, Mahasiswa mahasiswa, String id);
+
+    List<KrsDetail> findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord statusRecord, Jadwal jadwal, Mahasiswa mahasiswa, Object Id);
+
+    Long countByJadwalIdAndKrsAndStatusAndTahunAkademik(String jadwal, Krs krs , StatusRecord statusRecord, TahunAkademik tahunAkademik);
+
+    KrsDetail findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(Mahasiswa byNim, Jadwal jadwal, StatusRecord aktif, Krs krs,TahunAkademik tahunAkademik);
 }

@@ -18,6 +18,8 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
 
     Karyawan findByIdUser(User user);
 
+    Karyawan findByEmail(String email);
+
     Page<Karyawan> findByStatusAndNamaKaryawanContainingIgnoreCaseOrderByNamaKaryawan(StatusRecord aktif, String search, Pageable page);
 
     Page<Karyawan> findByStatusOrderByNamaKaryawan(StatusRecord aktif, Pageable page);
