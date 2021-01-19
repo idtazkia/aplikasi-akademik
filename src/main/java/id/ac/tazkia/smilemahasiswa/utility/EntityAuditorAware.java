@@ -18,6 +18,11 @@ public class EntityAuditorAware implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+        if(auth == null || auth.getPrincipal() == null){
+            return Optional.of("No logged in user");
+        }
+
         auth.getPrincipal().getAttributes().get("email");
         LOGGER.debug("Authentication Object : {}", auth);
         
