@@ -2,6 +2,8 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -46,6 +48,7 @@ public class PresensiDosen {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_dosen")
+    @NotFound(action = NotFoundAction.IGNORE)
     private Dosen dosen;
 
 }
