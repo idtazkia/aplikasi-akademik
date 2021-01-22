@@ -112,8 +112,8 @@ public class Mahasiswa {
     private String kps = "Tidak";
     private String nomorKps;
 
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @Column(columnDefinition = "DATE")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate terakhirUpdate;
 
     @ManyToOne
