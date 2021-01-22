@@ -170,11 +170,11 @@
         <h2>Untuk Aktifasi <span style="color: #d9534f;">KRS</span></h2>
         <p>Silahklan Pilih Konsetrasi Terlebih Dahulu. </p>
         <form th:action="@{/du/konsentrasi}" method="post" th:object="${mahasiswa}">
-            <select class="select-css" name="idKonsentrasi">
+            <select class="select-css" required name="idKonsentrasi">
                 <option selected disabled>-- Pilih Konsentrasi --</option>
-                <option th:each="data : ${konsentrasi}"
-                        th:text="${data.kodeKonsentrasi} + ' (' + ${data.idProdi.namaProdi} + ')'"
-                        th:value="${data.id}"></option>
+                <option th:each="data : ${konstrasiProdi}"
+                        th:text="${data[1]} + ' (' + ${data[2]} + ')'"
+                        th:value="${data[0]}"></option>
             </select>
             <input type="hidden" th:field="*{id}">
         <br>

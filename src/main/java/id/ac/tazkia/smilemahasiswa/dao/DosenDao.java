@@ -22,6 +22,7 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Dosen findByKaryawanRfid(String rfid);
 
     Dosen findByKaryawan(Karyawan karyawan);
+    List<Dosen> findByKaryawan(String kar);
     Dosen findByKaryawanIdUser(User user);
 
     Long countDosenByStatus(StatusRecord aktif);
