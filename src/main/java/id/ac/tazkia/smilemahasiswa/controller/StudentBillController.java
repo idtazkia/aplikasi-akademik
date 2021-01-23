@@ -470,11 +470,10 @@ public class StudentBillController {
 
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         List<Mahasiswa> mahasiswas = mahasiswaDao.findByIdProdiAndStatus(prodi, StatusRecord.AKTIF);
-        System.out.println("okeee gak?");
         for (Mahasiswa mhs : mahasiswas){
             List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndProdiAndStatus(tahun, mhs.getAngkatan(), mhs.getIdProdi(), StatusRecord.AKTIF);
             for (NilaiJenisTagihan njt : nilaiJenisTagihans){
-                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(mhs, njt.getJenisTagihan(), StatusRecord.AKTIF);
+                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(mhs, njt.getJenisTagihan(), tahun, StatusRecord.AKTIF);
                 if (tagihan1 == null){
                     Tagihan tagihan = new Tagihan();
                     tagihan.setMahasiswa(mhs);
@@ -527,20 +526,26 @@ public class StudentBillController {
                     }
 
                     tagihanService.createTagihan(tagihan);
-                }else if (tagihan1.getTahunAkademik() != tahun) {
+                }
+
+                Tagihan tagihan2 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikNotInAndLunasAndStatus(mhs, njt.getJenisTagihan(), tahun, false, StatusRecord.AKTIF);
+                if (tagihan2 != null){
                     Tagihan tagihan = new Tagihan();
                     tagihan.setMahasiswa(mhs);
                     tagihan.setNilaiJenisTagihan(njt);
                     tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                             + " a.n. " +tagihan.getMahasiswa().getNama());
-                    tagihan.setNilaiTagihan(njt.getNilai().add(tagihan1.getNilaiTagihan()));
+                    tagihan.setNilaiTagihan(njt.getNilai().add(tagihan2.getNilaiTagihan()));
                     tagihan.setTanggalPembuatan(LocalDate.now());
                     tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
                     tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
                     tagihan.setTahunAkademik(tahun);
                     tagihan.setStatus(StatusRecord.AKTIF);
-                    tagihan.setIdTagihanSebelumnya(tagihan1.getId());
+                    tagihan.setIdTagihanSebelumnya(tagihan2.getId());
                     tagihanDao.save(tagihan);
+
+                    tagihan2.setStatus(StatusRecord.NONAKTIF);
+                    tagihanDao.save(tagihan2);
 
                     if (uas != null){
                         EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.UAS, "0", tahun);

@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarBiayaDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.NilaiCicilanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.apache.kafka.common.metrics.Stat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -92,9 +93,11 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by angkatan order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4);
 
-    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord);
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikNotInAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, boolean lunas, StatusRecord statusRecord);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
+
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
     Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan);
 
