@@ -101,7 +101,7 @@ public class TagihanService {
             }
         }
 
-        if (pt.getKodeBiaya().equals("14")){
+        if (pt.getKodeBiaya().equals("14") || pt.getKodeBiaya().equals("40") || pt.getKodeBiaya().equals("22")){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (enableFiture != null){
                 enableFiture.setEnable("1");
