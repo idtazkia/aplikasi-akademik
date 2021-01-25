@@ -599,7 +599,9 @@ public class StudentBillController {
 
         Mahasiswa mhs = nim;
         tagihan.setMahasiswa(mhs);
-        tagihan.setKeterangan("-");
+//        Tagihan tgh = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikNotInAndLunasAndStatus(mhs, tagihan.getNilaiJenisTagihan().getJenisTagihan(), tahun, false, StatusRecord.AKTIF);
+        tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
+                + " a.n. " +tagihan.getMahasiswa().getNama());
         tagihan.setTanggalPembuatan(LocalDate.now());
         tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
         tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));

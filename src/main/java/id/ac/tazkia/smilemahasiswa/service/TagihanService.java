@@ -85,41 +85,41 @@ public class TagihanService {
         bank.setId(pt.getBank());
         pembayaran.setBank(bank);
 
-//        if (pt.getKodeBiaya().equals("12")){
-//            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-//            if (enableFiture != null){
-//                enableFiture.setEnable("1");
-//                enableFitureDao.save(enableFiture);
-//            }
-//        }
-//
-//        if (pt.getKodeBiaya().equals("13")){
-//            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-//            if (enableFiture != null){
-//                enableFiture.setEnable("1");
-//                enableFitureDao.save(enableFiture);
-//            }
-//        }
-//
-//        if (pt.getKodeBiaya().equals("14")){
-//            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
-//            if (enableFiture != null){
-//                enableFiture.setEnable("1");
-//                enableFitureDao.save(enableFiture);
-//
-//                TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi());
-//                Krs krs = new Krs();
-//                krs.setTahunAkademik(tagihan.getTahunAkademik());
-//                krs.setTahunAkademikProdi(tahunAkademikProdi);
-//                krs.setProdi(tagihan.getMahasiswa().getIdProdi());
-//                krs.setMahasiswa(tagihan.getMahasiswa());
-//                krs.setNim(tagihan.getMahasiswa().getNim());
-//                krs.setTanggalTransaksi(LocalDateTime.now());
-//                krs.setStatus(StatusRecord.AKTIF);
-//                krsDao.save(krs);
-//
-//            }
-//        }
+        if (pt.getKodeBiaya().equals("12")){
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (enableFiture != null){
+                enableFiture.setEnable("1");
+                enableFitureDao.save(enableFiture);
+            }
+        }
+
+        if (pt.getKodeBiaya().equals("13")){
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (enableFiture != null){
+                enableFiture.setEnable("1");
+                enableFitureDao.save(enableFiture);
+            }
+        }
+
+        if (pt.getKodeBiaya().equals("14")){
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (enableFiture != null){
+                enableFiture.setEnable("1");
+                enableFitureDao.save(enableFiture);
+
+                TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi());
+                Krs krs = new Krs();
+                krs.setTahunAkademik(tagihan.getTahunAkademik());
+                krs.setTahunAkademikProdi(tahunAkademikProdi);
+                krs.setProdi(tagihan.getMahasiswa().getIdProdi());
+                krs.setMahasiswa(tagihan.getMahasiswa());
+                krs.setNim(tagihan.getMahasiswa().getNim());
+                krs.setTanggalTransaksi(LocalDateTime.now());
+                krs.setStatus(StatusRecord.AKTIF);
+                krsDao.save(krs);
+
+            }
+        }
 
 
         tagihanDao.save(tagihan);
