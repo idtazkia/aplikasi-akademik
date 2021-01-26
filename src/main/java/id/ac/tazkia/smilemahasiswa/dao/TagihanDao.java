@@ -97,7 +97,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
-    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord);
 
     Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan);
 
