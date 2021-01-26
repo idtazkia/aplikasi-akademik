@@ -18,8 +18,8 @@ public class Diskon {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "id_tagihan")
-    private Tagihan tagihan;
+    @JoinColumn(name = "id_nilai_jenis_tagihan")
+    private NilaiJenisTagihan nilaiJenisTagihan;
 
     @ManyToOne
     @JoinColumn(name = "id_jenis_diskon")
