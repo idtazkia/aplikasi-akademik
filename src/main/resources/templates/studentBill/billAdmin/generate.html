@@ -78,6 +78,19 @@
 <!--                                </div>-->
 <!--                            </div>-->
                             <form method="post" th:action="@{/studentBill/billAdmin/generate( prodi=${selectProdi.id})}">
+                                <div class="row">
+                                    <div class="ml-3">
+                                        Fitur Block : &nbsp;
+                                        <input type="checkbox" name="uas">
+                                        UAS &nbsp;
+                                        &nbsp;
+                                        <input type="checkbox" name="uts">
+                                        UTS &nbsp;
+                                        &nbsp;
+                                        <input type="checkbox" name="krs">
+                                        KRS &nbsp;
+                                    </div>
+                                </div>
                                 <div class="col">
                                     <div class="form-group text-center">
                                         <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Generate</button>
@@ -85,7 +98,6 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>

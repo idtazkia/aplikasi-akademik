@@ -49,7 +49,7 @@ public class StudyActivityController {
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
-    private IpkDao ipkDao;
+    private EnableFitureDao enableFitureDao;
 
     @Autowired
     private JadwalDao jadwalDao;
@@ -139,38 +139,58 @@ public class StudyActivityController {
 
         KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
 
+        model.addAttribute("mahasiswa", mahasiswa);
+        if (kelasMahasiswa != null){
+            model.addAttribute("kelas", kelasMahasiswa);
+        }
+
+
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
-        Long jumlahSks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+        if (k == null){
+            Long jumlahSks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
-        if (jumlahSks == null){
-            jumlahSks = Long.valueOf(0);
+            if (jumlahSks == null) {
+                jumlahSks = Long.valueOf(0);
+            }
+
+            model.addAttribute("sks", jumlahSks);
+            model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
+
+            model.addAttribute("kosong", "kosong");
         }
 
-        if (ta.getTanggalMulaiKrs().compareTo(LocalDate.now()) >= 0) {
-            model.addAttribute("validasi", ta);
+        if(k != null) {
+
+            Long jumlahSks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            if (jumlahSks == null) {
+                jumlahSks = Long.valueOf(0);
+            }
+
+            if (ta.getTanggalSelesaiKrs().compareTo(LocalDate.now()) >= 0) {
+                model.addAttribute("validasi", ta);
+            }
+
+//            Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
+//            Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
+//
+//            if (semester == null) {
+//                semester = 0;
+//            }
+//
+//            if (semesterSekarang == null) {
+//                semesterSekarang = 0;
+//            }
+//
+//            Integer semesterTotal = semester + semesterSekarang;
+//
+//            model.addAttribute("semester", semesterTotal);
+            model.addAttribute("sks", jumlahSks);
+            model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
+
+            model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
         }
-
-        Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
-        Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
-
-        if(semester == null){
-            semester = 0;
-        }
-
-        if(semesterSekarang == null){
-            semesterSekarang = 0;
-        }
-
-        Integer semesterTotal = semester + semesterSekarang;
-
-        model.addAttribute("semester", semesterTotal);
-        model.addAttribute("mahasiswa", mahasiswa);
-        model.addAttribute("kelas",kelasMahasiswa);
-        model.addAttribute("sks", jumlahSks);
-        model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
-
-        model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
 
         return "study/krs";
 
