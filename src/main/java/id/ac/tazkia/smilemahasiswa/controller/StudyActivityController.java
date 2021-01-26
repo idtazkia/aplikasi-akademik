@@ -461,7 +461,7 @@ public class StudyActivityController {
         mahasiswa.setIdKonsentrasi(mahasiswaDto.getIdKonsentrasi());
         mahasiswaDao.save(mahasiswa);
 
-        return "redirect:/du/kelas";
+        return "redirect:/du/alert";
     }
 
     @GetMapping("/du/alert")
