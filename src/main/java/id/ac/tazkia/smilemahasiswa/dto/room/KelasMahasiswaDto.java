@@ -15,4 +15,5 @@ public class KelasMahasiswaDto {
     private String kurikulum;
     private String krs;
     private String krsDetail;
+    private String konsentrasi;
 }

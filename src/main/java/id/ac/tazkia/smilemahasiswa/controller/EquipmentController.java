@@ -40,6 +40,9 @@ public class EquipmentController {
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
+    private KonsentrasiDao konsentrasiDao;
+
+    @Autowired
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
@@ -321,46 +324,109 @@ public class EquipmentController {
     }
 
     @GetMapping("/equipment/class/mahasiswa")
-    public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, Model model, Pageable page){
+    public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Konsentrasi konsentrasi, Model model, Pageable page){
         model.addAttribute("selectedKelas", kelas);
         if (prodi != null) {
             List<KelasMahasiswaDto> mahasiswaDtos = new ArrayList<>();
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
-            Iterable<Mahasiswa> mahasiswa = mahasiswaDao.carikelas(StatusRecord.AKTIF, angkatan, prodi);
+            model.addAttribute("konsentrasi", konsentrasiDao.konsentrasiProdi(prodi.getId()));
+            if (konsentrasi != null){
+                Iterable<Mahasiswa> mahasiswaKonsentrasi = mahasiswaDao.carikelasKonsentrai(StatusRecord.AKTIF, angkatan, prodi,konsentrasi);
+                if (mahasiswaKonsentrasi != null){
+                    for (Mahasiswa m : mahasiswaKonsentrasi) {
+                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
+                        if (kelasMahasiswa == null) {
+                            KelasMahasiswaDto km = new KelasMahasiswaDto();
+                            km.setId(m.getId());
+                            km.setNama(m.getNama());
+                            if (m.getKurikulum() != null) {
+                                km.setKurikulum(m.getKurikulum().getNamaKurikulum());
+                            } else {
+                                km.setKurikulum("");
+                            }
+                            km.setNim(m.getNim());
+                            km.setKelas("");
+                            if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                                km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                            }
 
-            if (mahasiswa != null){
-                for (Mahasiswa m : mahasiswa) {
-                    KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
-                    if (kelasMahasiswa == null) {
-                        KelasMahasiswaDto km = new KelasMahasiswaDto();
-                        km.setId(m.getId());
-                        km.setNama(m.getNama());
-                        if (m.getKurikulum() != null) {
-                            km.setKurikulum(m.getKurikulum().getNamaKurikulum());
-                        } else {
-                            km.setKurikulum("");
+                            mahasiswaDtos.add(km);
                         }
-                        km.setNim(m.getNim());
-                        km.setKelas("");
-                        mahasiswaDtos.add(km);
-                    }
-                    if (kelasMahasiswa != null) {
-                        KelasMahasiswaDto km = new KelasMahasiswaDto();
-                        km.setId(m.getId());
-                        km.setNama(m.getNama());
-                        if (m.getKurikulum() != null) {
-                            km.setKurikulum(m.getKurikulum().getNamaKurikulum());
-                        } else {
-                            km.setKurikulum("");
-                        }
-                        km.setNim(m.getNim());
-                        km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
-                        mahasiswaDtos.add(km);
+                        if (kelasMahasiswa != null) {
+                            KelasMahasiswaDto km = new KelasMahasiswaDto();
+                            km.setId(m.getId());
+                            km.setNama(m.getNama());
+                            if (m.getKurikulum() != null) {
+                                km.setKurikulum(m.getKurikulum().getNamaKurikulum());
+                            } else {
+                                km.setKurikulum("");
+                            }
+                            km.setNim(m.getNim());
+                            km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
+                            if (m.getIdKonsentrasi() ==  null){
+                                km.setKonsentrasi(null);
+                            } else {
+                                if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                                    km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                                }
+                            }
 
+                            mahasiswaDtos.add(km);
+
+                        }
                     }
                 }
-        }
+
+            }else{
+                Iterable<Mahasiswa> mahasiswaAll = mahasiswaDao.carikelas(StatusRecord.AKTIF, angkatan, prodi);
+
+                if (mahasiswaAll != null){
+                    for (Mahasiswa m : mahasiswaAll) {
+                        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(m, StatusRecord.AKTIF);
+                        if (kelasMahasiswa == null) {
+                            KelasMahasiswaDto km = new KelasMahasiswaDto();
+                            km.setId(m.getId());
+                            km.setNama(m.getNama());
+                            if (m.getKurikulum() != null) {
+                                km.setKurikulum(m.getKurikulum().getNamaKurikulum());
+                            } else {
+                                km.setKurikulum("");
+                            }
+                            km.setNim(m.getNim());
+                            km.setKelas("");
+                            if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                                km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                            }
+
+                            mahasiswaDtos.add(km);
+                        }
+                        if (kelasMahasiswa != null) {
+                            KelasMahasiswaDto km = new KelasMahasiswaDto();
+                            km.setId(m.getId());
+                            km.setNama(m.getNama());
+                            if (m.getKurikulum() != null) {
+                                km.setKurikulum(m.getKurikulum().getNamaKurikulum());
+                            } else {
+                                km.setKurikulum("");
+                            }
+                            km.setNim(m.getNim());
+                            km.setKelas(kelasMahasiswa.getKelas().getNamaKelas());
+                            if (m.getIdKonsentrasi() ==  null){
+                                km.setKonsentrasi(null);
+                            } else {
+                                if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                                    km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                                }
+                            }
+
+                            mahasiswaDtos.add(km);
+
+                        }
+                    }
+                }
+            }
+
             model.addAttribute("mahasiswaList", mahasiswaDtos);
         }
     }
