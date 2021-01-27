@@ -18,6 +18,10 @@ public class Diskon {
     private String id;
 
     @ManyToOne
+    @JoinColumn(name = "id_mahasiswa")
+    private Mahasiswa mahasiswa;
+
+    @ManyToOne
     @JoinColumn(name = "id_nilai_jenis_tagihan")
     private NilaiJenisTagihan nilaiJenisTagihan;
 
