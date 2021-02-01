@@ -387,6 +387,15 @@ public class StudyActivityController {
 
     }
 
+    @GetMapping("/study/krs/form")
+    public void listKrs(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
+    }
+
     @GetMapping("/study/jadwal")
     public void listJadwal(){
 
