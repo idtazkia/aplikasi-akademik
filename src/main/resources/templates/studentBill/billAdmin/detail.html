@@ -83,11 +83,6 @@
                                                   <td> : </td>
                                                   <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                               </tr>
-                                              <tr th:if="${diskon} != null">
-                                                  <td>Diskon</td>
-                                                  <td> : </td>
-                                                  <td th:text="${diskon.jenisDiskon.nama}"></td>
-                                              </tr>
                                               <tr th:if="${pembayaran} != null">
                                                   <td>Waktu Pembayaran</td>
                                                   <td> : </td>

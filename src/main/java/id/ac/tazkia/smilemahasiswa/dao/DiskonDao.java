@@ -6,6 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface DiskonDao extends PagingAndSortingRepository<Diskon, String> {
 
-    Diskon findByTagihan(Tagihan tagihan);
 
 }

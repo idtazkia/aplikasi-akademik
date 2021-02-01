@@ -47,7 +47,8 @@
                     </div>
                     <div class="card-body">
                         <form method="post" th:action="@{/studentBill/diskon/new}" th:object="${diskon}">
-                            <input type="hidden" name="idTagihan" th:value="${tagihan.id}">
+                            <input type="hidden" name="id" th:value="${tagihan.nilaiJenisTagihan.id}">
+                            <input type="hidden" name="mahasiswa" th:value="${m.id}">
                             <div class="form-group">
                                 <label>Diskon</label>
                                 <select id="" name="jenisDiskon" required class="form-control">

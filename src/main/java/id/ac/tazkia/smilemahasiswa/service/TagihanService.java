@@ -86,7 +86,7 @@ public class TagihanService {
         pembayaran.setBank(bank);
 
         if (pt.getKodeBiaya().equals("12")){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
                 enableFitureDao.save(enableFiture);
@@ -94,7 +94,7 @@ public class TagihanService {
         }
 
         if (pt.getKodeBiaya().equals("13")){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
                 enableFitureDao.save(enableFiture);
@@ -102,7 +102,7 @@ public class TagihanService {
         }
 
         if (pt.getKodeBiaya().equals("14") || pt.getKodeBiaya().equals("40") || pt.getKodeBiaya().equals("22")){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
                 enableFitureDao.save(enableFiture);
