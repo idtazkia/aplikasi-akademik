@@ -122,7 +122,7 @@
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                                     <span class="btn-inner--text">Show Student</span>
                                                                 </a>
-                                                                <a th:href="@{/equipment/class/mahasiswa(kelas = ${data.id})}" class="btn btn-neutral btn-icon">
+                                                                <a th:href="@{/equipment/class/mahasiswa(angkatan = ${data.angkatan}, prodi = ${data.idProdi.id}, kelas = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-plus-circle"></i></span>
                                                                     <span class="btn-inner--text">Add Student</span>
                                                                 </a>

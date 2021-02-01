@@ -53,6 +53,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -2006,9 +2007,17 @@ public class StudiesActivityController {
 
     }
 
+    public static String getPattern(int month) {
+        String first = "MMMM dd";
+        String last = " yyyy";
+        String pos = (month == 1 || month == 21 || month == 31) ? "'st'" : (month == 2 || month == 22) ? "'nd'" : (month == 3 || month == 23) ? "'rd'" : "'th'";
+        return first + pos + last;
+    }
+
     @GetMapping("/studiesActivity/transcript/cetaktranscript")
     public void cetakTranscript(Model model,@RequestParam(required = false) String nim){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+
         if (StringUtils.hasText(nim)) {
             model.addAttribute("search",nim);
 
@@ -2189,77 +2198,13 @@ public class StudiesActivityController {
         birthDay.createCell(0).setCellValue("Place and Date of Birth");
         birthDay.createCell(3).setCellValue(":");
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " January" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
 
-        }
+        int month = mahasiswa.getTanggalLahir().getDayOfMonth();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(getPattern(month));
+        String birthdate = mahasiswa.getTanggalLahir().format(formatter);
+        birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + birthdate);
+        birthDay.getCell(4).setCellStyle(styleData);
 
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 2){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " February" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 3){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " March" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 4){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 5){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " May" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 6){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " June" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 7){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " July" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 8){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " August" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 9){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 10){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " October" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 11){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLahir().getMonthValue() == 12){
-            birthDay.createCell(4).setCellValue(mahasiswa.getTempatLahir()+"," + " " + mahasiswa.getTanggalLahir().getDayOfMonth() + " December" + " " + mahasiswa.getTanggalLahir().getYear());
-            birthDay.getCell(4).setCellStyle(styleData);
-
-        }
 
         birthDay.getCell(0).setCellStyle(styleData);
         birthDay.getCell(3).setCellStyle(styleSymbol);
@@ -2317,77 +2262,11 @@ public class StudiesActivityController {
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Date of Accreditation Decree");
         dateAccreditation.createCell(3).setCellValue(":");
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " January" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
+            int monthAccred = mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth();
+            DateTimeFormatter formatterAccred = DateTimeFormatter.ofPattern(getPattern(monthAccred));
+            String accredDate = mahasiswa.getIdProdi().getTanggalSk().format(formatterAccred);
+            dateAccreditation.createCell(4).setCellValue(accredDate);
             dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 2){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " February" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 3){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " March" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 4){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " April" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 5){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " May" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 6){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " June" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 7){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " July" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 8){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " August" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 9){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " September" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 10){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " October" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 11){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " November" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 12){
-            dateAccreditation.createCell(4).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " December" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
-            dateAccreditation.getCell(4).setCellStyle(styleData);
-
-        }
 
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
@@ -2396,78 +2275,12 @@ public class StudiesActivityController {
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Graduated Date");
         graduatedDate.createCell(3).setCellValue(":");
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 1){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " January" + " " + mahasiswa.getTanggalLulus().getYear());
+            int monthGraduate = mahasiswa.getTanggalLulus().getDayOfMonth();
+            DateTimeFormatter formatterGraduate = DateTimeFormatter.ofPattern(getPattern(monthGraduate));
+            String graduateDate = mahasiswa.getTanggalLulus().format(formatterGraduate);
+
+            graduatedDate.createCell(4).setCellValue(graduateDate);
             graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 2){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " February" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 3){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " March" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 4){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 5){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " May" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 6){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " June" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 7){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " July" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 8){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " August" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 9){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 10){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " October" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 11){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
-        if (mahasiswa.getTanggalLulus().getMonthValue() == 12){
-            graduatedDate.createCell(4).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " December" + " " + mahasiswa.getTanggalLulus().getYear());
-            graduatedDate.getCell(4).setCellStyle(styleData);
-
-        }
-
 
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
@@ -2849,256 +2662,34 @@ public class StudiesActivityController {
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("dd", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
-        if (LocalDate.now().getMonthValue() == 1){
+
+        int monthCreate = LocalDate.now().getDayOfMonth();
+        DateTimeFormatter formatterCreate = DateTimeFormatter.ofPattern(getPattern(monthCreate));
+        String createDatee = LocalDate.now().format(formatterCreate);
 
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " January" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " January" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " January" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " January" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " January" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
                 createDateRow.getCell(0).setCellStyle(styleData);
             }
 
-
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 2){
-
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " February" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " February" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " February" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " February" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " February" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 3){
-
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " March" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " March" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " March" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " March" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " March" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 4){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " April" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 5){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " May" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " May" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " May" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " May" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " May" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 6){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " June" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " June" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " June" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " June" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " June" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 7){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " July" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " July" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " July" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " July" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " July" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 8){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " August" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " August" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " August" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " August" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " August" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 9){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " September" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 10){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " October" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " October" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " October" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " October" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " October" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 11){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " November" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
-
-        if (LocalDate.now().getMonthValue() == 12){
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " December" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " December" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " December" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " December" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is Certified to be true and accurate statement, issued in Bogor on " + LocalDate.now().getDayOfMonth() + " December" + " " + LocalDate.now().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
-
-        }
 
         int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
         Row facultyRow = sheet.createRow(faculty);
-        facultyRow.createCell(0).setCellValue("Dean of " + mahasiswa.getIdProdi().getFakultas().getNamaFakultasEnglish());
+        facultyRow.createCell(0).setCellValue("Dean of ");
         facultyRow.getCell(0).setCellStyle(styleData);
-        facultyRow.createCell(5).setCellValue("Coordinator of " + mahasiswa.getIdProdi().getNamaProdiEnglish());
+        facultyRow.createCell(5).setCellValue("Coordinator of ");
         facultyRow.getCell(5).setCellStyle(styleData);
 
         int faculty2 = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;

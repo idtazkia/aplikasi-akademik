@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJenisTagihan, String> {
 
-    Page<NilaiJenisTagihan> findByStatusNotInAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatan(List<StatusRecord> asList, String angkatan, String prodi, Pageable page);
+    Page<NilaiJenisTagihan> findByStatusNotInAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(List<StatusRecord> asList, String angkatan, String prodi, Pageable page);
 
     Page<NilaiJenisTagihan> findByStatusNotInOrderByAngkatan(List<StatusRecord> asList, Pageable page);
 

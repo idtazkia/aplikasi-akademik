@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarBiayaDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.NilaiCicilanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.apache.kafka.common.metrics.Stat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -50,17 +51,20 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     @Query(value = "select a.id, a.id_mahasiswa, a.id_tahun_akademik, d.nama as namaTagihan, a.nilai_tagihan as tagihan, \n" +
             "coalesce(b.amount,0) as dibayar, a.lunas as lunas from tagihan as a inner join nilai_jenis_tagihan as c on \n" +
             "a.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id left join pembayaran as \n" +
-            "b on a.id=b.id_tagihan where a.id_tahun_akademik=?1 and a.id_mahasiswa=?2 and a.status='AKTIF'", nativeQuery = true)
+            "b on a.id=b.id_tagihan where a.id_tahun_akademik=?1 and a.id_mahasiswa=?2 and a.status!='HAPUS'", nativeQuery = true)
     List<DaftarBiayaDto> daftarBiaya(String idTahunAkademik, String idMahasiswa);
 
-    @Query(value = "select aaa.*,coalesce(bbb.dibayar,0)as dibayar,nilai_tagihan-coalesce(dibayar,0) as sisa from\n" +
+    @Query(value = "select aaa.*,coalesce(bbb.dibayar,0)as dibayar,nilai_tagihan-coalesce(dibayar,0) as sisa from \n" +
             "(select a.id,b.nama as namaTagihan,c.nama_tahun_akademik as namaTahun,a.nilai_tagihan from tagihan as a \n" +
-            "inner join nilai_jenis_tagihan as g on a.id_nilai_jenis_tagihan = g.id\n" +
+            "inner join nilai_jenis_tagihan as g on a.id_nilai_jenis_tagihan = g.id \n" +
             "inner join jenis_tagihan as b on g.id_jenis_tagihan=b.id \n" +
-            "inner join tahun_akademik as c on a.id_tahun_akademik=c.id where a.id_mahasiswa=?1 and a.status='AKTIF' order by b.nama)aaa\n" +
-            "left join\n" +
-            "(select sum(amount)as dibayar,aa.id_tagihan from pembayaran as aa inner join tagihan as bb on aa.id_tagihan = bb.id where \n" +
-            "bb.id_mahasiswa=?1 and bb.status='AKTIF' and aa.status='AKTIf' group by id_tagihan)bbb on aaa.id=bbb.id_tagihan" , nativeQuery = true)
+            "inner join tahun_akademik as c on a.id_tahun_akademik=c.id where a.id_mahasiswa=?1 and a.status!='HAPUS' \n" +
+            "order by b.nama)aaa \n" +
+            "left join \n" +
+            "(select sum(amount)as dibayar,aa.id_tagihan from pembayaran as aa inner join tagihan as bb on \n" +
+            "aa.id_tagihan = bb.id where bb.id_mahasiswa=?1 and bb.status!='HAPUS' and aa.status='AKTIf' \n" +
+            "group by id_tagihan)bbb \n" +
+            "on aaa.id=bbb.id_tagihan" , nativeQuery = true)
     List<BiayaMahasiswaDto> biayaMahasiswa(String idMahasiswa);
 
     @Query(value = "select a.id as idTagihan, b.id as idCicilan, a.nilai_tagihan as nilai, round(a.nilai_tagihan / b.banyak_cicilan, 0) \n" +
@@ -92,9 +96,11 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by angkatan order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4);
 
-    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord);
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikNotInAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, boolean lunas, StatusRecord statusRecord);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
+
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, boolean lunas, StatusRecord statusRecord);
 
     Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan);
 

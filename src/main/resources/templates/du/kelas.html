@@ -109,13 +109,19 @@
     <div class="error-page-wrap bounceIn" style="border-radius: 10px; ">
         <i class="notika-icon notika-alarm" style="color: #0c85d0;"></i>
         <h2>Aktifasi <span style="color: #d9534f;">KRS</span></h2>
-        <span>Kelas Anda <span th:text="${kelasMahasiswa.kelas.kodeKelas}"></span></span>
-        <br>
-        <span>Jika, kelas anda tidak sesuai silahkan segera hubungin bagain akademik.</span>
+        <span>Pilih Kelas Terlebih Dahulu</span></span>
         <br>
         <br>
-        <a th:href="@{/du/alert}" class="btn" style="background-color: #0c85d0;">Selanjutnya</a>
-
+        <form th:action="@{/du/kelas}" method="post">
+            <select name="kelas" id="" required class="form-control">
+                <option value="" selected disabled>-- Pilih Kelas --</option>
+                <option th:each="data : ${kelasSelected}"
+                        th:text="${data[1]}"
+                        th:value="${data[0]}">sdasd</option>
+            </select>
+            <br>
+            <button class="btn btn-success">Selanjutnya</button>
+        </form>
     </div>
 </div>
 <!-- 404 Page area End-->

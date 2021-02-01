@@ -22,9 +22,9 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>KRS List</h2>
-                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik + ' ( Semester ' + semester +' ).'}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                        <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )'}"></p>
-                                        <p th:text="${mahasiswa.idProdi.namaProdi + ' - Kelas : ' + kelas.kelas.namaKelas}"></p>
+                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )' + ' - ' + mahasiswa.idProdi.namaProdi}"></p>
+                                        <p th:text="${'Kelas : ' + kelas.kelas.namaKelas}"></p>
                                     </div>
                                 </div>
                             </div>
@@ -40,18 +40,18 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" th:if="${kosong == null}">
         <div class="row">
             <div class="col-md-12 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
                         <div class="row">
                             <div class="col-md-6 col-xs-12">
-                                KRS List
+                               <strong>Daftar KRS</strong>
                             </div>
-                            <div class="col-md-6 col-xs-12 text-right">
+                            <div class="col-md-6 col-xs-12 text-right" th:if="${validasi != null}">
                                 <a th:href="@{/study/form}">
-                                    <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Tambah KRS</button>
                                 </a>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                                     </a>
 
                                 </td>
-                                <td th:if="${validasi == null}">
+                                <td th:if="${validasi ! = null}">
                                     <form th:action="@{/study/deleteKrs(id = ${data.id})}" method="post">
                                         <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
                                             <i class="fa fa-trash"></i>
@@ -109,6 +109,26 @@
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" th:if="${kosong != null}">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger">
+                        <strong>
+                           <center><p>Silahkan selesaikan dulu pembayaran, atau hubungi bagian keuangan</p></center>
+                        </strong>
                     </div>
                 </div>
             </div>
