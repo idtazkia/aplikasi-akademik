@@ -98,6 +98,7 @@
                                                             <span style="color: #8a8a8a">Keterangan</span>
                                                             <h5 th:if="${data[9] != null && data[14] == null}" th:text="${ 'Anda Belum Mengambil Prasyarat' + ' (' +data[9] + ')'}">Anda Belum Mengambil Prasyarat</h5>
                                                             <h5 th:if="${data[9] == null && data[14] == null}">-</h5>
+                                                            <h5 th:if="${data[9] == null && data[14] == null}" style="color: white;">-</h5>
                                                         </div>
                                                     </div>
 
