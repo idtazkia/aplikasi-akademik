@@ -65,7 +65,9 @@
                             <h2>Data KRS</h2>
                         </div>
                         <div class="bsc-tbl-st" style="padding: 10px;">
-                            <form action="#" method="post">
+                            <form th:action="@{/study/form}" method="post" id="krs">
+                                <input type="hidden" name="jumlah" th:if="${full == null}" th:value="${'21'}">
+                                <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'24'}">
                                 <div class="row">
                                     <div class="col-md-6" th:each="data, row : ${listKrs}">
                                         <div class="col-md-12 background-col-md">
@@ -94,7 +96,7 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <span style="color: #8a8a8a">Keterangan</span>
-                                                            <h5 th:if="${data[9] != null && data[14] == null}">Anda Belum Mengambil Prasyarat</h5>
+                                                            <h5 th:if="${data[9] != null && data[14] == null}" th:text="${ 'Anda Belum Mengambil Prasyarat' + ' (' +data[9] + ')'}">Anda Belum Mengambil Prasyarat</h5>
                                                             <h5 th:if="${data[9] == null && data[14] == null}">-</h5>
                                                         </div>
                                                     </div>

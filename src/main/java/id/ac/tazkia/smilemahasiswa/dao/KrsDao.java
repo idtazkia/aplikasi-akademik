@@ -40,7 +40,7 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
     @Query(value = "select count(a.id) from krs as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and a.id_mahasiswa = ?1 and b.jenis != 'PENDEK'", nativeQuery = true)
     Integer countSemester(String nim);
 
-    @Query(value = "SELECT id_jadwal, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks,jam_mulai,jam_selesai, nama_hari, nama_karyawan, prasyarat, bobot_prasyarat, setara, ambil_sebelum,bobot_sebelum,ambil_prasyarat,bobot_ambil_prass FROM\n" +
+    @Query(value = "SELECT id_jadwal, kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks,jam_mulai,jam_selesai, nama_hari, nama_karyawan, prasyarat, bobot_prasyarat, setara, ambil_sebelum,bobot_sebelum,ambil_prasyarat,bobot_ambil_prass, already FROM\n" +
             "(SELECT a.id AS id_jadwal, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english,z.nama_hari as nama_hari,j.nama_karyawan as nama_karyawan,b.jumlah_sks,jam_mulai,jam_selesai, prasyarat, e.nilai AS bobot_prasyarat, setara, g.nama_matakuliah AS ambil_sebelum, g.bobot AS bobot_sebelum, h.nama_matakuliah AS ambil_prasyarat, h.bobot AS bobot_ambil_prass, i.kode_matakuliah AS already FROM jadwal AS a\n" +
             "INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum = b.id\n" +
             "INNER JOIN matakuliah AS c ON b.id_matakuliah = c.id\n" +
@@ -71,7 +71,7 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
             "\tINNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
             "\tINNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
             "\tWHERE a.status = 'AKTIF' AND a.id_tahun_akademik = ?1 AND a.id_mahasiswa = ?2)i\n" +
-            "\tON e.id_matakuliah = i.id OR e.kode_matakuliah = i.kode_matakuliah\n" +
+            "\tON c.id = i.id OR c.kode_matakuliah = i.kode_matakuliah\n" +
             "WHERE a.id_tahun_akademik = ?1 AND a.status = 'AKTIF' AND d.id_mahasiswa = ?2 AND b.jumlah_sks > 0 AND id_hari IS NOT NULL AND jam_mulai IS NOT NULL AND jam_selesai IS NOT NULL\n" +
             "GROUP BY a.id \n" +
             "ORDER BY nama_matakuliah)a WHERE already IS NULL", nativeQuery = true)
