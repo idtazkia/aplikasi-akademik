@@ -16,13 +16,6 @@ public class EdomQuestion {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_tahun_akademik")
-    private TahunAkademik tahunAkademik;
-
-    @NotNull
-    private String bahasa;
-
     @NotNull
     private Integer nomor;
 

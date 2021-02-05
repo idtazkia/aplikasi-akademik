@@ -48,27 +48,10 @@
                     <div class="card-body">
                         <form method="post" th:action="@{/setting/edom/question/save}" th:object="${edomQuestion}">
 
-                            <div class="form-group">
-                                <label>Academic Years</label>
-                                <select style="width:100%!important;" name="tahunAkademik" th:field="*{tahunAkademik}" class="form-control js-example-placeholder-single">
-                                    <option value=""></option>
-                                    <option th:each="data : ${tahunAkademik}"
-                                            th:text="${data.namaTahunAkademik}" th:value="${data.id}"></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Language</label>
-                                <select style="width:100%!important;" name="bahasa" th:field="*{bahasa}" class="form-control js-example-placeholder-single">
-                                    <option value=""></option>
-                                    <option th:each="data : ${bahasa}"
-                                            th:text="${data.keterangan}" th:value="${data.bahasa}"></option>
-                                </select>
-                            </div>
 
                             <div class="form-group">
                                 <label>Number</label>
-                                <input type="text" th:field="*{nomor}" name="nomor" class="form-control" placeholder="Number">
+                                <input type="number" th:field="*{nomor}" name="nomor" class="form-control" placeholder="Number">
                             </div>
 
                             <div class="form-group">
@@ -79,7 +62,7 @@
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
                                 <input class="btn btn-primary" type="submit" value="Save">
-                                <a th:href="@{/setting/edom/question}" class="btn btn-primary" role="button">
+                                <a th:href="@{/setting/edomquestion/list}" class="btn btn-primary" role="button">
                                     <span aria-hidden="true"></span>Cancel
                                 </a>
                             </div>

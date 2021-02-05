@@ -38,70 +38,8 @@ public class EdomQuestionController {
                                   @RequestParam(required = false) TahunAkademik tahunAkademik,
                                   @RequestParam(required = false) String bahasa,
                                   @PageableDefault(size = 10)Pageable page){
+        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
 
-        if(tahunAkademik != null){
-            if(bahasa != null){
-                if(search != null){
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikAndBahasaAndPertanyaanContainingIgnoreCaseOrderByNomor(StatusRecord.AKTIF, tahunAkademik, bahasa, search,page));
-
-                }else{
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikAndBahasaOrderByNomor(StatusRecord.AKTIF, tahunAkademik, bahasa, page));
-
-                }
-            }else{
-                if(search != null){
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikAndPertanyaanContainingIgnoreCaseOrderByNomor(StatusRecord.AKTIF, tahunAkademik, search, page));
-
-                }else{
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndTahunAkademikOrderByNomor(StatusRecord.AKTIF, tahunAkademik, page));
-
-
-                }
-            }
-        }else{
-            if(bahasa != null){
-                if(search != null){
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndBahasaAndPertanyaanContainingIgnoreCaseOrderByNomor(StatusRecord.AKTIF, bahasa, search,page));
-
-                }else{
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndBahasaOrderByNomor(StatusRecord.AKTIF, bahasa, page));
-
-                }
-            }else{
-                if(search != null){
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusAndPertanyaanContainingIgnoreCaseOrderByNomor(StatusRecord.AKTIF, search,page));
-
-                }else{
-
-                    model.addAttribute("bahasa", bahasaDao.findByStatusOrderByBahasa(StatusRecord.AKTIF));
-                    model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusOrderByKodeTahunAkademikDesc(StatusRecord.AKTIF));
-                    model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByBahasa(StatusRecord.AKTIF,page));
-
-                }
-            }
-
-        }
 
         return "setting/edomquestion/list";
     }
@@ -137,6 +75,14 @@ public class EdomQuestionController {
         edomQuestionDao.save(edomQuestion);
 
         redirectAttributes.addFlashAttribute("success", "Save Data Berhasil");
+        return "redirect:/setting/edomquestion/list";
+    }
+
+    @PostMapping("/setting/edom/question/delete")
+    public String deleteEdom(@RequestParam EdomQuestion edomQuestion){
+        edomQuestion.setStatus(StatusRecord.HAPUS);
+        edomQuestionDao.save(edomQuestion);
+
         return "redirect:../questions";
     }
 
