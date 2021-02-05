@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .background-col-md{
+            background-color: white;
+            border: 2px solid #0c85d0;
+            border-radius: 5px;
+            margin: 7px;
+        }
+
+        .bg-ck{
+            width: 20px;
+            height: 100%;
+            background-color: red;
+            text-align: center;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>KRS Form</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/krs}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bounceIn">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Data KRS</h2>
+                        </div>
+                        <div class="bsc-tbl-st" style="padding: 10px;">
+                            <form th:action="@{/study/form}" method="post" id="krs">
+                                <input type="hidden" name="jumlah" th:if="${full == null}" th:value="${'21'}">
+                                <input type="hidden" name="jumlah" th:if="${full != null}" th:value="${'24'}">
+                                <div class="row">
+                                    <div class="col-md-6" th:each="data, row : ${listKrs}">
+                                        <div class="col-md-12 background-col-md">
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
+                                                        <div class="col-md-12">
+                                                            <span style="color: #8a8a8a">Matakuliah</span>
+                                                            <h5 th:text="${data[2]}">Ekonomi Syariah</h5>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <span style="color: #8a8a8a">Dosen</span>
+                                                            <h5 th:text="${data[8]}"></h5>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <span style="color: #8a8a8a">Hari</span>
+                                                            <h5 th:text="${data[7]}"></h5>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <span style="color: #8a8a8a">Waktu</span>
+                                                            <h5 th:text="${data[5] + ' - ' + data[6]}"></h5>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <span style="color: #8a8a8a">Jumlah SKS</span>
+                                                            <h5 th:text="${data[4]}">4</h5>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <span style="color: #8a8a8a">Keterangan</span>
+                                                            <h5 th:if="${data[9] != null && data[14] == null}" th:text="${ 'Anda Belum Mengambil Prasyarat' + ' (' +data[9] + ')'}">Anda Belum Mengambil Prasyarat</h5>
+                                                            <h5 th:if="${data[9] == null && data[14] == null}">-</h5>
+                                                            <h5 th:if="${data[9] == null && data[14] == null}" style="color: white;">-</h5>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="col-md-12" th:if="${data[9] == null && data[14] == null}" style="text-align: center; background-color: #0C85D0;">
+                                                        <input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox">
+                                                        <br>
+                                                        <span style="color: white; font-size: 10px;">Selected</span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-success">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

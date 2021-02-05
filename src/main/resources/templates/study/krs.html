@@ -99,7 +99,7 @@
                                     </a>
 
                                 </td>
-                                <td th:if="${validasi ! = null}">
+                                <td th:if="${validasi != null}">
                                     <form th:action="@{/study/deleteKrs(id = ${data.id})}" method="post">
                                         <button type="submit" class="btn btn-danger waves-effect" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hapus">
                                             <i class="fa fa-trash"></i>

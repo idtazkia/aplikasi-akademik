@@ -387,6 +387,65 @@ public class StudyActivityController {
 
     }
 
+    @GetMapping("/study/krs/form")
+    public void listKrs(Model model,Authentication authentication ,@RequestParam(required = false) String lebih){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
+
+        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
+        System.out.println(firstFourChars);
+
+        if (ta.getJenis() == StatusRecord.GENAP){
+            String kode = firstFourChars+"1";
+            System.out.println("kode : " + kode);
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GANJIL);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
+            }
+            model.addAttribute("lebih", lebih);
+            model.addAttribute("sks", sks);
+        }
+
+        if (ta.getJenis() == StatusRecord.GANJIL){
+            Integer prosesKode = Integer.valueOf(firstFourChars)-1;
+            String kode = prosesKode.toString()+"2";
+
+            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
+            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
+            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+//            System.out.println(tahun.getKodeTahunAkademik());
+//            System.out.println(ipk.getIpk());
+            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            if (ipk == null){
+                model.addAttribute("kosong", "21");
+            }else {
+
+                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
+                    model.addAttribute("full", "23");
+                }
+            }
+            model.addAttribute("lebih", lebih);
+            model.addAttribute("sks", sks);
+        }
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
+    }
+
     @GetMapping("/study/jadwal")
     public void listJadwal(){
 
@@ -414,7 +473,7 @@ public class StudyActivityController {
         String prodi = mahasiswa.getIdProdi().getId();
 
         Integer semester = krsDao.countSemester(nim);
-        if (semester == 5){
+        if (semester == 6){
             // Manajemen Bisnis Syariah
             if (prodi.equals("01")){
                 model.addAttribute("mahasiswa", mahasiswa);
