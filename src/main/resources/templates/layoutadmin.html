@@ -283,6 +283,12 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN')">
                                 <a th:href="@{/assessment/import}" class="nav-link">Import Assesment</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN')">
+                                <a th:href="@{/assessment/updatenilai}" class="nav-link">Import Update Nilai</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN')">
+                                <a th:href="@{/assessment/krsnilaitugas}" class="nav-link">Import Krs Nilai Tugas</a>
+                            </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
                                 <a th:href="@{/studiesActivity/assesment/listdosen}" class="nav-link">Assesment</a>
                             </li>
