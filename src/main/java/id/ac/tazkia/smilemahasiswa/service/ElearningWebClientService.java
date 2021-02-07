@@ -161,8 +161,8 @@ public class ElearningWebClientService {
 //        }
 //    }
 
-    @Scheduled(cron = "0 0 19 * * ? ", zone = "Asia/Jakarta")
-    public void importPresensi() {
+    @Scheduled(cron = "0 45 19 * * ? ", zone = "Asia/Jakarta")
+    public void penilaian() {
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
