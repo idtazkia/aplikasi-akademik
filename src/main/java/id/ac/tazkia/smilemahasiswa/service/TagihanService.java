@@ -1,35 +1,29 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
-import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.invoke.MethodHandle;
-import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.Bidi;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Transactional
+@Slf4j
 public class TagihanService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TagihanService.class);
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final String TAGIHAN_UTS = "12";
     public static final String TAGIHAN_UAS = "13";
@@ -77,7 +71,7 @@ public class TagihanService {
 
         VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
 
-        LOGGER.debug("Pembayaran Tagihan = {}", pt.toString());
+        log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
         pembayaran.setTagihan(tagihan);
@@ -127,7 +121,7 @@ public class TagihanService {
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
-        LOGGER.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
+        log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
     }
 

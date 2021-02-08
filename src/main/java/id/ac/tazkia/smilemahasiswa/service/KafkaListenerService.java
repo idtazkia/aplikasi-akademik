@@ -6,33 +6,21 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
 import id.ac.tazkia.smilemahasiswa.dto.payment.VaResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.apache.kafka.common.metrics.Stat;
-import org.jfree.util.TableOrder;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.swing.text.html.Option;
-import javax.validation.Valid;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class KafkaListenerService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaListenerService.class);
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -67,18 +55,18 @@ public class KafkaListenerService {
             Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(pt.getJenisTagihan());
 
             if (!optionalJenisTagihan.isPresent()){
-                LOGGER.debug("Bukan Tagihan Mahasiswa");
+                log.debug("Bukan Tagihan Mahasiswa");
                 return;
             }
-            LOGGER.debug("Terima message : {}", message);
+            log.debug("Terima message : {}", message);
 
             Tagihan tagihan = tagihanDao.findByNomor(pt.getNomorTagihan());
             tagihanService.prosesPembayaran(tagihan, pt);
 
-            LOGGER.debug("jenis tagihan : {}",tagihan.getNilaiJenisTagihan().getJenisTagihan().getId());
+            log.debug("jenis tagihan : {}",tagihan.getNilaiJenisTagihan().getJenisTagihan().getId());
 
         } catch (Exception err){
-            LOGGER.warn(err.getMessage(), err);
+            log.warn(err.getMessage(), err);
         }
     }
 
@@ -88,44 +76,44 @@ public class KafkaListenerService {
             TagihanResponse response = objectMapper.readValue(message, TagihanResponse.class);
             Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(response.getJenisTagihan());
             if (!optionalJenisTagihan.isPresent()){
-                LOGGER.debug("Bukan tagihan mahasiswa");
+                log.debug("Bukan tagihan mahasiswa");
                 return;
             }
-            LOGGER.debug("Terima message : {}", message);
+            log.debug("Terima message : {}", message);
 
             if (!response.getSukses()) {
-                LOGGER.warn("Update tagihan gagal : {}", response.getDebitur());
+                log.warn("Update tagihan gagal : {}", response.getDebitur());
                 return;
             }
 
-            LOGGER.debug("Update tagihan untuk mahasiswa {} sukses dengan nomor {}",
+            log.debug("Update tagihan untuk mahasiswa {} sukses dengan nomor {}",
                     response.getDebitur(), response.getNomorTagihan());
 
             updateTagihan(response);
 
         }catch (Exception err){
-            LOGGER.warn(err.getMessage(), err);
+            log.warn(err.getMessage(), err);
         }
     }
 
     @KafkaListener(topics = "${kafka.topic.va.response}", groupId = "${spring.kafka.consumer.group-id}")
     public void handleVaResponse(String message){
         try{
-            LOGGER.debug("Terima message : {}", message);
+            log.debug("Terima message : {}", message);
             VaResponse vaResponse = objectMapper.readValue(message, VaResponse.class);
 
-            LOGGER.info("Memproses VA no {} di bank {} untuk tagihan {} ",
+            log.info("Memproses VA no {} di bank {} untuk tagihan {} ",
                     vaResponse.getAccountNumber(),
                     vaResponse.getBankId(),
                     vaResponse.getInvoiceNumber());
             insertNoVirtualAccount(vaResponse);
         }catch (IOException err){
-            LOGGER.warn(err.getMessage(), err);
+            log.warn(err.getMessage(), err);
         }
     }
 
     private void updateTagihan(TagihanResponse tagihanResponse){
-        LOGGER.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
+        log.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndStatus(tagihanResponse.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), StatusRecord.AKTIF);
@@ -141,7 +129,7 @@ public class KafkaListenerService {
     private void insertNoVirtualAccount(VaResponse vaResponse){
         Tagihan tagihan = tagihanDao.findByNomor(vaResponse.getInvoiceNumber());
         if (tagihan == null) {
-            LOGGER.info("Tagihan dengan nomor {} tidak ada dalam database", vaResponse.getInvoiceNumber());
+            log.info("Tagihan dengan nomor {} tidak ada dalam database", vaResponse.getInvoiceNumber());
             return;
         }
         VirtualAccount virtualAccount = new VirtualAccount();
@@ -156,7 +144,7 @@ public class KafkaListenerService {
         virtualAccount.setNomor(vaResponse.getAccountNumber());
 
         virtualAccountDao.save(virtualAccount);
-        LOGGER.info("Nomor VA {} di bank {} dengan nomor tagihan {} berhasil disimpan",
+        log.info("Nomor VA {} di bank {} dengan nomor tagihan {} berhasil disimpan",
                 vaResponse.getAccountNumber(), vaResponse.getBankId(),
                 tagihan.getNomor());
 
