@@ -106,20 +106,18 @@ public class StudyActivityController {
                 if (prodi.equals("01")){
                     model.addAttribute("mahasiswa", mahasiswa);
                     return "redirect:/du/konsentrasi";
+                }else if (prodi.equals("03")){
+                    //ekomomi Syariah
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    return "redirect:/du/konsentrasi";
                 }
-            }else if (semester == 7){
+            }else if (semester == 6){
                 // Akuntasi Syariah
                 if (prodi.equals("02")){
                     model.addAttribute("mahasiswa", mahasiswa);
                     return "redirect:/du/konsentrasi";
                 }
-            }else if (semester == 6){
-                // Ekonomi Syariah
-                if (prodi.equals("03")){
-                    model.addAttribute("mahasiswa", mahasiswa);
-                    return "redirect:/du/konsentrasi";
-                }
-            }else if (semester == 3){
+            }else if (semester == 2){
                 // Magister Ekonomi Syariah
                 if (prodi.equals("05")){
                     model.addAttribute("mahasiswa", mahasiswa);
@@ -388,59 +386,9 @@ public class StudyActivityController {
     }
 
     @GetMapping("/study/krs/form")
-    public void listKrs(Model model,Authentication authentication ,@RequestParam(required = false) String lebih){
+    public void listKrs(Model model,Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
-        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa,StatusRecord.AKTIF);
-
-        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        String firstFourChars = ta.getKodeTahunAkademik().substring(0,4);
-        System.out.println(firstFourChars);
-
-        if (ta.getJenis() == StatusRecord.GENAP){
-            String kode = firstFourChars+"1";
-            System.out.println("kode : " + kode);
-            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GANJIL);
-            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
-            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
-
-            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
-
-            if (ipk == null){
-                model.addAttribute("kosong", "21");
-            }else {
-
-                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
-                }
-            }
-            model.addAttribute("lebih", lebih);
-            model.addAttribute("sks", sks);
-        }
-
-        if (ta.getJenis() == StatusRecord.GANJIL){
-            Integer prosesKode = Integer.valueOf(firstFourChars)-1;
-            String kode = prosesKode.toString()+"2";
-
-            TahunAkademik tahun = tahunAkademikDao.findByKodeTahunAkademikAndJenis(kode,StatusRecord.GENAP);
-            IpkDto ipk = krsDetailDao.ip(mahasiswa,tahun);
-            Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
-//            System.out.println(tahun.getKodeTahunAkademik());
-//            System.out.println(ipk.getIpk());
-            Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
-
-            if (ipk == null){
-                model.addAttribute("kosong", "21");
-            }else {
-
-                if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
-                }
-            }
-            model.addAttribute("lebih", lebih);
-            model.addAttribute("sks", sks);
-        }
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
@@ -473,28 +421,26 @@ public class StudyActivityController {
         String prodi = mahasiswa.getIdProdi().getId();
 
         Integer semester = krsDao.countSemester(nim);
-        if (semester == 6){
+        if (semester == 5){
             // Manajemen Bisnis Syariah
             if (prodi.equals("01")){
                 model.addAttribute("mahasiswa", mahasiswa);
                 model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
                 return "du/konsentrasi";
+            }else if (prodi.equals("03")){
+                // Ekonomi Syariah
+                model.addAttribute("mahasiswa", mahasiswa);
+                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                return "du/konsentrasi";
             }
-        }else if (semester == 7){
+        }else if (semester == 6){
             // Akuntasi Syariah
             if (prodi.equals("02")){
                 model.addAttribute("mahasiswa", mahasiswa);
                 model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
                 return "du/konsentrasi";
             }
-        }else if (semester == 6){
-            // Ekonomi Syariah
-            if (prodi.equals("03")){
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
-            }
-        }else if (semester == 3){
+        }else if (semester == 2){
             // Magister Ekonomi Syariah
             if (prodi.equals("05")){
                 model.addAttribute("mahasiswa", mahasiswa);
