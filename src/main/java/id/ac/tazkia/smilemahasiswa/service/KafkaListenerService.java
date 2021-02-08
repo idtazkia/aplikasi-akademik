@@ -75,7 +75,7 @@ public class KafkaListenerService {
             Tagihan tagihan = tagihanDao.findByNomor(pt.getNomorTagihan());
             tagihanService.prosesPembayaran(tagihan, pt);
 
-            System.out.println("jenis tagihan : " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getId());
+            LOGGER.debug("jenis tagihan : {}",tagihan.getNilaiJenisTagihan().getJenisTagihan().getId());
 
         } catch (Exception err){
             LOGGER.warn(err.getMessage(), err);

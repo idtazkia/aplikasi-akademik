@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -29,6 +31,9 @@ public class TagihanService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TagihanService.class);
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String TAGIHAN_UTS = "12";
+    public static final String TAGIHAN_UAS = "13";
+    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
 
     @Autowired
     private PembayaranDao pembayaranDao;
@@ -72,7 +77,7 @@ public class TagihanService {
 
         VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
 
-        System.out.println("Pembayaran Tagihan = " + pt);
+        LOGGER.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
         pembayaran.setTagihan(tagihan);
@@ -85,7 +90,7 @@ public class TagihanService {
         bank.setId(pt.getBank());
         pembayaran.setBank(bank);
 
-        if (pt.getKodeBiaya().equals("12")){
+        if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -93,7 +98,7 @@ public class TagihanService {
             }
         }
 
-        if (pt.getKodeBiaya().equals("13")){
+        if (TAGIHAN_UAS.equals(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -101,7 +106,7 @@ public class TagihanService {
             }
         }
 
-        if (pt.getKodeBiaya().equals("14") || pt.getKodeBiaya().equals("40") || pt.getKodeBiaya().equals("22")){
+        if (TAGIHAN_KRS.contains(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -117,10 +122,8 @@ public class TagihanService {
                 krs.setTanggalTransaksi(LocalDateTime.now());
                 krs.setStatus(StatusRecord.AKTIF);
                 krsDao.save(krs);
-
             }
         }
-
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
