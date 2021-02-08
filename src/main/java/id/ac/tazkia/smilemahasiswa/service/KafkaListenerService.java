@@ -52,6 +52,7 @@ public class KafkaListenerService {
     public void handlePayment(String message){
         try{
             PembayaranTagihan pt = objectMapper.readValue(message, PembayaranTagihan.class);
+            log.info("Terima pembayaran tagihan {}", pt);
             Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(pt.getJenisTagihan());
 
             if (!optionalJenisTagihan.isPresent()){
