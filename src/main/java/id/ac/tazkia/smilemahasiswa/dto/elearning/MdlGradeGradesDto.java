@@ -13,6 +13,7 @@ public class MdlGradeGradesDto {
     private String mahasiswa;
     private BigInteger idBobotTugas;
     private BigDecimal finalGrade;
+    private BigDecimal nilai;
     private String status;
     private BigDecimal nilaiAkhir;
     private BigDecimal bobot;

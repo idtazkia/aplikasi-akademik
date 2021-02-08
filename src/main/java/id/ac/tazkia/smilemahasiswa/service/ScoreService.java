@@ -30,7 +30,7 @@ public class ScoreService {
         if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 80 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 85){
             System.out.println("a-");
             krsDetail.setGrade(amin.getNama());
-            krsDetail.setBobot(a.getBobot());
+            krsDetail.setBobot(amin.getBobot());
         }
 
         if (krsDetail.getNilaiAkhir().toBigInteger().intValue() >= 75 && krsDetail.getNilaiAkhir().toBigInteger().intValue() < 80){
