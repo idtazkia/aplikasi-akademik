@@ -1,34 +1,33 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
-import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.invoke.MethodHandle;
-import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.Bidi;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class TagihanService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TagihanService.class);
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String TAGIHAN_UTS = "12";
+    public static final String TAGIHAN_UAS = "13";
+    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
 
     @Autowired
     private PembayaranDao pembayaranDao;
@@ -72,7 +71,7 @@ public class TagihanService {
 
         VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
 
-        System.out.println("Pembayaran Tagihan = " + pt);
+        log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
         pembayaran.setTagihan(tagihan);
@@ -85,7 +84,7 @@ public class TagihanService {
         bank.setId(pt.getBank());
         pembayaran.setBank(bank);
 
-        if (pt.getKodeBiaya().equals("12")){
+        if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -93,7 +92,7 @@ public class TagihanService {
             }
         }
 
-        if (pt.getKodeBiaya().equals("13")){
+        if (TAGIHAN_UAS.equals(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -101,7 +100,7 @@ public class TagihanService {
             }
         }
 
-        if (pt.getKodeBiaya().equals("14") || pt.getKodeBiaya().equals("40") || pt.getKodeBiaya().equals("22")){
+        if (TAGIHAN_KRS.contains(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable("1");
@@ -117,14 +116,12 @@ public class TagihanService {
                 krs.setTanggalTransaksi(LocalDateTime.now());
                 krs.setStatus(StatusRecord.AKTIF);
                 krsDao.save(krs);
-
             }
         }
 
-
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
-        LOGGER.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
+        log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
     }
 

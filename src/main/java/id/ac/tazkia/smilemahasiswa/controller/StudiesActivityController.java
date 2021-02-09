@@ -203,14 +203,22 @@ public class StudiesActivityController {
 //    Attendance
 
     @GetMapping("/studiesActivity/attendance/listdosen")
-    public void listLectureAttendance(Model model, Authentication authentication){
+    public void listLectureAttendance(Model model, Authentication authentication, @RequestParam(required = false) TahunAkademik tahunAkademik){
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
-        model.addAttribute("jadwal", jadwal);
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+            Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+            model.addAttribute("jadwal", jadwal);
+
+        }else {
+            TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahun,dosen);
+            model.addAttribute("jadwal", jadwal);
+        }
+
 
     }
 
@@ -300,12 +308,17 @@ public class StudiesActivityController {
             mahasiswas.add(pm.getMahasiswa());
             statusPresensi.put(pm.getId(), pm.getStatusPresensi().toString());
         }
-        List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas,sesiKuliah.getJadwal(),StatusRecord.AKTIF);
+        if (!mahasiswas.isEmpty()) {
+            List<KrsDetail> krsDetails = krsDetailDao.findByMahasiswaNotInAndJadwalAndStatus(mahasiswas, sesiKuliah.getJadwal(), StatusRecord.AKTIF);
+            model.addAttribute("detail", krsDetails);
+        }else {
+            List<KrsDetail> krsDetails = krsDetailDao.findByJadwalAndStatus(sesiKuliah.getJadwal(),StatusRecord.AKTIF);
+            model.addAttribute("detail", krsDetails);
 
+        }
         model.addAttribute("statusPresensi", StatusPresensi.values());
         model.addAttribute("status", statusPresensi);
         model.addAttribute("presensi", presensiMahasiswa);
-        model.addAttribute("detail", krsDetails);
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi",sesiKuliah.getId());
         model.addAttribute("statusPresensi", StatusPresensi.values());
