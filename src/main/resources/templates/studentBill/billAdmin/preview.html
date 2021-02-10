@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Bill </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Preview Tagihan Mahasiswa</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-shadow">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="post" th:action="@{/studentBill/billAdmin/preview(tahun=${tahun}, prodi=${prodi}, program=${program}, angkatan=${angkatan})}" th:object="${listPreview}">
+                                        <div class="table-responsive">
+                                            <table id="data-table-basic" class="table align-items-center table-flush table-striped">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th class="text-center">#</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Mahasiswa</th>
+                                                    <th>Prodi</th>
+                                                    <th>Nilai</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="data, row:${listPreview}">
+                                                    <td th:text="${(row.index + 1)}">1</td>
+                                                    <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                                    <td th:text="${data.mahasiswa.nama}"></td>
+                                                    <td th:text="${data.mahasiswa.idProdi.namaProdi}"></td>
+                                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                    <td>
+                                                        <select th:name="${data.mahasiswa.nim + 'nim'}" id="">
+                                                            <option th:each="st : ${statusTagihan}"
+                                                                    th:text="${st}" th:value="${st}"
+                                                                    th:selected="${st == data.statusTagihan}"></option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="ml-3">
+                                                    Fitur Block : &nbsp;
+                                                    <input type="checkbox" name="uas">
+                                                    UAS &nbsp;
+                                                    &nbsp;
+                                                    <input type="checkbox" name="uts">
+                                                    UTS &nbsp;
+                                                    &nbsp;
+                                                    <input type="checkbox" name="krs">
+                                                    KRS &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <div class="form-group">
+                                                    <button class="btn btn-success" type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

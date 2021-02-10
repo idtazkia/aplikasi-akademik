@@ -39,6 +39,10 @@ public class NilaiJenisTagihan {
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
 
+    @ManyToOne
+    @JoinColumn(name = "id_program")
+    private Program program;
+
     @NotNull @NotEmpty
     private String angkatan;
 

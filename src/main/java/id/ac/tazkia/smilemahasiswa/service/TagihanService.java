@@ -68,6 +68,7 @@ public class TagihanService {
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
         tagihan.setLunas(true);
+        tagihan.setStatusTagihan(StatusTagihan.LUNAS);
 
         VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
 

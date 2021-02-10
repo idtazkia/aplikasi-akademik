@@ -96,13 +96,10 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by angkatan order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4);
 
-    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikNotInAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, boolean lunas, StatusRecord statusRecord);
-
-    Tagihan findByMahasiswaAndNilaiJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
-
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, boolean lunas, StatusRecord statusRecord);
 
     Tagihan findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord statusRecord, TahunAkademik tahunAkademik, Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan);
 
+    List<Tagihan> findByNilaiJenisTagihanProdiAndNilaiJenisTagihanProgramAndNilaiJenisTagihanAngkatanAndTahunAkademikAndTanggalPembuatanAndStatusTagihan(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, LocalDate tanggal, StatusTagihan status);
 
 }
