@@ -23,7 +23,10 @@ public class SettingController {
 
     @Autowired
     private JenjangDao jenjangDao;
-    
+
+    @Autowired
+    private EdomQuestionDao edomQuestionDao;
+
     @Autowired
     private FakultasDao fakultasDao;
     
@@ -326,5 +329,10 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         konsentrasiDao.save(konsentrasi);
 
         return "redirect:list";
+    }
+
+    @GetMapping("/setting/edomquestion/list")
+    public void listEdom(Model model){
+        model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
     }
 }

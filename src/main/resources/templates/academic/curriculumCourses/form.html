@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+z<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
@@ -71,7 +71,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Code Courses</label>
-                                        <input type="text" id="kodeMatkul" th:field="*{matakuliah.kodeMatakuliah}" name="kodeMatakuliah" disabled class="form-control" />
+                                        <input type="text" id="kodeMatkul" th:field="*{matakuliah.kodeMatakuliah}" name="kodeMatakuliah" readonly class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -79,13 +79,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Courses(English)</label>
-                                        <input type="text" id="matkulEng" th:field="*{matakuliah.namaMatakuliahEnglish}" disabled name="namaMatakuliahEnglish" class="form-control">
+                                        <input type="text" id="matkulEng" th:field="*{matakuliah.namaMatakuliahEnglish}" readonly name="namaMatakuliahEnglish" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Abbreviation</label>
-                                        <input type="text" name=singkatan th:field="*{matakuliah.singkatan}" disabled class="form-control" />
+                                        <input type="text" name=singkatan id="singkatan" th:field="*{matakuliah.singkatan}" readonly class="form-control" />
                                     </div>
                                 </div>
                             </div>

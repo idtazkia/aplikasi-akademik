@@ -43,6 +43,10 @@ $(document).ready(function(){
     var jamMulai= $("#jamMulai");
     var jamSelesai= $("#jamSelesai");
     var isiSesi= $("#isiSesi");
+    var singkatan= $("#singkatan");
+    var matkulEng= $("#matkulEng");
+    var kodeMatkul= $("#kodeMatkul");
+    // var isiSesi= $("#isiSesi");
     //uploadSmartTest
     var inputHiddenIdKelurahan= $("input[name=idKelurahan]");
     var inputHiddenIdKecamatan = $("input[name=idKecamatan]");
@@ -235,8 +239,12 @@ $(document).ready(function(){
             inputNamaMatakuliahEnglish.val(pilihan.namaMatakuliahEnglish);
             inputKodeMatakuliah.val(pilihan.kodeMatakuliah);
             inputSingkatan.val(pilihan.singkatan);
+            singkatan.val(pilihan.kodeMatakuliah);
+            matkulEng.val(pilihan.namaMatakuliahEnglish);
+            kodeMatkul.val(pilihan.kodeMatakuliah);
             inputIdMatkul.val(pilihan.id);
             console.log( pilihan.namaMatakuliahEnglish);
+            console.log(pilihan)
         }
 
     });

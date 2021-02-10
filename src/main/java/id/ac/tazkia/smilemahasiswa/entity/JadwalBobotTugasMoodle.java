@@ -4,25 +4,28 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
-@Data
 @Entity
-public class EdomQuestion {
+@Data
+@Table(name = "jadwal_bobot_tugas")
+public class JadwalBobotTugasMoodle {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @ManyToOne
     @NotNull
-    private Integer nomor;
+    @JoinColumn(name = "id_jadwal")
+    private Jadwal jadwal;
+
+    private String namaTugas;
+    private BigDecimal bobot;
 
     @NotNull
-    private String pertanyaan;
-
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    private String pertemuan;
 }

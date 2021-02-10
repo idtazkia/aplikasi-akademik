@@ -10,6 +10,7 @@ public class PembayaranTagihan {
 
     private String jenisTagihan;
     private String kodeBiaya;
+    private String kodeJenisBiaya;
     private String nomorTagihan;
     private String nomorDebitur;
     private String namaDebitur;

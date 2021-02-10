@@ -462,6 +462,8 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     @Query(value = "select  id from krs_detail where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' order by nilai_akhir desc Limit 1", nativeQuery = true)
     Object getKrsDetailId(Jadwal jadwal,Mahasiswa mahasiswa);
+    @Query(value = "select  id from krs_detail where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' and id_krs =?3 and id_tahun_akademik = ?4", nativeQuery = true)
+    Object getKrsDetailId2(Jadwal jadwal,Mahasiswa mahasiswa, Krs krs, TahunAkademik tahunAkademik);
 
     @Modifying
     @Query(value = "update krs_detail set status = 'HAPUS' where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' and id not in(?3)", nativeQuery = true)

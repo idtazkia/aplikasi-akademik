@@ -99,27 +99,25 @@ public class StudyActivityController {
 
         Konsentrasi idKonstrasi = mahasiswa.getIdKonsentrasi();
         String prodi = mahasiswa.getIdProdi().getId();
-        if (idKonstrasi == null){
+        if (idKonstrasi.getId().equals("0")){
             Integer semester = krsDao.countSemester(mahasiswa.getNim());
             if (semester == 5){
                 // Manajemen Bisnis Syariah
                 if (prodi.equals("01")){
                     model.addAttribute("mahasiswa", mahasiswa);
                     return "redirect:/du/konsentrasi";
+                }else if (prodi.equals("03")){
+                    //ekomomi Syariah
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    return "redirect:/du/konsentrasi";
                 }
-            }else if (semester == 7){
+            }else if (semester == 6){
                 // Akuntasi Syariah
                 if (prodi.equals("02")){
                     model.addAttribute("mahasiswa", mahasiswa);
                     return "redirect:/du/konsentrasi";
                 }
-            }else if (semester == 6){
-                // Ekonomi Syariah
-                if (prodi.equals("03")){
-                    model.addAttribute("mahasiswa", mahasiswa);
-                    return "redirect:/du/konsentrasi";
-                }
-            }else if (semester == 3){
+            }else if (semester == 2){
                 // Magister Ekonomi Syariah
                 if (prodi.equals("05")){
                     model.addAttribute("mahasiswa", mahasiswa);
@@ -387,6 +385,15 @@ public class StudyActivityController {
 
     }
 
+    @GetMapping("/study/krs/form")
+    public void listKrs(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        model.addAttribute("listKrs", krsDao.listKrs(tahunAkademik, mahasiswa));
+    }
+
     @GetMapping("/study/jadwal")
     public void listJadwal(){
 
@@ -420,22 +427,20 @@ public class StudyActivityController {
                 model.addAttribute("mahasiswa", mahasiswa);
                 model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
                 return "du/konsentrasi";
+            }else if (prodi.equals("03")){
+                // Ekonomi Syariah
+                model.addAttribute("mahasiswa", mahasiswa);
+                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                return "du/konsentrasi";
             }
-        }else if (semester == 7){
+        }else if (semester == 6){
             // Akuntasi Syariah
             if (prodi.equals("02")){
                 model.addAttribute("mahasiswa", mahasiswa);
                 model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
                 return "du/konsentrasi";
             }
-        }else if (semester == 6){
-            // Ekonomi Syariah
-            if (prodi.equals("03")){
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
-            }
-        }else if (semester == 3){
+        }else if (semester == 2){
             // Magister Ekonomi Syariah
             if (prodi.equals("05")){
                 model.addAttribute("mahasiswa", mahasiswa);
