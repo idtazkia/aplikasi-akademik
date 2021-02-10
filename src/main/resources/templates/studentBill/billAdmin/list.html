@@ -189,7 +189,7 @@
                                                             <td >Keterangan</td>
                                                             <td class="text-right">Tagihan</td>
                                                             <td class="text-right">Dibayar</td>
-                                                            <td class="text-center"></td>
+                                                            <td></td>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -198,12 +198,50 @@
                                                             <td th:text="${data.NamaTagihan}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
-                                                            <td>
-                                                                <a th:href="@{/studentBill/billAdmin/detail(tagihan = ${data.Id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                                                            <td class="text-center">
+                                                                <a th:href="@{/studentBill/billAdmin/detail(tagihan = ${data.Id})}" data-toggle="tooltip" title="Detail" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                                                                <a th:href="@{/studentBill/billAdmin/edit(id = ${data.Id})}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
                                                                 <text th:if="${data.Lunas} == 0">
-                                                                    <a th:href="@{/studentBill/diskon/form(id=${data.id})}" class="btn btn-info btn-sm"><i class="fas fa-tag text-white"></i></a>
+                                                                    <a th:href="@{/studentBill/payment/manual(id=${data.id})}" data-toggle="tooltip" title="Pembayaran" class="btn btn-default btn-sm"><i class="fas fa-money-bill-wave"></i></a>
+                                                                    <a th:href="@{/studentBill/diskon/form(id=${data.id})}" data-toggle="tooltip" title="Diskon" class="btn btn-info btn-sm"><i class="fas fa-tag"></i></a>
+
+                                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+
+                                                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                                            <div class="modal-content bg-gradient-danger">
+
+                                                                                <div class="modal-header">
+                                                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">×</span>
+                                                                                    </button>
+                                                                                </div>
+
+                                                                                <div class="modal-body">
+
+                                                                                    <div class="py-3 text-center">
+                                                                                        <i class="far fa-trash-alt fa-3x"></i>
+                                                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+                                                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                                <div class="modal-footer">
+                                                                                    <form method="post" th:action="@{/studentBill/billAdmin/delete(tagihan = ${data.id})}">
+                                                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                                                    </form>
+                                                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
                                                                 </text>
-                                                                <a th:href="@{/studentBill/billAdmin/edit(id = ${data.Id})}" class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
                                                             </td>
                                                         </tr>
                                                         <tr>

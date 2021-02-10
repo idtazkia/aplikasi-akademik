@@ -18,7 +18,7 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
 
     Integer countByStatusAndJenisTagihan(StatusRecord statusRecord, JenisTagihan jenisTagihan);
 
-    List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndStatus(TahunAkademik tahunAkademik, String angkatan , Prodi prodi, StatusRecord statusRecord);
+    List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(TahunAkademik tahunAkademik, String angkatan , Prodi prodi, Program program, StatusRecord statusRecord);
 
     List<NilaiJenisTagihan> findByTahunAkademikAndProdi(TahunAkademik tahunAkademik, Prodi prodi);
 

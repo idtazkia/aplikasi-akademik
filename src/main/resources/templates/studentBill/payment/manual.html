@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Payment </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form Pembayaran</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-shadow">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <address>
+                                        <table class="table">
+                                            <tr style="font-weight: bold">
+                                                <td>Nomor Tagihan</td>
+                                                <td> : </td>
+                                                <td th:text="${tagihan.nomor}">1222200085944</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama</td>
+                                                <td> : </td>
+                                                <td th:text="${tagihan.mahasiswa.nama}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Program Studi</td>
+                                                <td> : </td>
+                                                <td th:text="${tagihan.mahasiswa.idProdi.namaProdi}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jenis Tagihan</td>
+                                                <td> : </td>
+                                                <td th:text="${tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nilai Tagihan</td>
+                                                <td> : </td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tanggal Jatuh Tempo</td>
+                                                <td> : </td>
+                                                <td th:text="${tagihan.tanggalJatuhTempo}"></td>
+                                            </tr>
+                                        </table>
+                                    </address>
+                                </div>
+                                <div class="col-md-6">
+                                    <form method="post" th:action="@{/studentBill/payment/manual}" th:object="${pembayaran}" enctype="multipart/form-data">
+                                        <input type="hidden" name="tagihan" th:field="*{tagihan}">
+                                        <div class="form-group">
+                                            <label for="">Bank</label>
+                                            <select name="bank" id="" th:field="*{bank}" class="form-control">
+                                                <option value=""></option>
+                                                <option th:each="data : ${bank}"
+                                                        th:text="${data.nama}"
+                                                        th:value="${data.id}">Bank</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="">va</label>
+                                            <input type="text" name="nomorRekening" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="">Jumlah pembayaran</label>
+                                            <input type="text" readonly name="amount" class="form-control" th:value="${tagihan.nilaiTagihan}">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <label>Upload Bukti</label>
+                                                <input type="file" name="fileBukti"
+                                                       class="form-control"
+                                                       placeholder="Upload Bukti" autofocus/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <a th:href="@{/studentBill/billAdmin/list(tahunAkademik = ${tagihan.tahunAkademik.id}, nim = ${tagihan.mahasiswa.nim})}" class="btn btn-danger">Cancel</a>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

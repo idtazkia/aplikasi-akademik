@@ -33,7 +33,7 @@ public class Tagihan {
 
     private String keterangan;
 
-    @Min(1000)
+    @Min(0)
     private BigDecimal nilaiTagihan;
 
     @Column(columnDefinition = "DATE")
@@ -60,6 +60,9 @@ public class Tagihan {
     @Column(columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean lunas = false;
+
+    @Enumerated(EnumType.STRING)
+    private StatusTagihan statusTagihan = StatusTagihan.PREVIEW;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;

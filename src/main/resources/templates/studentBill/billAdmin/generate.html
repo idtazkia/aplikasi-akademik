@@ -49,7 +49,7 @@
                     <div class="card-body">
                         <form method="get">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Prodi</label>
                                         <select name="prodi" required class="form-control">
@@ -61,7 +61,31 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Program</label>
+                                        <select name="program" id="" class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${program}"
+                                                    th:selected="(${data} == *{selectProgram})"
+                                                    th:text="${data.namaProgram}"
+                                                    th:value="${data.id}">Reguler</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Angkatan</label>
+                                        <select name="angkatan" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${angkatan}"
+                                                    th:selected="(${data} == *{selectAngkatan})"
+                                                    th:text="${data}"
+                                                    th:value="${data}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Tahun Akademik</label>
                                         <select name="tahunAkademik" required class="form-control">
@@ -83,26 +107,13 @@
                             </div>
                         </form>
 
-                        <div class="card-shadow" th:if="${selectProdi != null && selectTahun != null || (id != null && !id.isEmpty())}">
+                        <div class="card-shadow" th:if="${selectProdi != null && selectProgram != null && selectAngkatan != null && selectTahun != null || (id != null && !id.isEmpty())}">
 <!--                            <div class="row">-->
 <!--                                <div class="text-center col-md-12 mb-4">-->
 <!--                                    <a class="btn btn-success" th:href="@{/studentBill/billAdmin/form( prodi = ${selectProdi.id})}"><i class="fa fa-plus"></i> One Student Added</a>-->
 <!--                                </div>-->
 <!--                            </div>-->
-                            <form method="post" th:action="@{/studentBill/billAdmin/generate(prodi=${selectProdi.id}, tahun=${selectTahun.id})}">
-                                <div class="row">
-                                    <div class="ml-3">
-                                        Fitur Block : &nbsp;
-                                        <input type="checkbox" name="uas">
-                                        UAS &nbsp;
-                                        &nbsp;
-                                        <input type="checkbox" name="uts">
-                                        UTS &nbsp;
-                                        &nbsp;
-                                        <input type="checkbox" name="krs">
-                                        KRS &nbsp;
-                                    </div>
-                                </div>
+                            <form method="post" th:action="@{/studentBill/billAdmin/generate(prodi=${selectProdi.id}, program=${selectProgram.id}, angkatan=${selectAngkatan}, tahun=${selectTahun.id})}">
                                 <div class="col">
                                     <div class="form-group text-center">
                                         <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Generate</button>
