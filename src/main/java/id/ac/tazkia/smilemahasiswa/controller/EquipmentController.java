@@ -326,10 +326,14 @@ public class EquipmentController {
     @GetMapping("/equipment/class/mahasiswa")
     public void ruanganMahasiswa(@RequestParam(required = false) String angkatan, @RequestParam Kelas kelas, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Konsentrasi konsentrasi, Model model, Pageable page){
         model.addAttribute("selectedKelas", kelas);
+        String ak = angkatan;
+        String pro = prodi.getId();
         if (prodi != null) {
             List<KelasMahasiswaDto> mahasiswaDtos = new ArrayList<>();
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
+            model.addAttribute("kelas", kelas.getId());
+            model.addAttribute("kelasAngkatan", kelasDao.kelasAngktanProdi(pro, ak));
             model.addAttribute("konsentrasi", konsentrasiDao.konsentrasiProdi(prodi.getId()));
             if (konsentrasi != null){
                 Iterable<Mahasiswa> mahasiswaKonsentrasi = mahasiswaDao.carikelasKonsentrai(StatusRecord.AKTIF, angkatan, prodi,konsentrasi);
@@ -347,8 +351,12 @@ public class EquipmentController {
                             }
                             km.setNim(m.getNim());
                             km.setKelas("");
-                            if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
-                                km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                            if (m.getIdKonsentrasi() ==  null){
+                                km.setKonsentrasi(null);
+                            } else {
+                                if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                                    km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
+                                }
                             }
 
                             mahasiswaDtos.add(km);
@@ -395,7 +403,10 @@ public class EquipmentController {
                             }
                             km.setNim(m.getNim());
                             km.setKelas("");
-                            if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
+                            if (m.getIdKonsentrasi() ==  null) {
+                                km.setKonsentrasi(null);
+                            }
+                            else if (m.getIdKonsentrasi().getStatus() == StatusRecord.AKTIF){
                                 km.setKonsentrasi(m.getIdKonsentrasi().getNamaKonsentrasi());
                             }
 
