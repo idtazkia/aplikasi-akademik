@@ -99,7 +99,7 @@ public class StudyActivityController {
 
         Konsentrasi idKonstrasi = mahasiswa.getIdKonsentrasi();
         String prodi = mahasiswa.getIdProdi().getId();
-        if (idKonstrasi.getId().equals("0")){
+        if (idKonstrasi == null){
             Integer semester = krsDao.countSemester(mahasiswa.getNim());
             if (semester == 5){
                 // Manajemen Bisnis Syariah
