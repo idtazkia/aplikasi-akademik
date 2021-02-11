@@ -101,7 +101,7 @@ public class StudyActivityController {
         String prodi = mahasiswa.getIdProdi().getId();
         if (idKonstrasi == null){
             Integer semester = krsDao.countSemester(mahasiswa.getNim());
-            if (semester == 5){
+            if (semester == 4){
                 // Manajemen Bisnis Syariah
                 if (prodi.equals("01")){
                     model.addAttribute("mahasiswa", mahasiswa);

@@ -99,7 +99,7 @@
                             <div class="table-responsive" th:if="${selected != null}">
                                 <form method="post" th:action="@{/equipment/class/mahasiswa}">
                                     <div class="card-body">
-                                        <button class="btn btn-success">Generate Student Class (<span th:text="${kelas}"></span>)</button>
+                                        <button class="btn btn-success">Generate Student Class (<span th:text="${namaKelas}"></span>)</button>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -107,7 +107,7 @@
                                                 <a th:href="@{/equipment/class/mahasiswa(angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block">All</a>
                                             </div>
                                             <div class="col-md-2" th:each="data, row : ${konsentrasi}">
-                                                <a th:href="@{/equipment/class/mahasiswa(konsentrasi = ${data[1]},angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block" th:text="${data[1]}"></a>
+                                                <a th:href="@{/equipment/class/mahasiswa(konsentrasi = ${data[0]},angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block" th:text="${data[1]}"></a>
                                             </div>
                                         </div>
                                     </div>

@@ -333,6 +333,7 @@ public class EquipmentController {
             model.addAttribute("selected", prodi);
             model.addAttribute("selectedAngkatan", angkatan);
             model.addAttribute("kelas", kelas.getId());
+            model.addAttribute("namaKelas", kelas.getNamaKelas());
             model.addAttribute("kelasAngkatan", kelasDao.kelasAngktanProdi(pro, ak));
             model.addAttribute("konsentrasi", konsentrasiDao.konsentrasiProdi(prodi.getId()));
             if (konsentrasi != null){
