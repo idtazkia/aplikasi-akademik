@@ -1088,8 +1088,6 @@ public class StudentBillController {
 
         Tagihan tagihan = pembayaran.getTagihan();
         LOGGER.debug("bank : " + pembayaran.getBank());
-        VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pembayaran.getBank().getId(), tagihan);
-        LOGGER.debug("va : " + va);
         pembayaran.setWaktuBayar(LocalDateTime.now());
         pembayaran.setAmount(tagihan.getNilaiTagihan());
         pembayaranDao.save(pembayaran);

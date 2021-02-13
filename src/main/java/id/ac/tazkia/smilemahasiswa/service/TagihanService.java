@@ -69,14 +69,11 @@ public class TagihanService {
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
         tagihan.setLunas(true);
         tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-
-        VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
-
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
         pembayaran.setTagihan(tagihan);
-        pembayaran.setNomorRekening(va.getNomor());
+        pembayaran.setNomorRekening(pt.getNomorRekening());
         pembayaran.setAmount(pt.getNilaiPembayaran());
         pembayaran.setWaktuBayar(LocalDateTime.parse(pt.getWaktuPembayaran(), FORMATTER_ISO_DATE_TIME));
         pembayaran.setReferensi(pt.getReferensiPembayaran());

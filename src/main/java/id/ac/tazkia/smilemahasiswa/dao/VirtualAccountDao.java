@@ -9,7 +9,4 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface VirtualAccountDao extends PagingAndSortingRepository<VirtualAccount, String> {
     Page<VirtualAccount> findByTagihan(Tagihan tagihan, Pageable pageable);
-
-    VirtualAccount findByBankIdAndTagihan(String bank, Tagihan tagihan);
-
 }
