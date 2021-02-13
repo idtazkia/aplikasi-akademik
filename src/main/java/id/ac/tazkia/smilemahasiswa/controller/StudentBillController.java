@@ -528,7 +528,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.UAS);
-                            enableFiture.setEnable("0");
+                            enableFiture.setEnable(false);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
                         }
@@ -540,7 +540,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.UTS);
-                            enableFiture.setEnable("0");
+                            enableFiture.setEnable(false);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
                         }
@@ -552,7 +552,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.KRS);
-                            enableFiture.setEnable("0");
+                            enableFiture.setEnable(false);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
                         }
@@ -571,7 +571,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.UAS);
-                            enableFiture.setEnable("1");
+                            enableFiture.setEnable(true);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
                         }
@@ -583,7 +583,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.UTS);
-                            enableFiture.setEnable("1");
+                            enableFiture.setEnable(true);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
                         }
@@ -595,7 +595,7 @@ public class StudentBillController {
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
                             enableFiture.setTahunAkademik(tahun);
                             enableFiture.setFitur(StatusRecord.KRS);
-                            enableFiture.setEnable("1");
+                            enableFiture.setEnable(true);
                             enableFiture.setKeterangan("-");
                             enableFitureDao.save(enableFiture);
 

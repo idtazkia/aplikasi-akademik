@@ -149,7 +149,7 @@ public class FinanceController {
             EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,StatusRecord.UTS,"1",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (validasiFiture == null) {
                 EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFiture.setFitur(StatusRecord.UTS);
                 enableFiture.setKeterangan("-");
                 enableFiture.setMahasiswa(mhsw);
@@ -162,7 +162,7 @@ public class FinanceController {
             EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.UAS, "1", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (validasiFiture == null) {
                 EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFiture.setFitur(StatusRecord.UAS);
                 enableFiture.setMahasiswa(mahasiswa);
                 enableFiture.setKeterangan("-");
