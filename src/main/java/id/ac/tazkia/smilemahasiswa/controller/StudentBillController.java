@@ -522,7 +522,8 @@ public class StudentBillController {
                     tagihanService.createTagihan(tgh);
 
                     if (uas != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.UAS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.UAS, false, tahun);
                         if (fitur == null){
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -534,7 +535,8 @@ public class StudentBillController {
                         }
                     }
                     if (uts != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.UTS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.UTS, false, tahun);
                         if (fitur == null) {
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -546,7 +548,8 @@ public class StudentBillController {
                         }
                     }
                     if (krs != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.KRS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.KRS, false, tahun);
                         if (fitur == null) {
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -565,7 +568,8 @@ public class StudentBillController {
                     LOGGER.debug("data lunas : {}" + tgh.getMahasiswa().getNama());
 
                     if (uas != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.UAS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.UAS, false, tahun);
                         if (fitur == null){
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -577,7 +581,8 @@ public class StudentBillController {
                         }
                     }
                     if (uts != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.UTS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.UTS, false, tahun);
                         if (fitur == null) {
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -589,7 +594,8 @@ public class StudentBillController {
                         }
                     }
                     if (krs != null){
-                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(), StatusRecord.KRS, "0", tahun);
+                        EnableFiture fitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tgh.getMahasiswa(),
+                                StatusRecord.KRS, false, tahun);
                         if (fitur == null) {
                             EnableFiture enableFiture = new EnableFiture();
                             enableFiture.setMahasiswa(tgh.getMahasiswa());

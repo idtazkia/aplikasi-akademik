@@ -83,7 +83,8 @@ public class TagihanService {
         pembayaran.setBank(bank);
 
         if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tagihan.getTahunAkademik());
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.UTS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
@@ -91,7 +92,8 @@ public class TagihanService {
         }
 
         if (TAGIHAN_UAS.equals(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tagihan.getTahunAkademik());
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.UAS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
@@ -99,7 +101,8 @@ public class TagihanService {
         }
 
         if (TAGIHAN_KRS.contains(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tagihan.getTahunAkademik());
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.KRS, false, tagihan.getTahunAkademik());
             if (enableFiture == null) {
                 enableFiture = new EnableFiture();
                 enableFiture.setFitur(StatusRecord.KRS);
@@ -109,7 +112,8 @@ public class TagihanService {
             enableFiture.setEnable(true);
             enableFitureDao.save(enableFiture);
 
-            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi());
+            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(),
+                    tagihan.getMahasiswa().getIdProdi());
             Krs krs = new Krs();
             krs.setTahunAkademik(tagihan.getTahunAkademik());
             krs.setTahunAkademikProdi(tahunAkademikProdi);
