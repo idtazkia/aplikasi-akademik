@@ -375,7 +375,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/billAdmin/list")
     public void listBillAdmin(Model model,
                               @RequestParam(required = false) TahunAkademik tahunAkademik,
-                              @RequestParam(required = false) String nim,
+                              @RequestParam String nim,
                               @RequestParam(required = false) String date1, @RequestParam(required = false) String date2,
                               @RequestParam(required = false) String date3, @RequestParam(required = false) String date4){
 
