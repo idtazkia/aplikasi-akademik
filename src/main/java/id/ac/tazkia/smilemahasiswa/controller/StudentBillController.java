@@ -386,8 +386,8 @@ public class StudentBillController {
 
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectNim", nim);
-        if (tahunAkademik != null) {
-            Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        if (tahunAkademik != null && mhs != null) {
             model.addAttribute("sisaTagihan", tagihanDao.sisaTagihanQuery(tahunAkademik.getId(),mhs.getId()));
             model.addAttribute("daftarBiaya", tagihanDao.daftarBiaya(tahunAkademik.getId(), mhs.getId()));
             model.addAttribute("daftarPembayaran", pembayaranDao.daftarPembayaran(tahunAkademik.getId(), mhs.getId()));
