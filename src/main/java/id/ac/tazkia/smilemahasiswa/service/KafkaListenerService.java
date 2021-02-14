@@ -62,6 +62,12 @@ public class KafkaListenerService {
             log.debug("Terima message : {}", message);
 
             Tagihan tagihan = tagihanDao.findByNomor(pt.getNomorTagihan());
+
+            if (tagihan == null) {
+                log.warn("Tagihan dengan nomor {} tidak ada di database", pt.getNomorTagihan());
+                return;
+            }
+
             tagihanService.prosesPembayaran(tagihan, pt);
 
             log.debug("jenis tagihan : {}",tagihan.getNilaiJenisTagihan().getJenisTagihan().getId());
