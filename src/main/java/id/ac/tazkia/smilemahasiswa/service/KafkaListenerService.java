@@ -123,9 +123,11 @@ public class KafkaListenerService {
         log.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndStatus(tagihanResponse.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), StatusRecord.AKTIF);
+        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
+                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(),
+                        tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                        mahasiswa.getIdProgram(), StatusRecord.AKTIF);
         Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan);
-//        Tagihan tagihan = new Tagihan();
         tagihan.setNomor(tagihanResponse.getNomorTagihan());
         tagihan.setKeterangan(tagihanResponse.getKeterangan());
 
