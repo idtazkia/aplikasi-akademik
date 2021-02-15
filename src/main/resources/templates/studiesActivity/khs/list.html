@@ -77,7 +77,14 @@
                             </div>
                         </form>
                     </div>
-                    <div class="table-responsive" th:if="${selectedNim != null  }">
+                    <div class="alert alert-warning" th:if="${khs == null}">
+                        <center>
+                            <strong>
+                                Tidak ada data untuk ditampilkan
+                            </strong>
+                        </center>
+                    </div>
+                    <div class="table-responsive" th:if="${selectedNim != null  && khs != null}">
                         <div class="col-md-12 text-right">
                             <div class="dropdown">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
