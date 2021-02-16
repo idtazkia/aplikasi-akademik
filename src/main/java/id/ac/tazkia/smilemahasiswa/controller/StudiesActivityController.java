@@ -584,11 +584,11 @@ public class StudiesActivityController {
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
-                model.addAttribute("kosong", "21");
+                model.addAttribute("kosong", "24");
             }else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
+                    model.addAttribute("full", "24");
                 }
             }
             model.addAttribute("sks", sks);
@@ -605,11 +605,11 @@ public class StudiesActivityController {
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
-                model.addAttribute("kosong", "21");
+                model.addAttribute("kosong", "24");
             }else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
+                    model.addAttribute("full", "24");
                 }
             }
             model.addAttribute("sks", sks);
@@ -1670,9 +1670,11 @@ public class StudiesActivityController {
                 model.addAttribute("selectedTahun" , tahunAkademik);
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
-                model.addAttribute("khs",krsDetail);
-                model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
-                model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+                if (!krsDetail.isEmpty()){
+                    model.addAttribute("khs",krsDetail);
+                    model.addAttribute("ipk", krsDetailDao.ipkTahunAkademik(mahasiswa,tahunAkademik.getKodeTahunAkademik()));
+                    model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+                }
             } else {
                 model.addAttribute("selectedNim" , nim);
                 List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa);

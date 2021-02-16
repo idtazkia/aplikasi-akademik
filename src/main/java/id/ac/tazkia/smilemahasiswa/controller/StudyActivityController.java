@@ -99,7 +99,7 @@ public class StudyActivityController {
 
         Konsentrasi idKonstrasi = mahasiswa.getIdKonsentrasi();
         String prodi = mahasiswa.getIdProdi().getId();
-        if (idKonstrasi.getId().equals("0")){
+        if (idKonstrasi == null){
             Integer semester = krsDao.countSemester(mahasiswa.getNim());
             if (semester == 5){
                 // Manajemen Bisnis Syariah
@@ -217,11 +217,11 @@ public class StudyActivityController {
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
-                model.addAttribute("kosong", "21");
+                model.addAttribute("kosong", "24");
             }else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
+                    model.addAttribute("full", "24");
                 }
             }
             model.addAttribute("lebih", lebih);
@@ -240,11 +240,11 @@ public class StudyActivityController {
             Long sks = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
 
             if (ipk == null){
-                model.addAttribute("kosong", "21");
+                model.addAttribute("kosong", "24");
             }else {
 
                 if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0) {
-                    model.addAttribute("full", "23");
+                    model.addAttribute("full", "24");
                 }
             }
             model.addAttribute("lebih", lebih);

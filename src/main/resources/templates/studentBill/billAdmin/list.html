@@ -99,6 +99,9 @@
                                                 </div>
                                             </div>
                                         </form>
+                                        <div class="alert alert-danger" th:if="${message != null && selectTahun != null}">
+                                            NIM tidak terdaftar!!
+                                        </div>
                                         <div class="card-body" th:if="${selectTahun != null && mhs != null || (id != null && !id.isEmpty() )}">
                                             <div class="card shadow">
                                                 <div class="row">
@@ -351,7 +354,6 @@
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
-                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -450,7 +452,6 @@
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
-                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -506,10 +507,6 @@
         if (activeTab){
             $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
         }
-
-        function alertFunction(){
-            alert("NIM tidak terdaftar!!");
-        };
     });
 
 </script>

@@ -36,7 +36,7 @@ public class ImportPresensiService {
                 .block();
     }
 
-    @Scheduled(cron = "0 0 22 * * ? ", zone = "Asia/Jakarta")
+//    @Scheduled(cron = "0 0 22 * * ? ", zone = "Asia/Jakarta")
     public void importPresensi(){
 
         LocalDate tanggalProses = terakhirImport().plusDays(1);

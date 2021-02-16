@@ -146,10 +146,11 @@ public class FinanceController {
 
         if (status == "UTS") {
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
-            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,StatusRecord.UTS,"1",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,
+                    StatusRecord.UTS,true,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (validasiFiture == null) {
                 EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFiture.setFitur(StatusRecord.UTS);
                 enableFiture.setKeterangan("-");
                 enableFiture.setMahasiswa(mhsw);
@@ -159,10 +160,11 @@ public class FinanceController {
 
         }else {
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.UAS, "1", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,
+                    StatusRecord.UAS, true, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
             if (validasiFiture == null) {
                 EnableFiture enableFiture = new EnableFiture();
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFiture.setFitur(StatusRecord.UAS);
                 enableFiture.setMahasiswa(mahasiswa);
                 enableFiture.setKeterangan("-");

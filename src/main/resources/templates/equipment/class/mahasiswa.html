@@ -77,12 +77,11 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Kelas</label>
-                                        <input type="text" th:if="${selectedKelas != null}" class="form-control" id="kelas" placeholder="Cari Kelas ..."
-                                               data-provide="typeahead" autocomplete="off" required th:value="${selectedKelas.namaKelas}">
-                                        <input type="text" th:if="${selectedKelas == null}" class="form-control" id="kelas" placeholder="Cari Kelas ..."
-                                               data-provide="typeahead" autocomplete="off" required>
-                                        <input type="hidden" th:if="${selectedKelas != null}" id="isiKelas" name="kelas" th:value="${selectedKelas.id}">
-                                        <input type="hidden" th:if="${selected == null}" id="isiKelas" name="kelas">
+                                        <select name="kelas" required class="form-control">
+                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option th:each="data : ${kelasAngkatan}" th:text="${data[1]}"
+                                                    th:value="${data[0]}"></option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +99,7 @@
                             <div class="table-responsive" th:if="${selected != null}">
                                 <form method="post" th:action="@{/equipment/class/mahasiswa}">
                                     <div class="card-body">
-                                        <button class="btn btn-success">Generate Student Class</button>
+                                        <button class="btn btn-success">Generate Student Class (<span th:text="${namaKelas}"></span>)</button>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">

@@ -27,7 +27,7 @@ public class EnableFiture {
     @Enumerated(EnumType.STRING)
     private StatusRecord fitur;
 
-    private String enable;
+    private Boolean enable = false;
 
     private String keterangan;
 

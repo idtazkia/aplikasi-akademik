@@ -22,6 +22,7 @@ public class PembayaranTagihan {
     private BigDecimal nilaiPembayaran;
     private BigDecimal nilaiAkumulasiPembayaran;
     private String bank;
+    private String nomorRekening;
     private String waktuPembayaran;
     private String referensiPembayaran;
 
