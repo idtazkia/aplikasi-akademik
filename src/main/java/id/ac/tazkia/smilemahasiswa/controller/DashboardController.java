@@ -113,7 +113,7 @@ public class DashboardController {
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
+        Krs k = krsDao.findByTahunAkademikAndMahasiswaAndStatus(ta,mahasiswa,StatusRecord.AKTIF);
 
         model.addAttribute("krsdetail", krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa, k, StatusRecord.AKTIF));
         model.addAttribute("persentase", krsDetailDao.persentaseKehadiran(mahasiswa,ta));
