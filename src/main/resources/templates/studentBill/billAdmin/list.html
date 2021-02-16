@@ -54,6 +54,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
+
                                 <div class="nav-wrapper mb-4">
                                     <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                         <li class="nav-item">
@@ -93,12 +94,15 @@
                                             <div class="row">
                                                 <div class="col-md-12" style="text-align: center">
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary"> Show</button>
+                                                        <button type="submit" class="btn btn-primary" > Show</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
-                                        <div class="card-body" th:if="${selectTahun != null || (id != null && !id.isEmpty() )}">
+                                        <div class="alert alert-danger" th:if="${message != null && selectTahun != null}">
+                                            NIM tidak terdaftar!!
+                                        </div>
+                                        <div class="card-body" th:if="${selectTahun != null && mhs != null || (id != null && !id.isEmpty() )}">
                                             <div class="card shadow">
                                                 <div class="row">
                                                     <div class="col-md-6 col-xs-12">
@@ -256,37 +260,6 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                <!--                                    <div class="row">-->
-                                                <!--                                        <div class="col-md-4 col-xs-12">-->
-                                                <!--                                            <h4 class="text-right">-->
-                                                <!--                                                Total:-->
-                                                <!--                                            </h4>-->
-                                                <!--                                        </div>-->
-                                                <!--                                        <div class="col-md-3 ml-2 col-xs-6">-->
-                                                <!--                                            <div class="text-right" >-->
-                                                <!--                                                <h5 th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}"></h5>-->
-                                                <!--                                            </div>-->
-                                                <!--                                        </div>-->
-                                                <!--                                        <div class="col-md-3 col-xs-6">-->
-                                                <!--                                            <div class="text-right">-->
-                                                <!--                                                <h5 class="mr-3" th:text="${'Rp. ' + #numbers.formatDecimal(totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
-                                                <!--                                            </div>-->
-                                                <!--                                        </div>-->
-                                                <!--                                        <div class="col-md-2"></div>-->
-                                                <!--                                    </div>-->
-                                                <!--                                    <div class="row">-->
-                                                <!--                                        <div class="col-md-4 col-xs-6">-->
-                                                <!--                                            <h4 class="text-right">-->
-                                                <!--                                                Sisa:-->
-                                                <!--                                            </h4>-->
-                                                <!--                                        </div>-->
-                                                <!--                                        <div class="col-md-6 col-xs-6">-->
-                                                <!--                                            <div class="text-right">-->
-                                                <!--                                                <h5 class="mr-2" th:text="${'Rp. ' + #numbers.formatDecimal(totalTagihan - totalDibayar, 0, 'POINT', 2, 'COMMA')}"></h5>-->
-                                                <!--                                            </div>-->
-                                                <!--                                        </div>-->
-                                                <!--                                        <div class="col-md-2"></div>-->
-                                                <!--                                    </div>-->
                                             </div>
 
                                             <div class="card shadow mt-5">
@@ -316,7 +289,6 @@
                                                     </table>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
@@ -382,7 +354,6 @@
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
-                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -481,7 +452,6 @@
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
-                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -538,4 +508,5 @@
             $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
         }
     });
+
 </script>

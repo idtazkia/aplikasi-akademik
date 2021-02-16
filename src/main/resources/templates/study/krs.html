@@ -56,6 +56,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-info" th:if="${validasi == null}">
+                        <center>
+                            <strong>
+                                Sudah tidak bisa mengambil krs, karena sudah melewati batas waktu
+                            </strong>
+                        </center>
+                    </div>
                     <div class="alert alert-danger" th:if="${gagal != null}">
                         Delete data gagal, Krs sudah tidak dapat dihapus karena sudah ada aktifitas perkuliahan yang anda lakukan dengan matakuliah ini...
                     </div>

@@ -7,5 +7,5 @@ import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface EnableFitureDao extends PagingAndSortingRepository<EnableFiture,String> {
-    EnableFiture findByMahasiswaAndFiturAndEnableAndTahunAkademik(Mahasiswa mhsw, StatusRecord uts, String s, TahunAkademik byStatus);
+    EnableFiture findByMahasiswaAndFiturAndEnableAndTahunAkademik(Mahasiswa mhsw, StatusRecord uts, Boolean enabled, TahunAkademik byStatus);
 }

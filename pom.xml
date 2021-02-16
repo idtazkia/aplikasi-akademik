@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<revision>2.1.81-RELEASE</revision>
+		<revision>2.1.90-RELEASE</revision>
 	</properties>
 
 	<dependencies>

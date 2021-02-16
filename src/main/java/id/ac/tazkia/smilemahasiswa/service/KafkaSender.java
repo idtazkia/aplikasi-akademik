@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.ac.tazkia.smilemahasiswa.dto.payment.HapusTagihanRequest;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ public class KafkaSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaListener.class);
 
     @Value("${kafka.topic.tagihan.request}") private String kafkaTopicTagihanRequest;
+    @Value("${kafka.topic.hapus.tagihan}") private String kafkaTopicHapusTagihan;
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -30,6 +32,16 @@ public class KafkaSender {
             LOGGER.info("Create Tagihan Request : {}", jsonRequest);
             kafkaTemplate.send(kafkaTopicTagihanRequest, jsonRequest);
         } catch (Exception err){
+            LOGGER.warn(err.getMessage(), err);
+        }
+    }
+
+    public void requsetHapusTagihan(HapusTagihanRequest hapusTagihanRequest){
+        try{
+            String jsonRequest = objectMapper.writeValueAsString(hapusTagihanRequest);
+            LOGGER.info("Hapus Tagihan Request : {}", jsonRequest);
+            kafkaTemplate.send(kafkaTopicHapusTagihan, jsonRequest);
+        }catch (Exception err){
             LOGGER.warn(err.getMessage(), err);
         }
     }

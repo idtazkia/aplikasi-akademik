@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.HapusTagihanRequest;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -53,9 +54,9 @@ public class TagihanService {
     @Autowired
     private VirtualAccountDao virtualAccountDao;
 
-    public void createTagihan(Tagihan tagihan) {
+    public void requestCreateTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
-                .kodeBiaya(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
                 .nilaiTagihan(tagihan.getNilaiTagihan())
                 .debitur(tagihan.getMahasiswa().getNim())
@@ -66,17 +67,24 @@ public class TagihanService {
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
+    public void hapusTagihan(Tagihan tagihan){
+        HapusTagihanRequest hapusTagihan = HapusTagihanRequest.builder()
+                .nomorTagihan(tagihan.getNomor())
+                .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
+                .debitur(tagihan.getMahasiswa().getNama())
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
+                .build();
+        kafkaSender.requsetHapusTagihan(hapusTagihan);
+    }
+
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
         tagihan.setLunas(true);
         tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-
-        VirtualAccount va = virtualAccountDao.findByBankIdAndTagihan(pt.getBank(), tagihan);
-
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
         pembayaran.setTagihan(tagihan);
-        pembayaran.setNomorRekening(va.getNomor());
+        pembayaran.setNomorRekening(pt.getNomorRekening());
         pembayaran.setAmount(pt.getNilaiPembayaran());
         pembayaran.setWaktuBayar(LocalDateTime.parse(pt.getWaktuPembayaran(), FORMATTER_ISO_DATE_TIME));
         pembayaran.setReferensi(pt.getReferensiPembayaran());
@@ -86,44 +94,70 @@ public class TagihanService {
         pembayaran.setBank(bank);
 
         if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UTS, "0", tagihan.getTahunAkademik());
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.UTS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
             }
         }
 
         if (TAGIHAN_UAS.equals(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.UAS, "0", tagihan.getTahunAkademik());
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.UAS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
-                enableFiture.setEnable("1");
+                enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
             }
         }
 
         if (TAGIHAN_KRS.contains(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.KRS, "0", tagihan.getTahunAkademik());
-            if (enableFiture != null){
-                enableFiture.setEnable("1");
-                enableFitureDao.save(enableFiture);
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.KRS, false, tagihan.getTahunAkademik());
+            if (enableFiture == null) {
+                enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.KRS);
+                enableFiture.setMahasiswa(tagihan.getMahasiswa());
+                enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
+            }
+            enableFiture.setEnable(true);
+            enableFitureDao.save(enableFiture);
 
-                TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi());
-                Krs krs = new Krs();
-                krs.setTahunAkademik(tagihan.getTahunAkademik());
-                krs.setTahunAkademikProdi(tahunAkademikProdi);
-                krs.setProdi(tagihan.getMahasiswa().getIdProdi());
-                krs.setMahasiswa(tagihan.getMahasiswa());
-                krs.setNim(tagihan.getMahasiswa().getNim());
-                krs.setTanggalTransaksi(LocalDateTime.now());
-                krs.setStatus(StatusRecord.AKTIF);
-                krsDao.save(krs);
+            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(),
+                    tagihan.getMahasiswa().getIdProdi());
+
+            Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(
+                    tagihan.getMahasiswa(), tagihan.getTahunAkademik(), StatusRecord.AKTIF);
+
+            if(krs == null) {
+                createKrs(tagihan, tahunAkademikProdi);
             }
         }
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
+
+        Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndStatusTagihanOrStatusTagihanAndStatus(tagihan.getMahasiswa(), tagihan.getNilaiJenisTagihan(), StatusTagihan.CICILAN_1, StatusTagihan.CICILAN_2, StatusRecord.AKTIF);
+        if (tagihan1 != null){
+            tagihan1.setTanggalPembuatan(LocalDate.now());
+            tagihanDao.save(tagihan1);
+            this.requestCreateTagihan(tagihan1);
+        }
+
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
+    }
+
+    public void createKrs(Tagihan tagihan, TahunAkademikProdi tahunAkademikProdi) {
+        Krs krs = new Krs();
+        krs.setTahunAkademik(tagihan.getTahunAkademik());
+        krs.setTahunAkademikProdi(tahunAkademikProdi);
+        krs.setProdi(tagihan.getMahasiswa().getIdProdi());
+        krs.setMahasiswa(tagihan.getMahasiswa());
+        krs.setNim(tagihan.getMahasiswa().getNim());
+        krs.setTanggalTransaksi(LocalDateTime.now());
+        krs.setStatus(StatusRecord.AKTIF);
+        krsDao.save(krs);
     }
 
 }
