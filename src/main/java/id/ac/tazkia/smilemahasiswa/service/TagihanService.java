@@ -53,7 +53,7 @@ public class TagihanService {
     @Autowired
     private VirtualAccountDao virtualAccountDao;
 
-    public void createTagihan(Tagihan tagihan) {
+    public void requestCreateTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
@@ -114,21 +114,31 @@ public class TagihanService {
 
             TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(),
                     tagihan.getMahasiswa().getIdProdi());
-            Krs krs = new Krs();
-            krs.setTahunAkademik(tagihan.getTahunAkademik());
-            krs.setTahunAkademikProdi(tahunAkademikProdi);
-            krs.setProdi(tagihan.getMahasiswa().getIdProdi());
-            krs.setMahasiswa(tagihan.getMahasiswa());
-            krs.setNim(tagihan.getMahasiswa().getNim());
-            krs.setTanggalTransaksi(LocalDateTime.now());
-            krs.setStatus(StatusRecord.AKTIF);
-            krsDao.save(krs);
+
+            Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(
+                    tagihan.getMahasiswa(), tagihan.getTahunAkademik(), StatusRecord.AKTIF);
+
+            if(krs == null) {
+                createKrs(tagihan, tahunAkademikProdi);
+            }
         }
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
+    }
+
+    public void createKrs(Tagihan tagihan, TahunAkademikProdi tahunAkademikProdi) {
+        Krs krs = new Krs();
+        krs.setTahunAkademik(tagihan.getTahunAkademik());
+        krs.setTahunAkademikProdi(tahunAkademikProdi);
+        krs.setProdi(tagihan.getMahasiswa().getIdProdi());
+        krs.setMahasiswa(tagihan.getMahasiswa());
+        krs.setNim(tagihan.getMahasiswa().getNim());
+        krs.setTanggalTransaksi(LocalDateTime.now());
+        krs.setStatus(StatusRecord.AKTIF);
+        krsDao.save(krs);
     }
 
 }
