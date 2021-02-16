@@ -71,7 +71,7 @@
                                             <label>Full Name</label>
                                             &nbsp&nbsp
                                             <small class="text-danger">* Fill in the name</small>
-                                            <input type="text" class="form-control" name="nama" th:field="*{nama}" placeholder="Name">
+                                            <input type="text" class="form-control" required name="nama" th:field="*{nama}" placeholder="Name">
                                         </div>
                                     </div>
 
@@ -88,14 +88,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Date Of Birth</label>
-                                            <input type="date" class="form-control" th:field="*{tanggalLahir}" name="tanggalLahir">
+                                            <input type="date" class="form-control" required th:field="*{tanggalLahir}" name="tanggalLahir">
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Gender</label>
-                                            <select name="jenisKelamin" th:field="*{jenisKelamin}" class="form-control">
+                                            <select name="jenisKelamin" required th:field="*{jenisKelamin}" class="form-control">
                                                 <option value=""></option>
                                                 <option value="PRIA">Male</option>
                                                 <option value="WANITA">Female</option>
@@ -108,7 +108,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" th:field="*{email}" name="email">
+                                            <input type="email" required class="form-control" th:field="*{email}" name="email">
                                         </div>
                                     </div>
 
@@ -128,7 +128,7 @@
                                     <div class="col-md-6" th:if="${karyawan.id == null}">
                                         <div class="form-group">
                                             <label>Prodi</label>
-                                            <select class="form-control js-example-placeholder-single" id="select2-dosen"
+                                            <select required class="form-control js-example-placeholder-single" id="select2-dosen"
                                                     style="width: 100%!important;" name="prodi">
                                                 <option value=""></option>
                                                 <option th:each="data : ${prodi}"
