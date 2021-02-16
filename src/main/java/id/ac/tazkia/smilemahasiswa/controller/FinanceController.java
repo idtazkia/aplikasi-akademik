@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ public class FinanceController {
     private TahunProdiDao tahunAkademikProdiDao;
     @Autowired
     private EnableFitureDao enableFitureDao;
+    @Autowired private TagihanService tagihanService;
 
 
     @ModelAttribute("prodi")
