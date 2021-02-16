@@ -60,10 +60,12 @@ public class ReportMahasiswaController {
                 List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
                 tugasDtos.addAll(nilaiTugas);
             }
-            model.addAttribute("tugas",tugasDtos);
-            model.addAttribute("khs",krsDetail);
-            model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
-            model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+            if (!krsDetail.isEmpty()){
+                model.addAttribute("tugas",tugasDtos);
+                model.addAttribute("khs",krsDetail);
+                model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+                model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+            }
 
             if (validasiEdom.isEmpty() || validasiEdom == null){
                 return "report/khs";

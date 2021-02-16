@@ -71,26 +71,32 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="table-responsive" th:if="${selectedTahun != null}">
+                        <div class="alert alert-warning" th:if="${khs == null}">
+                            <center>
+                                <strong>
+                                    Tidak ada data untuk ditampilkan
+                                </strong>
+                            </center>
+                        </div>
+                        <div class="table-responsive" th:if="${selectedTahun != null && khs != null}">
                             <table class="table table-striped">
                                 <tr>
                                     <th>No</th>
                                     <th>Code</th>
                                     <th>Matakuliah</th>
-                                    <!--<th>SKS</th>-->
                                     <th>Presensi</th>
                                     <th>Task</th>
                                     <th>Mid Term</th>
                                     <th>End Semester Exam</th>
+                                    <th>Total</th>
+                                    <th>SKS</th>
                                     <th>Weight</th>
                                     <th>Grade</th>
-                                    <th>Total</th>
                                 </tr>
                                 <tr th:each="data,row : ${khs}" >
                                     <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.kode}"></td>
                                     <td th:text="${data.matakuliah}"></td>
-                                    <!--<td th:text="${data.sks}"></td>-->
                                     <td th:text="${data.presensi}"></td>
                                     <td>
                                         <button data-toggle="modal" th:data-target="${'#myModalfour'+data.id}" style="background-color: white;border: 2px solid #4285f4; padding: 5px; border-radius: 10px;" th:text="${data.tugas}">
@@ -122,17 +128,18 @@
                                     </td>
                                     <td th:text="${data.uts}"></td>
                                     <td th:text="${data.uas}"></td>
+                                    <td th:text="${data.nilaiAkhir}"></td>
+                                    <td th:text="${data.sks}"></td>
                                     <td th:text="${data.bobot}"></td>
                                     <td th:text="${data.grade}"></td>
-                                    <td th:text="${data.nilaiAkhir}"></td>
                                 </tr>
                                 <tr>
                                     <th colspan="3"><center><h5><b>IP Semester</b></h5></center></th>
                                     <th><h5><b>:</b></h5></th>
-                                    <th colspan="1"><h5><b th:text="${ip?.ipk?}">21</b></h5></th>
+                                    <th colspan="1"><h5><b th:text="${ip.ipk}">21</b></h5></th>
                                     <th colspan="3"><center><h5><b>IPK</b></h5></center></th>
                                     <th><h5><b>:</b></h5></th>
-                                    <th colspan="1"><h5><b th:text="${ipk?.ipk?}">21</b></h5></th>
+                                    <th colspan="1"><h5><b th:text="${ipk.ipk}">21</b></h5></th>
                                 </tr>
                             </table>
                         </div>
