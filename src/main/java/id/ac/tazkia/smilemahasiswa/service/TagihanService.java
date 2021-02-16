@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.HapusTagihanRequest;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -55,7 +56,7 @@ public class TagihanService {
 
     public void createTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
-                .kodeBiaya(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
                 .nilaiTagihan(tagihan.getNilaiTagihan())
                 .debitur(tagihan.getMahasiswa().getNim())
@@ -64,6 +65,16 @@ public class TagihanService {
                 .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
+    }
+
+    public void hapusTagihan(Tagihan tagihan){
+        HapusTagihanRequest hapusTagihan = HapusTagihanRequest.builder()
+                .nomorTagihan(tagihan.getNomor())
+                .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
+                .debitur(tagihan.getMahasiswa().getNama())
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
+                .build();
+        kafkaSender.requsetHapusTagihan(hapusTagihan);
     }
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
@@ -122,6 +133,14 @@ public class TagihanService {
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
+
+        Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndStatusTagihanOrStatusTagihanAndStatus(tagihan.getMahasiswa(), tagihan.getNilaiJenisTagihan(), StatusTagihan.CICILAN_1, StatusTagihan.CICILAN_2, StatusRecord.AKTIF);
+        if (tagihan1 != null){
+            tagihan1.setTanggalPembuatan(LocalDate.now());
+            tagihanDao.save(tagihan1);
+            this.createTagihan(tagihan1);
+        }
+
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
     }
