@@ -157,13 +157,6 @@
                                 <td> : </td>
                                 <td th:text="${cicilan.statusApprove}"></td>
                             </tr>
-                            <tr th:if="${cicilan} != null">
-                                <div th:if="${cicilan.statusApprove.REJECTED} == ${cicilan.statusApprove}">
-                                    <td>Keterangan</td>
-                                    <td> : </td>
-                                    <td th:text="${cicilan.keteranganReject}">HAHAHA</td>
-                                </div>
-                            </tr>
                         </table>
                      </address>
                 </div>
@@ -208,8 +201,8 @@
                     <text th:if="${penangguhan} == null">
                         <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>
                     </text>
-                    <text th:if="${cicilan} == null">
-                        <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Request Cicilan</a>
+                    <text>
+                        <a class="btn btn-primary" onclick="myFunction()">Request Cicilan</a>
                     </text>
                 </div>
             </div>
@@ -225,3 +218,8 @@
 </section>
 </body>
 </html>
+<script>
+    function myFunction(){
+        alert("Mohon maaf!! Fitur sedang dalam perbaikan")
+    }
+</script>

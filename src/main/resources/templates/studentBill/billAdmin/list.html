@@ -345,15 +345,19 @@
                                                                     <tbody>
                                                                     <tr th:each="data, row:${listProdi}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
-                                                                        <td class="text-center" th:text="${data[0]}"></td>
-                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center">
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id})}"
+                                                                               th:text="${data.Prodi}"></a>
+                                                                        </td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -443,7 +447,10 @@
                                                                     <tbody>
                                                                     <tr th:each="data, row:${listAngkatan}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
-                                                                        <td class="text-center" th:text="${data[0]}"></td>
+                                                                        <td class="text-center">
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data[0]})}"
+                                                                            th:text="${data[0]}"></a>
+                                                                        </td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
@@ -452,6 +459,7 @@
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                                                                        <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>

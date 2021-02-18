@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.dto.payment.BiayaMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarBiayaDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.NilaiCicilanDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.apache.kafka.common.metrics.Stat;
 import org.springframework.data.domain.Page;
@@ -72,11 +69,11 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "on a.id=b.id_tagihan where a.id=?1 and a.status='AKTIF' and b.status='AKTIF'", nativeQuery = true)
     NilaiCicilanDto pembagianNilaiCicilan(String idTagihan);
 
-    @Query(value = "select c.nama_prodi as prodi, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(d.amount,0)) as \n" +
+    @Query(value = "select c.id, c.nama_prodi as prodi, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(d.amount,0)) as \n" +
             "dibayar, coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(d.amount,0))) as sisa from tagihan as a \n" +
             "inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id left join pembayaran \n" +
-            "as d on d.id_tagihan=a.id where a.status='AKTIF' group by prodi order by prodi asc", nativeQuery = true)
-    List<Object[]> listTagihanPerProdi();
+            "as d on d.id_tagihan=a.id where a.status='AKTIF' group by c.id order by prodi asc", nativeQuery = true)
+    List<DaftarTagihanPerProdiDto> listTagihanPerProdi();
 
     @Query(value = "select c.nama_prodi as prodi, sum(coalesce(d.amount,0)) as pemasukan from tagihan as a \n" +
             "inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id left join pembayaran \n" +
@@ -95,6 +92,20 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "as d on d.id_tagihan=a.id where a.status='AKTIF' and d.waktu_bayar between ?1 and ?2 \n" +
             "group by angkatan order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4);
+
+    @Query(value = "select a.id as id, a.angkatan, a.nim as nim, a.nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
+            "sum(coalesce(c.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(c.amount,0)) as sisa\n" +
+            "from mahasiswa as a inner join tagihan as b on a.id=b.id_mahasiswa left join pembayaran as c \n" +
+            "on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' group by id order by nim", nativeQuery = true)
+    List<Object[]> listTagihanPerMahasiswaByProdi(String idProdi);
+
+    @Query(value = "select a.id as id, c.nama_prodi as prodi, a.nim as nim, a.nama as nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
+            "sum(coalesce(d.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(d.amount,0)) as sisa \n" +
+            "from mahasiswa as a inner join tagihan as b on \n" +
+            "a.id=b.id_mahasiswa inner join prodi as c on \n" +
+            "a.id_prodi=c.id left join pembayaran as d on b.id=d.id_tagihan where \n" +
+            "b.status='AKTIF' and a.angkatan=?1 group by id order by nim", nativeQuery = true)
+    List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, boolean lunas, StatusRecord statusRecord);
 
