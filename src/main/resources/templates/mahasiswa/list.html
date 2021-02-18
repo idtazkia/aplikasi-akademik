@@ -81,32 +81,32 @@
                             <tbody>
                             <tr th:each="data,row : ${list}">
                                 <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
-                                <td th:text="${data.mahasiswa.nim}">1519001</td>
+                                <td th:text="${data.nim}">1519001</td>
                                 <td>
                                     <a class="btn btn-success btn-outline-success btn-sm"
-                                       th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}"
-                                       th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
+                                       th:if="${data.status.AKTIF} == ${data.status}"
+                                       th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
                                     </a>
 
                                     <a class="btn btn-danger btn-outline-danger btn-sm"
-                                       th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}"
-                                       th:text="${data.mahasiswa.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.mahasiswa.id})}">
+                                       th:if="${data.status.NONAKTIF} == ${data.status}"
+                                       th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
                                     </a>
                                 </td>
-                                <td th:text="${data.mahasiswa.idProdi.namaProdi}">Akuntansi Syariah</td>
-                                <td th:text="${data.mahasiswa.idProgram.namaProgram}">S2</td>
+                                <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>
+                                <td th:text="${data.idProgram.namaProgram}">S2</td>
                                 <td align="center">
 
-                                    <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.mahasiswa.id})}" method="post">
+                                    <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.id})}" method="post">
                                         <button type="submit" class="btn btn-danger btn-sm"
-                                                th:if="${data.mahasiswa.status.AKTIF} == ${data.mahasiswa.status}">
+                                                th:if="${data.status.AKTIF} == ${data.status}">
                                             Disable Student
                                         </button>
                                     </form>
 
-                                    <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.mahasiswa.id})}" method="post">
+                                    <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.id})}" method="post">
                                         <button type="submit" class="btn btn-success         btn-xs"
-                                                th:if="${data.mahasiswa.status.NONAKTIF} == ${data.mahasiswa.status}">
+                                                th:if="${data.status.NONAKTIF} == ${data.status}">
                                             Enable Student
                                         </button>
                                     </form>

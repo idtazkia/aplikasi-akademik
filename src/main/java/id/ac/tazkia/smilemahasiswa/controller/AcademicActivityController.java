@@ -700,9 +700,9 @@ public class  AcademicActivityController {
         MatakuliahKurikulum matakuliah = matakuliahKurikulumDao.findById(idMatakuliah).get();
 
         MatakuliahKurikulum idMatakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahKurikulum).get();
-        matakuliahSetara.setMatakuliah(idMatakuliahKurikulum);
+        matakuliahSetara.setMatakuliah(matakuliah);
         matakuliahSetara.setUserInsert(user.getUsername());
-        matakuliahSetara.setMatakuliahSetara(matakuliah);
+        matakuliahSetara.setMatakuliahSetara(idMatakuliahKurikulum);
         matakuliahSetara.setTanggalInsert(LocalDateTime.now());
         mataKuliahSetaraDao.save(matakuliahSetara);
 
