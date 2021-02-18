@@ -283,7 +283,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studiesActivity/assesment/listdosen}" class="nav-link">Assesment</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/khs/list}" class="nav-link">KHS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER') ">
@@ -416,7 +416,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/report/recapitulation/ipk}" class="nav-link">IPK</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/report/historymahasiswa}" class="nav-link">History Mahasiswa</a>
                             </li>
                         </ul>
