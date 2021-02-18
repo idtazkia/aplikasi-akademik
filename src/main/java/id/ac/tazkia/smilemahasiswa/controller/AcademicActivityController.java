@@ -697,9 +697,9 @@ public class  AcademicActivityController {
 
         User user = currentUserService.currentUser(authentication);
 
-        Matakuliah matakuliah = matakuliahDao.findById(idMatakuliah).get();
+        MatakuliahKurikulum matakuliah = matakuliahKurikulumDao.findById(idMatakuliah).get();
 
-        Matakuliah idMatakuliahKurikulum = matakuliahDao.findById(matakuliahKurikulum).get();
+        MatakuliahKurikulum idMatakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahKurikulum).get();
         matakuliahSetara.setMatakuliah(matakuliah);
         matakuliahSetara.setUserInsert(user.getUsername());
         matakuliahSetara.setMatakuliahSetara(idMatakuliahKurikulum);

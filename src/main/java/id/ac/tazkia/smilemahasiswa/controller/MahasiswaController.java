@@ -59,6 +59,9 @@ public class MahasiswaController {
     private IbuDao ibuDao;
 
     @Autowired
+    private WaliDao waliDao;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -102,9 +105,9 @@ public class MahasiswaController {
     public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("list", mahasiswaDetailKeluargaDao.findByMahasiswaStatusNotInAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrderByMahasiswaNama(Arrays.asList(StatusRecord.HAPUS), search,search, page));
+            model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(Arrays.asList(StatusRecord.HAPUS), search,search, page));
         } else {
-            model.addAttribute("list",mahasiswaDetailKeluargaDao.findByMahasiswaStatusNotIn(Arrays.asList(StatusRecord.HAPUS),page));
+            model.addAttribute("list", mahasiswaDao.findByStatusNotInOrderByNim(Arrays.asList(StatusRecord.HAPUS),page));
         }
     }
 
@@ -142,6 +145,10 @@ public class MahasiswaController {
         model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("ayah", ayahDao.findById(mahasiswa.getId()));
+        model.addAttribute("ibu", ibuDao.findById(mahasiswa.getId()));
+        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
+
         MahasiswaDetailKeluarga mahasiswaDetailKeluarga = mahasiswaDetailKeluargaDao.findByMahasiswa(mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
         if (mahasiswaDetailKeluarga.getWali() != null) {

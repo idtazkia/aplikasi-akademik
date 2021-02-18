@@ -19,11 +19,11 @@ public class MatakuliahSetara {
 
     @ManyToOne
     @JoinColumn(name = "id_matakuliah")
-    private Matakuliah matakuliah;
+    private MatakuliahKurikulum matakuliah;
 
     @ManyToOne
     @JoinColumn(name = "id_matakuliah_setara")
-    private Matakuliah matakuliahSetara;
+    private MatakuliahKurikulum matakuliahSetara;
 
     @NotNull
     @Enumerated(EnumType.STRING)

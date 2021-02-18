@@ -122,52 +122,92 @@ public class HumanResourcesController {
     }
 
     @PostMapping("/humanResources/lecturer/form")
-    public String prosesForm(@Valid DosenDto dosenDto){
+    public String prosesForm(Model model ,@Valid DosenDto dosenDto){
 
         Integer idAbesen = karyawanDao.cariIDAbesen();
 
         if (dosenDto.getId() == null || dosenDto.getId().isEmpty()) {
-            User user = new User();
-            user.setActive(Boolean.TRUE);
-            user.setRole(roleDao.findById("dosen").get());
-            user.setUsername(dosenDto.getEmail());
-            userDao.save(user);
-
-//            SplittableRandom splittableRandom = new SplittableRandom();
-//            int randomWithSplittableRandom = splittableRandom.nextInt(1, 999999);
-
-
-
-
-            Karyawan karyawan = new Karyawan();
-            karyawan.setEmail(dosenDto.getEmail());
-            karyawan.setGelar(dosenDto.getGelar());
-            karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
-            karyawan.setNamaKaryawan(dosenDto.getNama());
-            karyawan.setNidn(dosenDto.getNidn());
-            karyawan.setIdUser(user);
-            karyawan.setNik(dosenDto.getNik());
-            karyawan.setRfid(dosenDto.getRfid());
-            karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
-            karyawan.setIdAbsen(idAbesen);
-            karyawanDao.save(karyawan);
-
-            Dosen d = new Dosen();
-            d.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
-            d.setKaryawan(karyawan);
-            d.setStatusDosen(dosenDto.getStatusDosen());
-            d.setHonor(dosenDto.getHonor());
-            d.setStatus(StatusRecord.AKTIF);
-            dosenDao.save(d);
-        }else {
-            Karyawan karyawan = karyawanDao.findById(dosenDto.getId()).get();
-            if (dosenDto.getIdUser() == null){
+            User user1 = userDao.findByUsername(dosenDto.getEmail());
+            if (user1 == null){
                 User user = new User();
                 user.setActive(Boolean.TRUE);
                 user.setRole(roleDao.findById("dosen").get());
                 user.setUsername(dosenDto.getEmail());
                 userDao.save(user);
+
+                //            SplittableRandom splittableRandom = new SplittableRandom();
+//            int randomWithSplittableRandom = splittableRandom.nextInt(1, 999999);
+
+
+
+
+                Karyawan karyawan = new Karyawan();
+                karyawan.setEmail(dosenDto.getEmail());
+                karyawan.setGelar(dosenDto.getGelar());
+                karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
+                karyawan.setNamaKaryawan(dosenDto.getNama());
+                karyawan.setNidn(dosenDto.getNidn());
                 karyawan.setIdUser(user);
+                karyawan.setNik(dosenDto.getNik());
+                karyawan.setRfid(dosenDto.getRfid());
+                karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
+                karyawan.setIdAbsen(idAbesen);
+                karyawanDao.save(karyawan);
+
+                Dosen d = new Dosen();
+                d.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
+                d.setKaryawan(karyawan);
+                d.setStatusDosen(dosenDto.getStatusDosen());
+                d.setHonor(dosenDto.getHonor());
+                d.setStatus(StatusRecord.AKTIF);
+                dosenDao.save(d);
+            }else {
+                Karyawan cekKaryawan = karyawanDao.findByIdUser(user1);
+                if (cekKaryawan != null){
+                    model.addAttribute("email", dosenDto.getEmail());
+                    return "/humanResources/lecturer/alert";
+                }
+
+                Karyawan karyawan = new Karyawan();
+                karyawan.setEmail(dosenDto.getEmail());
+                karyawan.setGelar(dosenDto.getGelar());
+                karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
+                karyawan.setNamaKaryawan(dosenDto.getNama());
+                karyawan.setNidn(dosenDto.getNidn());
+                karyawan.setIdUser(user1);
+                karyawan.setNik(dosenDto.getNik());
+                karyawan.setRfid(dosenDto.getRfid());
+                karyawan.setTanggalLahir(dosenDto.getTanggalLahir());
+                karyawan.setIdAbsen(idAbesen);
+                karyawanDao.save(karyawan);
+
+                Dosen d = new Dosen();
+                d.setProdi(prodiDao.findById(dosenDto.getProdi()).get());
+                d.setKaryawan(karyawan);
+                d.setStatusDosen(dosenDto.getStatusDosen());
+                d.setHonor(dosenDto.getHonor());
+                d.setStatus(StatusRecord.AKTIF);
+                dosenDao.save(d);
+            }
+
+
+
+        }else {
+            Karyawan karyawan = karyawanDao.findById(dosenDto.getId()).get();
+            if (dosenDto.getIdUser() == null){
+                User user1 = userDao.findByUsername(dosenDto.getEmail());
+                if (user1 == null){
+                    User user = new User();
+                    user.setActive(Boolean.TRUE);
+                    user.setRole(roleDao.findById("dosen").get());
+                    user.setUsername(dosenDto.getEmail());
+                    userDao.save(user);
+                    karyawan.setIdUser(user);
+                }else {
+                    model.addAttribute("email", dosenDto.getEmail());
+                    return "/humanResources/lecturer/alert";
+                }
+
             }
             if (dosenDto.getIdUser() != null){
                 karyawan.setIdUser(dosenDto.getIdUser());
@@ -206,6 +246,10 @@ public class HumanResourcesController {
 
     @PostMapping("/humanResources/lecturer/delete")
     public String delete(@RequestParam Dosen dosen){
+        Karyawan karyawan = karyawanDao.findById(dosen.getKaryawan().getId()).get();
+        karyawan.setStatus(StatusRecord.HAPUS);
+        karyawan.setIdUser(null);
+        karyawanDao.save(karyawan);
         dosen.setStatus(StatusRecord.HAPUS);
         dosenDao.save(dosen);
 

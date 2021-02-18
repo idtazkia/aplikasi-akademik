@@ -5,4 +5,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface WaliDao extends PagingAndSortingRepository<Wali,String> {
 
+
 }
