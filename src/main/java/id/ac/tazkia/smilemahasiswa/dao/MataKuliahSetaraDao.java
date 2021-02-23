@@ -17,10 +17,6 @@ public interface MataKuliahSetaraDao extends PagingAndSortingRepository<Matakuli
             "(SELECT a.id,b.kode_matakuliah as kodeMatakuliah,b.nama_matakuliah as namaMatakuliah,b.nama_matakuliah_english as namaMatakuliahEnglish  FROM matakuliah_setara AS a \n" +
             "\tINNER JOIN matakuliah AS b ON a.id_matakuliah_setara = b.id \n" +
             "\tWHERE a.status = 'AKTIF' AND a.id_matakuliah = ?1 \n" +
-            "UNION\n" +
-            "SELECT a.id,b.kode_matakuliah as kodeMatakuliah,b.nama_matakuliah as namaMatakuliah,b.nama_matakuliah_english as namaMatakuliahEnglish FROM matakuliah_setara AS a\n" +
-            "\tINNER JOIN matakuliah AS b ON a.id_matakuliah = b.id\n" +
-            "\tWHERE a.status = 'AKTIF' AND a.id_matakuliah_setara = ?1 \n" +
             "\t)aa ORDER BY kodeMatakuliah", nativeQuery = true)
     List<MatakuliahSetaraDto> listMatakuliahSetara(String idMatakuliah);
 

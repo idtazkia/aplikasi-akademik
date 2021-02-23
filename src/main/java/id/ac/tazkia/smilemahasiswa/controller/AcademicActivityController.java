@@ -693,18 +693,23 @@ public class  AcademicActivityController {
     }
 
     @PostMapping("/academic/curriculumCourses/matakuliahSetara/form")
-    public String prosesMatakuliahSetara(MatakuliahSetara matakuliahSetara, @RequestParam String matakuliahKurikulum, @RequestParam String idMatakuliah, Authentication authentication){
+    public String prosesMatakuliahSetara(@RequestParam Matakuliah matakuliah, @RequestParam Matakuliah idMatakuliah, @RequestParam String matakuliahKurikulum, Authentication authentication){
 
         User user = currentUserService.currentUser(authentication);
 
-        MatakuliahKurikulum matakuliah = matakuliahKurikulumDao.findById(idMatakuliah).get();
-
-        MatakuliahKurikulum idMatakuliahKurikulum = matakuliahKurikulumDao.findById(matakuliahKurikulum).get();
+        MatakuliahSetara matakuliahSetara = new MatakuliahSetara();
         matakuliahSetara.setMatakuliah(matakuliah);
         matakuliahSetara.setUserInsert(user.getUsername());
-        matakuliahSetara.setMatakuliahSetara(idMatakuliahKurikulum);
+        matakuliahSetara.setMatakuliahSetara(idMatakuliah);
         matakuliahSetara.setTanggalInsert(LocalDateTime.now());
         mataKuliahSetaraDao.save(matakuliahSetara);
+
+        MatakuliahSetara setara = new MatakuliahSetara();
+        setara.setMatakuliah(idMatakuliah);
+        setara.setUserInsert(user.getUsername());
+        setara.setMatakuliahSetara(matakuliah);
+        setara.setTanggalInsert(LocalDateTime.now());
+        mataKuliahSetaraDao.save(setara);
 
 
         return "redirect:list?matakuliahKurikulum=" + matakuliahKurikulum;

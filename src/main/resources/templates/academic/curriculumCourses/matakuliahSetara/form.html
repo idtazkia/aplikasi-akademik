@@ -73,7 +73,7 @@
                                     <td th:text="${dataMatakuliah.getNamaMatakuliah()}">1</td>
                                     <td th:text="${dataMatakuliah.getNamaMatakuliahEnglish()}">1</td>
                                     <td>
-                                        <form th:action="@{/academic/curriculumCourses/matakuliahSetara/form (idMatakuliah = ${dataMatakuliah.getId()}, matakuliahKurikulum = ${matakuliahKurikulum.getId()})}" method="post">
+                                        <form th:action="@{/academic/curriculumCourses/matakuliahSetara/form (matakuliah = ${dataMatakuliah.getId()}, idMatakuliah = ${matakuliahKurikulum.getId()}, matakuliahKurikulum = ${matakuliahKurikulum.getId()})}" method="post">
                                             <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check-circle"></i> Pilih</button>
                                         </form>
                                     </td>
