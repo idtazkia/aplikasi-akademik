@@ -1999,22 +1999,19 @@ public class StudiesActivityController {
         if (nim != null) {
             model.addAttribute("nim", nim);
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            model.addAttribute("mhsw",mahasiswa);
+            if (mahasiswa != null){
+                model.addAttribute("mhsw",mahasiswa);
 
-            //tampilsemua
-            model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
-            model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
-            model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
-            model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
-            model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
-//            model.addAttribute("transkrip1", krsDetailDao.transkripSem(mahasiswa,"1"));
-//            model.addAttribute("transkrip2", krsDetailDao.transkripSem(mahasiswa,"2"));
-//            model.addAttribute("transkrip3", krsDetailDao.transkripSem(mahasiswa,"3"));
-//            model.addAttribute("transkrip4", krsDetailDao.transkripSem(mahasiswa,"4"));
-//            model.addAttribute("transkrip5", krsDetailDao.transkripSem(mahasiswa,"5"));
-//            model.addAttribute("transkrip6", krsDetailDao.transkripSem(mahasiswa,"6"));
-//            model.addAttribute("transkrip7", krsDetailDao.transkripSem(mahasiswa,"7"));
-//            model.addAttribute("transkrip8", krsDetailDao.transkripSem(mahasiswa,"8"));
+                //tampilsemua
+                model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+                model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
+                model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
+                model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+                model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+            }else{
+                model.addAttribute("message","error message");
+            }
+
         }
 
 
