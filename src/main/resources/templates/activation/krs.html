@@ -84,7 +84,7 @@
                         </form>
                     </div>
 
-                    <div class="alert alert-danger" th:if="${message == null}">
+                    <div class="alert alert-danger" th:if="${message != null}">
                         <center>
                             <strong>
                                 NIM tidak ditemukan
@@ -92,56 +92,7 @@
                         </center>
                     </div>
 
-                    <div class="card-body" th:if="${selectedProdi != null}">
-                        <div class="card shadow">
-                            <div class="card-header border-1">
-                                <h3 class="mb-0">List KRS</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3 col-xs-12 text-center">
-                                        <h5>Tahun</h5>
-                                        <h3 class="mb-0" th:text="${selectedTahun.tahun}">2019</h3>
-                                    </div>
-                                    <div class="col-md-3 col-xs-12 text-center">
-                                        <h5>Nama Tahun Akademik</h5>
-                                        <h3 class="mb-0" th:text="${selectedTahun.namaTahunAkademik}">2019</h3>
-                                    </div>
-                                    <div class="col-md-3 col-xs-12 text-center">
-                                        <h5>Nama Prodi</h5>
-                                        <h3 class="mb-0" th:text="${selectedProdi.namaProdi}">2019</h3>
-                                    </div>
-                                    <div class="col-md-3 col-xs-12 text-center">
-                                        <h5>Nama Program</h5>
-                                        <h3 class="mb-0" th:text="${selectedProgram.namaProgram}">2019</h3>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                    <th scope="col"></th>
-                                    <th scope="col">Nama</th>
-                                    <th scope="col">NIM</th>
-                                    <th scope="col">Tanggal di Buat KRS</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="data,row : ${krs}">
-                                        <td th:text="${(row.index + 1) + (krs.number * krs.size)}"></td>
-                                        <td th:text="${data.mahasiswa.nama}" ></td>
-                                        <td th:text="${data.mahasiswa.nim}" ></td>
-                                        <td th:text="${data.tanggalTransaksi}" ></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-body" th:if="${selectedNim != null}">
+                    <div class="card-body" th:if="${message == null}">
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">List KRS <small th:text="${'  ' + selectedTahun.namaTahunAkademik}">asd</small></h3>
