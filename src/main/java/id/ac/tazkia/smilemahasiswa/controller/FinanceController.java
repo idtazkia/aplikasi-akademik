@@ -2,10 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class FinanceController {
@@ -34,7 +30,6 @@ public class FinanceController {
     private TahunProdiDao tahunAkademikProdiDao;
     @Autowired
     private EnableFitureDao enableFitureDao;
-    @Autowired private TagihanService tagihanService;
 
 
     @ModelAttribute("prodi")
@@ -58,75 +53,48 @@ public class FinanceController {
     }
 
     @GetMapping("/activation/krs")
-    public void aktifasiKrs(Model model, @RequestParam(required = false) String mahasiswa, Pageable pageable,
-                            @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
-                            @RequestParam(required = false) Program program, @RequestParam(required = false) String angkatan,
+    public void aktifasiKrs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
                             @RequestParam(required = false) String nim){
-        model.addAttribute("validasi", mahasiswa);
 
-        if (nim == null){
-            model.addAttribute("selectedTahun", tahunAkademik);
-            model.addAttribute("selectedProdi", prodi);
-            model.addAttribute("selectedProgram", program);
-            model.addAttribute("selectedAngkatan", angkatan);
-            Page<Krs> krs = krsDao.findByTahunAkademikAndProdiAndMahasiswaIdProgramAndMahasiswaAngkatan(tahunAkademik,prodi,program,angkatan,pageable);
-            model.addAttribute("krs",krs);
-        }else {
-            Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
-            model.addAttribute("selectedTahun", tahunAkademik);
-            model.addAttribute("selectedNim", nim);
+
+        Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
+        if (mhsw != null){
             Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik,mhsw,StatusRecord.AKTIF);
             model.addAttribute("krsMahasiswa", krs);
+        }else {
+            model.addAttribute("message", "nim tidak ada");
         }
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedNim", nim);
+
+
     }
 
     @PostMapping("/activation/process")
-    public String prosesKrs(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
-                            @RequestParam(required = false) Program program, @RequestParam(required = false) String angkatan,
+    public String prosesKrs(@RequestParam TahunAkademik tahunAkademik,
                             @RequestParam(required = false) String nim){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-        if (nim == null){
-            List<Mahasiswa> mahasiswas = mahasiswaDao.findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord.AKTIF, angkatan, prodi, program);
-            for (Mahasiswa mahasiswa : mahasiswas){
-                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik,mahasiswa,StatusRecord.AKTIF);
-                if (cariKrs == null){
-                    TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik,prodi);
-                    Krs krs = new Krs();
-                    krs.setTanggalTransaksi(LocalDateTime.now());
-                    krs.setStatus(StatusRecord.AKTIF);
-                    krs.setTahunAkademik(tahunAkademik);
-                    krs.setNim(mahasiswa.getNim());
-                    krs.setProdi(prodi);
-                    krs.setMahasiswa(mahasiswa);
-                    krs.setTahunAkademikProdi(tahunAkademikProdi);
-                    krsDao.save(krs);
-                }
+        if (mahasiswa != null){
+            Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mahasiswa,StatusRecord.AKTIF);
+            TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
+            if (cariKrs == null) {
+                Krs krs = new Krs();
+                krs.setTanggalTransaksi(LocalDateTime.now());
+                krs.setStatus(StatusRecord.AKTIF);
+                krs.setTahunAkademik(tahunAkademik);
+                krs.setNim(mahasiswa.getNim());
+                krs.setProdi(mahasiswa.getIdProdi());
+                krs.setMahasiswa(mahasiswa);
+                krs.setTahunAkademikProdi(tahunAkademikProdi);
+                krsDao.save(krs);
+            }else {
+                cariKrs.setStatus(StatusRecord.AKTIF);
+                krsDao.save(cariKrs);
             }
-            return "redirect:krs?tahunAkademik=" + tahunAkademik.getId()+"&prodi="+prodi.getId()+"&program="+program.getId()+"&angkatan="+angkatan;
-
-        } else {
-            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-
-            if (mahasiswa != null){
-                Krs cariKrs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mahasiswa,StatusRecord.AKTIF);
-                TahunAkademikProdi tahunAkademikProdi = tahunAkademikProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
-                if (cariKrs == null) {
-                    Krs krs = new Krs();
-                    krs.setTanggalTransaksi(LocalDateTime.now());
-                    krs.setStatus(StatusRecord.AKTIF);
-                    krs.setTahunAkademik(tahunAkademik);
-                    krs.setNim(mahasiswa.getNim());
-                    krs.setProdi(mahasiswa.getIdProdi());
-                    krs.setMahasiswa(mahasiswa);
-                    krs.setTahunAkademikProdi(tahunAkademikProdi);
-                    krsDao.save(krs);
-                }else {
-                    cariKrs.setStatus(StatusRecord.AKTIF);
-                    krsDao.save(cariKrs);
-                }
-            }
-            return "redirect:krs?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
         }
+        return "redirect:krs?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
+
     }
 
     @GetMapping("/activation/kartu")
