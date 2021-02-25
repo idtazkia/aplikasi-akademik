@@ -80,11 +80,11 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-xs-12">
-                                <!--<div class="breadcomb-report">
-                                    <a th:href="@{/study/form}">
-                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
                                     </a>
-                                </div>-->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -92,45 +92,165 @@
             </div>
         </div>
     </div>
-    <div class="contact-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <table class="table table-bordered">
-                        <tr>
-                            <td> Type of bill </td>
-                            <td class="text-center"> : </td>
-                            <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
-                        </tr>
-                        <tr>
-                            <td> Value </td>
-                            <td class="text-center"> : </td>
-                            <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
-                        </tr>
-                        <tr>
-                            <td> Due date </td>
-                            <td class="text-center"> : </td>
-                            <td th:text="${bill.tanggalPenangguhan}"></td>
-                        </tr>
-                    </table>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Information</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <tr>
+                                <td> Type of bill </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td> Value </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td> Due date </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${bill.tanggalPenangguhan}"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Due Date</label>
-                            <input type="date" name="tanggalPenangguhan" class="form-control"
-                                   placeholder="yyyy-MM-dd" th:field="*{tanggalPenangguhan}">
-                        </div>
-                        <input type="hidden" name="id" th:field="*{id}">
-                        <div style="margin-top: 45px;" class="form-group">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}" class="btn btn-danger">Cancel</a>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="ongoing-task-inner notika-shadow mg-t-30">
+                    <div class="">
+                        <div class=" ongoing-hd-wd">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Submit File <i class="fa fa-plus-circle"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12 text-right">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Jumlah berkas : ' + jumlahFile}"></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </form>
+
+                    <!-- modal tambah dokumen -->
+
+                    <div class="modal fade" id="documentModal" role="dialog">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <form method="post" th:action="@{/studentBill/penangguhan/document}" enctype="multipart/form-data">
+                                    <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h2>Input Berkas</h2>
+                                        <div class="row">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <input type="file" name="file" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-12">
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal detail dokumen -->
+
+                    <div class="modal fade" id="totalDocument" role="dialog">
+                        <div class="modal-dialog ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="">
+                                        <div class="basic-tb-hd">
+                                            <h2>Daftar Berkas</h2>
+                                        </div>
+                                        <div class="bsc-tbl-st">
+                                            <table class="table table-striped">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama</th>
+                                                    <th>Berkas</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                <tr th:each="data, row : ${dokumen}">
+                                                    <td th:text="${(row.index + 1)}"></td>
+                                                    <td th:text="${data.nama}"></td>
+                                                    <td>
+                                                        <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="fa fa-file-image-o"></i>
+                                                                <small>Lihat Berkas&nbsp;</small>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <form method="post" th:action="@{/studentBill/dokumen/deletep(document = ${data.id})}">
+                                                            <div class="center ">
+                                                                <button type="submit" class="btn btn-danger ">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="row">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="bsc-tbl-st">
+                                <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
+                                    <div class="form-group">
+                                        <label>Due Date</label>
+                                        <input type="date" name="tanggalPenangguhan" class="form-control"
+                                               placeholder="yyyy-MM-dd" th:max="${tahun.tanggalMulaiUas}" th:field="*{tanggalPenangguhan}">
+                                    </div>
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <div style="margin-top: 45px;" class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </section>
 </body>
 </html>

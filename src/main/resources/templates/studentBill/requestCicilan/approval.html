@@ -40,10 +40,17 @@
 
     <div class="container-fluid mt--7">
         <div class="row">
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-5 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Keterangan Tagihan</h3>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Keterangan Tagihan</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studentBill/requestCicilan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-responsive">
@@ -70,7 +77,7 @@
                             <tr>
                                 <td>Request Cicilan</td>
                                 <td> : </td>
-                                <td th:text="${cicilan.banyakCicilan}"></td>
+                                <td th:text="${jumlahCicilan}"></td>
                             </tr>
                             <tr>
                                 <td>Tahun Akademik</td>
@@ -86,141 +93,174 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-7 col-xs-12">
                 <div class="card shadow" th:object="${cicilan}">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Form Approve</h3>
+                                <h3>Daftar Cicilan</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/studentBill/requestCicilan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <input type="hidden" name="id" th:field="*{id}">
-                        <div class="form-group">
-                            <button id="approve" type="button" class="btn btn-success" data-toggle="modal" th:data-target="${'#modal-notification' + cicilan.id}">Approve</button>
 
-                            <div class="modal fade" th:id="${'modal-notification' + cicilan.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                <div class="modal-dialog modal- modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-body p-0">
-                                            <div class="card bg-secondary border-0 mb-0">
-                                                <div class="card-header bg-transparent pb-5">
-                                                    <div class="text-muted text-center mt-2 mb-2"><small>Nilai Tagihan</small></div>
-                                                    <div class="btn-wrapper text-center">
-                                                        <input type="hidden" id="nilai" th:value="${bill.nilaiTagihan}">
-                                                        <div th:text="${'Rp. ' + #numbers.formatDecimal(nilaiCicilan.getNilai(), 0, 'POINT', 2, 'COMMA')}"></div>
-                                                    </div>
-                                                    <div class="text-muted text-center mt-3 mb-2"><small>Tanggal Jatuh Tempo</small></div>
-                                                    <div class="btn-wrapper text-center">
-                                                        <div th:text="${nilaiCicilan.getJatuhTempo()}"></div>
-                                                    </div>
+                                <!-- Modal dokumen -->
+
+                                <div class="modal fade" id="totalDocument" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                                    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="table-responsive">
+                                                    <table class="table align-items-center table-flush">
+                                                        <tr class="thead-light">
+                                                            <th>No</th>
+                                                            <th class="text-center">Nama</th>
+                                                            <th class="text-center">Berkas</th>
+                                                        </tr>
+                                                        <tr th:each="data, row : ${dokumen}">
+                                                            <td th:text="${(row.index + 1)}"></td>
+                                                            <td class="text-center" th:text="${data.nama}"></td>
+                                                            <td class="text-center">
+                                                                <a target="_blank" th:href="@{/tagihan/{document}/cicilan(document = ${data.id})}">
+                                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                                        <div>Lihat Berkas&nbsp;</div>
+                                                                    </button>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
-                                                <div class="text-center text-muted mb-4">
-                                                    <small>Set Nilai Tagihan dan Tanggal Jatuh Tempo</small>
-                                                </div>
-                                                <div class="card-body px-lg-5 py-lg-5">
-                                                    <form method="post" th:action="@{/studentBill/cicilan/approve}" th:object="${tagihan}">
-                                                        <div class="row">
-                                                            <input type="hidden" name="bill" th:value="${bill.id}">
-                                                            <input type="hidden" name="requestCicilan" th:value="${cicilan.id}">
-                                                            <input type="hidden" class="form-control" id="answer">
-                                                            <div class="col-md-6 col-sm-12">
-                                                                <!-- tagihan 1 -->
-                                                                <div class="form-group mb-3">
-                                                                    <label >Nilai Tagihan 1</label>
-                                                                    <div class="input-group input-group-merge input-group-alternative">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                                                        </div>
-                                                                        <input class="form-control" id="nilai1" type="number" required name="nilaiTagihan1"
-                                                                               th:value="${nilaiCicilan.NilaiCicilan}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Tanggal Jatuh Tempo 1</label>
-                                                                    <div class="input-group input-group-merge input-group-alternative">
-                                                                        <input class="form-control" required type="date" name="tanggalJatuhTempo1">
-                                                                    </div>
-                                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div th:if="${jumlahNilai != 0}" class="col text-right">
+                                <button type="submit"  class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-form">
+                                    Tambah Cicilan <i class="fa fa-plus-circle"></i>
+                                </button>
+                                <!-- Modal cicilan -->
+                                <div class="modal fade" id="modal-form">
+                                    <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+
+                                            <div class="modal-body p-0">
+                                                <div class="card bg-secondary">
+                                                    <div class="card-body">
+                                                        <form method="post" th:action="@{/studentBill/billAdmin/cicilan(tagihan=${bill.id})}">
+                                                            <div class="form-group mb-3">
+                                                                <div class="text-left"> Nilai</div>
+                                                                <input type="text" name="nilaiCicilan" class="form-control"
+                                                                       placeholder="0.00">
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
-                                                                <!-- tagihan 2 -->
-                                                                <div class="form-group mb-3">
-                                                                    <label >Nilai Tagihan 2</label>
-                                                                    <div class="input-group input-group-merge input-group-alternative">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                                                        </div>
-                                                                        <input class="form-control" id="nilai2" type="number" required name="nilaiTagihan2"
-                                                                               th:value="${nilaiCicilan.NilaiCicilan}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Tanggal Jatuh Tempo 2</label>
-                                                                    <div class="input-group input-group-merge input-group-alternative">
-                                                                        <input class="form-control" required type="date" name="tanggalJatuhTempo2">
-                                                                    </div>
-                                                                </div>
+                                                            <div class="form-group">
+                                                                <div class="text-left">Tanggal Jatuh Tempo</div>
+                                                                <input type="date" name="tanggalJatuhTempo" class="form-control"
+                                                                       placeholder="0.00" max="2021-05-10">
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12 col-sm-12">
-                                                                <!-- tagihan 3-->
-                                                                <div th:if="${cicilan.banyakCicilan} == 3">
-                                                                    <div class="row">
-                                                                        <div class="center col-md-6">
-                                                                            <div class="form-group mb-3">
-                                                                                <label >Nilai Tagihan 3</label>
-                                                                                <div class="input-group input-group-merge input-group-alternative">
-                                                                                    <div class="input-group-prepend">
-                                                                                        <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                                                                    </div>
-                                                                                    <input class="form-control" id="nilai3" type="number" name="nilaiTagihan3"
-                                                                                           th:value="${nilaiCicilan.NilaiCicilan}">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label>Tanggal Jatuh Tempo 3</label>
-                                                                                <div class="input-group input-group-merge input-group-alternative">
-                                                                                    <input class="form-control" type="date" name="tanggalJatuhTempo3">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                            <div class="text-center">
+                                                                <button type="submit" class="btn btn-success my-4">Save</button>
                                                             </div>
-                                                        </div>
-                                                        <input type="hidden" name="cicilan" id="bnykCicilan" th:value="${cicilan.banyakCicilan}">
-                                                        <div class="form-group">
-                                                            <div class="messageError"></div>
-                                                            <button type="submit" id="submit" class="btn btn-success my-4">Submit</button>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <div class="text-left" th:if="${jumlahNilai == null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 0, 'POINT')}"></div>
+                                                        <div class="text-center" th:if="${jumlahNilai != null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(jumlahNilai, 0, 'POINT', 0, 'POINT')}"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                        <form method="post" th:action="@{/studentBill/cicilan/reject(requestCicilan = ${cicilan.id})}"  th:object="${cicilan}">
-                            <div class="form-group">
-                                <label>Description Reject</label>
-                                <input type="text" name="keteranganReject" class="form-control"
-                                       placeholder="Keterangan Reject" th:field="*{keteranganReject}">
-                            </div>
+                    </div>
 
-                            <input type="hidden" name="id" th:field="*{id}">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-danger">Reject</button>
+                    <div class="card-body">
 
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <tr class="thead-light">
+                                    <th>No</th>
+                                    <th>Tanggal Jatuh Tempo</th>
+                                    <th>Nilai Cicilan</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                <tr th:each="data, row : ${request}">
+                                    <td th:text="${(row.index + 1)}"></td>
+                                    <td th:text="${data.tanggalJatuhTempo}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:text="${data.statusApprove}"></td>
+                                    <td th:if="${data.statusApprove == 'APPROVED'}">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content bg-gradient-danger">
+
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="py-3 text-center">
+                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <form method="post" th:action="@{/studentBill/approval/delete(cicilan = ${data.id})}">
+                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-2">
+                                <form method="post" th:action="@{/studentBill/cicilan/approve}">
+                                    <button type="submit" class="btn btn-success" >Setujui</button>
+                                    <input type="hidden" name="date" th:value="${date}" class="form-control">
+                                    <input type="hidden" name="bill" th:value="${bill.id}">
+                                </form>
                             </div>
-                        </form>
+                            <div class="col-md-2">
+                                <form th:action="@{/studentBill/cicilan/reject}">
+                                    <button type="submit" class="btn btn-danger">Ditolak</button>
+                                </form>
+                            </div>
+                            <div class="col-md-8 text-right">
+                                <button type="submit" class="btn btn-info " data-toggle="modal" data-target="#totalDocument">
+                                    <i class="fas fa-file"></i> Daftar Berkas
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

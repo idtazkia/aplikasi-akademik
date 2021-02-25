@@ -89,7 +89,7 @@
                                         <input type="hidden" name="tagihan" th:field="*{tagihan}">
                                         <div class="form-group">
                                             <label for="">Bank</label>
-                                            <select name="bank" id="" th:field="*{bank}" onchange="vir" class="form-control">
+                                            <select name="bank" id="" th:field="*{bank}" class="form-control">
                                                 <option value=""></option>
                                                 <option th:each="data : ${bank}"
                                                         th:text="${data.nama}"

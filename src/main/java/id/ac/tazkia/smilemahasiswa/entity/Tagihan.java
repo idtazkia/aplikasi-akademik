@@ -36,6 +36,9 @@ public class Tagihan {
     @Min(0)
     private BigDecimal nilaiTagihan;
 
+    @Min(0)
+    private BigDecimal akumulasiPembayaran;
+
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPembuatan;

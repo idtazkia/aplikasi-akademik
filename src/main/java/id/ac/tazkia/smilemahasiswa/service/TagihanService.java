@@ -6,12 +6,15 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.ocsp.Req;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.misc.Request;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,6 +52,9 @@ public class TagihanService {
     private KrsDao krsDao;
 
     @Autowired
+    private RequestCicilanDao requestCicilanDao;
+
+    @Autowired
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
@@ -67,19 +73,32 @@ public class TagihanService {
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
+    public void requestCreateCicilan(RequestCicilan requestCicilan) {
+        TagihanRequest tagihanRequest = TagihanRequest.builder()
+                .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeProdi())
+                .jenisTagihan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getId())
+                .nilaiTagihan(requestCicilan.getTagihan().getNilaiTagihan())
+                .debitur(requestCicilan.getTagihan().getMahasiswa().getNim())
+                .keterangan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()
+                        + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama())
+                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .build();
+        kafkaSender.requestCreateTagihan(tagihanRequest);
+    }
+
+
     public void hapusTagihan(Tagihan tagihan){
         HapusTagihanRequest hapusTagihan = HapusTagihanRequest.builder()
                 .nomorTagihan(tagihan.getNomor())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
-                .debitur(tagihan.getMahasiswa().getNama())
+                .debitur(tagihan.getMahasiswa().getNim())
                 .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
                 .build();
         kafkaSender.requsetHapusTagihan(hapusTagihan);
     }
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
-        tagihan.setLunas(true);
-        tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
@@ -134,15 +153,19 @@ public class TagihanService {
             }
         }
 
+        BigDecimal total = pt.getNilaiPembayaran().add(tagihan.getAkumulasiPembayaran());
+        tagihan.setAkumulasiPembayaran(total);
+        if (total == tagihan.getNilaiTagihan()){
+            tagihan.setLunas(true);
+            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+        }
+
+        RequestCicilan requestCicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+        requestCicilan.setStatusCicilan(StatusCicilan.LUNAS);
+
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
-
-        Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanAndStatusTagihanOrStatusTagihanAndStatus(tagihan.getMahasiswa(), tagihan.getNilaiJenisTagihan(), StatusTagihan.CICILAN_1, StatusTagihan.CICILAN_2, StatusRecord.AKTIF);
-        if (tagihan1 != null){
-            tagihan1.setTanggalPembuatan(LocalDate.now());
-            tagihanDao.save(tagihan1);
-            this.requestCreateTagihan(tagihan1);
-        }
+        requestCicilanDao.save(requestCicilan);
 
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
