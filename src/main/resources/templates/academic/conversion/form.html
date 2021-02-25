@@ -138,6 +138,10 @@
                                     <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
                                     <span class="alert-inner--text" >Mahasiswa atas nama <text th:text="${mahasiswa.nama}"></text> sudah ada matakuliah <text th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></text></span>
                                 </div>
+                                <div class="alert alert-warning" id="sks" th:if="${gagalSks != null}">
+                                    <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                    <span class="alert-inner--text" >Mahasiswa atas nama <text th:text="${mahasiswa.nama}"></text> sudah memiliki 24 SKS</span>
+                                </div>
                                 <div class="form-group text-center" id="submit" style="display: none;">
                                     <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Submit</button>
                                 </div>
@@ -203,6 +207,7 @@
     function myJadwal(){
         $('#submit').show();
         $('#notif').hide();
+        $('#sks').hide();
 
         var x = document.getElementById('locality-dropdown').value;
         console.log(x);
