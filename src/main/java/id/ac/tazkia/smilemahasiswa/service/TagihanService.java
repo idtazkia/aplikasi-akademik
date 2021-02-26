@@ -98,6 +98,8 @@ public class TagihanService {
     }
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
+        tagihan.setLunas(true);
+        tagihan.setStatusTagihan(StatusTagihan.LUNAS);
 
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 
@@ -153,19 +155,9 @@ public class TagihanService {
             }
         }
 
-        BigDecimal total = pt.getNilaiPembayaran().add(tagihan.getAkumulasiPembayaran());
-        tagihan.setAkumulasiPembayaran(total);
-        if (total == tagihan.getNilaiTagihan()){
-            tagihan.setLunas(true);
-            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-        }
-
-        RequestCicilan requestCicilan = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
-        requestCicilan.setStatusCicilan(StatusCicilan.LUNAS);
 
         tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
-        requestCicilanDao.save(requestCicilan);
 
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
