@@ -87,6 +87,14 @@ public class Mahasiswa {
     private JenisTinggal jenisTinggal;
 
     @ManyToOne
+    @JoinColumn(name = "id_ibu")
+    private Ibu ibu;
+
+    @ManyToOne
+    @JoinColumn(name = "id_ayah")
+    private Ayah ayah;
+
+    @ManyToOne
     @JoinColumn(name = "alat_transportasi")
     private Transportasi alatTransportasi;
 
@@ -112,18 +120,15 @@ public class Mahasiswa {
     private String kps = "Tidak";
     private String nomorKps;
 
-//    @Column(columnDefinition = "DATE")
-//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate terakhirUpdate;
 
     @ManyToOne
     @JoinColumn(name = "id_kurikulum")
     private  Kurikulum kurikulum;
 
-    @NotNull
     private String rfid;
-
-    @NotNull
     private Integer idAbsen;
 
     private String nirm;

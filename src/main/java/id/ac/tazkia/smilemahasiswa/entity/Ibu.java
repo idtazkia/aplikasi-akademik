@@ -19,10 +19,8 @@ public class Ibu {
     @NotNull
     private String namaIbuKandung;
 
-    @NotNull
     private String kebutuhanKhusus;
 
-    @NotNull
     private String tempatLahir;
 
     @Column(columnDefinition = "DATE")

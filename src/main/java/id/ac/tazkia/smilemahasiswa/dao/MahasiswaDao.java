@@ -30,19 +30,16 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     @Query("select m from Mahasiswa m where m.status = :status and m.angkatan = :angkatan and m.idProdi = :prodi and m.idKonsentrasi = :konsentrasi")
     Iterable<Mahasiswa> carikelasKonsentrai(@Param("status")StatusRecord statusRecord,@Param("angkatan") String angkatan,@Param("prodi") Prodi prodi, @Param("konsentrasi") Konsentrasi konsentrasi);
 
-    List<Mahasiswa> findByStatusAndIdProdi(StatusRecord statusRecord, Prodi prodi);
-    Page<Mahasiswa> findByAngkatanAndIdProdiAndStatus(String angkatan, Prodi prodi, StatusRecord statusRecord, Pageable page);
-
-    List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);
     List<Mahasiswa> findByStatusAndAngkatan(StatusRecord aktif,String angkatan);
-    List<Mahasiswa> findByIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
-    List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatus(Prodi prodi, Program program, String angkatan, String s, StatusRecord statusRecord);
-
 
     @Query(value = "select angkatan,nama_jenjang from mahasiswa as a inner join prodi as b on a.id_prodi = b.id inner join jenjang as c on b.id_jenjang = c.id group by concat(angkatan,id_jenjang) order by angkatan desc", nativeQuery = true)
     List<Object> angkatanMahasiswa();
 
     Page<Mahasiswa> findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(List<StatusRecord> statusRecords, String nama, String nim, Pageable page);
+
     Page<Mahasiswa> findByStatusNotInOrderByNim(List<StatusRecord> statusRecords, Pageable page);
+
+    @Query(value = "SELECT MAX(id_absen) FROM mahasiswa;", nativeQuery = true)
+    Integer cariMaxAbsen();
 
 }
