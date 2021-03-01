@@ -42,4 +42,11 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     @Query(value = "SELECT MAX(id_absen) FROM mahasiswa;", nativeQuery = true)
     Integer cariMaxAbsen();
 
+    List<Mahasiswa> findByStatusAndIdProdi(StatusRecord statusRecord, Prodi prodi);
+    Page<Mahasiswa> findByAngkatanAndIdProdiAndStatus(String angkatan, Prodi prodi, StatusRecord statusRecord, Pageable page);
+
+    List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);
+    List<Mahasiswa> findByIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
+    List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatus(Prodi prodi, Program program, String angkatan, String s, StatusRecord statusRecord);
+
 }

@@ -126,7 +126,6 @@ public class MahasiswaService {
         wali.setIdPenghasilan(mahasiswaDto.getIdPenghasilanWali());
         wali.setAgama(mahasiswaDto.getAgamaWali());
         waliDao.save(wali);
-
         return wali;
     }
 
