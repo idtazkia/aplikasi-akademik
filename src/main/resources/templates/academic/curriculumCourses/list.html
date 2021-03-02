@@ -57,25 +57,33 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
+                                <form method="get">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Prodi</label>
-                                                <input type="text" th:if="${selected != null}" class="form-control" id="prodi"  data-provide="typeahead" autocomplete="off" required th:value="${selected.namaProdi}" />
-                                                <input type="text" th:if="${selected == null}" class="form-control" id="prodi"
-                                                       data-provide="typeahead" autocomplete="off" required>
+                                                <select class="form-control" onchange="myProdi()"
+                                                        id="select2-tahun" required>
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${listProdi}"
+                                                            th:text="${data.namaProdi}"
+                                                            th:value="${data.id}">STEI Tazkia</option>
+                                                </select>
+                                                <input type="hidden" name="prodi" id="isiProdi">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Curriculum</label>
-                                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected != null}" th:value="${kurikulumSelected.namaKurikulum}" data-provide="typeahead" autocomplete="off" required>
-                                                <input type="text" class="form-control" id="kurikulum" th:if="${kurikulumSelected == null}"
-                                                       data-provide="typeahead" autocomplete="off" required>
+                                                <select class="form-control" id="locality-dropdown" onchange="myKurikulum()">
+                                                </select>
+                                                <input type="hidden" id="isiKurikulum" name="kurikulum">
+
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                <form method="get">
+
                                     <div class="row">
                                         <div class="col-md-12" style="text-align: center;">
                                             <div class="form-group">
@@ -84,11 +92,6 @@
                                         </div>
 
                                     </div>
-
-                                    <input type="hidden" th:if="${selected != null}" id="isiProdi" name="prodi" th:value="${selected.id}">
-                                    <input type="hidden" th:if="${kurikulumSelected != null}" id="isiKurikulum" name="kurikulum" th:value="${kurikulumSelected.id}">
-                                    <input type="hidden" th:if="${selected == null}" id="isiProdi" name="prodi">
-                                    <input type="hidden" th:if="${kurikulumSelected == null}" id="isiKurikulum" name="kurikulum">
                                 </form>
                             </div>
                         </div>
@@ -825,20 +828,21 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="">
+                        <form method="post" th:action="@{/academic/curriculumCourses/copy}">
                             <div class="form-group">
                                 <label>Curriculum</label>
-                                <select name="" id="" class="form-control">
+                                <select name="id" id="" class="form-control">
                                     <option value="" disabled selected>-- Select One --</option>
-                                    <option value=""></option>
+                                    <option th:each="data : ${kurikulum}"
+                                            th:text="${data.namaKurikulum}" th:value="${data.id}"></option>
                                 </select>
+                                <input type="hidden" th:if="${kurikulumSelected != null}" name="kurikulum" th:value="${kurikulumSelected.id}">
+                                <input type="hidden" th:if="${selected != null}" name="prodi" th:value="${selected.id}">
+                                <button class="btn btn-primary btn-sm" style="margin-top: 10px;"><i class="fa fa-copy"></i> Copy !</button>
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -847,4 +851,57 @@
     </div>
 </div>
 </body>
+
 </html>
+<script>
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#locality-dropdown').select2();
+        $('#select2-tahun').select2();
+
+        $('#select2-tahun').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiProdi').val(e.params.args.data.id);
+        });
+
+        $('#locality-dropdown').on('select2:selecting', function (e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiKurikulum').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+
+    function myProdi(){
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+        dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>')
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiProdi').val());
+        const url = '/api/prodikurikulum?prodi='+$('#isiProdi').val();
+
+        $.getJSON(url, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
+            })
+        });
+
+    }
+
+    function myKurikulum(){
+
+    }
+</script>

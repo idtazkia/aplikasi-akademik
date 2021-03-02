@@ -157,6 +157,15 @@ public class  AcademicActivityController {
 
     }
 
+    @GetMapping("/api/prodikurikulum")
+    @ResponseBody
+    public List<Kurikulum> prodiList(@RequestParam(required = false) Prodi prodi){
+        List<Kurikulum> kurikulum = kurikulumDao.findByProdiAndStatusNotIn(prodi, StatusRecord.HAPUS);
+
+        return kurikulum;
+
+    }
+
     @GetMapping("/api/matakuliah")
     @ResponseBody
     public Page<Matakuliah> cariData(@RequestParam(required = false) String search, Pageable page){
@@ -637,6 +646,38 @@ public class  AcademicActivityController {
 
 
         return "redirect:list?prodi="+matakuliahKurikulum.getKurikulum().getProdi().getId()+"&kurikulum="+matakuliahKurikulum.getKurikulum().getId();
+    }
+
+    @PostMapping("/academic/curriculumCourses/copy")
+    public String copyMatakuliah(@RequestParam(value = "id", name = "id") Kurikulum selectedKurikulum,
+                                 @RequestParam(value = "prodi", name = "prodi") Prodi prodi,
+                                 @RequestParam(value = "kurikulum", name = "kurikulum") Kurikulum kurikulum){
+        List<MatakuliahKurikulum> mk = matakuliahKurikulumDao.findByStatusAndKurikulumAndSemesterNotNull(StatusRecord.AKTIF,selectedKurikulum);
+        System.out.println(mk.size());
+        for (MatakuliahKurikulum k : mk){
+            Set<Program> programs = new HashSet<>();
+            MatakuliahKurikulum mkKurikulum = new MatakuliahKurikulum();
+            mkKurikulum.setSyaratTugasAkhir(k.getSyaratTugasAkhir());
+            mkKurikulum.setNomorUrut(k.getNomorUrut());
+            mkKurikulum.setJumlahSks(k.getJumlahSks());
+            mkKurikulum.setStatus(k.getStatus());
+            mkKurikulum.setMatakuliah(k.getMatakuliah());
+            mkKurikulum.setResponsi(k.getResponsi());
+            mkKurikulum.setSilabus(k.getSilabus());
+            mkKurikulum.setIpkMinimal(k.getIpkMinimal());
+            mkKurikulum.setKonsentrasi(k.getKonsentrasi());
+            mkKurikulum.setMatakuliahKurikulumSemester(k.getMatakuliahKurikulumSemester());
+            mkKurikulum.setSemester(k.getSemester());
+            mkKurikulum.setSksMinimal(k.getSksMinimal());
+            mkKurikulum.setWajib(k.getWajib());
+            mkKurikulum.setKurikulum(kurikulum);
+            for (Program program : k.getPrograms()){
+                programs.add(program);
+            }
+            mkKurikulum.setPrograms(programs);
+            matakuliahKurikulumDao.save(mkKurikulum);
+        }
+        return "redirect:list?prodi="+prodi.getId()+"&kurikulum="+kurikulum.getId();
     }
 
     @GetMapping("/academic/curriculumCourses/prasyarat")

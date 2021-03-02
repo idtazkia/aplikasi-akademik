@@ -121,7 +121,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<Object[]> pilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 
     @Query(value = "SELECT * FROM\n" +
-            "(SELECT a.id AS id_jadwal, a.id_number_elearning, hr.nama_hari, a.jam_mulai, a.jam_selesai, d.kode_matakuliah, d.nama_matakuliah_english, d.nama_matakuliah, g.nama_kelas, f.nama_karyawan AS dosen,\n" +
+            "(SELECT a.id AS id_jadwal, a.id_number_elearning, hr.nama_hari, a.jam_mulai, a.jam_selesai, d.kode_matakuliah, d.nama_matakuliah_english, d.nama_matakuliah, g.nama_kelas,c.jumlah_sks, f.nama_karyawan AS dosen,\n" +
             "i.nama_matakuliah AS prasyarat, h.nilai AS nilai_prasyarat,\n" +
             "j.kode_matakuliah AS pras_sudah_diambil,j.bobot AS nilai_pras_sudah_diambil,\n" +
             "k.kode_matakuliah AS sudah_diambil_semester_sebelumnya, k.bobot AS nilai_sudah_diambil_semester_sebelumnya,\n" +
