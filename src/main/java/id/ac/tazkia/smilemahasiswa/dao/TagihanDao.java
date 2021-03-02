@@ -64,10 +64,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "on aaa.id=bbb.id_tagihan" , nativeQuery = true)
     List<BiayaMahasiswaDto> biayaMahasiswa(String idMahasiswa);
 
-    @Query(value = "select a.id as idTagihan, b.id as idCicilan, a.nilai_tagihan as nilai, round(a.nilai_tagihan / b.banyak_cicilan, 0) \n" +
-            "as nilaiCicilan, a.tanggal_jatuh_tempo as jatuhTempo from tagihan as a inner join request_cicilan as b \n" +
-            "on a.id=b.id_tagihan where a.id=?1 and a.status='AKTIF' and b.status='AKTIF'", nativeQuery = true)
-    NilaiCicilanDto pembagianNilaiCicilan(String idTagihan);
+
 
     @Query(value = "select c.id, c.nama_prodi as prodi, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(d.amount,0)) as \n" +
             "dibayar, coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(d.amount,0))) as sisa from tagihan as a \n" +

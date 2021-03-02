@@ -55,10 +55,6 @@ import java.time.LocalDate;
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate tanggalSk;
 
-//        @ManyToMany(fetch = FetchType.EAGER)
-//        @JoinTable(name = "prodi_program",
-//                joinColumns=@JoinColumn(name = "id_prodi"),
-//                inverseJoinColumns = @JoinColumn(name = "id_program"))
-//        private Set<Program> programs= new HashSet<>();
+        private String kodeSpmb;
 
 }

@@ -19,10 +19,8 @@ public class Ayah {
     @NotNull
     private String namaAyah;
 
-    @NotNull
     private String kebutuhanKhusus;
 
-    @NotNull
     private String tempatLahir;
 
     @Column(columnDefinition = "DATE")

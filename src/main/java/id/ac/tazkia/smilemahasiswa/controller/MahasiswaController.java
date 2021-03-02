@@ -209,15 +209,6 @@ public class MahasiswaController {
             mahasiswaDto.setAgama(mahasiswaDetailKeluarga.getAyah().getAgama());
             mahasiswaDto.setHidup(mahasiswaDetailKeluarga.getAyah().getStatusHidup());
 
-            mahasiswaDto.setWali(mahasiswaDetailKeluarga.getWali().getId());
-            mahasiswaDto.setNamaWali(mahasiswaDetailKeluarga.getWali().getNamaWali());
-            mahasiswaDto.setKebutuhanKhususWali(mahasiswaDetailKeluarga.getWali().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirWali(mahasiswaDetailKeluarga.getWali().getTempatLahir());
-            mahasiswaDto.setTanggalLahirWali(mahasiswaDetailKeluarga.getWali().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanWali(mahasiswaDetailKeluarga.getWali().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanWali(mahasiswaDetailKeluarga.getWali().getIdPekerjaan());
-            mahasiswaDto.setIdPenghasilanWali(mahasiswaDetailKeluarga.getWali().getIdPenghasilan());
-            mahasiswaDto.setAgamaWali(mahasiswaDetailKeluarga.getWali().getAgama());
             mahasiswaDto.setUkuranBaju(mahasiswaDetailKeluarga.getMahasiswa().getUkuranBaju());
             mahasiswaDto.setKps(mahasiswaDetailKeluarga.getMahasiswa().getKps());
             mahasiswaDto.setNomorKps(mahasiswaDetailKeluarga.getMahasiswa().getNomorKps());
@@ -335,9 +326,6 @@ public class MahasiswaController {
         }
         mahasiswaService.prosesAyah(mahasiswaDto,mahasiswa);
         mahasiswaService.prosesIbu(mahasiswaDto,mahasiswa);
-        if (mahasiswaDto.getNamaWali() != null) {
-            mahasiswaService.prosesWali(mahasiswaDto, mahasiswa);
-        }
         return "redirect:list";
     }
 
