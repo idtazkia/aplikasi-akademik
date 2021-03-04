@@ -157,6 +157,7 @@ public class MahasiswaService {
         mahasiswa.setTeleponSeluler(importMahasiswaDto.getTelepon());
         mahasiswa.setIdAgama(agamaDao.findById(importMahasiswaDto.getIdAgama()).get());
         mahasiswa.setStatusMatrikulasi("N");
+        mahasiswa.setStatusAktif("AKTIF");
         mahasiswa.setAyah(ayah);
         mahasiswa.setIbu(ibu);
         mahasiswa.setNamaJalan(importMahasiswaDto.getAlamat());
