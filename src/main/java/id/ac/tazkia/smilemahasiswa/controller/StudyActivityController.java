@@ -292,6 +292,7 @@ public class StudyActivityController {
                 }else {
                     for (String idJadwal : selected) {
                         Jadwal j = jadwalDao.findById(idJadwal).get();
+
                         if (krsDetailDao.cariKrs(j,tahunAkademik,mahasiswa) == null) {
                             KrsDetail kd = new KrsDetail();
                             kd.setJadwal(j);
