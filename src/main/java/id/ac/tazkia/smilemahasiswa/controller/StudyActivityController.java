@@ -292,29 +292,33 @@ public class StudyActivityController {
                 }else {
                     for (String idJadwal : selected) {
                         Jadwal j = jadwalDao.findById(idJadwal).get();
+                        if (j == null){
+                            if (krsDetailDao.cariKrs(j,tahunAkademik,mahasiswa) == null) {
+                                KrsDetail kd = new KrsDetail();
+                                kd.setJadwal(j);
+                                kd.setKrs(k);
+                                kd.setMahasiswa(mahasiswa);
+                                kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+                                kd.setNilaiPresensi(BigDecimal.ZERO);
+                                kd.setNilaiTugas(BigDecimal.ZERO);
+                                kd.setNilaiUas(BigDecimal.ZERO);
+                                kd.setNilaiUts(BigDecimal.ZERO);
+                                kd.setFinalisasi("N");
+                                kd.setJumlahMangkir(0);
+                                kd.setJumlahKehadiran(0);
+                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setJumlahTerlambat(0);
+                                kd.setJumlahIzin(0);
+                                kd.setJumlahSakit(0);
+                                kd.setStatusEdom(StatusRecord.UNDONE);
+                                kd.setTahunAkademik(tahunAkademik);
+                                krsDetailDao.save(kd);
+                            }
+                        }else{
 
-                        if (krsDetailDao.cariKrs(j,tahunAkademik,mahasiswa) == null) {
-                            KrsDetail kd = new KrsDetail();
-                            kd.setJadwal(j);
-                            kd.setKrs(k);
-                            kd.setMahasiswa(mahasiswa);
-                            kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
-                            kd.setNilaiPresensi(BigDecimal.ZERO);
-                            kd.setNilaiTugas(BigDecimal.ZERO);
-                            kd.setNilaiUas(BigDecimal.ZERO);
-                            kd.setNilaiUts(BigDecimal.ZERO);
-                            kd.setFinalisasi("N");
-                            kd.setJumlahMangkir(0);
-                            kd.setJumlahKehadiran(0);
-                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setJumlahTerlambat(0);
-                            kd.setJumlahIzin(0);
-                            kd.setJumlahSakit(0);
-                            kd.setStatusEdom(StatusRecord.UNDONE);
-                            kd.setTahunAkademik(tahunAkademik);
-                            krsDetailDao.save(kd);
                         }
+
                     }
                 }
             }
