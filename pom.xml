@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<revision>2.1.97-RELEASE</revision>
+		<revision>2.1.98-RELEASE</revision>
 	</properties>
 
 	<dependencies>
@@ -131,6 +131,18 @@
             <artifactId>fr.opensagres.xdocreport.converter.odt.odfdom</artifactId>
             <version>1.0.5</version>
         </dependency>
+
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.converter</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.document</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>

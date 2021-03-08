@@ -145,6 +145,13 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${pilihanKrs}">
+<!--                                        <td><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>-->
+<!--                                        <td th:text="${data[2]}"></td>-->
+<!--                                        <td th:text="${data[3]} + ' - ' + ${data[4]}"></td>-->
+<!--                                        <td><button class="bd-primary" th:text="${data[6]}">Ini Subject Ini Subject</button></td>-->
+<!--                                        <td th:text="${data[9]}"></td>-->
+<!--                                        <td><button class="bd-warning" th:text="${data[8]}">Ruang 1.3</button></td>-->
+<!--                                        <td th:text="${data[10]}"></td>-->
                                         <td th:if="${data[13] == null}"><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
                                         <td th:if="${data[13] != null && data[13] == data[12]}"><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
                                         <td th:if="${data[13] != null && data[12] == null}" th:text="${'Anda belum mengambil matakuliah prasyarat ' + data[14]}"></td>

@@ -255,6 +255,7 @@ public class StudyActivityController {
 
 
         List<Object[]> krsDetail = krsDetailDao.pilihanKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
+//        List<Object[]> krsDetail = krsDetailDao.pilihKrsMahasiswa(ta, mahasiswa.getIdProdi(), mahasiswa);
         model.addAttribute("pilihanKrs", krsDetail);
 
     }
@@ -313,6 +314,7 @@ public class StudyActivityController {
                             kd.setTahunAkademik(tahunAkademik);
                             krsDetailDao.save(kd);
                         }
+
                     }
                 }
             }
