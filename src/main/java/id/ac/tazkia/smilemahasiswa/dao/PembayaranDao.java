@@ -2,8 +2,11 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarPembayaranDto;
 import id.ac.tazkia.smilemahasiswa.entity.Pembayaran;
+import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.Tagihan;
 import org.exolab.castor.types.DateTime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -12,7 +15,7 @@ import java.util.List;
 
 public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, String> {
 
-    Pembayaran findByTagihan(Tagihan tagihan);
+    Page<Pembayaran> findByTagihanAndStatus(Tagihan tagihan, StatusRecord statusRecord, Pageable page);
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b\n" +
             "on a.id_tagihan=b.id\n" +
@@ -37,5 +40,10 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
             "c.id_jenis_tagihan=d.id inner join tahun_akademik as e on b.id_tahun_akademik=e.id \n" +
             "where b.id_mahasiswa=?1 and a.status='AKTIF';", nativeQuery = true)
     List<Object[]> pembayaranMahasiswa(String idMahasiswa);
+
+    @Query(value = "SELECT * FROM pembayaran where id_tagihan=?1 limit 1", nativeQuery = true)
+    Pembayaran cekPembayaran(String idTagihan);
+
+    Integer countAllByTagihan(Tagihan tagihan);
 
 }

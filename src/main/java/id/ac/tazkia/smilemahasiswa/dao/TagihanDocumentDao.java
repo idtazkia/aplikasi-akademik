@@ -14,6 +14,8 @@ public interface TagihanDocumentDao extends PagingAndSortingRepository<TagihanDo
 
     Page<TagihanDocument> findByStatusNotInAndTagihanAndStatusDocument(List<StatusRecord> asList, Tagihan tagihan, StatusDocument statusDocument, Pageable page);
 
-    Long countAllByTagihanAndStatusAndStatusDocument(Tagihan tagihan, StatusRecord statusRecord, StatusDocument statusDocument);
+    Integer countAllByTagihanAndStatusAndStatusDocument(Tagihan tagihan, StatusRecord statusRecord, StatusDocument statusDocument);
+
+    List<TagihanDocument> findByTagihanAndStatusAndStatusDocument(Tagihan tagihan, StatusRecord statusRecord, StatusDocument statusDocument);
 
 }

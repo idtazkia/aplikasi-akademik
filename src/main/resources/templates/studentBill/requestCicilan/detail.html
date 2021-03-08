@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Profile</title>
+    <style type="text/css">
+        .card{
+            background-color: #ffffff;
+            padding: 0px;
+            border-radius: 10px;
+
+        }
+        .card-content{
+            background-color: #f49c6c;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .card-body{
+            padding: 15px;
+        }
+
+        .txt-profile{
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            color: white;
+        }
+
+        .card-body-content{
+            text-align: center;
+            padding: 5px;
+        }
+
+        .bt-edit{
+            width: 220px;
+            background-color: #f49c6c;
+            border: 2px solid white;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        .txt-title{
+            color: #292928;
+        }
+        .txt-warning{
+            color: red;
+            font-size: 10px;
+        }
+        .ohide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Detail Cicilan dan Pembayaran</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Keterangan Tagihan</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal Jatuh Tempo</th>
+                                <th>Nilai Cicilan</th>
+                                <th>Status</th>
+                                <th>Cicilan</th>
+                                <th th:if="${message == null}">Action</th>
+                            </tr>
+                            <tr th:each="data, row : ${request}">
+                                <td th:text="${(row.index + 1)}"></td>
+                                <td th:text="${data.tanggalJatuhTempo}"></td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                <td >
+                                    <a  class="btn btn-primary btn-sm"
+                                        th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
+                                        th:text="${data.statusApprove}">
+                                    </a>
+                                    <a  class="btn btn-success btn-sm"
+                                        th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
+                                        th:text="${data.statusApprove}">
+                                    </a>
+                                </td>
+                                <td th:if="${message != null}">
+                                    <a  class="btn btn-primary btn-sm"
+                                        th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
+                                        th:text="${data.statusCicilan}">
+                                    </a>
+                                    <a  class="btn btn-warning btn-sm"
+                                        th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
+                                        th:text="${data.statusCicilan}">
+                                    </a>
+                                    <a  class="btn btn-success btn-sm"
+                                        th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
+                                        th:text="${data.statusCicilan}">
+                                    </a>
+                                </td>
+                                <td th:if="${message == null}">
+                                    <button type="button" class="btn btn-danger " data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+
+                                    <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog " role="modal">
+                                            <div class="modal-content ">
+
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="py-3 text-center">
+                                                        <i class="far fa-trash-alt fa-3x"></i>
+                                                        <h4 class="heading mt-4">Are you sure ?</h4>
+                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                    </div>
+
+                                                </div>
+
+                                                <form method="post" th:action="@{/studentBill/requestCicilan/delete(cicilan = ${data.id})}">
+                                                    <div class="modal-footer center">
+                                                        <button type="submit" class="btn btn-danger ">Delete</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
+                <div class="ongoing-task-inner notika-shadow mg-t-30">
+
+
+
+                    <div class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="basic-tb-hd">
+                                <h2>Daftar Pembayaran</h2>
+                            </div>
+                            <div class="bsc-tbl-st">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Pembayaran</th>
+                                            <th>Bank</th>
+                                            <th>Nomor Rekening</th>
+                                            <th>Referensi</th>
+                                            <th>Nilai Pembayaran</th>
+                                            <th>Cetak Kwitansi</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data, row : ${pembayaran}">
+                                            <td th:text="${(row.index + 1)}">1</td>
+                                            <td th:text="${data.waktuBayar}">2021-03-04 06:55:00</td>
+                                            <td th:text="${data.bank.nama}"></td>
+                                            <td th:text="${data.nomorRekening}"></td>
+                                            <td th:text="${data.referensi}"></td>
+                                            <td th:text="${data.amount}"></td>
+                                            <td>
+                                                <a th:href="@{/buktiPembayaran(pembayaran=${data.id})}" class="btn btn-success btn-xs"><i class="fa fa-file"> Cetak Kwitansi </i></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

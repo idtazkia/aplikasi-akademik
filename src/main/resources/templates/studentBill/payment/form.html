@@ -117,10 +117,10 @@
                                 <td> : </td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
-                            <tr th:if="${pembayaran} != null">
-                                <td>Waktu Pembayaran</td>
+                            <tr th:if="${pembayaran != null}">
+                                <td>Pembayaran</td>
                                 <td> : </td>
-                                <td th:text="${pembayaran.waktuBayar}"></td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
                                 <td>Tanggal Jatuh Tempo</td>
@@ -177,16 +177,17 @@
                     <div class="table-responsive">
                         <table class="table">
                             <tbody>
-                                <tr th:if="${pembayaran} == null" th:each="va, row:${virtualAccount}">
-                                    <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
+                                <tr th:each="va, row:${virtualAccount}">
                                     <td th:text="${'Virtual Account '+va.bank.nama}">Virtual Account CIMB Syariah</td>
                                     <th th:text="${va.nomor}">20191000010020167</th>
                                 </tr>
-                                <tr th:if="${pembayaran} != null and ${pembayaran.bank} == ${va.bank}" th:each="va, row : ${virtualAccount}">
-                                    <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
-                                    <td th:text="${'Virtual Account '+va.bank.nama}" th:if="${pembayaran.bank} == ${va.bank}">Virtual Account CIMB Syariah</td>
-                                    <th th:text="${va.nomor}" th:if="${pembayaran.bank} == ${va.bank}">20191000010020167</th>
-                                </tr>
+                                <div th:if="${cekJumlahPembayaran == 1}">
+                                    <tr th:if="${pembayaran} != null and ${pembayaran.bank} == ${va.bank}" th:each="va, row : ${virtualAccount}">
+                                        <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
+                                        <td th:text="${'Virtual Account '+va.bank.nama}" th:if="${pembayaran.bank} == ${va.bank}">Virtual Account CIMB Syariah</td>
+                                        <th th:text="${va.nomor}" th:if="${pembayaran.bank} == ${va.bank}">20191000010020167</th>
+                                    </tr>
+                                </div>
                             </tbody>
                         </table>
                     </div>
@@ -194,21 +195,41 @@
             </div>
             <br>
 
-            <div class="row no-print" th:if="${pembayaran} == null">
-                <div class="col-xs-12" th:if="${tagihan} != null">
-                    <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
-                    <text th:if="${penangguhan} == null">
-                        <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>
-                    </text>
-                    <text>
-<!--                        <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Request Cicilan</a>-->
-                    </text>
+            <div class="row no-print" th:if="${lunas == null}">
+                <div th:if="${cekCicilan == null}">
+                    <div class="col-xs-12" th:if="${tagihan} != null">
+                        <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
+                        <text th:if="${penangguhan} == null">
+                            <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>
+                        </text>
+                        <text>
+                            <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Request Cicilan</a>
+                        </text>
+                    </div>
                 </div>
             </div>
 
-            <div class="row no-print" th:if="${pembayaran} != null">
-                <div class="col-xs-12" th:if="${tagihan} != null">
-                    <a th:href="@{/buktiPembayaran(pembayaran=${pembayaran.id})}" class="btn btn-success">Cetak Kwitansi <i class="fas fa-download"></i></a>
+            <div class="row no-print" th:if="${lunas == null}">
+                <div th:if="${cekCicilan != null}">
+                    <div class="col-xs-12" th:if="${tagihan} != null">
+                        <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
+<!--                        <text th:if="${penangguhan} == null">-->
+<!--                            <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>-->
+<!--                        </text>-->
+                        <text>
+                            <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/detail(tagihan = ${tagihan.id})}">Detail Pembayaran</a>
+                        </text>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${lunas != null}">
+                <div th:if="${cekJumlahPembayaran == 1}">
+                    <div class="row no-print" th:if="${pembayaran} != null">
+                        <div class="col-xs-12" th:if="${tagihan} != null">
+                            <a th:href="@{/buktiPembayaran(pembayaran=${pembayaran.id})}" class="btn btn-success">Cetak Kwitansi <i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -140,6 +140,11 @@
                                 </div>
 
                             </div>
+                            <div th:if="${message != null}">
+                                <button type="submit" class="btn btn-info " data-toggle="modal" data-target="#totalDocument">
+                                    <i class="fas fa-file"></i> Daftar Berkas
+                                </button>
+                            </div>
                             <div th:if="${jumlahNilai != 0}" class="col text-right">
                                 <button type="submit"  class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-form">
                                     Tambah Cicilan <i class="fa fa-plus-circle"></i>
@@ -159,8 +164,8 @@
                                                         <form method="post" th:action="@{/studentBill/billAdmin/cicilan(tagihan=${bill.id})}">
                                                             <div class="form-group mb-3">
                                                                 <div class="text-left"> Nilai</div>
-                                                                <input type="text" name="nilaiCicilan" class="form-control"
-                                                                       placeholder="0.00">
+                                                                <input type="text" name="nilaiCicilan" id="nilai" class="form-control"
+                                                                       placeholder="0.00" th:value="${jumlahCicilan}">
                                                             </div>
                                                             <div class="form-group">
                                                                 <div class="text-left">Tanggal Jatuh Tempo</div>
@@ -187,7 +192,6 @@
                     </div>
 
                     <div class="card-body">
-
                         <div class="table-responsive">
                             <table class="table align-items-center table-flush">
                                 <tr class="thead-light">
@@ -195,17 +199,40 @@
                                     <th>Tanggal Jatuh Tempo</th>
                                     <th>Nilai Cicilan</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th th:if="${message != null}">Status Cicilan</th>
                                 </tr>
                                 <tr th:each="data, row : ${request}">
                                     <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.tanggalJatuhTempo}"></td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
-                                    <td th:text="${data.statusApprove}"></td>
-                                    <td th:if="${data.statusApprove == 'APPROVED'}">
-                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                    <td >
+                                        <a  class="btn btn-primary btn-sm" href="form"
+                                            th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
+                                            th:text="${data.statusApprove}">
+                                        </a>
+                                        <a  class="btn btn-success btn-sm" href="form"
+                                            th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
+                                            th:text="${data.statusApprove}">
+                                        </a>
+                                    </td>
+                                    <td th:if="${message != null}">
+                                        <a  class="btn btn-primary btn-sm" href="form"
+                                            th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
+                                            th:text="${data.statusCicilan}">
+                                        </a>
+                                        <a  class="btn btn-warning btn-sm" href="form"
+                                            th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
+                                            th:text="${data.statusCicilan}">
+                                        </a>
+                                        <a  class="btn btn-success btn-sm" href="form"
+                                            th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
+                                            th:text="${data.statusCicilan}">
+                                        </a>
+                                    </td>
+                                    <td>
+<!--                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">-->
+<!--                                            <i class="fas fa-trash"></i>-->
+<!--                                        </button>-->
 
                                         <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
                                             <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
@@ -242,23 +269,54 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="row mt-4">
-                            <div class="col-md-2">
-                                <form method="post" th:action="@{/studentBill/cicilan/approve}">
-                                    <button type="submit" class="btn btn-success" >Setujui</button>
-                                    <input type="hidden" name="date" th:value="${date}" class="form-control">
-                                    <input type="hidden" name="bill" th:value="${bill.id}">
-                                </form>
-                            </div>
-                            <div class="col-md-2">
-                                <form th:action="@{/studentBill/cicilan/reject}">
-                                    <button type="submit" class="btn btn-danger">Ditolak</button>
-                                </form>
-                            </div>
-                            <div class="col-md-8 text-right">
-                                <button type="submit" class="btn btn-info " data-toggle="modal" data-target="#totalDocument">
-                                    <i class="fas fa-file"></i> Daftar Berkas
-                                </button>
+                        <div class="alert alert-success mt-4" th:if="${message != null}">
+                            Cicilan sudah di setujui!
+                        </div>
+                        <div th:if="${message == null}">
+                            <div class="row mt-4">
+                                <div class="col-md-2">
+                                    <form method="post" th:action="@{/studentBill/cicilan/approve}">
+                                        <button type="submit" class="btn btn-success" >Setujui</button>
+                                        <input type="hidden" name="bill" th:value="${bill.id}">
+                                    </form>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modal-reject">Ditolak</button>
+                                    <!-- Modal reject cicilan -->
+                                    <div class="modal fade" id="modal-reject">
+                                        <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">
+                                            <div class="modal-content">
+
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+
+                                                <div class="modal-body p-0">
+                                                    <div class="card bg-secondary">
+                                                        <div class="card-body">
+                                                            <form method="post" th:action="@{/studentBill/cicilan/reject}">
+                                                                <input type="hidden" name="bill" th:value="${bill.id}">
+                                                                <div class="form-group mb-3">
+                                                                    <div class="text-left">Keterangan Reject</div>
+                                                                    <textarea name="keterangan" class="form-control" id="" cols="30"
+                                                                              rows="10"></textarea>
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <button type="submit" class="btn btn-success my-4">Save</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 text-right">
+                                    <button type="submit" class="btn btn-info " data-toggle="modal" data-target="#totalDocument">
+                                        <i class="fas fa-file"></i> Daftar Berkas
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

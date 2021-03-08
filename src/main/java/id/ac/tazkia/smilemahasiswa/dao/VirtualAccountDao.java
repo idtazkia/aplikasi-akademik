@@ -5,8 +5,15 @@ import id.ac.tazkia.smilemahasiswa.entity.Tagihan;
 import id.ac.tazkia.smilemahasiswa.entity.VirtualAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import java.util.List;
 
 public interface VirtualAccountDao extends PagingAndSortingRepository<VirtualAccount, String> {
     Page<VirtualAccount> findByTagihan(Tagihan tagihan, Pageable pageable);
+
+    @Query(value = "SELECT * FROM virtual_account where id_tagihan=?1 limit 2", nativeQuery = true)
+    List<VirtualAccount> listVa(String idTagihan);
+
 }

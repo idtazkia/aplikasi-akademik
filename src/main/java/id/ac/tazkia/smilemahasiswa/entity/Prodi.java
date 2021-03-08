@@ -34,6 +34,8 @@ import java.time.LocalDate;
 
         private String kodeProdi;
 
+        private String kodeBiaya;
+
         private String namaProdi;
 
         private String namaProdiEnglish;
