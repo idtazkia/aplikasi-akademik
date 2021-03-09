@@ -83,10 +83,20 @@
                                                   <td> : </td>
                                                   <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                               </tr>
-                                              <tr th:if="${pembayaran} != null">
-                                                  <td>Waktu Pembayaran</td>
+                                              <tr th:if="${cekCicilan != null}">
+                                                  <td>Pembayaran</td>
                                                   <td> : </td>
-                                                  <td th:text="${pembayaran.waktuBayar}"></td>
+                                                  <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
+                                              </tr>
+                                              <tr>
+                                                  <td>Keterangan</td>
+                                                  <td> : </td>
+                                                  <td th:text="${tagihan.keterangan}"></td>
+                                              </tr>
+                                              <tr th:if="${cekCicilan != null}">
+                                                  <td>Status Cicilan</td>
+                                                  <td> : </td>
+                                                  <td ><a class="btn btn-success btn-sm text-white">APPROVED</a></td>
                                               </tr>
                                               <tr>
                                                   <td>Tanggal Jatuh Tempo</td>
@@ -104,23 +114,54 @@
                                 </div>
                             </div>
 
+                            <div class="row mt-4">
+                                <div class="col-md-12" th:if="${cekCicilan != null}">
+                                    <h4>Daftar Pembayaran</h4>
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Pembayaran</th>
+                                                <th>Bank</th>
+                                                <th>Nomor Rekening</th>
+                                                <th>Referensi</th>
+                                                <th>Nilai Pembayaran</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row : ${detailPembayaran}">
+                                                <td th:text="${(row.index + 1)}">1</td>
+                                                <td th:text="${data.waktuBayar}">2021-03-04 06:55:00</td>
+                                                <td th:text="${data.bank.nama}"></td>
+                                                <td th:text="${data.nomorRekening}"></td>
+                                                <td th:text="${data.referensi}"></td>
+                                                <td th:text="${data.amount}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row" th:if="${tagihan} != null">
-                                <div class="col-sm-7">
+                                <div class="col-sm-7" th:if="${cekCicilan == null}">
                                     <h4>Nomor Virtual Account</h4>
                                     <small th:if="${pembayaran} == null">*Pilih Salah Satu</small>
                                     <div class="table-responsive">
                                         <table class="table">
                                             <tbody>
-                                            <tr th:if="${pembayaran} == null" th:each="va, row:${virtualAccount}">
-                                                <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
+                                            <tr th:each="va, row:${virtualAccount}">
                                                 <td th:text="${'Virtual Account '+va.bank.nama}">Virtual Account CIMB Syariah</td>
                                                 <th th:text="${va.nomor}">20191000010020167</th>
                                             </tr>
-                                            <tr th:if="${pembayaran} != null and ${pembayaran.bank} == ${va.bank}" th:each="va, row : ${virtualAccount}">
-                                                <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
-                                                <td th:text="${'Virtual Account '+va.bank.nama}" th:if="${pembayaran.bank} == ${va.bank}">Virtual Account CIMB Syariah</td>
-                                                <th th:text="${va.nomor}" th:if="${pembayaran.bank} == ${va.bank}">20191000010020167</th>
-                                            </tr>
+                                            <div th:if="${cekJumlahPembayaran == 1}">
+                                                <tr th:if="${pembayaran} != null and ${pembayaran.bank} == ${va.bank}" th:each="va, row : ${virtualAccount}">
+                                                    <td th:text="${(row.index + 1) + (virtualAccount.number * virtualAccount.size)}">#</td>
+                                                    <td th:text="${'Virtual Account '+va.bank.nama}" th:if="${pembayaran.bank} == ${va.bank}">Virtual Account CIMB Syariah</td>
+                                                    <th th:text="${va.nomor}" th:if="${pembayaran.bank} == ${va.bank}">20191000010020167</th>
+                                                </tr>
+                                            </div>
                                             </tbody>
                                         </table>
                                     </div>

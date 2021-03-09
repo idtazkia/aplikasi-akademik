@@ -45,11 +45,11 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "where b.id_tahun_akademik = ?1 and b.id_mahasiswa=?2 and b.status='AKTIF')bb on aa.id_mahasiswa=bb.id_mahasiswa", nativeQuery = true)
     List<SisaTagihanDto> sisaTagihanQuery(String idTahunAkademik, String idMahasiswa);
 
-    @Query(value = "select a.id, a.id_mahasiswa, a.id_tahun_akademik, d.nama as namaTagihan, a.nilai_tagihan as tagihan, \n" +
-            "coalesce(b.amount,0) as dibayar, a.lunas as lunas from tagihan as a inner join nilai_jenis_tagihan as c on \n" +
-            "a.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id left join pembayaran as \n" +
-            "b on a.id=b.id_tagihan where a.id_tahun_akademik=?1 and a.id_mahasiswa=?2 and a.status!='HAPUS'", nativeQuery = true)
-    List<DaftarBiayaDto> daftarBiaya(String idTahunAkademik, String idMahasiswa);
+//    @Query(value = "select a.id, a.id_mahasiswa, a.id_tahun_akademik, d.nama as namaTagihan, a.nilai_tagihan as tagihan, \n" +
+//            "coalesce(b.amount,0) as dibayar, a.lunas as lunas from tagihan as a inner join nilai_jenis_tagihan as c on \n" +
+//            "a.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id left join pembayaran as \n" +
+//            "b on a.id=b.id_tagihan where a.id_tahun_akademik=?1 and a.id_mahasiswa=?2 and a.status!='HAPUS'", nativeQuery = true)
+//    List<DaftarBiayaDto> daftarBiaya(String idTahunAkademik, String idMahasiswa);
 
     @Query(value = "select aaa.*,coalesce(bbb.dibayar,0)as dibayar,nilai_tagihan-coalesce(dibayar,0) as sisa from \n" +
             "(select a.id,b.nama as namaTagihan,c.nama_tahun_akademik as namaTahun,a.nilai_tagihan from tagihan as a \n" +

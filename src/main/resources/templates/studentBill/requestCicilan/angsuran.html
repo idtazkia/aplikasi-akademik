@@ -127,7 +127,7 @@
                             <div class="row">
                                 <div class="col-md-4 col-xs-12">
                                     <div class="form-group" th:if="${jumlahNilai != 0}">
-                                        <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#myModal">Tambah Cicilan <i size="50" class="fa fa-plus-circle"></i></button>
+                                        <button type="submit" id="tambah" class="btn btn-success" data-toggle="modal" data-target="#myModal">Tambah Cicilan <i size="50" class="fa fa-plus-circle"></i></button>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-xs-12">
@@ -159,13 +159,13 @@
                                             <div class="col-md-12 col-xs-12">
                                                 <div class="form-group">
                                                     <label >Nilai </label>
-                                                    <input type="text" name="nilaiCicilan" required class="form-control"
-                                                           placeholder="0.00">
+                                                    <input type="text" name="nilaiCicilan" id="nilai" required class="form-control"
+                                                           placeholder="0.00" th:value="${jumlahNilai}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label >Tanggal Jatuh Tempo </label>
-                                                    <input type="date" name="tanggalJatuhTempo" required class="form-control"
-                                                           placeholder="0.00" th:max="${tahun.tanggalMulaiUas}">
+                                                    <input readonly type="date" name="tanggalJatuhTempo" required class="form-control"
+                                                           th:value="${tanggal}">
                                                 </div>
                                             </div>
                                         </div>
@@ -175,9 +175,11 @@
                                             <div class="col-md-6 col-xs-12 text-left">
                                                 <div th:if="${jumlahNilai == null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 0, 'POINT')}"></div>
                                                 <div th:if="${jumlahNilai != null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(jumlahNilai, 0, 'POINT', 0, 'POINT')}"></div>
+                                                <input type="hidden" id="nilai1" th:value="${jumlahNilai}">
                                             </div>
                                             <div class="col-md-6 col-xs-12">
-                                                <button type="submit" class="btn btn-success">Save</button>
+                                                <div class="messageError"></div>
+                                                <button type="submit" id="submit" class="btn btn-success">Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -286,14 +288,38 @@
                                         <th>Tanggal Jatuh Tempo</th>
                                         <th>Nilai Cicilan</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Cicilan</th>
+                                        <th th:if="${message == null}">Action</th>
                                     </tr>
                                     <tr th:each="data, row : ${request}">
                                         <td th:text="${(row.index + 1)}"></td>
                                         <td th:text="${data.tanggalJatuhTempo}"></td>
                                         <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
-                                        <td th:text="${data.statusApprove}"></td>
-                                        <td>
+                                        <td >
+                                            <a  class="btn btn-primary btn-sm"
+                                                th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
+                                                th:text="${data.statusApprove}">
+                                            </a>
+                                            <a  class="btn btn-success btn-sm"
+                                                th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
+                                                th:text="${data.statusApprove}">
+                                            </a>
+                                        </td>
+                                        <td th:if="${message != null}">
+                                            <a  class="btn btn-primary btn-sm"
+                                                th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
+                                                th:text="${data.statusCicilan}">
+                                            </a>
+                                            <a  class="btn btn-warning btn-sm"
+                                                th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
+                                                th:text="${data.statusCicilan}">
+                                            </a>
+                                            <a  class="btn btn-success btn-sm"
+                                                th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
+                                                th:text="${data.statusCicilan}">
+                                            </a>
+                                        </td>
+                                        <td th:if="${message == null}">
                                             <button type="button" class="btn btn-danger " data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
                                                 <i class="fa fa-trash"></i>
                                             </button>
@@ -342,3 +368,38 @@
 </section>
 </body>
 </html>
+
+<script>
+    $(document).ready(function (){
+        $("#nilai").keyup(function (){
+            var1s = $("#nilai").val();
+            if(var1s.match(/^\d+$/)){
+                $('.messageError').html('');
+                $('#submit').show();
+                sums();
+            }else{
+                $('.messageError').html('Hanya bisa memasukan angka!');
+                $('#submit').hide();
+            }
+        });
+
+        $('#tambah').click(function (){
+            $('#submit').show();
+            $('.messageError').html('');
+            sums();
+        });
+
+        function sums(){
+            varn = parseInt($("#nilai").val());
+            var1 = parseInt($("#nilai1").val());
+            console.log(varn, var1);
+            if(varn > var1){
+                $('#submit').hide();
+                $('.messageError').html('Jumlah melebihi sisa tagihan!');
+            }else{
+                $('#submit').show();
+            }
+        }
+
+    });
+</script>
