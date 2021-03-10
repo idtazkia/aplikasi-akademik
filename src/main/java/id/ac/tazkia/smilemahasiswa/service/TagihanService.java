@@ -33,6 +33,7 @@ public class TagihanService {
 
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final String TAGIHAN_SEMPRO = "08";
+    public static final String TAGIHAN_SKRIPSI = "09";
     public static final String TAGIHAN_UTS = "12";
     public static final String TAGIHAN_UAS = "13";
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
@@ -165,6 +166,32 @@ public class TagihanService {
 
             if(krs == null) {
                 createKrs(tagihan, tahunAkademikProdi);
+            }
+        }
+
+        if (TAGIHAN_SEMPRO.equals(pt.getKodeJenisBiaya())){
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.SEMPRO, true, tagihan.getTahunAkademik());
+            if (enableFiture == null) {
+                enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.SEMPRO);
+                enableFiture.setMahasiswa(tagihan.getMahasiswa());
+                enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
+                enableFiture.setEnable(true);
+                enableFitureDao.save(enableFiture);
+            }
+        }
+
+        if (TAGIHAN_SKRIPSI.equals(pt.getKodeJenisBiaya())){
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.SKRIPSI, true, tagihan.getTahunAkademik());
+            if (enableFiture == null) {
+                enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.SKRIPSI);
+                enableFiture.setMahasiswa(tagihan.getMahasiswa());
+                enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
+                enableFiture.setEnable(true);
+                enableFitureDao.save(enableFiture);
             }
         }
 
