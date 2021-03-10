@@ -32,6 +32,7 @@ import java.util.List;
 public class TagihanService {
 
     private static final DateTimeFormatter FORMATTER_ISO_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String TAGIHAN_SEMPRO = "08";
     public static final String TAGIHAN_UTS = "12";
     public static final String TAGIHAN_UAS = "13";
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");

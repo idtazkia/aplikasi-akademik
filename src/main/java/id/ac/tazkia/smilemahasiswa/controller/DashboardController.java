@@ -82,6 +82,9 @@ public class DashboardController {
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
 
+    @Autowired
+    private TagihanDao tagihanDao;
+
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
         return agamaDao.findByStatus(StatusRecord.AKTIF);
@@ -117,6 +120,10 @@ public class DashboardController {
 
         model.addAttribute("krsdetail", krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa, k, StatusRecord.AKTIF));
         model.addAttribute("persentase", krsDetailDao.persentaseKehadiran(mahasiswa,ta));
+
+        // tampilan tagihan
+
+        model.addAttribute("tagihan", tagihanDao.findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), false, mahasiswa, ta));
 
 
         return "dashboard";
