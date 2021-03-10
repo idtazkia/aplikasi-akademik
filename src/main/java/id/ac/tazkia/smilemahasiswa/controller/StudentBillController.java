@@ -1274,6 +1274,14 @@ public class StudentBillController {
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
     }
 
+    @GetMapping("/api/pembayaran")
+    @ResponseBody
+    public VirtualAccount va(@RequestParam(required = false) String id, @RequestParam(required = false) String idTagihan){
+
+        return virtualAccountDao.vaPembayaran(id, idTagihan);
+
+    }
+
     @PostMapping("/studentBill/payment/manual")
     public String paymentManual(@ModelAttribute @Valid Pembayaran pembayaran,
                                 MultipartFile fileBukti) throws IOException {

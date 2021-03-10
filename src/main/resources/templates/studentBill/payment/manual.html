@@ -87,23 +87,26 @@
                                 <div class="col-md-6">
                                     <form method="post" th:action="@{/studentBill/payment/manual}" th:object="${pembayaran}" enctype="multipart/form-data">
                                         <input type="hidden" name="tagihan" th:field="*{tagihan}">
+                                        <input type="hidden" id="isiTagihan" th:value="${tagihan.id}">
                                         <div class="form-group">
-                                            <label for="">Bank</label>
-                                            <select name="bank" id="" th:field="*{bank}" class="form-control">
+                                            <label>Bank</label>
+                                            <select id="select2-bank" onchange="autoVa()"
+                                                    name="bank" class="form-control">
                                                 <option value=""></option>
                                                 <option th:each="data : ${bank}"
                                                         th:text="${data.nama}"
                                                         th:value="${data.id}">Bank</option>
                                             </select>
+                                            <input type="hidden" id="isiBank" name="bank" th:field="*{bank}">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="">Virtual Account</label>
-                                            <input type="text" name="nomorRekening" class="form-control">
+                                            <label >Virtual Account</label>
+                                            <input type="text" id="nomorVa" th:field="*{nomorRekening}" name="nomorRekening" class="form-control">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="">Jumlah pembayaran</label>
+                                            <label >Jumlah pembayaran</label>
                                             <input type="text" readonly name="amount" class="form-control" th:value="${tagihan.nilaiTagihan}">
                                         </div>
                                         <div class="form-group">
@@ -132,3 +135,29 @@
 </div>
 </body>
 </html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih salah satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#select2-bank').select2();
+
+        $('#select2-bank').on('select2:selecting', function (e) {
+            console.log('Selecting: ', e.params.args.data.id);
+            $('#isiBank').val(e.params.args.data.id);
+        });
+    })(jQuery);
+
+    function autoVa(){
+        var x = document.getElementById("select2-bank").value;
+        console.log(x);
+        const url = '/api/pembayaran?id='+x+'&idTagihan='+$('#isiTagihan').val();
+        $.getJSON(url, function (data){
+            $('#nomorVa').val(data.nomor);
+            document.getElementById("nomorVa").value = data.nomor;
+        })
+    }
+
+</script>
