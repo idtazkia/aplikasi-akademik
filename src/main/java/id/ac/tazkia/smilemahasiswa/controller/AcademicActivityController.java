@@ -1153,7 +1153,7 @@ public class  AcademicActivityController {
         model.addAttribute("grade", gradeDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("mahasiswa", mhs);
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.AKTIF)));
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
     }
 
