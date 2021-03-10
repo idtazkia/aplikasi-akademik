@@ -109,8 +109,8 @@
 <div class="error-page-area" style="background-image: url('https://images.wallpaperscraft.com/image/macbook_pro_apple_laptop_headphones_table_98893_1920x1080.jpg')">
     <div class="error-page-wrap bounceIn" style="border-radius: 10px; ">
         <i class="notika-icon notika-success" style="color: #4DA8A8;"></i>
-        <h2 style="color: #4DA8A8;">Congratulations !</h2>
-        <p>Your Concept Note is Approved</p>
+        <h2 style="color: #4DA8A8;">Selamat !</h2>
+        <p>Concept Note Anda telah di Approve</p>
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
@@ -137,7 +137,17 @@
         </div>
         <br>
 
-        <div class="col-md-6 col-lg-offset-3">
+        <div class="col-md-12 alert alert-info" th:if="${sempro == null}">
+            <p>
+                <center>
+                    <strong>
+                        Silahkan selesaikan pembayaran tugas akhir terlebih dahulu untuk melanjutkan Seminar Proposal (minimal 50%).
+                    </strong>
+                </center>
+            </p>
+        </div>
+
+        <div class="col-md-6 col-lg-offset-3" th:if="${sempro != null}">
             <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;">
             Continue to sempro !
             </a>
