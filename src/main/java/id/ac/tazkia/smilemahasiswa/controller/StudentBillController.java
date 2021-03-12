@@ -1323,6 +1323,7 @@ public class StudentBillController {
         pembayaran.setAmount(tagihan.getNilaiTagihan());
         pembayaranDao.save(pembayaran);
 
+        tagihan.setAkumulasiPembayaran(tagihan.getNilaiTagihan());
         tagihan.setStatusTagihan(StatusTagihan.LUNAS);
         tagihan.setLunas(true);
         tagihanDao.save(tagihan);

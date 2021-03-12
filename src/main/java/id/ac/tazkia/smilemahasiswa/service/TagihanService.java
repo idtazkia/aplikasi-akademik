@@ -104,16 +104,20 @@ public class TagihanService {
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
 
-        BigDecimal akumulasi = tagihan.getAkumulasiPembayaran().add(pt.getNilaiPembayaran());
-        BigDecimal nilai = tagihan.getNilaiTagihan();
-        tagihan.setAkumulasiPembayaran(akumulasi);
-        log.info("akumulasi : {}", akumulasi);
-        if (akumulasi.compareTo(nilai) == 0){
-            tagihan.setLunas(true);
-            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-            tagihanDao.save(tagihan);
-            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
-        }
+//        BigDecimal akumulasi = tagihan.getAkumulasiPembayaran().add(pt.getNilaiPembayaran());
+//        BigDecimal nilai = tagihan.getNilaiTagihan();
+//        tagihan.setAkumulasiPembayaran(akumulasi);
+//        log.info("akumulasi : {}", akumulasi);
+//        if (akumulasi.compareTo(nilai) == 0){
+//            tagihan.setLunas(true);
+//            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+//            tagihanDao.save(tagihan);
+//            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
+//        }
+
+        tagihan.setLunas(true);
+        tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+        tagihan.setAkumulasiPembayaran(tagihan.getNilaiTagihan());
 
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 

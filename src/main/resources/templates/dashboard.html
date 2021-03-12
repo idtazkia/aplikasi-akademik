@@ -44,24 +44,24 @@
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Subject</th>
-                                    <th>Day</th>
-                                    <th>Time</th>
-                                    <th>Lecture</th>
-                                    <th>Room</th>
-                                </tr>
+                            <tr>
+                                <th>No.</th>
+                                <th>Subject</th>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Lecture</th>
+                                <th>Room</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="data,row : ${krsdetail}">
-                                    <td th:text="${(row.index + 1)}">1</td>
-                                    <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Senin</td>
-                                    <td th:text="${data.jadwal.hari.namaHari}"></td>
-                                    <td th:text="${data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">Matematika</td>
-                                    <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">13.00</td>
-                                    <td th:text="${data.jadwal.ruangan.namaRuangan}">13.00</td>
-                                </tr>
+                            <tr th:each="data,row : ${krsdetail}">
+                                <td th:text="${(row.index + 1)}">1</td>
+                                <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Senin</td>
+                                <td th:text="${data.jadwal.hari.namaHari}"></td>
+                                <td th:text="${data.jadwal.jamMulai+' - '+ data.jadwal.jamSelesai}">Matematika</td>
+                                <td th:text="${data.jadwal.dosen.karyawan.namaKaryawan}">13.00</td>
+                                <td th:text="${data.jadwal.ruangan.namaRuangan}">13.00</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -77,20 +77,103 @@
                     <div class="skill-content-3 ongoing-tsk">
                         <div class="skill">
                             <a href="">
-                            <div class="progress" th:each="data : ${persentase}">
-                                <div class="lead-content">
-                                    <p th:text="${data[0]}">Matematika</p><br>
+                                <div class="progress" th:each="data : ${persentase}">
+                                    <div class="lead-content">
+                                        <p th:text="${data[0]}">Matematika</p><br>
+                                    </div>
+                                    <div th:if="${data[1] == 1}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 33%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
+                                    <div th:if="${data[1] == 2}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 66%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
+                                    <div th:if="${data[1] > 3}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 100%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span>>3</span></div>
                                 </div>
-                                <div th:if="${data[1] == 1}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 33%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
-                                <div th:if="${data[1] == 2}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 66%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span th:text="${data[1]}">95 %</span></div>
-                                <div th:if="${data[1] > 3}" class="progress-bar wow fadeInLeft" data-progress="95%" style="width: 100%;" data-wow-duration="1.5s" data-wow-delay="1.2s"><span>>3</span></div>
-                            </div>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-xs-12">-->
+<!--                <div class="normal-table-list mg-t-30">-->
+<!--                    <div class="basic-tb-hd">-->
+<!--                        <h2>List Tagihan</h2>-->
+<!--                    </div>-->
+<!--                    <div class="bsc-tbl-st">-->
+<!--                        <table class="table table-striped">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>#</th>-->
+<!--                                <th>Tagihan</th>-->
+<!--                                <th>Nilai</th>-->
+<!--                                <th>Jatuh Tempo</th>-->
+<!--                                <th></th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbdy>-->
+<!--                            <tr th:each="data, row:${tagihan}">-->
+<!--                                <td th:text="${(row.index + 1)}">1</td>-->
+<!--                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>-->
+<!--                                <td th:text="${data.nilaiTagihan}"></td>-->
+<!--                                <td th:text="${data.tanggalJatuhTempo}"></td>-->
+<!--                                <td th:text="${data.statusTagihan}"></td>-->
+<!--                            </tr>-->
+<!--                            </tbdy>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-xs-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6 col-xs-12">-->
+<!--                        <div class="normal-table-list mg-t-30">-->
+<!--                            <div class="basic-tb-hd">-->
+<!--                                <h2>Cicilan</h2>-->
+<!--                            </div>-->
+<!--                            <div class="bsc-tbl-st">-->
+<!--                                <table class="table table-striped">-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>No.</th>-->
+<!--                                        <th>Subject</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tbdy>-->
+<!--                                        <tr>-->
+<!--                                            <td>1</td>-->
+<!--                                            <td>1</td>-->
+<!--                                        </tr>-->
+<!--                                    </tbdy>-->
+<!--                                </table>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-6 col-xs-12">-->
+<!--                        <div class="normal-table-list mg-t-30">-->
+<!--                            <div class="basic-tb-hd">-->
+<!--                                <h2>Penangguhan</h2>-->
+<!--                            </div>-->
+<!--                            <div class="bsc-tbl-st">-->
+<!--                                <table class="table table-striped">-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>No.</th>-->
+<!--                                        <th>Subject</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tbdy>-->
+<!--                                        <tr>-->
+<!--                                            <td>1</td>-->
+<!--                                            <td>1</td>-->
+<!--                                        </tr>-->
+<!--                                    </tbdy>-->
+<!--                                </table>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="row">
             <div class="col-md-8 col-xs-12">
                 <div class="normal-table-list mg-t-30">

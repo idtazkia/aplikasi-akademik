@@ -27,7 +27,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "inner join request_cicilan as b on a.id=b.id_tagihan where a.status='AKTIF' and b.status='AKTIF' and a.id=?1", nativeQuery = true)
     BigDecimal sisaCicilan(String idTagihan);
 
-    @Query(value = "select a.id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan from tagihan as a inner join mahasiswa as c " +
+    @Query(value = "select a.id as id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan from tagihan as a inner join mahasiswa as c " +
             "on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d \n" +
             "on a.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id \n" +
             "left join request_cicilan as b on a.id=b.id_tagihan where b.status='AKTIF' group by a.id", nativeQuery = true)
