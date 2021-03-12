@@ -45,7 +45,7 @@ public class RequestCicilan {
     private StatusRecord status = StatusRecord.AKTIF;
 
     @Enumerated(EnumType.STRING)
-    private StatusCicilan statusCicilan = StatusCicilan.CICILAN_1;
+    private StatusCicilan statusCicilan = StatusCicilan.CICILAN;
 
     private String keterangan;
 

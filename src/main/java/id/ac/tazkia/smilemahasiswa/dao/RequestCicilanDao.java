@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.payment.TampilanCicilanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.bouncycastle.ocsp.Req;
 import org.springframework.data.domain.Page;
@@ -28,10 +29,10 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
     BigDecimal sisaCicilan(String idTagihan);
 
     @Query(value = "select a.id as id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan from tagihan as a inner join mahasiswa as c " +
-            "on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d \n" +
-            "on a.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id \n" +
+            "on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d " +
+            "on a.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id " +
             "left join request_cicilan as b on a.id=b.id_tagihan where b.status='AKTIF' group by a.id", nativeQuery = true)
-    Page<Object[]> listRequestCicilan(Pageable page);
+    Page<TampilanCicilanDto> listRequestCicilan(Pageable page);
 
     @Query(value = "select * from request_cicilan where id_tagihan = ?1 and status_cicilan = 'CICILAN' order by tanggal_jatuh_tempo limit 1", nativeQuery = true)
     RequestCicilan cariCicilanSelanjutnya(Tagihan tagihan);

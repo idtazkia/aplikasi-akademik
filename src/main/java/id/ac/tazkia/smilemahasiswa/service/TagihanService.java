@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.Local;
+import org.apache.tomcat.jni.Status;
 import org.bouncycastle.ocsp.Req;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,21 +105,6 @@ public class TagihanService {
 
     public void prosesPembayaran(Tagihan tagihan, PembayaranTagihan pt){
 
-//        BigDecimal akumulasi = tagihan.getAkumulasiPembayaran().add(pt.getNilaiPembayaran());
-//        BigDecimal nilai = tagihan.getNilaiTagihan();
-//        tagihan.setAkumulasiPembayaran(akumulasi);
-//        log.info("akumulasi : {}", akumulasi);
-//        if (akumulasi.compareTo(nilai) == 0){
-//            tagihan.setLunas(true);
-//            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-//            tagihanDao.save(tagihan);
-//            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
-//        }
-
-        tagihan.setLunas(true);
-        tagihan.setStatusTagihan(StatusTagihan.LUNAS);
-        tagihan.setAkumulasiPembayaran(tagihan.getNilaiTagihan());
-
         log.debug("Pembayaran Tagihan = {}", pt.toString());
 
         Pembayaran pembayaran = new Pembayaran();
@@ -131,6 +117,17 @@ public class TagihanService {
         Bank bank = new Bank();
         bank.setId(pt.getBank());
         pembayaran.setBank(bank);
+
+        BigDecimal akumulasi = tagihan.getAkumulasiPembayaran().add(pt.getNilaiPembayaran());
+        BigDecimal nilai = tagihan.getNilaiTagihan();
+        tagihan.setAkumulasiPembayaran(akumulasi);
+        log.info("akumulasi : {}", akumulasi);
+        if (akumulasi.compareTo(nilai) == 0){
+            tagihan.setLunas(true);
+            tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+            tagihanDao.save(tagihan);
+            log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
+        }
 
         if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
@@ -199,29 +196,29 @@ public class TagihanService {
             }
         }
 
-        tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
-
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate hariIni = LocalDate.now();
-//        LocalDate tgl10Bulandepan = hariIni.plusMonths(1).withDayOfMonth(10);
 
-        RequestCicilan cicilanLunas = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
-        cicilanLunas.setStatusCicilan(StatusCicilan.LUNAS);
-        requestCicilanDao.save(cicilanLunas);
-        log.info("cicilan lunas : {}", cicilanLunas);
+        if (tagihan.getStatusTagihan() == StatusTagihan.DICICIL){
 
+            RequestCicilan cicilanLunas = requestCicilanDao.findByTagihanAndStatusCicilanAndStatus(tagihan, StatusCicilan.SEDANG_DITAGIHKAN, StatusRecord.AKTIF);
+            if (cicilanLunas != null) {
+                cicilanLunas.setStatusCicilan(StatusCicilan.LUNAS);
+                requestCicilanDao.save(cicilanLunas);
+                log.info("cicilan lunas : {}", cicilanLunas);
+            }
 
-        RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
-        if (requestCicilan == null){
-            log.info("tidak ada cicilan");
+            RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
+            if (requestCicilan == null){
+                log.info("tidak ada cicilan");
+            }else {
+                requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                requestCicilanDao.save(requestCicilan);
+                requestCreateCicilan(requestCicilan);
+                log.info("kirim cicilan selanjutnya : {}", requestCicilan);
+            }
         }
-        requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-        requestCicilanDao.save(requestCicilan);
-        requestCreateCicilan(requestCicilan);
-        log.info("kirim cicilan selanjutnya : {}", requestCicilan);
 
     }
 
