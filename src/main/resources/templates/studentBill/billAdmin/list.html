@@ -295,11 +295,12 @@
                                         <div class="card-body">
                                             <form method="get">
                                                 <div class="row">
-                                                    <div th:if="${tanggal1 != null}" class="col-md-1">
+                                                    <div th:if="${tanggal1 != null}" class="col-md-3">
                                                         <div class="btn btn-info"><a class="text-white" th:href="@{/studentBill/billAdmin/list}"><i class="fas fa-sync-alt"></i> Refresh</a></div>
                                                     </div>
-                                                    <div th:if="${tanggal1 == null}" class="col-md-1"></div>
-                                                    <div class="col-md-2"></div>
+                                                    <div  class="col-md-3">
+
+                                                    </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
                                                             <input type="date" name="date1" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal1}">
@@ -516,5 +517,22 @@
             $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
         }
     });
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#select2-tahun').select2();
+
+        $('#select2-tahun').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiTahun').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+
+
 
 </script>

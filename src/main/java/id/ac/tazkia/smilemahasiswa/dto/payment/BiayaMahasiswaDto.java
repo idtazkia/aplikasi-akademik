@@ -7,6 +7,7 @@ public interface BiayaMahasiswaDto {
     String getId();
     String getNamaTagihan();
     String getNamaTahun();
+    String getStatus();
     BigDecimal getnilai_tagihan();
     BigDecimal getDibayar();
     BigDecimal getSisa();

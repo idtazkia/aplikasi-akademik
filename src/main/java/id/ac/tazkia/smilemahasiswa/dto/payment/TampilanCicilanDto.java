@@ -6,5 +6,6 @@ public interface TampilanCicilanDto {
     String getNama();
     String getTagihan();
     Integer getCicilan();
+    String getStatus();
 
 }

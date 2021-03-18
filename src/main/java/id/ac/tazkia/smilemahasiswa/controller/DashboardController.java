@@ -20,6 +20,7 @@ import javax.script.Bindings;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class DashboardController {
@@ -85,6 +86,12 @@ public class DashboardController {
     @Autowired
     private TagihanDao tagihanDao;
 
+    @Autowired
+    private RequestCicilanDao requestCicilanDao;
+
+    @Autowired
+    private RequestPenangguhanDao requestPenangguhanDao;
+
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
         return agamaDao.findByStatus(StatusRecord.AKTIF);
@@ -122,10 +129,23 @@ public class DashboardController {
         model.addAttribute("persentase", krsDetailDao.persentaseKehadiran(mahasiswa,ta));
 
         // tampilan tagihan
-
-        model.addAttribute("tagihan", tagihanDao.findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), false, mahasiswa, ta));
-
-
+        List<Tagihan> cekTagihan = tagihanDao.findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), false, mahasiswa, ta);
+        model.addAttribute("tagihan", cekTagihan);
+        if(cekTagihan.isEmpty()){
+            model.addAttribute("message", "message");
+        }
+        List<Object[]> cekCicilan = requestCicilanDao.cekCicilanPerMahasiswa(ta, mahasiswa);
+        if (cekCicilan.isEmpty()){
+            model.addAttribute("cekCicilan", "cekCicilan");
+        }else {
+            model.addAttribute("cicilan", cekCicilan);
+        }
+        List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa, ta);
+        if (cekPenangguhan.isEmpty()){
+            model.addAttribute("cekPenangguhan", "cekPenangguhan");
+        }else {
+            model.addAttribute("penangguhan", cekPenangguhan);
+        }
         return "dashboard";
     }
 

@@ -40,10 +40,17 @@
 
     <div class="container-fluid mt--7">
         <div class="row">
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-7 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Keterangan Tagihan</h3>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Keterangan Tagihan</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <address>
@@ -88,45 +95,33 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-12">
+            <div class="col-md-5 col-xs-12">
                 <div class="card shadow">
+
                     <div class="card-header border-0">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">Form Approve</h3>
-                            </div>
-                            <div class="col text-right">
-                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
-                            </div>
-                        </div>
+                        <h3 class="mb-0">Form Approval</h3>
                     </div>
                     <div class="card-body">
                         <form method="post" th:action="@{/studentBill/penangguhan/approve(requestPenangguhan = ${penangguhan.id}, tagihan = ${bill.id})}"  th:object="${penangguhan}">
-                            <div class="form-group">
-                                <label>Keterangan</label>
-                                <input type="text" name="keterangan" class="form-control"
-                                       placeholder="Keterangan Approve" th:field="*{keterangan}">
-                                <input type="hidden" th:field="*{tagihan}">
-                                <input type="hidden" th:field="*{keterangan}">
-                            </div>
+                            <input type="hidden" th:field="*{tagihan}">
+                            <input type="hidden" th:field="*{keterangan}">
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success">Approve</button>
+                                <button type="submit" class="btn btn-success">Disetujui</button>
                             </div>
                         </form>
                         <form method="post" th:action="@{/studentBill/penangguhan/reject(requestPenangguhan = ${penangguhan.id})}"  th:object="${penangguhan}">
                             <div class="form-group">
-                                <label>Keterangan</label>
-                                <input type="text" name="keteranganReject" class="form-control"
-                                placeholder="Keterangan Reject" th:field="*{keteranganReject}">
+                                <label>Keterangan Ditolak</label>
+                                <textarea name="keteranganReject" id="" cols="30" rows="8" class="form-control" th:field="*{keteranganReject}"></textarea>
                                 <input type="hidden" th:field="*{tagihan}">
                                 <input type="hidden" th:field="*{keterangan}">
                             </div>
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-danger">Reject</button>
+                                <button type="submit" class="btn btn-danger">Ditolak</button>
 
                             </div>
                         </form>

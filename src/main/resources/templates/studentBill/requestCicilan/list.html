@@ -61,6 +61,7 @@
                                 <th>Nama</th>
                                 <th>Tagihan</th>
                                 <th>Cicilan</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -70,9 +71,9 @@
                                 <td th:text="${data.Nama}"></td>
                                 <td th:text="${data.Tagihan}"></td>
                                 <td th:text="${data.Cicilan}"></td>
-<!--                                <td th:if="${data.statusApprove.WAITING} == ${data.statusApprove} "><a href="#!" class="btn btn-primary btn-sm">WAITING</a></td>-->
-<!--                                <td th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}"><a href="#!" class="btn btn-danger btn-sm">REJECT</a></td>-->
-<!--                                <td th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"><a href="#!" class="btn btn-success btn-sm">APPROVED</a></td>-->
+                                <td th:if="${data.Status} == 'WAITING' "><a href="#!" class="btn btn-primary btn-sm">WAITING</a></td>
+                                <td th:if="${data.Status} == 'REJECTED'"><a href="#!" class="btn btn-danger btn-sm">REJECT</a></td>
+                                <td th:if="${data.Status} == 'APPROVED'"><a href="#!" class="btn btn-success btn-sm">APPROVED</a></td>
                                 <td>
                                     <a th:href="@{/studentBill/requestCicilan/approval(tagihan = ${data.Id})}" class="btn btn-info btn-sm">Cek</a>
 <!--                                    <a th:if="${data.statusApprove.WAITING} != ${data.statusApprove}" href="#!" class="text-green text-sm">Done</a>-->

@@ -404,6 +404,7 @@ public class StudentBillController {
         model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi());
         model.addAttribute("toTagihan", tagihanDao.totalTagihan());
         model.addAttribute("toDibayar", pembayaranDao.totalDibayar());
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         // list per prodi + date
         model.addAttribute("tanggal1", date1);
@@ -999,7 +1000,6 @@ public class StudentBillController {
         model.addAttribute("jumlahNilai", requestCicilanDao.sisaCicilan(tagihan.getId()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.CICILAN, page));
-        model.addAttribute("tahun", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         if (jumlahCicilan == 0){
             model.addAttribute("tanggal", LocalDate.now().plusMonths(1).withDayOfMonth(10));
         }else if (jumlahCicilan == 1){
@@ -1256,7 +1256,7 @@ public class StudentBillController {
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
-        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatus(tagihan1, StatusRecord.AKTIF));
+        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
 
     }
 
