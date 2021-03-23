@@ -2,9 +2,11 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class SettingController {
@@ -44,6 +49,18 @@ public class SettingController {
 
     @Autowired
     private DosenDao dosenDao;
+
+    @Autowired
+    private BeasiswaDao beasiswaDao;
+
+    @Autowired
+    private TagihanBeasiswaDao tagihanBeasiswaDao;
+
+    @Autowired
+    private JenisTagihanDao jenisTagihanDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
 //    Attribute
 
@@ -334,5 +351,80 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     @GetMapping("/setting/edomquestion/list")
     public void listEdom(Model model){
         model.addAttribute("listEdomQuestion", edomQuestionDao.findByStatusOrderByNomor(StatusRecord.AKTIF));
+    }
+
+    @GetMapping("/setting/beasiswa/list")
+    public void listBeasiswa(Model model){
+        model.addAttribute("beasiswa", beasiswaDao.findByStatus(StatusRecord.AKTIF));
+    }
+
+    @GetMapping("/setting/beasiswa/form")
+    public void formBeasiswa(Model model,@RequestParam(required = false) String id){
+        model.addAttribute("beasiswa", new Beasiswa());
+
+        if (id != null && !id.isEmpty()) {
+            Beasiswa Beasiswa = beasiswaDao.findById(id).get();
+            if (Beasiswa != null) {
+                model.addAttribute("beasiswa", Beasiswa);
+//                if (Beasiswa.getStatus() == null){
+//                    Beasiswa.setStatus(StatusRecord.NONAKTIF);
+//                }
+            }
+        }
+
+    }
+
+    @PostMapping("/setting/beasiswa/form")
+    public String prosesBeasiswa(@Valid Beasiswa beasiswa){
+        beasiswa.setStatus(StatusRecord.AKTIF);
+        beasiswaDao.save(beasiswa);
+        return "redirect:list";
+    }
+
+    @PostMapping("/setting/beasiswa/delete")
+    public String deleteBeasiswa(@RequestParam Beasiswa beasiswa){
+        beasiswa.setStatus(StatusRecord.HAPUS);
+        beasiswaDao.save(beasiswa);
+        return "redirect:list";
+    }
+
+    @GetMapping("/setting/beasiswa/tagihan")
+    public void tagihanList(Model model, @RequestParam Beasiswa id){
+        model.addAttribute("id", id.getId());
+        model.addAttribute("listTagiahanBeasiswa", tagihanBeasiswaDao.findByBeasiswaAndStatus(id, StatusRecord.AKTIF));
+        model.addAttribute("listJenisTagihan", jenisTagihanDao.findByStatusOrderByNama(StatusRecord.AKTIF));
+    }
+
+    @PostMapping("/setting/beasiswa/tagihan")
+    public String tagihanBeasiswaPost(@RequestParam String[] selected, @RequestParam String idBeasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Beasiswa beasiswa = beasiswaDao.findById(idBeasiswa).get();
+        for (String idJenis : selected){
+            JenisTagihan jenisTagihan = jenisTagihanDao.findById(idJenis).get();
+            TagihanBeasiswa tagihanBeasiswa = new TagihanBeasiswa();
+            tagihanBeasiswa.setBeasiswa(beasiswa);
+            tagihanBeasiswa.setJenisTagihan(jenisTagihan);
+            tagihanBeasiswa.setUserCreate(user.getUsername());
+            tagihanBeasiswa.setDateCreate(LocalDateTime.now());
+            tagihanBeasiswa.setStatus(StatusRecord.AKTIF);
+
+            tagihanBeasiswaDao.save(tagihanBeasiswa);
+        }
+        return "redirect:/setting/beasiswa/tagihan?id=" + idBeasiswa;
+    }
+
+    @PostMapping("/setting/beasiswa/deteletagihan")
+    public String tagihanBeasiswaHapus(@RequestParam TagihanBeasiswa tagihanBeasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        tagihanBeasiswa.setStatus(StatusRecord.HAPUS);
+        tagihanBeasiswa.setUserUpdate(user.getUsername());
+        tagihanBeasiswa.setDateUpdate(LocalDateTime.now());
+        tagihanBeasiswaDao.save(tagihanBeasiswa);
+        return "redirect:list";
+    }
+
+    @GetMapping("/setting/beasiswa/mahasiswa")
+    public void listMahasiswa(Model model,@RequestParam String id){
+        model.addAttribute("mahasiswa", beasiswaDao.listBeasiswaMahasiwa(id, StatusRecord.AKTIF));
     }
 }

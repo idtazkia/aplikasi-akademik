@@ -160,7 +160,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_FINANCE')">
                     <a class="nav-link" href="#navbar-setting" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-settings text-danger"></i>
                         <span class="nav-link-text">Setting</span>
@@ -169,6 +169,9 @@
                         <ul class="nav nav-sm flex-column">
                             <li sec:authorize="hasAuthority('VIEW_SUPERUSER')" class="nav-item">
                                 <a th:href="@{/setting/program/list}" class="nav-link">Program</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_FINANCE')">
+                                <a th:href="@{/setting/beasiswa/list}" class="nav-link">Beasiswa</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/setting/level/list}" class="nav-link">Level</a>

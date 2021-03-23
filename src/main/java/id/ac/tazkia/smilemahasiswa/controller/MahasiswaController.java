@@ -3,12 +3,14 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +33,9 @@ public class MahasiswaController {
 
     @Autowired
     private KodeposDao kodeposDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @Autowired
     private AgamaDao agamaDao;
@@ -75,6 +81,14 @@ public class MahasiswaController {
 
     @Autowired
     private PenghasilanDao penghasilanDao;
+
+    @Autowired
+    private MahasiswaBeasiswaDao mahasiswaBeasiswaDao;
+
+    @Autowired
+    private BeasiswaDao beasiswaDao;
+
+
 
 
     @ModelAttribute("penghasilan")
@@ -278,6 +292,8 @@ public class MahasiswaController {
             mahasiswaDto.setRfid(mahasiswa.getRfid());
         }
         model.addAttribute("mahasiswa", mahasiswaDto);
+        model.addAttribute("listbeasiswa", beasiswaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("beasiswa", mahasiswaBeasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
     }
 
     @PostMapping("/mahasiswa/form")
@@ -343,4 +359,36 @@ public class MahasiswaController {
         }
         return "redirect:list";
     }
+
+    @PostMapping("/mahasiswa/beasiswa")
+    public String prosesBeasiswa(Model model,@Valid MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication, @RequestParam Beasiswa beasiswa, @RequestParam Mahasiswa mahasiswa){
+        User user = currentUserService.currentUser(authentication);
+
+        List<MahasiswaBeasiswa> cek = mahasiswaBeasiswaDao.findByMahasiswaAndBeasiswaAndStatus(mahasiswa, beasiswa, StatusRecord.AKTIF);
+
+        if (cek.isEmpty()){
+            mahasiswaBeasiswa.setStatus(StatusRecord.AKTIF);
+            mahasiswaBeasiswa.setUserCreate(user.getUsername());
+            mahasiswaBeasiswa.setDateCreate(LocalDateTime.now());
+            mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
+        }else {
+            model.addAttribute("validasi", "Beasiswa " + beasiswa.getNamaBeasiswa() + " tersebut sudah ada !!");
+        }
+
+        return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswa.getId();
+    }
+
+    @PostMapping("/mahasiswa/beasiswadelete")
+    public String deleteBeasiswa(@RequestParam MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+
+        MahasiswaBeasiswa mahasiswaBeasiswa1 = mahasiswaBeasiswaDao.findById(mahasiswaBeasiswa.getId()).get();
+        System.out.println("Cek = " + mahasiswaBeasiswa1);
+        mahasiswaBeasiswa.setStatus(StatusRecord.HAPUS);
+        mahasiswaBeasiswa.setUserUpdate(user.getUsername());
+        mahasiswaBeasiswa.setDateUpdate(LocalDateTime.now());
+        mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
+        return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswaBeasiswa1.getMahasiswa().getId();
+    }
+
 }
