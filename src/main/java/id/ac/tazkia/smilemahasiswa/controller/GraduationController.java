@@ -42,6 +42,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,9 @@ public class GraduationController {
 
     @Autowired
     private DosenDao dosenDao;
+
+    @Autowired
+    private EnableFitureDao enableFitureDao;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -383,6 +388,10 @@ public class GraduationController {
     public String success(Model model, @RequestParam Note note){
         List<Seminar> seminar = seminarDao.findByNote(note);
         model.addAttribute("note", note);
+        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
+        if (enableFiture != null) {
+            model.addAttribute("sempro", enableFiture);
+        }
         if (!seminar.isEmpty()){
             return "redirect:seminar/waiting?id="+note.getId();
         }else {
@@ -598,12 +607,18 @@ public class GraduationController {
 
     @GetMapping("/graduation/sempro")
     public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note,@RequestParam(required = false)String sempro){
-        if (note.getStatus() == StatusApprove.APPROVED){
-            model.addAttribute("note", note);
-            return "graduation/sempro";
-        }else {
+        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
 
-            return "redirect:register";
+        if (enableFiture == null) {
+            return "redirect:success?note="+note.getId();
+        }else {
+            if (note.getStatus() == StatusApprove.APPROVED){
+                model.addAttribute("note", note);
+                return "graduation/sempro";
+            }else {
+
+                return "redirect:register";
+            }
         }
 
 
@@ -636,7 +651,8 @@ public class GraduationController {
     @GetMapping("/graduation/seminar/success")
     public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
         model.addAttribute("seminar", seminar);
-
+        String tanggalUjian = seminar.getTanggalUjian().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
+        model.addAttribute("tanggalUjian", tanggalUjian);
         if (seminar.getPublish() != null) {
 
             if (seminar.getPublish().equals("AKTIF")) {

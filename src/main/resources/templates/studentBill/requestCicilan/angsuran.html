@@ -160,7 +160,9 @@
                                                 <div class="form-group">
                                                     <label >Nilai </label>
                                                     <input type="text" name="nilaiCicilan" id="nilai" required class="form-control"
-                                                           placeholder="0.00" th:value="${jumlahNilai}">
+                                                           placeholder="0.00" th:if="${jumlahCicilan < 2}" th:value="${jumlahNilai}">
+                                                    <input type="text" name="nilaiCicilan" th:value="${jumlahNilai}" class="form-control"
+                                                           readonly th:if="${jumlahCicilan == 2}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label >Tanggal Jatuh Tempo </label>
@@ -176,6 +178,8 @@
                                                 <div th:if="${jumlahNilai == null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 0, 'POINT')}"></div>
                                                 <div th:if="${jumlahNilai != null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(jumlahNilai, 0, 'POINT', 0, 'POINT')}"></div>
                                                 <input type="hidden" id="nilai1" th:value="${jumlahNilai}">
+                                                <input type="hidden" id="nilai2" th:value="${bill.nilaiTagihan}">
+                                                <p style="color: red">Maksimal Cicilan 3X</p>
                                             </div>
                                             <div class="col-md-6 col-xs-12">
                                                 <div class="messageError"></div>
@@ -288,7 +292,7 @@
                                         <th>Tanggal Jatuh Tempo</th>
                                         <th>Nilai Cicilan</th>
                                         <th>Status</th>
-                                        <th>Cicilan</th>
+                                        <th th:if="${message != null}">Cicilan</th>
                                         <th th:if="${message == null}">Action</th>
                                     </tr>
                                     <tr th:each="data, row : ${request}">
@@ -392,8 +396,16 @@
         function sums(){
             varn = parseInt($("#nilai").val());
             var1 = parseInt($("#nilai1").val());
-            console.log(varn, var1);
+            var2 = parseInt($("#nilai2").val());
+            console.log(varn, var1, var2);
             if(varn > var1){
+                $('#submit').hide();
+                $('.messageError').html('Jumlah melebihi sisa tagihan!');
+            }else{
+                $('#submit').show();
+            }
+
+            if(varn > var2){
                 $('#submit').hide();
                 $('.messageError').html('Jumlah melebihi sisa tagihan!');
             }else{

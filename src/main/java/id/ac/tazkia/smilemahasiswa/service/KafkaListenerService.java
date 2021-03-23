@@ -127,7 +127,7 @@ public class KafkaListenerService {
                 findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(),
                         tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
                         mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihan(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan);
+        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
         tagihan.setNomor(tagihanResponse.getNomorTagihan());
         tagihan.setKeterangan(tagihanResponse.getKeterangan());
 

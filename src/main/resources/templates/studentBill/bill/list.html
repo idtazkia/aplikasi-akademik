@@ -52,6 +52,7 @@
                                     <th>Jenis Tagihan</th>
                                     <th>Total</th>
                                     <th>Dibayar</th>
+                                    <th>Status</th>
                                     <th> </th>
                                 </tr>
                             </thead>
@@ -62,7 +63,12 @@
                                     <td th:text="${data.getNamaTagihan()}">Ini SKS</td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getnilai_tagihan(), 0, 'POINT', 2, 'COMMA')}"></td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getDibayar(), 0, 'POINT', 2, 'COMMA')}"></td>
-<!--                                    <td><a class="btn btn-primary pull-right" th:href="@{/studentBill/requestPenangguhan/date(id = ${data.getId()})}">Request Penangguhan</a></td>-->
+                                    <td>
+                                        <div th:if="${data.Status} == 'AKTIF'" th:text="${data.Status}" class="btn btn-info btn-sm"></div>
+                                        <div th:if="${data.Status} == 'LUNAS'" th:text="${data.Status}" class="btn btn-success btn-sm"></div>
+                                        <div th:if="${data.Status} == 'DICICIL'" th:text="${data.Status}" class="btn btn-warning btn-sm"></div>
+                                    </td>
+                                    <!-- <td><a class="btn btn-primary pull-right" th:href="@{/studentBill/requestPenangguhan/date(id = ${data.getId()})}">Request Penangguhan</a></td>-->
                                     <td><a class="btn btn-primary" th:href="@{/studentBill/payment/form(tagihan = ${data.getId()})}">Cek</a></td>
                                 </tr>
                                 <tr>
