@@ -74,7 +74,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Request Penangguhan Tagihan Mahasiswa</h2>
+                                        <h2>Pengajuan Pelunasan</h2>
                                         <p></p>
                                     </div>
                                 </div>
@@ -114,9 +114,9 @@
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
-                                <td> Due date </td>
+                                <td> Create date </td>
                                 <td class="text-center"> : </td>
-                                <td th:text="${bill.tanggalPenangguhan}"></td>
+                                <td th:text="${bill.tanggalPembuatan}"></td>
                             </tr>
                         </table>
                     </div>

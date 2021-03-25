@@ -22,8 +22,8 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>Bill List</h2>
-                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                        <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )' + ' - ' + mahasiswa.idProdi.namaProdi}"></p>
+<!--                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>-->
+<!--                                        <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )' + ' - ' + mahasiswa.idProdi.namaProdi}"></p>-->
                                     </div>
                                 </div>
                             </div>
@@ -67,6 +67,7 @@
                                         <div th:if="${data.Status} == 'AKTIF'" th:text="${data.Status}" class="btn btn-info btn-sm"></div>
                                         <div th:if="${data.Status} == 'LUNAS'" th:text="${data.Status}" class="btn btn-success btn-sm"></div>
                                         <div th:if="${data.Status} == 'DICICIL'" th:text="${data.Status}" class="btn btn-warning btn-sm"></div>
+                                        <div th:if="${data.Status} == 'DITANGGUHKAN'" th:text="${data.Status}" class="btn nk-deep-orange btn-sm" style="color: white;"></div>
                                     </td>
                                     <!-- <td><a class="btn btn-primary pull-right" th:href="@{/studentBill/requestPenangguhan/date(id = ${data.getId()})}">Request Penangguhan</a></td>-->
                                     <td><a class="btn btn-primary" th:href="@{/studentBill/payment/form(tagihan = ${data.getId()})}">Cek</a></td>

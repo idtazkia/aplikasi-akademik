@@ -193,6 +193,7 @@
                                                             <td >Keterangan</td>
                                                             <td class="text-right">Tagihan</td>
                                                             <td class="text-right">Dibayar</td>
+                                                            <td> Status</td>
                                                             <td></td>
                                                         </tr>
                                                         </thead>
@@ -202,6 +203,27 @@
                                                             <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                            <td>
+                                                                <a  class="btn btn-primary btn-sm" href="#!"
+                                                                    th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
+                                                                    th:text="${data.statusTagihan}">
+                                                                </a>
+
+                                                                <a type="button" class="btn btn-success btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
+
+                                                                <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
+
+                                                                <a type="button" class="btn btn-info btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
+                                                            </td>
                                                             <td class="text-center">
                                                                 <a th:href="@{/studentBill/billAdmin/detail(tagihan = ${data.id})}" data-toggle="tooltip" title="Detail" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
                                                                 <a th:href="@{/studentBill/billAdmin/edit(id = ${data.id})}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
@@ -291,14 +313,40 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Tagihan Per Prodi -->
+
                                     <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
                                         <div class="card-body">
                                             <form method="get">
                                                 <div class="row">
-                                                    <div th:if="${tanggal1 != null}" class="col-md-3">
-                                                        <div class="btn btn-info"><a class="text-white" th:href="@{/studentBill/billAdmin/list}"><i class="fas fa-sync-alt"></i> Refresh</a></div>
+                                                    <div class="col-md-10">
+                                                        <div class="form-group">
+                                                            <select name="tahunAkademik" required class="form-control" id="select2-tahun">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${tahunAkademik}"
+                                                                        th:selected="(${data} == *{selectTahun})"
+                                                                        th:text="${data.namaTahunAkademik}"
+                                                                        th:value="${data.id}">STEI TAZKIA</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <div  class="col-md-3">
+                                                    <div class="col-md-2" th:if="${tanggal1 == null}">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary" type="submit"><i class="fas fa-eye"></i> &nbsp;Show</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <form method="get" th:if="${tahun == null}">
+                                                <div class="row">
+                                                    <input type="hidden" name="tahunAkademik" th:value="${tahunPilihan.id}">
+                                                    <div th:if="${tanggal1 != null}" class="col-md-3">
+                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
+                                                    </div>
+                                                    <div th:if="${tanggal1 == null}" class="col-md-3">
 
                                                     </div>
                                                     <div class="col-md-3">
@@ -317,7 +365,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <div class="input-group mb-3">
+                                                        <div class="input-group ">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
                                                             </div>
@@ -326,7 +374,7 @@
 
                                                 </div>
                                             </form>
-                                            <div class="card shadow">
+                                            <div class="card shadow" th:if="${tahun == null}">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div th:if="${tanggal1 == null && tanggal2 == null}">
@@ -344,7 +392,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <tr th:each="data, row:${listProdi}">
+                                                                    <tr id="table-prodi" th:each="data, row:${listProdi}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
                                                                         <td class="text-center">
                                                                             <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id})}"
@@ -394,15 +442,42 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Tagihan per Angkatan -->
+
                                     <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
                                         <div class="card-body">
                                             <form method="get">
                                                 <div class="row">
-                                                    <div th:if="${tanggal3 != null}" class="col-md-1">
-                                                        <div class="btn btn-info"><a class="text-white" th:href="@{/studentBill/billAdmin/list}"><i class="fas fa-sync-alt"></i> Refresh</a></div>
+                                                    <div class="col-md-10">
+                                                        <div class="form-group">
+                                                            <select name="tahunAkademik" required class="form-control">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${tahunAkademik}"
+                                                                        th:selected="(${data} == *{selectTahun})"
+                                                                        th:text="${data.namaTahunAkademik}"
+                                                                        th:value="${data.id}">STEI TAZKIA</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <div th:if="${tanggal3 == null}" class="col-md-1"></div>
-                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-2" th:if="${tanggal3 == null}">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary" type="submit"><i class="fas fa-eye"></i> &nbsp;Show</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <form method="get" th:if="${tahun == null}">
+                                                <div class="row">
+                                                    <input type="hidden" name="tahunAkademik" th:value="${tahunPilihan.id}">
+                                                    <div th:if="${tanggal3 != null}" class="col-md-3">
+                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
+                                                    </div>
+                                                    <div th:if="${tanggal3 == null}" class="col-md-3">
+
+                                                    </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
                                                             <input type="date" name="date3" class="form-control" placeholder="Tanggal Mulai" th:value="${tanggal3}">
@@ -428,7 +503,7 @@
 
                                                 </div>
                                             </form>
-                                            <div class="card shadow">
+                                            <div class="card shadow" th:if="${tahun == null}">
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div th:if="${tanggal3 == null && tanggal4 == null}">
@@ -523,15 +598,6 @@
         allowClear: true
     });
 
-    (function($){
-        $('#select2-tahun').select2();
-
-        $('#select2-tahun').on('select2:selecting', function(e){
-            console.log('Selecting: ' , e.params.args.data.id);
-            $('#isiTahun').val(e.params.args.data.id);
-        });
-
-    })(jQuery);
 
 
 

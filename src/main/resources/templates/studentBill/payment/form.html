@@ -222,6 +222,7 @@
                                             <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
                                             <text>
                                                 <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/detail(tagihan = ${tagihan.id})}">Detail Pembayaran</a>
+                                                <a th:if="${cekJumlahCicilan != 1}" class="btn btn-info" th:href="@{/studentBill/requestCicilan/pelunasan(tagihan=${tagihan.id})}">Ajukan Pelunasan</a>
                                             </text>
                                         </div>
                                     </div>

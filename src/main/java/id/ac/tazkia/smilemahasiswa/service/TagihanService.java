@@ -98,7 +98,7 @@ public class TagihanService {
                 .nomorTagihan(tagihan.getNomor())
                 .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
                 .debitur(tagihan.getMahasiswa().getNim())
-                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeProdi())
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .build();
         kafkaSender.requsetHapusTagihan(hapusTagihan);
     }
@@ -179,6 +179,7 @@ public class TagihanService {
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setEnable(true);
+                enableFiture.setKeterangan("-");
                 enableFitureDao.save(enableFiture);
             }
         }

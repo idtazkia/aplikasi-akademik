@@ -106,7 +106,7 @@
                                 <th>Nilai</th>
                                 <th>Pembayaran</th>
                                 <th>Jatuh Tempo</th>
-                                <th></th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbdy>
@@ -115,8 +115,14 @@
                                     <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                     <td th:text="${data.nilaiTagihan}"></td>
                                     <td th:text="${data.akumulasiPembayaran}"></td>
-                                    <td th:text="${data.tanggalJatuhTempo}"></td>
-                                    <td th:text="${data.statusTagihan}"></td>
+                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} != ${data.statusTagihan}" th:text="${data.tanggalJatuhTempo}"></td>
+                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}" th:text="${data.tanggalPenangguhan}"></td>
+                                    <td>
+                                        <div th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-info btn-sm"></div>
+                                        <div th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-success btn-sm"></div>
+                                        <div th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-warning btn-sm"></div>
+                                        <div th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn nk-deep-orange btn-sm" style="color: white;"></div>
+                                    </td>
                                 </tr>
                             </tbdy>
                         </table>

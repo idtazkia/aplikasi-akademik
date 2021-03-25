@@ -9,6 +9,7 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
@@ -36,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.ws.RequestWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -399,23 +401,27 @@ public class StudentBillController {
             model.addAttribute("message","message");
         }
 
+        if (tahunAkademik == null){
+            model.addAttribute("tahun", "tahun");
+        }else {
+            // list per prodi
+            model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
+            model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
+            model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+            model.addAttribute("tahunPilihan", tahunAkademik);
 
-        // list per prodi
-        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi());
-        model.addAttribute("toTagihan", tagihanDao.totalTagihan());
-        model.addAttribute("toDibayar", pembayaranDao.totalDibayar());
-        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
+            // list per prodi + date
+            model.addAttribute("tanggal1", date1);
+            model.addAttribute("tanggal2", date2);
+            model.addAttribute("listProdiDate", tagihanDao.listTagihanPerProdiAndDate(date1, date2, tahunAkademik));
 
-        // list per prodi + date
-        model.addAttribute("tanggal1", date1);
-        model.addAttribute("tanggal2", date2);
-        model.addAttribute("listProdiDate", tagihanDao.listTagihanPerProdiAndDate(date1, date2));
+            // list per angkatan + date
+            model.addAttribute("tanggal3", date3);
+            model.addAttribute("tanggal4", date4);
+            model.addAttribute("listAngkatanDate", tagihanDao.listTagihanPerAngkatanDate(date3, date4, tahunAkademik));
+            model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
+        }
 
-        // list per angkatan + date
-        model.addAttribute("tanggal3", date3);
-        model.addAttribute("tanggal4", date4);
-        model.addAttribute("listAngkatanDate", tagihanDao.listTagihanPerAngkatanDate(date3, date4));
-        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan());
 
     }
 
@@ -423,6 +429,20 @@ public class StudentBillController {
     public void formDate(Model model, @RequestParam(required = false) String id){
 
         model.addAttribute("tagihan", tagihanDao.findById(id).get());
+
+    }
+
+    @GetMapping("/api/list")
+    @ResponseBody
+    public List<DaftarTagihanPerProdiDto> daftarTagihan(Model model, @RequestParam(required = false) String id){
+
+        TahunAkademik tahun = tahunAkademikDao.findById(id).get();
+
+//        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahun));
+//        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahun));
+//        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahun));
+
+        return tagihanDao.listTagihanPerProdi(tahun);
 
     }
 
@@ -940,6 +960,8 @@ public class StudentBillController {
                                      @RequestParam(required = false) Tagihan tagihan,
                                      Authentication authentication){
 
+        String kode = tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode();
+        log.info("kode tagihan : {}", kode);
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         requestPenangguhan.setUserApprove(karyawan);
@@ -950,6 +972,7 @@ public class StudentBillController {
 
         tagihan.setKaryawan(karyawan);
         tagihan.setTanggalPenangguhan(requestPenangguhan.getTanggalPenangguhan());
+        tagihan.setStatusTagihan(StatusTagihan.DITANGGUHKAN);
         tagihanDao.save(tagihan);
         return "redirect:../requestPenangguhan/list";
     }
@@ -1041,6 +1064,47 @@ public class StudentBillController {
         model.addAttribute("bill", tagihan);
         model.addAttribute("pembayaran", pembayaranDao.findByTagihanAndStatus(tagihan, StatusRecord.AKTIF, page));
 
+    }
+
+    @GetMapping("/studentBill/requestCicilan/pelunasan")
+    public void pelunasanCicilan(Model model, @RequestParam(required = false) Tagihan tagihan,
+                                 Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mhs.getIdProdi());
+
+        model.addAttribute("mahasiswa", mhs);
+        model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
+        model.addAttribute("sisaCicilan", requestCicilanDao.pengajuanPelunasan(tagihan.getId()));
+        model.addAttribute("tagihan", tagihan);
+
+    }
+
+    @PostMapping("/studentBill/cicilan/pelunasan")
+    public String pelunasan(@Valid RequestCicilan requestCicilan,
+                          @RequestParam(required = false) Tagihan tagihan,
+                          @RequestParam(required = false) BigDecimal nilaiCicilan){
+
+        tagihanService.hapusTagihan(tagihan);
+        System.out.println("jumlah cicilan : " + nilaiCicilan);
+        List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+        for (RequestCicilan sisaCicilan : cekSisaCicilan){
+            sisaCicilan.setStatus(StatusRecord.HAPUS);
+            sisaCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+            sisaCicilan.setStatusApprove(StatusApprove.HAPUS);
+            requestCicilanDao.save(sisaCicilan);
+        }
+
+        requestCicilan.setTagihan(tagihan);
+        requestCicilan.setTanggalJatuhTempo(LocalDate.now().plusMonths(1).withDayOfMonth(10));
+        requestCicilan.setStatusApprove(StatusApprove.APPROVED);
+        requestCicilan.setStatus(StatusRecord.AKTIF);
+        requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+        requestCicilanDao.save(requestCicilan);
+        tagihanService.requestCreateCicilan(requestCicilan);
+
+        return "redirect:../bill/list";
     }
 
 
@@ -1251,6 +1315,8 @@ public class StudentBillController {
         if (tagihan1.getStatusTagihan() == StatusTagihan.LUNAS){
             model.addAttribute("lunas", "lunas");
         }
+
+        model.addAttribute("cekJumlahCicilan", requestCicilanDao.countByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS)));
         model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan1));
         model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan));
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));

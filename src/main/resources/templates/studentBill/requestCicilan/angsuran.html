@@ -112,9 +112,9 @@
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
-                                <td> Tanggal Jatuh Tempo </td>
+                                <td> Tanggal Penagihan </td>
                                 <td class="text-center"> : </td>
-                                <td th:text="${bill.tanggalJatuhTempo}"></td>
+                                <td th:text="${bill.tanggalPembuatan}"></td>
                             </tr>
                         </table>
                     </div>
@@ -401,16 +401,13 @@
             if(varn > var1){
                 $('#submit').hide();
                 $('.messageError').html('Jumlah melebihi sisa tagihan!');
-            }else{
-                $('#submit').show();
-            }
-
-            if(varn > var2){
+            }else if(varn > var2){
                 $('#submit').hide();
                 $('.messageError').html('Jumlah melebihi sisa tagihan!');
             }else{
                 $('#submit').show();
             }
+
         }
 
     });

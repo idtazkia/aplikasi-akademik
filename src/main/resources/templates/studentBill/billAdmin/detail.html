@@ -88,11 +88,6 @@
                                                   <td> : </td>
                                                   <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
                                               </tr>
-                                              <tr>
-                                                  <td>Keterangan</td>
-                                                  <td> : </td>
-                                                  <td th:text="${tagihan.keterangan}"></td>
-                                              </tr>
                                               <tr th:if="${cekCicilan != null}">
                                                   <td>Status Cicilan</td>
                                                   <td> : </td>
