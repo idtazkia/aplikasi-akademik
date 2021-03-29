@@ -152,6 +152,11 @@
             Lanjut ke sempro !
             </a>
         </div>
+        <div class="col-md-6 col-lg-offset-3" th:if="${sempro != null}" style="padding: 10px;">
+            <a th:href="@{/graduation/seminar/formulir (id = ${note.id})}" class="btn" style="background-color: #d9534f;">
+                Download Formulir
+            </a>
+        </div>
         <div class="col-md-6 col-lg-offset-3" th:if="${sempro == null}">
             <a th:href="@{/studentBill/bill/list}" class="btn" style="background-color: #4DA8A8;">
             Lihat Tagihan

@@ -33,6 +33,7 @@ public class Seminar {
     private String fileBimbingan;
 
     private String fileSkripsi;
+    private String fileFormulir;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -1,5 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -34,6 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
@@ -41,9 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,9 +68,6 @@ public class GraduationController {
 
     @Autowired
     private DosenDao dosenDao;
-
-    @Autowired
-    private EnableFitureDao enableFitureDao;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -97,8 +101,14 @@ public class GraduationController {
     @Autowired
     private KaryawanDao karyawanDao;
 
+    @Autowired
+    private EnableFitureDao enableFitureDao;
+
     @Value("classpath:sample/example.xlsx")
     private Resource example;
+
+    @Value("classpath:sample/sempro.odt")
+    private Resource formulirSempro1;
 
 //    Attribute
 
@@ -607,18 +617,12 @@ public class GraduationController {
 
     @GetMapping("/graduation/sempro")
     public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note,@RequestParam(required = false)String sempro){
-        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
-
-        if (enableFiture == null) {
-            return "redirect:success?note="+note.getId();
+        if (note.getStatus() == StatusApprove.APPROVED){
+            model.addAttribute("note", note);
+            return "graduation/sempro";
         }else {
-            if (note.getStatus() == StatusApprove.APPROVED){
-                model.addAttribute("note", note);
-                return "graduation/sempro";
-            }else {
 
-                return "redirect:register";
-            }
+            return "redirect:register";
         }
 
 
@@ -651,8 +655,7 @@ public class GraduationController {
     @GetMapping("/graduation/seminar/success")
     public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
         model.addAttribute("seminar", seminar);
-        String tanggalUjian = seminar.getTanggalUjian().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
-        model.addAttribute("tanggalUjian", tanggalUjian);
+
         if (seminar.getPublish() != null) {
 
             if (seminar.getPublish().equals("AKTIF")) {
@@ -673,7 +676,7 @@ public class GraduationController {
     @PostMapping("/graduation/sempro")
     public String prosesSeminar(@Valid Seminar seminar,
                                 BindingResult error, MultipartFile kartu,MultipartFile skripsi,MultipartFile pengesahan,
-                                Authentication currentUser) throws Exception {
+                                Authentication currentUser,MultipartFile formulir) throws Exception {
         User user = currentUserService.currentUser(currentUser);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -705,6 +708,33 @@ public class GraduationController {
 
         }else {
             seminar.setFileBimbingan(seminar.getFileBimbingan());
+        }
+
+        if (!formulir.isEmpty() || formulir != null) {
+            String namaAsli = formulir.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            formulir.transferTo(tujuan);
+
+
+            seminar.setFileFormulir(idFile + "." + extension);
+
+        }else {
+            seminar.setFileFormulir(seminar.getFileBimbingan());
         }
 
         if (!pengesahan.isEmpty() || pengesahan != null) {
@@ -838,6 +868,34 @@ public class GraduationController {
             } else if (seminar.getFilePengesahan().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (seminar.getFilePengesahan().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{seminar}/formulir/")
+    public ResponseEntity<byte[]> formulir(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileFormulir();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileFormulir().toLowerCase().endsWith("jpeg") || seminar.getFileFormulir().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileFormulir().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileFormulir().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -1087,9 +1145,9 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/pembimbing")
     public String savePembimbing(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal pa,
-                            @RequestParam(required = false) BigDecimal pb,@RequestParam(required = false) BigDecimal pc,
-                            @RequestParam(required = false) BigDecimal pd,@RequestParam(required = false) BigDecimal pe,
-                            @RequestParam(required = false) BigDecimal pf,@RequestParam(required = false) String komentarPembimbing){
+                                 @RequestParam(required = false) BigDecimal pb,@RequestParam(required = false) BigDecimal pc,
+                                 @RequestParam(required = false) BigDecimal pd,@RequestParam(required = false) BigDecimal pe,
+                                 @RequestParam(required = false) BigDecimal pf,@RequestParam(required = false) String komentarPembimbing){
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
             seminar.setPa(pa);
             seminar.setPb(pb);
@@ -1163,6 +1221,44 @@ public class GraduationController {
         return "redirect:sempro?tahunAkademik="+seminar.getTahunAkademik().getId();
 
     }
+
+    @GetMapping("/graduation/seminar/formulir")
+    public void formulirSempro(@RequestParam(name = "id") Note note,
+                               HttpServletResponse response){
+        try {
+            // 0. Setup converter
+            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+
+            // 1. Load template dari file
+            InputStream in = formulirSempro1.getInputStream();
+
+            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
+            IXDocReport report = XDocReportRegistry.getRegistry().
+                    loadReport(in, TemplateEngineKind.Freemarker);
+
+            // 3. Context object, untuk mengisi variabel
+            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(note.getMahasiswa().getId());
+            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(note.getMahasiswa().getId());
+
+            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+
+            IContext ctx = report.createContext();
+            ctx.put("nama", note.getMahasiswa().getNama());
+            ctx.put("nim", note.getMahasiswa().getNim());
+            ctx.put("prodi",note.getMahasiswa().getIdProdi().getNamaProdi());
+            ctx.put("ipk", ipk);
+            ctx.put("sks", totalSKS);
+            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+
+            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Sempro-"+ note.getMahasiswa().getIdProdi().getKodeProdi() + "-" + note.getMahasiswa().getNim() +".pdf");
+            OutputStream out = response.getOutputStream();
+            report.convert(ctx, options, out);
+            out.flush();
+        } catch (Exception err){
+//            logger.error(err.getMessage(), err);
+        }
+    }
+
 
 
 
