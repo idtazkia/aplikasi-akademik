@@ -2523,14 +2523,29 @@ public class StudiesActivityController {
         }
 
         if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
-            predicateRow.createCell(2).setCellValue("Very Good");
-            predicateRow.getCell(2).setCellStyle(styleData);
+            BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
+
+            if (validate != null){
+                predicateRow.createCell(2).setCellValue("Good");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }else {
+                predicateRow.createCell(2).setCellValue("Very Good");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }
 
         }
 
         if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
-            predicateRow.createCell(2).setCellValue("Excellent");
-            predicateRow.getCell(2).setCellStyle(styleData);
+            BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
+
+            if (validate != null){
+                predicateRow.createCell(2).setCellValue("Good");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }else {
+                predicateRow.createCell(2).setCellValue("Excellent");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }
+
 
         }
 
@@ -3540,14 +3555,27 @@ public class StudiesActivityController {
         }
 
         if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
-            predicateRow.createCell(2).setCellValue("Pujian ");
-            predicateRow.getCell(2).setCellStyle(styleData);
+            BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
+            if (validate != null){
+                predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }else {
+                predicateRow.createCell(2).setCellValue("Pujian ");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }
 
         }
 
         if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
-            predicateRow.createCell(2).setCellValue("Pujian Tertinggi");
-            predicateRow.getCell(2).setCellStyle(styleData);
+            BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
+            if (validate != null){
+                predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }else {
+                predicateRow.createCell(2).setCellValue("Pujian Tertinggi");
+                predicateRow.getCell(2).setCellStyle(styleData);
+            }
+
 
         }
 
