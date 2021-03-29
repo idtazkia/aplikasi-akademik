@@ -79,8 +79,13 @@
                         </form>
 
                         <div class="card shadow" th:if="${tahun != null}">
-                            <div class="card-header border-0">
+                            <div class="card-header border-0" th:if="${validation == null}">
                                 <a th:href="@{/studiesActivity/krs/form(nim = ${nim}, tahunAkademik= ${tahun.id})}" class="btn btn-dark btn-sm"><i class="fas fa-plus-circle"></i> Add</a>
+                            </div>
+                            <div class="alert alert-danger" th:if="${validation != null}">
+                                <strong>
+                                    <center><p th:text="${validation}">Silahkan selesaikan dulu pembayaran, atau hubungi bagian keuangan</p></center>
+                                </strong>
                             </div>
                             <div class="card-header border-0">
                                 <center>
