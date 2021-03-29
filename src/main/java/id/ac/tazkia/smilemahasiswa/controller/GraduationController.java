@@ -616,9 +616,11 @@ public class GraduationController {
 //    Seminar Proposal
 
     @GetMapping("/graduation/sempro")
-    public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note,@RequestParam(required = false)String sempro){
+    public String sempro(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
         if (note.getStatus() == StatusApprove.APPROVED){
             model.addAttribute("note", note);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            model.addAttribute("waiting", waiting);
             return "graduation/sempro";
         }else {
 
