@@ -28,7 +28,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "inner join request_cicilan as b on a.id=b.id_tagihan where a.status='AKTIF' and b.status='AKTIF' and a.id=?1", nativeQuery = true)
     BigDecimal sisaCicilan(String idTagihan);
 
-    @Query(value = "select a.id as id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status from tagihan as a inner join mahasiswa as c on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id left join request_cicilan as b on a.id=b.id_tagihan where b.status='AKTIF' group by a.id, c.nama, b.status_approve", nativeQuery = true)
+    @Query(value = "select tag.id as id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status from tagihan as tag inner join mahasiswa as c on tag.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on tag.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id left join request_cicilan as b on tag.id=b.id_tagihan where b.status='AKTIF' group by tag.id, c.nama, b.status_approve", nativeQuery = true)
     Page<TampilanCicilanDto> listRequestCicilan(Pageable page);
 
     @Query(value = "select * from request_cicilan where id_tagihan = ?1 and status_cicilan = 'CICILAN' and status_approve='APPROVED' order by tanggal_jatuh_tempo limit 1", nativeQuery = true)
