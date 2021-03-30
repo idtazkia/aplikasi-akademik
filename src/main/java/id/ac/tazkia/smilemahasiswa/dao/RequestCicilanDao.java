@@ -1,8 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.dto.payment.TampilanCicilanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.bouncycastle.ocsp.Req;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCicilan, String> {
@@ -30,6 +27,9 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
 
     @Query(value = "select tag.id as id, c.nama as nama, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status from tagihan as tag inner join mahasiswa as c on tag.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on tag.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id left join request_cicilan as b on tag.id=b.id_tagihan where b.status='AKTIF' group by tag.id, c.nama, b.status_approve", nativeQuery = true)
     Page<Object[]> listRequestCicilan(Pageable page);
+
+    @Query(value = "select t.id,m.nama,jt.nama as tagihan, count(rc.id),rc.status_approve from tagihan as t inner join mahasiswa as m on t.id_mahasiswa = m.id inner join nilai_jenis_tagihan as nt on nt.id = t.id_nilai_jenis_tagihan inner join jenis_tagihan as jt on nt.id_jenis_tagihan = jt.id left join request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' group by t.id,m.nama,rc.status_approve", nativeQuery = true)
+    Page<Object[]> listRequestCicilan1(Pageable page);
 
     @Query(value = "select * from request_cicilan where id_tagihan = ?1 and status_cicilan = 'CICILAN' and status_approve='APPROVED' order by tanggal_jatuh_tempo limit 1", nativeQuery = true)
     RequestCicilan cariCicilanSelanjutnya(Tagihan tagihan);

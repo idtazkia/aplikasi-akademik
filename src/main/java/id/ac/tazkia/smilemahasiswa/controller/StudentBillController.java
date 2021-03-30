@@ -1005,7 +1005,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/requestCicilan/list")
     public void listCicilan(Model model, @PageableDefault(size = 10) Pageable page){
 
-        model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan(page));
+        model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan1(page));
 
     }
 
