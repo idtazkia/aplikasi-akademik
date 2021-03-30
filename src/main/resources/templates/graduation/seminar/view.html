@@ -80,14 +80,17 @@
                     <div class="card-body">
                         <div class="nav-wrapper">
                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item" th:if="${seminar.fileFormulir != null}">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/formulir/(seminar=${seminar.id})}" role="tab" target="_blank">Formulir Sempro</a>
+                                </li>
                                 <li class="nav-item">
-                                    <a class="nav-link mb-sm-3 mb-md-0 active"  th:href="@{/upload/{seminar}/pengesahan/(seminar=${seminar.id})}" role="tab" target="_blank">Lembar Pengesahan</a>
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"  th:href="@{/upload/{seminar}/pengesahan/(seminar=${seminar.id})}" role="tab" target="_blank">Lembar Persetujuan Pembimbing</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/bimbingan/(seminar=${seminar.id})}" role="tab" target="_blank">Kartu Bimbingan</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/skripsi/(seminar=${seminar.id})}" role="tab" target="_blank">Skirpsi Bab 1 - 3</a>
+                                    <a class="nav-link mb-sm-3 mb-md-0 active"   th:href="@{/upload/{seminar}/skripsi/(seminar=${seminar.id})}" role="tab" target="_blank">Skripsi Bab 1 - 3</a>
                                 </li>
                             </ul>
                         </div>

@@ -171,20 +171,20 @@ public class StudyActivityController {
                 model.addAttribute("validasi", ta);
             }
 
-//            Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
-//            Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
-//
-//            if (semester == null) {
-//                semester = 0;
-//            }
-//
-//            if (semesterSekarang == null) {
-//                semesterSekarang = 0;
-//            }
-//
-//            Integer semesterTotal = semester + semesterSekarang;
-//
-//            model.addAttribute("semester", semesterTotal);
+            Integer semester = krsDetailDao.cariSemester(mahasiswa.getId(), ta.getId());
+            Integer semesterSekarang = krsDetailDao.cariSemesterSekarang(mahasiswa.getId(), ta.getId());
+
+            if (semester == null) {
+                semester = 0;
+            }
+
+            if (semesterSekarang == null) {
+                semesterSekarang = 0;
+            }
+
+            Integer semesterTotal = semester + semesterSekarang;
+
+            model.addAttribute("semester", semesterTotal);
             model.addAttribute("sks", jumlahSks);
             model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 

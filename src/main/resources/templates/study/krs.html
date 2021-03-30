@@ -22,7 +22,8 @@
                                     </div>
                                     <div class="breadcomb-ctn">
                                         <h2>KRS List</h2>
-                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik}">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <p th:text="${tahunAkademikProdi.tahunAkademik.namaTahunAkademik + ' - ( Semester ' + semester +' ).'
+                                        }">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                                         <p th:text="${mahasiswa.nama + ' ( ' + mahasiswa.nim + ' )' + ' - ' + mahasiswa.idProdi.namaProdi}"></p>
                                         <p th:text="${'Kelas : ' + kelas.kelas.namaKelas}"></p>
                                     </div>

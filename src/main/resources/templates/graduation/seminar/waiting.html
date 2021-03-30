@@ -230,6 +230,7 @@
                                     </div>
                                 </div>
                                 <a th:if="${waiting == null}" class="btn btn-primary" th:href="@{/graduation/sempro (id = ${note.id})}"><i class="fa fa-repeat" aria-hidden="true"></i><b> Re-Upload</b></a>
+                                <a th:if="${waiting != null}" class="btn btn-primary" th:href="@{/graduation/sempro (id = ${note.id})}"><i class="fa fa-repeat" aria-hidden="true"></i><b> Revisi</b></a>
                             </div>
                         </div>
                     </div>

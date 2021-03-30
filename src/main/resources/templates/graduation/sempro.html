@@ -58,7 +58,7 @@
                                 <img src="https://nikahinaja.id/image/undraw_Creation_process_ukbh.png" alt="">
                             </div>
                             <div class="col-md-6 col-xs-12">
-                                <form th:action="@{/graduation/sempro}" method="post" enctype="multipart/form-data">
+                                <form th:action="@{/graduation/sempro}" th:object="${waiting}" method="post" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label>NIM</label>
                                         <br>
@@ -78,20 +78,25 @@
                                     </div>
                                     <input type="hidden" name="note" th:value="${note.id}">
                                     <div class="form-group">
-                                        <label>Lembar Pengesahan</label>
-                                        <input type="file" accept="application/pdf" name="pengesahan" class="form-control">
+                                        <label>Formulir Sempro</label>
+                                        <input type="file" required accept="application/pdf" name="formulir" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Lembar Persetujuan Pembimbing</label>
+                                        <input type="file" required accept="application/pdf" name="pengesahan" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Kartu Bimbingan</label>
-                                        <input type="file" accept="application/pdf" name="kartu" class="form-control">
+                                        <input type="file" required accept="application/pdf" name="kartu" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Skripsi Bab 1-3</label>
-                                        <input type="file" accept="application/pdf" name="skripsi" class="form-control">
+                                        <input type="file" required accept="application/pdf" name="skripsi" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
+                                    <input type="hidden" name="id" th:field="*{id}">
                                 </form>
                             </div>
                         </div>
