@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1460,5 +1462,56 @@ public class StudentBillController {
         enableFiture.setKeterangan("-");
         enableFitureDao.save(enableFiture);
     }
+
+//    @Scheduled(cron = "0 21 11 29 * *", zone = "Asia/Jakarta")
+//    public void akumulasiTagihan(){
+//
+//        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().withDayOfMonth(10));
+//        for (RequestCicilan cariCicilanHariIni : requestCicilan){
+//            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
+//            requestCicilanDao.save(cariCicilanHariIni);
+//            log.info("Update status cicilan : {}", cariCicilanHariIni);
+//
+//            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
+//            if (cicilanSelanjutnya != null){
+//                tagihanService.hapusTagihan(cariCicilanHariIni.getTagihan());
+//
+//                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+//                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
+//                requestCicilanDao.save(cicilanSelanjutnya);
+//
+//                tagihanService.requestCreateCicilan(cicilanSelanjutnya);
+//
+//            }else{
+//                log.info("Tidak ada cicilan selanjutnya!");
+//                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+//                requestCicilanDao.save(cariCicilanHariIni);
+////                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
+////                userBlock.setActive(false);
+////                userDao.save(userBlock);
+////                log.info("block smile untuk user {}", userBlock);
+//            }
+//
+//        }
+//
+//    }
+//
+//    @Scheduled(cron = "0 59 20 * * *", zone = "Asia/Jakarta")
+//    public void lewatPenangguhan(){
+//
+//        List<RequestPenangguhan> requestPenangguhan = requestPenangguhanDao.findByStatusAndStatusApproveAndTanggalPenangguhan(StatusRecord.AKTIF, StatusApprove.APPROVED, LocalDate.now());
+//        for (RequestPenangguhan cariPenangguhan : requestPenangguhan){
+//
+//            log.info("tes lewat tanggal penangguhan :) {}", cariPenangguhan.getId());
+//
+////            User userBlock = userDao.findById(cariPenangguhan.getTagihan().getMahasiswa().getUser().getId()).get();
+////            userBlock.setActive(false);
+////            userDao.save(userBlock);
+////            log.info("Block Smile untuk user {}", userBlock);
+//
+//        }
+//
+//    }
+
 
 }

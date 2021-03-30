@@ -136,6 +136,10 @@
                                         th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
                                         th:text="${data.statusCicilan}">
                                     </a>
+                                    <a  class="btn btn-danger btn-sm"
+                                        th:if="${data.statusCicilan.LEWAT_JATUH_TEMPO} == ${data.statusCicilan}"
+                                        th:text="${data.statusCicilan}">
+                                    </a>
                                 </td>
                                 <td th:if="${message == null}">
                                     <button type="button" class="btn btn-danger " data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
