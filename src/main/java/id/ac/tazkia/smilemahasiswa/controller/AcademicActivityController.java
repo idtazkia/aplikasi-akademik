@@ -1161,10 +1161,15 @@ public class  AcademicActivityController {
     public String inputForm(@RequestParam(required = false) String nim, @RequestParam(required = false) String ta,
                             @RequestParam(required = false) Jadwal jadwal, @RequestParam(required = false) String matakuliahLama,
                             @RequestParam(required = false) String grade, RedirectAttributes attributes){
-
+        int jumlahSks;
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
-        Long jumlahSks = krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId());
+        if (krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()) == null){
+            jumlahSks = 0;
+        }else {
+            jumlahSks =krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()).intValue();
+
+        }
         Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
