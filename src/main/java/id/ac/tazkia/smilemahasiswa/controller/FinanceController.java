@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class FinanceController {
@@ -30,6 +31,8 @@ public class FinanceController {
     private TahunProdiDao tahunAkademikProdiDao;
     @Autowired
     private EnableFitureDao enableFitureDao;
+    @Autowired
+    private KrsDetailDao krsDetailDao;
 
 
     @ModelAttribute("prodi")
@@ -88,9 +91,26 @@ public class FinanceController {
                 krs.setMahasiswa(mahasiswa);
                 krs.setTahunAkademikProdi(tahunAkademikProdi);
                 krsDao.save(krs);
+
+                List<KrsDetail> cek = krsDetailDao.findByMahasiswaAndTahunAkademikAndStatusAndKrsNull(mahasiswa, tahunAkademik, StatusRecord.AKTIF);
+                if (!cek.isEmpty() || cek != null){
+                    for (KrsDetail krsDetail : cek){
+                        krsDetail.setKrs(krs);
+                        krsDetailDao.save(krsDetail);
+                    }
+                }
+
             }else {
                 cariKrs.setStatus(StatusRecord.AKTIF);
                 krsDao.save(cariKrs);
+
+                List<KrsDetail> cek = krsDetailDao.findByMahasiswaAndTahunAkademikAndStatusAndKrsNull(mahasiswa, tahunAkademik, StatusRecord.AKTIF);
+                if (!cek.isEmpty() || cek != null){
+                    for (KrsDetail krsDetail : cek){
+                        krsDetail.setKrs(cariKrs);
+                        krsDetailDao.save(krsDetail);
+                    }
+                }
             }
         }
         return "redirect:krs?mahasiswa=AKTIF" + "&tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim;
