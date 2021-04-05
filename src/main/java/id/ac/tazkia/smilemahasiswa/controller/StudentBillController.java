@@ -390,7 +390,7 @@ public class StudentBillController {
             model.addAttribute("mhs", mhs);
             if (tahunAkademik != null && mhs != null) {
                 model.addAttribute("sisaTagihan", tagihanDao.sisaTagihanQuery(tahunAkademik.getId(),mhs.getId()));
-                model.addAttribute("daftarBiaya", tagihanDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mhs, tahunAkademik, page));
+                model.addAttribute("daftarBiaya", tagihanDao.findByStatusNotInAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), mhs, tahunAkademik, page));
                 model.addAttribute("daftarPembayaran", pembayaranDao.daftarPembayaran(tahunAkademik.getId(), mhs.getId()));
                 model.addAttribute("status", krsDao.findByTahunAkademikAndMahasiswaAndStatus(tahunAkademik, mhs, StatusRecord.AKTIF));
                 model.addAttribute("mahasiswa", mhs);
@@ -1005,7 +1005,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/requestCicilan/list")
     public void listCicilan(Model model, @PageableDefault(size = 10) Pageable page){
 
-        model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan(page));
+        model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan1(page));
 
     }
 

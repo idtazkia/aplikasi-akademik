@@ -17,7 +17,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     Page<Tagihan> findByStatusNotInAndMahasiswaContainingIgnoreCaseOrderByMahasiswa(List<StatusRecord> asList, String search, Pageable page);
 
-    Page<Tagihan> findByStatusAndMahasiswaAndTahunAkademik(StatusRecord statusRecord, Mahasiswa mhs, TahunAkademik tahunAkademik, Pageable page);
+    Page<Tagihan> findByStatusNotInAndMahasiswaAndTahunAkademik(List<StatusRecord> asList, Mahasiswa mhs, TahunAkademik tahunAkademik, Pageable page);
     
     Page<Tagihan> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
 
