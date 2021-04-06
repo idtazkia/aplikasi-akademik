@@ -136,36 +136,17 @@
                                                 <tr>
                                                     <td>Tanggal Jatuh Tempo</td>
                                                     <td> : </td>
-                                                    <td th:text="${tagihan.tanggalPenangguhan}"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Keterangan Tagihan</td>
-                                                    <td> : </td>
-                                                    <td th:text="${tagihan.keterangan}"></td>
-                                                </tr>
-                                                <tr th:if="${penangguhan} != null">
-                                                    <td>Status Penangguhan</td>
-                                                    <td> : </td>
-                                                    <td th:text="${penangguhan.statusApprove}"></td>
-                                                </tr>
-                                                <tr th:if="${penangguhan} != null">
-                                                    <div th:if="${penangguhan.statusApprove.APPROVED} == ${penangguhan.statusApprove}">
-                                                        <td>Keterangan</td>
-                                                        <td> : </td>
-                                                        <td th:text="${penangguhan.keterangan}"></td>
-                                                    </div>
-                                                </tr>
-                                                <tr th:if="${penangguhan} != null">
-                                                    <div th:if="${penangguhan.statusApprove.REJECTED} == ${penangguhan.statusApprove}">
-                                                        <td>Keterangan</td>
-                                                        <td> : </td>
-                                                        <td th:text="${penangguhan.keteranganReject}">HAHAHA</td>
-                                                    </div>
+                                                    <td th:text="${#temporals.format(tagihan.tanggalPenangguhan, 'dd - MMM - yyy')}"></td>
                                                 </tr>
                                                 <tr th:if="${cicilan} != null">
                                                     <td>Status Cicilan</td>
                                                     <td> : </td>
                                                     <td th:text="${cicilan.statusApprove}"></td>
+                                                </tr>
+                                                <tr th:if="${tagihan.status.NONAKTIF} == ${tagihan.status}">
+                                                    <td>Status Tagihan</td>
+                                                    <td> : </td>
+                                                    <td th:text="${tagihan.status}"></td>
                                                 </tr>
                                             </table>
                                         </address>
@@ -204,14 +185,16 @@
                                 </div>
                                 <br>
 
-                                <div class="row no-print" th:if="${lunas == null}">
+                                <div class="row no-print" th:if="${lunas} == null">
                                     <div th:if="${cekCicilan == null}">
-                                        <div class="col-xs-12" th:if="${tagihan} != null">
-                                            <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
-                                            <text th:if="${penangguhan} == null">
-                                                <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>
-                                                <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Request Cicilan</a>
-                                            </text>
+                                        <div th:if="${tagihan.status.AKTIF} == ${tagihan.status}">
+                                            <div class="col-xs-12" th:if="${tagihan} != null">
+                                                <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
+                                                <text th:if="${penangguhan} == null">
+                                                    <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Request Penangguhan</a>
+                                                    <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Request Cicilan</a>
+                                                </text>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
