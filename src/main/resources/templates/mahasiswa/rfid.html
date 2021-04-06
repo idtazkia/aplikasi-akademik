@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>RFID</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">RFID </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/mahasiswa/rfid}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <center><label><b>NIM</b></label></center>
+                                        <input type="text" th:value="${nim}" class="form-control" name="nim">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <center><label><b>RFID</b></label></center>
+                                        <input type="text" class="form-control" th:value="${rfid}" name="rfid">
+                                    </div>
+                                </div>
+                            </div>
+                            <center>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Aktifasi</button>
+                                    </div>
+                                </div>
+                            </center>
+                        </form>
+                    </div>
+                    <hr>
+                    <div class="card-body" th:if="${mahasiswa != null}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                                                    <span class="alert-text"><strong>Aktifasi RFID Berhasil</strong></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span>NIM</span>
+                                                <br>
+                                                <b th:text="${mahasiswa.nim}"></b>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span>Nama</span>
+                                                <br>
+                                                <b th:text="${mahasiswa.nama}"></b>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span>Prodi</span>
+                                                <br>
+                                                <b th:text="${mahasiswa.idProdi.namaProdi}"></b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
