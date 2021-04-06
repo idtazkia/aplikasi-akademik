@@ -116,7 +116,7 @@
                             <tr>
                                 <td> Create date </td>
                                 <td class="text-center"> : </td>
-                                <td th:text="${bill.tanggalPembuatan}"></td>
+                                <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
                             </tr>
                         </table>
                     </div>
@@ -209,7 +209,7 @@
                                                     <td>
                                                         <form method="post" th:action="@{/studentBill/dokumen/deletep(document = ${data.id})}">
                                                             <div class="center ">
-                                                                <button type="submit" class="btn btn-danger ">
+                                                                <button type="submit" class="btn btn-danger">
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
                                                             </div>
@@ -236,7 +236,7 @@
                                     <div class="form-group">
                                         <label>Due Date</label>
                                         <input type="date" name="tanggalPenangguhan" class="form-control"
-                                               placeholder="yyyy-MM-dd" th:max="${tahun.tanggalMulaiUas}" th:field="*{tanggalPenangguhan}">
+                                               placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">
                                     </div>
                                     <input type="hidden" name="id" th:field="*{id}">
                                     <div style="margin-top: 45px;" class="form-group">

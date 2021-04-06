@@ -114,7 +114,7 @@
                             <tr>
                                 <td> Tanggal Penagihan </td>
                                 <td class="text-center"> : </td>
-                                <td th:text="${bill.tanggalPembuatan}"></td>
+                                <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
                             </tr>
                         </table>
                     </div>

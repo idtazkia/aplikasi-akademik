@@ -670,7 +670,7 @@ public class StudentBillController {
                     tagihan.setIdTagihanSebelumnya(tagihan1.getId());
                     tagihanDao.save(tagihan);
 
-                    tagihan1.setStatusTagihan(StatusTagihan.DITANGGUHKAN);
+                    tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
                     tagihan1.setStatus(StatusRecord.NONAKTIF);
                     tagihanDao.save(tagihan1);
 
@@ -863,7 +863,7 @@ public class StudentBillController {
         Tagihan tagihan = tagihanDao.findById(id).get();
         model.addAttribute("penangguhan", new RequestPenangguhan());
         model.addAttribute("bill", tagihan);
-        model.addAttribute("tahun", tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("tahun", tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, tagihan.getMahasiswa().getIdProdi()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PENANGGUHAN));
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PENANGGUHAN, page));
     }

@@ -1,5 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
 public enum StatusTagihan {
-    AKTIF,LUNAS,DITANGGUHKAN,PREVIEW,DICICIL, HAPUS
+    AKTIF,LUNAS,DITANGGUHKAN,PREVIEW,DICICIL, HAPUS, NONAKTIF
 }

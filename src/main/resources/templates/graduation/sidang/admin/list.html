@@ -99,7 +99,7 @@
                                         <th scope="col">Nama</th>
                                         <th scope="col">Pembimbing</th>
                                         <th scope="col">Status</th>
-                                        <th></th>
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -110,8 +110,11 @@
                                         <td>Muhammmad Rafizki</td>
                                         <td>Status</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-outline-primary btn-sm" data-toggle="modal">
-                                                <i class="fas fa-list"></i> Detail Seminar
+                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" data-target="#modal-setuju" data-toggle="modal">
+                                                <i class="fas fa-check"></i> Setujui
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" data-target="#modal-tolak" data-toggle="modal">
+                                                <i class="fas fa-times"></i> Tolak
                                             </button>
 
 
@@ -158,3 +161,49 @@
 </div>
 </body>
 </html>
+
+    <div class="modal fade" id="modal-setuju" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <textarea name="keteranganApprove" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" type="submit">Setujui</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-tolak" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <textarea name="keteranganApprove" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-danger" type="submit">Tolak</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
