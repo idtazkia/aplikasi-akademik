@@ -72,5 +72,8 @@ public class SidangController {
     @GetMapping("/graduation/sidang/admin/list")
     public void listApproval(){}
 
+    @GetMapping("/graduation/sidang/admin/approval")
+    public void approval(){}
+
 
 }
