@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class MahasiswaBeasiswa {
+public class MahasiswaBeasiswa extends Auditable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -28,16 +28,6 @@ public class MahasiswaBeasiswa {
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private StatusRecord status = StatusRecord.AKTIF;
-
-    @Column(nullable = false)
-    private String userCreate;
-
-    private LocalDateTime dateCreate;
-
-    @Column(nullable = false)
-    private String userUpdate;
-
-    private LocalDateTime dateUpdate;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

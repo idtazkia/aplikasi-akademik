@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class TagihanBeasiswa {
+public class TagihanBeasiswa extends Auditable {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -28,13 +28,4 @@ public class TagihanBeasiswa {
     @NotNull
     private StatusRecord status = StatusRecord.AKTIF;
 
-    @Column(nullable = false)
-    private String userCreate;
-
-    @Column(nullable = false)
-    private String userUpdate;
-
-    private LocalDateTime dateCreate;
-
-    private LocalDateTime dateUpdate;
 }

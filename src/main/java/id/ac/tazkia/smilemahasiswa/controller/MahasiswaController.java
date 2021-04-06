@@ -362,14 +362,10 @@ public class MahasiswaController {
 
     @PostMapping("/mahasiswa/beasiswa")
     public String prosesBeasiswa(Model model,@Valid MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication, @RequestParam Beasiswa beasiswa, @RequestParam Mahasiswa mahasiswa){
-        User user = currentUserService.currentUser(authentication);
-
         List<MahasiswaBeasiswa> cek = mahasiswaBeasiswaDao.findByMahasiswaAndBeasiswaAndStatus(mahasiswa, beasiswa, StatusRecord.AKTIF);
 
         if (cek.isEmpty()){
             mahasiswaBeasiswa.setStatus(StatusRecord.AKTIF);
-            mahasiswaBeasiswa.setUserCreate(user.getUsername());
-            mahasiswaBeasiswa.setDateCreate(LocalDateTime.now());
             mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
         }else {
             model.addAttribute("validasi", "Beasiswa " + beasiswa.getNamaBeasiswa() + " tersebut sudah ada !!");
@@ -380,13 +376,9 @@ public class MahasiswaController {
 
     @PostMapping("/mahasiswa/beasiswadelete")
     public String deleteBeasiswa(@RequestParam MahasiswaBeasiswa mahasiswaBeasiswa, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
-
         MahasiswaBeasiswa mahasiswaBeasiswa1 = mahasiswaBeasiswaDao.findById(mahasiswaBeasiswa.getId()).get();
         System.out.println("Cek = " + mahasiswaBeasiswa1);
         mahasiswaBeasiswa.setStatus(StatusRecord.HAPUS);
-        mahasiswaBeasiswa.setUserUpdate(user.getUsername());
-        mahasiswaBeasiswa.setDateUpdate(LocalDateTime.now());
         mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
         return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswaBeasiswa1.getMahasiswa().getId();
     }

@@ -397,15 +397,12 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
 
     @PostMapping("/setting/beasiswa/tagihan")
     public String tagihanBeasiswaPost(@RequestParam String[] selected, @RequestParam String idBeasiswa, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
         Beasiswa beasiswa = beasiswaDao.findById(idBeasiswa).get();
         for (String idJenis : selected){
             JenisTagihan jenisTagihan = jenisTagihanDao.findById(idJenis).get();
             TagihanBeasiswa tagihanBeasiswa = new TagihanBeasiswa();
             tagihanBeasiswa.setBeasiswa(beasiswa);
             tagihanBeasiswa.setJenisTagihan(jenisTagihan);
-            tagihanBeasiswa.setUserCreate(user.getUsername());
-            tagihanBeasiswa.setDateCreate(LocalDateTime.now());
             tagihanBeasiswa.setStatus(StatusRecord.AKTIF);
 
             tagihanBeasiswaDao.save(tagihanBeasiswa);
@@ -415,10 +412,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
 
     @PostMapping("/setting/beasiswa/deteletagihan")
     public String tagihanBeasiswaHapus(@RequestParam TagihanBeasiswa tagihanBeasiswa, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
         tagihanBeasiswa.setStatus(StatusRecord.HAPUS);
-        tagihanBeasiswa.setUserUpdate(user.getUsername());
-        tagihanBeasiswa.setDateUpdate(LocalDateTime.now());
         tagihanBeasiswaDao.save(tagihanBeasiswa);
         return "redirect:list";
     }
