@@ -107,7 +107,7 @@ public class GraduationController {
     @Value("classpath:sample/example.xlsx")
     private Resource example;
 
-    @Value("classpath:sample/sempro.odt")
+    @Value("classpath:sample/sempro1.odt")
     private Resource formulirSempro1;
 
 //    Attribute
