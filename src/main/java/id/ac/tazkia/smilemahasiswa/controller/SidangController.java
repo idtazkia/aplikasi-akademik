@@ -67,6 +67,9 @@ public class SidangController {
     @GetMapping("/graduation/sidang/mahasiswa/pendaftaran")
     public void pendaftaranSidang(){}
 
+    @GetMapping("/graduation/sidang/mahasiswa/list")
+    public void listSidang(){}
+
 //    Admin
 
     @GetMapping("/graduation/sidang/admin/list")
@@ -74,6 +77,18 @@ public class SidangController {
 
     @GetMapping("/graduation/sidang/admin/approval")
     public void approval(){}
+
+    @GetMapping("/graduation/sidang/admin/view")
+    public void viewSidang(){}
+
+    @GetMapping("/graduation/sidang/admin/penjadwalan")
+    public void penjadwalan(){}
+
+//    Dosen
+
+    @GetMapping("/graduation/sidang/dosen/list")
+    public void listDosen(){}
+
 
 
 }
