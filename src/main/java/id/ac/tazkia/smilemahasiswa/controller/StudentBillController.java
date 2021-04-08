@@ -800,10 +800,10 @@ public class StudentBillController {
 
         }else{
             attributes.addFlashAttribute("gagal", "Data sudah ada!!");
-            return "redirect:form?tahunAkademik="+tahunAkademik.getId()+"&nim="+mhs.getId();
+            return "redirect:form?tahunAkademik="+tahunAkademik.getId()+"&nim="+mhs.getNim();
         }
 
-        return "redirect:list?tahunAkademik="+tahunAkademik.getId()+"&nim="+mhs.getId();
+        return "redirect:list?tahunAkademik="+tahunAkademik.getId()+"&nim="+mhs.getNim();
     }
 
     @PostMapping("/studentBill/billAdmin/edit")
