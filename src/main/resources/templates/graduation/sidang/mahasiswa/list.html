@@ -137,7 +137,7 @@
         .btn-style{
             width:150px;
             height:35px;
-            background: linear-gradient(to left top, #f25e35 50%, #cf4f2b 50%);
+            background: linear-gradient(to left top, #eb9942 50%, #ffa742 50%);
             border-style: none;
             color:#fff;
             font-size: 15px;
@@ -241,6 +241,116 @@
             box-shadow: 0px 3px 5px rgba(0,0,0,.4);
         }
         .btn-style:hover span{
+            animation-play-state: paused;
+        }
+
+        .btn-style1{
+            width:150px;
+            height:35px;
+            background: linear-gradient(to left top, #ff5542 50%, #de4837 50%);
+            border-style: none;
+            color:#fff;
+            font-size: 15px;
+            letter-spacing: 3px;
+            font-family: 'Lato';
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            padding: 0px;
+            overflow: hidden;
+            transition: all .5s;
+            box-shadow: 0px 1px 2px rgba(0,0,0,.2);
+        }
+        .btn-style1 span{
+            position: absolute;
+            display: block;
+        }
+        .btn-style1 span:nth-child(1){
+            height: 3px;
+            width:200px;
+            top:0px;
+            left:-200px;
+            background: linear-gradient(to right, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span1 2s linear infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes span1{
+            0%{
+                left:-200px
+            }
+            100%{
+                left:200px;
+            }
+        }
+        .btn-style1 span:nth-child(2){
+            height: 70px;
+            width: 3px;
+            top:-70px;
+            right:0px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #f6e58d);
+            border-bottom-left-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span2 2s linear infinite;
+            animation-delay: 2s;
+        }
+        @keyframes span2{
+            0%{
+                top:-70px;
+            }
+            100%{
+                top:70px;
+            }
+        }
+        .btn-style1 span:nth-child(3){
+            height:3px;
+            width:200px;
+            right:-200px;
+            bottom: 0px;
+            background: linear-gradient(to left, rgba(0,0,0,0), #f6e58d);
+            border-top-left-radius: 1px;
+            border-bottom-left-radius: 1px;
+            animation: span3 2s linear infinite;
+            animation-delay: 3s;
+        }
+        @keyframes span3{
+            0%{
+                right:-200px;
+            }
+            100%{
+                right: 200px;
+            }
+        }
+
+        .btn-style1 span:nth-child(4){
+            height:70px;
+            width:3px;
+            bottom:-70px;
+            left:0px;
+            background: linear-gradient(to top, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-top-left-radius: 1px;
+            animation: span4 2s linear infinite;
+            animation-delay: 4s;
+        }
+        @keyframes span4{
+            0%{
+                bottom: -70px;
+            }
+            100%{
+                bottom:70px;
+            }
+        }
+
+        .btn-style1:hover{
+            transition: all .5s;
+            transform: rotate(-3deg) scale(1.1);
+            box-shadow: 0px 3px 5px rgba(0,0,0,.4);
+        }
+        .btn-style1:hover span{
             animation-play-state: paused;
         }
 
@@ -386,6 +496,7 @@
                 transform:translateY(0);
             }
         }
+
     </style>
 </head>
 <body>
@@ -402,8 +513,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Sidang</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <h2>Tugas Akhir</h2>
                                     </div>
                                 </div>
                             </div>
@@ -433,9 +543,9 @@
                                         <div class="col-md-12 col-xs-12 card-profile" style="background-image: url('https://images.wallpaperscraft.com/image/forest_pine_sun_202936_1280x720.jpg'); background-size: cover;"></div>
                                         <img th:src="${#authentication.principal.picture}" class="img-profile" alt="">
                                         <div class="card-body">
-                                            <b class="name-profile">Nama User</b>
+                                            <b class="name-profile" th:text="${mahasiswa.nama}">Nama User</b>
                                             <br>
-                                            <b class="nim-profile">11404344</b>
+                                            <b class="nim-profile" th:text="${mahasiswa.nim}">11404344</b>
                                         </div>
                                     </div>
                                 </div>
@@ -445,7 +555,7 @@
                                     <div class="row">
                                         <div class="col-md-12 card" style="text-align: center; background-color: #0c85d0;">
                                             <p style="font-size: 20px; color: white;">"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya..." (Q.S Al-Baqarah 2:286)</p>
-                                            <a href="#" class="btn-y btn-white btn-animation-1">Revisi</a>
+                                            <a th:href="@{/graduation/sidang/mahasiswa/revisi (id = ${waiting.id})}" class="btn-y btn-white btn-animation-1">Revisi</a>
                                         </div>
                                     </div>
                                 </div>
@@ -454,15 +564,45 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div style="overflow-y: scroll; height: 420px;">
-                            <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;">
+                            <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;" th:each="data : ${list}">
                                 <div class="col-md-12 card" style="margin-bottom: 5px;">
-                                    <b><h4>Sidang Skripsi</h4></b>
-                                    <p style="color: #a8a8a8;"></p>
+                                    <b><h4>Tugas Akhir</h4></b>
+                                    <p style="color: #a8a8a8;" th:text="${data.judulTugasAkhir}"></p>
                                     <div style="width: 30px; height: 5px; background-color: #0c85d0; border-radius: 10px;"></div>
                                     <br>
-                                    <div class="wrapper">
+                                    <div class="wrapper" th:if="${data.akademik.WAITING == data.akademik}">
                                         <button class="btn-style">
-                                            Waiting
+                                            Menunggu
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.WAITING == data.statusSidang}">
+                                        <button class="btn-style">
+                                            Menunggu
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.REJECTED == data.statusSidang}">
+                                        <button class="btn-style1">
+                                            Ditolak
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.REJECTED == data.akademik}">
+                                        <button class="btn-style1">
+                                            Ditolak
                                             <span></span>
                                             <span></span>
                                             <span></span>

@@ -85,7 +85,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" th:if="${selectedTahun != null}">
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">List</h3>
@@ -97,18 +97,19 @@
                                         <th scope="col">#</th>
                                         <th scope="col">NIM</th>
                                         <th scope="col">Nama</th>
-                                        <th scope="col">Pembimbing</th>
                                         <th scope="col">Status</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
+                                    <tr th:each="data,row : ${listSidang}">
                                         <td>1</td>
-                                        <td>12121</td>
-                                        <td>Muhammmad Rafizki</td>
-                                        <td>Muhammmad Rafizki</td>
-                                        <td>Status</td>
+                                        <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
+                                        <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-outline-success btn-sm" data-target="#modal-setuju" data-toggle="modal">
                                                 <i class="fas fa-check"></i> Setujui
@@ -116,8 +117,15 @@
                                             <button type="button" class="btn btn-primary btn-outline-danger btn-sm" data-target="#modal-tolak" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
-
-
+                                            <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat File</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft Sidang</a>
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form Pendaftaran</a>
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ijazah/(sidang=${data.id})}">Ijazah</a>
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/ktp/(sidang=${data.id})}">Ktp</a>
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/bimbingan/(sidang=${data.id})}">Kartu Bimbingan</a>
+                                                <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
+                                            </div>
                                         </td>
                                     </tr>
                                     </tbody>

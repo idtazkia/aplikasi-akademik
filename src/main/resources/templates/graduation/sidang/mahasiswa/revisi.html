@@ -114,11 +114,12 @@
                         <div class="bsc-tbl-st">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form th:action="@{/graduation/sidang/mahasiswa/pendaftaran}" method="post" enctype="multipart/form-data" >
+                                    <form th:action="@{/graduation/sidang/mahasiswa/pendaftaran}" method="post" enctype="multipart/form-data" th:object="${sidang}">
                                         <div class="form-group">
                                             <label>Judul Tugas Akhir</label>
-                                            <input type="text" required name="judulTugasAkhir" class="form-control">
+                                            <input type="text" th:field="*{judulTugasAkhir}" required name="judulTugasAkhir" class="form-control">
                                         </div>
+                                        <input type="hidden" th:field="*{id}">
                                         <div class="form-group">
                                             <label>Upload Draft Sidang</label>
                                             <input type="file" required name="draft" class="form-control">
@@ -147,7 +148,7 @@
                                         <div class="form-group">
                                             <button class="btn btn-success">Upload</button>
                                         </div>
-                                        <input type="hidden" name="seminar" th:value="${seminar.id}">
+                                        <input type="hidden" name="seminar" th:field="*{seminar}">
                                     </form>
                                 </div>
                             </div>
