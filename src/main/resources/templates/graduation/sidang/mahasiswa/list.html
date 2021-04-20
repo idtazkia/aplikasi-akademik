@@ -555,7 +555,8 @@
                                     <div class="row">
                                         <div class="col-md-12 card" style="text-align: center; background-color: #0c85d0;">
                                             <p style="font-size: 20px; color: white;">"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya..." (Q.S Al-Baqarah 2:286)</p>
-                                            <a th:href="@{/graduation/sidang/mahasiswa/revisi (id = ${waiting.id})}" class="btn-y btn-white btn-animation-1">Revisi</a>
+                                            <a th:if="${waiting != null}" th:href="@{/graduation/sidang/mahasiswa/revisi (id = ${waiting.id})}" class="btn-y btn-white btn-animation-1">Revisi</a>
+                                            <a th:if="${waiting == null}" th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" class="btn-y btn-white btn-animation-1">Upload Ulang</a>
                                         </div>
                                     </div>
                                 </div>
@@ -566,8 +567,8 @@
                         <div style="overflow-y: scroll; height: 420px;">
                             <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;" th:each="data : ${list}">
                                 <div class="col-md-12 card" style="margin-bottom: 5px;">
-                                    <b><h4>Tugas Akhir</h4></b>
-                                    <p style="color: #a8a8a8;" th:text="${data.judulTugasAkhir}"></p>
+                                    <b><h5 th:text="${data.judulTugasAkhir}">Tugas Akhir</h5></b>
+                                    <p style="color: #a8a8a8;" th:text="${data.komentarAkademik}"></p>
                                     <div style="width: 30px; height: 5px; background-color: #0c85d0; border-radius: 10px;"></div>
                                     <br>
                                     <div class="wrapper" th:if="${data.akademik.WAITING == data.akademik}">
