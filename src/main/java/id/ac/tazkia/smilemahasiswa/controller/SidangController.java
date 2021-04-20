@@ -1,10 +1,18 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import fr.opensagres.xdocreport.converter.ConverterTypeTo;
+import fr.opensagres.xdocreport.converter.Options;
+import fr.opensagres.xdocreport.core.document.DocumentKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,8 +24,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -42,6 +53,9 @@ public class SidangController {
 
     @Autowired
     private DosenDao dosenDao;
+
+    @Value("classpath:sample/filesidang.odt")
+    private Resource file;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -506,5 +520,26 @@ public class SidangController {
 
     }
 
+    @GetMapping("/graduation/sidang/download")
+    public void nilaiSidang(@RequestParam(name = "id")String nim, HttpServletResponse response){
+        try {
+            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+            InputStream in = file.getInputStream();
 
+            IXDocReport report = XDocReportRegistry.getRegistry().
+                    loadReport(in, TemplateEngineKind.Freemarker);
+
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            IContext ctx = report.createContext();
+            ctx.put("nama", mahasiswa.getNama());
+
+            response.setHeader("Content-Disposition", "attachment;filename=Surat-Keterangan.pdf");
+            OutputStream out = response.getOutputStream();
+            report.convert(ctx, options, out);
+            out.flush();
+
+        }catch (Exception err){
+
+        }
+    }
 }
