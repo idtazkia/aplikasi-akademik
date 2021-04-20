@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,9 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -54,17 +58,14 @@ public class SidangController {
     @Autowired
     private DosenDao dosenDao;
 
-    @Value("classpath:sample/filesidang.odt")
-    private Resource file;
-
     @Autowired
     private CurrentUserService currentUserService;
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
 
-   @Autowired
-   private SidangDao sidangDao;
+    @Autowired
+    private SidangDao sidangDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -73,7 +74,13 @@ public class SidangController {
     private ProdiDao prodiDao;
 
     @Autowired
-    private SeminarDao seminarDao;
+    private KrsDetailDao krsDetailDao;
+
+    @Value("classpath:sample/filesidang.odt")
+    private Resource fileNilai;
+
+    @Value("classpath:sample/skripsi.odt")
+    private Resource formulirSkripsi;
 
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
@@ -95,6 +102,70 @@ public class SidangController {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
     }
 
+    @GetMapping("/api/sidang")
+    @ResponseBody
+    public Object[] validasiSidang(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
+        System.out.println(tanggal.getDayOfWeek().getValue());
+        if (tanggal.getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            System.out.println(hari.getNamaHari());
+            System.out.println(ta.getId());
+            System.out.println(jamMulai);
+            System.out.println(jamSelesai);
+            System.out.println(ruangan.getNamaRuangan());
+            return sidangDao.validasiJadwalSidang(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
+        }else {
+            Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            System.out.println(hari.getNamaHari());
+            System.out.println(tahunAkademik.getId());
+            System.out.println(jamMulai);
+            System.out.println(jamSelesai);
+            System.out.println(ruangan.getNamaRuangan());
+            return sidangDao.validasiJadwalSidang(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
+
+        }
+    }
+
+    @GetMapping("/graduation/sidang/formulir")
+    public void formulirSempro(@RequestParam(name = "id") Seminar seminar,
+                               HttpServletResponse response){
+        try {
+            // 0. Setup converter
+            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+
+            // 1. Load template dari file
+            InputStream in = formulirSkripsi.getInputStream();
+
+            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
+            IXDocReport report = XDocReportRegistry.getRegistry().
+                    loadReport(in, TemplateEngineKind.Freemarker);
+
+            // 3. Context object, untuk mengisi variabel
+            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(seminar.getNote().getMahasiswa().getId());
+            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(seminar.getNote().getMahasiswa().getId());
+
+            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+
+            IContext ctx = report.createContext();
+            ctx.put("nama", seminar.getNote().getMahasiswa().getNama());
+            ctx.put("nim", seminar.getNote().getMahasiswa().getNim());
+            ctx.put("prodi",seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi());
+            ctx.put("ipk", ipk);
+            ctx.put("sks", totalSKS);
+            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+
+            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf");
+            OutputStream out = response.getOutputStream();
+            report.convert(ctx, options, out);
+            out.flush();
+        } catch (Exception err){
+//            logger.error(err.getMessage(), err);
+        }
+    }
 
 //    Mahasiswa
 
@@ -302,15 +373,31 @@ public class SidangController {
             sidang.setFileSidang(sidang.getFileBimbingan());
         }
         sidang.setTanggalInput(LocalDate.now());
-        sidang.setStatus(StatusRecord.AKTIF);
         sidang.setStatusSidang(StatusApprove.WAITING);
         sidang.setAkademik(StatusApprove.WAITING);
         sidang.setPublish(StatusRecord.NONAKTIF);
         sidang.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        mahasiswa.setJudul(sidang.getJudulTugasAkhir());
+        mahasiswa.setTitle(sidang.getJudulInggris());
+        mahasiswaDao.save(mahasiswa);
         sidangDao.save(sidang);
 
         return "redirect:list?id="+sidang.getSeminar().getId();
 
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/success")
+    public void successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
+        model.addAttribute("sidang", sidang);
+
+//        if (seminar.getPublish() != null) {
+//
+//            if (seminar.getPublish().equals("AKTIF")) {
+//                return "redirect:nilai?id="+seminar.getId();
+//            }
+//        }
+//
+//        return "graduation/seminar/success";
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/list")
@@ -320,16 +407,18 @@ public class SidangController {
         model.addAttribute("mahasiswa", mahasiswa);
         model.addAttribute("seminar", seminar);
         if (seminar.getStatusSempro().equals(StatusApprove.APPROVED)  && seminar.getPublish().equals("AKTIF") && seminar.getNilai().compareTo(new BigDecimal(70)) >= 0) {
-            Sidang sidang = sidangDao.findBySeminarAndStatusAndStatusSidangAndAkademik(seminar,StatusRecord.AKTIF,StatusApprove.APPROVED,StatusApprove.APPROVED);
+            Sidang sidang = sidangDao.findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(seminar,StatusApprove.APPROVED);
             if (sidang != null) {
-                return "redirect:success?id=" + seminar.getId();
+                return "redirect:success?id=" + sidang.getId();
             } else {
 
-                List<Sidang> sidangList = sidangDao.findBySeminarAndStatusNotInOrderByTanggalInputDesc(seminar,Arrays.asList(StatusRecord.HAPUS));
-                Sidang waiting = sidangDao.findBySeminarAndStatus(seminar,StatusRecord.AKTIF);
+                List<Sidang> sidangList = sidangDao.findBySeminarOrderByAkademikDescTanggalInputDesc(seminar);
+                Sidang waiting = sidangDao.findBySeminarAndAkademik(seminar,StatusApprove.WAITING);
+                if (waiting != null) {
+                    model.addAttribute("waiting", waiting);
+                }
 //
                 model.addAttribute("list", sidangList);
-                model.addAttribute("waiting", waiting);
                 return "graduation/sidang/mahasiswa/list";
             }
         } else {
@@ -337,7 +426,7 @@ public class SidangController {
         }
     }
 
-//    Admin
+//    Akademik & Prodi
 
     @GetMapping("/graduation/sidang/admin/list")
     public void listApproval(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model){
@@ -345,7 +434,17 @@ public class SidangController {
         model.addAttribute("selectedProdi",prodi);
 
         if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatus(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),StatusRecord.AKTIF,page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotIn(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),page));
+        }
+    }
+
+    @GetMapping("/graduation/sidang/prodi/list")
+    public void listJadwal (@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model){
+        model.addAttribute("selectedTahun",tahunAkademik);
+        model.addAttribute("selectedProdi",prodi);
+
+        if (tahunAkademik != null){
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademik(tahunAkademik,prodi,StatusApprove.APPROVED,page));
         }
     }
 
@@ -355,15 +454,44 @@ public class SidangController {
     @GetMapping("/graduation/sidang/admin/view")
     public void viewSidang(){}
 
-    @GetMapping("/graduation/sidang/admin/penjadwalan")
-    public void penjadwalan(){}
+    @GetMapping("/graduation/sidang/prodi/penjadwalan")
+    public void penjadwalan(@RequestParam(name = "id", value = "id") Sidang sidang,Model model){
+        model.addAttribute("sidang",sidang);
+        List<String> dosenList = new ArrayList<>();
+        dosenList.add(sidang.getSeminar().getNote().getDosen().getId());
+        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS),dosenList));
+    }
+
+    @PostMapping("/graduation/sidang/prodi/penjadwalan")
+    public void saveJadwal(@ModelAttribute @Valid Sidang sidang){
+        sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
+        sidangDao.save(sidang);
+    }
+
+    @PostMapping("/graduation/sidang/admin/tolak")
+    public String tolakSidang(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarAkademik){
+        sidang.setAkademik(StatusApprove.REJECTED);
+        sidang.setKomentarAkademik(komentarAkademik);
+        sidangDao.save(sidang);
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/sidang/admin/terima")
+    public String terimaSidang(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarAkademik){
+        sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setKomentarAkademik(komentarAkademik);
+        sidangDao.save(sidang);
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
 
 //    Dosen
 
     @GetMapping("/graduation/sidang/dosen/list")
     public void listDosen(){}
 
-//    file
+    //    file
     @GetMapping("/upload/{sidang}/sidang/")
     public ResponseEntity<byte[]> sidang(@PathVariable Sidang sidang, Model model) throws Exception {
         String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
@@ -389,31 +517,31 @@ public class SidangController {
         }
     }
 
-        @GetMapping("/upload/{sidang}/pendaftaran/")
-        public ResponseEntity<byte[]> pendaftaran(@PathVariable Sidang sidang, Model model) throws Exception {
-            String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
-                    + File.separator + sidang.getFilePendaftaran();
+    @GetMapping("/upload/{sidang}/pendaftaran/")
+    public ResponseEntity<byte[]> pendaftaran(@PathVariable Sidang sidang, Model model) throws Exception {
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
+                + File.separator + sidang.getFilePendaftaran();
 
-            try {
-                HttpHeaders headers = new HttpHeaders();
-                if (sidang.getFilePendaftaran().toLowerCase().endsWith("jpeg") || sidang.getFilePendaftaran().toLowerCase().endsWith("jpg")) {
-                    headers.setContentType(MediaType.IMAGE_JPEG);
-                } else if (sidang.getFilePendaftaran().toLowerCase().endsWith("png")) {
-                    headers.setContentType(MediaType.IMAGE_PNG);
-                } else if (sidang.getFilePendaftaran().toLowerCase().endsWith("pdf")) {
-                    headers.setContentType(MediaType.APPLICATION_PDF);
-                } else {
-                    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-                }
-                byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
-                return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
-            } catch (Exception err) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
-
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sidang.getFilePendaftaran().toLowerCase().endsWith("jpeg") || sidang.getFilePendaftaran().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sidang.getFilePendaftaran().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sidang.getFilePendaftaran().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
 
         }
+
+    }
 
     @GetMapping("/upload/{sidang}/ijazah/")
     public ResponseEntity<byte[]> ijazah(@PathVariable Sidang sidang, Model model) throws Exception {
@@ -524,7 +652,7 @@ public class SidangController {
     public void nilaiSidang(@RequestParam(name = "id")String nim, HttpServletResponse response){
         try {
             Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
-            InputStream in = file.getInputStream();
+            InputStream in = fileNilai.getInputStream();
 
             IXDocReport report = XDocReportRegistry.getRegistry().
                     loadReport(in, TemplateEngineKind.Freemarker);
@@ -542,4 +670,7 @@ public class SidangController {
 
         }
     }
+
+
+
 }
