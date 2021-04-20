@@ -92,13 +92,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Download Formulir
-                                            <span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#">Doc</a></li>
-                                            <li><a href="#">Form</a></li>
-                                            <li><a href="#">Excel</a></li>
-                                        </ul>
+                                        <a class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${sidang.seminar.id})}">Download Formulir
+                                            <span class="caret"></span></a>
                                     </div>
                                 </div>
                             </div>
@@ -118,6 +113,10 @@
                                         <div class="form-group">
                                             <label>Judul Tugas Akhir</label>
                                             <input type="text" th:field="*{judulTugasAkhir}" required name="judulTugasAkhir" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Judul Inggris</label>
+                                            <input type="text" th:field="*{judulInggris}" required name="judulInggris" class="form-control">
                                         </div>
                                         <input type="hidden" th:field="*{id}">
                                         <div class="form-group">

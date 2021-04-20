@@ -21,6 +21,9 @@ public class Sidang {
     @Lob
     private String judulTugasAkhir;
 
+    @Lob
+    private String judulInggris;
+
     @ManyToOne
     @JoinColumn(name = "id_seminar")
     private Seminar seminar;
@@ -116,6 +119,10 @@ public class Sidang {
     @Column(columnDefinition = "LONGTEXT")
     private String komentarPembimbing;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarAkademik;
+
     @Enumerated(EnumType.STRING)
     private StatusApprove akademik;
 
@@ -125,8 +132,6 @@ public class Sidang {
     @Enumerated(EnumType.STRING)
     private StatusRecord publish;
 
-    @Enumerated(EnumType.STRING)
-    private StatusRecord status;
 
 
 }
