@@ -111,10 +111,10 @@
                                             <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" data-target="#modal-setuju" data-toggle="modal">
+                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" th:data-target="${'#modal-setuju'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-check"></i> Setujui
                                             </button>
-                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" data-target="#modal-tolak" data-toggle="modal">
+                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
                                             <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat File</button>
@@ -127,34 +127,80 @@
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
                                             </div>
                                         </td>
+                                        <div class="modal fade" th:id="${'modal-setuju'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form th:action="@{/graduation/sidang/admin/terima (id = ${data.id})}" method="post">
+                                                            <div class="form-group">
+                                                                <textarea name="komentarAkademik" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success" type="submit">Setujui</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" th:id="${'modal-tolak'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form th:action="@{/graduation/sidang/admin/tolak (id = ${data.id})}" method="post">
+                                                            <div class="form-group">
+                                                                <textarea name="komentarAkademik" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                                                            </div>
+                                                            <input type="hidden" name="id" th:value="${data.id}">
+                                                            <div class="form-group">
+                                                                <button class="btn btn-danger" type="submit">Tolak</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <center>
-<!--                                <div class="card-footer">-->
+                                <div class="card-footer">
 
-<!--                                    <nav aria-label="Page navigation example">-->
-<!--                                        <ul class="pagination" sd:pagination="full">-->
-<!--                                            <li class="page-item">-->
-<!--                                                <a class="page-link" href="#" aria-label="Previous">-->
-<!--                                                    <i class="fa fa-angle-left"></i>-->
-<!--                                                    <span class="sr-only">Previous</span>-->
-<!--                                                </a>-->
-<!--                                            </li>-->
-<!--                                            <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination" sd:pagination="full">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <i class="fa fa-angle-left"></i>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
 
-<!--                                            <li class="page-item">-->
-<!--                                                <a class="page-link" href="#" aria-label="Next">-->
-<!--                                                    <i class="fa fa-angle-right"></i>-->
-<!--                                                    <span class="sr-only">Next</span>-->
-<!--                                                </a>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </nav>-->
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
 
 
-<!--                                </div>-->
+                                </div>
                             </center>
 
                         </div>
@@ -170,48 +216,3 @@
 </body>
 </html>
 
-    <div class="modal fade" id="modal-setuju" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        <div class="form-group">
-                            <textarea name="keteranganApprove" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-success" type="submit">Setujui</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-tolak" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        <div class="form-group">
-                            <textarea name="keteranganApprove" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-danger" type="submit">Tolak</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
