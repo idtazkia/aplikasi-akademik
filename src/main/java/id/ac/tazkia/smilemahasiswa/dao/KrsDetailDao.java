@@ -547,7 +547,10 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<Object[]> transkriptAkhir(String idMahasiswa);
 
 
-    @Query(value = "select c.nama_tahun_akademik, sum(e.jumlah_sks), ROUND(SUM(COALESCE(a.bobot,0)*e.jumlah_sks)/SUM(e.jumlah_sks),2)AS ipk from krs_detail as a inner join krs as b on b.id = a.id_krs inner join tahun_akademik as c on c.id = b.id_tahun_akademik inner join jadwal as d on d.id = a.id_jadwal inner join matakuliah_kurikulum as e on e.id = d.id_matakuliah_kurikulum where b.id_mahasiswa =?1 and a.status = 'AKTIF' and e.jumlah_sks > 0 group by c.nama_tahun_akademik", nativeQuery = true)
+    @Query(value = "select c.nama_tahun_akademik, sum(e.jumlah_sks), ROUND(SUM(COALESCE(a.bobot,0)*e.jumlah_sks)/SUM(e.jumlah_sks),2)AS ipk from krs_detail as a " +
+            "inner join krs as b on b.id = a.id_krs inner join tahun_akademik as c on c.id = b.id_tahun_akademik inner join jadwal as d on d.id = a.id_jadwal " +
+            "inner join matakuliah_kurikulum as e on e.id = d.id_matakuliah_kurikulum where b.id_mahasiswa =?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and e.jumlah_sks > 0 " +
+            "group by c.nama_tahun_akademik", nativeQuery = true)
     List<Object[]> historyMahasiswa(Mahasiswa mahasiswa);
 
     @Query(value = "select b.id, b.nama_tahun_akademik,b.jenis from krs as a inner join krs_detail as g on a.id = g.id_krs inner join jadwal as h on g.id_jadwal = h.id inner join matakuliah_kurikulum as i on h.id_matakuliah_kurikulum = i.id inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id order by b.id desc", nativeQuery = true)
