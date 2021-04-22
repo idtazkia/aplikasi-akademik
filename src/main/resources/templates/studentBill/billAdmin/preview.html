@@ -55,7 +55,7 @@
                                 <div class="col-md-12">
                                     <form method="post" th:action="@{/studentBill/billAdmin/preview(tahun=${tahun}, prodi=${prodi}, program=${program}, angkatan=${angkatan})}" th:object="${listPreview}">
                                         <div class="table-responsive">
-                                            <table id="data-table-basic" class="table align-items-center table-flush table-striped">
+                                            <table id="data-table-tes" class="table align-items-center table-flush table-striped">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th class="text-center">#</th>
@@ -118,3 +118,11 @@
 </div>
 </body>
 </html>
+
+<script>
+    $(document).ready(function() {
+        $('#data-table-tes').DataTable( {
+            "paging":   false
+        } );
+    });
+</script>
