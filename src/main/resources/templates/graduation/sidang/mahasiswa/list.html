@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Sidang</title>
+    <style type="text/css">
+        .btn{
+            border-radius: 10px;
+            border: none;
+            background-color: #4285f4;
+            color: white;padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 12px;
+        }
+        .btn:hover{
+            background-color: #0a5a8c;
+            color: white;
+        }
+
+        #quote-carousel {
+            padding: 0 10px 30px 10px;
+            margin-top: 60px;
+        }
+
+        #quote-carousel .carousel-control {
+            background: none;
+            color: #CACACA;
+            font-size: 2.3em;
+            text-shadow: none;
+            margin-top: 30px;
+        }
+        #quote-carousel .carousel-indicators {
+            position: relative;
+            right: 50%;
+            top: auto;
+            bottom: 0px;
+            margin-top: 20px;
+            margin-right: -19px;
+        }
+        #quote-carousel .carousel-indicators li {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            opacity: 0.4;
+            overflow: hidden;
+            transition: all .10s ease-in;
+            vertical-align: middle;
+        }
+        #quote-carousel .carousel-indicators .active {
+            width: 128px;
+            height: 128px;
+            opacity: 1;
+            transition: all .10s;
+        }
+        .item blockquote {
+            border-left: none;
+            margin: 0;
+        }
+        .item blockquote p:before {
+            content: "\f10d";
+            font-family: 'Fontawesome';
+            float: left;
+            margin-right: 10px;
+        }
+
+        .card {
+
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .card-profile {
+            background-color: white;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            height: 100px;
+            width: 100%;
+        }
+
+        .img-profile{
+            height: 70px;
+            width: 70px;
+            background-color: #555;
+            border-radius: 50%;
+            background-size: cover;
+            position: absolute;
+            left: 50px;
+            top: 80px;
+            z-index: 1;
+        }
+
+        .text-title{
+            color: black; font-size: 15px;
+        }
+        .btn-status{
+            color: white; background-color: red; border: none; border-radius: 10px; width: 100px; height: 30px;
+        }
+
+        .btn-status-warning{
+            color: white; background-color: #FFCC00; border: none; border-radius: 10px; width: 100px; height: 30px;
+        }
+
+        .btn-status-sucess{
+            color: white; background-color: green; border: none; border-radius: 10px; width: 100px; height: 30px;
+        }
+
+
+        .card-body{
+            background-color: white;
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            padding-top: 140px;
+            padding-left: 25px;
+            padding-bottom: 25px;
+            padding-right: 25px;
+        }
+
+        .name-profile{
+            color: black;
+            font-size: 17px;
+        }
+
+        .nim-profile{
+            color: #4285f4;
+            font-size: 15px;
+        }
+
+
+        .btn-style{
+            width:150px;
+            height:35px;
+            background: linear-gradient(to left top, #eb9942 50%, #ffa742 50%);
+            border-style: none;
+            color:#fff;
+            font-size: 15px;
+            letter-spacing: 3px;
+            font-family: 'Lato';
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            padding: 0px;
+            overflow: hidden;
+            transition: all .5s;
+            box-shadow: 0px 1px 2px rgba(0,0,0,.2);
+        }
+        .btn-style span{
+            position: absolute;
+            display: block;
+        }
+        .btn-style span:nth-child(1){
+            height: 3px;
+            width:200px;
+            top:0px;
+            left:-200px;
+            background: linear-gradient(to right, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span1 2s linear infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes span1{
+            0%{
+                left:-200px
+            }
+            100%{
+                left:200px;
+            }
+        }
+        .btn-style span:nth-child(2){
+            height: 70px;
+            width: 3px;
+            top:-70px;
+            right:0px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #f6e58d);
+            border-bottom-left-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span2 2s linear infinite;
+            animation-delay: 2s;
+        }
+        @keyframes span2{
+            0%{
+                top:-70px;
+            }
+            100%{
+                top:70px;
+            }
+        }
+        .btn-style span:nth-child(3){
+            height:3px;
+            width:200px;
+            right:-200px;
+            bottom: 0px;
+            background: linear-gradient(to left, rgba(0,0,0,0), #f6e58d);
+            border-top-left-radius: 1px;
+            border-bottom-left-radius: 1px;
+            animation: span3 2s linear infinite;
+            animation-delay: 3s;
+        }
+        @keyframes span3{
+            0%{
+                right:-200px;
+            }
+            100%{
+                right: 200px;
+            }
+        }
+
+        .btn-style span:nth-child(4){
+            height:70px;
+            width:3px;
+            bottom:-70px;
+            left:0px;
+            background: linear-gradient(to top, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-top-left-radius: 1px;
+            animation: span4 2s linear infinite;
+            animation-delay: 4s;
+        }
+        @keyframes span4{
+            0%{
+                bottom: -70px;
+            }
+            100%{
+                bottom:70px;
+            }
+        }
+
+        .btn-style:hover{
+            transition: all .5s;
+            transform: rotate(-3deg) scale(1.1);
+            box-shadow: 0px 3px 5px rgba(0,0,0,.4);
+        }
+        .btn-style:hover span{
+            animation-play-state: paused;
+        }
+
+        .btn-style1{
+            width:150px;
+            height:35px;
+            background: linear-gradient(to left top, #ff5542 50%, #de4837 50%);
+            border-style: none;
+            color:#fff;
+            font-size: 15px;
+            letter-spacing: 3px;
+            font-family: 'Lato';
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            padding: 0px;
+            overflow: hidden;
+            transition: all .5s;
+            box-shadow: 0px 1px 2px rgba(0,0,0,.2);
+        }
+        .btn-style1 span{
+            position: absolute;
+            display: block;
+        }
+        .btn-style1 span:nth-child(1){
+            height: 3px;
+            width:200px;
+            top:0px;
+            left:-200px;
+            background: linear-gradient(to right, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span1 2s linear infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes span1{
+            0%{
+                left:-200px
+            }
+            100%{
+                left:200px;
+            }
+        }
+        .btn-style1 span:nth-child(2){
+            height: 70px;
+            width: 3px;
+            top:-70px;
+            right:0px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), #f6e58d);
+            border-bottom-left-radius: 1px;
+            border-bottom-right-radius: 1px;
+            animation: span2 2s linear infinite;
+            animation-delay: 2s;
+        }
+        @keyframes span2{
+            0%{
+                top:-70px;
+            }
+            100%{
+                top:70px;
+            }
+        }
+        .btn-style1 span:nth-child(3){
+            height:3px;
+            width:200px;
+            right:-200px;
+            bottom: 0px;
+            background: linear-gradient(to left, rgba(0,0,0,0), #f6e58d);
+            border-top-left-radius: 1px;
+            border-bottom-left-radius: 1px;
+            animation: span3 2s linear infinite;
+            animation-delay: 3s;
+        }
+        @keyframes span3{
+            0%{
+                right:-200px;
+            }
+            100%{
+                right: 200px;
+            }
+        }
+
+        .btn-style1 span:nth-child(4){
+            height:70px;
+            width:3px;
+            bottom:-70px;
+            left:0px;
+            background: linear-gradient(to top, rgba(0,0,0,0), #f6e58d);
+            border-top-right-radius: 1px;
+            border-top-left-radius: 1px;
+            animation: span4 2s linear infinite;
+            animation-delay: 4s;
+        }
+        @keyframes span4{
+            0%{
+                bottom: -70px;
+            }
+            100%{
+                bottom:70px;
+            }
+        }
+
+        .btn-style1:hover{
+            transition: all .5s;
+            transform: rotate(-3deg) scale(1.1);
+            box-shadow: 0px 3px 5px rgba(0,0,0,.4);
+        }
+        .btn-style1:hover span{
+            animation-play-state: paused;
+        }
+
+        .box{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform : translate(-50% ,-50%);
+        }
+
+        .btn:link,
+        .btn:visited{
+            text-decoration: none;
+            text-transform:uppercase;
+            position:relative;
+            top:0;
+            left:0;
+            padding:20px 40px;
+            border-radius:100px;
+            display:inline-block;
+            transition: all .5s;
+        }
+
+        .btn-white{
+            background:#fff;
+            color:#000;
+        }
+
+        .btn:hover{
+            box-shadow:0px 10px 10px rgba(0,0,0,0.2);
+            transform : translateY(-3px);
+        }
+
+        .btn:active{
+            box-shadow:0px 5px 10px rgba(0,0,0,0.2)
+            transform:translateY(-1px);
+        }
+
+        .btn-bottom-animation-1{
+            animation:comeFromBottom 1s ease-out .8s;
+        }
+
+        .btn::after{
+            content:"";
+            text-decoration: none;
+            text-transform:uppercase;
+            position:absolute;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            border-radius:100px;
+            display:inline-block;
+            z-index:-1;
+            transition: all .5s;
+        }
+
+        .btn-white::after {
+            background: #fff;
+        }
+
+        .btn-animation-1:hover::after {
+            transform: scaleX(1.4) scaleY(1.6);
+            opacity: 0;
+        }
+
+        @keyframes comeFromBottom{
+            0%{
+                opacity:0;
+                transform:translateY(40px);
+            }
+            100%{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        /*lkjdfas*/
+
+        .btn-y:link,
+        .btn-y:visited{
+            text-decoration: none;
+            text-transform:uppercase;
+            position:relative;
+            top:0;
+            left:0;
+            padding:15px 20px;
+            border-radius:100px;
+            display:inline-block;
+            transition: all .5s;
+        }
+
+        .btn-white{
+            background:#fff;
+            color:#000;
+        }
+
+        .btn-y:hover{
+            box-shadow:0px 10px 10px rgba(0,0,0,0.2);
+            transform : translateY(-3px);
+        }
+
+        .btn-y:active{
+            box-shadow:0px 5px 10px rgba(0,0,0,0.2);
+            transform:translateY(-1px);
+        }
+
+        .btn-bottom-animation-1{
+            animation:comeFromBottom 1s ease-out .8s;
+        }
+
+        .btn-y::after{
+            content:"";
+            text-decoration: none;
+            text-transform:uppercase;
+            position:absolute;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            border-radius:100px;
+            display:inline-block;
+            z-index:-1;
+            transition: all .5s;
+        }
+
+        .btn-white::after {
+            background: #fff;
+        }
+
+        .btn-animation-1:hover::after {
+            transform: scaleX(1.4) scaleY(1.6);
+            opacity: 0;
+        }
+
+        @keyframes comeFromBottom{
+            0%{
+                opacity:0;
+                transform:translateY(40px);
+            }
+            100%{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Tugas Akhir</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/study/krs}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                    </a>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="margin: 16px;">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12 card-profile" style="background-image: url('https://images.wallpaperscraft.com/image/forest_pine_sun_202936_1280x720.jpg'); background-size: cover;"></div>
+                                        <img th:src="${#authentication.principal.picture}" class="img-profile" alt="">
+                                        <div class="card-body">
+                                            <b class="name-profile" th:text="${mahasiswa.nama}">Nama User</b>
+                                            <br>
+                                            <b class="nim-profile" th:text="${mahasiswa.nim}">11404344</b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div style="margin: 16px;">
+                                    <div class="row">
+                                        <div class="col-md-12 card" style="text-align: center; background-color: #0c85d0;">
+                                            <p style="font-size: 20px; color: white;">"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya..." (Q.S Al-Baqarah 2:286)</p>
+                                            <a th:if="${waiting != null}" th:href="@{/graduation/sidang/mahasiswa/revisi (id = ${waiting.id})}" class="btn-y btn-white btn-animation-1">Revisi</a>
+                                            <a th:if="${waiting == null}" th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" class="btn-y btn-white btn-animation-1">Upload Ulang</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                        <div style="overflow-y: scroll; height: 420px;">
+                            <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;" th:each="data : ${list}">
+                                <div class="col-md-12 card" style="margin-bottom: 5px;">
+                                    <b><h5 th:text="${data.judulTugasAkhir}">Tugas Akhir</h5></b>
+                                    <p style="color: #a8a8a8;" th:text="${data.komentarAkademik}"></p>
+                                    <div style="width: 30px; height: 5px; background-color: #0c85d0; border-radius: 10px;"></div>
+                                    <br>
+                                    <div class="wrapper" th:if="${data.akademik.WAITING == data.akademik}">
+                                        <button class="btn-style">
+                                            Menunggu
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.WAITING == data.statusSidang}">
+                                        <button class="btn-style">
+                                            Menunggu
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.REJECTED == data.statusSidang}">
+                                        <button class="btn-style1">
+                                            Ditolak
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+
+                                    <div class="wrapper" th:if="${data.akademik.REJECTED == data.akademik}">
+                                        <button class="btn-style1">
+                                            Ditolak
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

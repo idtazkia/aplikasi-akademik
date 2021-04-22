@@ -104,6 +104,9 @@ public class GraduationController {
     @Autowired
     private EnableFitureDao enableFitureDao;
 
+    @Autowired
+    private SidangDao sidangDao;
+
     @Value("classpath:sample/example.xlsx")
     private Resource example;
 
@@ -669,8 +672,19 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/seminar/nilai")
-    public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
+    public String nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
         model.addAttribute("seminar", seminar);
+        List<Sidang> sidang = sidangDao.findBySeminar(seminar);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,true);
+        if (enableFiture != null) {
+            model.addAttribute("sidang", enableFiture);
+        }
+        System.out.println(sidang);
+        if (sidang.isEmpty()){
+            return "graduation/seminar/nilai";
+        }else {
+            return "redirect:../sidang/mahasiswa/list?id="+seminar.getId();
+        }
 
 
     }

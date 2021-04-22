@@ -107,13 +107,15 @@
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</button>
-                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
+                                            <button class="btn btn-info btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai != null}">Menunggu Penilain</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu jadwal sidang</button>
+                                            <button class="btn btn-primary btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED}">Menunggu Publish Nilai</button>
+                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF}">Nilai Terpublish</button>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" th:data-target="${'#modal-setuju'+data.id}" data-toggle="modal">
-                                                <i class="fas fa-check"></i> Setujui
-                                            </button>
+                                            <a class="btn btn-primary btn-outline-success btn-sm" th:href="@{/graduation/sidang/prodi/penjadwalan(id = ${data.id})}">
+                                                <i class="fas fa-calendar-check"></i> Buat Jadwal
+                                            </a>
                                             <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>

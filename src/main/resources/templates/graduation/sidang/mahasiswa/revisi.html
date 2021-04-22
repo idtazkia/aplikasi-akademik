@@ -92,7 +92,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="dropdown">
-                                        <a class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${seminar.id})}">Download Formulir
+                                        <a class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${sidang.seminar.id})}">Download Formulir
                                             <span class="caret"></span></a>
                                     </div>
                                 </div>
@@ -109,15 +109,16 @@
                         <div class="bsc-tbl-st">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form th:action="@{/graduation/sidang/mahasiswa/pendaftaran}" method="post" enctype="multipart/form-data" >
+                                    <form th:action="@{/graduation/sidang/mahasiswa/pendaftaran}" method="post" enctype="multipart/form-data" th:object="${sidang}">
                                         <div class="form-group">
                                             <label>Judul Tugas Akhir</label>
-                                            <input type="text" required name="judulTugasAkhir" class="form-control">
+                                            <input type="text" th:field="*{judulTugasAkhir}" required name="judulTugasAkhir" class="form-control">
                                         </div>
                                         <div class="form-group">
                                             <label>Judul Inggris</label>
-                                            <input type="text" required name="judulInggris" class="form-control">
+                                            <input type="text" th:field="*{judulInggris}" required name="judulInggris" class="form-control">
                                         </div>
+                                        <input type="hidden" th:field="*{id}">
                                         <div class="form-group">
                                             <label>Upload Draft Sidang</label>
                                             <input type="file" required name="draft" class="form-control">
@@ -146,7 +147,7 @@
                                         <div class="form-group">
                                             <button class="btn btn-success">Upload</button>
                                         </div>
-                                        <input type="hidden" name="seminar" th:value="${seminar.id}">
+                                        <input type="hidden" name="seminar" th:field="*{seminar}">
                                     </form>
                                 </div>
                             </div>
