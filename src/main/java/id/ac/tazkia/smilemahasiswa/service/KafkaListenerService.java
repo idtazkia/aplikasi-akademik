@@ -1,7 +1,9 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import groovyjarjarasm.asm.commons.ModuleHashesAttribute;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.HapusTagihanResponse;
 import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanResponse;
 import id.ac.tazkia.smilemahasiswa.dto.payment.VaResponse;
@@ -14,6 +16,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -45,6 +48,9 @@ public class KafkaListenerService {
 
     @Autowired
     private VirtualAccountDao virtualAccountDao;
+
+    @Autowired
+    private RequestCicilanDao requestCicilanDao;
 
     @Autowired private JenisTagihanDao jenisTagihanDao;
 
@@ -157,6 +163,47 @@ public class KafkaListenerService {
                 vaResponse.getAccountNumber(), vaResponse.getBankId(),
                 tagihan.getNomor());
 
+    }
+
+    @KafkaListener(topics = "${kafka.topic.hapus.tagihan.response}", groupId = "${spring.kafka.consumer.group-id}")
+    public void handleHapusTagihanResponse(String message){
+        try{
+            HapusTagihanResponse response = objectMapper.readValue(message, HapusTagihanResponse.class);
+            Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(response.getJenisTagihan());
+            if (!optionalJenisTagihan.isPresent()) {
+                log.debug("Bukan Tagihan Mahasiswa");
+                return;
+            }
+
+            log.debug("Terima message : {}", message);
+
+            if (!response.getSukses()) {
+                log.debug("Hapus tagihan gagal : {}", response.getDebitur());
+                return;
+            }
+
+            kirimTagihanAfterDelete(response);
+
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+        }
+    }
+
+    private void kirimTagihanAfterDelete(HapusTagihanResponse response){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getDebitur());
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
+                .findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(
+                        response.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), mahasiswa.getIdProgram(), StatusRecord.AKTIF
+                );
+        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
+        RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
+        if (requestCicilan == null){
+            log.info("Bukan tagihan cicilan!");
+        }else{
+            log.info("Mengirim cicilan pertama!");
+            tagihanService.requestCreateCicilan(requestCicilan);
+        }
     }
 
 }
