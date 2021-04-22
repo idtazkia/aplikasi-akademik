@@ -85,9 +85,9 @@
                                 <td th:text="${bill.tahunAkademik.namaTahunAkademik}"></td>
                             </tr>
                             <tr>
-                                <td>Tanggal Jatuh Tempo</td>
+                                <td>Tanggal Pembuatan</td>
                                 <td> : </td>
-                                <td th:text="${bill.tanggalPenangguhan}"></td>
+                                <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
                             </tr>
                         </table>
                     </div>
