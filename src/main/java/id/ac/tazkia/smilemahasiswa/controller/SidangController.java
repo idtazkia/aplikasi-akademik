@@ -600,7 +600,7 @@ public class SidangController {
 
     }
 
-    @GetMapping("/upload/{sidang}/bimbingan/")
+    @GetMapping("/upload/{sidang}/bimbinganSidang/")
     public ResponseEntity<byte[]> bimbinganSidang(@PathVariable Sidang sidang, Model model) throws Exception {
         String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
                 + File.separator + sidang.getFileBimbingan();
