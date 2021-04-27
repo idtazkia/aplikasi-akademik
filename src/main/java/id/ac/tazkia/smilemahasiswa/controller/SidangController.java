@@ -463,10 +463,12 @@ public class SidangController {
     }
 
     @PostMapping("/graduation/sidang/prodi/penjadwalan")
-    public void saveJadwal(@ModelAttribute @Valid Sidang sidang){
+    public String saveJadwal(@ModelAttribute @Valid Sidang sidang){
         sidang.setAkademik(StatusApprove.APPROVED);
         sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
         sidangDao.save(sidang);
+
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @PostMapping("/graduation/sidang/admin/tolak")
@@ -490,6 +492,9 @@ public class SidangController {
 
     @GetMapping("/graduation/sidang/dosen/list")
     public void listDosen(){}
+
+    @GetMapping("/graduation/sidang/dosen/penilaian")
+    public void penilaiaanSidang(){}
 
     //    file
     @GetMapping("/upload/{sidang}/sidang/")
