@@ -491,7 +491,11 @@ public class StudentBillController {
                            @PageableDefault(size = 10) Pageable page){
 
         Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
+        StatusTagihan info = tagihan1.getStatusTagihan();
         RequestCicilan cekCicilan = requestCicilanDao.cariCicilan(tagihan);
+        if (info == StatusTagihan.DICICIL){
+            model.addAttribute("message", "message");
+        }
 
         model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan1));
         model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan));
@@ -501,6 +505,9 @@ public class StudentBillController {
         if (cekCicilan != null){
             model.addAttribute("cekCicilan", "cicilan");
         }
+
+        // bagian keterangan cicilan
+        model.addAttribute("cicilan", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan1));
 
     }
 

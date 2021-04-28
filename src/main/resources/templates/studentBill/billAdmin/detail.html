@@ -55,9 +55,10 @@
                     <div class="card-body">
                         <div class="card-shadow">
                             <div class="row">
-                                <div class="col-md-5">
-                                      <address>
-                                          <table class="table">
+                                <div class="col-md-6">
+                                  <address>
+                                      <div class="table-responsive">
+                                          <table class="table align-items-center table-flush">
                                               <tr style="font-weight: bold">
                                                   <td>Nomor Tagihan</td>
                                                   <td> : </td>
@@ -105,7 +106,59 @@
                                                   <td th:if="${tagihan.lunas} == true">Lunas</td>
                                               </tr>
                                           </table>
-                                      </address>
+                                      </div>
+                                  </address>
+                                </div>
+                                <div class="col-md-6" th:if="${message != null}">
+                                    <h2>Keterangan Cicilan</h2>
+                                    <div class="table-responsive">
+                                        <table class="table table-flush table-hovered">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Tanggal Jatuh Tempo</th>
+                                                <th>Nilai Cicilan</th>
+                                                <th>Status Tagihan</th>
+                                                <th>Status Pembayaran</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row:${cicilan}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td th:text="${data.tanggalJatuhTempo}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td >
+                                                    <a  class="btn btn-primary btn-sm text-white"
+                                                        th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
+                                                        th:text="${data.statusApprove}">
+                                                    </a>
+                                                    <a  class="btn btn-success btn-sm text-white"
+                                                        th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
+                                                        th:text="${data.statusApprove}">
+                                                    </a>
+                                                </td>
+                                                <td th:if="${message != null}">
+                                                    <a  class="btn btn-primary btn-sm text-white"
+                                                        th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
+                                                        th:text="${data.statusCicilan}">
+                                                    </a>
+                                                    <a  class="btn btn-warning btn-sm text-white"
+                                                        th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
+                                                        th:text="${data.statusCicilan}">
+                                                    </a>
+                                                    <a  class="btn btn-success btn-sm text-white"
+                                                        th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
+                                                        th:text="${data.statusCicilan}">
+                                                    </a>
+                                                    <a  class="btn btn-danger btn-sm text-white"
+                                                        th:if="${data.statusCicilan.LEWAT_JATUH_TEMPO} == ${data.statusCicilan}"
+                                                        th:text="${data.statusCicilan}">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
