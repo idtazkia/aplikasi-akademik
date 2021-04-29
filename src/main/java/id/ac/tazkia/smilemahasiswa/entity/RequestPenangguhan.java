@@ -27,6 +27,11 @@ public class RequestPenangguhan {
     @NotNull
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalPengajuan;
+
+    @NotNull
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPenangguhan;
 
     @Enumerated(EnumType.STRING)

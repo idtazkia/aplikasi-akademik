@@ -45,10 +45,10 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Keterangan Tagihan</h3>
+                                <h3 class="mb-0">Description of Bill</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
@@ -56,9 +56,9 @@
                         <address>
                             <table class="table-responsive table">
                                 <tr>
-                                    <td><b>Request Tanggal Penangguhan</b></td>
+                                    <td><b>Proposed Deferred Payment Schedule</b></td>
                                     <td> : </td>
-                                    <td><b th:text="${penangguhan.tanggalPenangguhan}"></b></td>
+                                    <td><b th:text="${#temporals.format(penangguhan.tanggalPenangguhan, 'dd MMM yyyy')}"></b></td>
                                 </tr>
                                 <tr>
                                     <td>Nomor Tagihan</td>
@@ -108,12 +108,12 @@
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success">Disetujui</button>
+                                <button type="submit" class="btn btn-success">Approved</button>
                             </div>
                         </form>
                         <form method="post" th:action="@{/studentBill/penangguhan/reject(requestPenangguhan = ${penangguhan.id})}"  th:object="${penangguhan}">
                             <div class="form-group">
-                                <label>Keterangan Ditolak</label>
+                                <label>Description rejected</label>
                                 <textarea name="keteranganReject" id="" cols="30" rows="8" class="form-control" th:field="*{keteranganReject}"></textarea>
                                 <input type="hidden" th:field="*{tagihan}">
                                 <input type="hidden" th:field="*{keterangan}">
@@ -121,8 +121,7 @@
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-danger">Ditolak</button>
-
+                                <button type="submit" class="btn btn-danger">Rejected</button>
                             </div>
                         </form>
                     </div>

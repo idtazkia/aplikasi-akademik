@@ -901,9 +901,9 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
-            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTagihan(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTanggalPenangguhan(Arrays.asList(StatusRecord.HAPUS), search, page));
         }else {
-            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotInOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
@@ -929,7 +929,9 @@ public class StudentBillController {
     @PostMapping("/studentBill/bill/newDate")
     public String newDate(@Valid RequestPenangguhan requestPenangguhan,
                           @RequestParam(required = false) Tagihan tagihan){
+
         requestPenangguhan.setTagihan(tagihan);
+        requestPenangguhan.setTanggalPengajuan(LocalDate.now());
         requestPenangguhan.setStatusApprove(StatusApprove.WAITING);
         requestPenangguhan.setStatus(StatusRecord.AKTIF);
         requestPenangguhanDao.save(requestPenangguhan);
@@ -1138,7 +1140,7 @@ public class StudentBillController {
                           @RequestParam(required = false) BigDecimal nilaiCicilan){
 
         tagihanService.hapusTagihan(tagihan);
-        System.out.println("jumlah cicilan : " + nilaiCicilan);
+        log.info("jumlah cicilan : {}" + nilaiCicilan);
         List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
         for (RequestCicilan sisaCicilan : cekSisaCicilan){
             sisaCicilan.setStatus(StatusRecord.HAPUS);
@@ -1148,10 +1150,11 @@ public class StudentBillController {
         }
 
         requestCicilan.setTagihan(tagihan);
+        requestCicilan.setTanggalPengajuan(LocalDate.now());
         requestCicilan.setTanggalJatuhTempo(LocalDate.now().plusMonths(1).withDayOfMonth(10));
         requestCicilan.setStatusApprove(StatusApprove.APPROVED);
         requestCicilan.setStatus(StatusRecord.AKTIF);
-        requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+        requestCicilan.setStatusCicilan(StatusCicilan.PENGAJUAN_PELUNASAN);
         requestCicilanDao.save(requestCicilan);
         tagihanService.requestCreateCicilan(requestCicilan);
 
@@ -1233,8 +1236,8 @@ public class StudentBillController {
     public String newCicilan(@Valid RequestCicilan requestCicilan, RedirectAttributes attributes,
                              @RequestParam(required = false) Tagihan tagihan){
 
-
         requestCicilan.setStatusCicilan(StatusCicilan.CICILAN);
+        requestCicilan.setTanggalPengajuan(LocalDate.now());
         requestCicilan.setTagihan(tagihan);
         requestCicilan.setStatusApprove(StatusApprove.WAITING);
         requestCicilan.setStatus(StatusRecord.AKTIF);
@@ -1248,15 +1251,15 @@ public class StudentBillController {
                                   @RequestParam(required = false) Tagihan tagihan){
 
         List<RequestCicilan> rc = requestCicilanDao.findByTagihanAndStatusAndStatusApprove(tagihan, StatusRecord.AKTIF, StatusApprove.WAITING);
-        for (RequestCicilan requestCicilan1 : rc){
-            if (requestCicilan1 == null){
-                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_1);
-            }else if(requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_1){
-                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_2);
-            }else if (requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_2){
-                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_3);
-            }
-        }
+//        for (RequestCicilan requestCicilan1 : rc){
+//            if (requestCicilan1 == null){
+//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_1);
+//            }else if(requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_1){
+//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_2);
+//            }else if (requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_2){
+//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_3);
+//            }
+//        }
         requestCicilan.setTagihan(tagihan);
         requestCicilan.setStatusApprove(StatusApprove.WAITING);
         requestCicilan.setStatus(StatusRecord.AKTIF);

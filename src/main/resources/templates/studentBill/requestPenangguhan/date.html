@@ -234,7 +234,7 @@
                             <div class="bsc-tbl-st">
                                 <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
                                     <div class="form-group">
-                                        <label>Due Date</label>
+                                        <label>Proposed Deferred Payment Schedule</label>
                                         <input type="date" name="tanggalPenangguhan" class="form-control"
                                                placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">
                                     </div>

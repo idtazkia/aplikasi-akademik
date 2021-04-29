@@ -134,9 +134,9 @@
                                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(tagihan.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Tanggal Jatuh Tempo</td>
+                                                    <td>Tanggal Pembuatan</td>
                                                     <td> : </td>
-                                                    <td th:text="${#temporals.format(tagihan.tanggalPenangguhan, 'dd - MMM - yyy')}"></td>
+                                                    <td th:text="${#temporals.format(tagihan.tanggalPembuatan, 'dd - MMM - yyy')}"></td>
                                                 </tr>
                                                 <tr th:if="${cicilan} != null">
                                                     <td>Status Cicilan</td>
