@@ -30,6 +30,10 @@ public class RequestCicilan {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalPengajuan;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalJatuhTempo;
 
     @Enumerated(EnumType.STRING)

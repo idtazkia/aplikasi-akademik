@@ -24,6 +24,10 @@ public class RequestPenangguhan {
     @JoinColumn(name = "id_tagihan")
     private Tagihan tagihan;
 
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalPengajuan;
+
     @NotNull
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

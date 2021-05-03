@@ -57,6 +57,7 @@
                                 <th>#</th>
                                 <th>Nama</th>
                                 <th>Tagihan</th>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Tanggal Penangguhan</th>
                                 <th>Status</th>
                                 <th></th>
@@ -67,6 +68,7 @@
                                 <td th:text="${(row.index + 1) + (listPenangguhan.number * listPenangguhan.size)}">1</td>
                                 <td th:text="${data.tagihan.mahasiswa.nama}"></td>
                                 <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                <td th:text="${data.tanggalPengajuan}"></td>
                                 <td th:text="${data.tanggalPenangguhan}">PATRICK STAR</td>
                                 <td th:if="${data.statusApprove.WAITING} == ${data.statusApprove} "><a href="#!" th:text="${data.statusApprove}" class="btn btn-primary btn-sm">WAITING</a></td>
                                 <td th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}"><a href="#!" th:text="${data.statusApprove}" class="btn btn-danger btn-sm">REJECT</a></td>

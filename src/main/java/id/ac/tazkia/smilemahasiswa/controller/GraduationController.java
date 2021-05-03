@@ -956,7 +956,7 @@ public class GraduationController {
     }
 
     @GetMapping("/upload/{seminar}/bimbingan/")
-    public ResponseEntity<byte[]> bimbingan(@PathVariable Seminar seminar, Model model) throws Exception {
+    public ResponseEntity<byte[]> fileBimbingan(@PathVariable Seminar seminar, Model model) throws Exception {
         String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
                 + File.separator + seminar.getFileBimbingan();
         LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
