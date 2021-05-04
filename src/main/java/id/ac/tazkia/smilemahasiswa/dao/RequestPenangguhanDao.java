@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface RequestPenangguhanDao extends PagingAndSortingRepository<RequestPenangguhan, String> {
 
-    Page<RequestPenangguhan> findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTagihan(List<StatusRecord> asList, String search, Pageable page);
+    Page<RequestPenangguhan> findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTanggalPenangguhan(List<StatusRecord> asList, String search, Pageable page);
 
-    Page<RequestPenangguhan> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
+    Page<RequestPenangguhan> findByStatusNotInOrderByTanggalPengajuanDesc(List<StatusRecord> asList, Pageable page);
 
     RequestPenangguhan findByTagihanAndStatusAndStatusApproveNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusApprove> asList);
 
