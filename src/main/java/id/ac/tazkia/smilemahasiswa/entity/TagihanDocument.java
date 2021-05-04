@@ -22,6 +22,9 @@ public class TagihanDocument {
 
     private String nama;
 
+    @Enumerated(EnumType.STRING)
+    private JenisDocument jenisDocument;
+
     private String document;
 
     @Enumerated(EnumType.STRING)

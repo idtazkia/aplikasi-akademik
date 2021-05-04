@@ -17,7 +17,7 @@ public interface RequestPenangguhanDao extends PagingAndSortingRepository<Reques
 
     Page<RequestPenangguhan> findByStatusNotInOrderByTanggalPengajuanDesc(List<StatusRecord> asList, Pageable page);
 
-    RequestPenangguhan findByTagihanAndStatusAndStatusApproveNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusApprove> asList);
+    RequestPenangguhan findByTagihanAndStatusAndStatusApprove(Tagihan tagihan, StatusRecord statusRecord, StatusApprove statusApprove);
 
     List<RequestPenangguhan> findByStatusAndStatusApproveAndTanggalPenangguhan(StatusRecord statusRecord, StatusApprove statusApprove, LocalDate penangguhan);
 
