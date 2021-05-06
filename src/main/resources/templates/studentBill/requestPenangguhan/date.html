@@ -74,7 +74,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Pengajuan Pelunasan</h2>
+                                        <h2>Request Suspension</h2>
                                         <p></p>
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@
                                 <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                             </tr>
                             <tr>
-                                <td> Value </td>
+                                <td> Amount </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
@@ -128,13 +128,13 @@
                         <div class=" ongoing-hd-wd">
                             <div class="row">
                                 <div class="col-md-6 col-xs-12">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Submit File <i class="fa fa-plus-circle"></i></button>
+                                    <div th:if="${jumlahFile == 0}" class="form-group">
+                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Supported Documents <i class="fa fa-plus-circle"></i></button>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-xs-12 text-right">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Jumlah berkas : ' + jumlahFile}"></button>
+                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Number of Files : ' + jumlahFile}"></button>
                                     </div>
                                 </div>
                             </div>
@@ -152,11 +152,52 @@
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
                                     <div class="modal-body">
-                                        <h2>Input Berkas</h2>
-                                        <div class="row">
+                                        <div class="row ">
                                             <div class="col-md-12 col-xs-12">
                                                 <div class="form-group">
-                                                    <input type="file" name="file" required class="form-control"
+                                                    <label >Surat permohonan penangguhan</label>
+                                                    <input type="hidden" name="jenisDocument1" value="PERMOHONAN_PENGAJUAN">
+                                                    <input type="file" name="fileBerkas1" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Slip gaji atau keterangan penghasilan orang tua</label>
+                                                    <input type="hidden" name="jenisDocument2" value="SLIP_GAJI">
+                                                    <input type="file" name="fileBerkas2" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Surat tagihan listrik</label>
+                                                    <input type="hidden" name="jenisDocument3" value="TAGIHAN_LISTRIK">
+                                                    <input type="file" name="fileBerkas3" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Surat tagihan air</label>
+                                                    <input type="hidden" name="jenisDocument4" value="TAGIHAN_AIR">
+                                                    <input type="file" name="fileBerkas4" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Lainnya..</label>
+                                                    <input type="hidden" name="jenisDocument5" value="LAINNYA">
+                                                    <input type="file" name="fileBerkas5" class="form-control"
                                                            placeholder="Upload Berkas" autofocus>
                                                 </div>
                                             </div>
@@ -191,13 +232,13 @@
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Nama</th>
+                                                    <th>Jenis</th>
                                                     <th>Berkas</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
-                                                    <td th:text="${data.nama}"></td>
+                                                    <td th:text="${data.jenisDocument}"></td>
                                                     <td>
                                                         <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
                                                             <button type="submit" class="btn btn-success">

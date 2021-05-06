@@ -61,32 +61,32 @@
                                     <td><b th:text="${#temporals.format(penangguhan.tanggalPenangguhan, 'dd MMM yyyy')}"></b></td>
                                 </tr>
                                 <tr>
-                                    <td>Nomor Tagihan</td>
+                                    <td>Bill Number</td>
                                     <td> : </td>
                                     <td th:text="${bill.nomor}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Nama Mahasiswa</td>
+                                    <td>Name</td>
                                     <td> : </td>
                                     <td th:text="${bill.mahasiswa.nama}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Jenis Tagihan</td>
+                                    <td>Type Bill</td>
                                     <td> : </td>
                                     <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Nilai Tagihan</td>
+                                    <td>Amount</td>
                                     <td> : </td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Tahun Akademik</td>
+                                    <td>Academic Year</td>
                                     <td> : </td>
                                     <td th:text="${bill.tahunAkademik.namaTahunAkademik}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Tanggal Pembuatan Tagihan</td>
+                                    <td>Create Bill</td>
                                     <td> : </td>
                                     <td th:text="${bill.tanggalPembuatan}"></td>
                                 </tr>
@@ -102,28 +102,103 @@
                         <h3 class="mb-0">Form Approval</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" th:action="@{/studentBill/penangguhan/approve(requestPenangguhan = ${penangguhan.id}, tagihan = ${bill.id})}"  th:object="${penangguhan}">
-                            <input type="hidden" th:field="*{tagihan}">
-                            <input type="hidden" th:field="*{keterangan}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="post" th:action="@{/studentBill/penangguhan/approve(requestPenangguhan = ${penangguhan.id}, tagihan = ${bill.id})}"  th:object="${penangguhan}">
+                                    <input type="hidden" th:field="*{tagihan}">
+                                    <input type="hidden" th:field="*{keterangan}">
 
-                            <input type="hidden" name="id" th:field="*{id}">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-success">Approved</button>
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-success">Approved</button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
-                        <form method="post" th:action="@{/studentBill/penangguhan/reject(requestPenangguhan = ${penangguhan.id})}"  th:object="${penangguhan}">
-                            <div class="form-group">
-                                <label>Description rejected</label>
-                                <textarea name="keteranganReject" id="" cols="30" rows="8" class="form-control" th:field="*{keteranganReject}"></textarea>
-                                <input type="hidden" th:field="*{tagihan}">
-                                <input type="hidden" th:field="*{keterangan}">
+                            <div class="col-md-6 text-right">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Rejected</button>
+                                </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-info btn-block" data-toggle="modal" data-target="#daftarDocument">
+                                        <i class="fas fa-file"></i> Daftar Berkas
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Daftar Document -->
+                        <div class="modal fade" id="daftarDocument" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+                            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                                <div class="modal-content">
 
-                            <input type="hidden" name="id" th:field="*{id}">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-danger">Rejected</button>
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center table-flush">
+                                                <tr class="thead-light">
+                                                    <th>No</th>
+                                                    <th class="text-center">Jenis</th>
+                                                    <th class="text-center">Berkas</th>
+                                                </tr>
+                                                <tr th:each="data, row : ${dokumen}">
+                                                    <td th:text="${(row.index + 1)}"></td>
+                                                    <td>
+                                                        <div class="text-center" th:text="${data.jenisDocument}"></div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                            <button type="submit" class="btn btn-success btn-sm">
+                                                                <div>Lihat Berkas&nbsp;</div>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                        </form>
+                        </div>
+                        <!-- Modal Reject Request Penangguhan -->
+                        <div class="modal fade" id="rejectModal">
+                            <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <div class="text-left">Statement Rejected</div>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body p-0">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <form method="post" th:action="@{/studentBill/penangguhan/reject(requestPenangguhan = ${penangguhan.id})}"  th:object="${penangguhan}">
+                                                    <div class="form-group">
+                                                        <input type="hidden" th:field="*{tagihan}">
+                                                        <input type="hidden" th:field="*{keterangan}">
+                                                    </div>
+                                                    <input type="hidden" name="id" th:field="*{id}">
+                                                    <div class="form-group mb-3">
+                                                        <textarea name="keterangan" class="form-control" id="" cols="30"
+                                                                  rows="10"></textarea>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" class="btn btn-success my-4">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -560,7 +560,7 @@
                                                         <center>
                                                             <b>Main Examiner </b>
                                                             <p th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((seminar.ka * 0.25) + (seminar.kb * 0.15) + (seminar.kc * 0.2) + (seminar.kd * 0.1) + (seminar.ke * 0.15) + (seminar.kf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
-                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.ua * 0.3) + (seminar.ub * 0.25) + (seminar.uc * 0.2) + (seminar.ud * 0.15) + (seminar.ke * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                                                            <p th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.ka * 0.3) + (seminar.kb * 0.25) + (seminar.kc * 0.2) + (seminar.kd * 0.15) + (seminar.ke * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                         </center>
                                                     </div>
 

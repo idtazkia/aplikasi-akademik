@@ -109,6 +109,7 @@
                                         <div class="modal-content">
 
                                             <div class="modal-header">
+                                                <h2>List Berkas</h2>
                                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                                             </div>
 
@@ -117,16 +118,16 @@
                                                     <table class="table align-items-center table-flush">
                                                         <tr class="thead-light">
                                                             <th>No</th>
-                                                            <th class="text-center">Nama</th>
+                                                            <th class="text-center">Jenis</th>
                                                             <th class="text-center">Berkas</th>
                                                         </tr>
                                                         <tr th:each="data, row : ${dokumen}">
                                                             <td th:text="${(row.index + 1)}"></td>
-                                                            <td class="text-center" th:text="${data.nama}"></td>
+                                                            <td class="text-center" th:text="${data.jenisDocument}"></td>
                                                             <td class="text-center">
                                                                 <a target="_blank" th:href="@{/tagihan/{document}/cicilan(document = ${data.id})}">
-                                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                                        <div>Lihat Berkas&nbsp;</div>
+                                                                    <button class="btn btn-info btn-sm">
+                                                                        Lihat Berkas
                                                                     </button>
                                                                 </a>
                                                             </td>

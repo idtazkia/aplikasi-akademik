@@ -10,12 +10,12 @@ import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
-import org.bouncycastle.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -25,28 +25,26 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
+import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.xml.ws.RequestWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -910,6 +908,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/requestPenangguhan/date")
     public void holdDate(Model model, @RequestParam(required = false) String id, @PageableDefault(size = 10) Pageable page){
         Tagihan tagihan = tagihanDao.findById(id).get();
+        model.addAttribute("uploadBerkas", new UploadBerkasDto());
         model.addAttribute("penangguhan", new RequestPenangguhan());
         model.addAttribute("bill", tagihan);
         model.addAttribute("tahun", tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, tagihan.getMahasiswa().getIdProdi()));
@@ -919,11 +918,12 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/requestPenangguhan/approval")
     public void approval(Model model, @RequestParam(required = false) String id,
-                         @RequestParam(required = false) Tagihan tagihan){
+                         @RequestParam(required = false) Tagihan tagihan, @PageableDefault(size = 10) Pageable page){
 
         RequestPenangguhan requestPenangguhan = requestPenangguhanDao.findById(id).get();
         model.addAttribute("penangguhan", requestPenangguhan);
         model.addAttribute("bill", tagihan);
+        model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PENANGGUHAN, page));
     }
 
     @PostMapping("/studentBill/bill/newDate")
@@ -939,46 +939,78 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/penangguhan/document")
-    public String newDocumentPenangguhan(@ModelAttribute @Valid TagihanDocument tagihanDocument,
-                              MultipartFile file) throws IOException{
+    public String newDocumentPenangguhan(@ModelAttribute @Valid UploadBerkasDto berkasDto, BindingResult errors,
+                                       MultipartFile fileBerkas1, MultipartFile fileBerkas2, MultipartFile fileBerkas3, MultipartFile fileBerkas4,
+                                       MultipartFile fileBerkas5, Authentication authentication, String tagihan) throws Exception{
 
-        String idPeserta = tagihanDocument.getTagihan().getMahasiswa().getNim();
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Tagihan t = tagihanDao.findById(tagihan).get();
 
-        String namaFile = file.getName();
-        String jenisFile = file.getContentType();
-        String namaAsli = file.getOriginalFilename();
-        Long ukuran = file.getSize();
-
-        log.debug("nama file : {}" + namaFile);
-        log.debug("jenis file : {}" + jenisFile);
-        log.debug("nama asli file : {}" + namaAsli);
-        log.debug("ukuran file : {}" + ukuran);
-
-        // Memisahkan extension
-        String extension = "";
-
-        int i = namaAsli.lastIndexOf('.');
-        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-        if (i > p){
-            extension = namaAsli.substring(i + 1);
+        if (errors.hasErrors()){
+            log.debug("Error upload supported documents : {}", errors.toString());
         }
 
-        String idFile = UUID.randomUUID().toString();
+        String idPeserta = mahasiswa.getNim();
         String lokasiUpload = uploadBerkasPenangguhan + File.separator + idPeserta;
-        log.debug("Lokasi Upload : {}" + lokasiUpload);
-        new File(lokasiUpload).mkdirs();
-        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-        tagihanDocument.setDocument(idFile + "." + extension);
-        file.transferTo(tujuan);
-        log.debug("file sudah dicopy ke : {}" + tujuan.getAbsolutePath());
+        log.debug("Lokasi upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdir();
+        StatusDocument penangguhan = StatusDocument.PENANGGUHAN;
 
-        tagihanDocument.setNama(namaAsli);
-        tagihanDocument.setStatus(StatusRecord.AKTIF);
-        tagihanDocument.setStatusDocument(StatusDocument.PENANGGUHAN);
-        tagihanDocumentDao.save(tagihanDocument);
+        saveBerkas(fileBerkas1, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument1(), penangguhan);
+        saveBerkas(fileBerkas2, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument2(), penangguhan);
+        saveBerkas(fileBerkas3, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument3(), penangguhan);
+        saveBerkas(fileBerkas4, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument4(), penangguhan);
+        saveBerkas(fileBerkas5, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument5(), penangguhan);
 
-        return "redirect:../requestPenangguhan/date?id="+tagihanDocument.getTagihan().getId();
+        return "redirect:/studentBill/requestPenangguhan/date?id=" + t.getId();
+
+    }
+
+    private void saveBerkas(MultipartFile berkasFile, Tagihan tagihan, UploadBerkasDto berkasDto, String lokasiUpload, JenisDocument jenisDocument, StatusDocument statusDocument){
+        try {
+            if (berkasFile == null || berkasFile.isEmpty()) {
+                log.info("Document kosong, tidak di proses!");
+                return;
+            }
+
+            TagihanDocument document = new TagihanDocument();
+            document.setTagihan(tagihan);
+            document.setNama(berkasFile.getOriginalFilename());
+            document.setJenisDocument(berkasDto.getJenisDocument1());
+
+            String namaFile = berkasFile.getName();
+            String jenisFile = berkasFile.getContentType();
+            String namaAsli = berkasFile.getOriginalFilename();
+            Long ukuran = berkasFile.getSize();
+
+            log.debug("Nama File : {}", namaFile);
+            log.debug("Jenis File : {}", jenisFile);
+            log.debug("namaAsli : {}", namaAsli);
+            log.debug("Ukuran : {}", ukuran);
+
+            //memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p){
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            document.setDocument(idFile + '.' + extension);
+            File tujuan = new File(lokasiUpload + File.separator + document.getDocument());
+            berkasFile.transferTo(tujuan);
+            log.debug("Document sudah dicopy ke : {}", tujuan.getAbsolutePath());
+            document.setStatusDocument(statusDocument);
+            document.setJenisDocument(jenisDocument);
+            tagihanDocumentDao.save(document);
+
+        }catch (Exception err){
+            log.error(err.getMessage(), err);
+        }
     }
 
     @GetMapping("/tagihan/{document}/penangguhan")
@@ -1077,11 +1109,11 @@ public class StudentBillController {
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.CICILAN, page));
         if (jumlahCicilan == 0){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(1).withDayOfMonth(10));
+            model.addAttribute("tanggal", LocalDate.now().plusMonths(1).plusDays(15));
         }else if (jumlahCicilan == 1){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(2).withDayOfMonth(10));
+            model.addAttribute("tanggal", LocalDate.now().plusMonths(3));
         }else if (jumlahCicilan == 2){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(3).withDayOfMonth(10));
+            model.addAttribute("tanggal", LocalDate.now().plusMonths(4).plusDays(15));
         }
         model.addAttribute("bill", tagihan);
     }
@@ -1163,46 +1195,31 @@ public class StudentBillController {
 
 
     @PostMapping("/studentBill/bill/document")
-    public String newDocument(@ModelAttribute @Valid TagihanDocument tagihanDocument,
-                              MultipartFile file) throws IOException{
+    public String newDocument(@ModelAttribute @Valid UploadBerkasDto berkasDto, BindingResult errors,
+                              MultipartFile fileBerkas1, MultipartFile fileBerkas2, MultipartFile fileBerkas3, MultipartFile fileBerkas4,
+                              MultipartFile fileBerkas5, Authentication authentication, String tagihan) throws IOException{
 
-        String idPeserta = tagihanDocument.getTagihan().getMahasiswa().getNim();
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Tagihan t = tagihanDao.findById(tagihan).get();
 
-        String namaFile = file.getName();
-        String jenisFile = file.getContentType();
-        String namaAsli = file.getOriginalFilename();
-        Long ukuran = file.getSize();
-
-        log.debug("nama file : {}" + namaFile);
-        log.debug("jenis file : {}" + jenisFile);
-        log.debug("nama asli file : {}" + namaAsli);
-        log.debug("ukuran file : {}" + ukuran);
-
-        // Memisahkan extension
-        String extension = "";
-
-        int i = namaAsli.lastIndexOf('.');
-        int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-        if (i > p){
-            extension = namaAsli.substring(i + 1);
+        if (errors.hasErrors()) {
+            log.debug("Error upload supported documents : {}", errors.toString());
         }
 
-        String idFile = UUID.randomUUID().toString();
+        String idPeserta = t.getMahasiswa().getNim();
         String lokasiUpload = uploadBerkasCicilan + File.separator + idPeserta;
-        log.debug("Lokasi Upload : {}" + lokasiUpload);
-        new File(lokasiUpload).mkdirs();
-        File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
-        tagihanDocument.setDocument(idFile + "." + extension);
-        file.transferTo(tujuan);
-        log.debug("file sudah dicopy ke : {}" + tujuan.getAbsolutePath());
+        log.info("Lokasi Upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdir();
+        StatusDocument cicilan = StatusDocument.CICILAN;
 
-        tagihanDocument.setNama(namaAsli);
-        tagihanDocument.setStatus(StatusRecord.AKTIF);
-        tagihanDocument.setStatusDocument(StatusDocument.CICILAN);
-        tagihanDocumentDao.save(tagihanDocument);
+        saveBerkas(fileBerkas1, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument1(), cicilan);
+        saveBerkas(fileBerkas2, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument2(), cicilan);
+        saveBerkas(fileBerkas3, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument3(), cicilan);
+        saveBerkas(fileBerkas4, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument4(), cicilan);
+        saveBerkas(fileBerkas5, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument5(), cicilan);
 
-        return "redirect:../requestCicilan/angsuran?id="+tagihanDocument.getTagihan().getId();
+        return "redirect:../requestCicilan/angsuran?id="+t.getId();
     }
 
     @GetMapping("/tagihan/{document}/cicilan")
@@ -1375,7 +1392,7 @@ public class StudentBillController {
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
-        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
+        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApprove(tagihan1, StatusRecord.AKTIF, (StatusApprove.APPROVED)));
 
     }
 

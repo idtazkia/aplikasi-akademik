@@ -628,7 +628,6 @@ public class  AcademicActivityController {
             file.transferTo(tujuan);
 
             matakuliahKurikulum.setSilabus(idFile);
-            matakuliahKurikulumDao.save(matakuliahKurikulum);
         }
 
         matakuliahKurikulumDao.save(matakuliahKurikulum);

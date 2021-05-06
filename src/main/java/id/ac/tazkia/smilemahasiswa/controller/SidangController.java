@@ -8,8 +8,15 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.SidangService;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,10 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -76,8 +82,14 @@ public class SidangController {
     @Autowired
     private KrsDetailDao krsDetailDao;
 
+    @Autowired
+    private SidangService sidangService;
+
     @Value("classpath:sample/filesidang.odt")
     private Resource fileNilai;
+
+    @Value("classpath:sample/nilaiSidang.docx")
+    private Resource nilaiSidang;
 
     @Value("classpath:sample/skripsi.odt")
     private Resource formulirSkripsi;
@@ -491,10 +503,80 @@ public class SidangController {
 //    Dosen
 
     @GetMapping("/graduation/sidang/dosen/list")
-    public void listDosen(){}
+    public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
+        model.addAttribute("selectedTahun", tahunAkademik);
+        model.addAttribute("selectedProdi", prodi);
+
+        if (tahunAkademik != null) {
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndJamMulaiNotNullAndRuanganNotNull(tahunAkademik, prodi, StatusApprove.APPROVED, page));
+        }
+    }
 
     @GetMapping("/graduation/sidang/dosen/penilaian")
-    public void penilaiaanSidang(){}
+    public void penilaiaanSidang(Model model,@RequestParam Sidang sidang,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("sidang",sidang);
+
+        if (sidang.getKetuaPenguji() == dosen){
+            model.addAttribute("data", sidangService.getKetua(sidang));
+            System.out.println(sidangService.getKetua(sidang));
+        }
+
+        if (sidang.getDosenPenguji() == dosen){
+            model.addAttribute("data", sidangService.getPenguji(sidang));
+        }
+
+        if (sidang.getPembimbing() == dosen){
+            model.addAttribute("data", sidangService.getPembimbing(sidang));
+        }
+
+    }
+
+    @PostMapping("/graduation/sidang/dosen/penilaian")
+    public String saveKetua(@RequestParam Sidang sidang,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
+                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
+                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        SidangDto sidangDto = new SidangDto();
+        sidangDto.setId(sidang.getId());
+        sidangDto.setKomentar(komentar);
+        sidangDto.setBeritaAcara(beritaAcara);
+        sidangDto.setNilaiA(nilaiA);
+        sidangDto.setNilaiB(nilaiB);
+        sidangDto.setNilaiC(nilaiC);
+        sidangDto.setNilaiD(nilaiD);
+
+        if (sidang.getKetuaPenguji() == dosen){
+            sidangService.saveKetua(sidangDto);
+        }
+
+        if (sidang.getDosenPenguji() == dosen){
+            sidangService.savePenguji(sidangDto);
+        }
+
+        if (sidang.getPembimbing() == dosen){
+            sidangService.savePembimbing(sidangDto);
+        }
+
+
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
 
     //    file
     @GetMapping("/upload/{sidang}/sidang/")
