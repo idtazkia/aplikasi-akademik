@@ -56,7 +56,7 @@
                             <div class="col-md-12">
                                 <form method="get">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Academic Year</label>
                                                 <select name="tahunAkademik" required class="form-control">
@@ -68,7 +68,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Prody</label>
                                                 <select name="prodi" required class="form-control">
@@ -80,7 +80,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Day</label>
                                                 <select name="hari" class="form-control">
@@ -90,6 +90,16 @@
                                                             th:selected="(${data} == *{selectedHari})"
                                                             th:text="${data.namaHariEng}"
                                                             th:value="${data.id}">sdasd</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Language</label>
+                                                <select name="bahasa" class="form-control">
+                                                    <option value="" selected disabled>-- Select a language to display course names</option>
+                                                    <option value="ina">Indonesia</option>
+                                                    <option value="eng">English</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -139,7 +149,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -286,7 +298,9 @@
                                                     <td>-</td>
                                                     <td><span>-</span> -
                                                         <span>-</span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.matakuliah}"></td>
                                                     <td th:text="${jadwal.kelas}"></td>
                                                     <td th:text="${jadwal.dosen}"></td>
                                                     <td>
@@ -401,7 +415,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -525,7 +541,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -650,7 +668,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -782,7 +802,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -907,7 +929,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -1032,7 +1056,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>
@@ -1157,7 +1183,9 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
-                                                    <td th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
+                                                    <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
+                                                    <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
                                                     <td th:text="${jadwal.namaKelas}"></td>
                                                     <td th:text="${jadwal.namaDosen}"></td>
                                                     <td>

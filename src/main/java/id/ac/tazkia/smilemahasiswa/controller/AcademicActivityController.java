@@ -829,10 +829,12 @@ public class  AcademicActivityController {
     @GetMapping("/academic/schedule/list")
     public void listSchedule(Model model, @RequestParam(required = false) Prodi prodi,
                              @RequestParam(required = false) TahunAkademik tahunAkademik,
-                             @RequestParam(required = false) Hari hari){
+                             @RequestParam(required = false) Hari hari,
+                             @RequestParam(required = false) String bahasa){
         model.addAttribute("selectedTahun",tahunAkademik);
         model.addAttribute("selectedHari", hari);
         model.addAttribute("selectedProdi",prodi);
+        model.addAttribute("bahasa", bahasa);
 
         if (prodi != null && tahunAkademik != null && hari != null){
             model.addAttribute("jadwal", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hari));
