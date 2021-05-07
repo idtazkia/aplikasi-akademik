@@ -99,6 +99,76 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "b.status='AKTIF' and a.angkatan=?1 group by id order by nim", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan);
 
+    @Query(value = "select 'LANCAR' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih = 0\n" +
+            " union\n" +
+            "select 'PERHATIAN KHUSUS' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (2,3)\n" +
+            " union\n" +
+            "select 'KURANG LANCAR' as keterangan, count(id_mahasiswa)as jumlah, selisih from\n" +
+            " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (4,5)\n" +
+            " union\n" +
+            "select 'DIRAGUKAN' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (6)\n" +
+            " union\n" +
+            "select 'MACET' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih > 6", nativeQuery = true)
+    List<Object[]> listPiutang(String idTahunAkademik);
+
+    @Query(value = "select nim, nama, a.* from\n" +
+            "(select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
+            " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, coalesce(pembayaran,0) as pembayaran from\n" +
+            " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
+            " and status = 'AKTIF' group by id_mahasiswa) a\n" +
+            " left join\n" +
+            " (select b.id_mahasiswa,sum(amount)as pembayaran, max(waktu_bayar)as waktu_bayar from pembayaran as a \n" +
+            " inner join tagihan as b on a.id_tagihan = b.id \n" +
+            " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
+            " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)a\n" +
+            " inner join mahasiswa as b on a.id_mahasiswa = b.id \n" +
+            " where selisih in (?2)", nativeQuery = true)
+    List<Object[]> detailPiutang(String idTahunAkademik, String selisih);
+
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatusAndLunas(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord, boolean lunas);

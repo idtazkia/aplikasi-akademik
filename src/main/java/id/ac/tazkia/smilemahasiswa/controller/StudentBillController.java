@@ -426,6 +426,10 @@ public class StudentBillController {
             model.addAttribute("tanggal4", date4);
             model.addAttribute("listAngkatanDate", tagihanDao.listTagihanPerAngkatanDate(date3, date4, tahunAkademik));
             model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
+
+            // list klasifikasi piutang
+            model.addAttribute("listPiutang", tagihanDao.listPiutang(tahunAkademik.getId()));
+
         }
 
 
@@ -522,6 +526,15 @@ public class StudentBillController {
 
         model.addAttribute("angkatan", angkatan);
         model.addAttribute("tagihanAngkatan", tagihanDao.listTagihanPerMahasiswaByAngkatan(angkatan));
+
+    }
+
+    @GetMapping("/studentBill/billAdmin/detailPiutang")
+    public void detailPiutang(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+                              @RequestParam(required = false) String selisih){
+
+        model.addAttribute("tahun", tahunAkademik);
+        model.addAttribute("detailPiutang", tagihanDao.detailPiutang(tahunAkademik.getId(), selisih));
 
     }
 
