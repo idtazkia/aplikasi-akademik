@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -36,13 +37,15 @@ public class ImportPresensiService {
                 .block();
     }
 
-//    @Scheduled(cron = "0 0 22 * * ? ", zone = "Asia/Jakarta")
+    //    @Scheduled(fixedDelay = 60*60)
+    //    @Scheduled(cron = "0 51 14 * * ? ", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 0 22 * * ? ", zone = "Asia/Jakarta")
     public void importPresensi(){
 
         LocalDate tanggalProses = terakhirImport().plusDays(1);
         LocalDate tanggalProses2 = terakhirImport();
 //         dibatasi sampai yang ditentukan
-//        if(tanggalProses.compareTo(LocalDate.of(2021,1,18)) <= 0) {
+//        if(tanggalProses.compareTo(LocalDate.of(2021,5,8)) <= 0) {
             System.out.println("HASIL TANGGAL = " + terakhirImport().plusDays(1));
             importPresensi(tanggalProses);
 //        }
