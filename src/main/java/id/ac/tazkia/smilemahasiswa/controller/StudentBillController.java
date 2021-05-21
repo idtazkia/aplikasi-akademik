@@ -16,9 +16,11 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.crosstabs.fill.JRPercentageCalculatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -411,7 +413,8 @@ public class StudentBillController {
             model.addAttribute("tahun", "tahun");
         }else {
             // list per prodi
-            model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
+            List<DaftarTagihanPerProdiDto> listProdi = tagihanDao.listTagihanPerProdi(tahunAkademik);
+            model.addAttribute("listProdi", listProdi);
             model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
             model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
             model.addAttribute("tahunPilihan", tahunAkademik);
@@ -434,6 +437,10 @@ public class StudentBillController {
 
 
     }
+
+//    public double calculatePercentage(double obstance, double total){
+//        return obstance * 100 / total;
+//    }
 
     @GetMapping("/studentBill/billAdmin/date")
     public void formDate(Model model, @RequestParam(required = false) String id){
@@ -514,18 +521,22 @@ public class StudentBillController {
     }
 
     @GetMapping("/studentBill/billAdmin/detailProdi")
-    public void detailProdi(Model model, @RequestParam(required = false) Prodi prodi){
+    public void detailProdi(Model model, @RequestParam(required = false) Prodi prodi,
+                            @RequestParam(required = false) TahunAkademik tahunAkademik){
 
         model.addAttribute("prodi", prodi);
-        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi.getId()));
+        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi.getId(), tahunAkademik.getId()));
+        model.addAttribute("tahun", tahunAkademik);
 
     }
 
     @GetMapping("/studentBill/billAdmin/detailAngkatan")
-    public void detailAngkatan(Model model, @RequestParam(required = false) String angkatan){
+    public void detailAngkatan(Model model, @RequestParam(required = false) String angkatan,
+                               @RequestParam(required = false) TahunAkademik tahunAkademik){
 
         model.addAttribute("angkatan", angkatan);
-        model.addAttribute("tagihanAngkatan", tagihanDao.listTagihanPerMahasiswaByAngkatan(angkatan));
+        model.addAttribute("tagihanAngkatan", tagihanDao.listTagihanPerMahasiswaByAngkatan(angkatan, tahunAkademik.getId()));
+        model.addAttribute("tahun", tahunAkademik);
 
     }
 
@@ -1489,7 +1500,7 @@ public class StudentBillController {
     }
 
     @GetMapping("/studentBill/payment/report")
-    public void report(){
+    public void report(Model model, @PageableDefault(size = 10) Pageable page){
 
     }
 
@@ -1532,6 +1543,48 @@ public class StudentBillController {
         } catch (Exception err){
             log.error(err.getMessage(), err);
         }
+    }
+
+    // report
+
+    @GetMapping("/studentBill/billReport/prodi")
+    public void reportProdi(Model model, @RequestParam(required = false) String tahun){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
+
+        model.addAttribute("tahun", thn);
+        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
+        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
+        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+    }
+
+    @GetMapping("/studentBill/billReport/mahasiswaProdi")
+    public void reportMahasiswaProdi(Model model, @RequestParam(required = false) String prodi,
+                                        @RequestParam(required = false) String tahun){
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        Prodi prd = prodiDao.findById(prodi).get();
+
+        String tahun1 = tahunAkademik.getNamaTahunAkademik().substring(1,9);
+
+        model.addAttribute("prodi", prd);
+        model.addAttribute("tahun", tahun1);
+        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi, tahun));
+
+
+
+    }
+
+    @GetMapping("/studentBill/billReport/angkatan")
+    public void reportAngkatan(Model model, @RequestParam(required = false) String tahun){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
+
+        model.addAttribute("tahun", thn);
+        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
+        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
+        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+
     }
 
     private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {

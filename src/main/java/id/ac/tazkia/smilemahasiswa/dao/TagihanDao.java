@@ -86,20 +86,20 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4, TahunAkademik tahunAkademik);
 
     @Query(value = "select a.id as id, a.angkatan, a.nim as nim, a.nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
-            "sum(coalesce(c.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(c.amount,0)) as sisa\n" +
+            "sum(coalesce(c.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(c.amount,0)) as sisa \n" +
             "from mahasiswa as a inner join tagihan as b on a.id=b.id_mahasiswa left join pembayaran as c \n" +
-            "on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' group by id order by nim", nativeQuery = true)
-    List<Object[]> listTagihanPerMahasiswaByProdi(String idProdi);
+            "on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
+    List<Object[]> listTagihanPerMahasiswaByProdi(String idProdi, String idTahunAkademik);
 
     @Query(value = "select a.id as id, c.nama_prodi as prodi, a.nim as nim, a.nama as nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
             "sum(coalesce(d.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(d.amount,0)) as sisa \n" +
             "from mahasiswa as a inner join tagihan as b on \n" +
             "a.id=b.id_mahasiswa inner join prodi as c on \n" +
             "a.id_prodi=c.id left join pembayaran as d on b.id=d.id_tagihan where \n" +
-            "b.status='AKTIF' and a.angkatan=?1 group by id order by nim", nativeQuery = true)
-    List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan);
+            "b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
+    List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan, String idTahunAkademik);
 
-    @Query(value = "select 'LANCAR' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+    @Query(value = "select 'LANCAR' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
             " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
             " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
             " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
@@ -110,7 +110,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
             " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih = 0\n" +
             " union\n" +
-            "select 'PERHATIAN KHUSUS' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            "select 'PERHATIAN KHUSUS' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
             " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
             " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
             " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
@@ -121,7 +121,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
             " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (2,3)\n" +
             " union\n" +
-            "select 'KURANG LANCAR' as keterangan, count(id_mahasiswa)as jumlah, selisih from\n" +
+            "select 'KURANG LANCAR' as keterangan, count(id_mahasiswa)as jumlah,coalesce(selisih, 100) from\n" +
             " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
             " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
             " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
@@ -132,7 +132,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
             " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (4,5)\n" +
             " union\n" +
-            "select 'DIRAGUKAN' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            "select 'DIRAGUKAN' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
             " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
             " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
             " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
@@ -143,7 +143,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
             " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)aa where selisih in (6)\n" +
             " union\n" +
-            "select 'MACET' as keterangan, count(id_mahasiswa)as jumlah,selisih from\n" +
+            "select 'MACET' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
             " (select a.id_mahasiswa, tanggal_pembuatan,date(now())as tanggal_sekarang, waktu_bayar,\n" +
             " TIMESTAMPDIFF(MONTH, tanggal_pembuatan, coalesce(waktu_bayar,NOW())) as selisih, tagihan, pembayaran from\n" +
             " (select id_mahasiswa, min(tanggal_pembuatan)as tanggal_pembuatan,sum(nilai_tagihan) as tagihan from tagihan where id_tahun_akademik = ?1 \n" +
@@ -166,7 +166,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             " where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF'\n" +
             " group by b.id_mahasiswa) b on a.id_mahasiswa = b.id_mahasiswa)a\n" +
             " inner join mahasiswa as b on a.id_mahasiswa = b.id \n" +
-            " where selisih in (?2)", nativeQuery = true)
+            " where selisih = ?2", nativeQuery = true)
     List<Object[]> detailPiutang(String idTahunAkademik, String selisih);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, StatusRecord statusRecord);

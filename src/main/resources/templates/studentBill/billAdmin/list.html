@@ -347,10 +347,10 @@
                                                 <div class="row">
                                                     <input type="hidden" name="tahunAkademik" th:value="${tahunPilihan.id}">
                                                     <div th:if="${tanggal1 != null}" class="col-md-3">
-                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
+                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-secondary btn-block"><i class="fas fa-arrow-circle-left"></i> Back</div></a>
                                                     </div>
                                                     <div th:if="${tanggal1 == null}" class="col-md-3">
-
+<!--                                                        <button type="button" class="btn btn-success btn-block"><a target="_blank" class="text-white" th:href="@{/studentBill/billReport/prodi(tahun=${tahunPilihan.id})}">Download</a></button>-->
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
@@ -398,7 +398,7 @@
                                                                     <tr id="table-prodi" th:each="data, row:${listProdi}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
                                                                         <td class="text-center">
-                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id})}"
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id}, tahunAkademik=${tahunPilihan.id})}"
                                                                                th:text="${data.Prodi}"></a>
                                                                         </td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
@@ -406,7 +406,7 @@
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td class="text-right" colspan="2"><h5>Total : </h5></td>
+                                                                        <td colspan="2" class="text-right"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
@@ -479,7 +479,7 @@
                                                         <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
                                                     </div>
                                                     <div th:if="${tanggal3 == null}" class="col-md-3">
-
+                                                        <!-- <button type="button" class="btn btn-success btn-block"><a target="_blank" class="text-white" th:href="@{/studentBill/billReport/angkatan(tahun=${tahunPilihan.id})}">Download</a></button>-->
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
@@ -527,7 +527,7 @@
                                                                     <tr th:each="data, row:${listAngkatan}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
                                                                         <td class="text-center">
-                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data[0]})}"
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data[0]}, tahunAkademik=${tahunPilihan.id})}"
                                                                             th:text="${data[0]}"></a>
                                                                         </td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
