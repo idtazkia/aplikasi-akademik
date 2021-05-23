@@ -391,6 +391,7 @@
                                                                         <td class="text-center">Total Tagihan</td>
                                                                         <td class="text-center">Dibayar</td>
                                                                         <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Persentase Sisa Tagihan</td>
                                                                         <td class="text-center"></td>
                                                                     </tr>
                                                                     </thead>
@@ -404,6 +405,7 @@
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data.Percentage+'%'}"></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="2" class="text-right"><h5>Total : </h5></td>
@@ -520,6 +522,7 @@
                                                                         <td class="text-center">Total Tagihan</td>
                                                                         <td class="text-center">Dibayar</td>
                                                                         <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Percentage Sisa Tagihan</td>
                                                                         <td class="text-center"></td>
                                                                     </tr>
                                                                     </thead>
@@ -533,6 +536,7 @@
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data[4]+'%'}"></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>

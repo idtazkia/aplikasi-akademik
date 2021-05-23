@@ -10,5 +10,6 @@ public interface DaftarTagihanPerProdiDto {
     BigDecimal getTagihan();
     BigDecimal getDibayar();
     BigDecimal getSisa();
+    BigDecimal getPercentage();
 
 }

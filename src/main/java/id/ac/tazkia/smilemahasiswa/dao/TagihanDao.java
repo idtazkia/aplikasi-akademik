@@ -62,7 +62,9 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
 
     @Query(value = "select c.id, c.nama_prodi as prodi, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(d.amount,0)) as dibayar, \n" +
-            "coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(d.amount,0))) as sisa from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
+            "coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(d.amount,0))) as sisa, \n" +
+            "substr(coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(d.amount,0))) * 100/sum(coalesce(a.nilai_tagihan,0)), 1,4) as percentage from tagihan as a \n" +
+            "inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
             "inner join prodi as c on b.id_prodi=c.id inner join tahun_akademik as e on a.id_tahun_akademik=e.id left join pembayaran as d on d.id_tagihan=a.id \n" +
             "where a.status='AKTIF' and e.id=?1 group by c.id order by prodi asc", nativeQuery = true)
     List<DaftarTagihanPerProdiDto> listTagihanPerProdi(TahunAkademik tahunAkademik);
@@ -74,9 +76,11 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     List<Object[]> listTagihanPerProdiAndDate(String tanggal1, String tanggal2, TahunAkademik tahunAkademik);
 
     @Query(value = "select distinct b.angkatan as angkatan, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(c.amount,0)) as \n" +
-            "dibayar, coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(c.amount,0))) as sisa from tagihan as a inner join \n" +
-            "mahasiswa as b on a.id_mahasiswa=b.id inner join tahun_akademik as d on a.id_tahun_akademik=d.id left join pembayaran as c on a.id=c.id_tagihan \n" +
-            "where a.status='AKTIF' and d.id=?1 group by angkatan order by angkatan asc", nativeQuery = true)
+            "dibayar, coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(c.amount,0))) as sisa, \n" +
+            "substr(coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(c.amount,0))) * 100/sum(coalesce(a.nilai_tagihan,0)), 1,4) as percentage \n" +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join tahun_akademik as d on a.id_tahun_akademik=d.id \n" +
+            "left join pembayaran as c on a.id=c.id_tagihan where a.status='AKTIF' and d.id=?1 group by angkatan \n" +
+            "order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatan(TahunAkademik tahunAkademik);
 
     @Query(value = "select distinct b.angkatan as angkatan, sum(coalesce(d.amount,0)) as pemasukan from tagihan as a \n" +

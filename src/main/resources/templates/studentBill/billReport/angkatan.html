@@ -64,7 +64,8 @@
                 <td rowspan="2" style="text-align: center;">BACTH</td>
                 <td rowspan="2" style="text-align: center;">BILL TOTAL</td>
                 <td rowspan="2" style="text-align: center;">PAID</td>
-                <td rowspan="2" style="text-align: center;">REST</td>
+                <td rowspan="2" style="text-align: center;">REMAIN</td>
+                <td rowspan="2" style="text-align: center;">REMAINING PERCENTAGE</td>
 
             </tr>
             </thead>
@@ -75,7 +76,8 @@
                 <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}">09:31:00</td>
                 <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}">12:00:00</td>
                 <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}">42</td>
-                <!--                <td style="text-align: center;" width="3%" th:text="${data[5]}">3</td>-->
+                <td style="text-align: center" th:text="${data[4]+'%'}"></td>
+                <!--               <td style="text-align: center;" width="3%" th:text="${data[5]}">3</td>-->
             </tr>
             <tr>
                 <td colspan="2" class="text-center"><h5>Total : </h5></td>
