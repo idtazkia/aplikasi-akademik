@@ -66,6 +66,9 @@
                                         <li class="nav-item">
                                             <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="true"> Angkatan</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-4-tab" data-toggle="tab" href="#tabs-icons-text-4" role="tab" aria-controls="tabs-icons-text-4" aria-selected="true">Piutang</a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="myTabContent">
@@ -344,10 +347,10 @@
                                                 <div class="row">
                                                     <input type="hidden" name="tahunAkademik" th:value="${tahunPilihan.id}">
                                                     <div th:if="${tanggal1 != null}" class="col-md-3">
-                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
+                                                        <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-secondary btn-block"><i class="fas fa-arrow-circle-left"></i> Back</div></a>
                                                     </div>
                                                     <div th:if="${tanggal1 == null}" class="col-md-3">
-
+<!--                                                        <button type="button" class="btn btn-success btn-block"><a target="_blank" class="text-white" th:href="@{/studentBill/billReport/prodi(tahun=${tahunPilihan.id})}">Download</a></button>-->
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
@@ -388,6 +391,7 @@
                                                                         <td class="text-center">Total Tagihan</td>
                                                                         <td class="text-center">Dibayar</td>
                                                                         <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Persentase Sisa Tagihan</td>
                                                                         <td class="text-center"></td>
                                                                     </tr>
                                                                     </thead>
@@ -395,15 +399,16 @@
                                                                     <tr id="table-prodi" th:each="data, row:${listProdi}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
                                                                         <td class="text-center">
-                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id})}"
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailProdi(prodi=${data.Id}, tahunAkademik=${tahunPilihan.id})}"
                                                                                th:text="${data.Prodi}"></a>
                                                                         </td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data.Percentage+'%'}"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td class="text-right" colspan="2"><h5>Total : </h5></td>
+                                                                        <td colspan="2" class="text-right"><h5>Total : </h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
                                                                         <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
@@ -476,7 +481,7 @@
                                                         <a class="text-white" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahunPilihan.id})}"><div class="btn btn-info btn-block"><i class="fas fa-sync-alt"></i> Refresh</div></a>
                                                     </div>
                                                     <div th:if="${tanggal3 == null}" class="col-md-3">
-
+                                                        <!-- <button type="button" class="btn btn-success btn-block"><a target="_blank" class="text-white" th:href="@{/studentBill/billReport/angkatan(tahun=${tahunPilihan.id})}">Download</a></button>-->
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="input-group mb-3">
@@ -517,6 +522,7 @@
                                                                         <td class="text-center">Total Tagihan</td>
                                                                         <td class="text-center">Dibayar</td>
                                                                         <td class="text-center">Sisa</td>
+                                                                        <td class="text-center">Percentage Sisa Tagihan</td>
                                                                         <td class="text-center"></td>
                                                                     </tr>
                                                                     </thead>
@@ -524,12 +530,13 @@
                                                                     <tr th:each="data, row:${listAngkatan}">
                                                                         <td th:text="${(row.index + 1)}">1</td>
                                                                         <td class="text-center">
-                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data[0]})}"
+                                                                            <a class="text-default" th:href="@{/studentBill/billAdmin/detailAngkatan(angkatan=${data[0]}, tahunAkademik=${tahunPilihan.id})}"
                                                                             th:text="${data[0]}"></a>
                                                                         </td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>
                                                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[3], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                                        <td class="text-center" th:text="${data[4]+'%'}"></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="text-right" colspan="2"><h5>Total : </h5></td>
@@ -571,6 +578,65 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Piutang -->
+
+                                    <div class="tab-pane fade" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-4-tab">
+                                        <div class="card-body">
+                                            <form method="get">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <div class="form-group">
+                                                            <select name="tahunAkademik" required class="form-control">
+                                                                <option value=""></option>
+                                                                <option th:each="data : ${tahunAkademik}"
+                                                                        th:selected="(${data} == *{selectTahun})"
+                                                                        th:text="${data.namaTahunAkademik}"
+                                                                        th:value="${data.id}">STEI TAZKIA</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary" type="submit"><i class="fas fa-eye"></i> Show</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <div class="card shadow" th:if="${tahun == null}">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="bg-primary text-white text-center">Daftar List Piutang</div>
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center table-flush">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <td>#</td>
+                                                                    <td class="text-center">Keterangan</td>
+                                                                    <td class="text-center">Jumlah</td>
+                                                                    <td class="text-center"></td>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr th:each="data, row:${listPiutang}">
+                                                                    <td th:text="${(row.index + 1)}">1</td>
+                                                                    <td class="text-center">
+                                                                        <a class="text-default" th:href="@{/studentBill/billAdmin/detailPiutang(tahunAkademik=${selectTahun.id}, selisih=${data[2]})}"
+                                                                           th:text="${data[0]}"></a>
+                                                                    </td>
+                                                                    <td class="text-center" th:text="${data[1]}"></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

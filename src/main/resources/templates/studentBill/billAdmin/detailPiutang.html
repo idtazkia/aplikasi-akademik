@@ -45,7 +45,7 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Prodi : <div th:text="${prodi.namaProdi}"></div></h3>
+<!--                                <h3 class="mb-0">Angkatan : <div th:text="${angkatan}"></div></h3>-->
                             </div>
                             <div class="col text-right">
                                 <a th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
@@ -61,32 +61,23 @@
                                             <thead class="thead-light">
                                             <tr>
                                                 <th class="text-center">#</th>
-                                                <th>Angkatan</th>
                                                 <th>Nim</th>
                                                 <th>Nama</th>
                                                 <th>Tagihan</th>
                                                 <th>Dibayar</th>
-                                                <th>Sisa</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="data, row:${tagihanProdi}">
+                                            <tr th:each="data, row:${detailPiutang}">
                                                 <td th:text="${(row.index + 1)}">1</td>
+                                                <td th:text="${data[0]}"></td>
                                                 <td th:text="${data[1]}"></td>
-                                                <td th:text="${data[2]}"></td>
-                                                <td th:text="${data[3]}"></td>
-                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[4], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>
-                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[8], 0, 'POINT', 2, 'COMMA')}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-xs-12 col-sm-12">
-                                    <button type="button" class="btn btn-success"><a target="_blank" class="text-white pull-left" th:href="@{/studentBill/billReport/mahasiswaProdi(prodi=${prodi.id}, tahun=${tahun.id})}">Download</a></button>
                                 </div>
                             </div>
                         </div>

@@ -48,7 +48,7 @@
                                 <h3 class="mb-0">Angkatan : <div th:text="${angkatan}"></div></h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/studentBill/billAdmin/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                <a th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
                     </div>

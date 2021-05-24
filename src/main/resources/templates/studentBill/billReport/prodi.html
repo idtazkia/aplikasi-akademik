@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Topic</title>
+    <style type="text/css">
+        body {
+            font-size: small;
+        }
+
+        .container{
+            padding-top: 30px;
+        }
+        .text{
+            font-size: 18px;
+        }
+        td{
+            font-size: 18px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row" style="padding-left: 30px; padding-left: 30px;">
+        <div class="col-md-1">
+            <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
+        </div>
+        <div class="col-md-11 text-center">
+            <b>BILL REPORT BY PRODI</b>
+            <br>
+            <b>TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS</b>
+            <br>
+            <b th:text="${'ACADEMIC YEAR ' + tahun}">FIRST SEMESTER ACADEMIC YEAR 20**/20**</b>
+        </div>
+    </div>
+<!--    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">-->
+<!--        <div class="col-md-12">-->
+<!--            <table>-->
+<!--                <tr>-->
+<!--                    <td class="text"><b>Departement/Group</b></td>-->
+<!--                    <td class="text"><b> &nbsp; &nbsp; :</b></td>-->
+<!--                    <td class="text"><b th:text="${jadwal.prodi.namaProdi + ' /'+jadwal.kelas.namaKelas}">Islamic Business and Management/MBS-C-17</b></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td class="text"><b>Subject</b></td>-->
+<!--                    <td class="text"><b>&nbsp; &nbsp; :</b></td>-->
+<!--                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">ACC2701-Islamic Business Ethic</b></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td class="text"><b>Lecture</b></td>-->
+<!--                    <td class="text"><b>&nbsp; &nbsp; :</b></td>-->
+<!--                    <td class="text"><b th:text="${dosen}">KholifahST, M.E.Sy</b></td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="row" style="margin-top: 20px;">
+        <table border="1" width="100%" style="font-size: 10px;">
+            <thead>
+            <tr>
+                <td rowspan="2" style="text-align: center;">NO</td>
+                <td rowspan="2" style="text-align: center;">NAME</td>
+                <td rowspan="2" style="text-align: center;">BILL TOTAL</td>
+                <td rowspan="2" style="text-align: center;">PAID</td>
+                <td rowspan="2" style="text-align: center;">REMAIN</td>
+                <td rowspan="2" style="text-align: center;">REMAINING PERCENTAGE</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data,row : ${listProdi}">
+                <td style="text-align: center;" th:text="${row.index + 1}">1</td>
+                <td th:text="${data.Prodi}">2018-09-10</td>
+                <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data.Tagihan, 0, 'POINT', 2, 'COMMA')}">09:31:00</td>
+                <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data.Dibayar, 0, 'POINT', 2, 'COMMA')}">12:00:00</td>
+                <td style="text-align: center;" th:text="${'Rp. ' + #numbers.formatDecimal(data.Sisa, 0, 'POINT', 2, 'COMMA')}">42</td>
+                <td style="text-align: center;" th:text="${data.Percentage+'%'}"></td>
+<!--                <td style="text-align: center;" width="3%" th:text="${data[5]}">3</td>-->
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center"><h5>Total : </h5></td>
+                <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+                <td class="text-center"><h5 th:text="${'Rp. ' + #numbers.formatDecimal(toTagihan - toDibayar, 0, 'POINT', 2, 'COMMA')}"></h5></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+            <tr>
+                <td id="tanggal">&nbsp;&nbsp;</td>
+            </tr>
+            </thead>
+            <tr>
+<!--                <td th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>-->
+            </tr>
+            <tr>
+                <td>&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;&nbsp;</td>
+            </tr>
+            <tr>
+<!--                <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>-->
+            </tr>
+        </table>
+    </div>
+</div>
+<!--<style type="text/css">-->
+<!--    @page-->
+<!--    {-->
+
+<!--        size: auto;   /* auto is the current printer page size */-->
+<!--        margin: 0mm;  /* this affects the margin in the printer settings */-->
+<!--    }-->
+
+<!--    @media print {-->
+<!--        #printbtn {-->
+<!--            display :  none;-->
+<!--        }-->
+<!--    }-->
+<!--</style>-->
+
+<!--</body>-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
+
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>-->
+<!--<script>-->
+<!--    function printpage()-->
+<!--    {-->
+<!--        window.print()-->
+<!--    }-->
+
+<!--    var doc = new jsPDF('p','pt','letter');-->
+<!--    var content = $('#content');-->
+<!--    doc.addHTML(document.body,function() {-->
+<!--        doc.save('Report-Tagihan-PerProdi.pdf');-->
+<!--    });-->
+
+<!--</script>-->
+
+<!--<script language=javascript>-->
+<!--    function closemyself() {-->
+<!--        window.opener=self;-->
+<!--        window.close();-->
+<!--        self.close();-->
+<!--    }-->
+<!--</script>-->
+</html>

@@ -232,13 +232,13 @@
                         </div>
                         <div th:if="${message == null}">
                             <div class="row mt-4" th:if="${jumlahNilai == 0}">
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-12">
                                     <form method="post" th:action="@{/studentBill/cicilan/approve}">
                                         <button type="submit" class="btn btn-success" >Setujui</button>
                                         <input type="hidden" name="bill" th:value="${bill.id}">
                                     </form>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-12">
                                     <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modal-reject">Ditolak</button>
                                     <!-- Modal reject cicilan -->
                                     <div class="modal fade" id="modal-reject">
@@ -270,7 +270,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-8 text-right">
+                                <div class="col-md-8 col-xs-12 text-right">
                                     <button type="submit" class="btn btn-info " data-toggle="modal" data-target="#totalDocument">
                                         <i class="fas fa-file"></i> Daftar Berkas
                                     </button>
