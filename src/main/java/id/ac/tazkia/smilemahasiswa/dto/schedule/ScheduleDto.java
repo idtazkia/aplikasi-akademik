@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleDto {
     private String id;
+    private String idMatakuliah;
     private String namaMatkuliah;
     private String namaKelas;
     private String namaDosen;

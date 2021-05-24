@@ -5,28 +5,39 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.script.Bindings;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
-@Controller
+@Controller @Slf4j
 public class DashboardController {
 
     @Autowired
     private UserDao userDao;
+
+    @Value("${upload.ktp}")
+    private String uploadKtp;
+
+    @Value("${upload.ijazah}")
+    private String uploadIjazah;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -92,6 +103,18 @@ public class DashboardController {
     @Autowired
     private RequestPenangguhanDao requestPenangguhanDao;
 
+    @Autowired
+    private CutiDao cutiDao;
+
+    @Autowired
+    private WilayahDao wilayahDao;
+
+    @Autowired
+    private ProdiDao prodiDao;
+
+    @Autowired
+    private KurikulumDao kurikulumDao;
+
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
         return agamaDao.findByStatus(StatusRecord.AKTIF);
@@ -110,6 +133,27 @@ public class DashboardController {
     @ModelAttribute("pendidikan")
     public Iterable<Pendidikan> pendidikan() {
         return pendidikanDao.findAll();
+    }
+
+    @GetMapping("/api/kabupaten")
+    @ResponseBody
+    public List<Wilayah> kabupatenList(@RequestParam String id){
+        List<Wilayah> wilayah = wilayahDao.kabupaten(id);
+        return wilayah;
+    }
+
+    @GetMapping("/api/kecamatan")
+    @ResponseBody
+    public List<Wilayah> kecamatanList(@RequestParam String id){
+        List<Wilayah> wilayah = wilayahDao.kecamatan(id);
+        return wilayah;
+    }
+
+    @GetMapping("/api/desa")
+    @ResponseBody
+    public List<Wilayah> desaList(@RequestParam String id){
+        List<Wilayah> wilayah = wilayahDao.desa(id);
+        return wilayah;
     }
 
     @GetMapping("/dashboard")
@@ -159,6 +203,7 @@ public class DashboardController {
 
     }
 
+
     @GetMapping("/user/profile")
     public void UserProfile(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
@@ -166,6 +211,9 @@ public class DashboardController {
         model.addAttribute("mhsw", mahasiswa);
         model.addAttribute("transportasi", transportasiDao.findAll());
         model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
+        model.addAttribute("provinsi", wilayahDao.provinsi());
+        model.addAttribute("listProdi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
 
         model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
@@ -316,12 +364,60 @@ public class DashboardController {
     }
 
     @PostMapping("/user/profile")
-    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result){
-
-
+    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result, MultipartFile file, MultipartFile ijazah) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
+
+        if (!file.isEmpty() || file != null){
+            String namaFile = file.getName();
+            String jenisFile = file.getContentType();
+            String namaAsliFile = file.getOriginalFilename();
+            Long ukuran = file.getSize();
+
+            String extension = "";
+
+            int i = namaAsliFile.lastIndexOf('.');
+            int p = Math.max(namaAsliFile.lastIndexOf('/'), namaAsliFile.lastIndexOf('\\'));
+
+            if (i > p){
+                extension = namaAsliFile.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = uploadKtp + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + extension);
+            file.transferTo(tujuan);
+
+            mahasiswa.setFileKtp(idFile + "." + extension);
+        }else {
+            mahasiswa.setFileKtp(mahasiswa.getFileKtp());
+        }
+
+        if (!ijazah.isEmpty() || ijazah != null){
+            String namaFile = ijazah.getName();
+            String namaFileAsli = ijazah.getOriginalFilename();
+
+            String extinsion = "";
+            int i = namaFileAsli.lastIndexOf('.');
+            int p = Math.max(namaFileAsli.lastIndexOf('/'), namaFileAsli.lastIndexOf('\\'));
+
+            if (i > p){
+                extinsion = namaFileAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = uploadKtp + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + extinsion);
+            ijazah.transferTo(tujuan);
+
+            mahasiswa.setFileIjazah(idFile + "." + extinsion);
+        }else {
+            mahasiswa.setFileIjazah(mahasiswa.getFileIjazah());
+        }
+
+
         mahasiswa.setStatus(mahasiswa.getStatus());
-        mahasiswa.setStatusAktif("A");
         mahasiswa.setIdAgama(mahasiswaDto.getAgama());
         mahasiswa.setEmailPribadi(mahasiswaDto.getEmailPribadi());
         mahasiswa.setEmailTazkia(mahasiswaDto.getEmailTazkia());
@@ -333,6 +429,17 @@ public class DashboardController {
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdNegara(mahasiswaDto.getIdNegara());
         mahasiswa.setNamaJalan(mahasiswaDto.getNamaJalan());
+        mahasiswa.setIdProvinsi(mahasiswaDto.getIdProvinsi());
+        mahasiswa.setIdKotaKabupaten(mahasiswaDto.getIdKotaKabupaten());
+        mahasiswa.setIdKecamatan(mahasiswaDto.getIdKecamatan());
+        mahasiswa.setIdKelurahan(mahasiswaDto.getIdKelurahan());
+        mahasiswa.setRt(mahasiswaDto.getRt());
+        if (mahasiswa.getStatusAktif() == null){
+            mahasiswa.setStatusAktif("AKTIF");
+        } else {
+            mahasiswa.setStatusAktif(mahasiswa.getStatusAktif());
+        }
+        mahasiswa.setRw(mahasiswaDto.getRw());
         mahasiswa.setTerakhirUpdate(LocalDate.now());
         mahasiswaDao.save(mahasiswa);
 
@@ -358,11 +465,11 @@ public class DashboardController {
         ayah.setStatusHidup(mahasiswaDto.getHidup());
         ayah.setNik(mahasiswaDto.getNikAyah());
         ayahDao.save(ayah);
-        return "redirect:profile";
+        return "redirect:/study/comingsoon";
     }
 
     @GetMapping("/admin")
-    public String adminDashboard(Model model,Authentication authentication){
+    public String adminDashboard(Model model, Authentication authentication, @PageableDefault(size = 10)Pageable pageable){
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
         model.addAttribute("jmlDosen",dosenDao.countDosenByStatus(StatusRecord.AKTIF));
@@ -374,12 +481,28 @@ public class DashboardController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
+        model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
+        model.addAttribute("listCutiDosenWali", cutiDao.listCutiDosenWali(user));
+
         Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
         model.addAttribute("jadwal", jadwal);
 
 
 
         return "dashboardadmin";
+    }
+
+    @PostMapping("/admin/updateCuti")
+    public String updateStatus(@RequestParam Cuti cuti, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        String idMahasiswa = cuti.getMahasiswa().getNim();
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
+
+        mahasiswa.setStatusAktif("CUTI");
+        cuti.setStatusPengajuaan("APPROVED");
+        cuti.setUserApproved(user.getUsername());
+        cutiDao.save(cuti);
+        return "redirect:/admin";
     }
 
 }

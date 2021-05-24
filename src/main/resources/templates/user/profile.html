@@ -1,787 +1,646 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layout}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Data Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link th:href="@{/css/assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css}" rel="stylesheet" />
     <style type="text/css">
-        .card{
-            background-color: #ffffff;
-            padding: 0px;
-            border-radius: 10px;
-
+        body{
+            background-color: #589cdb;
         }
-        .card-content{
-            background-color: #f49c6c;
+        .margin-row{
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        .card-style{
+            background-color: white;
+            border-radius: 10px;
+        }
+        .color-header{
+            background-color: #f5f0e1;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            padding: 12px;
-            text-align: center;
         }
-
-        .card-body{
-            padding: 15px;
+        .profile-picture{
+            width: 120px;
+            height: 120px;
         }
-
-        .txt-profile{
-            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+        .btn-arrow-back{
+            background-color: #ff6e40;
+            border: none;
+            border-radius: 14px;
             color: white;
-        }
-
-        .card-body-content{
-            text-align: center;
-            padding: 5px;
-        }
-
-        .bt-edit{
-            width: 220px;
-            background-color: #f49c6c;
-            border: 2px solid white;
-            color: white;
-            border-radius: 15px;
-            padding: 5px;
-            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-            font-size: 12px;
-        }
-
-        .txt-title{
-            color: #292928;
+            padding: 10px;
+            font-size: 13px;
+            text-decoration: none;
         }
         .txt-warning{
+            font-size: 12px;
             color: red;
-            font-size: 10px;
-        }
-        .ohide {
-            display: none;
         }
     </style>
 </head>
 <body>
-<section layout:fragment="main" class="content">
-    <div class="breadcomb-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="breadcomb-list">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <div class="breadcomb-wp">
-                                    <div class="breadcomb-icon">
-                                        <i class="notika-icon notika-form"></i>
-                                    </div>
-                                    <div class="breadcomb-ctn">
-                                        <h2>Profile Mahasiswa</h2>
-                                        <p></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <!--<div class="breadcomb-report">
-                                    <a th:href="@{/study/form}">
-                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
-                                    </a>
-                                </div>-->
+    <div class="container">
+        <div class="row margin-row">
+            <div class="col-md-3 col-xs-12" style="margin-top: 5px; margin-bottom: 5px;">
+                <div class="card-style">
+                    <div class="card-body color-header">
+                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="col-md-12 col-xs-12 text-center">
+                                <img th:src="@{/img/profile.png}" class="profile-picture">
                             </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <div class="col-md-12 col-xs-12">
+                            <b class="card-title" style="color: #1e3d59;">Nim</b>
+                            <p th:text="${mahasiswa.nim}"></p>
+                            <b class="card-title" style="color: #1e3d59;">Nama</b>
+                            <p th:text="${mahasiswa.nama}"></p>
+                            <b class="card-title" style="color: #1e3d59;">Prodi</b>
+                            <p th:text="${mahasiswa.idProdi.namaProdi}"></p>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-xs-12" style="margin-top: 5px; margin-bottom: 5px;">
+                <div class="card-style">
+                    <div class="card-body color-header">
+                        <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                                <h5>Edit Your Profile</h5>
+                                <p class="txt-warning" style="font-size: 15px;">Perbaiki dan lengkapi Data yang masih kosong !!!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <form th:action="@{/user/profile}" name="myForm" method="post" onsubmit="return validateForm()" th:object="${mahasiswa}" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Personal Data</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Address</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Parents</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="ktp-tab" data-bs-toggle="tab" data-bs-target="#ktp" type="button" role="tab" aria-controls="messages" aria-selected="false">Upload KTP dan Ijazah</button>
+                                </li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Name <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                <input type="text" name="nama" th:field="*{nama}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Student Identification Number (NIM)</label>
+                                                <input type="text" disabled name="nim" th:field="*{nim}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Religion</label>
+                                                <select class="form-control" style="width: 100%;" id="selectReligion" th:field="*{agama}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${agama}"
+                                                            th:text="${data.agama}"
+                                                            th:value="${data.idAgama}">Islam</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                <input type="text" name="lahir" th:field="*{tempat}"  class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Date of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
+                                                <input type="date" name="tanggalLahir" th:field="*{tanggalLahir}" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Cloth Size (Toga)</label>
+                                                <select class="form-control" style="width: 100%;" id="select2" name="toga" th:field="*{ukuranBaju}">
+                                                    <option value=""></option>
+                                                    <option value="S">S</option>
+                                                    <option value="M">M</option>
+                                                    <option value="L">L</option>
+                                                    <option value="XL">XL</option>
+                                                    <option value="XXL">XXL</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>ID Number</label>
+                                                <input type="text" name="nik" th:field="*{nik}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>NISN</label>
+                                                <input type="text" name="nisn" th:field="*{nisn}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Citizen</label>
+                                                <select class="form-control" name="wargaNegara" th:field="*{kewarganegaraan}">
+                                                    <option value=""></option>
+                                                    <option value="WNI">WNI</option>
+                                                    <option value="WNA">WNA</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Tranportation</label>
+                                                <select class="form-control" name="trasportasi" th:field="*{alatTransportasi}">
+                                                    <option value=""></option>
+                                                    <option th:each="transport : ${transportasi}"
+                                                            th:text="${transport.nama}"
+                                                            th:value="${transport.id}">Mobil</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Telephone</label>
+                                                <input maxlength="13" minlength="5" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponRumah" th:field="*{teleponRumah}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Phone</label>
+                                                <input maxlength="13" minlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponSeluler" th:field="*{teleponSeluler}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Personal Email</label>
+                                                <input type="email" required name="email" th:field="*{emailPribadi}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Email</label>
+                                                <input type="email" name="emailTazkia" th:field="*{emailTazkia}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-12 col-xs-12">
+                                                <label>Country</label>
+                                                <input type="text" name="negara" th:field="*{idNegara}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Provinsi</label>
+                                                <select class="form-control" name="provinsi" style="width: 100%;" id="select-provinsi" onchange="getProvinsi()">
+                                                    <option value="" selected disabled>Pilih Provinsi</option>
+                                                    <option th:each="data : ${provinsi}"
+                                                            th:text="${data[1]}"
+                                                            th:value="${data[0]}"></option>
+                                                </select>
+                                                <input type="hidden" name="namaProvinsi" id="isiProvinsi">
+                                                <input type="hidden" name="idProvinsi" id="namaProvinsi" th:field="*{idProvinsi}">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Kabupaten / Kota</label>
+                                                <select class="form-control" name="kota" style="width: 100%;" id="selectKota" onchange="getKabupaten()">
+                                                </select>
+                                                <input type="hidden" name="namaKotaKabupaten" id="isiKabupaten">
+                                                <input type="hidden" name="idKotaKabupaten" id="namaKotaKabupaten" th:field="*{idKotaKabupaten}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Kecamatan</label>
+                                                <select class="form-control" style="width: 100%;" id="selectKecamatan" onchange="getDesa()">
+                                                </select>
+                                                <input type="hidden" name="kecamatan" id="isiKecamatan">
+                                                <input type="hidden" name="idKecamatan" id="namaKecamatan" th:field="*{idKecamatan}">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Desa</label>
+                                                <select class="form-control" style="width: 100%;" id="selectDesa">
+                                                </select>
+                                                <input type="hidden" name="kelurahan" id="isiDesa">
+                                                <input type="hidden" name="idKelurahan" id="namaDesa" th:field="*{idKelurahan}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Rt</label>
+                                                <input type="text" class="form-control" name="rt">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Rw</label>
+                                                <input type="text" class="form-control" name="rw">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-12 col-xs-12">
+                                                <label>Address</label>
+                                                <input type="text" id="alamat" required minlength="10" class="form-control" name="namaJalan" th:field="*{namaJalan}">
+                                                <input type="hidden" name="id" th:field="*{id}">
+                                                <input type="hidden" name="idUser" th:field="*{idUser}">
+                                                <input type="hidden" name="ayah" th:field="*{ayah}">
+                                                <input type="hidden" name="ibu" th:field="*{ibu}">
+                                                <input type="hidden" name="wali" th:field="*{wali}">
+                                                <input type="hidden" name="rfid" th:field="*{rfid}">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>NIK Father</label>
+                                                <input type="text" name="nikAyah" th:field="*{nikAyah}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Father's Name</label>
+                                                <input type="text" name="ayah" th:field="*{namaAyah}" class="form-control">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Eductaion Level</label>
+                                                <select class="form-control" name="pendidikanAyah" th:field="*{idJenjangPendidikan}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${pendidikan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Place of Birth</label>
+                                                <input type="text" name="lahirAyah" th:field="*{tempatLahirAyah}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Date of Birth</label>
+                                                <input type="date" name="tanggalLahirAyah" th:field="*{tanggalLahirAyah}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Job</label>
+                                                <select class="form-control" name="pekerjaanAyah" th:field="*{idPekerjaan}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${pekerjaan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Revenue</label>
+                                                <select class="form-control" name="penghasilanAyah" th:field="*{penghasilan}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${penghasilan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Religion</label>
+                                                <select class="form-control" name="agamaAyah" th:field="*{agama}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${agama}"
+                                                            th:value="${data.idAgama}"
+                                                            th:text="${data.agama}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Live Status</label>
+                                                <select class="form-control" name="statusAyah" th:field="*{hidup}">
+                                                    <option value=""></option>
+                                                    <option value="H">Hidup</option>
+                                                    <option value="M">Meninggal</option>
+                                                </select>
+
+
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Special Needs</label>
+                                                <select class="form-control" name="kebutuhanAyah" th:field="*{kebutuhanKhusus}">
+                                                    <option value="" disabled>Pilih Salah Satu</option>
+                                                    <option th:each="data : ${kebutuhan}"
+                                                            th:text="${data.kode + '  -  ' + data.nama}"
+                                                            th:value="${data.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>NIK Mother</label>
+                                                <input type="text" name="nikIbu" th:field="*{nikIbu}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Mother's Name</label>
+                                                <input type="text" name="ibu" th:field="*{namaIbuKandung}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Eductaion Level</label>
+                                                <select class="form-control" name="pendidikanIbu" th:field="*{idJenjangPendidikanIbu}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${pendidikan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Place of Birth</label>
+                                                <input type="text" name="lahirIbu" th:field="*{tempatLahirIbu}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Date of Birth</label>
+                                                <input type="date" name="tanggalLahirIbu" th:field="*{tanggalLahirIbu}" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Job</label>
+                                                <select class="form-control" name="pekerjaanIbu" th:field="*{idPekerjaanIbu}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${pekerjaan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Revenue</label>
+                                                <select class="form-control" name="penghasilanIbu" th:field="*{penghasilanIbu}">
+                                                    option value=""></option>
+                                                    <option th:each="data : ${penghasilan}"
+                                                            th:text="${data.nama}"
+                                                            th:value="${data.id}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Religion</label>
+                                                <select class="form-control" name="agamaIbu" th:field="*{agamaIbu}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${agama}"
+                                                            th:value="${data.idAgama}"
+                                                            th:text="${data.agama}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Live Status</label>
+                                                <select class="form-control" name="statusIbu" th:field="*{statusHidupIbu}">
+                                                    <option value=""></option>
+                                                    <option value="H">Hidup</option>
+                                                    <option value="M">Meninggal</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                                <label>Special Needs</label>
+                                                <select class="form-control" name="kebutuhanIbu" th:field="*{kebutuhanKhususIbu}">
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${kebutuhan}"
+                                                            th:text="${data.kode + '  -  ' + data.nama}"
+                                                            th:value="${data.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="ktp" role="tabpanel" aria-labelledby="ktp-tab">
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                                            <div class="col-md-12 col-xs-12">
+                                                <label>Upload KTP</label>
+                                                <input type="file" name="file" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row" style="margin-top: 12px; margin-bottom: 12px;">
+                                            <div class="col-md-12 col-xs-12">
+                                                <label>Upload Ijazah</label>
+                                                <input type="file" name="ijazah" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-body">
+                            <input class="btn btn-primary" type="submit" value="Submit">
+                            <a th:href="@{/dashboard}" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <form th:action="@{/user/profile}" method="post" th:object="${mahasiswa}">
-        <div class="contact-area">
-            <div class="container">
-                <div class="row" style="padding: 15px;">
-                    <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 card" style="margin-top: 10px;">
-                        <div class="card-content">
-                            <div class="contact-img">
-                                <img th:src="@{/img/post/1.jpg}" alt="" />
-                            </div>
-                            <b class="txt-profile" th:text="${mhsw.nama}">Muhammad Rafizki</b>
-                            <br>
-                            <b class="txt-profile" th:text="${mhsw.nim}"></b>
-                            <br>
-                            <br>
-                            <button class="bt-edit" th:text="${mhsw.idProdi.namaProdi}"><b>Hukum Ekonomi Syariah</b></button>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-md-6 col-xs-6 card-body-content">
-                                <span th:text="${mhsw.angkatan}">2019</span>
-                                <br>
-                                <b>Angkatan</b>
-                            </div>
-
-                            <div class="col-md-6 col-xs-6 card-body-content">
-                                <span th:text="${mhsw.jenisKelamin}">PRIA</span>
-                                <br>
-                                <b>Gender</b>
-                            </div>
-
-                            <div class="col-md-12 col-xs-12 card-body-content">
-                                <center>
-                                    <span th:text="${mhsw.idAbsen}">PRIA</span>
-                                    <br>
-                                    <b>Password Exam</b>
-                                </center>
-                            </div>
-
-                            <div class="col-md-12 col-xs-12 card-body-content">
-                                <center>
-                                    <span th:text="${'Username = ' + mhsw.nim}">PRIA</span>
-                                    <span th:text="${'Password = ' + mhsw.idAbsen}">PRIA</span>
-                                    <br>
-                                    <b>Login Wifi</b>
-                                </center>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="col-lg-9 col-md-9 col-xs-12" style="padding-top: 10px;">
-                        <div class="wizard-wrap-int">
-                            <div class="wizard-hd">
-                                <center>
-                                    <h2>Edit Profile</h2>
-                                    <span style="color: red; font-size: 10px;">Lengkapi data yang masih kosong !!!</span>
-                                </center>
-
-
-                            </div>
-                            <div id="rootwizard">
-                                <div class="navbar">
-                                    <div class="navbar-inner">
-                                        <div class="container-pro wizard-cts-st">
-                                            <ul>
-                                                <li><a href="#tab1" data-toggle="tab">Personal Data</a></li>
-                                                <li><a href="#tab2" data-toggle="tab">Address</a></li>
-                                                <li><a href="#tab3" data-toggle="tab">Parents</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-content">
-                                    <div class="tab-pane wizard-ctn" id="tab1">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Name <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
-                                                        <input type="text" name="nama" disabled th:field="*{nama}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Student Identification Number (NIM)</label>
-                                                        <input type="text" disabled name="nim" th:field="*{nim}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Religion</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" th:field="*{agama}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${agama}"
-                                                                        th:text="${data.agama}"
-                                                                        th:value="${data.idAgama}">Islam</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Place of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
-                                                        <input type="text" name="lahir" th:field="*{tempat}"  class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Date of Birth <span class="txt-warning">* Fill in the name according to the last certificate (Ijazah Akhir)</span></label>
-                                                        <input type="date" name="tanggalLahir" th:field="*{tanggalLahir}" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Cloth Size (Toga)</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="toga" th:field="*{ukuranBaju}">
-                                                                <option value=""></option>
-                                                                <option value="S">S</option>
-                                                                <option value="M">M</option>
-                                                                <option value="L">L</option>
-                                                                <option value="XL">XL</option>
-                                                                <option value="XXL">XXL</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">ID Number</label>
-                                                        <input type="text" name="nik" th:field="*{nik}" class="form-control">                                                </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">NISN</label>
-                                                        <input type="text" name="nisn" th:field="*{nisn}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Citizen</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="wargaNegara" th:field="*{kewarganegaraan}">
-                                                                <option value=""></option>
-                                                                <option value="WNI">WNI</option>
-                                                                <option value="WNA">WNA</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Tranportation</span></label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="trasportasi" th:field="*{alatTransportasi}">
-                                                                <option value=""></option>
-                                                                <option th:each="transport : ${transportasi}"
-                                                                        th:text="${transport.nama}"
-                                                                        th:value="${transport.id}">Mobil</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Telephone</label>
-                                                        <input maxlength="13" minlength="5" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponRumah" th:field="*{teleponRumah}" class="form-control">                                                </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Phone</label>
-                                                        <input maxlength="13" minlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'');" id="myId" name="teleponSeluler" th:field="*{teleponSeluler}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Personal Email</label>
-                                                        <input type="text" name="email" th:field="*{emailPribadi}" class="form-control">                                                </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Email</label>
-                                                        <input type="text" name="emailTazkia" th:field="*{emailTazkia}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="tab-pane wizard-ctn" id="tab2">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Country</label>
-                                                        <input type="text" name="negara" th:field="*{idNegara}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Address</label>
-                                                        <input type="text" required minlength="10" class="form-control" name="namaJalan" th:field="*{namaJalan}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <input type="hidden" name="id" th:field="*{id}">
-                                        <input type="hidden" name="idUser" th:field="*{idUser}">
-                                        <input type="hidden" name="ayah" th:field="*{ayah}">
-                                        <input type="hidden" name="ibu" th:field="*{ibu}">
-                                        <input type="hidden" name="wali" th:field="*{wali}">
-                                        <input type="hidden" name="rfid" th:field="*{rfid}">
-
-
-                                    </div>
-                                    <div class="tab-pane wizard-ctn" id="tab3">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">NIK Father</label>
-                                                        <input type="text" name="nikAyah" th:field="*{nikAyah}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Father's Name</label>
-                                                        <input type="text" name="ayah" th:field="*{namaAyah}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Eductaion Level</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pendidikanAyah" th:field="*{idJenjangPendidikan}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${pendidikan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Place of Birth</label>
-                                                        <input type="text" name="lahirAyah" th:field="*{tempatLahirAyah}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Date of Birth</label>
-                                                        <input type="date" name="tanggalLahirAyah" th:field="*{tanggalLahirAyah}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Job</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pekerjaanAyah" th:field="*{idPekerjaan}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${pekerjaan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Revenue</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="penghasilanAyah" th:field="*{penghasilan}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${penghasilan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Religion</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="agamaAyah" th:field="*{agama}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${agama}"
-                                                                        th:value="${data.idAgama}"
-                                                                        th:text="${data.agama}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Live Status</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="statusAyah" th:field="*{hidup}">
-                                                                <option value=""></option>
-                                                                <option value="H">Hidup</option>
-                                                                <option value="M">Meninggal</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Special Needs</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="kebutuhanAyah" th:field="*{kebutuhanKhusus}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${kebutuhan}"
-                                                                        th:text="${data.kode + '  -  ' + data.nama}"
-                                                                        th:value="${data.id}"></option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <hr>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">NIK Mother</label>
-                                                        <input type="text" name="nikIbu" th:field="*{nikIbu}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Mother's Name</label>
-                                                        <input type="text" name="ibu" th:field="*{namaIbuKandung}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Eductaion Level</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pendidikanIbu" th:field="*{idJenjangPendidikanIbu}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${pendidikan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Place of Birth</label>
-                                                        <input type="text" name="lahirIbu" th:field="*{tempatLahirIbu}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Date of Birth</label>
-                                                        <input type="date" name="tanggalLahirIbu" th:field="*{tanggalLahirIbu}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Job</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="pekerjaanIbu" th:field="*{idPekerjaanIbu}">
-                                                                <option value=""></option>
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${pekerjaan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Revenue</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="penghasilanIbu" th:field="*{penghasilanIbu}">
-                                                                option value=""></option>
-                                                                <option th:each="data : ${penghasilan}"
-                                                                        th:text="${data.nama}"
-                                                                        th:value="${data.id}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Religion</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="agamaIbu" th:field="*{agamaIbu}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${agama}"
-                                                                        th:value="${data.idAgama}"
-                                                                        th:text="${data.agama}">
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Live Status</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="statusIbu" th:field="*{statusHidupIbu}">
-                                                                <option value=""></option>
-                                                                <option value="H">Hidup</option>
-                                                                <option value="M">Meninggal</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                <div class="form-group ic-cmp-int">
-                                                    <div class="form-ic-cmp">
-
-                                                    </div>
-                                                    <div class="nk-int-st">
-                                                        <label class="txt-title">Special Needs</label>
-                                                        <div class="bootstrap-select fm-cmp-mg">
-                                                            <select class="selectpicker" name="kebutuhanIbu" th:field="*{kebutuhanKhususIbu}">
-                                                                <option value=""></option>
-                                                                <option th:each="data : ${kebutuhan}"
-                                                                        th:text="${data.kode + '  -  ' + data.nama}"
-                                                                        th:value="${data.id}"></option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="wizard-action-pro">
-                                        <ul class="wizard-nav-ac">
-                                            <li><a class="button-previous a-prevent" href="#"><i class="notika-icon notika-back"></i></a></li>
-                                            <li><a class="button-next a-prevent" href="#"><i class="notika-icon notika-next-pro"></i></a></li>
-                                        </ul>
-                                        <div class="row">
-                                            <div class="col-md-12 col-xs-12">
-
-
-
-                                                <button class="btn btn-primary notika-btn-primary btn-sm waves-effect">Save</button>
-                                                <a th:href="@{/dashboard}" class="btn btn-danger notika-btn-danger btn-sm waves-effect">Cancel</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-</section>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $("#myField").keyup(function() {
-        $("#myField").val(this.value.match(/[0-9]*/));
+    $(function() {
+        $('#selectReligion').select2({
+            placeholder: 'Select an option'
+        });
+        $('#select2').select2({
+            placeholder: 'Select an option'
+        });
+        $('#select-provinsi').select2({
+            placeholder: 'Select an option'
+        });
+        $('#selectKota').select2({
+            placeholder: 'Select an option'
+        });
+        $('#selectKecamatan').select2({
+            placeholder: 'Select an option'
+        })
+        $('#selectDesa').select2({
+            placeholder: 'Select an option'
+        })
+        $('#select-provinsi').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.text);
+            $('#isiProvinsi').val(e.params.args.data.id);
+            $('#namaProvinsi').val(e.params.args.data.text);
+        });
+        $('#selectKota').on('select2:selecting', function (e){
+           console.log('Selecting: ', e.params.args.data.id);
+           $('#isiKabupaten').val(e.params.args.data.id);
+           $('#namaKotaKabupaten').val(e.params.args.data.text);
+        });
+        $('#selectKecamatan').on('select2:selecting', function (e){
+            console.log('Selecting : ' , e.params.args.data.id);
+            $('#isiKecamatan').val(e.params.args.data.id);
+            $('#namaKecamatan').val(e.params.args.data.text);
+        });
+        $('#selectDesa').on('select2:selecting', function (e){
+            console.log('Selecting : ' , e.params.args.data.id);
+            $('#isiDesa').val(e.params.args.data.id);
+            $('#namaDesa').val(e.params.args.data.text);
+        });
     });
+
+    function getProvinsi(){
+        let dropdown = $('#selectKota');
+
+        dropdown.empty();
+        dropdown.append('<option selected="true" disabled>Pilih Kabupaten/Kota</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiProvinsi').val());
+
+
+        const url = '/api/kabupaten?id='+$('#isiProvinsi').val();
+
+        $.getJSON(url, function (data){
+           console.log(data);
+           $.each(data, function (key, entry){
+               dropdown.append($('<option></option>').attr('value', entry.kode).text(entry.nama));
+           })
+        });
+    }
+
+    function getKabupaten(){
+        let dropdown = $('#selectKecamatan');
+
+        dropdown.empty();
+        dropdown.append('<option selected="true" disabled>Pilih Kecamatan</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiKabupaten').val());
+
+        const url = '/api/kecamatan?id='+$('#isiKabupaten').val();
+        $.getJSON(url, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.kode).text(entry.nama))
+            })
+        });
+    }
+
+    function getDesa(){
+        let dropdown = $('#selectDesa');
+
+        dropdown.empty();
+        dropdown.append('<option selected="true" disabled>Pilih Desa/Kelurahan</option>');
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiKecamatan').val());
+
+        const url = '/api/desa?id='+$('#isiKecamatan').val();
+        $.getJSON(url, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.kode).text(entry.nama))
+            })
+        });
+    }
+
+    function validateForm() {
+        var provinsi = document.forms["myForm"]["provinsi"].value;
+        if (provinsi == ""){
+            alert("Provinsi Harus Diisi !!!");
+            return false;
+        }
+        var kota = document.forms["myForm"]["kota"].value;
+        if (kota == ""){
+            alert("Kabupaten/Kota Harus Diisi !!!");
+            return false;
+        }
+        var ktp = document.forms["myForm"]["file"].value;
+        if (ktp == "") {
+            alert("Upload KTP Harus Diisi !!!");
+            return false;
+        }
+        var ijazah = document.forms["myForm"]["ijazah"].value;
+        if (ijazah == ""){
+            alert("Upload Ijazah Harus Diisi !!!");
+            return false;
+        }
+    }
+
+
+    var triggerTabList = [].slice.call(document.querySelectorAll('#myTab a'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            tabTrigger.show()
+        })
+    })
 </script>
 </html>

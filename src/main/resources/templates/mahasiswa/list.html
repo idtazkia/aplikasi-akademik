@@ -74,7 +74,7 @@
                                 <th scope="col">NIM</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Program Study</th>
-                                <th scope="col">Program</th>
+                                <th scope="col">Status</th>
                                 <th scope="col" width="30px"></th>
                             </tr>
                             </thead>
@@ -94,22 +94,52 @@
                                     </a>
                                 </td>
                                 <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>
-                                <td th:text="${data.idProgram.namaProgram}">S2</td>
+                                <td th:if="${data.statusAktif == 'K'}"><span class="badge badge-danger badge-md">NONAKTIF</span></td>
+                                <td th:if="${data.statusAktif == 'L'}"><span class="badge badge-info badge-md">LULUS</span></td>
+                                <td th:if="${data.statusAktif == 'CUTI'}"><span class="badge badge-warning badge-md">CUTI</span></td>
+                                <td th:if="${data.statusAktif == 'AKTIF'}"><span class="badge badge-success badge-md">AKTIF</span></td>
                                 <td align="center">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
+                                        Select to change student status
+                                    </button>
 
-                                    <form th:action="@{/mahasiswa/nonaktif(mahasiswa=${data.id})}" method="post">
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                th:if="${data.status.AKTIF} == ${data.status}">
-                                            Disable Student
-                                        </button>
-                                    </form>
-
-                                    <form th:action="@{/mahasiswa/aktif(mahasiswa=${data.id})}" method="post">
-                                        <button type="submit" class="btn btn-success         btn-xs"
-                                                th:if="${data.status.NONAKTIF} == ${data.status}">
-                                            Enable Student
-                                        </button>
-                                    </form>
+                                    <!-- Modal -->
+                                    <div class="modal fade" th:id="${'exampleModal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Select to change student status</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <form method="post" th:action="@{/mahasiswa/aktif(mahasiswa = ${data.id})}">
+                                                                <button type="submit" class="btn btn-primary btn-success">AKTIF</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <form method="post" th:action="@{/mahasiswa/lulus(mahasiswa = ${data.id})}">
+                                                                <button type="submit" class="btn btn-primary btn-info">LULUS</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <form method="post" th:action="@{/mahasiswa/cuti(mahasiswa = ${data.id})}">
+                                                                <button type="submit" class="btn btn-primary btn-warning">CUTI</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <form method="post" th:action="@{/mahasiswa/keluar(mahasiswa = ${data.id})}">
+                                                                <button type="submit" class="btn btn-primary btn-danger">NONAKTIF</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>

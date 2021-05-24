@@ -137,6 +137,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -149,6 +150,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -286,6 +288,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -298,6 +301,7 @@
                                                     <td>-</td>
                                                     <td><span>-</span> -
                                                         <span>-</span></td>
+                                                    <td th:text="${jadwal.kodeMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.matakuliah}"></td>
@@ -371,8 +375,8 @@
                                                                     </div>
 
                                                                     <div class="modal-footer">
-                                                                        <form  method="post">
-                                                                            <button th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}" type="submit" class="btn btn-white">Delete</button>
+                                                                        <form  method="post" th:action="@{/academic/schedule/delete (jadwal = ${jadwal.id})}">
+                                                                            <button type="submit" class="btn btn-white">Delete</button>
                                                                         </form>
                                                                         <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
                                                                     </div>
@@ -403,6 +407,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -415,6 +420,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -529,6 +535,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -541,6 +548,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -656,6 +664,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -668,6 +677,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -790,6 +800,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -802,6 +813,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -917,6 +929,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -929,6 +942,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -1044,6 +1058,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -1056,6 +1071,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>
@@ -1171,6 +1187,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Room</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Code Course</th>
                                                     <th scope="col">Course</th>
                                                     <th scope="col">Class</th>
                                                     <th scope="col">Lecture</th>
@@ -1183,6 +1200,7 @@
                                                     <td th:text="${jadwal.ruangan}"></td>
                                                     <td><span  th:text="${jadwal.jamMulai}"></span> -
                                                         <span th:text="${jadwal.jamSelesai}"></span></td>
+                                                    <td th:text="${jadwal.idMatakuliah}"></td>
                                                     <td th:if="${bahasa == null}" th:text="${jadwal.course}">></td>
                                                     <td th:if="${bahasa == 'eng'}" th:text="${jadwal.course}"></td>
                                                     <td th:if="${bahasa == 'ina'}" th:text="${jadwal.namaMatkuliah}"></td>

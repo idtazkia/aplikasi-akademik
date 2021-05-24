@@ -383,4 +383,32 @@ public class MahasiswaController {
         return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswaBeasiswa1.getMahasiswa().getId();
     }
 
+    @PostMapping("/mahasiswa/aktif")
+    public String statusAktif(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("AKTIF");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list";
+    }
+
+    @PostMapping("/mahasiswa/lulus")
+    public String statusLulus(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("L");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list";
+    }
+
+    @PostMapping("/mahasiswa/cuti")
+    public String statusCuti(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("CUTI");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list";
+    }
+
+    @PostMapping("/mahasiswa/keluar")
+    public String statusKeluar(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("K");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list";
+    }
+
 }
