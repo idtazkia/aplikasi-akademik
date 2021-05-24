@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlotingDto {
     private String id;
+    private String kodeMatakuliah;
     private String matakuliah;
     private String course;
     private String kelas;

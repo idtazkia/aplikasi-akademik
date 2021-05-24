@@ -143,4 +143,7 @@ public class Mahasiswa {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLulus;
 
+    private String fileKtp;
+    private String fileIjazah;
+
 }

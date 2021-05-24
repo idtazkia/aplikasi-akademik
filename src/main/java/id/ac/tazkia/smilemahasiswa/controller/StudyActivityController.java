@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
@@ -60,6 +61,9 @@ public class StudyActivityController {
 
     @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
+
+    @Autowired
+    private CutiDao cutiDao;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -254,7 +258,7 @@ public class StudyActivityController {
 
 
 
-        List<Object[]> krsDetail = krsDetailDao.pilihanKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
+        List<Object[]> krsDetail = krsDetailDao.pilihKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
 //        List<Object[]> krsDetail = krsDetailDao.pilihKrsMahasiswa(ta, mahasiswa.getIdProdi(), mahasiswa);
         model.addAttribute("pilihanKrs", krsDetail);
 
@@ -427,32 +431,50 @@ public class StudyActivityController {
         if (semester == 5){
             // Manajemen Bisnis Syariah
             if (prodi.equals("01")){
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
+                if (mahasiswa.getIdKonsentrasi().getId().equals("0")){
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                    return "du/konsentrasi";
+                }else {
+                    return "redirect:/du/alert";
+                }
             }else if (prodi.equals("03")){
                 // Ekonomi Syariah
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
+                if (mahasiswa.getIdKonsentrasi().getId().equals("0")){
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                    return "du/konsentrasi";
+                }else {
+                    return "redirect:/du/alert";
+                }
             }
         }else if (semester == 6){
             // Akuntasi Syariah
-            if (prodi.equals("02")){
+            if (mahasiswa.getIdKonsentrasi().getId().equals("0")){
                 model.addAttribute("mahasiswa", mahasiswa);
                 model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
                 return "du/konsentrasi";
+            }else {
+                return "redirect:/du/alert";
             }
         }else if (semester == 2){
             // Magister Ekonomi Syariah
             if (prodi.equals("05")){
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
+                if (mahasiswa.getIdKonsentrasi().getId().equals("0")){
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                    return "du/konsentrasi";
+                }else {
+                    return "redirect:/du/alert";
+                }
             } else if (prodi.equals("4f8e1779-4d46-4365-90df-996fab83b47c")){
-                model.addAttribute("mahasiswa", mahasiswa);
-                model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
-                return "du/konsentrasi";
+                if (mahasiswa.getIdKonsentrasi().getId().equals("0")){
+                    model.addAttribute("mahasiswa", mahasiswa);
+                    model.addAttribute("konstrasiProdi", konsentrasiDao.konsentrasiProdi(prodi));
+                    return "du/konsentrasi";
+                }else {
+                    return "redirect:/du/alert";
+                }
             }
         }
 
@@ -527,5 +549,57 @@ public class StudyActivityController {
 
     }
 
+    @GetMapping("/du/form")
+    public String formDaftarUlang(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
+        if (cuti == null){
+            return "/du/form";
+        }else {
+            model.addAttribute("cuti", cutiDao.findCutiByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
+            return "redirect:/du/cuti/list";
+        }
+    }
+
+//    Cuti
+
+    @GetMapping("/du/cuti/form")
+    public void formCuti(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        model.addAttribute("mahasiswa", mahasiswa);
+
+    }
+
+    @PostMapping("/du/cuti/form")
+    public String prosesCuti(@Valid Cuti cuti, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        cuti.setMahasiswa(mahasiswa);
+        cuti.setTanggalPengajuaan(LocalDate.now());
+        cuti.setStatusPengajuaan("DIAJUKAN");
+        cutiDao.save(cuti);
+
+        return "redirect:/du/cuti/list";
+
+    }
+
+    @GetMapping("/du/cuti/list")
+    public String listCuti(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
+        if (cuti == null){
+            return "redirect:/du/cuti/form";
+        }else {
+            model.addAttribute("cuti", cutiDao.findCutiByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
+            return "/du/cuti/list";
+        }
+
+    }
 
 }
