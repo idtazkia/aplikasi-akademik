@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
@@ -29,6 +30,9 @@ public class ReportController {
 
     @Autowired
     private JadwalDao jadwalDao;
+
+    @Autowired
+    private CutiDao cutiDao;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -217,5 +221,10 @@ public class ReportController {
             model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
             model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
         }
+    }
+
+    @GetMapping("/report/cuti")
+    public void mahasiswaCuti(Model model,@PageableDefault(size = 10)Pageable pageable){
+        model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
     }
 }

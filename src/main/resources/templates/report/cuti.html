@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuti</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                    <span class="h2 font-weight-bold mb-0">Cuti </span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-user-astronaut"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+        <div class="card shadow">
+          <div class="card-header">
+            <h2 class="mb-0">List Mahasiswa Cuti</h2>
+          </div>
+          <div class="table-responsive">
+            <div>
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Nim</th>
+                  <th>Nama</th>
+                  <th>Tanggal Mulai Cuti</th>
+                  <th>Tanggal Berakhir Cuti</th>
+                  <th>Detail</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data, row : ${listCutiMahasiswa}">
+                  <td th:text="${(row.index + 1)}"></td>
+                  <td th:text="${data.mahasiswa.nim}"></td>
+                  <td th:text="${data.mahasiswa.nama}"></td>
+                  <td th:text="${#temporals.format(data.tanggalMulaiCuti, 'dd - MMM - yyyy')}"></td>
+                  <td th:text="${#temporals.format(data.tanggalBerakhirCuti, 'dd - MMM - yyyy')}"></td>
+                  <td>
+                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
+                      Lihat Alasan Cuti
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" th:id="${'exampleModal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Alasan Cuti</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <p th:text="${data.keterangan}"></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="btn btn-danger btn-sm" th:if="${data.statusPengajuaan == 'DIAJUKAN'}">Belum Disetujui</span>
+                    <span class="btn btn-success btn-sm" th:if="${data.statusPengajuaan == 'APPROVED'}">Sudah Disetujui</span>
+                  </td>
+
+                </tr>
+                </tbody>
+              </table>
+              <div class="card-footer py-4">
+                <nav aria-label="...">
+                  <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                            aria-hidden="true">&laquo;</span></a>
+                    </li>
+                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
