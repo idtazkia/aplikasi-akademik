@@ -19,8 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -226,5 +229,15 @@ public class ReportController {
     @GetMapping("/report/cuti")
     public void mahasiswaCuti(Model model,@PageableDefault(size = 10)Pageable pageable){
         model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
+    }
+
+    @PostMapping("/proses/cuti")
+    public String prosesCuti(@Valid Cuti cuti, @RequestParam Mahasiswa mahasiswa){
+        cuti.setMahasiswa(mahasiswa);
+        cuti.setTanggalPengajuaan(LocalDate.now());
+        cuti.setStatusPengajuaan("DIAJUKAN");
+        cutiDao.save(cuti);
+
+        return "redirect:/report/cuti";
     }
 }
