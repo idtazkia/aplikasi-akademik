@@ -423,6 +423,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/report/historymahasiswa}" class="nav-link">History Mahasiswa</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                <a th:href="@{/report/cuti}" class="nav-link">Mahasiswa Cuti</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

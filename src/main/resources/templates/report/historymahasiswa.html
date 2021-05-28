@@ -120,7 +120,7 @@
                                                 <div class="col-md-6">
                                                     <label>Alamat</label>
                                                     <h4 th:if="${mhs.namaJalan} == null">-</h4>
-                                                    <h4 th:text="${mhs.namaJalan}">Bogor</h4>
+                                                    <h4 th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}" th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }">Bogor</h4>
                                                 </div>
                                             </div>
                                             <br>
