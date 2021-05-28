@@ -13,6 +13,8 @@ import java.util.List;
 public interface VirtualAccountDao extends PagingAndSortingRepository<VirtualAccount, String> {
     Page<VirtualAccount> findByTagihan(Tagihan tagihan, Pageable pageable);
 
+    List<VirtualAccount> findByTagihan(Tagihan tagihan);
+
     @Query(value = "SELECT * FROM virtual_account where id_tagihan=?1 limit 2", nativeQuery = true)
     List<VirtualAccount> listVa(String idTagihan);
 

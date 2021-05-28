@@ -9,6 +9,7 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -17,6 +18,9 @@ import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.crosstabs.fill.JRPercentageCalculatorFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -912,6 +916,10 @@ public class StudentBillController {
     public String deleteBill(@RequestParam Tagihan tagihan){
         tagihan.setStatus(StatusRecord.HAPUS);
         tagihanDao.save(tagihan);
+        List<VirtualAccount> va = virtualAccountDao.findByTagihan(tagihan);
+        for(VirtualAccount listVa : va){
+            virtualAccountDao.delete(listVa);
+        }
         tagihanService.hapusTagihan(tagihan);
         return "redirect:list?tahunAkademik="+tagihan.getTahunAkademik().getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
@@ -1315,6 +1323,10 @@ public class StudentBillController {
 
         bill.setStatusTagihan(StatusTagihan.DICICIL);
         tagihanDao.save(bill);
+        List<VirtualAccount> va = virtualAccountDao.findByTagihan(bill);
+        for(VirtualAccount listVa : va){
+            virtualAccountDao.delete(listVa);
+        }
         tagihanService.hapusTagihan(bill);
 
         User user = currentUserService.currentUser(authentication);
@@ -1331,10 +1343,6 @@ public class StudentBillController {
         RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(bill);
         if (requestCicilan != null) {
             requestCicilan.setUserApprove(karyawan);
-            requestCicilan.setWaktuApprove(LocalDateTime.now());
-            requestCicilan.setStatus(StatusRecord.AKTIF);
-            requestCicilan.setStatusApprove(StatusApprove.APPROVED);
-            requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(requestCicilan);
         }
 
@@ -1547,45 +1555,145 @@ public class StudentBillController {
 
     // report
 
-    @GetMapping("/studentBill/billReport/prodi")
-    public void reportProdi(Model model, @RequestParam(required = false) String tahun){
-        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
-
-        model.addAttribute("tahun", thn);
-        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
-        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
-        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
-    }
-
-    @GetMapping("/studentBill/billReport/mahasiswaProdi")
-    public void reportMahasiswaProdi(Model model, @RequestParam(required = false) String prodi,
-                                        @RequestParam(required = false) String tahun){
+    @GetMapping("/billReport/prodi")
+    public void reportTagihanProdi(@RequestParam String tahun, HttpServletResponse response) throws IOException {
+        String[] columns = {"No", "Nama Prodi", "Total Tagihan", "Dibayar", "Sisa", "Persentasi Sisa"};
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-        Prodi prd = prodiDao.findById(prodi).get();
+        List<DaftarTagihanPerProdiDto> listProdi = tagihanDao.listTagihanPerProdi(tahunAkademik);
 
-        String tahun1 = tahunAkademik.getNamaTahunAkademik().substring(1,9);
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Tagihan Prodi");
 
-        model.addAttribute("prodi", prd);
-        model.addAttribute("tahun", tahun1);
-        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi, tahun));
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
 
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
 
+        Row headerRow = sheet.createRow(0);
+
+        for(int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for(DaftarTagihanPerProdiDto t : listProdi){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(t.getProdi());
+            row.createCell(2).setCellValue(t.getTagihan().toString());
+            row.createCell(3).setCellValue(t.getDibayar().toString());
+            row.createCell(4).setCellValue(t.getSisa().toString());
+            row.createCell(5).setCellValue(t.getPercentage().toString()+" %");
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Tagihan_Prodi_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 
-    @GetMapping("/studentBill/billReport/angkatan")
-    public void reportAngkatan(Model model, @RequestParam(required = false) String tahun){
+    @GetMapping("/billReport/angkatan")
+    public void reportTagihanAngkatan(@RequestParam String tahun, HttpServletResponse response) throws IOException{
+        String[] colums = {"No","Angkatan","Total Tagihan", "Dibayar", "Sisa", "Persentase Sisa"};
+
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
+        List<DaftarTagihanPerAngkatanDto> listAngkatan = tagihanDao.listTagihanPerAngkatan(tahunAkademik);
 
-        model.addAttribute("tahun", thn);
-        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
-        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
-        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Tagihan Angkatan");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < colums.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(colums[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (DaftarTagihanPerAngkatanDto ta : listAngkatan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(ta.getAngkatan());
+            row.createCell(2).setCellValue(ta.getTagihan().toString());
+            row.createCell(3).setCellValue(ta.getDibayar().toString());
+            row.createCell(4).setCellValue(ta.getSisa().toString());
+            row.createCell(5).setCellValue(ta.getPercentage().toString()+" %");
+        }
+
+        for(int i = 0; i < colums.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Tagihan_Angkatan_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
+
+//    @GetMapping("/studentBill/billReport/prodi")
+//    public void reportProdi(Model model, @RequestParam(required = false) String tahun){
+//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+//        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
+//
+//        model.addAttribute("tahun", thn);
+//        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
+//        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
+//        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+//    }
+//
+//    @GetMapping("/studentBill/billReport/mahasiswaProdi")
+//    public void reportMahasiswaProdi(Model model, @RequestParam(required = false) String prodi,
+//                                        @RequestParam(required = false) String tahun){
+//
+//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+//        Prodi prd = prodiDao.findById(prodi).get();
+//
+//        String tahun1 = tahunAkademik.getNamaTahunAkademik().substring(1,9);
+//
+//        model.addAttribute("prodi", prd);
+//        model.addAttribute("tahun", tahun1);
+//        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi, tahun));
+//
+//
+//
+//    }
+//
+//    @GetMapping("/studentBill/billReport/angkatan")
+//    public void reportAngkatan(Model model, @RequestParam(required = false) String tahun){
+//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+//        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
+//
+//        model.addAttribute("tahun", thn);
+//        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
+//        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
+//        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
+//
+//    }
 
     private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {
         EnableFiture enableFiture = new EnableFiture();
