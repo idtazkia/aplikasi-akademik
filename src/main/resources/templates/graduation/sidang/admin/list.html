@@ -107,14 +107,79 @@
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu jadwal sidang</button>
+                                            <button class="btn btn-primary btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF}">Menunggu Penilaian & Publish Nilai</button>
+                                            <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"  th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">LULUS</button>
+                                            <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai < 70}">TIDAK LULUS</button>
                                             <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Detail Nilai</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table class="table table-bordered table-hover">
+                                                                <thead class="thead-light">
+                                                                <tr class="table-primary">
+                                                                    <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Ketua Penguji</b></center></th>
+                                                                    <th><center><b>Penguji</b></center></th>
+                                                                    <th><center><b>Pembimbing</b></center></th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Pembahasan</b></td>
+                                                                    <td align="center" th:text="${data.ka}">90.00</td>
+                                                                    <td align="center" th:text="${data.ua}">90.00</td>
+                                                                    <td align="center" th:text="${data.pa}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Penguasaan Materi</b></td>
+                                                                    <td align="center" th:text="${data.kb}">90.00</td>
+                                                                    <td align="center" th:text="${data.ub}">90.00</td>
+                                                                    <td align="center" th:text="${data.pb}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Teknik Penulisan</b></td>
+                                                                    <td align="center" th:text="${data.kc}">90.00</td>
+                                                                    <td align="center" th:text="${data.uc}">90.00</td>
+                                                                    <td align="center" th:text="${data.pc}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Presentasi dan Pemaparan</b></td>
+                                                                    <td align="center" th:text="${data.kd}">90.00</td>
+                                                                    <td align="center" th:text="${data.ud}">90.00</td>
+                                                                    <td align="center" th:text="${data.pd}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center">
+                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
+                                                            <button type="button" class="btn btn-primary">Publish</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" th:data-target="${'#modal-setuju'+data.id}" data-toggle="modal">
+                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" th:if="${data.akademik != data.akademik.APPROVED}" th:data-target="${'#modal-setuju'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-check"></i> Setujui
                                             </button>
-                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
+                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:if="${data.statusSidang != data.akademik.APPROVED}" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
                                             </button>
                                             <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat File</button>
