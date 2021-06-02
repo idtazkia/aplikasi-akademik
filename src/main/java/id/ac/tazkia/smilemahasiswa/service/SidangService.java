@@ -20,8 +20,8 @@ public class SidangService {
         sidangDto.setKomentar(sidang.getKomentarKetua());
         sidangDto.setBeritaAcara(sidang.getBeritaAcara());
         sidangDto.setNilaiA(sidang.getKa());
-        sidangDto.setNilaiB(sidang.getKa());
-        sidangDto.setNilaiC(sidang.getKa());
+        sidangDto.setNilaiB(sidang.getKb());
+        sidangDto.setNilaiC(sidang.getKc());
         sidangDto.setNilaiD(sidang.getKd());
 
         return sidangDto;
@@ -32,8 +32,8 @@ public class SidangService {
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarPenguji());
         sidangDto.setNilaiA(sidang.getUa());
-        sidangDto.setNilaiB(sidang.getUa());
-        sidangDto.setNilaiC(sidang.getUa());
+        sidangDto.setNilaiB(sidang.getUb());
+        sidangDto.setNilaiC(sidang.getUc());
         sidangDto.setNilaiD(sidang.getUd());
 
         return sidangDto;
@@ -44,8 +44,8 @@ public class SidangService {
         sidangDto.setId(sidang.getId());
         sidangDto.setKomentar(sidang.getKomentarPembimbing());
         sidangDto.setNilaiA(sidang.getPa());
-        sidangDto.setNilaiB(sidang.getPa());
-        sidangDto.setNilaiC(sidang.getPa());
+        sidangDto.setNilaiB(sidang.getPb());
+        sidangDto.setNilaiC(sidang.getPc());
         sidangDto.setNilaiD(sidang.getPd());
 
         return sidangDto;

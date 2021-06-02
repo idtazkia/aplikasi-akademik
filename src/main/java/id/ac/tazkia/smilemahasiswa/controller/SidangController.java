@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -446,7 +447,7 @@ public class SidangController {
         model.addAttribute("selectedProdi",prodi);
 
         if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotIn(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotIn(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),Arrays.asList(StatusApprove.REJECTED),page));
         }
     }
 
@@ -456,7 +457,7 @@ public class SidangController {
         model.addAttribute("selectedProdi",prodi);
 
         if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademik(tahunAkademik,prodi,StatusApprove.APPROVED,page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotIn(tahunAkademik,prodi,StatusApprove.APPROVED,Arrays.asList(StatusApprove.REJECTED),page));
         }
     }
 
@@ -477,6 +478,7 @@ public class SidangController {
     @PostMapping("/graduation/sidang/prodi/penjadwalan")
     public String saveJadwal(@ModelAttribute @Valid Sidang sidang){
         sidang.setAkademik(StatusApprove.APPROVED);
+        sidang.setStatusSidang(StatusApprove.APPROVED);
         sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
         sidangDao.save(sidang);
 
@@ -487,6 +489,14 @@ public class SidangController {
     public String tolakSidang(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarAkademik){
         sidang.setAkademik(StatusApprove.REJECTED);
         sidang.setKomentarAkademik(komentarAkademik);
+        sidangDao.save(sidang);
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/sidang/prodi/tolak")
+    public String tolakSidangProdi(@RequestParam(name = "id", value = "id") Sidang sidang,@RequestParam(required = false) String komentarProdi){
+        sidang.setStatusSidang(StatusApprove.REJECTED);
+        sidang.setKomentarProdi(komentarProdi);
         sidangDao.save(sidang);
         return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
@@ -503,12 +513,18 @@ public class SidangController {
 //    Dosen
 
     @GetMapping("/graduation/sidang/dosen/list")
-    public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi, Pageable page, Model model) {
+    public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
+                          @PageableDefault(size = 20) Pageable page, Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
         model.addAttribute("selectedTahun", tahunAkademik);
         model.addAttribute("selectedProdi", prodi);
+        model.addAttribute("dosen", dosen);
 
         if (tahunAkademik != null) {
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndJamMulaiNotNullAndRuanganNotNull(tahunAkademik, prodi, StatusApprove.APPROVED, page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(tahunAkademik, StatusApprove.APPROVED,StatusApprove.APPROVED, page));
         }
     }
 
@@ -532,7 +548,6 @@ public class SidangController {
 
         if (sidang.getKetuaPenguji() == dosen){
             model.addAttribute("data", sidangService.getKetua(sidang));
-            System.out.println(sidangService.getKetua(sidang));
         }
 
         if (sidang.getDosenPenguji() == dosen){
@@ -574,6 +589,14 @@ public class SidangController {
             sidangService.savePembimbing(sidangDto);
         }
 
+
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/sidang/dosen/publish")
+    public String publishSidang(@RequestParam Sidang sidang){
+        sidang.setPublish(StatusRecord.AKTIF);
+        sidangDao.save(sidang);
 
         return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }

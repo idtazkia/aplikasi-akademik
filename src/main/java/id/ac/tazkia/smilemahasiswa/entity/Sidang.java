@@ -123,6 +123,10 @@ public class Sidang {
     @Column(columnDefinition = "LONGTEXT")
     private String komentarAkademik;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarProdi;
+
     @Enumerated(EnumType.STRING)
     private StatusApprove akademik;
 
