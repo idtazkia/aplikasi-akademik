@@ -568,47 +568,221 @@
                             <div class="row" style="padding-bottom: 16px; padding-top: 16px; padding-left: 20px; padding-right: 20px;" th:each="data : ${list}">
                                 <div class="col-md-12 card" style="margin-bottom: 5px;">
                                     <b><h5 th:text="${data.judulTugasAkhir}">Tugas Akhir</h5></b>
-                                    <p style="color: #a8a8a8;" th:text="${data.komentarAkademik}"></p>
                                     <div style="width: 30px; height: 5px; background-color: #0c85d0; border-radius: 10px;"></div>
                                     <br>
                                     <div class="wrapper" th:if="${data.akademik.WAITING == data.akademik}">
-                                        <button class="btn-style">
+                                        <button class="btn-style" data-toggle="modal" th:data-target="${'#modal-akademik'+data.id}">
                                             Menunggu
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </button>
+                                    </div>
+
+                                    <div class="modal fade" th:id="${'modal-akademik'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th><center>Keterangan</center></th>
+                                                            <th><center>Status</center></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr class="danger">
+                                                            <td align="center">Akademik</td>
+                                                            <td align="center" th:text="${data.komentarAkademik}">Akademik</td>
+                                                            <td align="center">
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.REJECTED}" th:text="${data.akademik}">Approved</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="info">
+                                                            <td align="center">Prodi</td>
+                                                            <td align="center" th:text="${data.komentarProdi}">-</td>
+                                                            <td align="center">
+                                                                <span class="badge badge-danger" th:if="${data.statusSidang == data.statusSidang.APPROVED}" th:text="${data.statusSidang}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.statusSidang == data.statusSidang.WAITING}" th:text="${data.statusSidang}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.statusSidang == data.statusSidang.REJECTED}" th:text="${data.statusSidang}">Approved</span>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.WAITING == data.statusSidang}">
-                                        <button class="btn-style">
+                                        <button class="btn-style" data-toggle="modal" th:data-target="${'#modal-prodi'+data.id}">
                                             Menunggu
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </button>
+
+                                        <div class="modal fade" th:id="${'modal-prodi'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-bordered">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th></th>
+                                                                <th><center>Keterangan</center></th>
+                                                                <th><center>Status</center></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr class="danger">
+                                                                <td align="center">Akademik</td>
+                                                                <td align="center" th:text="${data.komentarAkademik}">Akademik</td>
+                                                                <td align="center">
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</span>
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</span>
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.REJECTED}" th:text="${data.akademik}">Approved</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="info">
+                                                                <td align="center">Prodi</td>
+                                                                <td align="center" th:text="${data.komentarProdi}">-</td>
+                                                                <td align="center">
+                                                                    <span class="badge badge-danger">WAITING</span>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="wrapper" th:if="${data.akademik.APPROVED == data.akademik && data.statusSidang.REJECTED == data.statusSidang}">
-                                        <button class="btn-style1">
+                                        <button class="btn-style1" data-toggle="modal" th:data-target="${'#modal-tprodi'+data.id}">
                                             Ditolak
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </button>
+
+                                        <div class="modal fade" th:id="${'modal-tprodi'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Detail Approve</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-bordered">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th></th>
+                                                                <th><center>Keterangan</center></th>
+                                                                <th><center>Status</center></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr class="danger">
+                                                                <td align="center">Akademik</td>
+                                                                <td align="center" th:text="${data.komentarAkademik}">Akademik</td>
+                                                                <td align="center">
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</span>
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</span>
+                                                                    <span class="badge badge-danger" th:if="${data.akademik == data.akademik.REJECTED}" th:text="${data.akademik}">Approved</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="info">
+                                                                <td align="center">Prodi</td>
+                                                                <td align="center" th:text="${data.komentarProdi}">-</td>
+                                                                <td align="center">
+                                                                    <span class="badge badge-danger">REJECTED</span>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="wrapper" th:if="${data.akademik.REJECTED == data.akademik}">
-                                        <button class="btn-style1">
+                                        <button class="btn-style1" data-toggle="modal" th:data-target="${'#modal-takademik'+data.id}">
                                             Ditolak
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </button>
+
+                                        <div class="modal fade" th:id="${'modal-takademik'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th><center>Keterangan</center></th>
+                                                            <th><center>Status</center></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr class="danger">
+                                                            <td align="center">Akademik</td>
+                                                            <td align="center" th:text="${data.komentarAkademik}">Akademik</td>
+                                                            <td align="center">
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</span>
+                                                                <span class="badge badge-danger" th:if="${data.akademik == data.akademik.REJECTED}" th:text="${data.akademik}">Approved</span>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
