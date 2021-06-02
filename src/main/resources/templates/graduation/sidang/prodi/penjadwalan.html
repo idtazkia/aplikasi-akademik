@@ -46,7 +46,7 @@
             <h3><span th:text="${sidang.seminar.note.mahasiswa.nama}"></span> - <span th:text="${sidang.seminar.note.mahasiswa.nim}">12212121</span></h3>
           </div>
           <div class="card-body">
-            <form th:action="@{/graduation/sidang/admin/penjadwalan}" method="post" th:object="${sidang}">
+            <form th:action="@{/graduation/sidang/prodi/penjadwalan}" method="post" th:object="${sidang}">
               <input type="hidden" name="id" th:value="${sidang.id}">
               <input type="hidden" name="judulTugasAkhir" th:value="${sidang.judulTugasAkhir}">
               <input type="hidden" name="judulInggris" th:value="${sidang.judulInggris}">
