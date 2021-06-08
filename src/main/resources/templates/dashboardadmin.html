@@ -137,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_DOSEN')">
                     <div class="col-md-12 col-xs-12">
                         <div class="card shadow">
                             <div class="card-header">
@@ -148,7 +148,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-reponsive">
+                            <div class="table-responsive">
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
                                     <tr>
@@ -164,7 +164,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data, row : ${listCutiDosenWali}">
-                                        <td></td>
+                                        <td th:text="${(row.index + 1)}"></td>
                                         <td th:text="${data[1]}"></td>
                                         <td th:text="${data[2]}"></td>
                                         <td th:text="${data[4]}"></td>
@@ -192,11 +192,86 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="btn btn-danger btn-sm" th:if="${data[6] == 'DIAJUKAN'}">Belum Disetujui</span>
-                                            <span class="btn btn-success btn-sm" th:if="${data[6] == 'APPROVED'}">Sudah Disetujui</span>
+                                            <span class="btn btn-danger btn-sm" th:if="${data[6] == 'WAITING'}">Belum Disetujui</span>
+                                            <span class="btn btn-primary btn-sm" th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">Waiting for approval by KPS</span>
+                                            <span class="btn btn-success btn-sm" th:if="${data[6] == 'APPROVED'}">APPROVED</span>
                                         </td>
-                                        <td th:if="${data[6] == 'DIAJUKAN'}">
+                                        <td th:if="${data[6] == 'WAITING'}">
                                             <form th:action="@{admin/updateCuti(cuti = ${data[0]})}" method="post">
+                                                <button class="btn btn-primary btn-sm">Approved</button>
+                                            </form>
+                                        </td>
+                                        <td th:if="${data[6] == 'APPROVED_DOSEN_WALI' or data[6] == 'APPROVED'}">
+                                            -
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_KPS')">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="text-uppercase ls-1 mb-1">List</h6>
+                                        <h2 class=" mb-0">Mahasiswa Cuti</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>Tanggal Mulai Cuti</th>
+                                        <th>Tanggal Berakhir Cuti</th>
+                                        <th>Detail</th>
+                                        <th>Status</th>
+                                        <th>Approved</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, row : ${listCutiKps}">
+                                        <td th:text="${(row.index + 1)}"></td>
+                                        <td th:text="${data[1]}"></td>
+                                        <td th:text="${data[2]}"></td>
+                                        <td th:text="${data[3]}"></td>
+                                        <td th:text="${data[5]}"></td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data[0]}">
+                                                <i class="fa fa-eye"></i> Lihat Alasan Cuti
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" th:id="${'exampleModal' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Alasan Cuti</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p th:text="${data[4]}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="btn btn-danger btn-sm" th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">WAITING</span>
+                                            <span class="btn btn-success btn-sm" th:if="${data[6] == 'APPROVED'}">APPROVED</span>
+                                        </td>
+                                        <td th:if="${data[6] == 'APPROVED_DOSEN_WALI'}">
+                                            <form th:action="@{admin/approved(cuti = ${data[0]})}" method="post">
                                                 <button class="btn btn-primary btn-sm">Approved</button>
                                             </form>
                                         </td>

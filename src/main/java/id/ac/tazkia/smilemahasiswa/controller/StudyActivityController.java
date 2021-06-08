@@ -580,7 +580,7 @@ public class StudyActivityController {
 
         cuti.setMahasiswa(mahasiswa);
         cuti.setTanggalPengajuaan(LocalDate.now());
-        cuti.setStatusPengajuaan("DIAJUKAN");
+        cuti.setStatusPengajuaan("WAITING");
         cutiDao.save(cuti);
 
         return "redirect:/du/cuti/list";

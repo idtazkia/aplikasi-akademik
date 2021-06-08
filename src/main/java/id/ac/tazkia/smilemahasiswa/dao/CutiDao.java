@@ -28,4 +28,16 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
             "    order by a.status_pengajuaan desc", nativeQuery = true)
     List<Object[]> listCutiDosenWali(User user);
 
+    @Query(value = "select a.id, b.nim, b.nama,a.tanggal_mulai_cuti,a.keterangan,a.tanggal_berakhir_cuti,a.status_pengajuaan, a.status, dosen_wali_approved from cuti as a \n" +
+            "inner join mahasiswa as b on b.id = a.id_mahasiswa\n" +
+            "inner join prodi as c on c.id = b.id_prodi\n" +
+            "inner join dosen as d on d.id = c.id_dosen\n" +
+            "inner join karyawan as e on e.id = d.id_karyawan\n" +
+            "inner join s_user as g on g.id = e.id_user\n" +
+            "where e.id = ?1 and a.status = 'AKTIF' and a.status_pengajuaan = 'APPROVED_DOSEN_WALI' or a.status_pengajuaan = 'APPROVED'\n" +
+            "order by a.status_pengajuaan desc", nativeQuery = true)
+    List<Object[]> listCutiKps(User user);
+
+
+
 }

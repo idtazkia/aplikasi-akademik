@@ -40,5 +40,7 @@ public class Cuti {
 
     private String statusPengajuaan;
 
-    private String userApproved;
+    private String dosenWaliApproved;
+
+    private String kpsApproved;
 }

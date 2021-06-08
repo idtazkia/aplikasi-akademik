@@ -96,7 +96,7 @@
     }
 
     .btn-style{
-      width:150px;
+      width:350px;
       height:35px;
       background: linear-gradient(to left top, #eb9942 50%, #ffa742 50%);
       border-style: none;
@@ -250,13 +250,22 @@
                   <div class="col-md-12 col-xs-12">
                     <button class="btn btn-primary" th:if="${data.statusPengajuaan == 'APPROVED'}">Approved</button>
                     <div class="wrapper">
-                    <button class="btn-style" th:if="${data.statusPengajuaan == 'DIAJUKAN'}">
-                      Waiting
+                    <button class="btn-style" th:if="${data.statusPengajuaan == 'WAITING'}">
+                      Waiting for Approval by Dosen Wali
                       <span></span>
                       <span></span>
                       <span></span>
                       <span></span>
                     </button>
+                    </div>
+                    <div class="wrapper">
+                      <button class="btn-style" th:if="${data.statusPengajuaan == 'APPROVED_DOSEN_WALI'}">
+                        Waiting for approval by KPS
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </button>
                     </div>
                   </div>
                 </div>

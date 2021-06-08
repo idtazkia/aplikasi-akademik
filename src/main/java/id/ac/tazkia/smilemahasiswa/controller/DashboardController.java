@@ -483,6 +483,7 @@ public class DashboardController {
 
         model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
         model.addAttribute("listCutiDosenWali", cutiDao.listCutiDosenWali(user));
+        model.addAttribute("listCutiKps", cutiDao.listCutiKps(user));
 
         Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNull(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
         model.addAttribute("jadwal", jadwal);
@@ -498,9 +499,21 @@ public class DashboardController {
         String idMahasiswa = cuti.getMahasiswa().getNim();
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
 
+        cuti.setStatusPengajuaan("APPROVED_DOSEN_WALI");
+        cuti.setDosenWaliApproved(user.getId());
+        cutiDao.save(cuti);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/approved")
+    public String approvedStatus(@RequestParam Cuti cuti, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        String idMahasiswa = cuti.getMahasiswa().getNim();
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
+
         mahasiswa.setStatusAktif("CUTI");
         cuti.setStatusPengajuaan("APPROVED");
-        cuti.setUserApproved(user.getUsername());
+        cuti.setKpsApproved(user.getId());
         cutiDao.save(cuti);
         return "redirect:/admin";
     }
