@@ -112,11 +112,11 @@
                         <span style="color: #b8b8b8;">Your Score Total</span>
                         <br>
                         <b class="card-title">
-                            <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((seminar.ua * 0.25) + (seminar.ub * 0.15) + (seminar.uc * 0.2) + (seminar.ud * 0.1) + (seminar.ue * 0.15) + (seminar.uf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
-                            <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((seminar.ua * 0.3) + (seminar.ub * 0.25) + (seminar.uc * 0.2) + (seminar.ud * 0.15) + (seminar.ue * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
+                            <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${seminar.nilai}">2019-01-01</p>
+                            <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${seminar.nilai}">2019-01-01</p>
                         </b>
-                        <b class="card-text" style="color: #53b86b;" th:if="${seminar.nilai >= 70}">Passed</b>
-                        <b class="card-text" style="color: #f25a50;" th:if="${seminar.nilai < 70}">Not Passed</b>
+                        <b class="card-text" style="color: #53b86b;" th:if="${seminar.nilai >= 70}">Lulus</b>
+                        <b class="card-text" style="color: #f25a50;" th:if="${seminar.nilai < 70}">Tidak Lulus</b>
 
                     </div>
                     <div class="col-md-12 col-xs-12" style="margin-bottom: 10px;">
@@ -153,8 +153,16 @@
                             </center>
                         </div>
                     </div>
+                    <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang != null && seminar.nilai < 70}">
+                        <div class="card-red">
+                            <center>
+                                <b class="card-title">Pemberitahuan!</b>
+                                <p class="p-comment">Anda tidak bisa melanjutkan sidang karna nilai Anda dibawah 70</p>
+                            </center>
+                        </div>
+                    </div>
                     <div class="col-md-12 col-xs-12 margin-col text-center">
-                        <a th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" th:if="${sidang != null}" class="hvr-sweep-to-top">Lanjut Sidang</a>
+                        <a th:href="@{/graduation/sidang/mahasiswa/pendaftaran (id = ${seminar.id})}" th:if="${sidang != null && seminar.nilai >= 70}" class="hvr-sweep-to-top">Lanjut Sidang</a>
                         <a th:href="@{/studentBill/bill/list}" th:if="${sidang == null}" class="hvr-sweep-to-top">Lihat Tagihan</a>
                         <a th:href="@{/dashboard}" class="hvr-sweep-to-top" style="background-color: #fc6258">Kembali ke Dashboard</a>
                     </div>

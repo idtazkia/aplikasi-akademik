@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Seminar</span>
+                                        <span class="h2 font-weight-bold mb-0">Sidang</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -53,7 +53,7 @@
                     <div class="card-body">
                         <form method="get">
                             <div class="row">
-                                <div class="col-md-6 col-xs-12">
+                                <div class="col-md-12 col-xs-12">
                                     <div class="form-group">
                                         <label>Tahun Akademik</label>
                                         <select name="tahunAkademik" required class="form-control">
@@ -62,18 +62,6 @@
                                                     th:selected="(${tahun} == *{selectedTahun})"
                                                     th:text="${tahun.namaTahunAkademik}"
                                                     th:value="${tahun.id}"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>Program Study</label>
-                                        <select name="prodi" required class="form-control">
-                                            <option value="" selected disabled>-- Select One --</option>
-                                            <option th:each="prodi : ${prodi}"
-                                                    th:selected="(${prodi} == *{selectedProdi})"
-                                                    th:text="${prodi.namaProdi}"
-                                                    th:value="${prodi.id}"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -107,17 +95,15 @@
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED}" th:text="${data.akademik}">Approved</button>
-                                            <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
+                                            <button class="btn btn-primary btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF }">Menunggu Penilaian & Publish Nilai</button>
+                                            <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"  th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">LULUS</button>
+                                            <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai < 70}">TIDAK LULUS</button>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-outline-success btn-sm" th:data-target="${'#modal-setuju'+data.id}" data-toggle="modal">
-                                                <i class="fas fa-check"></i> Setujui
-                                            </button>
-                                            <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
-                                                <i class="fas fa-times"></i> Tolak
-                                            </button>
-                                            <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lihat File</button>
+                                            <a class="btn btn-primary btn-outline-success btn-sm" th:href="@{/graduation/sidang/dosen/penilaian(sidang = ${data.id})}">
+                                                <i class="fas fa-pencil-alt"></i> Penilaian
+                                            </a>
+                                            <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle fas fa-folder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Lihat File</button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/sidang/(sidang=${data.id})}">Draft Sidang</a>
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/pendaftaran/(sidang=${data.id})}">Form Pendaftaran</a>
@@ -126,53 +112,75 @@
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/bimbinganSidang/(sidang=${data.id})}">Kartu Bimbingan</a>
                                                 <a class="dropdown-item" target="_blank" th:href="@{/upload/{sidang}/turnitin/(sidang=${data.id})}">Hasil Uji Plagiarisme</a>
                                             </div>
-                                        </td>
-                                        <div class="modal fade" th:id="${'modal-setuju'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form th:action="@{/graduation/sidang/admin/terima (id = ${data.id})}" method="post">
-                                                            <div class="form-group">
-                                                                <textarea name="komentarAkademik" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <button class="btn btn-success" type="submit">Setujui</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <button th:if="${data.ketuaPenguji == dosen && data.publish == data.publish.NONAKTIF}" type="button" class="btn btn-info btn-outline-primary btn-sm fas fa-share"
+                                                    data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"> Publish</button>
 
-                                        <div class="modal fade" th:id="${'modal-tolak'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Komentar</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form th:action="@{/graduation/sidang/admin/tolak (id = ${data.id})}" method="post">
-                                                            <div class="form-group">
-                                                                <textarea name="komentarAkademik" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
-                                                            </div>
-                                                            <input type="hidden" name="id" th:value="${data.id}">
-                                                            <div class="form-group">
-                                                                <button class="btn btn-danger" type="submit">Tolak</button>
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Detail Nilai</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <table class="table table-bordered table-hover">
+                                                                <thead class="thead-light">
+                                                                <tr class="table-primary">
+                                                                    <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Ketua Penguji</b></center></th>
+                                                                    <th><center><b>Penguji</b></center></th>
+                                                                    <th><center><b>Pembimbing</b></center></th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Pembahasan</b></td>
+                                                                    <td align="center" th:text="${data.ka}">90.00</td>
+                                                                    <td align="center" th:text="${data.ua}">90.00</td>
+                                                                    <td align="center" th:text="${data.pa}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Penguasaan Materi</b></td>
+                                                                    <td align="center" th:text="${data.kb}">90.00</td>
+                                                                    <td align="center" th:text="${data.ub}">90.00</td>
+                                                                    <td align="center" th:text="${data.pb}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Teknik Penulisan</b></td>
+                                                                    <td align="center" th:text="${data.kc}">90.00</td>
+                                                                    <td align="center" th:text="${data.uc}">90.00</td>
+                                                                    <td align="center" th:text="${data.pc}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Presentasi dan Pemaparan</b></td>
+                                                                    <td align="center" th:text="${data.kd}">90.00</td>
+                                                                    <td align="center" th:text="${data.ud}">90.00</td>
+                                                                    <td align="center" th:text="${data.pd}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center">
+                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <form th:action="@{/graduation/sidang/dosen/publish (sidang = ${data.id})}" method="post">
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
+                                                                <button type="submit" class="btn btn-primary">Publish</button>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </td>
+
                                     </tr>
                                     </tbody>
                                 </table>

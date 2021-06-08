@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -201,6 +202,11 @@ public class KafkaListenerService {
         if (requestCicilan == null){
             log.info("Bukan tagihan cicilan!");
         }else{
+            requestCicilan.setWaktuApprove(LocalDateTime.now());
+            requestCicilan.setStatus(StatusRecord.AKTIF);
+            requestCicilan.setStatusApprove(StatusApprove.APPROVED);
+            requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+            requestCicilanDao.save(requestCicilan);
             log.info("Mengirim cicilan pertama!");
             tagihanService.requestCreateCicilan(requestCicilan);
         }

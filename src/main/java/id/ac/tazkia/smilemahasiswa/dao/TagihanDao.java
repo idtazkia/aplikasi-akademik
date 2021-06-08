@@ -81,7 +81,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join tahun_akademik as d on a.id_tahun_akademik=d.id \n" +
             "left join pembayaran as c on a.id=c.id_tagihan where a.status='AKTIF' and d.id=?1 group by angkatan \n" +
             "order by angkatan asc", nativeQuery = true)
-    List<Object[]> listTagihanPerAngkatan(TahunAkademik tahunAkademik);
+    List<DaftarTagihanPerAngkatanDto> listTagihanPerAngkatan(TahunAkademik tahunAkademik);
 
     @Query(value = "select distinct b.angkatan as angkatan, sum(coalesce(d.amount,0)) as pemasukan from tagihan as a \n" +
             "inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id left join pembayaran \n" +
