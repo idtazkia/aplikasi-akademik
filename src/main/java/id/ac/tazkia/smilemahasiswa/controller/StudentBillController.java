@@ -284,9 +284,9 @@ public class StudentBillController {
     public void listType(Model model, @PageableDefault(size = 10) Pageable page, String search){
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
-            model.addAttribute("listType", jenisTagihanDao.findByStatusNotInAndNamaContainingIgnoreCaseOrderByNama(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listType", jenisTagihanDao.findByStatusNotInAndNamaContainingIgnoreCaseOrderByKode(Arrays.asList(StatusRecord.HAPUS), search, page));
         }else{
-            model.addAttribute("listType", jenisTagihanDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listType", jenisTagihanDao.findByStatusNotInOrderByKode(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
