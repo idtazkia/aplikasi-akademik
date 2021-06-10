@@ -129,7 +129,10 @@ public class KafkaListenerService {
     private void updateTagihan(TagihanResponse tagihanResponse){
         log.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
+        if (tahunAkademik == null) {
+            tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        }
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
                 findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(),
                         tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
@@ -166,30 +169,6 @@ public class KafkaListenerService {
 
     }
 
-    @KafkaListener(topics = "${kafka.topic.hapus.tagihan.response}", groupId = "${spring.kafka.consumer.group-id}")
-    public void handleHapusTagihanResponse(String message){
-        try{
-            HapusTagihanResponse response = objectMapper.readValue(message, HapusTagihanResponse.class);
-            Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(response.getJenisTagihan());
-            if (!optionalJenisTagihan.isPresent()) {
-                log.debug("Bukan Tagihan Mahasiswa");
-                return;
-            }
-
-            log.debug("Terima message : {}", message);
-
-            if (!response.getSukses()) {
-                log.debug("Hapus tagihan gagal : {}", response.getDebitur());
-                return;
-            }
-
-            kirimTagihanAfterDelete(response);
-
-        }catch (Exception err){
-            log.warn(err.getMessage(), err);
-        }
-    }
-
     private void kirimTagihanAfterDelete(HapusTagihanResponse response){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getDebitur());
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -211,5 +190,35 @@ public class KafkaListenerService {
             tagihanService.requestCreateCicilan(requestCicilan);
         }
     }
+
+    @KafkaListener(topics = "${kafka.topic.hapus.tagihan.response}", groupId = "${spring.kafka.consumer.group-id}")
+    public void handleHapusTagihanResponse(String message) {
+        try{
+            HapusTagihanResponse response = objectMapper.readValue(message, HapusTagihanResponse.class);
+            Optional<JenisTagihan> optionalJenisTagihan = jenisTagihanDao.findById(response.getJenisTagihan());
+            if (!optionalJenisTagihan.isPresent()) {
+                log.debug("Bukan Tagihan Mahasiswa");
+                return;
+            }
+
+            log.debug("Terima message : {}", message);
+
+            if (!response.getSukses()) {
+                log.debug("Hapus tagihan gagal : {}", response.getDebitur());
+                return;
+            }
+
+            if (response.getSukses()) {
+                log.debug("Hapus tagihan sukses : {}", response.getDebitur());
+                kirimTagihanAfterDelete(response);
+            }
+
+
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+        }
+    }
+
+
 
 }
