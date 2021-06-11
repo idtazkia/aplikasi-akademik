@@ -15,6 +15,7 @@ public class MdlAttendanceLogDosenDto {
     private String idJadwal;
     private String waktuMasuk;
     private String waktuSelesai;
+    private String tanggalInput;
     private String statusPresensi;
     private String status;
     private String idDosen;
