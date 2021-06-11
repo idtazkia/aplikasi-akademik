@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Transkrip</title>
+    <style type="text/css">
+        .background-color-white{
+            background-color: white;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 10px;
+            margin: 10px;
+        }
+        .shape{
+            background-color: #4285f4;
+            color: white;
+            padding-top: 15px;
+            padding-left: 15px;
+            padding-bottom: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: white;
+            border: 2px solid #d9534f;
+            border-radius: 15px;
+            color: #d9534f;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-danger:hover{
+            background-color: #d9534f;
+            color: white;
+        }
+        .bd-success{
+            background-color: white;
+            border: 2px solid #5cb85c;
+            border-radius: 15px;
+            color: #5cb85c;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-success:hover{
+            background-color: #5cb85c;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+
+
+
+    </script>
+</th:block>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Request Semester Pendek</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <!--<div class="breadcomb-report">
+                                    <a th:href="@{/study/form}">
+                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
+                                    </a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 background-color-white">
+
+
+                <form method="post" th:action="@{/prakrs/request/sp}">
+                    <div class="card-body">
+                        <div class="alert alert-danger" th:if="${gagal != null}">
+                            Prioritas tidak bisa sama, setiap matakuliah pilih salah satu, tidah bisa sama!
+                        </div>
+                        <div class="card shadow">
+
+                            <div style="margin-top: 20px;" class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label >Jumlah sks</label>
+                                        <input type="text" class="form-control" readonly th:value="${jumlahSks}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label >Total tagihan untuk <span th:text="${jumlahSks}"></span> sks</label>
+                                        <input type="text" class="form-control" readonly th:value="${totalTagihan}">
+                                    </div>
+                                </div>
+
+                                <div th:if="${cekbox == 1}">
+                                    <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
+                                    <div class="col-md-12">
+                                        <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
+                                        <div class="form-group">
+                                            <label >Prioritas</label>
+                                            <select name="prioritas1" class="form-control" required>
+                                                <option value="">-- Pilih Prioritas --</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+
+                                <div th:if="${cekbox == 2}">
+                                    <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
+                                    <input type="hidden" name="idMatkul2" th:value="${cekCheckbox2.id}">
+                                    <div class="col-md-12">
+                                        <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
+                                        <div class="form-group">
+                                            <label >Prioritas</label>
+                                            <select name="prioritas1" class="form-control" required>
+                                                <option value="">-- Pilih Prioritas --</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                        <br>
+                                        <h4 th:text="${cekCheckbox2.matakuliah.namaMatakuliah}"></h4>
+                                        <div class="form-group">
+                                            <label >Prioritas</label>
+                                            <select name="prioritas2" class="form-control" required>
+                                                <option value="">-- Pilih Prioritas --</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label >Nomor Telepon</label>
+                                        <input type="text" name="nomorTelepon" class="form-control" th:value="${mhs.teleponSeluler}" required>
+                                        <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
+                                        <input type="hidden" th:value="${biayaSks}">
+                                        <input type="hidden" th:value="${totalTagihan}">
+                                        <input type="hidden" name="jumlahMatkul" th:value="${cekbox}">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <br><br>
+
+                    <button type="submit" class="btn btn-success">Submit</button>
+
+                </form>
+                <br>
+
+            </div>
+            <div class="col-md-5 col-sm-12 background-color-white">
+                <div class="card-body">
+                    <div class="card shadow">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Catatan : </h3>
+                                <p>- Matakuliah tidak bisa diubah ketika pengisian KRS, harap konsultasi kan pilihan matakuliah dengan pembibing</p>
+                                <p>- Setelah Anda submit, maka tagihan akan langsung terkirim sesuai matakuliah dan sks yang diambil</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+</body>
+</html>

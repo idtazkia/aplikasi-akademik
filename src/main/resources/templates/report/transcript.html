@@ -11,7 +11,6 @@
             background-color: white;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
             border-radius: 10px;
-            pa
         }
         .shape{
             background-color: #4285f4;
@@ -88,6 +87,14 @@
     </style>
 </head>
 <body>
+<th:block layout:fragment="script">
+<script th:inline="javascript">
+
+
+
+
+</script>
+</th:block>
 <section layout:fragment="main" class="content">
     <div class="breadcomb-area">
         <div class="container">
@@ -123,230 +130,68 @@
     <div class="container">
         <div class="col-md-12 col-xs-12 background-color-white">
 
-            <div class="row"  th:if="${transkrip1}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 1</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip1}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
+            <form method="get" th:action="@{/study/prakrssp}">
+                <div class="card-body" th:each="dataSemester,row : ${semesterTranskript}">
+                    <div class="card shadow">
+                        <div class="table-responsive">
+                            <div class="col-md-12 col-xs-12 shape">
+                                <h3 th:if="${dataSemester[3] == 'PENDEK'}" class="mb-0" th:text="${dataSemester[2] + ' ( Semester ' + dataSemester[3] + ')'}">Semester<b> 1</b></h3>
+
+                                <h3 th:if="${dataSemester[3] != 'PENDEK'}"  class="mb-0" th:text="${dataSemester[2] + ' ( Semester ' + (row.index + 1) + ')'}">Semester<b> 1</b></h3>
+                            </div>
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Kode MK</th>
+                                    <th>Nama Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Nilai</th>
+                                    <th>Bobot</th>
+                                    <th>Mutu</th>
+                                    <div th:if="${tahun != null}">
+                                        <div th:if="${ceklis == null}">
+                                            <th width="10%" class="text-center">Request SP</th>
+                                        </div>
+                                    </div>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${transkriptTampil}">
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[1]}">AEM1101</td>
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[2]}">Dirasah Islamiah</td>
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[3]}"><b>3</b></td>
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
+                                    <td th:if="${dataSemester[0] == data[0]}" th:text="${data[6]}"><b>9</b></td>
+                                    <td th:if="${dataSemester[0] == data[0]}">
+                                        <div th:if="${tahun != null}">
+                                            <div th:if="${ceklis == null}">
+                                                <div class="text-center" th:if="${data[5] == 'C' || data[5] == 'D' || data[5] == 'E'}">
+
+                                                    <input type="checkbox" class="select-check" name="checkBox" th:value="${data[9]}">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row"  th:if="${transkrip2}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 2</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip2}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
+                <div th:if="${tahun != null}">
+                    <div th:if="${ceklis == null}">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button style="margin-bottom: 20px;" type="submit" class="mb-5 btn btn-success btn-sm"> Request Semester Pendek (Maks 2)</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row"  th:if="${transkrip3}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 3</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip3}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row"  th:if="${transkrip4}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 4</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip4}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row"  th:if="${transkrip5}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 5</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip5}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row"  th:if="${transkrip6}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 6</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip6}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row"  th:if="${transkrip7}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 7</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip7}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row"  th:if="${transkrip8}">
-                <div class="col-md-12 col-xs-12 shape">
-                    <h4><b>Semester</b> <b> 8</b></h4>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tr>
-                                <th>Kode MK</th>
-                                <th>Nama Mata Kuliah</th>
-                                <th>SKS</th>
-                                <th>Nilai</th>
-                                <th>Bobot</th>
-                                <th>Mutu</th>
-                            </tr>
-                            <tr th:each="data : ${transkrip8}">
-                                <td th:text="${data[1]}">AEM1101</td>
-                                <td th:text="${data[2]}">Dirasah Islamiah</td>
-                                <td th:text="${data[3]}"><b>3</b></td>
-                                <td th:text="${data[5]}"><button class="bd-primary"><b>B</b></button></td>
-                                <td th:text="${data[4]}"><button class="bd-danger"><b>3.00</b></button></td>
-                                <td th:text="${data[6]}"><b>9</b></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+            </form>
 
 
         </div>
@@ -354,3 +199,19 @@
 </section>
 </body>
 </html>
+
+<script type="text/javascript">
+    var max_limit = 2; // Max Limit
+    $(document).ready(function (){
+        $(".select-check:input:checkbox").each(function (index){
+            this.checked = (".select-check:input:checkbox" < max_limit);
+        }).change(function (){
+            if ($(".select-check:input:checkbox:checked").length > max_limit){
+                this.checked = false;
+            }
+        });
+    });
+
+
+
+</script>
