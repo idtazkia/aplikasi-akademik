@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Semester Pendek </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Prioritas 1</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Matakuliah</th>
+                                    <th>Jumlah</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row:${list1}">
+                                    <td th:text="${row.index + 1}">1</td>
+                                    <td>
+                                        <div style="cursor: pointer;" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
+                                            <div th:text="${data[1]}"></div>
+                                        </div>
+
+                                        <div class="modal fade" th:id="${'modal-notification' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h4>Daftar Pengajuan Matakuliah <div th:text="${data[1]}"></div></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center table-flush">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Nim</th>
+                                                                    <th>Nama</th>
+                                                                    <th>Prodi</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr th:each="dataDetail : ${matkulDetail1}">
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.nim}">18101040</td>
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.nama}">Rafhatullah</td>
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.idProdi.namaProdi}">HES</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+<!--                                                        <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data[0]})}">-->
+<!--                                                            <button type="submit" class="btn btn-white">Delete</button>-->
+<!--                                                        </form>-->
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td>
+                                        <form method="post" th:action="@{/studiesActivity/sp/approve}">
+                                            <input type="hidden" name="idMatkul" th:value="${data[0]}">
+                                            <input type="hidden" name="prioritas" value="1">
+                                            <div th:if="${data[3] == 'WAITING'}">
+                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            </div>
+                                            <div th:if="${data[3] == 'APPROVED'}">
+                                                <a href="#!" class="btn btn-info btn-sm">Approved</a>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Prioritas 2</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Matakuliah</th>
+                                    <th>Jumlah</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row:${list2}">
+                                    <td th:text="${row.index + 1}">1</td>
+                                    <td>
+                                        <div style="cursor: pointer;" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
+                                            <div th:text="${data[1]}"></div>
+                                        </div>
+
+                                        <div class="modal fade" th:id="${'modal-notification' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h4>Daftar Pengajuan Matakuliah <div th:text="${data[1]}"></div></h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center table-flush">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Nim</th>
+                                                                    <th>Nama</th>
+                                                                    <th>Prodi</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr th:each="dataDetail : ${matkulDetail2}">
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.nim}">18101040</td>
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.nama}">Rafhatullah</td>
+                                                                    <td th:if="${dataDetail.matakuliahKurikulum.id == data[0]}" th:text="${dataDetail.mahasiswa.idProdi.namaProdi}">HES</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <!--                                                        <form method="post" th:action="@{/studentBill/valueType/delete(nilaiJenisTagihan = ${data[0]})}">-->
+                                                            <!--                                                            <button type="submit" class="btn btn-white">Delete</button>-->
+                                                            <!--                                                        </form>-->
+                                                            <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td>
+                                        <form method="post" th:action="@{/studiesActivity/sp/approve}">
+                                            <input type="hidden" name="idMatkul" th:value="${data[0]}">
+                                            <input type="hidden" name="prioritas" value="2">
+                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>

@@ -137,6 +137,12 @@ public class StudiesActivityController {
 
     @Autowired private ScoreService scoreService;
 
+    @Autowired
+    private PraKrsSpDao praKrsSpDao;
+
+    @Autowired
+    private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
@@ -4501,6 +4507,43 @@ public class StudiesActivityController {
         }
 
         return "redirect:/studiesActivity/assesment/upload/rps?jadwal=" + rps.getJadwal().getId();
+
+    }
+
+//    Pra KRS SP
+
+    @GetMapping("/studiesActivity/sp/list")
+    public void listSp(Model model){
+
+        List<Object[]> p1 = praKrsSpDao.listKrsSp("1");
+        List<Object[]> p2 = praKrsSpDao.listKrsSp("2");
+        model.addAttribute("list1", p1);
+        model.addAttribute("list2", p2);
+
+        model.addAttribute("matkulDetail1", praKrsSpDao.findAllByStatusAndPrioritas(StatusRecord.AKTIF, "1"));
+        model.addAttribute("matkulDetail2", praKrsSpDao.findAllByStatusAndPrioritas(StatusRecord.AKTIF, "2"));
+
+
+    }
+
+    @PostMapping("/studiesActivity/sp/approve")
+    public String approveSp(@RequestParam(required = false) String idMatkul,
+                            @RequestParam(required = false) String prioritas,
+                            Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+
+        MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(idMatkul).get();
+
+        List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulumAndPrioritas(StatusRecord.AKTIF, matkul, prioritas);
+        for (PraKrsSp pks : listSp){
+            pks.setStatusApprove(StatusApprove.APPROVED);
+            pks.setUserUpdate(karyawan);
+            praKrsSpDao.save(pks);
+        }
+
+        return "redirect:../sp/list";
 
     }
 

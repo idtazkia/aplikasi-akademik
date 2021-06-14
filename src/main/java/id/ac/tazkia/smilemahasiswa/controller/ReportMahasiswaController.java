@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import id.ac.tazkia.smilemahasiswa.dao.KrsDetailDao;
-import id.ac.tazkia.smilemahasiswa.dao.MahasiswaDao;
-import id.ac.tazkia.smilemahasiswa.dao.NilaiTugasDao;
-import id.ac.tazkia.smilemahasiswa.dao.TahunAkademikDao;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.KhsDto;
@@ -26,6 +23,10 @@ import java.util.*;
 
 @Controller
 public class ReportMahasiswaController {
+
+    @Autowired
+    private KrsDao krsDao;
+
     @Autowired
     private KrsDetailDao krsDetailDao;
 
@@ -40,6 +41,9 @@ public class ReportMahasiswaController {
 
     @Autowired
     private NilaiTugasDao nilaiTugasDao;
+
+    @Autowired
+    private PraKrsSpDao praKrsSpDao;
 
     @GetMapping("/report/khs")
     public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik){
@@ -154,20 +158,15 @@ public class ReportMahasiswaController {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
+        model.addAttribute("tahun", tahun);
+        model.addAttribute("ceklis", praKrsSpDao.cariKrsSp(mahasiswa, tahun));
 
         //tampilsemua
         model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
 
-
-        model.addAttribute("transkrip1", krsDetailDao.transkripSem(mahasiswa,"1"));
-        model.addAttribute("transkrip2", krsDetailDao.transkripSem(mahasiswa,"2"));
-        model.addAttribute("transkrip3", krsDetailDao.transkripSem(mahasiswa,"3"));
-        model.addAttribute("transkrip4", krsDetailDao.transkripSem(mahasiswa,"4"));
-        model.addAttribute("transkrip5", krsDetailDao.transkripSem(mahasiswa,"5"));
-        model.addAttribute("transkrip6", krsDetailDao.transkripSem(mahasiswa,"6"));
-        model.addAttribute("transkrip7", krsDetailDao.transkripSem(mahasiswa,"7"));
-        model.addAttribute("transkrip8", krsDetailDao.transkripSem(mahasiswa,"8"));
-
+        model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+        model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
 
 
     }

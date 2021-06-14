@@ -7,22 +7,14 @@ import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -82,6 +74,9 @@ public class ElearningWebClientService {
 
     @Autowired
     private BobotTugasDao bobotTugasDao;
+
+    @Autowired
+    private AttendanceImportBerhasilDao listImportBerhasilDao;
 
     WebClient webClient1 = WebClient.builder()
             .baseUrl("https://elearning.tazkia.ac.id")
@@ -369,6 +364,7 @@ public class ElearningWebClientService {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         LocalDate timeIn = LocalDate.parse(mdldos.getWaktuMasuk(), formatter);
                         LocalDate timeOut = LocalDate.parse(mdldos.getWaktuSelesai(), formatter);
+                        LocalDate timeIp = LocalDate.parse(mdldos.getTanggalInput(), formatter);
 
                         LocalTime jamNya = LocalTime.of(00,00,00);
 
@@ -413,6 +409,29 @@ public class ElearningWebClientService {
                             if (jadwal.getJamSelesai() == null){
                                 System.out.println(" JAM SELESAI NULL");
                             }
+
+                            AttendanceImportBerhasil ib = new AttendanceImportBerhasil();
+                            ib.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
+                            ib.setJadwal(jadwal);
+                            ib.setKelas(jadwal.getKelas().getNamaKelas());
+                            ib.setDosen(dosen);
+                            if (jadwal.getJamMulai() != null){
+                                ib.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+                            }
+                            if (jadwal.getJamMulai() == null){
+                                ib.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
+                            }
+                            if (jadwal.getJamSelesai() != null){
+                                ib.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
+                            }
+                            if (jadwal.getJamSelesai() == null){
+                                ib.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
+                            }
+                            ib.setTanggalImport(LocalDateTime.of(timeIp, jamNya));
+                            ib.setStatus(StatusRecord.AKTIF);
+                            listImportBerhasilDao.save(ib);
+                            System.out.println("Tanggal Input =" + LocalDateTime.of(timeIp,jamNya));
+
                         }
 
                         SesiKuliah sesiKuliah = new SesiKuliah();
@@ -508,6 +527,7 @@ public class ElearningWebClientService {
                                             pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
                                             presensiMahasiswaDao.save(pm);
                                             System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
+
                                         }
 
 

@@ -275,7 +275,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
 
     @Query(value="SELECT h.id, c.kode_matakuliah, c.nama_matakuliah, b.jumlah_sks,COALESCE(a.bobot,'waiting')AS bobot,\n" +
-            "            COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu ,kode_tahun_akademik, nama_tahun_akademik\n" +
+            "            COALESCE(a.grade,'waiting')AS grade,COALESCE((b.jumlah_sks*a.bobot),'waiting') AS mutu ,kode_tahun_akademik, nama_tahun_akademik, b.id AS idMatKul \n" +
             "            FROM krs_detail AS a \n" +
             "            inner join krs as h on a.id_krs = h.id\n" +
             "            inner join tahun_akademik as i on h.id_tahun_akademik = i.id\n" +
