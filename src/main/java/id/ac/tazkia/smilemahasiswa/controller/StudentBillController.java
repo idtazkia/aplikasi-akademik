@@ -1322,11 +1322,10 @@ public class StudentBillController {
 
         bill.setStatusTagihan(StatusTagihan.DICICIL);
         tagihanDao.save(bill);
-        List<VirtualAccount> va = virtualAccountDao.findByTagihan(bill);
-        for(VirtualAccount listVa : va){
-            virtualAccountDao.delete(listVa);
-        }
-        tagihanService.hapusTagihan(bill);
+//        List<VirtualAccount> va = virtualAccountDao.findByTagihan(bill);
+//        for(VirtualAccount listVa : va){
+//            virtualAccountDao.delete(listVa);
+//        }
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -1343,6 +1342,7 @@ public class StudentBillController {
         if (requestCicilan != null) {
             requestCicilan.setUserApprove(karyawan);
             requestCicilanDao.save(requestCicilan);
+            tagihanService.requestCreateCicilan(requestCicilan);
         }
 
         return "redirect:../requestCicilan/list";

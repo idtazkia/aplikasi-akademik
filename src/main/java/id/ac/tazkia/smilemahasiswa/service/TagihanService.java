@@ -74,6 +74,7 @@ public class TagihanService {
                 .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " +tagihan.getMahasiswa().getNama())
                 .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .jenisRequest(TagihanRequest.Type.CREATE)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
@@ -87,6 +88,8 @@ public class TagihanService {
                 .keterangan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()
                         + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama())
                 .tanggalJatuhTempo(Date.from(requestCicilan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .jenisRequest(TagihanRequest.Type.REPLACE)
+                .nomorTagihanLama(requestCicilan.getTagihan().getNomor())
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
