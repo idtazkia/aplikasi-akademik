@@ -1202,7 +1202,6 @@ public class StudentBillController {
                           @RequestParam(required = false) Tagihan tagihan,
                           @RequestParam(required = false) BigDecimal nilaiCicilan){
 
-        tagihanService.hapusTagihan(tagihan);
         log.info("jumlah cicilan : {}" + nilaiCicilan);
         List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
         for (RequestCicilan sisaCicilan : cekSisaCicilan){
@@ -1219,7 +1218,7 @@ public class StudentBillController {
         requestCicilan.setStatus(StatusRecord.AKTIF);
         requestCicilan.setStatusCicilan(StatusCicilan.PENGAJUAN_PELUNASAN);
         requestCicilanDao.save(requestCicilan);
-        tagihanService.requestCreateCicilan(requestCicilan);
+        tagihanService.ubahJadiCicilan(requestCicilan);
 
         return "redirect:../bill/list";
     }
@@ -1342,7 +1341,7 @@ public class StudentBillController {
         if (requestCicilan != null) {
             requestCicilan.setUserApprove(karyawan);
             requestCicilanDao.save(requestCicilan);
-            tagihanService.requestCreateCicilan(requestCicilan);
+            tagihanService.ubahJadiCicilan(requestCicilan);
         }
 
         return "redirect:../requestCicilan/list";

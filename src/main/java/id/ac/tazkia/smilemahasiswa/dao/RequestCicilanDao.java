@@ -50,7 +50,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "group by a.id, e.nama, b.status_approve", nativeQuery = true)
     List<Object[]> cekCicilanPerMahasiswa(TahunAkademik tahunAkademik, Mahasiswa mahasiswa);
 
-    @Query(value = "select sum(nilai_cicilan) as sisaCicilan from request_cicilan where status_cicilan!='LUNAS' and id_tagihan=?1", nativeQuery = true)
+    @Query(value = "select sum(nilai_cicilan) as sisaCicilan from request_cicilan where status_cicilan!='LUNAS' and id_tagihan=?1 and status='AKTIF'", nativeQuery = true)
     BigDecimal pengajuanPelunasan(String idTagihan);
 
     List<RequestCicilan> findByTagihanAndStatusAndStatusApprove(Tagihan tagihan, StatusRecord statusRecord, StatusApprove statusApprove);

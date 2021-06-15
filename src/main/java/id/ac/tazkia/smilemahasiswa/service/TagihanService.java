@@ -79,7 +79,7 @@ public class TagihanService {
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
-    public void requestCreateCicilan(RequestCicilan requestCicilan) {
+    public void ubahJadiCicilan(RequestCicilan requestCicilan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .jenisTagihan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getId())
@@ -90,6 +90,20 @@ public class TagihanService {
                 .tanggalJatuhTempo(Date.from(requestCicilan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.REPLACE)
                 .nomorTagihanLama(requestCicilan.getTagihan().getNomor())
+                .build();
+        kafkaSender.requestCreateTagihan(tagihanRequest);
+    }
+
+    public void mengirimCicilanSelanjutnya(RequestCicilan requestCicilan) {
+        TagihanRequest tagihanRequest = TagihanRequest.builder()
+                .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeBiaya())
+                .jenisTagihan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getId())
+                .nilaiTagihan(requestCicilan.getNilaiCicilan())
+                .debitur(requestCicilan.getTagihan().getMahasiswa().getNim())
+                .keterangan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()
+                        + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama())
+                .tanggalJatuhTempo(Date.from(requestCicilan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .jenisRequest(TagihanRequest.Type.CREATE)
                 .build();
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
@@ -218,7 +232,7 @@ public class TagihanService {
             }else {
                 requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                 requestCicilanDao.save(requestCicilan);
-                requestCreateCicilan(requestCicilan);
+                mengirimCicilanSelanjutnya(requestCicilan);
                 log.info("kirim cicilan selanjutnya : {}", requestCicilan);
             }
         }
