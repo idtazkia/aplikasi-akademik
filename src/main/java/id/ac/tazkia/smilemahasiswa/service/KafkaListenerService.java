@@ -169,27 +169,6 @@ public class KafkaListenerService {
 
     }
 
-//    private void kirimTagihanAfterDelete(HapusTagihanResponse response){
-//        Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getDebitur());
-//        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-//        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
-//                .findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(
-//                        response.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), mahasiswa.getIdProgram(), StatusRecord.AKTIF
-//                );
-//        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
-//        RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
-//        if (requestCicilan == null){
-//            log.debug("Bukan tagihan cicilan!");
-//        }else{
-//            requestCicilan.setWaktuApprove(LocalDateTime.now());
-//            requestCicilan.setStatus(StatusRecord.AKTIF);
-//            requestCicilan.setStatusApprove(StatusApprove.APPROVED);
-//            requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-//            requestCicilanDao.save(requestCicilan);
-//            log.info("Mengirim cicilan pertama!");
-//            tagihanService.requestCreateCicilan(requestCicilan);
-//        }
-//    }
 
     @KafkaListener(topics = "${kafka.topic.hapus.tagihan.response}", groupId = "${spring.kafka.consumer.group-id}")
     public void handleHapusTagihanResponse(String message) {
