@@ -1704,10 +1704,10 @@ public class StudentBillController {
         enableFitureDao.save(enableFiture);
     }
 
-//    @Scheduled(cron = "0 21 11 11 * *", zone = "Asia/Jakarta")
+//    @Scheduled(cron = "0 21 11 * * *", zone = "Asia/Jakarta")
 //    public void akumulasiTagihan(){
 //
-//        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().withDayOfMonth(10));
+//        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
 //        for (RequestCicilan cariCicilanHariIni : requestCicilan){
 //            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
 //            requestCicilanDao.save(cariCicilanHariIni);

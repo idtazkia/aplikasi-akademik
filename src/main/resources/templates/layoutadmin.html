@@ -266,6 +266,9 @@
                     </a>
                     <div class="collapse" id="navbar-study">
                         <ul class="nav nav-sm flex-column">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KABAG_AKADEMIK') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
+                                <a th:href="@{/studiesActivity/sp/list}" class="nav-link">Pra KRS SP</a>
+                            </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/studiesActivity/krs/list}" class="nav-link">KRS</a>
                             </li>

@@ -122,12 +122,19 @@
             </div>
             <div class="col-md-7 col-xs-12">
                 <div class="ongoing-task-inner notika-shadow mg-t-30">
+
+                    
                     <div class="">
                         <div class=" ongoing-hd-wd">
                             <div class="row">
                                 <div class="col-md-4 col-xs-12">
                                     <div class="form-group" th:if="${jumlahNilai != 0}">
-                                        <button type="submit" id="tambah" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add installments <i size="50" class="fa fa-plus-circle"></i></button>
+                                        <div th:if="${jumlahFile == 0}">
+                                            <h4>Enter the Support Document first</h4>
+                                        </div>
+                                        <div th:if="${jumlahFile != 0}">
+                                            <button type="submit" id="tambah" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add installments <i size="50" class="fa fa-plus-circle"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-xs-12">
@@ -283,13 +290,13 @@
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Nama</th>
-                                                    <th>Berkas</th>
+                                                    <th>Type</th>
+                                                    <th>Document</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
-                                                    <td th:text="${data.nama}"></td>
+                                                    <td th:text="${data.jenisDocument}"></td>
                                                     <td>
                                                         <a target="_blank" th:href="@{/tagihan/{document}/cicilan(document = ${data.id})}">
                                                             <button type="submit" class="btn btn-success">

@@ -46,6 +46,4 @@ public class PraKrsSp {
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
 
-    private String prioritas;
-
 }

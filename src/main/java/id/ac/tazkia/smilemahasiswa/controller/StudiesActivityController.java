@@ -135,6 +135,9 @@ public class StudiesActivityController {
     @Autowired
     private RpsDao rpsDao;
 
+    @Autowired
+    private ProgramDao programDao;
+
     @Autowired private ScoreService scoreService;
 
     @Autowired
@@ -142,6 +145,12 @@ public class StudiesActivityController {
 
     @Autowired
     private MatakuliahKurikulumDao matakuliahKurikulumDao;
+
+    @Autowired
+    private KelasDao kelasDao;
+
+    @Autowired
+    private TahunProdiDao tahunProdiDao;
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -4515,35 +4524,64 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/sp/list")
     public void listSp(Model model){
 
-        List<Object[]> p1 = praKrsSpDao.listKrsSp("1");
-        List<Object[]> p2 = praKrsSpDao.listKrsSp("2");
-        model.addAttribute("list1", p1);
-        model.addAttribute("list2", p2);
+        List<Object[]> p1 = praKrsSpDao.listKrsSp();
+        model.addAttribute("list", p1);
+        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listProdi", prodiDao.findAll());
+        model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        TahunAkademik tahun = tahunAkademikDao.findByStatusOrStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.AKTIF, StatusRecord.PENDEK);
+        model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
-        model.addAttribute("matkulDetail1", praKrsSpDao.findAllByStatusAndPrioritas(StatusRecord.AKTIF, "1"));
-        model.addAttribute("matkulDetail2", praKrsSpDao.findAllByStatusAndPrioritas(StatusRecord.AKTIF, "2"));
+        model.addAttribute("matkulDetail1", praKrsSpDao.findByStatus(StatusRecord.AKTIF));
 
 
     }
 
     @PostMapping("/studiesActivity/sp/approve")
-    public String approveSp(@RequestParam(required = false) String idMatkul,
-                            @RequestParam(required = false) String prioritas,
+    public String approveSp(HttpServletRequest request, @RequestParam(required = false) Prodi prodi,
+                            @RequestParam(required = false) TahunAkademik tahunAkademik,
                             Authentication authentication){
 
-        User user = currentUserService.currentUser(authentication);
-        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        List<Object[]> p1 = praKrsSpDao.listKrsSp();
+        for (Object[] mk : p1){
+            String pilihan = request.getParameter("dosen-"+mk[0].toString());
+            if (pilihan != null && !pilihan.trim().isEmpty()) {
+                User user = currentUserService.currentUser(authentication);
+                Karyawan karyawan = karyawanDao.findByIdUser(user);
+                MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(request.getParameter("matkur-"+mk[0])).get();
 
-        MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(idMatkul).get();
+                List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulum(StatusRecord.AKTIF, matkul);
+                for (PraKrsSp pks : listSp){
+                    pks.setStatusApprove(StatusApprove.APPROVED);
+                    pks.setUserUpdate(karyawan);
+                    praKrsSpDao.save(pks);
+                }
 
-        List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulumAndPrioritas(StatusRecord.AKTIF, matkul, prioritas);
-        for (PraKrsSp pks : listSp){
-            pks.setStatusApprove(StatusApprove.APPROVED);
-            pks.setUserUpdate(karyawan);
-            praKrsSpDao.save(pks);
+                Kelas kelas = kelasDao.findById("SP-01").get();
+                TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, prodi);
+
+                Jadwal jadwal = new Jadwal();
+                jadwal.setJumlahSesi(1);
+                jadwal.setBobotUts(BigDecimal.ZERO);
+                jadwal.setBobotUas(BigDecimal.ZERO);
+                jadwal.setBobotTugas(BigDecimal.ZERO);
+                jadwal.setBobotPresensi(BigDecimal.ZERO);
+                jadwal.setKelas(kelas);
+                jadwal.setProdi(prodi);
+                jadwal.setDosen(dosenDao.findById(request.getParameter("dosen-"+mk[0].toString())).get());
+                jadwal.setTahunAkademik(tahunAkademik);
+                jadwal.setTahunAkademikProdi(tahunProdi);
+                jadwal.setMatakuliahKurikulum(matkul);
+                jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
+                jadwal.setProgram(programDao.findById("01").get());
+                jadwal.setAkses(Akses.UMUM);
+                jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+                jadwalDao.save(jadwal);
+                System.out.println(matkul.getId());
+            }
         }
 
-        return "redirect:../sp/list";
+        return "redirect:../../academic/schedule/list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
 
     }
 
