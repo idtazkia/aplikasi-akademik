@@ -175,6 +175,7 @@
                                     <tr>
                                         <th>No. </th>
                                         <th>Tagihan</th>
+                                        <th>Permintaan Penangguhan</th>
                                         <th>Status</th>
                                         <th></th>
                                     </tr>
@@ -183,14 +184,16 @@
                                     <tr th:each="data, row:${penangguhan}">
                                         <td th:text="${(row.index + 1)}">1</td>
                                         <td th:text="${data[1]}">1</td>
+                                        <td th:text="${data[4]}">22-12-2012</td>
                                         <td >
                                             <div th:if="${data[2]} == 'WAITING'" class="btn btn-primary btn-sm" th:text="${data[2]}"></div>
                                             <div th:if="${data[2]} == 'APPROVED'" class="btn btn-success btn-sm" th:text="${data[2]}"></div>
                                             <div th:if="${data[2]} == 'REJECTED'" class="btn btn-danger btn-sm" th:text="${data[2]}"></div>
                                         </td>
                                         <td th:if="${data[2] == 'REJECTED'}">
-                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModaltwo">keterangan</button>
-                                            <div class="modal fade" id="myModaltwo" role="dialog">
+                                            <button type="button" class="btn btn-info" data-toggle="modal" th:data-target="${'#myModaltwo-'+data[5]}">keterangan</button>
+
+                                            <div class="modal fade" th:id="${'myModaltwo-'+data[5]}" role="dialog">
                                                 <div class="modal-dialog modal-sm">
                                                     <div class="modal-content">
                                                         <div class="modal-header">

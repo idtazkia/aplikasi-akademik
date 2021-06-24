@@ -20,7 +20,7 @@ public interface RequestPenangguhanDao extends PagingAndSortingRepository<Reques
 
     List<RequestPenangguhan> findByStatusAndStatusApproveAndTanggalPenangguhan(StatusRecord statusRecord, StatusApprove statusApprove, LocalDate penangguhan);
 
-    @Query(value = "select b.id, e.nama, a.status_approve as status, a.keterangan_reject as keterangan from tagihan as b inner join mahasiswa as c on b.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on b.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id inner join tahun_akademik as f on b.id_tahun_akademik=f.id left join request_penangguhan as a on a.id_tagihan=b.id where a.status='AKTIF' and c.nim=?1 and f.id=?2", nativeQuery = true)
+    @Query(value = "select b.id as id_tagihan, e.nama, a.status_approve as status, a.keterangan_reject as keterangan, a.tanggal_penangguhan, a.id from tagihan as b inner join mahasiswa as c on b.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on b.id_nilai_jenis_tagihan=d.id inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id inner join tahun_akademik as f on b.id_tahun_akademik=f.id left join request_penangguhan as a on a.id_tagihan=b.id where a.status='AKTIF' and c.nim=?1 and f.id=?2", nativeQuery = true)
     List<Object[]> cekPenangguhanPerMahasiswa(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
 }

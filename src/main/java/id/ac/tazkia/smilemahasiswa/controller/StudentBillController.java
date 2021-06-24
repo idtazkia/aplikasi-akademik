@@ -1101,18 +1101,26 @@ public class StudentBillController {
         return "redirect:../requestPenangguhan/date?id="+document.getTagihan().getId();
     }
 
-//    @PostMapping("/studentBill/penangguhan/reject")
-//    public String rejectPenangguhan(@RequestParam RequestPenangguhan requestPenangguhan,
-//                                    Authentication authentication){
-//        User user = currentUserService.currentUser(authentication);
-//        Karyawan karyawan = karyawanDao.findByIdUser(user);
-//        requestPenangguhan.setUserApprove(karyawan);
-//        requestPenangguhan.setTanggalApprove(LocalDate.now());
-//        requestPenangguhan.setStatusApprove(StatusApprove.REJECTED);
-//        requestPenangguhan.setStatus(StatusRecord.AKTIF);
-//        requestPenangguhanDao.save(requestPenangguhan);
-//        return "redirect:../requestPenangguhan/list";
-//    }
+    @PostMapping("/studentBill/penangguhan/reject")
+    public String rejectPenangguhan(@RequestParam RequestPenangguhan requestPenangguhan,
+                                    @RequestParam(required = false) String keterangan,
+                                    Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        requestPenangguhan.setUserApprove(karyawan);
+        requestPenangguhan.setTanggalApprove(LocalDate.now());
+        requestPenangguhan.setKeteranganReject(keterangan);
+        requestPenangguhan.setStatusApprove(StatusApprove.REJECTED);
+        requestPenangguhan.setStatus(StatusRecord.AKTIF);
+        requestPenangguhanDao.save(requestPenangguhan);
+
+        List<TagihanDocument> td = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(requestPenangguhan.getTagihan(), StatusRecord.AKTIF, StatusDocument.PENANGGUHAN);
+        for (TagihanDocument document : td){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
+        return "redirect:../requestPenangguhan/list";
+    }
 
 //    request cicilan
 
