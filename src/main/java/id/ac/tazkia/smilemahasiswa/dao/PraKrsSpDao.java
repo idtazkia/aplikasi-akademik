@@ -23,6 +23,14 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "where a.status='AKTIF' and d.status!='NONAKTIF' and d.status!='HAPUS' group by c.kode_matakuliah", nativeQuery = true)
     List<Object[]> listKrsSp();
 
+    @Query(value = "select b.id_mahasiswa from pembayaran as a " +
+            "inner join tagihan as b on a.id_tagihan = b.id " +
+            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id " +
+            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id " +
+            "inner join pra_krs_sp as e on b.id_mahasiswa=e.id_mahasiswa " +
+            "where d.kode = '23' and b.lunas = true and e.id_matakuliah_kurikulum=?1", nativeQuery = true)
+    List<Object[]> listLunasSpPerMatkul(String idMatkul);
+
     @Query(value = "select b.id, c.nama_matakuliah, coalesce(count(a.id_mahasiswa),0) as jumlah from pra_krs_sp as a right join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
             "inner join matakuliah as c on b.id_matakuliah=c.id where b.id=?1", nativeQuery = true)
     Object[] jumlahPerMatkul(String idMatkul);
@@ -38,7 +46,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
     @Query(value = "select * from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF' limit 1", nativeQuery = true)
     PraKrsSp cariKrsSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
-    List<PraKrsSp> findByMatakuliahKurikulumAndStatus(MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
+    List<PraKrsSp> findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(Mahasiswa mahasiswa, StatusRecord statusRecord, StatusApprove statusApprove, TahunAkademik tahunAkademik);
 
     List<PraKrsSp> findByStatus(StatusRecord statusRecord);
 

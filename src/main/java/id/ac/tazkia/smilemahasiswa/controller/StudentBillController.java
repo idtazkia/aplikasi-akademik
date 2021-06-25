@@ -1431,7 +1431,7 @@ public class StudentBillController {
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
-        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApprove(tagihan1, StatusRecord.AKTIF, (StatusApprove.APPROVED)));
+        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
 
     }
 

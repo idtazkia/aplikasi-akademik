@@ -184,7 +184,7 @@ public class DashboardController {
         }else {
             model.addAttribute("cicilan", cekCicilan);
         }
-        List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa, ta);
+        List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa.getId(), ta.getId());
         if (cekPenangguhan.isEmpty()){
             model.addAttribute("cekPenangguhan", "cekPenangguhan");
         }else {

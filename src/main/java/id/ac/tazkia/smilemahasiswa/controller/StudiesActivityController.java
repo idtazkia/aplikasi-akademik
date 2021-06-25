@@ -4538,9 +4538,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/sp/approve")
-    public String approveSp(HttpServletRequest request, @RequestParam(required = false) Prodi prodi,
-                            @RequestParam(required = false) TahunAkademik tahunAkademik,
-                            Authentication authentication){
+    public String approveSp(HttpServletRequest request, Authentication authentication){
 
         List<Object[]> p1 = praKrsSpDao.listKrsSp();
         for (Object[] mk : p1){
@@ -4557,8 +4555,13 @@ public class StudiesActivityController {
                     praKrsSpDao.save(pks);
                 }
 
+                Prodi prodi = prodiDao.findById(request.getParameter("prodi-"+mk[0])).get();
+                TahunAkademik tahunAkademik = tahunAkademikDao.findById(request.getParameter("tahunAkademik-"+mk[0])).get();
+
                 Kelas kelas = kelasDao.findById("SP-01").get();
                 TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, prodi);
+                System.out.println("prodi : " + request.getParameter("prodi-"+mk[0].toString()));
+                System.out.println("tahun aka : " + request.getParameter("tahunAkademik-"+mk[0].toString()));
 
                 Jadwal jadwal = new Jadwal();
                 jadwal.setJumlahSesi(1);
@@ -4578,12 +4581,106 @@ public class StudiesActivityController {
                 jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
                 jadwalDao.save(jadwal);
                 System.out.println(matkul.getId());
+//
+                List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(matkul.getId());
+                for (Object[] listLunas : spLunas){
+                    Mahasiswa mhs = mahasiswaDao.findById(listLunas[0].toString()).get();
+                    TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
+                    Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
+                    if (krsDetail == null){
+                        if (k == null){
+                            Krs krs = new Krs();
+                            krs.setTahunAkademik(tahunAkademik);
+                            krs.setTahunAkademikProdi(tahunAkademikProdi);
+                            krs.setProdi(mhs.getIdProdi());
+                            krs.setMahasiswa(mhs);
+                            krs.setNim(mhs.getNim());
+                            krs.setTanggalTransaksi(LocalDateTime.now());
+                            krs.setStatus(StatusRecord.AKTIF);
+                            krsDao.save(krs);
+
+                            KrsDetail kd = new KrsDetail();
+                            kd.setKrs(krs);
+                            kd.setMahasiswa(mhs);
+                            kd.setJadwal(jadwal);
+                            kd.setMatakuliahKurikulum(matkul);
+                            kd.setNilaiPresensi(BigDecimal.ZERO);
+                            kd.setNilaiUts(BigDecimal.ZERO);
+                            kd.setNilaiTugas(BigDecimal.ZERO);
+                            kd.setFinalisasi("N");
+                            kd.setNilaiUas(BigDecimal.ZERO);
+                            kd.setJumlahKehadiran(0);
+                            kd.setJumlahMangkir(0);
+                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                            kd.setJumlahTerlambat(0);
+                            kd.setJumlahIzin(0);
+                            kd.setJumlahSakit(0);
+                            kd.setStatusEdom(StatusRecord.UNDONE);
+                            kd.setStatus(StatusRecord.AKTIF);
+                            kd.setTahunAkademik(tahunAkademik);
+                            kd.setStatusKonversi(StatusRecord.AKTIF);
+                            krsDetailDao.save(kd);
+
+                        }else{
+
+                            KrsDetail kd = new KrsDetail();
+                            kd.setKrs(k);
+                            kd.setMahasiswa(mhs);
+                            kd.setJadwal(jadwal);
+                            kd.setMatakuliahKurikulum(matkul);
+                            kd.setNilaiPresensi(BigDecimal.ZERO);
+                            kd.setNilaiUts(BigDecimal.ZERO);
+                            kd.setNilaiTugas(BigDecimal.ZERO);
+                            kd.setFinalisasi("N");
+                            kd.setNilaiUas(BigDecimal.ZERO);
+                            kd.setJumlahKehadiran(0);
+                            kd.setJumlahMangkir(0);
+                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                            kd.setJumlahTerlambat(0);
+                            kd.setJumlahIzin(0);
+                            kd.setJumlahSakit(0);
+                            kd.setStatusEdom(StatusRecord.UNDONE);
+                            kd.setStatus(StatusRecord.AKTIF);
+                            kd.setTahunAkademik(tahunAkademik);
+                            kd.setStatusKonversi(StatusRecord.AKTIF);
+                            krsDetailDao.save(kd);
+                        }
+                    }
+                }
+                return "redirect:../../academic/schedule/list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
             }
         }
 
-        return "redirect:../../academic/schedule/list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
+        return "redirect:list";
 
     }
+
+    @PostMapping("/studiesActivity/sp/reject")
+    private String rejectSp(HttpServletRequest request, Authentication authentication){
+
+        List<Object[]> p1 = praKrsSpDao.listKrsSp();
+        for (Object[] mk : p1){
+            String pilihan = request.getParameter("matkur-"+mk[0].toString());
+            if (pilihan != null && !pilihan.trim().isEmpty()) {
+                User user = currentUserService.currentUser(authentication);
+                Karyawan karyawan = karyawanDao.findByIdUser(user);
+                MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(request.getParameter("matkur-"+mk[0])).get();
+
+                List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulum(StatusRecord.AKTIF, matkul);
+                for (PraKrsSp pks : listSp){
+                    pks.setStatusApprove(StatusApprove.REJECTED);
+                    pks.setUserUpdate(karyawan);
+                    praKrsSpDao.save(pks);
+                }
+
+            }
+        }
+        return "redirect:list";
+    }
+
 
 
 }

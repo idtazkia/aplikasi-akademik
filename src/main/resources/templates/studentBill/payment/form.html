@@ -143,6 +143,11 @@
                                                     <td> : </td>
                                                     <td th:text="${cicilan.statusApprove}"></td>
                                                 </tr>
+                                                <tr th:if="${penangguhan} != null">
+                                                    <td>Status Penangguhan</td>
+                                                    <td> : </td>
+                                                    <td th:text="${penangguhan.statusApprove}"></td>
+                                                </tr>
                                                 <tr th:if="${tagihan.status.NONAKTIF} == ${tagihan.status}">
                                                     <td>Status Tagihan</td>
                                                     <td> : </td>
