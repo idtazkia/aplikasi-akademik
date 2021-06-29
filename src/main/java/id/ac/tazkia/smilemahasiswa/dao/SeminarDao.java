@@ -22,6 +22,8 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
     @Query("select s from Seminar s where s.status = 'APPROVED' and s.ketuaPenguji = :ketua or s.status = 'APPROVED' and s.dosenPenguji = :dosen or s.status = 'APPROVED' and s.note.dosen = :dosen1 and s.tahunAkademik = :tahun order by s.statusSempro desc ")
     List<Seminar> cariSeminar(@Param("ketua") Dosen ketua,@Param("dosen")Dosen dosen, @Param("dosen1") Dosen dosenNote,@Param("tahun") TahunAkademik tahunAkademik);
 
+    List<Seminar> findByStatusAndKetuaPengujiAndTahunAkademikOrStatusAndDosenPengujiAndTahunAkademikOrStatusAndNoteDosenAndTahunAkademikOrderByStatusSemproDesc(StatusApprove statusApprove1,Dosen dosen,TahunAkademik tahunAkademik,StatusApprove statusApprove2,Dosen dosen2, TahunAkademik tahunAkademik2, StatusApprove statusApprove3,Dosen dosen3,TahunAkademik tahunAkademik3);
+    
     List<Seminar> findByStatusAndNoteDosenAndTahunAkademikOrderByStatusSemproDesc(StatusApprove statusApprove,Dosen dosen,TahunAkademik tahunAkademik);
 
     @Query(value = "select round(sum(ka+ua+pa),2) from seminar where id = ?1", nativeQuery = true)
@@ -50,5 +52,10 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
 
     List<Seminar> findByNoteMahasiswaAndStatusSemproNotInAndStatus(Mahasiswa mahasiswa,List<StatusApprove> statusSempro,StatusApprove statusApprove);
 
+    @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or kf = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or uf = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2 or pf = ?2)", nativeQuery = true)
+    Object validasiSemproSKripsi(Seminar seminar, BigDecimal nilai);
+
+    @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2)", nativeQuery = true)
+    Object validasiSemproStudy(Seminar seminar, BigDecimal nilai);
 
 }
