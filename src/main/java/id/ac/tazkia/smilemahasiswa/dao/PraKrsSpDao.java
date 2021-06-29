@@ -35,6 +35,9 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join matakuliah as c on b.id_matakuliah=c.id where b.id=?1", nativeQuery = true)
     Object[] jumlahPerMatkul(String idMatkul);
 
+    @Query(value = "select a.id, d.nama_matakuliah as matakuliah, c.jumlah_sks as jumlahSks, a.status_approve as status, bb.status_pengembalian as pengembalian, a.id_mahasiswa as mahasiswa, a.id_tahun_akademik as tahun_akademik, c.id as idMatakuliah from pra_krs_sp as a inner join matakuliah_kurikulum as c on a.id_matakuliah_kurikulum=c.id inner join matakuliah as d on c.id_matakuliah=d.id left join (select b.id_pra_krs_sp, b.status_pengembalian from refund_sp as b where b.status='AKTIF') bb on a.id=bb.id_pra_krs_sp where a.status='AKTIF' and a.id_mahasiswa=?1", nativeQuery = true)
+    List<Object[]> listSp(String idMahasiswa);
+
     List<PraKrsSp> findByStatusAndMatakuliahKurikulum(StatusRecord statusRecord, MatakuliahKurikulum matakuliahKurikulum);
 
     @Query(value = "select sum(jumlah_sks) from matakuliah_kurikulum where id = ?1", nativeQuery = true)
@@ -52,6 +55,6 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
 
     Integer countMahasiswaByMatakuliahKurikulumIdAndTahunAkademikAndStatus(String matakuliahKurikulum, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
-//    List<PraKrsSp> findByStatus
+    List<PraKrsSp> findByStatusAndMahasiswaAndTahunAkademik(StatusRecord status, Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
 }

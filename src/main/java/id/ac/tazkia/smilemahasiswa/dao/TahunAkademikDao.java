@@ -21,8 +21,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     TahunAkademik findByStatusAndJenis(StatusRecord statusRecord, StatusRecord jenis);
 
-    TahunAkademik findByStatusOrStatusAndJenis(StatusRecord statusRecord, StatusRecord status, StatusRecord jenis);
-
     List<TahunAkademik> findByStatusOrderByKodeTahunAkademikDesc(StatusRecord statusRecord);
 
     Iterable<TahunAkademik> findByStatusNotInOrderByTahunDesc(List<StatusRecord> statusRecords);

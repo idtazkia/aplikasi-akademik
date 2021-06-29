@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import jdk.net.SocketFlow;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -89,6 +91,12 @@ public class StudyActivityController {
 
     @Autowired
     private BiayaSksSpDao biayaSksDao;
+
+    @Autowired
+    private RefundSpDao refundSpDao;
+
+    @Autowired
+    private PembayaranDao pembayaranDao;
 
     @ModelAttribute("konsentrasi")
     public Iterable<Konsentrasi> konsentrasis() {
@@ -844,6 +852,39 @@ public class StudyActivityController {
 
 
         return "redirect:../../report/transcript";
+    }
+
+    @PostMapping("/prakrs/sp/refund")
+    private String refund(HttpServletRequest request, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
+
+        List<PraKrsSp> listReject = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mhs, StatusRecord.AKTIF, StatusApprove.REJECTED, tahun);
+        for (PraKrsSp mk : listReject ){
+            String pilihan = request.getParameter("matkur-"+mk.getMatakuliahKurikulum().getId());
+            if (pilihan != null && !pilihan.trim().isEmpty()) {
+                Tagihan tagihan = tagihanDao.findByMahasiswaAndTahunAkademikAndNilaiJenisTagihanJenisTagihanKodeAndLunasAndStatus(mk.getMahasiswa(), mk.getTahunAkademik(), "23", true, StatusRecord.AKTIF);
+                Pembayaran pembayaran = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
+                RefundSp refund = new RefundSp();
+                refund.setMahasiswa(mk.getMahasiswa());
+                refund.setTagihan(tagihan);
+                refund.setPembayaran(pembayaran);
+                refund.setPraKrsSp(mk);
+                refund.setNomorRekening(request.getParameter("nomorRekening-"+mk.getMatakuliahKurikulum().getId()));
+                refund.setNamaPemilik(request.getParameter("namaPemilik-"+mk.getMatakuliahKurikulum().getId()));
+                refund.setJumlah(new BigDecimal(request.getParameter("jumlah-"+mk.getMatakuliahKurikulum().getId())));
+                refund.setNomorTelepon(request.getParameter("nomorTelepon-"+mk.getMatakuliahKurikulum().getId()));
+                refund.setStatusPengembalian(StatusRecord.UNDONE);
+                refundSpDao.save(refund);
+
+            }
+        }
+
+        return "redirect:/../../dashboard";
     }
 
 }

@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranTagihan;
 import id.ac.tazkia.smilemahasiswa.dto.payment.TagihanRequest;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.jni.Local;
 import org.apache.tomcat.jni.Status;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class TagihanService {
     public static final String TAGIHAN_SKRIPSI = "09";
     public static final String TAGIHAN_UTS = "12";
     public static final String TAGIHAN_UAS = "13";
+    public static final String TAGIHAN_SP = "23";
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
 
     @Autowired
@@ -58,6 +60,18 @@ public class TagihanService {
 
     @Autowired
     private RequestCicilanDao requestCicilanDao;
+
+    @Autowired
+    private PraKrsSpDao praKrsSpDao;
+
+    @Autowired
+    private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private JadwalDao jadwalDao;
+
+    @Autowired
+    private KelasDao kelasDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -187,29 +201,115 @@ public class TagihanService {
         }
 
         if (TAGIHAN_SEMPRO.equals(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
                     StatusRecord.SEMPRO, true, tagihan.getTahunAkademik());
-            if (enableFiture == null) {
-                enableFiture = new EnableFiture();
+            if (ef == null) {
+                EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setFitur(StatusRecord.SEMPRO);
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setEnable(true);
                 enableFiture.setKeterangan("-");
                 enableFitureDao.save(enableFiture);
+            } else if (ef.getEnable() == false) {
+                ef.setEnable(true);
+                ef.setKeterangan("Ngulang");
+                enableFitureDao.save(ef);
             }
         }
 
         if (TAGIHAN_SKRIPSI.equals(pt.getKodeJenisBiaya())){
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
                     StatusRecord.SKRIPSI, true, tagihan.getTahunAkademik());
-            if (enableFiture == null) {
-                enableFiture = new EnableFiture();
+            if (ef == null) {
+                EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setFitur(StatusRecord.SKRIPSI);
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
+            } else if (ef.getEnable() == false) {
+                ef.setEnable(true);
+                ef.setKeterangan("Ngulang");
+                enableFitureDao.save(ef);
+            }
+        }
+
+        if (TAGIHAN_SP.equals(pt.getKodeJenisBiaya())) {
+            List<PraKrsSp> listSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.AKTIF, StatusApprove.APPROVED, tagihan.getTahunAkademik());
+            for (PraKrsSp listApprove : listSp){
+                Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(listApprove.getMahasiswa(), listApprove.getTahunAkademik(), StatusRecord.AKTIF);
+                Kelas kelas = kelasDao.findById("SP-01").get();
+                TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(listApprove.getTahunAkademik(), listApprove.getMahasiswa().getIdProdi());
+                Jadwal jadwal = jadwalDao.
+                        findByTahunAkademikAndProdiAndKelasAndTahunAkademikProdiAndMatakuliahKurikulumAndStatus(listApprove.getTahunAkademik(),
+                                listApprove.getMahasiswa().getIdProdi(), kelas, tahunAkademikProdi, listApprove.getMatakuliahKurikulum(), StatusRecord.AKTIF);
+                KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(listApprove.getMahasiswa(), jadwal, StatusRecord.AKTIF, k, listApprove.getTahunAkademik());
+
+                if (krsDetail == null) {
+
+                    if (k == null) {
+
+                        Krs krs = new Krs();
+                        krs.setTahunAkademik(listApprove.getTahunAkademik());
+                        krs.setTahunAkademikProdi(tahunAkademikProdi);
+                        krs.setProdi(listApprove.getMahasiswa().getIdProdi());
+                        krs.setMahasiswa(listApprove.getMahasiswa());
+                        krs.setNim(listApprove.getMahasiswa().getNim());
+                        krs.setTanggalTransaksi(LocalDateTime.now());
+                        krs.setStatus(StatusRecord.AKTIF);
+                        krsDao.save(krs);
+
+                        KrsDetail kd = new KrsDetail();
+                        kd.setKrs(krs);
+                        kd.setMahasiswa(listApprove.getMahasiswa());
+                        kd.setJadwal(jadwal);
+                        kd.setMatakuliahKurikulum(listApprove.getMatakuliahKurikulum());
+                        kd.setNilaiPresensi(BigDecimal.ZERO);
+                        kd.setNilaiUts(BigDecimal.ZERO);
+                        kd.setNilaiTugas(BigDecimal.ZERO);
+                        kd.setFinalisasi("N");
+                        kd.setNilaiUas(BigDecimal.ZERO);
+                        kd.setJumlahKehadiran(0);
+                        kd.setJumlahMangkir(0);
+                        kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setJumlahTerlambat(0);
+                        kd.setJumlahIzin(0);
+                        kd.setJumlahSakit(0);
+                        kd.setStatusEdom(StatusRecord.UNDONE);
+                        kd.setStatus(StatusRecord.AKTIF);
+                        kd.setTahunAkademik(listApprove.getTahunAkademik());
+                        kd.setStatusKonversi(StatusRecord.AKTIF);
+                        krsDetailDao.save(kd);
+
+                    }else{
+                        KrsDetail kd = new KrsDetail();
+                        kd.setKrs(k);
+                        kd.setMahasiswa(listApprove.getMahasiswa());
+                        kd.setJadwal(jadwal);
+                        kd.setMatakuliahKurikulum(listApprove.getMatakuliahKurikulum());
+                        kd.setNilaiPresensi(BigDecimal.ZERO);
+                        kd.setNilaiUts(BigDecimal.ZERO);
+                        kd.setNilaiTugas(BigDecimal.ZERO);
+                        kd.setFinalisasi("N");
+                        kd.setNilaiUas(BigDecimal.ZERO);
+                        kd.setJumlahKehadiran(0);
+                        kd.setJumlahMangkir(0);
+                        kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setJumlahTerlambat(0);
+                        kd.setJumlahIzin(0);
+                        kd.setJumlahSakit(0);
+                        kd.setStatusEdom(StatusRecord.UNDONE);
+                        kd.setStatus(StatusRecord.AKTIF);
+                        kd.setTahunAkademik(listApprove.getTahunAkademik());
+                        kd.setStatusKonversi(StatusRecord.AKTIF);
+                        krsDetailDao.save(kd);
+                    }
+
+                }
+
             }
         }
 

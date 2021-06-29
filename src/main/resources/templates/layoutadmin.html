@@ -331,6 +331,9 @@
                     <div class="collapse" id="studentBill">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/refund/list}" class="nav-link">Request Refund</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/requestPenangguhan/list}" class="nav-link">Request Penangguhan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">

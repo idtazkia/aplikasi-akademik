@@ -4529,7 +4529,10 @@ public class StudiesActivityController {
         model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listProdi", prodiDao.findAll());
         model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
-        TahunAkademik tahun = tahunAkademikDao.findByStatusOrStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.AKTIF, StatusRecord.PENDEK);
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
         model.addAttribute("matkulDetail1", praKrsSpDao.findByStatus(StatusRecord.AKTIF));

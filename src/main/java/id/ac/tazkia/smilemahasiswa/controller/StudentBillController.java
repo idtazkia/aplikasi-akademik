@@ -30,6 +30,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -133,6 +134,9 @@ public class StudentBillController {
 
     @Autowired
     private ProgramDao programDao;
+
+    @Autowired
+    private RefundSpDao refundSpDao;
 
     @Value("classpath:kwitansi.odt")
     private Resource templateKwitansi;
@@ -1553,7 +1557,7 @@ public class StudentBillController {
 
             response.setHeader("Content-Disposition", "attachment;filename=bukti_pembayaran_"+pembayaran.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()+".pdf");
             OutputStream out = response.getOutputStream();
-            report.  convert(ctx, options, out);
+            report.convert(ctx, options, out);
             out.flush();
         } catch (Exception err){
             log.error(err.getMessage(), err);
@@ -1702,6 +1706,30 @@ public class StudentBillController {
 //
 //    }
 
+    // refund sp
+
+    @GetMapping("/studentBill/refund/list")
+    public void listRefund(Model model, @PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaPemilikContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
+        }else{
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
+    }
+
+    @PostMapping("/studentBill/refund/done")
+    private String doneRefund(@RequestParam(required = false) String refund){
+
+        RefundSp refSp = refundSpDao.findById(refund).get();
+        refSp.setStatusPengembalian(StatusRecord.DONE);
+        refundSpDao.save(refSp);
+
+        return "redirect:list";
+    }
+
     private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {
         EnableFiture enableFiture = new EnableFiture();
         enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -1712,38 +1740,38 @@ public class StudentBillController {
         enableFitureDao.save(enableFiture);
     }
 
-//    @Scheduled(cron = "0 21 11 * * *", zone = "Asia/Jakarta")
-//    public void akumulasiTagihan(){
-//
-//        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
-//        for (RequestCicilan cariCicilanHariIni : requestCicilan){
-//            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
-//            requestCicilanDao.save(cariCicilanHariIni);
-//            log.info("Update status cicilan : {}", cariCicilanHariIni);
-//
-//            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
-//            if (cicilanSelanjutnya != null){
-//                tagihanService.hapusTagihan(cariCicilanHariIni.getTagihan());
-//
-//                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-//                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
-//                requestCicilanDao.save(cicilanSelanjutnya);
-//
-//                tagihanService.requestCreateCicilan(cicilanSelanjutnya);
-//
-//            }else{
-//                log.info("Tidak ada cicilan selanjutnya!");
-//                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-//                requestCicilanDao.save(cariCicilanHariIni);
-////                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
-////                userBlock.setActive(false);
-////                userDao.save(userBlock);
-////                log.info("block smile untuk user {}", userBlock);
-//            }
-//
-//        }
-//
-//    }
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
+    public void akumulasiTagihan(){
+
+        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
+        for (RequestCicilan cariCicilanHariIni : requestCicilan){
+            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
+            requestCicilanDao.save(cariCicilanHariIni);
+
+            log.info("Update status cicilan : {}", cariCicilanHariIni);
+
+            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
+            if (cicilanSelanjutnya != null){
+
+                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
+                requestCicilanDao.save(cicilanSelanjutnya);
+
+                tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
+
+            }else{
+                log.info("Tidak ada cicilan selanjutnya!");
+                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                requestCicilanDao.save(cariCicilanHariIni);
+//                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
+//                userBlock.setActive(false);
+//                userDao.save(userBlock);
+//                log.info("block smile untuk user {}", userBlock);
+            }
+
+        }
+
+    }
 //
 //    @Scheduled(cron = "0 59 20 * * *", zone = "Asia/Jakarta")
 //    public void lewatPenangguhan(){

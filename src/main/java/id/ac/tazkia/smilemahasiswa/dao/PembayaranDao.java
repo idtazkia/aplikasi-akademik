@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import sun.security.util.Pem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -43,6 +44,8 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
 
     @Query(value = "SELECT * FROM pembayaran where id_tagihan=?1 limit 1", nativeQuery = true)
     Pembayaran cekPembayaran(String idTagihan);
+
+    Pembayaran findByStatusAndTagihan(StatusRecord statusRecord, Tagihan tagihan);
 
     Integer countAllByTagihan(Tagihan tagihan);
 
