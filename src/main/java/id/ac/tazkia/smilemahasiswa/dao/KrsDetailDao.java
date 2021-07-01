@@ -603,4 +603,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     BigDecimal validasiTranskrip(Mahasiswa mahasiswa);
 
     List<KrsDetail> findByMahasiswaAndTahunAkademikAndStatusAndKrsNull(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord status);
+
+    List<KrsDetail> findByStatusAndJadwalOrderByMahasiswaNim(StatusRecord status, Jadwal jadwal);
 }
