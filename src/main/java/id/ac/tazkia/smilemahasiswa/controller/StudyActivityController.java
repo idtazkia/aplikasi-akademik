@@ -688,6 +688,7 @@ public class StudyActivityController {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
 
         if (jumlahMatkul.equals("2")) {
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
@@ -715,10 +716,10 @@ public class StudyActivityController {
                 mahasiswaDao.save(mahasiswa);
             }
 
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatus(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF);
+            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                    mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
             if (nilaiJenisTagihan == null){
 
-                JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
                 BigDecimal total = bs.getBiaya().multiply(new BigDecimal(jumlahSks));
 
@@ -790,10 +791,10 @@ public class StudyActivityController {
                 mahasiswaDao.save(mahasiswa);
             }
 
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatus(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF);
+            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
+                    mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
             if (nilaiJenisTagihan == null){
 
-                JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
                 BigDecimal total = bs.getBiaya().multiply(new BigDecimal(jumlahSks));
 
@@ -855,7 +856,7 @@ public class StudyActivityController {
     }
 
     @PostMapping("/prakrs/sp/refund")
-    private String refund(HttpServletRequest request, Authentication authentication){
+    public String refund(HttpServletRequest request, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
@@ -884,7 +885,7 @@ public class StudyActivityController {
             }
         }
 
-        return "redirect:/../../dashboard";
+        return "redirect:/dashboard";
     }
 
 }

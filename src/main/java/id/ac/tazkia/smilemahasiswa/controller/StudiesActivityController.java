@@ -4662,7 +4662,7 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/sp/reject")
-    private String rejectSp(HttpServletRequest request, Authentication authentication){
+    public String rejectSp(HttpServletRequest request, Authentication authentication){
 
         List<Object[]> p1 = praKrsSpDao.listKrsSp();
         for (Object[] mk : p1){

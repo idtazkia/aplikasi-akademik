@@ -319,6 +319,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
                                 <a th:href="@{/activation/kartu}" class="nav-link">Student Exam Card</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/activation/cicilan}" class="nav-link">Custom Cicilan</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -351,12 +354,12 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Amount of Bill</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>
-                            </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report</a>
-                            </li>
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
+<!--                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
+<!--                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report</a>-->
+<!--                            </li>-->
                         </ul>
                     </div>
                 </li>

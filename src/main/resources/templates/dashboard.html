@@ -258,11 +258,11 @@
                                                                         <div class="col-md-12 col-xs-12">
                                                                             <div class="form-group">
                                                                                 <label >Nomor Rekening </label>
-                                                                                <input type="text" class="form-control" th:name="${'nomorRekening-'+data[7]}">
+                                                                                <input type="text" class="form-control" th:name="${'nomorRekening-'+data[7]}" required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label >Nama Pemilik </label>
-                                                                                <input type="text" class="form-control" th:name="${'namaPemilik-'+data[7]}">
+                                                                                <input type="text" class="form-control" th:name="${'namaPemilik-'+data[7]}" required>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label >Jumlah </label>
@@ -289,7 +289,8 @@
                                                 </div>
                                             </div>
                                             <div  th:if="${data[4] != null}">
-                                                <div class="btn btn-info btn-sm" th:text="${data[4]}"></div>
+                                                <div class="btn btn-warning btn-sm" th:if="${data[4] == 'UNDONE'}" th:text="${'PROCESS'}"></div>
+                                                <div class="btn btn-success btn-sm" th:if="${data[4] == 'DONE'}" th:text="${data[4]}"></div>
                                             </div>
                                         </div>
 <!--                                        <div th:if="${cekRefund == null}">-->

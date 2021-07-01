@@ -1,14 +1,19 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.apache.commons.math3.geometry.enclosing.EnclosingBall;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -33,6 +38,8 @@ public class FinanceController {
     private EnableFitureDao enableFitureDao;
     @Autowired
     private KrsDetailDao krsDetailDao;
+    @Autowired
+    private TagihanDao tagihanDao;
 
 
     @ModelAttribute("prodi")
@@ -188,4 +195,40 @@ public class FinanceController {
 
         return "redirect:rfid?nim="+nim+"&rfid="+rfid;
     }
+
+    @GetMapping("/activation/cicilan")
+    public void cicilan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String nim, @PageableDefault(size = 10) Pageable page){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        if (mhs != null){
+            model.addAttribute("tagihanMahasiswa", tagihanDao.findByStatusNotInAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), mhs, tahunAkademik, page));
+        }else {
+            model.addAttribute("message", "nim tidak ada");
+        }
+        model.addAttribute("selectTahun", tahunAkademik);
+        model.addAttribute("selectNim", nim);
+    }
+
+    @PostMapping("/activation/cicilan")
+    public String prosesCicilan(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) String nim, RedirectAttributes attributes){
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        if (mhs != null) {
+            EnableFiture cekEnableFitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.CICILAN, true, tahunAkademik);
+            if (cekEnableFitur == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.CICILAN);
+                enableFiture.setEnable(true);
+                enableFiture.setKeterangan("-");
+                enableFiture.setMahasiswa(mhs);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFitureDao.save(enableFiture);
+            }else{
+                attributes.addFlashAttribute("gagal", "data sudah ada!");
+                return "redirect:cicilan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
+            }
+        }
+
+        return "redirect:cicilan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
+    }
+
 }
