@@ -372,7 +372,11 @@ public class  AcademicActivityController {
             tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
             tahunAkademik.setTahun(tahun);
-            tahunAkademik.setStatus(status);
+            if (jenis == StatusRecord.PENDEK){
+                tahunAkademik.setStatus(StatusRecord.PRAAKTIF);
+            }else{
+                tahunAkademik.setStatus(status);
+            }
             tahunAkademikDao.save(tahunAkademik);
 
             for (Prodi prodi : prodis){
