@@ -3,31 +3,25 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
-import id.ac.tazkia.smilemahasiswa.dto.report.KhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.TugasDto;
-import id.ac.tazkia.smilemahasiswa.dto.study.Kartu;
-import id.ac.tazkia.smilemahasiswa.dto.user.PrasyaratDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class ReportMahasiswaController {
@@ -80,35 +74,6 @@ public class ReportMahasiswaController {
     @Autowired
     private TagihanService tagihanService;
 
-    @GetMapping("/api/prasyarat")
-    @ResponseBody
-    public Kartu cariPrasyarat(@RequestParam(required = false) String search, Authentication authentication){
-        User user = currentUserService.currentUser(authentication);
-
-        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
-        MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(search).get();
-        List<PrasyaratDto> prasyarat = prasyaratDao.cariPrasyarat(matakuliahKurikulum);
-        Kartu kartus = new Kartu();
-
-        if (prasyarat != null || !prasyarat.isEmpty()){
-            for (PrasyaratDto p : prasyarat){
-                List<PrasyaratDto> prasyaratDto = prasyaratDao.validasiPras(mahasiswa,p.getGrade(),p.getMatakuliah(),p.getEnglish(),p.getKode());
-                if (prasyaratDto != null || !prasyaratDto.isEmpty()){
-                    kartus.setIdUjian("LULUS");
-                    kartus.setMatakuliah(p.getMatakuliah());
-                    System.out.println("ada");
-                }
-            }
-        }else {
-            kartus.setMatakuliah("Tidak Ada Prasyarat");
-            kartus.setIdUjian("LULUS");
-            System.out.println("gaada");
-        }
-
-        return kartus;
-
-    }
 
     @GetMapping("/report/khs")
     public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik){
