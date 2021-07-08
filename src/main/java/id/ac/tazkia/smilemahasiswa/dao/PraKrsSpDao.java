@@ -49,6 +49,9 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
     @Query(value = "select * from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF' limit 1", nativeQuery = true)
     PraKrsSp cariKrsSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
+    @Query(value = "select count (*) from pra_krs_sp where id_mahasiswa=?1 and id_tahun_akademik=?2 and status='AKTIF'", nativeQuery = true)
+    Integer countSp(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
     List<PraKrsSp> findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(Mahasiswa mahasiswa, StatusRecord statusRecord, StatusApprove statusApprove, TahunAkademik tahunAkademik);
 
     List<PraKrsSp> findByStatus(StatusRecord statusRecord);
