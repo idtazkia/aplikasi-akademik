@@ -108,17 +108,14 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Transkrip List</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <h2>Transkrip List</h2><br>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" th:if="${tahun != null && total < 2}">
+                                            <i class="fas fa-plus"></i>
+                                            Akselerasi
+                                        </button>
+
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <!--<div class="breadcomb-report">
-                                    <a th:href="@{/study/form}">
-                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
-                                    </a>
-                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -129,6 +126,55 @@
 
     <div class="container">
         <div class="col-md-12 col-xs-12 background-color-white">
+
+            <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="post" th:action="@{/report/akselerasi}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label><center>Matakuliah</center></label>
+                                                <select name="idMatkul" class="form-control" id="select-matkul" onchange="matkul(this)" required>
+                                                    <option value=""></option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:text="${data.matakuliah.namaMatakuliah}"
+                                                            th:value="${data.id}">STEI Tazkia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+        <!--                            <div class="row">-->
+        <!--                                <div class="col-md-6">-->
+        <!--                                    <div class="form-group">-->
+        <!--                                        <label><center>Matakuliah Prasyarat</center></label>-->
+        <!--                                        <input type="text" disabled class="form-control">-->
+        <!--                                    </div>-->
+        <!--                                </div>-->
+
+        <!--                                <div class="col-md-6">-->
+        <!--                                    <div class="form-group">-->
+        <!--                                        <label><center>Status</center></label>-->
+        <!--                                        <input type="text" disabled class="form-control">-->
+        <!--                                    </div>-->
+        <!--                                </div>-->
+        <!--                            </div>-->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <form method="get" th:action="@{/study/prakrssp}">
                 <div class="card-body" th:each="dataSemester,row : ${semesterTranskript}">
@@ -201,6 +247,19 @@
 </html>
 
 <script type="text/javascript">
+
+    function matkul(a) {
+        var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+        console.log(x);
+
+        const url = '/api/prasyarat?search='+x;
+
+        $.getJSON(url, function (data) {
+            console.log(data);
+
+        });
+    }
+
     var max_limit = 2; // Max Limit
     $(document).ready(function (){
         $(".select-check:input:checkbox").each(function (index){
@@ -211,7 +270,6 @@
             }
         });
     });
-
 
 
 </script>
