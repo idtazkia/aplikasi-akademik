@@ -34,7 +34,7 @@ public class EdomMahasiswa {
     private EdomQuestion edomQuestion;
 
     @NotNull
-    private BigDecimal nilai;
+    private Integer nilai;
 
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
