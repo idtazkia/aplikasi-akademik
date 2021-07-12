@@ -511,7 +511,7 @@ public class ReportMahasiswaController {
             }
         }
 
-        return "redirect:transkript";
+        return "redirect:transcript";
     }
 
 
