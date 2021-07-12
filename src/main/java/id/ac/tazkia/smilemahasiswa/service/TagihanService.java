@@ -93,6 +93,21 @@ public class TagihanService {
         kafkaSender.requestCreateTagihan(tagihanRequest);
     }
 
+    public void editTagihan(Tagihan tagihan) {
+        TagihanRequest tagihanRequest = TagihanRequest.builder()
+                .kodeBiaya(tagihan.getNilaiJenisTagihan().getProdi().getKodeBiaya())
+                .jenisTagihan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getId())
+                .nilaiTagihan(tagihan.getNilaiTagihan())
+                .debitur(tagihan.getMahasiswa().getNim())
+                .keterangan(tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
+                        + " a.n. " + tagihan.getMahasiswa().getNama())
+                .tanggalJatuhTempo(Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .jenisRequest(TagihanRequest.Type.REPLACE)
+                .nomorTagihanLama(tagihan.getNomor())
+                .build();
+        kafkaSender.requestCreateTagihan(tagihanRequest);
+    }
+
     public void ubahJadiCicilan(RequestCicilan requestCicilan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeBiaya())
@@ -228,6 +243,7 @@ public class TagihanService {
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setEnable(true);
                 enableFitureDao.save(enableFiture);
+                enableFiture.setKeterangan("-");
             } else if (ef.getEnable() == false) {
                 ef.setEnable(true);
                 ef.setKeterangan("Ngulang");

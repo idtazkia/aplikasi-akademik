@@ -405,20 +405,29 @@ public class ReportMahasiswaController {
                 String keteranganTagihan = "Tagihan " + nilaiJenisTagihan.getJenisTagihan().getNama()
                         + " a.n. " + mahasiswa.getNama();
 
-                Tagihan tagihan = new Tagihan();
-                tagihan.setMahasiswa(mahasiswa);
-                tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
-                tagihan.setKeterangan(keteranganTagihan);
-                tagihan.setNilaiTagihan(total);
-                tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
-                tagihan.setTanggalPembuatan(LocalDate.now());
-                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
-                tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
-                tagihan.setTahunAkademik(tahunAkademik);
-                tagihan.setStatusTagihan(StatusTagihan.AKTIF);
-                tagihan.setStatus(StatusRecord.AKTIF);
-                tagihanDao.save(tagihan);
-                tagihanService.requestCreateTagihan(tagihan);
+                Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa,nilaiJenisTagihan, false);
+                if (t == null){
+                    Tagihan tagihan = new Tagihan();
+                    tagihan.setMahasiswa(mahasiswa);
+                    tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
+                    tagihan.setKeterangan(keteranganTagihan);
+                    tagihan.setNilaiTagihan(total);
+                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                    tagihan.setTanggalPembuatan(LocalDate.now());
+                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                    tagihan.setTahunAkademik(tahunAkademik);
+                    tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                    tagihan.setStatus(StatusRecord.AKTIF);
+                    tagihanDao.save(tagihan);
+                    tagihanService.requestCreateTagihan(tagihan);
+                }else{
+                    t.setNilaiTagihan(t.getNilaiTagihan().add(total));
+                    tagihanDao.save(t);
+                    tagihanService.editTagihan(t);
+                }
+
+
             }
         }else {
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
