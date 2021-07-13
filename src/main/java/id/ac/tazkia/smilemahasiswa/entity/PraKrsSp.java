@@ -39,7 +39,7 @@ public class PraKrsSp {
 
     @ManyToOne
     @JoinColumn(name = "user_delete")
-    private Karyawan userDelete;
+    private User userDelete;
 
     @NotNull
     @ManyToOne

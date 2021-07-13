@@ -9,18 +9,32 @@ import java.util.List;
 
 public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String> {
 
-    @Query(value = "select b.id, c.nama_matakuliah, coalesce(count(a.id_mahasiswa),0)as jumlah, coalesce(count(e.id_mahasiswa),0)as lunas , a.status_approve as status from pra_krs_sp as a " +
-            "inner join matakuliah_kurikulum as b on " +
-            "a.id_matakuliah_kurikulum=b.id " +
-            "inner join matakuliah as c on b.id_matakuliah=c.id " +
-            "inner join tahun_akademik as d on a.id_tahun_akademik=d.id " +
-            "left join " +
-            "(select b.id_mahasiswa from pembayaran as a " +
-            "inner join tagihan as b on a.id_tagihan = b.id " +
-            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id " +
-            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id " +
-            "where d.kode = '23' and b.lunas = true) e on a.id_mahasiswa = e.id_mahasiswa " +
-            "where a.status='AKTIF' and d.status!='NONAKTIF' and d.status!='HAPUS' group by c.kode_matakuliah", nativeQuery = true)
+    @Query(value = "select id,id_matakuliah,group_concat(nama_matakuliah separator ' / ')as nama_matakuliah,\n" +
+            "sum(jumlah)as jumlah, sum(lunas)as lunas,status from\n" +
+            "(select id, id_matakuliah, coalesce(id_matakuliah_setara, id_matakuliah) as id_matakuliah_setara, nama_matakuliah, nama_matakuliah_setara,\n" +
+            "sum(jumlah) as jumlah, sum(lunas) as lunas , \n" +
+            "status from\n" +
+            "(select b.id, c.id as id_matakuliah, coalesce(c.id_matakuliah_setara, id_matakuliah) as id_matakuliah_setara, c.nama_matakuliah, c.nama_matakuliah_setara,\n" +
+            "coalesce(count(a.id_mahasiswa),0)as jumlah, coalesce(count(e.id_mahasiswa),0)as lunas , \n" +
+            "a.status_approve as status from pra_krs_sp as a \n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
+            "inner join \n" +
+            "(select a.*,b.id_matakuliah_setara,c.nama_matakuliah as nama_matakuliah_setara from matakuliah as a \n" +
+            "left join matakuliah_setara as b on a.id = b.id_matakuliah\n" +
+            "left join matakuliah as c on b.id_matakuliah_setara = c.id)\n" +
+            "as c on b.id_matakuliah=c.id \n" +
+            "inner join tahun_akademik as d on a.id_tahun_akademik=d.id \n" +
+            "left join \n" +
+            "(select b.id_mahasiswa from pembayaran as a \n" +
+            "inner join tagihan as b on a.id_tagihan = b.id \n" +
+            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id \n" +
+            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
+            "where d.kode = '23' and b.lunas = true) e on a.id_mahasiswa = e.id_mahasiswa \n" +
+            "where a.status='AKTIF' and d.status!='NONAKTIF' and d.status!='HAPUS' \n" +
+            "group by c.kode_matakuliah)a\n" +
+            "group by nama_matakuliah)a\n" +
+            "group by id_matakuliah_setara \n" +
+            "order by nama_matakuliah", nativeQuery = true)
     List<Object[]> listKrsSp();
 
     @Query(value = "select b.id_mahasiswa from pembayaran as a " +
