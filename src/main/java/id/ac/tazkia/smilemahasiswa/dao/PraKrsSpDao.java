@@ -52,6 +52,26 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
     @Query(value = "select a.id, d.nama_matakuliah as matakuliah, c.jumlah_sks as jumlahSks, a.status_approve as status, bb.status_pengembalian as pengembalian, a.id_mahasiswa as mahasiswa, a.id_tahun_akademik as tahun_akademik, c.id as idMatakuliah from pra_krs_sp as a inner join matakuliah_kurikulum as c on a.id_matakuliah_kurikulum=c.id inner join matakuliah as d on c.id_matakuliah=d.id left join (select b.id_pra_krs_sp, b.status_pengembalian from refund_sp as b where b.status='AKTIF') bb on a.id=bb.id_pra_krs_sp where a.status='AKTIF' and a.id_mahasiswa=?1", nativeQuery = true)
     List<Object[]> listSp(String idMahasiswa);
 
+    @Query(value = "select a.id_matakuliah_kurikulum, b.nim, b.nama, d.nama_prodi, coalesce(b.telepon_seluler,'-'), coalesce(lunas,0) as lunas from pra_krs_sp as a inner join mahasiswa as b on a.id_mahasiswa=b.id " +
+            "inner join prodi as d on b.id_prodi=d.id left join " +
+            "(select b.id_mahasiswa, b.lunas as lunas from pembayaran as a " +
+            "inner join tagihan as b on a.id_tagihan = b.id " +
+            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id " +
+            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id " +
+            "where d.kode = '23') as c on b.id=c.id_mahasiswa where a.status='AKTIF';", nativeQuery = true)
+    List<Object[]> detailSp();
+
+    @Query(value = "select a.id_matakuliah_kurikulum, b.nim, b.nama, d.nama_prodi, coalesce(b.telepon_seluler,'-'), if(lunas = '1', 'LUNAS', 'BELUM LUNAS') as lunas from pra_krs_sp as a " +
+            "inner join mahasiswa as b on a.id_mahasiswa=b.id " +
+            "inner join prodi as d on b.id_prodi=d.id left join " +
+            "(select b.id_mahasiswa, b.lunas as lunas from pembayaran as a " +
+            "inner join tagihan as b on a.id_tagihan = b.id " +
+            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id " +
+            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id " +
+            "inner join pra_krs_sp as e on b.id_mahasiswa=e.id_mahasiswa " +
+            "where d.kode = '23' and b.status='AKTIF' and e.id_matakuliah_kurikulum=?1) as c on b.id=c.id_mahasiswa where a.status='AKTIF' and a.id_matakuliah_kurikulum=?1", nativeQuery = true)
+    List<Object[]> excelDownlaod(MatakuliahKurikulum matakuliahKurikulum);
+
     List<PraKrsSp> findByStatusAndMatakuliahKurikulum(StatusRecord statusRecord, MatakuliahKurikulum matakuliahKurikulum);
 
     @Query(value = "select sum(jumlah_sks) from matakuliah_kurikulum where id = ?1", nativeQuery = true)

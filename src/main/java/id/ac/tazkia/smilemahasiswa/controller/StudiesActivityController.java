@@ -4535,7 +4535,7 @@ public class StudiesActivityController {
         }
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
-        model.addAttribute("matkulDetail1", praKrsSpDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("matkulDetail1", praKrsSpDao.detailSp());
 
 
     }
@@ -4684,7 +4684,58 @@ public class StudiesActivityController {
         return "redirect:list";
     }
 
+    @GetMapping("/download/list")
+    public void listPerMatkul(@RequestParam(required = false) String matkul, HttpServletResponse response) throws  IOException{
+
+        MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(matkul).get();
+        List<Object[]> listDownload = praKrsSpDao.excelDownlaod(matkur);
+
+        String[] columns = {"No", "Nim", "Nama", "Prodi", "Nomor Telepon", "Status Pembayaran"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List Mahasiswa Request SP");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        sheet.createRow(0).createCell(2).setCellValue("Matakuliah : " + matkur.getMatakuliah().getNamaMatakuliah());
+
+        Row headerRow = sheet.createRow(2);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 3;
+        int baris = 1;
+
+        for (Object[] list : listDownload){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[1].toString());
+            row.createCell(2).setCellValue(list[2].toString());
+            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(4).setCellValue(list[4].toString());
+            row.createCell(5).setCellValue(list[5].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
 
 
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=List_Request_SP_Matkul_"+matkur.getMatakuliah().getNamaMatakuliah()+"_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
 }
 
