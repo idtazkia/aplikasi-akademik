@@ -76,7 +76,7 @@
                                             th:text="${pro.namaProdi}"
                                             th:value="${pro.id}">prodi</option>
                                 </select>
-                                <input type="hidden" name="pr" id="isiProdi">
+                                <input type="hidden" name="prodi" id="isiProdi">
                             </div>
 
                             <div class="form-group">
@@ -160,7 +160,11 @@
     function myTahun(){
 
         console.log($('#isiTahun').val());
-        const url = '/api/tahun2?ta='+$('#isiTahun').val();
+        const url = '/api/prodi2?ta='+$('#isiTahun').val();
+
+        $.getJSON(url, function (data){
+
+        });
 
     }
 
