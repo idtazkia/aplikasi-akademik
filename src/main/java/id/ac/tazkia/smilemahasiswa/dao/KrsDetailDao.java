@@ -605,4 +605,10 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<KrsDetail> findByMahasiswaAndTahunAkademikAndStatusAndKrsNull(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord status);
 
     List<KrsDetail> findByStatusAndJadwalOrderByMahasiswaNim(StatusRecord status, Jadwal jadwal);
+
+
+    KrsDetail findByTahunAkademikAndJadwalProdiAndJadwalAndStatus(TahunAkademik tahunAkademik, Prodi prodi, Jadwal jadwal,StatusRecord statusRecord);
+
+    KrsDetail findByTahunAkademikAndJadwalProdiAndJadwalAndMahasiswaAndStatus(TahunAkademik tahunAkademik, Prodi prodi, Jadwal jadwal, Mahasiswa mahasiswa,StatusRecord statusRecord);
+
 }

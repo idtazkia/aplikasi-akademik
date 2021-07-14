@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Data Moodle </span>
+                                        <span class="h2 font-weight-bold mb-0">Sedang Dalam Perbaikan </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -53,10 +53,10 @@
                     </div>
 
                     <div class="card-body">
-                        <form method="post" >
+                        <form th:action="@{/elearning/importNilai}" method="post">
                             <div class="form-group">
                                 <label >Tahun Akademik</label>
-                                <select class="form-control" onchange="myTahundanprodi()"
+                                <select class="form-control" onchange="myTahun()"
                                         id="select2-tahun" th:field="*{tahunAkademik}" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Tahun Akademik</option>
@@ -68,7 +68,7 @@
                             </div>
                             <div class="form-group">
                                 <label >Prodi</label>
-                                <select class="form-control" onchange="myTahundanprodi()"
+                                <select class="form-control" onchange="myProdi()"
                                         id="select2-prodi" th:field="*{prodi}" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Prodi</option>
@@ -157,7 +157,15 @@
 
     })(jQuery);
 
-    function myTahundanprodi(){
+    function myTahun(){
+
+        console.log($('#isiTahun').val());
+        const url = '/api/tahun2?ta='+$('#isiTahun').val();
+
+    }
+
+    function myProdi(){
+
         let dropdown = $('#locality-dropdown');
 
         dropdown.empty();
@@ -165,7 +173,7 @@
         dropdown.append('<option selected="true" disabled>Pilih Matakuliah</option>')
         dropdown.prop('selectedIndex', 0);
         console.log($('#isiTahun').val());
-        const url = '/api/tahun2?idTahun='+$('#isiTahun').val()+'&idProdi='+$('#isiProdi').val();
+        const url = '/api/tahun2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val();
 
         $.getJSON(url, function (data){
             console.log(data);
@@ -174,6 +182,7 @@
             })
 
         });
+
     }
 
     function myJadwal() {
@@ -184,7 +193,7 @@
         var x = document.getElementById('locality-dropdown').value;
 
         console.log(x);
-        const url = '/api/jadwal2?idTahun='+$('#isiTahun').val()+'&idProdi='+$('#isiProdi').val()+'&idJadwal='+$('#isiJadwal').val();
+        const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
         $.getJSON(url, function (data) {
 
         });
@@ -196,7 +205,7 @@
         dropdown.append('<option selected="true" disabled>Pilih Mahasiswa</option>')
         dropdown.prop('selectedIndex', 0);
         console.log($('#isiJadwal').val());
-        const url2 = '/api/jadwal2?idTahun='+$('#isiTahun').val()+'&idProdi='+$('#isiProdi').val()+'&idJadwal='+$('#isiJadwal').val();
+        const url2 = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
 
         $.getJSON(url2, function (data){
             console.log(data);
@@ -215,7 +224,7 @@
 
             var x = document.getElementById('locality-dropdown-2').value;
             console.log(x);
-            const url = '/api/jadwal2?idTahun='+$('#isiTahun').val()+'&idProdi='+$('#isiProdi').val()+'&idJadwal='+$('#isiJadwal').val()+'&idMahasiswa='+$('#isiMahasiswa').val();
+            const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&mahasiswa='+$('#isiMahasiswa').val();
             $.getJSON(url, function (data) {
 
 
