@@ -168,25 +168,31 @@ public class ElearningController {
         for (MdlGradeGradesDto mdlniluts : daftarNilaiUts){
             Jadwal j = jadwalDao.findById(mdlniluts.getIdJadwal()).get();
 
-            System.out.println("TA  =" + tahunAkademik1);
-            System.out.println("PRODI =" + prodi1);
-            System.out.println("JADWAL =" + jadwal);
+//            System.out.println("TA  =" + ta);
+//            System.out.println("PRODI =" + prodi);
+//            System.out.println("JADWAL =" + jadwal);
 
-            if (mdlniluts.getMahasiswa() != null) {
-                User user = userDao.findByUsername(mdlniluts.getMahasiswa());
+            if (mdlniluts.getEmail() != null) {
+                User user = userDao.findByUsername(mdlniluts.getEmail());
+                System.out.println("USER  == "  + user.getId());
+                System.out.println("USER Email  == "  + user.getUsername());
+
 
                 if (user != null) {
                     Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
                     Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
+
                     if (k != null) {
 
+
 //                        Object krsDetail2 = krsDetailDao.getKrsDetailId3(tahunAkademik1, prodi, jadwal1, StatusRecord.AKTIF);
-                        KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalProdiAndJadwalAndStatus(tahunAkademik1, prodi1, jadwal1, StatusRecord.AKTIF);
+                        KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
                         if (krsDetail2 != null) {
                             krsDetail2.setNilaiUts(mdlniluts.getNilai());
 //                            krsDetailDao.save(krsDetail2);
                             System.out.println(" JADWAL == " + mdlniluts.getIdJadwal());
                             System.out.println(" Mahasiswa == " + mdlniluts.getMahasiswa());
+                            System.out.println(" Nilai == " + mdlniluts.getNilai());
                             System.out.println(" NILAI UTS UPDATED == " + mdlniluts.getId());
                             System.out.println("  =======  ");
                         }
