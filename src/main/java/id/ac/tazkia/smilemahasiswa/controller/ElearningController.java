@@ -58,7 +58,7 @@ public class ElearningController {
 
     public List<MdlGradeGradesDto> getNilaiTugas2(@RequestParam String jadwal) {
         return webClient1.get()
-                .uri("/api/nilaitugas2" + jadwal)
+                .uri("/api/nilaitugas2?jadwal=" + jadwal)
                 .retrieve().bodyToFlux(MdlGradeGradesDto.class)
                 .collectList()
                 .block();
@@ -74,7 +74,7 @@ public class ElearningController {
 
     public List<MdlGradeGradesDto> getNilaiUas2(@RequestParam String jadwal) {
         return webClient1.get()
-                .uri("/api/nilaiuas2" + jadwal)
+                .uri("/api/nilaiuas2?jadwal=" + jadwal)
                 .retrieve().bodyToFlux(MdlGradeGradesDto.class)
                 .collectList()
                 .block();
@@ -154,53 +154,161 @@ public class ElearningController {
 
     @PostMapping("/elearning/importNilai")
     public String inputForm(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
-                            @RequestParam(required = false) String jadwal,@RequestParam(required = false) String nim, RedirectAttributes attributes){
+                            @RequestParam(required = false) String jadwal,@RequestParam(required = false) String nim,
+                            @RequestParam(value="action", required=true) String action){
 
         TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
         Prodi prodi1 = prodiDao.findById(prodi).get();
         Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 
+        if (action.equals("tugas")) {
+            // do something here
+            //tugas per jadwal
+            List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal);
+            for (MdlGradeGradesDto mdlnilcounttugas : daftarNilaiCountTugas) {
+                Jadwal j = jadwalDao.findById(mdlnilcounttugas.getIdJadwal()).get();
+
+                if (mdlnilcounttugas.getEmail() != null) {
+                    User user = userDao.findByUsername(mdlnilcounttugas.getEmail());
+                        System.out.println("USER  == "  + user.getId());
+                        System.out.println("USER Email  == "  + user.getUsername());
+
+                    if (user != null) {
+                        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+                        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
+                        if (k != null) {
+                            Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlnilcounttugas.getIdJadwal(), k, StatusRecord.AKTIF, tahunAkademik1);
+                            if (jmlData.compareTo(Long.valueOf(1)) > 0) {
+                                Object idKrsDetail = krsDetailDao.getKrsDetailId(jadwal1, mahasiswa);
+                                List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, jadwal1, mahasiswa, idKrsDetail);
+                                for (KrsDetail thekrsDetail : cariDouble) {
+                                    thekrsDetail.setStatus(StatusRecord.HAPUS);
+//                                    krsDetailDao.save(thekrsDetail);
+                                    System.out.println("KRS DETAIL DOUBLE TERHAPUS == " + thekrsDetail.getId());
+                                }
+
+                                KrsDetail krsDetail1 = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwal1, StatusRecord.AKTIF, k, tahunAkademik1);
+                                if (krsDetail1 != null) {
+                                    krsDetail1.setNilaiTugas(mdlnilcounttugas.getNilaiAkhir());
+//                                    krsDetailDao.save(krsDetail1);
+                                    System.out.println(" NILAI TUGAS UPDATED == " + mdlnilcounttugas.getId());
+                                }
+
+                            }
+
+                            if (jmlData.compareTo(Long.valueOf(1)) == 0) {
+
+//                                KrsDetail krsDetail1 = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwal1, StatusRecord.AKTIF, k, tahunAkademik1);
+                                KrsDetail krsDetail1 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1, mahasiswa, k, StatusRecord.AKTIF);
+                                if (krsDetail1 != null) {
+                                    krsDetail1.setNilaiTugas(mdlnilcounttugas.getNilaiAkhir());
+//                                    krsDetailDao.save(krsDetail1);
+                                    System.out.println(" JADWAL == " + mdlnilcounttugas.getIdJadwal());
+                                    System.out.println(" Mahasiswa == " + mdlnilcounttugas.getMahasiswa());
+                                    System.out.println(" Nilai == " + mdlnilcounttugas.getNilai());
+                                    System.out.println(" NILAI TUGAS UPDATED == " + mdlnilcounttugas.getId());
+                                    System.out.println("  =======  ");
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
 
 
-        //uts per jadwal
-        List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUts2(jadwal);
-        for (MdlGradeGradesDto mdlniluts : daftarNilaiUts){
-            Jadwal j = jadwalDao.findById(mdlniluts.getIdJadwal()).get();
+
+        if (action.equals("uts")) {
+            // do something here
+            //uts per jadwal
+            List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUts2(jadwal);
+            for (MdlGradeGradesDto mdlniluts : daftarNilaiUts){
+                Jadwal j = jadwalDao.findById(mdlniluts.getIdJadwal()).get();
 
 //            System.out.println("TA  =" + ta);
 //            System.out.println("PRODI =" + prodi);
 //            System.out.println("JADWAL =" + jadwal);
 
-            if (mdlniluts.getEmail() != null) {
-                User user = userDao.findByUsername(mdlniluts.getEmail());
-                System.out.println("USER  == "  + user.getId());
-                System.out.println("USER Email  == "  + user.getUsername());
+                if (mdlniluts.getEmail() != null) {
+                    User user = userDao.findByUsername(mdlniluts.getEmail());
+                    System.out.println("USER  == "  + user.getId());
+                    System.out.println("USER Email  == "  + user.getUsername());
 
 
-                if (user != null) {
-                    Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-                    Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
+                    if (user != null) {
+                        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+                        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
 
-                    if (k != null) {
+                        if (k != null) {
 
 
 //                        Object krsDetail2 = krsDetailDao.getKrsDetailId3(tahunAkademik1, prodi, jadwal1, StatusRecord.AKTIF);
-                        KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
-                        if (krsDetail2 != null) {
-                            krsDetail2.setNilaiUts(mdlniluts.getNilai());
+                            KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
+                            if (krsDetail2 != null) {
+                                krsDetail2.setNilaiUts(mdlniluts.getNilai());
 //                            krsDetailDao.save(krsDetail2);
-                            System.out.println(" JADWAL == " + mdlniluts.getIdJadwal());
-                            System.out.println(" Mahasiswa == " + mdlniluts.getMahasiswa());
-                            System.out.println(" Nilai == " + mdlniluts.getNilai());
-                            System.out.println(" NILAI UTS UPDATED == " + mdlniluts.getId());
-                            System.out.println("  =======  ");
+                                System.out.println(" JADWAL == " + mdlniluts.getIdJadwal());
+                                System.out.println(" Mahasiswa == " + mdlniluts.getMahasiswa());
+                                System.out.println(" Nilai == " + mdlniluts.getNilai());
+                                System.out.println(" NILAI UTS UPDATED == " + mdlniluts.getId());
+                                System.out.println("  =======  ");
+                            }
                         }
                     }
                 }
-            }
 
+            }
         }
+
+        if (action.equals("uas")) {
+            //uas per jadwal
+            List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUas2(jadwal);
+            for (MdlGradeGradesDto mdlniluas : daftarNilaiUas){
+                Jadwal j = jadwalDao.findById(mdlniluas.getIdJadwal()).get();
+
+//            System.out.println("TA  =" + ta);
+//            System.out.println("PRODI =" + prodi);
+//            System.out.println("JADWAL =" + jadwal);
+
+                if (mdlniluas.getEmail() != null) {
+                    User user = userDao.findByUsername(mdlniluas.getEmail());
+                    System.out.println("USER  == "  + user.getId());
+                    System.out.println("USER Email  == "  + user.getUsername());
+
+
+                    if (user != null) {
+                        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+                        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
+
+                        if (k != null) {
+
+
+//                        Object krsDetail2 = krsDetailDao.getKrsDetailId3(tahunAkademik1, prodi, jadwal1, StatusRecord.AKTIF);
+                            KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
+                            if (krsDetail2 != null) {
+                                krsDetail2.setNilaiUas(mdlniluas.getNilai());
+//                            krsDetailDao.save(krsDetail2);
+                                System.out.println(" JADWAL == " + mdlniluas.getIdJadwal());
+                                System.out.println(" Mahasiswa == " + mdlniluas.getMahasiswa());
+                                System.out.println(" Nilai == " + mdlniluas.getNilai());
+                                System.out.println(" NILAI UAS UPDATED == " + mdlniluas.getId());
+                                System.out.println("  =======  ");
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+
+
+
+
+
 
 
         return "redirect:importNilai";
