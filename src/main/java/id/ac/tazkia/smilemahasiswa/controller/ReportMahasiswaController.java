@@ -151,7 +151,8 @@ public class ReportMahasiswaController {
                 if (tahunAkademik.getTanggalSelesaiNilai().compareTo(LocalDate.now()) > 0){
                     return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
                 }else {
-                    return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
+                    model.addAttribute("hidden", "Data KHS masih terkunci");
+                    return "report/khs";
                 }
             }
         }

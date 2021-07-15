@@ -45,6 +45,7 @@ public class Mahasiswa {
     @JoinColumn(name = "id_konsentrasi")
     private  Konsentrasi idKonsentrasi;
 
+    @NotNull
     private  String tempatLahir;
 
     @NotNull
@@ -57,6 +58,7 @@ public class Mahasiswa {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull
     private LocalDate tanggalLahir;
 
     private String idKelurahan;
@@ -71,6 +73,7 @@ public class Mahasiswa {
 
     private  String kewarganegaraan;
 
+    @NotNull
     private  String nik;
 
     private  String nisn;
@@ -102,6 +105,8 @@ public class Mahasiswa {
     private String teleponSeluler;
     private String emailPribadi;
     private String emailTazkia;
+
+    @NotNull
     private String statusAktif;
 
     @NotNull @Enumerated(EnumType.STRING)
