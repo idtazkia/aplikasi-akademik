@@ -2088,7 +2088,9 @@ public class StudiesActivityController {
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
-        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
+
+//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
 
         InputStream file = contohExcelTranskript.getInputStream();
@@ -2290,17 +2292,17 @@ public class StudiesActivityController {
         accreditation.getCell(0).setCellStyle(styleData);
         accreditation.getCell(3).setCellStyle(styleSymbol);
         accreditation.getCell(4).setCellStyle(styleData);
-        
+
 
         int rowInfoDateAcred = 13 ;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
         dateAccreditation.createCell(0).setCellValue("Date of Accreditation Decree");
         dateAccreditation.createCell(3).setCellValue(":");
-            int monthAccred = mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth();
-            DateTimeFormatter formatterAccred = DateTimeFormatter.ofPattern(getPattern(monthAccred));
-            String accredDate = mahasiswa.getIdProdi().getTanggalSk().format(formatterAccred);
-            dateAccreditation.createCell(4).setCellValue(accredDate);
-            dateAccreditation.getCell(4).setCellStyle(styleData);
+        int monthAccred = mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth();
+        DateTimeFormatter formatterAccred = DateTimeFormatter.ofPattern(getPattern(monthAccred));
+        String accredDate = mahasiswa.getIdProdi().getTanggalSk().format(formatterAccred);
+        dateAccreditation.createCell(4).setCellValue(accredDate);
+        dateAccreditation.getCell(4).setCellStyle(styleData);
 
         dateAccreditation.getCell(0).setCellStyle(styleData);
         dateAccreditation.getCell(3).setCellStyle(styleSymbol);
@@ -2309,12 +2311,12 @@ public class StudiesActivityController {
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
         graduatedDate.createCell(0).setCellValue("Graduated Date");
         graduatedDate.createCell(3).setCellValue(":");
-            int monthGraduate = mahasiswa.getTanggalLulus().getDayOfMonth();
-            DateTimeFormatter formatterGraduate = DateTimeFormatter.ofPattern(getPattern(monthGraduate));
-            String graduateDate = mahasiswa.getTanggalLulus().format(formatterGraduate);
+        int monthGraduate = mahasiswa.getTanggalLulus().getDayOfMonth();
+        DateTimeFormatter formatterGraduate = DateTimeFormatter.ofPattern(getPattern(monthGraduate));
+        String graduateDate = mahasiswa.getTanggalLulus().format(formatterGraduate);
 
-            graduatedDate.createCell(4).setCellValue(graduateDate);
-            graduatedDate.getCell(4).setCellStyle(styleData);
+        graduatedDate.createCell(4).setCellValue(graduateDate);
+        graduatedDate.getCell(4).setCellStyle(styleData);
 
         graduatedDate.getCell(0).setCellStyle(styleData);
         graduatedDate.getCell(3).setCellStyle(styleSymbol);
@@ -2518,26 +2520,26 @@ public class StudiesActivityController {
         Row rowIpk = sheet.createRow(ipKomulatif);
         sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
         rowIpk.createCell(0).setCellValue("Cumulative Grade Point Average");
-        rowIpk.createCell(5).setCellValue(ipk.toString());
+        rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
         int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predicate :");
-        if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0){
             predicateRow.createCell(2).setCellValue("Satisfactory");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0){
             predicateRow.createCell(2).setCellValue("Good");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0){
             BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
 
             if (validate != null){
@@ -2550,7 +2552,7 @@ public class StudiesActivityController {
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0){
             BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
 
             if (validate != null){
@@ -2716,22 +2718,22 @@ public class StudiesActivityController {
         DateTimeFormatter formatterCreate = DateTimeFormatter.ofPattern(getPattern(monthCreate));
         String createDatee = LocalDate.now().format(formatterCreate);
 
-            if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }else{
-                createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
-                createDateRow.getCell(0).setCellStyle(styleData);
-            }
+        if (namaBulanHijri.equals("Jumada I")){
+            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
+            createDateRow.getCell(0).setCellStyle(styleData);
+        }else if (namaBulanHijri.equals("Jumada II")){
+            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri);
+            createDateRow.getCell(0).setCellStyle(styleData);
+        }else if (namaBulanHijri.equals("Rabiʻ I")){
+            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri);
+            createDateRow.getCell(0).setCellStyle(styleData);
+        }else if (namaBulanHijri.equals("Rabiʻ II")){
+            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri);
+            createDateRow.getCell(0).setCellStyle(styleData);
+        }else{
+            createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri);
+            createDateRow.getCell(0).setCellStyle(styleData);
+        }
 
 
         int faculty = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
@@ -2923,7 +2925,8 @@ public class StudiesActivityController {
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
-        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
 
 
         InputStream file = contohExcelTranskriptIndo.getInputStream();
@@ -3550,26 +3553,26 @@ public class StudiesActivityController {
         Row rowIpk = sheet.createRow(ipKomulatif);
         sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
         rowIpk.createCell(0).setCellValue("Indeks Prestasi Kumulatif");
-        rowIpk.createCell(5).setCellValue(ipk.toString());
+        rowIpk.createCell(5).setCellValue(ipk.getIpk().toString());
         rowIpk.getCell(0).setCellStyle(styleTotal);
         rowIpk.getCell(5).setCellStyle(styleDataKhs);
 
         int predicate = 18+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
         Row predicateRow = sheet.createRow(predicate);
         predicateRow.createCell(0).setCellValue("Predikat :");
-        if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(2.99)) <= 0){
             predicateRow.createCell(2).setCellValue("Memuaskan");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.00)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.49)) <= 0){
             predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
             predicateRow.getCell(2).setCellStyle(styleData);
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.50)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(3.79)) <= 0){
             BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
             if (validate != null){
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
@@ -3581,7 +3584,7 @@ public class StudiesActivityController {
 
         }
 
-        if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
+        if (ipk.getIpk().compareTo(new BigDecimal(3.80)) >= 0 && ipk.getIpk().compareTo(new BigDecimal(4.00)) <= 0){
             BigDecimal validate = krsDetailDao.validasiTranskrip(mahasiswa);
             if (validate != null){
                 predicateRow.createCell(2).setCellValue("Sangat Memuaskan");
@@ -4186,19 +4189,19 @@ public class StudiesActivityController {
     public void printTranskript1(Model model, @RequestParam(required = false)String nim){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
-//        model.addAttribute("ipk", krsDetailDao.ipkTranskript(mahasiswa));
+        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
 
-        BigDecimal Ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+//        BigDecimal Ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
         Long totalSKS2 = totalSKS.longValue();
         Long totalMuti1 = totalMuti.longValue();
 
         model.addAttribute("sks", totalSKS2);
         model.addAttribute("mutu", totalMuti1);
-        model.addAttribute("ipk", Ipk);
+//        model.addAttribute("ipk", Ipk);
 
 //        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
 //        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
