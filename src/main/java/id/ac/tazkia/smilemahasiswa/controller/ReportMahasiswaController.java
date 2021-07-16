@@ -327,7 +327,7 @@ public class ReportMahasiswaController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         if (mahasiswa.getKurikulum() != null){
-            model.addAttribute("matakuliah", matakuliahKurikulumDao.findByStatusNotInAndKurikulumAndKurikulumProdi(Arrays.asList(StatusRecord.HAPUS),mahasiswa.getKurikulum(),mahasiswa.getIdProdi()));
+            model.addAttribute("matakuliah", matakuliahKurikulumDao.listMatkulSelection(mahasiswa));
         }
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
         model.addAttribute("tahun", tahun);

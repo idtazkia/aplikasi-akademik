@@ -149,25 +149,15 @@
                                                 <select name="idMatkul" class="form-control" id="select-matkul" onchange="matkul(this)" required>
                                                     <option value="kosong"></option>
                                                     <option th:each="data : ${matakuliah}"
-                                                            th:text="${data.matakuliah.namaMatakuliah}"
-                                                            th:value="${data.id}">STEI Tazkia</option>
+                                                            th:if="${data[11] == null && data[6] == null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] != null && data[7] != null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
                                                 </select>
                                                 <input type="hidden" id="jumlah" name="jumlah" th:value="${total}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label><center>Matakuliah Prasyarat</center></label>
-                                                <input type="text" id="prasyarat" disabled class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label><center>Status</center></label>
-                                                <input type="text" id="status" disabled class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -179,34 +169,21 @@
                                                 <select name="idMatkul2" class="form-control" id="select-matkul2" onchange="matkul2(this)" required>
                                                     <option value="kosong"></option>
                                                     <option th:each="data : ${matakuliah}"
-                                                            th:text="${data.matakuliah.namaMatakuliah}"
-                                                            th:value="${data.id}">STEI Tazkia</option>
+                                                            th:if="${data[11] == null && data[6] == null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] != null && data[7] != null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="row3" class="row" style="display: none">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label><center>Matakuliah Prasyarat</center></label>
-                                                <input type="text" id="prasyarat2" disabled class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label><center>Status</center></label>
-                                                <input type="text" id="status2" disabled class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
                             </div>
-                            <div id="saveButton" style="display: none" class="modal-footer">
+                            <div id="saveButton" class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit"  class="btn btn-primary">Save changes</button>
-                            </div>
-                            <div id="emptyButton" style="display: block" class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -337,95 +314,115 @@
         var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
         console.log(x);
 
-        const url = '/api/prasyarat?search='+x;
+        var row2  = document.getElementById("row2");
 
-        $.getJSON(url, function (data) {
-            console.log(data.idUjian)
-            console.log(data.matakuliah)
-
-            var button  = document.getElementById("saveButton");
-            var row2  = document.getElementById("row2");
-            var row3  = document.getElementById("row3");
-            var empty  = document.getElementById("emptyButton");
-            if (data.idUjian == "LULUS"){
-                $('#prasyarat').val(data.matakuliah);
-                $('#status').val(data.idUjian);
-                if ($('#jumlah').val() < 1){
-                    button.style.display = "block";
-                    empty.style.display = "none";
-                    row2.style.display = "block";
-                    row3.style.display = "block";
-                }else {
-                    button.style.display = "block";
-                    empty.style.display = "none";
-                    row2.style.display = "none";
-                    row3.style.display = "none";
-                }
-
-            }else if (data.idUjian == "GAGAL"){
-                $('#prasyarat').val(data.matakuliah);
-                $('#status').val("Belum Mengambil Prasyarat");
-                empty.style.display = "block";
-                button.style.display = "none";
+        if (x == "kosong"){
+            row2.style.display = "none";
+        }else {
+            if ($('#jumlah').val() < 1){
+                row2.style.display = "block";
+            }else {
                 row2.style.display = "none";
-                row3.style.display = "none";
-                $('#select-matkul2').prop('selectedIndex',0);
-                $('#prasyarat2').val("");
-                $('#status2').val("");
-            }else {
-                    $('#prasyarat').val("");
-                    $('#status').val("");
-                    empty.style.display = "block";
-                    button.style.display = "none";
-                    row2.style.display = "none";
-                    row3.style.display = "none";
-                    $('#select-matkul2').prop('selectedIndex',0);
-                    $('#prasyarat2').val("");
-                    $('#status2').val("");
             }
+        }
 
-        });
-    }
+        };
 
-    function matkul2(a) {
-        var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
-        console.log(x);
 
-        const url = '/api/prasyarat?search='+x;
 
-        $.getJSON(url, function (data) {
+    // function matkul(a) {
+    //     var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+    //     console.log(x);
+    //
+    //     const url = '/api/prasyarat?search='+x;
+    //
+    //     $.getJSON(url, function (data) {
+    //         console.log(data.idUjian)
+    //         console.log(data.matakuliah)
+    //
+    //         var button  = document.getElementById("saveButton");
+    //         var row2  = document.getElementById("row2");
+    //         var row3  = document.getElementById("row3");
+    //         var empty  = document.getElementById("emptyButton");
+    //         if (data.idUjian == "LULUS"){
+    //             $('#prasyarat').val(data.matakuliah);
+    //             $('#status').val(data.idUjian);
+    //             if ($('#jumlah').val() < 1){
+    //                 button.style.display = "block";
+    //                 empty.style.display = "none";
+    //                 row2.style.display = "block";
+    //                 row3.style.display = "block";
+    //             }else {
+    //                 button.style.display = "block";
+    //                 empty.style.display = "none";
+    //                 row2.style.display = "none";
+    //                 row3.style.display = "none";
+    //             }
+    //
+    //         }else if (data.idUjian == "GAGAL"){
+    //             $('#prasyarat').val(data.matakuliah);
+    //             $('#status').val("Belum Mengambil Prasyarat");
+    //             empty.style.display = "block";
+    //             button.style.display = "none";
+    //             row2.style.display = "none";
+    //             row3.style.display = "none";
+    //             $('#select-matkul2').prop('selectedIndex',0);
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //         }else {
+    //                 $('#prasyarat').val("");
+    //                 $('#status').val("");
+    //                 empty.style.display = "block";
+    //                 button.style.display = "none";
+    //                 row2.style.display = "none";
+    //                 row3.style.display = "none";
+    //                 $('#select-matkul2').prop('selectedIndex',0);
+    //                 $('#prasyarat2').val("");
+    //                 $('#status2').val("");
+    //         }
+    //
+    //     });
+    // }
 
-            var button  = document.getElementById("saveButton");
-            var row2  = document.getElementById("row2");
-            var empty  = document.getElementById("emptyButton");
-            if (data.idUjian == "LULUS"){
-                $('#prasyarat2').val(data.matakuliah);
-                $('#status2').val(data.idUjian);
-                button.style.display = "block";
-                empty.style.display = "none";
-                row2.style.display = "block";
-                row3.style.display = "block";
-
-            }else if (data.idUjian == "GAGAL"){
-                $('#prasyarat2').val(data.matakuliah);
-                $('#status2').val("Belum Mengambil Prasyarat");
-                empty.style.display = "block";
-                button.style.display = "none";
-                row2.style.display = "block";
-                row3.style.display = "block";
-            }else {
-                $('#prasyarat2').val("");
-                $('#status2').val("");
-                button.style.display = "block";
-                row2.style.display = "block";
-                row3.style.display = "block";
-                $('#select-matkul2').prop('selectedIndex',0);
-                $('#prasyarat2').val("");
-                $('#status2').val("");
-            }
-
-        });
-    }
+    // function matkul2(a) {
+    //     var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+    //     console.log(x);
+    //
+    //     const url = '/api/prasyarat?search='+x;
+    //
+    //     $.getJSON(url, function (data) {
+    //
+    //         var button  = document.getElementById("saveButton");
+    //         var row2  = document.getElementById("row2");
+    //         var empty  = document.getElementById("emptyButton");
+    //         if (data.idUjian == "LULUS"){
+    //             $('#prasyarat2').val(data.matakuliah);
+    //             $('#status2').val(data.idUjian);
+    //             button.style.display = "block";
+    //             empty.style.display = "none";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //
+    //         }else if (data.idUjian == "GAGAL"){
+    //             $('#prasyarat2').val(data.matakuliah);
+    //             $('#status2').val("Belum Mengambil Prasyarat");
+    //             empty.style.display = "block";
+    //             button.style.display = "none";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //         }else {
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //             button.style.display = "block";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //             $('#select-matkul2').prop('selectedIndex',0);
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //         }
+    //
+    //     });
+    // }
 
     if ($('#totalMatkul').val() < 1){
         var max_limit = 2; // Max Limit
