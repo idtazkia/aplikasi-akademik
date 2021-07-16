@@ -93,4 +93,10 @@ public class KrsDetail extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord statusKonversi;
+
+    private BigDecimal nilaiUtsFinal = BigDecimal.ZERO;
+
+    private BigDecimal nilaiUasFinal = BigDecimal.ZERO;
+
+
 }

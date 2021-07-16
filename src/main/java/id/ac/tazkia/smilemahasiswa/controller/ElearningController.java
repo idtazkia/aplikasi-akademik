@@ -3,7 +3,9 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
+import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -50,10 +52,58 @@ public class ElearningController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private BobotTugasDao bobotTugasDao;
+
+    @Autowired
+    private NilaiTugasDao nilaiTugasDao;
+
+    @Autowired
+    private JadwalBobotTugasMoodleDao jadwalBobotTugasMoodleDao;
+
+    @Autowired
+    private KrsNilaiTugasMoodleDao krsNilaiTugasMoodleDao;
+
+
+    @Autowired
+    private ScoreService scoreService;
+
     WebClient webClient1 = WebClient.builder()
-            .baseUrl("http://localhost:8081")
+            .baseUrl("https://elearning.tazkia.ac.id")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
+
+    public List<MdlGradeItemsDto> getBobotTugas(String jadwal) {
+        return webClient1.get()
+                .uri("/api/bobottugas?jadwal="+jadwal)
+                .retrieve().bodyToFlux(MdlGradeItemsDto.class)
+                .collectList()
+                .block();
+    }
+
+    public List<MdlGradeItemsDto> getBobotTugasAsli(String jadwal) {
+        return webClient1.get()
+                .uri("/api/bobotaslitugas?jadwal="+jadwal)
+                .retrieve().bodyToFlux(MdlGradeItemsDto.class)
+                .collectList()
+                .block();
+    }
+
+    public List<MdlGradeItemsDto> getBobotUts(String tahunAkademik) {
+        return webClient1.get()
+                .uri("/api/bobotuts?tahunAkademik="+tahunAkademik)
+                .retrieve().bodyToFlux(MdlGradeItemsDto.class)
+                .collectList()
+                .block();
+    }
+
+    public List<MdlGradeItemsDto> getBobotUas(String tahunAkademik) {
+        return webClient1.get()
+                .uri("/api/bobotuas?tahunAkademik="+tahunAkademik)
+                .retrieve().bodyToFlux(MdlGradeItemsDto.class)
+                .collectList()
+                .block();
+    }
 
 
     public List<MdlGradeGradesDto> getNilaiTugas2(@RequestParam String jadwal) {
@@ -162,6 +212,8 @@ public class ElearningController {
         Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
 
+
+
         if (action.equals("tugas")) {
             // do something here
             //tugas per jadwal
@@ -184,14 +236,14 @@ public class ElearningController {
                                 List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, jadwal1, mahasiswa, idKrsDetail);
                                 for (KrsDetail thekrsDetail : cariDouble) {
                                     thekrsDetail.setStatus(StatusRecord.HAPUS);
-//                                    krsDetailDao.save(thekrsDetail);
+                                    krsDetailDao.save(thekrsDetail);
                                     System.out.println("KRS DETAIL DOUBLE TERHAPUS == " + thekrsDetail.getId());
                                 }
 
                                 KrsDetail krsDetail1 = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwal1, StatusRecord.AKTIF, k, tahunAkademik1);
                                 if (krsDetail1 != null) {
                                     krsDetail1.setNilaiTugas(mdlnilcounttugas.getNilaiAkhir());
-//                                    krsDetailDao.save(krsDetail1);
+                                    krsDetailDao.save(krsDetail1);
                                     System.out.println(" NILAI TUGAS UPDATED == " + mdlnilcounttugas.getId());
                                 }
 
@@ -203,12 +255,20 @@ public class ElearningController {
                                 KrsDetail krsDetail1 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1, mahasiswa, k, StatusRecord.AKTIF);
                                 if (krsDetail1 != null) {
                                     krsDetail1.setNilaiTugas(mdlnilcounttugas.getNilaiAkhir());
-//                                    krsDetailDao.save(krsDetail1);
+                                    krsDetailDao.save(krsDetail1);
                                     System.out.println(" JADWAL == " + mdlnilcounttugas.getIdJadwal());
                                     System.out.println(" Mahasiswa == " + mdlnilcounttugas.getMahasiswa());
                                     System.out.println(" Nilai == " + mdlnilcounttugas.getNilai());
                                     System.out.println(" NILAI TUGAS UPDATED == " + mdlnilcounttugas.getId());
-                                    System.out.println("  =======  ");
+
+                                    BigDecimal finalUts = krsDetail1.getNilaiUtsFinal();
+                                    BigDecimal finalUas = krsDetail1.getNilaiUasFinal();
+                                    if (finalUts != null && finalUas != null){
+                                        krsDetail1.setNilaiAkhir(krsDetail1.getNilaiTugas().add(krsDetail1.getNilaiUtsFinal()).add(krsDetail1.getNilaiUasFinal()).add(krsDetail1.getNilaiPresensi()));
+                                        scoreService.hitungNilaiAkhir(krsDetail1);
+                                        System.out.println("SEMUA NILAI TERHITUNG == " + krsDetail1.getNilaiAkhir());
+                                        System.out.println("  =======  ");
+                                    }
                                 }
                             }
 
@@ -249,12 +309,34 @@ public class ElearningController {
                             KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
                             if (krsDetail2 != null) {
                                 krsDetail2.setNilaiUts(mdlniluts.getNilai());
-//                            krsDetailDao.save(krsDetail2);
+                                krsDetail2.setNilaiUtsFinal(mdlniluts.getNilaiAkhir());
+                                krsDetailDao.save(krsDetail2);
                                 System.out.println(" JADWAL == " + mdlniluts.getIdJadwal());
                                 System.out.println(" Mahasiswa == " + mdlniluts.getMahasiswa());
                                 System.out.println(" Nilai == " + mdlniluts.getNilai());
                                 System.out.println(" NILAI UTS UPDATED == " + mdlniluts.getId());
-                                System.out.println("  =======  ");
+
+
+//                                BigDecimal nilaiUas = krsDetail2.getNilaiUas().multiply(krsDetail2.getJadwal().getBobotUas()).divide(new BigDecimal(100));
+//                                BigDecimal nilaiUts = krsDetail2.getNilaiUts().multiply(krsDetail2.getJadwal().getBobotUts()).divide(new BigDecimal(100));
+//                                krsDetail2.setNilaiAkhir(krsDetail2.getNilaiTugas().add(nilaiUts).add(krsDetail2.getNilaiPresensi()).add(nilaiUas));
+
+                                //                                if (krsDetail2.getNilaiUtsFinal().compareTo(BigDecimal.ZERO) == 0){
+//
+//                                }
+
+                                BigDecimal finalUts = krsDetail2.getNilaiUtsFinal();
+                                BigDecimal finalUas = krsDetail2.getNilaiUasFinal();
+                                if (finalUts != null && finalUas != null){
+                                    krsDetail2.setNilaiAkhir(krsDetail2.getNilaiTugas().add(krsDetail2.getNilaiUtsFinal()).add(krsDetail2.getNilaiUasFinal()).add(krsDetail2.getNilaiPresensi()));
+                                    scoreService.hitungNilaiAkhir(krsDetail2);
+                                    System.out.println("SEMUA NILAI TERHITUNG == " + krsDetail2.getNilaiAkhir());
+                                    System.out.println("  =======  ");
+                                }
+
+
+
+
                             }
                         }
                     }
@@ -290,12 +372,23 @@ public class ElearningController {
                             KrsDetail krsDetail2 = krsDetailDao.findByTahunAkademikAndJadwalAndMahasiswaAndKrsAndStatus(tahunAkademik1, jadwal1,mahasiswa,k, StatusRecord.AKTIF);
                             if (krsDetail2 != null) {
                                 krsDetail2.setNilaiUas(mdlniluas.getNilai());
-//                            krsDetailDao.save(krsDetail2);
+                                krsDetail2.setNilaiUasFinal(mdlniluas.getNilaiAkhir());
+                                krsDetailDao.save(krsDetail2);
                                 System.out.println(" JADWAL == " + mdlniluas.getIdJadwal());
                                 System.out.println(" Mahasiswa == " + mdlniluas.getMahasiswa());
                                 System.out.println(" Nilai == " + mdlniluas.getNilai());
                                 System.out.println(" NILAI UAS UPDATED == " + mdlniluas.getId());
                                 System.out.println("  =======  ");
+
+                                BigDecimal finalUts = krsDetail2.getNilaiUtsFinal();
+                                BigDecimal finalUas = krsDetail2.getNilaiUasFinal();
+                                if (finalUts != null && finalUas != null){
+                                    krsDetail2.setNilaiAkhir(krsDetail2.getNilaiTugas().add(krsDetail2.getNilaiUtsFinal()).add(krsDetail2.getNilaiUasFinal()).add(krsDetail2.getNilaiPresensi()));
+                                    scoreService.hitungNilaiAkhir(krsDetail2);
+                                    System.out.println("SEMUA NILAI TERHITUNG == " + krsDetail2.getNilaiAkhir());
+                                    System.out.println("  =======  ");
+                                }
+
                             }
                         }
                     }
