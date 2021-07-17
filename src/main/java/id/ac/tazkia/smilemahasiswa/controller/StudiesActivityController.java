@@ -53,6 +53,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -4685,6 +4686,65 @@ public class StudiesActivityController {
             }
         }
         return "redirect:list";
+    }
+
+    @GetMapping("/studiesActivity/sp/detail")
+    public void spDetail(Model model){
+
+        List<Object[]> detailSp = praKrsSpDao.allDetail();
+        model.addAttribute("detailSp", detailSp);
+
+    }
+
+    @GetMapping("/download/detail/sp")
+    public void listDetail(HttpServletResponse response) throws IOException{
+
+        List<Object[]> listDetail = praKrsSpDao.allDetail();
+
+        String[] columns = {"No", "Nama", "NIM", "Prodi", "Matakuliah", "SKS", "Pembayaran"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List detail mahasiswa request SP");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for(Object[] detail : listDetail){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(detail[0].toString());
+            row.createCell(2).setCellValue(detail[1].toString());
+            row.createCell(3).setCellValue(detail[2].toString());
+            row.createCell(4).setCellValue(detail[3].toString());
+            row.createCell(5).setCellValue(detail[4].toString());
+            row.createCell(6).setCellValue(detail[5].toString());
+        }
+
+        for (int i = 1; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Detail_MHS_SP_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
     @GetMapping("/download/list")

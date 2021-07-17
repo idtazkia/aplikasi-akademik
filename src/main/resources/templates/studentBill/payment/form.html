@@ -172,16 +172,16 @@
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <tbody>
-                                                <div th:if="${lunas != null}">
+                                                <div th:if="${lunas == null && pembayaran == null}">
                                                     <tr th:each="va, row:${virtualAccount}">
+                                                        <td th:text="${(row.index + 1)}">#</td>
                                                         <td th:text="${'Virtual Account '+va.bank.nama}">Virtual Account CIMB Syariah</td>
                                                         <th th:text="${va.nomor}">20191000010020167</th>
                                                     </tr>
                                                 </div>
-                                                <div th:if="${lunas != null}">
+                                                <div th:if="${lunas != null && pembayaran != null}">
                                                     <div th:if="${cekJumlahPembayaran == 1}">
                                                         <tr th:if="${pembayaran} != null and ${pembayaran.bank} == ${va.bank}" th:each="va, row : ${virtualAccount}">
-                                                            <td th:text="${(row.index + 1)}">#</td>
                                                             <td th:text="${'Virtual Account '+va.bank.nama}" th:if="${pembayaran.bank} == ${va.bank}">Virtual Account CIMB Syariah</td>
                                                             <th th:text="${va.nomor}" th:if="${pembayaran.bank} == ${va.bank}">20191000010020167</th>
                                                         </tr>

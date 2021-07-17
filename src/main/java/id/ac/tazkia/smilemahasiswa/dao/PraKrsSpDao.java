@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.xml.ws.WebEndpoint;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,6 +37,17 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "group by id_matakuliah_setara \n" +
             "order by nama_matakuliah", nativeQuery = true)
     List<Object[]> listKrsSp();
+    
+    @Query(value = "select d.nama as Nama, d.nim as NIM, e.nama_prodi as Prodi, c.nama_matakuliah as Matakuliah, b.jumlah_sks as SKS, if(lunas = '1', 'LUNAS', 'BELUM LUNAS') as Pembayaran\n" +
+            "from pra_krs_sp as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id inner join matakuliah as c on b.id_matakuliah=c.id inner join \n" +
+            "mahasiswa as d on a.id_mahasiswa=d.id inner join prodi as e on d.id_prodi=e.id \n" +
+            "left join (select b.id_mahasiswa, b.lunas as lunas from pembayaran as a \n" +
+            "inner join tagihan as b on a.id_tagihan = b.id \n" +
+            "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id \n" +
+            "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
+            "where d.kode = '23' and b.status='AKTIF') as f on a.id_mahasiswa=f.id_mahasiswa \n" +
+            "where a.status='AKTIF' order by NIM", nativeQuery = true)
+    List<Object[]> allDetail();
 
     @Query(value = "select b.id_mahasiswa from pembayaran as a " +
             "inner join tagihan as b on a.id_tagihan = b.id " +
