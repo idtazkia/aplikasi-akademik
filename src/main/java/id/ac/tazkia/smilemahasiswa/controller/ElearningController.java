@@ -219,7 +219,7 @@ public class ElearningController {
             //tugas per jadwal
             List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlnilcounttugas : daftarNilaiCountTugas) {
-                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlnilcounttugas.getIdJadwal(), jadwal);
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlnilcounttugas.getIdNumber(), jadwal);
 
                 if (mdlnilcounttugas.getEmail() != null) {
                     User user = userDao.findByUsername(mdlnilcounttugas.getEmail());
@@ -228,18 +228,27 @@ public class ElearningController {
 
                     if (user != null) {
                         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+                        System.out.println("Mahasiswa  == "  + mahasiswa.getNim());
                         if (mahasiswa != null){
                             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
+                            System.out.println("KRS  == "  + k.getId());
                             if (k != null) {
                                 Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlnilcounttugas.getIdJadwal(), k, StatusRecord.AKTIF, tahunAkademik1);
+                                System.out.println("JML  == "  + jmlData);
                                 if (jmlData.compareTo(Long.valueOf(1)) > 0) {
                                     Object idKrsDetail = krsDetailDao.getKrsDetailId(jadwal1, mahasiswa);
+                                    System.out.println("idKrsDetailOjject  == "  + idKrsDetail);
                                     List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, jadwal1, mahasiswa, idKrsDetail);
-                                    for (KrsDetail thekrsDetail : cariDouble) {
-                                        thekrsDetail.setStatus(StatusRecord.HAPUS);
-                                        krsDetailDao.save(thekrsDetail);
-                                        System.out.println("KRS DETAIL DOUBLE TERHAPUS == " + thekrsDetail.getId());
+                                    System.out.println("caridouble  == "  + cariDouble);
+
+                                    if (cariDouble != null) {
+                                        for (KrsDetail thekrsDetail : cariDouble) {
+                                            thekrsDetail.setStatus(StatusRecord.HAPUS);
+                                            krsDetailDao.save(thekrsDetail);
+                                            System.out.println("KRS DETAIL DOUBLE TERHAPUS == " + thekrsDetail.getId());
+                                        }
                                     }
+
 
                                     KrsDetail krsDetail1 = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwal1, StatusRecord.AKTIF, k, tahunAkademik1);
                                     if (krsDetail1 != null) {
@@ -289,7 +298,7 @@ public class ElearningController {
             //uts per jadwal
             List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUts2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlniluts : daftarNilaiUts){
-                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluts.getIdJadwal(),jadwal);
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluts.getIdNumber(),jadwal);
 
 //            System.out.println("TA  =" + ta);
 //            System.out.println("PRODI =" + prodi);
@@ -355,7 +364,7 @@ public class ElearningController {
             //uas per jadwal
             List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUas2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlniluas : daftarNilaiUas){
-                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluas.getIdJadwal(),jadwal);
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluas.getIdNumber(),jadwal);
 
 //            System.out.println("TA  =" + ta);
 //            System.out.println("PRODI =" + prodi);
