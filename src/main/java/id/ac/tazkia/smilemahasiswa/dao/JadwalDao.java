@@ -20,6 +20,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     @Query("select sum (j.matakuliahKurikulum.jumlahSks)from Jadwal j where j.id in (:id)")
     Long totalSks(@Param("id")String[] id);
 
+    Jadwal findByStatusAndId(StatusRecord statusRecord, String id);
+
     Jadwal findByStatusAndIdNumberElearningAndId(StatusRecord statusRecord, String idNumberElearning, String idJadwal);
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto(j.id,j.matakuliahKurikulum.matakuliah.kodeMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.kelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses,j.ruangan.namaRuangan, j.hari.namaHari,j.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish)from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademik= :tahun and j.hari= :hari")
@@ -116,7 +118,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
                                                                                           MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
 
 
-    @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2\n" +
+    @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2 \n" +
             " and status = 'AKTIF' and id_number_elearning is not null", nativeQuery = true)
     List<ListJadwalDto> listJadwalDto( String idProdi, String idTahunAkademik);
 
