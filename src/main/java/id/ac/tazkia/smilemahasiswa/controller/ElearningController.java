@@ -331,7 +331,7 @@ public class ElearningController {
                                 if (krsDetail.getNilaiTugas() != null) {
                                     nilaiTugas = krsDetail.getNilaiTugas();
                                 }
-                                if (krsDetail.getNilaiUtsFinal() != null) {
+                                if (krsDetail.getNilaiUasFinal() != null) {
                                     nilaiUas = krsDetail.getNilaiUasFinal();
                                 }
                                 krsDetail.setNilaiUts(getNilaiUts.getFinalGrade());
@@ -358,7 +358,7 @@ public class ElearningController {
                                 if (krsDetail.getNilaiTugas() != null) {
                                     nilaiTugas = krsDetail.getNilaiTugas();
                                 }
-                                if (krsDetail.getNilaiUtsFinal() != null) {
+                                if (krsDetail.getNilaiUasFinal() != null) {
                                     nilaiUas = krsDetail.getNilaiUasFinal();
                                 }
 
@@ -394,7 +394,7 @@ public class ElearningController {
                                     if(krsDetail.getNilaiTugas() != null){
                                         nilaiTugas = krsDetail.getNilaiTugas();
                                     }
-                                    if(krsDetail.getNilaiUtsFinal() != null){
+                                    if(krsDetail.getNilaiUasFinal() != null){
                                         nilaiUas = krsDetail.getNilaiUasFinal();
                                     }
                                     krsDetail.setNilaiUts(listNilaiUts.getFinalGrade());
@@ -488,7 +488,7 @@ public class ElearningController {
 //                                System.out.println("krs  == "  + krsDetail.getId());
 
                                 if (krsDetail != null){
-                                    if(krsDetail.getNilaiUasFinal() != null){
+                                    if(krsDetail.getNilaiUtsFinal() != null){
                                         nilaiUts = krsDetail.getNilaiUtsFinal();
                                     }
                                     if(krsDetail.getNilaiTugas() != null){
