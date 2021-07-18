@@ -59,30 +59,30 @@
                     </div>
 
                     <div class="card-body">
-                        <form th:action="@{/elearning/importNilai}" method="post">
+                        <form th:action="@{/elearning/importNilaiProdi}" method="post">
                             <div class="form-group">
                                 <label >Tahun Akademik</label>
                                 <select class="form-control"
-                                        id="select2-tahun" th:field="*{tahunAkademik}" required>
+                                        id="select2-tahun" name="ta" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Tahun Akademik</option>
                                     <option th:each="data : ${tahunAkademik}"
                                             th:text="${data.namaTahunAkademik}"
                                             th:value="${data.id}">STEI Tazkia</option>
                                 </select>
-                                <input type="hidden" name="ta" id="isiTahun">
+<!--                                <input type="hidden" name="ta" id="isiTahun">-->
                             </div>
                             <div class="form-group">
                                 <label >Prodi</label>
                                 <select class="form-control"
-                                        id="select2-prodi" th:field="*{prodi}" required>
+                                        id="select2-prodi" name="prodi" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Prodi</option>
                                     <option th:each="pro : ${prodi}"
                                             th:text="${pro.namaProdi}"
                                             th:value="${pro.id}">prodi</option>
                                 </select>
-                                <input type="hidden" name="prodi" id="isiProdi">
+<!--                                <input type="hidden" name="prodi" id="isiProdi">-->
                             </div>
 
 
