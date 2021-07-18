@@ -103,7 +103,7 @@ public class KafkaListenerService {
             log.debug("Update tagihan untuk mahasiswa {} sukses dengan nomor {}",
                     response.getDebitur(), response.getNomorTagihan());
 
-            tagihanService.updateTagihan(response);
+            updateTagihan(response);
 
         }catch (Exception err){
             log.warn(err.getMessage(), err);
@@ -124,6 +124,33 @@ public class KafkaListenerService {
         }catch (IOException err){
             log.warn(err.getMessage(), err);
         }
+    }
+
+    private void updateTagihan(TagihanResponse tagihanResponse){
+        log.info("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
+        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
+                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                        mahasiswa.getIdProgram(), StatusRecord.AKTIF);
+        if (nilaiJenisTagihan == null) {
+            TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            NilaiJenisTagihan nilaiTagihan = nilaiJenisTagihanDao.
+                    findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                            mahasiswa.getIdProgram(), StatusRecord.AKTIF);
+            Tagihan t =  tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun, mahasiswa, nilaiTagihan, false);
+            t.setNomor(tagihanResponse.getNomorTagihan());
+            t.setKeterangan(tagihanResponse.getKeterangan());
+
+            tagihanDao.save(t);
+        }else{
+            Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
+            tagihan.setNomor(tagihanResponse.getNomorTagihan());
+            tagihan.setKeterangan(tagihanResponse.getKeterangan());
+
+            tagihanDao.save(tagihan);
+        }
+
     }
 
     private void insertNoVirtualAccount(VaResponse vaResponse){

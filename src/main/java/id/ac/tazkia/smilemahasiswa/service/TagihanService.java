@@ -74,17 +74,6 @@ public class TagihanService {
     @Autowired
     private KelasDao kelasDao;
 
-    @Autowired
-    private TahunAkademikDao tahunAkademikDao;
-
-    @Autowired
-    private MahasiswaDao mahasiswaDao;
-
-    @Autowired
-    private NilaiJenisTagihanDao nilaiJenisTagihanDao;
-
-    @Autowired
-    private VirtualAccountDao virtualAccountDao;
 
     public void requestCreateTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
@@ -358,33 +347,6 @@ public class TagihanService {
                 mengirimCicilanSelanjutnya(requestCicilan);
                 log.info("kirim cicilan selanjutnya : {}", requestCicilan);
             }
-        }
-
-    }
-
-    public void updateTagihan(TagihanResponse tagihanResponse){
-        log.info("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
-        Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
-        TahunAkademik tahun1 = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
-        if (tahun1 == null) {
-            TahunAkademik tahun2 = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
-                    findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun2, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
-                            mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-            Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun2, mahasiswa, nilaiJenisTagihan, false);
-            tagihan.setNomor(tagihanResponse.getNomorTagihan());
-            tagihan.setKeterangan(tagihanResponse.getKeterangan());
-
-            tagihanDao.save(tagihan);
-        }else{
-            NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
-                    findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun1, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
-                            mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-            Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun1, mahasiswa, nilaiJenisTagihan, false);
-            tagihan.setNomor(tagihanResponse.getNomorTagihan());
-            tagihan.setKeterangan(tagihanResponse.getKeterangan());
-
-            tagihanDao.save(tagihan);
         }
 
     }
