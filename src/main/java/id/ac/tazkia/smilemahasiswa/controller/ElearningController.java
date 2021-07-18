@@ -357,6 +357,7 @@ public class ElearningController {
                     if (daftarNilaiUts != null) {
                         for (MdlGradeGradesDto getNilaiUts : daftarNilaiUts) {
                             Mahasiswa mhs = mahasiswaDao.findByNim(getNilaiUts.getMahasiswa());
+                            System.out.println("Nilai_uts  == "  + getNilaiUts.getNilaiAkhir());
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
                             BigDecimal nilaiUas = BigDecimal.ZERO;
                             if (getNilaiUts.getNilaiAkhir() != null && getNilaiUts.getFinalGrade() != null) {
@@ -390,7 +391,7 @@ public class ElearningController {
                         Jadwal jadwal2 = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, listJadwalDto.getId(), listJadwalDto.getIdNumberElearning());
                         if (daftarNilaiUts != null){
                             for(MdlGradeGradesDto listNilaiUts : daftarNilaiUts){
-                                System.out.println("Nilai_tugas  == "  + listNilaiUts.getNilaiAkhir());
+                                System.out.println("Nilai_uts  == "  + listNilaiUts.getNilaiAkhir());
                                 Mahasiswa mhs = mahasiswaDao.findByNim(listNilaiUts.getMahasiswa());
                                 BigDecimal nilaiTugas = BigDecimal.ZERO;
                                 BigDecimal nilaiUas = BigDecimal.ZERO;
@@ -460,6 +461,7 @@ public class ElearningController {
                     if (daftarNilaiUas != null) {
                         for (MdlGradeGradesDto nilaiUas : daftarNilaiUas) {
                             Mahasiswa mhs = mahasiswaDao.findByNim(nilaiUas.getMahasiswa());
+                            System.out.println("Nilai_UAS  == "  + nilaiUas.getNilaiAkhir());
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
                             BigDecimal nilaiUts = BigDecimal.ZERO;
                             if (nilaiUas.getNilaiAkhir() != null && nilaiUas.getFinalGrade() != null) {
@@ -489,11 +491,11 @@ public class ElearningController {
                 List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
                 if (listJadwalDtos != null){
                     for (ListJadwalDto listJadwalDto : listJadwalDtos){
-                        List<MdlGradeGradesDto> daftarNilaiUas = getNilaiTugas2(listJadwalDto.getIdNumberElearning());
+                        List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUas2(listJadwalDto.getIdNumberElearning());
                         Jadwal jadwal2 = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, listJadwalDto.getId(), listJadwalDto.getIdNumberElearning());
                         if (daftarNilaiUas != null){
                             for(MdlGradeGradesDto listNilaiUas : daftarNilaiUas){
-                                System.out.println("Nilai_tugas  == "  + listNilaiUas.getNilaiAkhir());
+                                System.out.println("Nilai_UAS  == "  + listNilaiUas.getNilaiAkhir());
                                 Mahasiswa mhs = mahasiswaDao.findByNim(listNilaiUas.getMahasiswa());
                                 BigDecimal nilaiUts = BigDecimal.ZERO;
                                 BigDecimal nilaiTugas = BigDecimal.ZERO;
