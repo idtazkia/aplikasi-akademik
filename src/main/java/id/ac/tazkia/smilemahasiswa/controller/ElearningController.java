@@ -208,16 +208,16 @@ public class ElearningController {
 
     @PostMapping("/elearning/importNilai")
     public String inputForm(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
-                            @RequestParam(required = false) String jadwal,@RequestParam(required = false) String nim,
+                            @RequestParam(required = false) String jadwal, @RequestParam(required = false) String nim,
                             @RequestParam(value="action", required=true) String action){
 
         TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
         Prodi prodi1 = prodiDao.findById(prodi).get();
-        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
 
 
         if (action.equals("tugas")) {
             if (jadwal != null){
+                Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
                 if (nim != null) {
                     Mahasiswa mhs = mahasiswaDao.findByNim(nim);
                     System.out.println("Mahasiswa  == "  + mhs.getNim());
@@ -317,6 +317,7 @@ public class ElearningController {
 
         if (action.equals("uts")) {
             if (jadwal != null) {
+                Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
                 if (nim != null) {
                     Mahasiswa mhs = mahasiswaDao.findByNim(nim);
                     List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUtsPerMhs(jadwal1.getIdNumberElearning(), mhs.getNim());
@@ -413,6 +414,7 @@ public class ElearningController {
 
         if (action.equals("uas")) {
             if (jadwal != null) {
+                Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
                 if (nim != null) {
                     Mahasiswa mhs = mahasiswaDao.findByNim(nim);
                     List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUasPerMhs(jadwal1.getIdNumberElearning(), mhs.getNim());
