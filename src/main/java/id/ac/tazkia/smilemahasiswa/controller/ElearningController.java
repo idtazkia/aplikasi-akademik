@@ -233,7 +233,7 @@ public class ElearningController {
                             for(MdlGradeGradesDto listNilaiTugas : daftarNilaiTugas){
 //                                if (listNilaiTugas.getNilaiAkhir().compareTo(BigDecimal.ZERO) > 0) {
                                 System.out.println("NIM : " + listNilaiTugas.getMahasiswa());
-                                    System.out.println("Nilai_tugas  == "  + listNilaiTugas.getNilaiAkhir());
+                                    System.out.println("Nilai_tugas  : "  + listNilaiTugas.getNilaiAkhir());
 //                                    Mahasiswa mhs = mahasiswaDao.findByNim(listNilaiTugas.getMahasiswa());
                                     BigDecimal nilaiUas = BigDecimal.ZERO;
                                     BigDecimal nilaiUts = BigDecimal.ZERO;
@@ -282,9 +282,9 @@ public class ElearningController {
 //                                System.out.println("krs  == "  + krsDetail.getId());
 
                                     if (krsDetail != null) {
-                                        if (krsDetail.getNilaiTugas() != null) {
+
                                             nilaiTugas = krsDetail.getNilaiTugas();
-                                        }
+
                                         if (krsDetail.getNilaiUasFinal() != null) {
                                             nilaiUas = krsDetail.getNilaiUasFinal();
                                         }
@@ -328,9 +328,9 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUtsFinal() != null) {
                                             nilaiUts = krsDetail.getNilaiUtsFinal();
                                         }
-                                        if (krsDetail.getNilaiTugas() != null) {
+
                                             nilaiTugas = krsDetail.getNilaiTugas();
-                                        }
+
                                         krsDetail.setNilaiUas(listNilaiUas.getFinalGrade());
                                         krsDetail.setNilaiUasFinal(listNilaiUas.getNilaiAkhir());
                                         BigDecimal nilaiAkhir = nilaiUts.add(nilaiTugas.add(listNilaiUas.getNilaiAkhir()));
@@ -479,9 +479,9 @@ public class ElearningController {
 //                            if(getNilaiUts.getNilaiAkhir() != null && getNilaiUts.getFinalGrade() != null) {
                                 KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, nim, jadwal1);
                                 if (krsDetail != null) {
-                                    if (krsDetail.getNilaiTugas() != null) {
+
                                         nilaiTugas = krsDetail.getNilaiTugas();
-                                    }
+
                                     if (krsDetail.getNilaiUasFinal() != null) {
                                         nilaiUas = krsDetail.getNilaiUasFinal();
                                     }
@@ -509,9 +509,9 @@ public class ElearningController {
 //                            if (getNilaiUts.getNilaiAkhir() != null && getNilaiUts.getFinalGrade() != null) {
                                 KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, getNilaiUts.getMahasiswa(), jadwal1);
                                 if (krsDetail != null) {
-                                    if (krsDetail.getNilaiTugas() != null) {
+
                                         nilaiTugas = krsDetail.getNilaiTugas();
-                                    }
+
                                     if (krsDetail.getNilaiUasFinal() != null) {
                                         nilaiUas = krsDetail.getNilaiUasFinal();
                                     }
@@ -552,9 +552,9 @@ public class ElearningController {
 //                                System.out.println("krs  == "  + krsDetail.getId());
 
                                     if (krsDetail != null) {
-                                        if (krsDetail.getNilaiTugas() != null) {
+
                                             nilaiTugas = krsDetail.getNilaiTugas();
-                                        }
+
                                         if (krsDetail.getNilaiUasFinal() != null) {
                                             nilaiUas = krsDetail.getNilaiUasFinal();
                                         }
@@ -588,9 +588,9 @@ public class ElearningController {
 //                            if(nilaiUas.getNilaiAkhir() != null && nilaiUas.getFinalGrade() != null) {
                                 KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, nim, jadwal1);
                                 if (krsDetail != null) {
-                                    if (krsDetail.getNilaiTugas() != null) {
+
                                         nilaiTugas = krsDetail.getNilaiTugas();
-                                    }
+
                                     if (krsDetail.getNilaiUtsFinal() != null) {
                                         nilaiUts = krsDetail.getNilaiUtsFinal();
                                     }
@@ -618,9 +618,9 @@ public class ElearningController {
 //                            if (nilaiUas.getNilaiAkhir() != null && nilaiUas.getFinalGrade() != null) {
                                 KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, nilaiUas.getMahasiswa(), jadwal1);
                                 if (krsDetail != null) {
-                                    if (krsDetail.getNilaiTugas() != null) {
+
                                         nilaiTugas = krsDetail.getNilaiTugas();
-                                    }
+
                                     if (krsDetail.getNilaiUtsFinal() != null) {
                                         nilaiUts = krsDetail.getNilaiUtsFinal();
                                     }
@@ -659,9 +659,9 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUtsFinal() != null) {
                                             nilaiUts = krsDetail.getNilaiUtsFinal();
                                         }
-                                        if (krsDetail.getNilaiTugas() != null) {
+
                                             nilaiTugas = krsDetail.getNilaiTugas();
-                                        }
+
                                         krsDetail.setNilaiUas(listNilaiUas.getFinalGrade());
                                         krsDetail.setNilaiUasFinal(listNilaiUas.getNilaiAkhir());
                                         BigDecimal nilaiAkhir = nilaiUts.add(nilaiTugas.add(listNilaiUas.getNilaiAkhir()));
