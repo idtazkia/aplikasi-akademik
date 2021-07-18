@@ -461,6 +461,11 @@
                                 </a>
                             </li>
 
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                                <a class="nav-link " th:href="@{/elearning/importNilaiProdi}">
+                                    Import Nilai Prodi
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

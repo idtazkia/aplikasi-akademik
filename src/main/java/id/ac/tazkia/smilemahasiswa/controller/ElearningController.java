@@ -206,6 +206,13 @@ public class ElearningController {
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
     }
 
+    @GetMapping("/elearning/importNilaiProdi")
+    public void importNilaiProdi(Model model){
+
+        model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+    }
+
     @PostMapping("/elearning/importNilai")
     public String inputForm(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
                             @RequestParam(required = false) String jadwal, @RequestParam(required = false) String nim,
@@ -378,6 +385,11 @@ public class ElearningController {
                                     krsDetail.setGrade(gradeDto.getGrade());
                                     krsDetail.setBobot(gradeDto.getBobot());
                                     krsDetailDao.save(krsDetail);
+                                    System.out.println(" JADWAL == " + getNilaiUts.getIdJadwal());
+                                    System.out.println(" Mahasiswa == " + getNilaiUts.getMahasiswa());
+                                    System.out.println(" Nilai == " + getNilaiUts.getNilai());
+                                    System.out.println(" NILAI UAS UPDATED == " + getNilaiUts.getId());
+                                    System.out.println("  =======  ");
                                 }
                             }
                         }
