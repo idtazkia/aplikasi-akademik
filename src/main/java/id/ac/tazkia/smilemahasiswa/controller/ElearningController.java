@@ -201,9 +201,76 @@ public class ElearningController {
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
     }
 
-
     @PostMapping("/elearning/importNilai")
     public String inputForm(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
+                            @RequestParam(required = false) String jadwal,@RequestParam(required = false) String nim,
+                            @RequestParam(value="action", required=true) String action){
+
+        TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
+        Prodi prodi1 = prodiDao.findById(prodi).get();
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+
+
+        if (action.equals("tugas")) {
+            if (StringUtils.hasText(nim)) {
+                Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+                List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugasPerMhs(jadwal1.getIdNumberElearning(),mhs.getNim());
+                if (daftarNilaiCountTugas != null){
+                    for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
+                        BigDecimal nilaiUas = BigDecimal.ZERO;
+                        BigDecimal nilaiUts = BigDecimal.ZERO;
+                        KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaAndJadwal(StatusRecord.AKTIF, mhs, jadwal1);
+                        if (krsDetail != null){
+                            if(krsDetail.getNilaiUasFinal() == null){
+                                nilaiUas = krsDetail.getNilaiUasFinal();
+                            }
+                            if(krsDetail.getNilaiUtsFinal() == null){
+                                nilaiUts = krsDetail.getNilaiUtsFinal();
+                            }
+                            krsDetail.setNilaiTugas(nilaiTugas.getNilaiAkhir());
+                            krsDetail.setNilaiAkhir(nilaiUas.add(nilaiUts.add(nilaiTugas.getNilaiAkhir())));
+                            krsDetailDao.save(krsDetail);
+                        }
+                    }
+                }
+            }else{
+                List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal1.getIdNumberElearning());
+                if (daftarNilaiCountTugas != null){
+                    for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
+
+                    }
+                }
+            }
+        }
+
+        if (action.equals("uts")) {
+            if (StringUtils.hasText(nim)) {
+                Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+
+            }else{
+
+            }
+        }
+
+        if (action.equals("uas")) {
+            if (StringUtils.hasText(nim)) {
+                Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+
+            }else{
+
+            }
+        }
+
+
+        return "redirect:importNilai";
+
+    }
+
+
+
+
+    @PostMapping("/elearning/importNilai2")
+    public String inputForm1(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
                             @RequestParam(required = false) String jadwal,@RequestParam(required = false) String nim,
                             @RequestParam(value="action", required=true) String action){
 
@@ -233,7 +300,7 @@ public class ElearningController {
                             Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik1, StatusRecord.AKTIF);
                             System.out.println("KRS  == "  + k.getId());
                             if (k != null) {
-                                Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlnilcounttugas.getIdJadwal(), k, StatusRecord.AKTIF, tahunAkademik1);
+                                Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlnilcounttugas.getIdNumber(), k, StatusRecord.AKTIF, tahunAkademik1);
                                 System.out.println("JML  == "  + jmlData);
                                 if (jmlData.compareTo(Long.valueOf(1)) > 0) {
                                     Object idKrsDetail = krsDetailDao.getKrsDetailId(jadwal1, mahasiswa);
@@ -248,7 +315,6 @@ public class ElearningController {
                                             System.out.println("KRS DETAIL DOUBLE TERHAPUS == " + thekrsDetail.getId());
                                         }
                                     }
-
 
                                     KrsDetail krsDetail1 = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwal1, StatusRecord.AKTIF, k, tahunAkademik1);
                                     if (krsDetail1 != null) {
