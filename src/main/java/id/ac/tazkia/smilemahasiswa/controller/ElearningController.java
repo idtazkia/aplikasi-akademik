@@ -218,12 +218,15 @@ public class ElearningController {
         if (action.equals("tugas")) {
             if (StringUtils.hasText(nim)) {
                 Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+                System.out.println("Mahasiswa  == "  + mhs.getNim());
                 List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugasPerMhs(jadwal1.getIdNumberElearning(),mhs.getNim());
                 if (daftarNilaiCountTugas != null){
                     for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
+                        System.out.println("nilai  == "  + nilaiTugas.getNilaiAkhir());
                         BigDecimal nilaiUas = BigDecimal.ZERO;
                         BigDecimal nilaiUts = BigDecimal.ZERO;
                         KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaAndJadwal(StatusRecord.AKTIF, mhs, jadwal1);
+                        System.out.println("krs_detail  == "  + krsDetail.getId());
                         if (krsDetail != null){
                             if(krsDetail.getNilaiUasFinal() == null){
                                 nilaiUas = krsDetail.getNilaiUasFinal();
@@ -245,10 +248,13 @@ public class ElearningController {
                 List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal1.getIdNumberElearning());
                 if (daftarNilaiCountTugas != null){
                     for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
+                        System.out.println("Nilai_tugas  == "  + nilaiTugas.getNilaiAkhir());
                         Mahasiswa mhs = mahasiswaDao.findByNim(nilaiTugas.getMahasiswa());
                         BigDecimal nilaiUas = BigDecimal.ZERO;
                         BigDecimal nilaiUts = BigDecimal.ZERO;
                         KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaAndJadwal(StatusRecord.AKTIF, mhs, jadwal1);
+                        System.out.println("Mahasiswa  == "  + krsDetail.getMahasiswa().getNim());
+                        System.out.println("krs  == "  + krsDetail.getId());
                         if (krsDetail != null){
                             if(krsDetail.getNilaiUasFinal() == null){
                                 nilaiUas = krsDetail.getNilaiUasFinal();
