@@ -217,9 +217,9 @@ public class ElearningController {
         if (action.equals("tugas")) {
             // do something here
             //tugas per jadwal
-            List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal);
+            List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlnilcounttugas : daftarNilaiCountTugas) {
-                Jadwal j = jadwalDao.findById(mdlnilcounttugas.getIdJadwal()).get();
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlnilcounttugas.getIdJadwal(), jadwal);
 
                 if (mdlnilcounttugas.getEmail() != null) {
                     User user = userDao.findByUsername(mdlnilcounttugas.getEmail());
@@ -284,9 +284,9 @@ public class ElearningController {
         if (action.equals("uts")) {
             // do something here
             //uts per jadwal
-            List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUts2(jadwal);
+            List<MdlGradeGradesDto> daftarNilaiUts = getNilaiUts2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlniluts : daftarNilaiUts){
-                Jadwal j = jadwalDao.findById(mdlniluts.getIdJadwal()).get();
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluts.getIdJadwal(),jadwal);
 
 //            System.out.println("TA  =" + ta);
 //            System.out.println("PRODI =" + prodi);
@@ -347,9 +347,9 @@ public class ElearningController {
 
         if (action.equals("uas")) {
             //uas per jadwal
-            List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUas2(jadwal);
+            List<MdlGradeGradesDto> daftarNilaiUas = getNilaiUas2(jadwal1.getIdNumberElearning());
             for (MdlGradeGradesDto mdlniluas : daftarNilaiUas){
-                Jadwal j = jadwalDao.findById(mdlniluas.getIdJadwal()).get();
+                Jadwal j = jadwalDao.findByStatusAndIdNumberElearningAndId(StatusRecord.AKTIF, mdlniluas.getIdJadwal(),jadwal);
 
 //            System.out.println("TA  =" + ta);
 //            System.out.println("PRODI =" + prodi);
