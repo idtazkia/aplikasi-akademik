@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
@@ -113,5 +114,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     Jadwal findByTahunAkademikAndProdiAndKelasAndTahunAkademikProdiAndMatakuliahKurikulumAndStatus(TahunAkademik tahunAkademik, Prodi prodi,
                                                                                           Kelas kelas, TahunAkademikProdi tahunAkademikProdi,
                                                                                           MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
+
+
+    @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2\n" +
+            " and status = 'AKTIF' and id_number_elearning is not null", nativeQuery = true)
+    List<ListJadwalDto> listJadwalDto( String idProdi, String idTahunAkademik);
 
 }
