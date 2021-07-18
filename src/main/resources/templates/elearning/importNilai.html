@@ -63,26 +63,26 @@
                             <div class="form-group">
                                 <label >Tahun Akademik</label>
                                 <select class="form-control" onchange="myTahun()"
-                                        id="select2-tahun" name = "ta" required>
+                                        id="select2-tahun" name="ta" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Tahun Akademik</option>
                                     <option th:each="data : ${tahunAkademik}"
                                             th:text="${data.namaTahunAkademik}"
                                             th:value="${data.id}">STEI Tazkia</option>
                                 </select>
-                                <input type="hidden" name="ta" id="isiTahun">
+                                <input type="hidden" name="tas" id="isiTahun">
                             </div>
                             <div class="form-group">
                                 <label >Prodi</label>
                                 <select class="form-control" onchange="myProdi()"
-                                        id="select2-prodi" name = "prodi" required>
+                                        id="select2-prodi" name="prodi" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Prodi</option>
                                     <option th:each="pro : ${prodi}"
                                             th:text="${pro.namaProdi}"
                                             th:value="${pro.id}">prodi</option>
                                 </select>
-                                <input type="hidden" name="prodi" id="isiProdi">
+                                <input type="hidden" name="prodi1" id="isiProdi">
                             </div>
 
                             <div class="form-group">
