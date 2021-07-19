@@ -235,6 +235,9 @@ public class ElearningController {
                                     System.out.println("Nilai_tugas  : "  + listNilaiTugas.getNilaiAkhir());
                                     BigDecimal nilaiUas = BigDecimal.ZERO;
                                     BigDecimal nilaiUts = BigDecimal.ZERO;
+                                    BigDecimal nilaiTugas = BigDecimal.ZERO;
+                                    BigDecimal nilaiUtsAsli = BigDecimal.ZERO;
+                                    BigDecimal nilaiUasAsli = BigDecimal.ZERO;
                                     KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, listNilaiTugas.getMahasiswa(), jadwal2);
                                     if (krsDetail != null) {
                                         if (krsDetail.getNilaiUasFinal() != null) {
@@ -243,10 +246,22 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUtsFinal() != null) {
                                             nilaiUts = krsDetail.getNilaiUtsFinal();
                                         }
-                                        krsDetail.setNilaiTugas(listNilaiTugas.getNilaiAkhir());
-//                                        krsDetail.setNilaiUts(nilaiUts);
-//                                        krsDetail.setNilaiUas(nilaiUas);
-                                        BigDecimal nilaiAkhir = nilaiUas.add(nilaiUts.add(listNilaiTugas.getNilaiAkhir()));
+                                        if (krsDetail.getNilaiTugas() != null){
+                                            nilaiTugas = krsDetail.getNilaiTugas();
+                                        }
+                                        if (listNilaiTugas.getNilaiAkhir() != null){
+                                            nilaiTugas = listNilaiTugas.getNilaiAkhir();
+                                        }
+                                        if(krsDetail.getNilaiUts() != null){
+                                            nilaiUtsAsli = krsDetail.getNilaiUts();
+                                        }
+                                        if(krsDetail.getNilaiUas() != null){
+                                            nilaiUasAsli = krsDetail.getNilaiUas();
+                                        }
+                                        krsDetail.setNilaiTugas(nilaiTugas);
+                                        krsDetail.setNilaiUts(nilaiUtsAsli);
+                                        krsDetail.setNilaiUas(nilaiUasAsli);
+                                        BigDecimal nilaiAkhir = nilaiUas.add(nilaiUts.add(nilaiTugas));
                                         GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
                                         krsDetail.setNilaiAkhir(nilaiAkhir);
                                         krsDetail.setGrade(gradeDto.getGrade());
@@ -356,6 +371,7 @@ public class ElearningController {
                 }
         }
 
+        System.out.println("Impor Data Finished");
         return "redirect:importNilaiProdi";
 
     }
