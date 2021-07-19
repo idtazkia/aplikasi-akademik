@@ -236,7 +236,7 @@
 
             var x = document.getElementById('locality-dropdown-2').value;
             console.log(x);
-            const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&mahasiswa='+$('#isiMahasiswa').val();
+            const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&nim='+$('#isiMahasiswa').val();
             $.getJSON(url, function (data) {
 
 

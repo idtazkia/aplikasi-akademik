@@ -401,9 +401,7 @@ public class ElearningController {
                             BigDecimal nilaiTugass = BigDecimal.ZERO;
                             BigDecimal nilaiUtsAsli = BigDecimal.ZERO;
                             BigDecimal nilaiUasAsli = BigDecimal.ZERO;
-//                            if(nilaiTugas.getNilaiAkhir() != null && nilaiTugas.getFinalGrade() != null){
                                 KrsDetail krsDetail = krsDetailDao.findByStatusAndMahasiswaNimAndJadwal(StatusRecord.AKTIF, nim, jadwal1);
-//                            System.out.println("krs_detail  == "  + krsDetail.getId());
                                 if (krsDetail != null){
                                     if (krsDetail.getNilaiUasFinal() != null) {
                                         nilaiUas = krsDetail.getNilaiUasFinal();
@@ -439,7 +437,7 @@ public class ElearningController {
                     }
                 }else{
                     List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugas2(jadwal1.getIdNumberElearning());
-                    System.out.println("Jadwal : "  + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas() + " - " + jadwal1.getDosen().getKaryawan().getNamaKaryawan());
+//                    System.out.println("Jadwal : "  + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas() + " - " + jadwal1.getDosen().getKaryawan().getNamaKaryawan());
                     if (daftarNilaiCountTugas != null){
                         for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
                             System.out.println("Mahasiswa : " + nilaiTugas.getMahasiswa());
