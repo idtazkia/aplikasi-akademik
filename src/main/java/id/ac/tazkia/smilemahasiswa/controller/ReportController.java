@@ -64,6 +64,9 @@ public class ReportController {
     @Autowired
     private ProdiDao prodiDao;
 
+    @Autowired
+    private EdomQuestionDao edomQuestionDao;
+
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
@@ -179,6 +182,21 @@ public class ReportController {
                           @RequestParam(required = false) Prodi prodi){
 
         if (tahunAkademik != null){
+            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademik);
+            if (edomQuestion != null){
+                EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
+                EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
+                EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
+                EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
+                EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
+                model.addAttribute("edomQuestion1",edomQuestion1);
+                model.addAttribute("edomQuestion2",edomQuestion2);
+                model.addAttribute("edomQuestion3",edomQuestion3);
+                model.addAttribute("edomQuestion4",edomQuestion4);
+                model.addAttribute("edomQuestion5",edomQuestion5);
+            }else {
+                model.addAttribute("questionNull", "Pertanyaan edom untuk tahun akademik ini belum dibuat");
+            }
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("rekapEdom",krsDetailDao.rekapEdom(tahunAkademik,prodi));
