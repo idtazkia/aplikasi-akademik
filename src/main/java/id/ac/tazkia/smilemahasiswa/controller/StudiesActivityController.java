@@ -153,6 +153,9 @@ public class StudiesActivityController {
     @Autowired
     private TahunProdiDao tahunProdiDao;
 
+    @Autowired
+    private EdomQuestionDao edomQuestionDao;
+
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
@@ -1952,6 +1955,16 @@ public class StudiesActivityController {
         BigDecimal e5 = BigDecimal.valueOf(e5Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
 
         BigDecimal rata = e1.add(e2).add(e3).add(e4).add(e5);
+        EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
+        EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
+        EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
+        EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,jadwal.getTahunAkademik());
+        EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,jadwal.getTahunAkademik());
+        model.addAttribute("edomQuestion1",edomQuestion1);
+        model.addAttribute("edomQuestion2",edomQuestion2);
+        model.addAttribute("edomQuestion3",edomQuestion3);
+        model.addAttribute("edomQuestion4",edomQuestion4);
+        model.addAttribute("edomQuestion5",edomQuestion5);
 
 
         model.addAttribute("e1", e1);

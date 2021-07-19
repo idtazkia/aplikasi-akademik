@@ -76,7 +76,14 @@
                             </form>
                         </div>
                     </div>
-                    <span th:if="${selectedTahun != null}">
+                    <div class="alert alert-warning" th:if="${questionNull != null}">
+                        <center>
+                            <strong th:text="${questionNull}">
+
+                            </strong>
+                        </center>
+                    </div>
+                    <span th:if="${selectedTahun != null && questionNull == null}">
                         <div class="card-body" th:each="data : ${rekapEdom}">
                             <div class="card shadow">
                                 <div class="card-body">
@@ -121,27 +128,27 @@
                                         <tbody>
                                         <tr>
                                             <td><center>1</center></td>
-                                            <td>Disiplin masuk kelas</td>
+                                            <td th:text="${edomQuestion1.pertanyaan}">Disiplin masuk kelas</td>
                                             <td th:text="${data[6]}"><center>4.2</center></td>
                                         </tr>
                                         <tr>
                                             <td><center>2</center></td>
-                                            <td>Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>
+                                            <td th:text="${edomQuestion2.pertanyaan}">Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>
                                             <td th:text="${data[7]}"><center>4.2</center></td>
                                         </tr>
                                         <tr>
                                             <td><center>3</center></td>
-                                            <td>Cara menyampaikan materi perkuliahan</td>
+                                            <td th:text="${edomQuestion3.pertanyaan}">Cara menyampaikan materi perkuliahan</td>
                                             <td th:text="${data[8]}"><center>4.2</center></td>
                                         </tr>
                                         <tr>
                                             <td><center>4</center></td>
-                                            <td>Keragaman konten materi pada e learning</td>
+                                            <td th:text="edomQuestion4.pertanyaan">Keragaman konten materi pada e learning</td>
                                             <td th:text="${data[9]}"><center>4.2</center></td>
                                         </tr>
                                         <tr>
                                             <td><center>5</center></td>
-                                            <td>Perhatian kepada Mahasiswa</td>
+                                            <td th:text="${edomQuestion5.pertanyaan}">Perhatian kepada Mahasiswa</td>
                                             <td th:text="${data[10]}"><center>4.2</center></td>
                                         </tr>
                                         </tbody>
