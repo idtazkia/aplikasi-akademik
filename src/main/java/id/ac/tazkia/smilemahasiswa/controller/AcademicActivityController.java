@@ -110,6 +110,9 @@ public class  AcademicActivityController {
     @Autowired
     private MataKuliahSetaraDao mataKuliahSetaraDao;
 
+    @Autowired
+    private EdomQuestionDao edomQuestionDao;
+
     //    Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -356,6 +359,9 @@ public class  AcademicActivityController {
             TahunAkademik tahunAkademik = new TahunAkademik();
             List<Prodi> prodis = prodiDao.findByStatus(StatusRecord.AKTIF);
 
+            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+
             tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
             tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
             tahunAkademik.setTanggalMulaiKrs(LocalDate.parse(tanggalMulaiKrs, formatter));
@@ -378,6 +384,15 @@ public class  AcademicActivityController {
                 tahunAkademik.setStatus(status);
             }
             tahunAkademikDao.save(tahunAkademik);
+            for (EdomQuestion question : edomQuestion){
+                EdomQuestion edomQues = new EdomQuestion();
+                edomQues.setStatus(StatusRecord.AKTIF);
+                edomQues.setBahasa(question.getBahasa());
+                edomQues.setNomor(question.getNomor());
+                edomQues.setPertanyaan(question.getPertanyaan());
+                edomQues.setTahunAkademik(tahunAkademik);
+                edomQuestionDao.save(edomQues);
+            }
 
             for (Prodi prodi : prodis){
                 TahunAkademikProdi tahunProdi = new TahunAkademikProdi();
