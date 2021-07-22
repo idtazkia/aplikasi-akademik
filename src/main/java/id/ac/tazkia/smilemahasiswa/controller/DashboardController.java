@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.script.Bindings;
+import javax.swing.text.html.HTML;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -219,7 +220,7 @@ public class DashboardController {
         for (Object[] list : listSp){
             Mahasiswa mhs = mahasiswaDao.findById(list[5].toString()).get();
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(list[6].toString()).get();
-            Tagihan tagihan = tagihanDao.findByMahasiswaAndTahunAkademikAndNilaiJenisTagihanJenisTagihanKodeAndLunasAndStatus(mhs, tahunAkademik, "23", true, StatusRecord.AKTIF);
+            Tagihan tagihan = tagihanDao.tagihanSp(mhs.getId(), tahunAkademik.getId());
             if (tagihan == null){
                 model.addAttribute("cekTagihan", "cekTagihan");
             }
