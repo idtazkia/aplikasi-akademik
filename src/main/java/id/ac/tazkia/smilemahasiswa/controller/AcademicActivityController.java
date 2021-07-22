@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -513,6 +514,18 @@ public class  AcademicActivityController {
             model.addAttribute("selected",prodi);
             model.addAttribute("kurikulum",kurikulumDao.findByStatusInAndProdi(statusRecords,prodi));
         }
+    }
+
+    @Transactional
+    @PostMapping("/academic/curriculum/aktif")
+    public String aktifKurikulum(@RequestParam Kurikulum kurikulum){
+        kurikulumDao.nonaktifKurikulum(kurikulum.getProdi());
+
+
+        kurikulum.setStatus(StatusRecord.AKTIF);
+        kurikulumDao.save(kurikulum);
+
+        return "redirect:list?prodi="+kurikulum.getProdi().getId();
     }
 
     @GetMapping("/academic/curriculum/form")
