@@ -159,9 +159,9 @@ public class MahasiswaController {
         model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
-        model.addAttribute("ayah", ayahDao.findById(mahasiswa.getId()));
-        model.addAttribute("ibu", ibuDao.findById(mahasiswa.getId()));
-        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
+        model.addAttribute("ayah", ayahDao.findById(mahasiswa.getAyah().getId()));
+        model.addAttribute("ibu", ibuDao.findById(mahasiswa.getIbu().getId()));
+//        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
 
         MahasiswaDetailKeluarga mahasiswaDetailKeluarga = mahasiswaDetailKeluargaDao.findByMahasiswa(mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
