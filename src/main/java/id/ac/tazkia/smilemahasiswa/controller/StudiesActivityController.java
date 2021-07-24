@@ -7,6 +7,7 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.krs.KrsSpDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
@@ -43,6 +44,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -4552,11 +4554,12 @@ public class StudiesActivityController {
         }
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
-        model.addAttribute("matkulDetail1", praKrsSpDao.detailSp());
+        model.addAttribute("matkulDetail1", praKrsSpDao.detailSp(tahun));
 
 
     }
 
+    @Transactional
     @PostMapping("/studiesActivity/sp/approve")
     public String approveSp(HttpServletRequest request, Authentication authentication){
 
@@ -4567,16 +4570,17 @@ public class StudiesActivityController {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(request.getParameter("matkur-"+mk[0])).get();
+                TahunAkademik tahunAkademik = tahunAkademikDao.findById(request.getParameter("tahunAkademik-"+mk[0])).get();
 
-                List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulum(StatusRecord.AKTIF, matkul);
-                for (PraKrsSp pks : listSp){
-                    pks.setStatusApprove(StatusApprove.APPROVED);
-                    pks.setUserUpdate(karyawan);
-                    praKrsSpDao.save(pks);
+                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik,matkul.getMatakuliah().getNamaMatakuliah());
+                List<String> listId = new ArrayList<>();
+                for (KrsSpDto pks : listSp){
+                    listId.add(pks.getSp());
                 }
 
+                praKrsSpDao.updateStatus(karyawan,listId);
+
                 Prodi prodi = prodiDao.findById(request.getParameter("prodi-"+mk[0])).get();
-                TahunAkademik tahunAkademik = tahunAkademikDao.findById(request.getParameter("tahunAkademik-"+mk[0])).get();
 
                 Kelas kelas = kelasDao.findById("SP-01").get();
                 TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, prodi);
@@ -4601,13 +4605,26 @@ public class StudiesActivityController {
                 jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
                 jadwalDao.save(jadwal);
                 System.out.println(matkul.getId());
+
+                JadwalDosen jadwalDosen = new JadwalDosen();
+                jadwalDosen.setStatusJadwalDosen(StatusJadwalDosen.PENGAMPU);
+                jadwalDosen.setJadwal(jadwal);
+                jadwalDosen.setDosen(dosenDao.findById(request.getParameter("dosen-"+mk[0].toString())).get());
+                jadwalDosen.setJumlahIzin(0);
+                jadwalDosen.setJumlahKehadiran(0);
+                jadwalDosen.setJumlahMangkir(0);
+                jadwalDosen.setJumlahSakit(0);
+                jadwalDosen.setJumlahTerlambat(0);
+                jadwalDosenDao.save(jadwalDosen);
+
 //
-                List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(matkul.getId());
+                List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString(), mk[2].toString());
                 for (Object[] listLunas : spLunas){
-                    Mahasiswa mhs = mahasiswaDao.findById(listLunas[0].toString()).get();
+                    Mahasiswa mhs = mahasiswaDao.findByNim(listLunas[2].toString());
                     TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
                     KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
                     Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
+                    System.out.println("create krs : " + mhs.getNim());
                     if (krsDetail == null){
                         if (k == null){
                             Krs krs = new Krs();
@@ -4688,13 +4705,18 @@ public class StudiesActivityController {
                 User user = currentUserService.currentUser(authentication);
                 Karyawan karyawan = karyawanDao.findByIdUser(user);
                 MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(request.getParameter("matkur-"+mk[0])).get();
-
-                List<PraKrsSp> listSp = praKrsSpDao.findByStatusAndMatakuliahKurikulum(StatusRecord.AKTIF, matkul);
-                for (PraKrsSp pks : listSp){
-                    pks.setStatusApprove(StatusApprove.REJECTED);
-                    pks.setUserUpdate(karyawan);
-                    praKrsSpDao.save(pks);
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+                if (tahunAkademik == null) {
+                    tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
                 }
+
+                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik, matkul.getMatakuliah().getNamaMatakuliah());
+                List<String> listId = new ArrayList<>();
+                for (KrsSpDto pks : listSp){
+                   listId.add(pks.getSp());
+                }
+
+                praKrsSpDao.updateReject(karyawan, listId);
 
             }
         }
