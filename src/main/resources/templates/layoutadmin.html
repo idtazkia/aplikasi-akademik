@@ -432,7 +432,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/report/recapitulation/bkd}" class="nav-link">BKD Report</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/report/recapitulation/edom}" class="nav-link">Edom Report</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
