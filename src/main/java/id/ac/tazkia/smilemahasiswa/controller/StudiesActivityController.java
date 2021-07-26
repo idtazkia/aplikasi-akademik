@@ -1940,23 +1940,8 @@ public class StudiesActivityController {
     public void hasilEdom(Model model, @RequestParam Jadwal jadwal) {
 
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("jumlahMahasiswa", krsDetailDao.findByJadwalAndStatusOrderByMahasiswaNamaAsc(jadwal,StatusRecord.AKTIF).size());
+        model.addAttribute("edom", krsDetailDao.edomJadwal(jadwal));
 
-        List<KrsDetail> mahasiswa = krsDetailDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
-
-        long e1Long =krsDetailDao.jumlahE1(jadwal);
-        long e2Long =krsDetailDao.jumlahE2(jadwal);
-        long e3Long =krsDetailDao.jumlahE3(jadwal);
-        long e4Long =krsDetailDao.jumlahE4(jadwal);
-        long e5Long =krsDetailDao.jumlahE5(jadwal);
-
-        BigDecimal e1 = BigDecimal.valueOf(e1Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
-        BigDecimal e2 = BigDecimal.valueOf(e2Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
-        BigDecimal e3 = BigDecimal.valueOf(e3Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
-        BigDecimal e4 = BigDecimal.valueOf(e4Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
-        BigDecimal e5 = BigDecimal.valueOf(e5Long).divide(BigDecimal.valueOf(mahasiswa.size()),2, RoundingMode.HALF_UP);
-
-        BigDecimal rata = e1.add(e2).add(e3).add(e4).add(e5);
         EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
         EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
         EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
@@ -1969,12 +1954,6 @@ public class StudiesActivityController {
         model.addAttribute("edomQuestion5",edomQuestion5);
 
 
-        model.addAttribute("e1", e1);
-        model.addAttribute("e2", e2);
-        model.addAttribute("e3", e3);
-        model.addAttribute("e4", e4);
-        model.addAttribute("e5", e5);
-        model.addAttribute("rata",rata.divide(BigDecimal.valueOf(5), 2, RoundingMode.HALF_UP));
 
 
     }
