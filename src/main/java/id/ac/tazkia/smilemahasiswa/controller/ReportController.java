@@ -271,4 +271,21 @@ public class ReportController {
         model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
         model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
     }
+
+    @GetMapping("/report/recapitulation/attendance")
+    public void attendance(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+
+        model.addAttribute("jadwal", jadwal);
+
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
+        List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+
+        model.addAttribute("attendance", hasil);
+
+
+    }
 }
