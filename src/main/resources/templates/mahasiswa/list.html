@@ -82,7 +82,7 @@
                             <tr th:each="data,row : ${list}">
                                 <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
                                 <td th:text="${data.nim}">1519001</td>
-                                <td>
+                                <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                     <a class="btn btn-success btn-outline-success btn-sm"
                                        th:if="${data.status.AKTIF} == ${data.status}"
                                        th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
@@ -91,6 +91,17 @@
                                     <a class="btn btn-danger btn-outline-danger btn-sm"
                                        th:if="${data.status.NONAKTIF} == ${data.status}"
                                        th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
+                                    </a>
+                                </td>
+                                <td sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_STAFF')">
+                                    <a class="btn btn-success btn-outline-success btn-sm"
+                                       th:if="${data.status.AKTIF} == ${data.status}"
+                                       th:text="${data.nama}" >
+                                    </a>
+
+                                    <a class="btn btn-danger btn-outline-danger btn-sm"
+                                       th:if="${data.status.NONAKTIF} == ${data.status}"
+                                       th:text="${data.nama}">
                                     </a>
                                 </td>
                                 <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>

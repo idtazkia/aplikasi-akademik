@@ -116,7 +116,9 @@ public class MahasiswaController {
         return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
     @GetMapping("/mahasiswa/list")
-    public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search){
+    public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        model.addAttribute("user", user);
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
             model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(Arrays.asList(StatusRecord.HAPUS), search,search, page));
