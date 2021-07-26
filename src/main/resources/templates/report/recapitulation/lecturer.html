@@ -104,7 +104,9 @@
                                         <td th:text="${jd.jamSelesai}">455-981-221</td>
                                         <td th:text="${jd.namaRuangan}">455-981-221</td>
                                         <td>
-                                            <div class="dropdown">
+                                            <a target="_blank" sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK')" class="btn btn-primary btn-sm"  th:href="@{/report/recapitulation/nilai(jadwal = ${jd.idJadwal})}">Lihat Nilai</a>
+
+                                            <div class="dropdown" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
                                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     Download
                                                 </button>

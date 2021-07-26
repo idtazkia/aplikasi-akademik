@@ -110,7 +110,7 @@
                                 <td th:if="${data.statusAktif == 'CUTI'}"><span class="badge badge-warning badge-md">CUTI</span></td>
                                 <td th:if="${data.statusAktif == 'AKTIF'}"><span class="badge badge-success badge-md">AKTIF</span></td>
                                 <td align="center">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                         Select to change student status
                                     </button>
 
