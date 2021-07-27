@@ -1099,11 +1099,14 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/dokumen/deletep")
-    public String hapusDokumenPenangguhan(@RequestParam TagihanDocument document){
-        document.setStatus(StatusRecord.HAPUS);
-        tagihanDocumentDao.save(document);
+    public String hapusDokumenPenangguhan(@RequestParam Tagihan tagihan){
+        List<TagihanDocument> tagihanDoc = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PENANGGUHAN);
+        for (TagihanDocument document : tagihanDoc){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
 
-        return "redirect:../requestPenangguhan/date?id="+document.getTagihan().getId();
+        return "redirect:../requestPenangguhan/date?id="+tagihan.getId();
     }
 
     @PostMapping("/studentBill/penangguhan/reject")
@@ -1493,11 +1496,14 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/dokumen/delete")
-    public String hapusDokumen(@RequestParam TagihanDocument document){
-        document.setStatus(StatusRecord.HAPUS);
-        tagihanDocumentDao.save(document);
+    public String hapusDokumen(@RequestParam Tagihan tagihan){
+        List<TagihanDocument> doc = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN);
+        for (TagihanDocument document : doc){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
 
-        return "redirect:../requestCicilan/angsuran?id="+document.getTagihan().getId();
+        return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
     }
 
     // pembayaran
