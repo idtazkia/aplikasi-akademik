@@ -129,21 +129,21 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
 
     @Query(value = "select a.*,if(b.id_mahasiswa != '','LUNAS', 'BELUM LUNAS')as status_bayar from\n" +
             "(select a.*, coalesce(b.id_matakuliah_setara, a.id_matakuliah) as id from\n" +
-            "(select b.id_matakuliah,a.id_mahasiswa, c.nama_matakuliah, d.nama, a.status_approve,a.id as sp from pra_krs_sp as a \n" +
+            "(select b.id_matakuliah,a.id_mahasiswa, c.nama_matakuliah, d.nama, a.status_approve, c.kode_matakuliah as kode,a.id as sp from pra_krs_sp as a \n" +
             "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id \n" +
             "inner join matakuliah as c on b.id_matakuliah = c.id \n" +
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
             "inner join prodi as e on d.id_prodi = e.id\n" +
-            "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and c.nama_matakuliah like %?2%)a\n" +
-            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah)a\n" +
-            "left join\n" +
+            "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah where a.id_matakuliah = ?2 or id=?3 or a.kode=?4 or a.nama_matakuliah like %?5%)a\n" +
+            "left join " +
             "(select b.id_mahasiswa from pembayaran as a \n" +
             "inner join tagihan as b on a.id_tagihan = b.id \n" +
             "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id \n" +
             "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
-            "where d.kode = '23' and b.lunas = true)b on a.id_mahasiswa = b.id_mahasiswa\n" +
-            "group by a.id_mahasiswa,a.id_matakuliah", nativeQuery = true)
-    List<KrsSpDto> cariMatakuliah(TahunAkademik tahunAkademik, String matkul);
+            "where d.kode = '23' and b.lunas = true)b on a.id_mahasiswa = b.id_mahasiswa " +
+            "group by a.id_mahasiswa, a.id_matakuliah ", nativeQuery = true)
+    List<KrsSpDto> cariMatakuliah(TahunAkademik tahunAkademik, String idMatkul, String id, String kode, String nama);
 
     @Modifying
     @Query(value = "update pra_krs_sp set status_approve = 'APPROVED',user_update = ?1 where id in(?2)", nativeQuery = true)

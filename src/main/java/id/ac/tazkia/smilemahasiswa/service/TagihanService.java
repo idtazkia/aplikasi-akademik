@@ -238,8 +238,8 @@ public class TagihanService {
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
                 enableFiture.setEnable(true);
-                enableFitureDao.save(enableFiture);
                 enableFiture.setKeterangan("-");
+                enableFitureDao.save(enableFiture);
             } else if (ef.getEnable() == false) {
                 ef.setEnable(true);
                 ef.setKeterangan("Ngulang");
@@ -251,77 +251,20 @@ public class TagihanService {
             List<PraKrsSp> listSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(tagihan.getMahasiswa(), StatusRecord.AKTIF, StatusApprove.APPROVED, tagihan.getTahunAkademik());
             for (PraKrsSp listApprove : listSp){
                 Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(listApprove.getMahasiswa(), listApprove.getTahunAkademik(), StatusRecord.AKTIF);
-                Kelas kelas = kelasDao.findById("SP-01").get();
                 TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(listApprove.getTahunAkademik(), listApprove.getMahasiswa().getIdProdi());
-//                Jadwal jadwal = jadwalDao.
-//                        findByTahunAkademikAndProdiAndKelasAndTahunAkademikProdiAndMatakuliahKurikulumAndStatus(listApprove.getTahunAkademik(),
-//                                listApprove.getMahasiswa().getIdProdi(), kelas, tahunAkademikProdi, listApprove.getMatakuliahKurikulum(), StatusRecord.AKTIF);
-//                KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(listApprove.getMahasiswa(), jadwal, StatusRecord.AKTIF, k, listApprove.getTahunAkademik());
-//
-//                if (krsDetail == null) {
-//
-//                    if (k == null) {
-//
-//                        Krs krs = new Krs();
-//                        krs.setTahunAkademik(listApprove.getTahunAkademik());
-//                        krs.setTahunAkademikProdi(tahunAkademikProdi);
-//                        krs.setProdi(listApprove.getMahasiswa().getIdProdi());
-//                        krs.setMahasiswa(listApprove.getMahasiswa());
-//                        krs.setNim(listApprove.getMahasiswa().getNim());
-//                        krs.setTanggalTransaksi(LocalDateTime.now());
-//                        krs.setStatus(StatusRecord.AKTIF);
-//                        krsDao.save(krs);
-//
-//                        KrsDetail kd = new KrsDetail();
-//                        kd.setKrs(krs);
-//                        kd.setMahasiswa(listApprove.getMahasiswa());
-//                        kd.setJadwal(jadwal);
-//                        kd.setMatakuliahKurikulum(listApprove.getMatakuliahKurikulum());
-//                        kd.setNilaiPresensi(BigDecimal.ZERO);
-//                        kd.setNilaiUts(BigDecimal.ZERO);
-//                        kd.setNilaiTugas(BigDecimal.ZERO);
-//                        kd.setFinalisasi("N");
-//                        kd.setNilaiUas(BigDecimal.ZERO);
-//                        kd.setJumlahKehadiran(0);
-//                        kd.setJumlahMangkir(0);
-//                        kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-//                        kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-//                        kd.setJumlahTerlambat(0);
-//                        kd.setJumlahIzin(0);
-//                        kd.setJumlahSakit(0);
-//                        kd.setStatusEdom(StatusRecord.UNDONE);
-//                        kd.setStatus(StatusRecord.AKTIF);
-//                        kd.setTahunAkademik(listApprove.getTahunAkademik());
-//                        kd.setStatusKonversi(StatusRecord.AKTIF);
-//                        krsDetailDao.save(kd);
-//
-//                    }else{
-//                        KrsDetail kd = new KrsDetail();
-//                        kd.setKrs(k);
-//                        kd.setMahasiswa(listApprove.getMahasiswa());
-//                        kd.setJadwal(jadwal);
-//                        kd.setMatakuliahKurikulum(listApprove.getMatakuliahKurikulum());
-//                        kd.setNilaiPresensi(BigDecimal.ZERO);
-//                        kd.setNilaiUts(BigDecimal.ZERO);
-//                        kd.setNilaiTugas(BigDecimal.ZERO);
-//                        kd.setFinalisasi("N");
-//                        kd.setNilaiUas(BigDecimal.ZERO);
-//                        kd.setJumlahKehadiran(0);
-//                        kd.setJumlahMangkir(0);
-//                        kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-//                        kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-//                        kd.setJumlahTerlambat(0);
-//                        kd.setJumlahIzin(0);
-//                        kd.setJumlahSakit(0);
-//                        kd.setStatusEdom(StatusRecord.UNDONE);
-//                        kd.setStatus(StatusRecord.AKTIF);
-//                        kd.setTahunAkademik(listApprove.getTahunAkademik());
-//                        kd.setStatusKonversi(StatusRecord.AKTIF);
-//                        krsDetailDao.save(kd);
-//                    }
-//
-//                }
+                    if (k == null) {
 
+                        Krs krs = new Krs();
+                        krs.setTahunAkademik(listApprove.getTahunAkademik());
+                        krs.setTahunAkademikProdi(tahunAkademikProdi);
+                        krs.setProdi(listApprove.getMahasiswa().getIdProdi());
+                        krs.setMahasiswa(listApprove.getMahasiswa());
+                        krs.setNim(listApprove.getMahasiswa().getNim());
+                        krs.setTanggalTransaksi(LocalDateTime.now());
+                        krs.setStatus(StatusRecord.AKTIF);
+                        krsDao.save(krs);
+
+                    }
             }
         }
 

@@ -6,6 +6,7 @@ public interface KrsSpDto {
     String getNamaMatakuliah();
     String getNama();
     String getStatusApprove();
+    String getKode();
     String getSp();
     String getId();
 }
