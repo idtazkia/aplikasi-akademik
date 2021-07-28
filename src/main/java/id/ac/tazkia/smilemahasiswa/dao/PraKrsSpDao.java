@@ -76,7 +76,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
             "inner join prodi as e on d.id_prodi = e.id\n" +
             "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1)a\n" +
-            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah where a.id_matakuliah = ?2 or id=?3 or a.kode_matakuliah=?4 or a.nama_matakuliah like %?5%)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah where a.id_matakuliah = ?2 or id=?3 or a.kode_matakuliah=?4)a\n" +
             "left join " +
             "(select b.id_mahasiswa from pembayaran as a \n" +
             "inner join tagihan as b on a.id_tagihan = b.id \n" +
@@ -85,7 +85,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "where d.kode = '23' and b.lunas = true)b on a.id_mahasiswa = b.id_mahasiswa)a\n" +
             "where a.status_bayar = 'LUNAS' \n" +
             "group by a.id_mahasiswa, a.id_matakuliah ", nativeQuery = true)
-    List<Object[]> listLunasSpPerMatkul(TahunAkademik tahunAkademik, String idMatkul, String id, String kode, String nama);
+    List<Object[]> listLunasSpPerMatkul(TahunAkademik tahunAkademik, String idMatkul, String id, String kode);
 
     @Query(value = "select b.id, c.nama_matakuliah, coalesce(count(a.id_mahasiswa),0) as jumlah from pra_krs_sp as a right join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum=b.id \n" +
             "inner join matakuliah as c on b.id_matakuliah=c.id where b.id=?1", nativeQuery = true)
@@ -135,7 +135,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
             "inner join prodi as e on d.id_prodi = e.id\n" +
             "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1)a\n" +
-            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah where a.id_matakuliah = ?2 or id=?3 or a.kode=?4 or a.nama_matakuliah like %?5%)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah where a.id_matakuliah = ?2 or id=?3 or a.kode=?4)a\n" +
             "left join " +
             "(select b.id_mahasiswa from pembayaran as a \n" +
             "inner join tagihan as b on a.id_tagihan = b.id \n" +
@@ -143,7 +143,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
             "where d.kode = '23' and b.lunas = true)b on a.id_mahasiswa = b.id_mahasiswa " +
             "group by a.id_mahasiswa, a.id_matakuliah ", nativeQuery = true)
-    List<KrsSpDto> cariMatakuliah(TahunAkademik tahunAkademik, String idMatkul, String id, String kode, String nama);
+    List<KrsSpDto> cariMatakuliah(TahunAkademik tahunAkademik, String idMatkul, String id, String kode);
 
     @Modifying
     @Query(value = "update pra_krs_sp set status_approve = 'APPROVED',user_update = ?1 where id in(?2)", nativeQuery = true)

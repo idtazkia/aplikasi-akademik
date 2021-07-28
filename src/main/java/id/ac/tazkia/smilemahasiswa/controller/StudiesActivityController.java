@@ -4551,7 +4551,7 @@ public class StudiesActivityController {
                 MatakuliahKurikulum matkul = matakuliahKurikulumDao.findById(request.getParameter("matkur-"+mk[0])).get();
                 TahunAkademik tahunAkademik = tahunAkademikDao.findById(request.getParameter("tahunAkademik-"+mk[0])).get();
 
-                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString(), mk[2].toString());
+                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString());
                 List<String> listId = new ArrayList<>();
                 for (KrsSpDto pks : listSp){
                     listId.add(pks.getSp());
@@ -4597,7 +4597,7 @@ public class StudiesActivityController {
                 jadwalDosenDao.save(jadwalDosen);
 
 //
-                List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString(), mk[2].toString());
+                List<Object[]> spLunas = praKrsSpDao.listLunasSpPerMatkul(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString());
                 for (Object[] listLunas : spLunas){
                     Mahasiswa mhs = mahasiswaDao.findByNim(listLunas[2].toString());
                     TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
@@ -4689,7 +4689,7 @@ public class StudiesActivityController {
                     tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
                 }
 
-                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString(), mk[2].toString());
+                List<KrsSpDto> listSp = praKrsSpDao.cariMatakuliah(tahunAkademik, mk[1].toString(), mk[0].toString(), mk[6].toString());
                 List<String> listId = new ArrayList<>();
                 for (KrsSpDto pks : listSp){
                    listId.add(pks.getSp());
