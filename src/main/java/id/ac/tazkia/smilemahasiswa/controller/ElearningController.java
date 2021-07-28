@@ -301,8 +301,8 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUts() != null) {
                                             nilaiUts = krsDetail.getNilaiUts();
                                         }
-                                        if (listNilaiUts.getFinalGrade() != null){
-                                            nilaiUts = listNilaiUts.getFinalGrade();
+                                        if (listNilaiUts.getFinalgrade() != null){
+                                            nilaiUts = listNilaiUts.getFinalgrade();
                                         }
                                         if (listNilaiUts.getNilaiAkhir() != null){
                                             nilaiUtsFinal = listNilaiUts.getNilaiAkhir();
@@ -349,8 +349,8 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUas() != null) {
                                             nilaiUas = krsDetail.getNilaiUas();
                                         }
-                                        if (listNilaiUas.getFinalGrade() != null){
-                                            nilaiUas = listNilaiUas.getFinalGrade();
+                                        if (listNilaiUas.getFinalgrade() != null){
+                                            nilaiUas = listNilaiUas.getFinalgrade();
                                         }
                                         if (listNilaiUas.getNilaiAkhir() != null){
                                             nilaiUasFinal = listNilaiUas.getNilaiAkhir();
@@ -385,8 +385,22 @@ public class ElearningController {
         System.out.println("Masih Jalan");
         System.out.println("ta : " + ta);
         System.out.println("prodi : " + prodi);
-        System.out.println("jadwal : " + jadwal);
-        System.out.println("nim : " + nim);
+        if(jadwal != null){
+            System.out.println("jadwal : " + jadwal);
+        }
+        if(nim != null){
+            System.out.println("nim : " + nim);
+        }
+        if(nim == ""){
+            nim = null;
+        }
+        if(nim.equals("")) {
+            nim = null;
+        }
+        if(nim.isEmpty()){
+            nim = null;
+        }
+
 
         if (action.equals("tugas")) {
             if (jadwal != null){
@@ -394,7 +408,7 @@ public class ElearningController {
                 System.out.println("Jadwal : "  + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas() + " - " + jadwal1.getDosen().getKaryawan().getNamaKaryawan());
                 if (nim != null) {
                     System.out.println("Upload Tugas Per Mahasiswa");
-                    List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugasPerMhs(jadwal1.getIdNumberElearning(),nim);
+                    List<MdlGradeGradesDto> daftarNilaiCountTugas = getNilaiTugasPerMhs(jadwal1.getIdNumberElearning(), nim);
                     System.out.println("Mahasiswa : " + nim);
                     if (daftarNilaiCountTugas != null){
                         for (MdlGradeGradesDto nilaiTugas : daftarNilaiCountTugas) {
@@ -552,7 +566,7 @@ public class ElearningController {
                     if (daftarNilaiUts != null) {
                         for (MdlGradeGradesDto getNilaiUts : daftarNilaiUts) {
                             System.out.println("Mahasiswa : " + getNilaiUts.getMahasiswa());
-                            System.out.println("Nilai_UTS : " + getNilaiUts.getFinalGrade());
+                            System.out.println("Nilai_UTS : " + getNilaiUts.getFinalgrade());
                             System.out.println("Nilai_UTS_Akhir : " + getNilaiUts.getNilaiAkhir());
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
                             BigDecimal nilaiUas = BigDecimal.ZERO;
@@ -569,8 +583,8 @@ public class ElearningController {
                                     if (krsDetail.getNilaiUts() != null) {
                                         nilaiUts = krsDetail.getNilaiUts();
                                     }
-                                    if (getNilaiUts.getFinalGrade() != null){
-                                        nilaiUts = getNilaiUts.getFinalGrade();
+                                    if (getNilaiUts.getFinalgrade() != null){
+                                        nilaiUts = getNilaiUts.getFinalgrade();
                                     }
                                     if (getNilaiUts.getNilaiAkhir() != null){
                                         nilaiUtsFinal = getNilaiUts.getNilaiAkhir();
@@ -595,7 +609,7 @@ public class ElearningController {
                     if (daftarNilaiUts != null) {
                         for (MdlGradeGradesDto getNilaiUts : daftarNilaiUts) {
                             System.out.println("Mahasiswa : " + getNilaiUts.getMahasiswa());
-                            System.out.println("Nilai_UTS : " + getNilaiUts.getFinalGrade());
+                            System.out.println("Nilai_UTS : " + getNilaiUts.getFinalgrade());
                             System.out.println("Nilai_UTS_Akhir : " + getNilaiUts.getNilaiAkhir());
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
                             BigDecimal nilaiUas = BigDecimal.ZERO;
@@ -612,8 +626,8 @@ public class ElearningController {
                                     if (krsDetail.getNilaiUts() != null) {
                                         nilaiUts = krsDetail.getNilaiUts();
                                     }
-                                    if (getNilaiUts.getFinalGrade() != null){
-                                        nilaiUts = getNilaiUts.getFinalGrade();
+                                    if (getNilaiUts.getFinalgrade() != null){
+                                        nilaiUts = getNilaiUts.getFinalgrade();
                                     }
                                     if (getNilaiUts.getNilaiAkhir() != null){
                                         nilaiUtsFinal = getNilaiUts.getNilaiAkhir();
@@ -643,7 +657,7 @@ public class ElearningController {
                         if (daftarNilaiUts != null){
                             for(MdlGradeGradesDto listNilaiUts : daftarNilaiUts){
                                 System.out.println("Mahasiswa : " + listNilaiUts.getMahasiswa());
-                                System.out.println("Nilai_UTS : " + listNilaiUts.getFinalGrade());
+                                System.out.println("Nilai_UTS : " + listNilaiUts.getFinalgrade());
                                 System.out.println("Nilai_UTS_Akhir : " + listNilaiUts.getNilaiAkhir());
                                 BigDecimal nilaiTugas = BigDecimal.ZERO;
                                 BigDecimal nilaiUas = BigDecimal.ZERO;
@@ -662,8 +676,8 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUts() != null) {
                                             nilaiUts = krsDetail.getNilaiUts();
                                         }
-                                        if (listNilaiUts.getFinalGrade() != null){
-                                            nilaiUts = listNilaiUts.getFinalGrade();
+                                        if (listNilaiUts.getFinalgrade() != null){
+                                            nilaiUts = listNilaiUts.getFinalgrade();
                                         }
                                         if (listNilaiUts.getNilaiAkhir() != null){
                                             nilaiUtsFinal = listNilaiUts.getNilaiAkhir();
@@ -696,7 +710,7 @@ public class ElearningController {
                     if (daftarNilaiUas != null) {
                         for (MdlGradeGradesDto nilaiUas : daftarNilaiUas) {
                             System.out.println("Mahasiswa : " + nilaiUas.getMahasiswa());
-                            System.out.println("Nilai_UAS : " + nilaiUas.getFinalGrade());
+                            System.out.println("Nilai_UAS : " + nilaiUas.getFinalgrade());
                             System.out.println("Nilai_UAS_Akhir : " + nilaiUas.getNilaiAkhir());
                             BigDecimal nilaiUts = BigDecimal.ZERO;
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
@@ -713,8 +727,8 @@ public class ElearningController {
                                     if (krsDetail.getNilaiUas() != null) {
                                         nilaiUass = krsDetail.getNilaiUas();
                                     }
-                                    if (nilaiUas.getFinalGrade() != null){
-                                        nilaiUass = nilaiUas.getFinalGrade();
+                                    if (nilaiUas.getFinalgrade() != null){
+                                        nilaiUass = nilaiUas.getFinalgrade();
                                     }
                                     if (nilaiUas.getNilaiAkhir() != null){
                                         nilaiUasFinal = nilaiUas.getNilaiAkhir();
@@ -738,7 +752,7 @@ public class ElearningController {
                     if (daftarNilaiUas != null) {
                         for (MdlGradeGradesDto nilaiUas : daftarNilaiUas) {
                             System.out.println("Mahasiswa : " + nilaiUas.getMahasiswa());
-                            System.out.println("Nilai_UAS : " + nilaiUas.getFinalGrade());
+                            System.out.println("Nilai_UAS : " + nilaiUas.getFinalgrade());
                             System.out.println("Nilai_UAS_Akhir : " + nilaiUas.getNilaiAkhir());
                             BigDecimal nilaiUts = BigDecimal.ZERO;
                             BigDecimal nilaiTugas = BigDecimal.ZERO;
@@ -755,8 +769,8 @@ public class ElearningController {
                                     if (krsDetail.getNilaiUas() != null) {
                                         nilaiUass = krsDetail.getNilaiUas();
                                     }
-                                    if (nilaiUas.getFinalGrade() != null){
-                                        nilaiUass = nilaiUas.getFinalGrade();
+                                    if (nilaiUas.getFinalgrade() != null){
+                                        nilaiUass = nilaiUas.getFinalgrade();
                                     }
                                     if (nilaiUas.getNilaiAkhir() != null){
                                         nilaiUasFinal = nilaiUas.getNilaiAkhir();
@@ -786,7 +800,7 @@ public class ElearningController {
                         if (daftarNilaiUas != null){
                             for(MdlGradeGradesDto listNilaiUas : daftarNilaiUas){
                                 System.out.println("Mahasiswa : " + listNilaiUas.getMahasiswa());
-                                System.out.println("Nilai_UAS : " + listNilaiUas.getFinalGrade());
+                                System.out.println("Nilai_UAS : " + listNilaiUas.getFinalgrade());
                                 System.out.println("Nilai_UAS_Akhir : " + listNilaiUas.getNilaiAkhir());
                                 BigDecimal nilaiUts = BigDecimal.ZERO;
                                 BigDecimal nilaiTugas = BigDecimal.ZERO;
@@ -803,8 +817,8 @@ public class ElearningController {
                                         if (krsDetail.getNilaiUas() != null) {
                                             nilaiUas = krsDetail.getNilaiUas();
                                         }
-                                        if (listNilaiUas.getFinalGrade() != null){
-                                            nilaiUas = listNilaiUas.getFinalGrade();
+                                        if (listNilaiUas.getFinalgrade() != null){
+                                            nilaiUas = listNilaiUas.getFinalgrade();
                                         }
                                         if (listNilaiUas.getNilaiAkhir() != null){
                                             nilaiUasFinal = listNilaiUas.getNilaiAkhir();
@@ -922,7 +936,7 @@ public class ElearningController {
                             if(krsDetail.getNilaiUtsFinal() == null){
                                 nilaiUas = krsDetail.getNilaiUasFinal();
                             }
-                            krsDetail.setNilaiUts(getNilaiUts.getFinalGrade());
+                            krsDetail.setNilaiUts(getNilaiUts.getFinalgrade());
                             krsDetail.setNilaiUtsFinal(getNilaiUts.getNilaiAkhir());
                             BigDecimal nilaiAkhir = nilaiTugas.add(nilaiUas).add(getNilaiUts.getNilaiAkhir());
                             GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
@@ -950,7 +964,7 @@ public class ElearningController {
                                 nilaiUas = krsDetail.getNilaiUtsFinal();
                             }
 
-                            krsDetail.setNilaiUts(getNilaiUts.getFinalGrade());
+                            krsDetail.setNilaiUts(getNilaiUts.getFinalgrade());
                             krsDetail.setNilaiUtsFinal(getNilaiUts.getNilaiAkhir());
                             BigDecimal nilaiAkhir = nilaiTugas.add(nilaiUas).add(getNilaiUts.getNilaiAkhir());
                             GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
@@ -981,7 +995,7 @@ public class ElearningController {
                                 nilaiUts = krsDetail.getNilaiUtsFinal();
                             }
 
-                            krsDetail.setNilaiUas(nilaiUas.getFinalGrade());
+                            krsDetail.setNilaiUas(nilaiUas.getFinalgrade());
                             krsDetail.setNilaiUasFinal(nilaiUas.getNilaiAkhir());
                             BigDecimal nilaiAkhir = nilaiTugas.add(nilaiUts).add(nilaiUas.getNilaiAkhir());
                             GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
@@ -1008,7 +1022,7 @@ public class ElearningController {
                                 nilaiUts = krsDetail.getNilaiUtsFinal();
                             }
 
-                            krsDetail.setNilaiUas(nilaiUas.getFinalGrade());
+                            krsDetail.setNilaiUas(nilaiUas.getFinalgrade());
                             krsDetail.setNilaiUasFinal(nilaiUas.getNilaiAkhir());
                             BigDecimal nilaiAkhir = nilaiTugas.add(nilaiUts).add(nilaiUas.getNilaiAkhir());
                             GradeDto gradeDto = gradeDao.cariGradeNilai(nilaiAkhir);
