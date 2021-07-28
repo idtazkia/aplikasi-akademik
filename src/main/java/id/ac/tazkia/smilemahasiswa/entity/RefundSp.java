@@ -35,7 +35,7 @@ public class RefundSp {
     @NotNull
     private String nomorRekening;
 
-    private String namaPemilik;
+    private String namaBank;
 
     @Min(0)
     private BigDecimal jumlah;

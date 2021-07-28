@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface RefundSpDao extends PagingAndSortingRepository<RefundSp, String> {
 
-    Page<RefundSp> findByStatusNotInAndNamaPemilikContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(List<StatusRecord> asList, String pemilik, String nim, String mahasiswa, Pageable page);
+    Page<RefundSp> findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(List<StatusRecord> asList, String bank, String nim, String mahasiswa, Pageable page);
 
     Page<RefundSp> findByStatusNotInOrderByMahasiswaNim(List<StatusRecord> asList, Pageable page);
 

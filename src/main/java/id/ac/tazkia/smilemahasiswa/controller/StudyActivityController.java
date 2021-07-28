@@ -1061,7 +1061,7 @@ public class StudyActivityController {
                 refund.setPembayaran(pembayaran);
                 refund.setPraKrsSp(mk);
                 refund.setNomorRekening(request.getParameter("nomorRekening-"+mk.getMatakuliahKurikulum().getId()));
-                refund.setNamaPemilik(request.getParameter("namaPemilik-"+mk.getMatakuliahKurikulum().getId()));
+                refund.setNamaBank(request.getParameter("namaBank-"+mk.getMatakuliahKurikulum().getId()));
                 refund.setJumlah(new BigDecimal(request.getParameter("jumlah-"+mk.getMatakuliahKurikulum().getId())));
                 refund.setNomorTelepon(request.getParameter("nomorTelepon-"+mk.getMatakuliahKurikulum().getId()));
                 refund.setStatusPengembalian(StatusRecord.UNDONE);

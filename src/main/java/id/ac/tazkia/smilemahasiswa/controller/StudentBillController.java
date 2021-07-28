@@ -1804,7 +1804,7 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaPemilikContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
         }else{
             model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), page));
         }
