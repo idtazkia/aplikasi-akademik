@@ -10,6 +10,9 @@ import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -178,6 +183,61 @@ public class ReportController {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan));
         }
+    }
+
+    @GetMapping("/report/recapitulation/downloadipk")
+    public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
+                              @RequestParam(required = false) String angkatan, HttpServletResponse response) throws IOException {
+
+        List<Object[]> listDownload = krsDetailDao.cariIpk(tahunAkademik,angkatan);
+
+        String[] columns = {"No", "Nim", "Nama", "Prodi", "Tahun Akademik", "SKS Semester", "SKS Total", "IP Semester", "IPK"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List Ipk Angkatan " + angkatan);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+
+        Row headerRow = sheet.createRow(2);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 3;
+        int baris = 1;
+
+        for (Object[] list : listDownload){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[0].toString());
+            row.createCell(2).setCellValue(list[1].toString());
+            row.createCell(3).setCellValue(list[2].toString());
+            row.createCell(4).setCellValue(tahunAkademik.getNamaTahunAkademik());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[7].toString());
+            row.createCell(7).setCellValue(list[6].toString());
+            row.createCell(8).setCellValue(list[8].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=List Ipk Tahun Akademik-"+tahunAkademik.getNamaTahunAkademik()+"-"+"Angkatan " + angkatan+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
     @GetMapping("/report/recapitulation/edom")
