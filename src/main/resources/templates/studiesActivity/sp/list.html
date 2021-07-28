@@ -108,13 +108,12 @@
                                                                     </thead>
                                                                     <tbody>
                                                                     <tr th:each="dataDetail : ${matkulDetail1}">
-                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[1]}">18101040</td>
-                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[2]}">Rafhatullah</td>
-                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[3]}">HES</td>
-                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[4]}"></td>
-                                                                        <td th:if="${dataDetail[0] == data[0]}">
-                                                                            <div th:if="${dataDetail[5] == 1}" th:text="${'LUNAS'}"></div>
-                                                                            <div th:if="${dataDetail[5] == 0}" th:text="${'BELUM LUNAS'}"></div>
+                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[2]}">18101040</td>
+                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[3]}">Rafhatullah</td>
+                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[4]}">HES</td>
+                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[5]}"></td>
+                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}">
+                                                                            <div th:text="${dataDetail[10]}"></div>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -175,7 +174,7 @@
                                         </div>
                                     </form>
                                     <form method="post" th:action="@{/studiesActivity/sp/reject}">
-                                        <div th:if="${data[4] == 'WAITING'}">
+                                        <div th:if="${data[5] == 'WAITING'}">
                                             <td>
                                                 <input type="hidden" th:name="${'matkur-'+data[0]}" class="form-control" th:value="${data[0]}">
                                                 <button type="submit" class="btn btn-danger btn-sm">Reject</button>

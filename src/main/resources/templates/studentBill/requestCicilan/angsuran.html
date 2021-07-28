@@ -128,12 +128,28 @@
                         <div class=" ongoing-hd-wd">
                             <div class="row">
                                 <div class="col-md-4 col-xs-12">
-                                    <div class="form-group" th:if="${jumlahNilai != 0}">
+                                    <div class="form-group" >
                                         <div th:if="${jumlahFile == 0}">
-                                            <h4>Enter the Support Document first</h4>
+                                            <h4>Enter the Support Documents first</h4>
                                         </div>
                                         <div th:if="${jumlahFile != 0}">
-                                            <button type="submit" id="tambah" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add installments <i size="50" class="fa fa-plus-circle"></i></button>
+                                            <form method="post" th:action="@{/studentBill/requestCicilan/cicil}">
+                                                <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                                <div class="form-group">
+                                                    <label >How Many</label>
+                                                    <div th:if="${custom == null}">
+                                                        <input type="number" class="form-control" name="jumlah" required th:value="${jumlah}" max="3">
+                                                    </div>
+                                                    <div th:if="${custom != null}">
+                                                        <input type="number" class="form-control" name="jumlah" required th:value="${jumlah}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" th:if="${custom != null}">
+                                                    <label >Due Date Inteval</label>
+                                                    <input type="number" name="interval" class="form-control" th:value="${interval}" placeholder="Month" max="3">
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Add installments <i size="50" class="fa fa-plus-circle"></i></button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -151,52 +167,11 @@
                         </div>
                     </div>
 
-                    <!-- modal tambah cicilan -->
-
-                    <div class="modal fade" id="myModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                                <form method="post" th:action="@{/studentBill/bill/cicilan(tagihan=${bill.id})}">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h2>Requst Cicilan</h2>
-                                        <div class="row">
-                                            <div class="col-md-12 col-xs-12">
-                                                <div class="form-group">
-                                                    <label >Nilai </label>
-                                                    <input type="text" name="nilaiCicilan" id="nilai" required class="form-control"
-                                                           placeholder="0.00" th:if="${jumlahCicilan < 2}" th:value="${jumlahNilai}">
-                                                    <input type="text" name="nilaiCicilan" th:value="${jumlahNilai}" class="form-control"
-                                                           readonly th:if="${jumlahCicilan == 2}">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label >Tanggal Jatuh Tempo </label>
-                                                    <input readonly type="date" name="tanggalJatuhTempo" required class="form-control"
-                                                           th:value="${tanggal}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="row">
-                                            <div class="col-md-6 col-xs-12 text-left">
-                                                <div th:if="${jumlahNilai == null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 0, 'POINT')}"></div>
-                                                <div th:if="${jumlahNilai != null}" th:text="'Sisa : ' + ${'Rp. ' + #numbers.formatDecimal(jumlahNilai, 0, 'POINT', 0, 'POINT')}"></div>
-                                                <input type="hidden" id="nilai1" th:value="${jumlahNilai}">
-                                                <input type="hidden" id="nilai2" th:value="${bill.nilaiTagihan}">
-                                                <p style="color: red">Maksimal Cicilan 3X</p>
-                                            </div>
-                                            <div class="col-md-6 col-xs-12">
-                                                <div class="messageError"></div>
-                                                <button type="submit" id="submit" class="btn btn-success">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                    <div class="alert alert-danger" th:if="${kurang != null}">
+                        Jumlah nilai cicilan <text th:text="${'Rp. '+#numbers.formatDecimal(detail, 0, 'COMMA', 2, 'POINT')}"></text> dari jumlah tagihan!
+                    </div>
+                    <div class="alert alert-danger" th:if="${lebih != null}">
+                        Jumlah nilai cicilan lebih <text th:text="${'Rp. '+#numbers.formatDecimal(detail, 0, 'COMMA', 2, 'POINT')}"></text> dari jumlah tagihan!
                     </div>
 
                     <!-- modal tambah dokumen -->
@@ -284,15 +259,26 @@
                                 <div class="modal-body">
                                     <div class="">
                                         <div class="basic-tb-hd">
-                                            <h2>Daftar Berkas</h2>
+                                            <div class="col-md-6">
+                                                <h2>Daftar Berkas</h2>
+                                            </div>
+                                            <div th:if="${jumlahFile != 0}" class="col-md-6 text-right">
+                                                <form method="post" th:action="@{/studentBill/dokumen/delete(tagihan = ${bill.id})}">
+                                                    <div class="center ">
+                                                        <button type="submit" class="btn btn-danger ">
+                                                            <i class="fa fa-trash"></i> Delete File
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
+                                        <br><br><br>
                                         <div class="bsc-tbl-st">
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Type</th>
                                                     <th>Document</th>
-                                                    <th>Action</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
@@ -304,15 +290,6 @@
                                                                 <small>Lihat Berkas&nbsp;</small>
                                                             </button>
                                                         </a>
-                                                    </td>
-                                                    <td>
-                                                        <form method="post" th:action="@{/studentBill/dokumen/delete(document = ${data.id})}">
-                                                            <div class="center ">
-                                                                <button type="submit" class="btn btn-danger ">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </form>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -328,7 +305,53 @@
                         </div>
                     </div>
 
-                    <div class="skill-content-3 ongoing-tsk">
+                    <div th:if="${message == null}" class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="basic-tb-hd">
+                                <h2>Installment Request List</h2>
+                            </div>
+                            <div class="bsc-tbl-st">
+                                <form method="post" th:action="@{/studentBill/cicilan/ajukan}">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Amount</th>
+                                            <th>Due Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        <tr th:each="data, row : ${listCicilan}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td width="40%">
+                                                <input type="text" th:name="${'nilaiCicilan-'+data.id+data.tanggalJatuhTempo}" class="form-control" th:value="${data.nilaiCicilan}">
+                                            </td>
+                                            <td th:text="${#temporals.format(data.tanggalJatuhTempo, 'dd - MMM - yyyy')}"></td>
+                                            <td >
+                                                <a  class="btn btn-primary btn-sm"
+                                                    th:if="${data.statusCicilan.EDITED} == ${data.statusCicilan}"
+                                                    th:text="${data.statusCicilan}">
+                                                </a>
+                                                <a  class="btn btn-info btn-sm"
+                                                    th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
+                                                    th:text="${data.statusCicilan}">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="text-center">
+                                        <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                        <input type="hidden" name="jumlah" th:value="${jumlah}">
+                                        <div th:if="${custom != null}">
+                                            <input type="hidden" name="interval" th:value="${interval}">
+                                        </div>
+                                        <div class="messageError"></div>
+                                        <button type="submit" id="submit" class="btn btn-success">Apply <i size="50" class="fa fa-plus-circle"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${adaCicilan != null && message != null}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="basic-tb-hd">
                                 <h2>Installment Request List</h2>
@@ -337,81 +360,30 @@
                                 <table class="table table-striped">
                                     <tr>
                                         <th>No</th>
-                                        <th>Due Date</th>
                                         <th>Amount</th>
+                                        <th>Due Date</th>
                                         <th>Status</th>
-                                        <th th:if="${message != null}">Cicilan</th>
-                                        <th th:if="${message == null}">Action</th>
                                     </tr>
-                                    <tr th:each="data, row : ${request}">
+                                    <tr th:each="data, row : ${adaCicilan}">
                                         <td th:text="${(row.index + 1)}"></td>
-                                        <td th:text="${data.tanggalJatuhTempo}"></td>
-                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td width="40%" th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="${#temporals.format(data.tanggalJatuhTempo, 'dd - MMM - yyyy')}"></td>
                                         <td >
                                             <a  class="btn btn-primary btn-sm"
-                                                th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
-                                                th:text="${data.statusApprove}">
+                                                th:if="${data.statusCicilan.EDITED} == ${data.statusCicilan}"
+                                                th:text="${data.statusCicilan}">
                                             </a>
-                                            <a  class="btn btn-success btn-sm"
-                                                th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
-                                                th:text="${data.statusApprove}">
-                                            </a>
-                                        </td>
-                                        <td th:if="${message != null}">
-                                            <a  class="btn btn-primary btn-sm"
+                                            <a  class="btn btn-info btn-sm"
                                                 th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
                                                 th:text="${data.statusCicilan}">
                                             </a>
-                                            <a  class="btn btn-warning btn-sm"
-                                                th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
-                                                th:text="${data.statusCicilan}">
-                                            </a>
-                                            <a  class="btn btn-success btn-sm"
-                                                th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
-                                                th:text="${data.statusCicilan}">
-                                            </a>
-                                        </td>
-                                        <td th:if="${message == null}">
-                                            <button type="button" class="btn btn-danger " data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-
-                                            <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                                <div class="modal-dialog " role="modal">
-                                                    <div class="modal-content ">
-
-                                                        <div class="modal-header">
-                                                            <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-
-                                                        <div class="modal-body">
-
-                                                            <div class="py-3 text-center">
-                                                                <i class="far fa-trash-alt fa-3x"></i>
-                                                                <h4 class="heading mt-4">Are you sure ?</h4>
-                                                                <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                            </div>
-
-                                                        </div>
-
-                                                        <form method="post" th:action="@{/studentBill/requestCicilan/delete(cicilan = ${data.id})}">
-                                                            <div class="modal-footer center">
-                                                                <button type="submit" class="btn btn-danger ">Delete</button>
-                                                            </div>
-                                                        </form>
-
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -434,7 +406,6 @@
                 $('#submit').hide();
             }
         });
-
         $('#tambah').click(function (){
             $('#submit').show();
             $('.messageError').html('');

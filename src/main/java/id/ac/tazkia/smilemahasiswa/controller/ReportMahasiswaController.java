@@ -21,9 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -120,7 +123,7 @@ public class ReportMahasiswaController {
 
 
     @GetMapping("/report/khs")
-    public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik){
+    public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik) throws ParseException {
 
         User user = currentUserService.currentUser(authentication);
 
@@ -148,7 +151,10 @@ public class ReportMahasiswaController {
                 }
                 return "report/khs";
             }else {
-                if (tahunAkademik.getTanggalSelesaiNilai().compareTo(LocalDate.now()) > 0){
+                SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateNow = sdformat.parse(LocalDate.now().toString());
+                Date scoreEnd = sdformat.parse(tahunAkademik.getTanggalSelesaiNilai().toString());
+                if (dateNow.compareTo(scoreEnd) > 0){
                     return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
                 }else {
                     model.addAttribute("hidden", "Data KHS masih terkunci");

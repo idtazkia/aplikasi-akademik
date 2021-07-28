@@ -30,7 +30,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
 
     @Query(value = "select t.id,m.nama,jt.nama as tagihan, rc.tanggal_pengajuan as Pengajuan, count(rc.id),rc.status_approve from tagihan as t inner join mahasiswa as m on t.id_mahasiswa = m.id \n" +
             "inner join nilai_jenis_tagihan as nt on nt.id = t.id_nilai_jenis_tagihan inner join jenis_tagihan as jt on nt.id_jenis_tagihan = jt.id inner join \n" +
-            "request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve order by rc.tanggal_pengajuan desc", nativeQuery = true,
+            "request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' and rc.status_cicilan='CICILAN' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve order by rc.tanggal_pengajuan desc", nativeQuery = true,
             countQuery = "select count(t.id) from tagihan as t inner join mahasiswa as m " +
                     "on t.id_mahasiswa = m.id inner join nilai_jenis_tagihan as nt on nt.id = t.id_nilai_jenis_tagihan inner join jenis_tagihan as jt " +
                     "on nt.id_jenis_tagihan = jt.id inner join request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve;")
@@ -62,5 +62,15 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
     List<RequestCicilan> findByTagihanAndStatusAndStatusCicilanNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusCicilan> asList);
 
     List<RequestCicilan> findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord statusRecord, StatusCicilan statusCicilan, LocalDate tanggal);
+
+    List<RequestCicilan> findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord statusRecord, StatusCicilan statusCicilan, Tagihan tagihan);
+
+    List<RequestCicilan> findByStatusAndTagihanOrderByTanggalJatuhTempo(StatusRecord statusRecord, Tagihan tagihan);
+
+    @Query(value = "select floor(?1 / ?2)", nativeQuery = true)
+    BigDecimal hitungCicilan(BigDecimal total, int jumlah);
+
+    @Query(value = "select sum(nilai_cicilan) as total from request_cicilan where id_tagihan=?1 and status_cicilan='EDITED' and status='AKTIF'", nativeQuery = true)
+    BigDecimal sumTotalCicilan(String idTagihan);
 
 }

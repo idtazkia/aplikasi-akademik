@@ -116,7 +116,9 @@ public class MahasiswaController {
         return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
     @GetMapping("/mahasiswa/list")
-    public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search){
+    public void daftarMahasiswa(Model model, @PageableDefault(size = 10) Pageable page, String search,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        model.addAttribute("user", user);
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
             model.addAttribute("list", mahasiswaDao.findByStatusNotInAndNamaContainingIgnoreCaseOrNimOrderByNim(Arrays.asList(StatusRecord.HAPUS), search,search, page));
@@ -159,9 +161,9 @@ public class MahasiswaController {
         model.addAttribute("konsentrasi",konsentrasiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
-        model.addAttribute("ayah", ayahDao.findById(mahasiswa.getId()));
-        model.addAttribute("ibu", ibuDao.findById(mahasiswa.getId()));
-        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
+        model.addAttribute("ayah", ayahDao.findById(mahasiswa.getAyah().getId()));
+        model.addAttribute("ibu", ibuDao.findById(mahasiswa.getIbu().getId()));
+//        model.addAttribute("wali", waliDao.findById(mahasiswa.getId()));
 
         MahasiswaDetailKeluarga mahasiswaDetailKeluarga = mahasiswaDetailKeluargaDao.findByMahasiswa(mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();

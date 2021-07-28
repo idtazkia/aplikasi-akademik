@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
                     <div class="col-xl-12 mb-5 mb-xl-0">
                         <div class="card shadow">
                             <div class="card-header">
@@ -137,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_DOSEN')">
+                <div class="row" style="margin-top: 20px;" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
                     <div class="col-md-12 col-xs-12">
                         <div class="card shadow">
                             <div class="card-header">

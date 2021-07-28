@@ -113,9 +113,9 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByStatusAndTahunAkademik(StatusRecord statusRecord, TahunAkademik tahunaAkademik);
 
-    Jadwal findByTahunAkademikAndProdiAndKelasAndTahunAkademikProdiAndMatakuliahKurikulumAndStatus(TahunAkademik tahunAkademik, Prodi prodi,
-                                                                                          Kelas kelas, TahunAkademikProdi tahunAkademikProdi,
-                                                                                          MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
+//    Jadwal findByTahunAkademikAndProdiAndKelasAndTahunAkademikProdiAndMatakuliahKurikulumAndStatus(TahunAkademik tahunAkademik, Prodi prodi,
+//                                                                                          Kelas kelas, TahunAkademikProdi tahunAkademikProdi,
+//                                                                                          MatakuliahKurikulum matakuliahKurikulum, StatusRecord statusRecord);
 
 
     @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2 \n" +

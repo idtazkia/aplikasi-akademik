@@ -67,6 +67,9 @@ public class ReportController {
     @Autowired
     private EdomQuestionDao edomQuestionDao;
 
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
@@ -257,5 +260,32 @@ public class ReportController {
         cutiDao.save(cuti);
 
         return "redirect:/report/cuti";
+    }
+
+    @GetMapping("/report/recapitulation/nilai")
+    public void nilai(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+        model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
+    }
+
+    @GetMapping("/report/recapitulation/attendance")
+    public void attendance(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+
+        model.addAttribute("jadwal", jadwal);
+
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
+        List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+
+        model.addAttribute("attendance", hasil);
+
+
     }
 }

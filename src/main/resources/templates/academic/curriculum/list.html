@@ -99,7 +99,9 @@
                                     <td th:text="${item.tahunKurikulum}">2020</td>
                                     <td th:if="${item.status == item.status.AKTIF}"></td>
                                     <td th:if="${item.status == item.status.NONAKTIF}">
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
+                                        <form th:action="@{/academic/curriculum/aktif(kurikulum = ${item.id})}" method="post">
+                                            <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
+                                        </form>
                                     </td>
                                     <td>
                                         <a th:href="@{/academic/curriculum/form (id = ${item.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>

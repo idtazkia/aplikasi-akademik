@@ -82,7 +82,7 @@
                             <tr th:each="data,row : ${list}">
                                 <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>
                                 <td th:text="${data.nim}">1519001</td>
-                                <td>
+                                <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                     <a class="btn btn-success btn-outline-success btn-sm"
                                        th:if="${data.status.AKTIF} == ${data.status}"
                                        th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
@@ -93,13 +93,24 @@
                                        th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">
                                     </a>
                                 </td>
+                                <td sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_STAFF')">
+                                    <a class="btn btn-success btn-outline-success btn-sm"
+                                       th:if="${data.status.AKTIF} == ${data.status}"
+                                       th:text="${data.nama}" >
+                                    </a>
+
+                                    <a class="btn btn-danger btn-outline-danger btn-sm"
+                                       th:if="${data.status.NONAKTIF} == ${data.status}"
+                                       th:text="${data.nama}">
+                                    </a>
+                                </td>
                                 <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>
                                 <td th:if="${data.statusAktif == 'K'}"><span class="badge badge-danger badge-md">NONAKTIF</span></td>
                                 <td th:if="${data.statusAktif == 'L'}"><span class="badge badge-info badge-md">LULUS</span></td>
                                 <td th:if="${data.statusAktif == 'CUTI'}"><span class="badge badge-warning badge-md">CUTI</span></td>
                                 <td th:if="${data.statusAktif == 'AKTIF'}"><span class="badge badge-success badge-md">AKTIF</span></td>
                                 <td align="center">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                         Select to change student status
                                     </button>
 

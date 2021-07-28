@@ -65,7 +65,7 @@
                                 <th>Nim</th>
                                 <th>Nama</th>
                                 <th>Nomor Rekening</th>
-                                <th>Nama Pemilik</th>
+                                <th>Nama bank</th>
                                 <th>Jumlah</th>
                                 <th>Telepon Seluler</th>
                                 <th>Download Bukti Pembayaran</th>
@@ -79,7 +79,7 @@
                                 <td th:text="${data.mahasiswa.nim}">PATRICK STAR</td>
                                 <td th:text="${data.mahasiswa.nama}"></td>
                                 <td th:text="${data.nomorRekening}"></td>
-                                <td th:text="${data.namaPemilik}"></td>
+                                <td th:text="${data.namaBank}"></td>
                                 <td th:text="${'Rp. '+#numbers.formatDecimal(data.jumlah, 0, 'POINT', 2, 'COMMA')}"></td>
                                 <td th:text="${data.nomorTelepon}"></td>
                                 <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.pembayaran.id})}" class="fas fa-print text-lg"></a></td>

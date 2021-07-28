@@ -227,15 +227,26 @@
                                 <div class="modal-body">
                                     <div class="">
                                         <div class="basic-tb-hd">
-                                            <h2>Daftar Berkas</h2>
+                                            <div class="col-md-6 ">
+                                                <h2>Daftar Berkas</h2>
+                                            </div>
+                                            <div th:if="${jumlahFile != 0}" class="col-md-6 text-right">
+                                                <form method="post" th:action="@{/studentBill/dokumen/deletep(tagihan = ${bill.id})}">
+                                                    <div class="center ">
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fa fa-trash"></i> Delete File
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
+                                        <br><br><br>
                                         <div class="bsc-tbl-st">
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Jenis</th>
                                                     <th>Berkas</th>
-                                                    <th>Action</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
@@ -247,15 +258,6 @@
                                                                 <small>Lihat Berkas&nbsp;</small>
                                                             </button>
                                                         </a>
-                                                    </td>
-                                                    <td>
-                                                        <form method="post" th:action="@{/studentBill/dokumen/deletep(document = ${data.id})}">
-                                                            <div class="center ">
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </form>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -271,7 +273,7 @@
                         </div>
                     </div>
 
-                    <div class="skill-content-3 ongoing-tsk">
+                    <div th:if="${jumlahFile != 0}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="bsc-tbl-st">
                                 <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
@@ -285,6 +287,13 @@
                                         <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${jumlahFile == 0}" class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="bsc-tbl-st">
+                                <h4 class="text-center">Enter the Support Documents First</h4>
                             </div>
                         </div>
                     </div>

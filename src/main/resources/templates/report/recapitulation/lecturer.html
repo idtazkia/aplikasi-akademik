@@ -104,7 +104,18 @@
                                         <td th:text="${jd.jamSelesai}">455-981-221</td>
                                         <td th:text="${jd.namaRuangan}">455-981-221</td>
                                         <td>
-                                            <div class="dropdown">
+
+                                            <div class="dropdown" sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Lihat
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                    <a target="_blank" class="dropdown-item" th:href="@{/report/recapitulation/attendance(jadwal = ${jd.idJadwal})}">Attendance</a>
+                                                    <a target="_blank" class="dropdown-item" th:href="@{/report/recapitulation/nilai(jadwal = ${jd.idJadwal})}">Lihat Nilai</a>
+                                                </div>
+                                            </div>
+
+                                            <div class="dropdown" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
                                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     Download
                                                 </button>

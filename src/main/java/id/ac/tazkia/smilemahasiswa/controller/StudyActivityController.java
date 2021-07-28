@@ -1053,7 +1053,7 @@ public class StudyActivityController {
         for (PraKrsSp mk : listReject ){
             String pilihan = request.getParameter("matkur-"+mk.getMatakuliahKurikulum().getId());
             if (pilihan != null && !pilihan.trim().isEmpty()) {
-                Tagihan tagihan = tagihanDao.findByMahasiswaAndTahunAkademikAndNilaiJenisTagihanJenisTagihanKodeAndLunasAndStatus(mk.getMahasiswa(), mk.getTahunAkademik(), "23", true, StatusRecord.AKTIF);
+                Tagihan tagihan = tagihanDao.tagihanSp(mk.getMahasiswa().getId(), mk.getTahunAkademik().getId());
                 Pembayaran pembayaran = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
                 RefundSp refund = new RefundSp();
                 refund.setMahasiswa(mk.getMahasiswa());
@@ -1061,7 +1061,7 @@ public class StudyActivityController {
                 refund.setPembayaran(pembayaran);
                 refund.setPraKrsSp(mk);
                 refund.setNomorRekening(request.getParameter("nomorRekening-"+mk.getMatakuliahKurikulum().getId()));
-                refund.setNamaPemilik(request.getParameter("namaPemilik-"+mk.getMatakuliahKurikulum().getId()));
+                refund.setNamaBank(request.getParameter("namaBank-"+mk.getMatakuliahKurikulum().getId()));
                 refund.setJumlah(new BigDecimal(request.getParameter("jumlah-"+mk.getMatakuliahKurikulum().getId())));
                 refund.setNomorTelepon(request.getParameter("nomorTelepon-"+mk.getMatakuliahKurikulum().getId()));
                 refund.setStatusPengembalian(StatusRecord.UNDONE);
