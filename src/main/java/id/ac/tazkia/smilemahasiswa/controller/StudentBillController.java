@@ -1804,18 +1804,21 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
         }else{
-            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByMahasiswaNim(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), page));
         }
 
     }
 
     @PostMapping("/studentBill/refund/done")
-    private String doneRefund(@RequestParam(required = false) String refund){
+    private String doneRefund(@RequestParam(required = false) String refund, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
 
         RefundSp refSp = refundSpDao.findById(refund).get();
         refSp.setStatusPengembalian(StatusRecord.DONE);
+        refSp.setUserUpdate(karyawan);
         refundSpDao.save(refSp);
 
         return "redirect:list";

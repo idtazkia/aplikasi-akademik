@@ -68,6 +68,7 @@
                                 <th>Nama bank</th>
                                 <th>Jumlah</th>
                                 <th>Telepon Seluler</th>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Download Bukti Pembayaran</th>
                                 <th>Status</th>
                                 <th></th>
@@ -82,6 +83,7 @@
                                 <td th:text="${data.namaBank}"></td>
                                 <td th:text="${'Rp. '+#numbers.formatDecimal(data.jumlah, 0, 'POINT', 2, 'COMMA')}"></td>
                                 <td th:text="${data.nomorTelepon}"></td>
+                                <td th:text="${#temporals.format(data.timeUpdate, 'dd - MMM - yyyy HH:mm')}"></td>
                                 <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.pembayaran.id})}" class="fas fa-print text-lg"></a></td>
                                 <td>
                                     <a  class="btn btn-danger btn-sm" href="#!"

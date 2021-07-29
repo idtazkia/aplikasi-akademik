@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -47,5 +49,12 @@ public class RefundSp {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord statusPengembalian = StatusRecord.DONE;
+
+    @ManyToOne
+    @JoinColumn(name = "user_update")
+    private Karyawan userUpdate;
+
+    @JoinColumn(name = "time_update")
+    private LocalDateTime timeUpdate = LocalDateTime.now();
 
 }
