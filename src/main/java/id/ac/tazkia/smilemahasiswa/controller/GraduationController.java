@@ -191,61 +191,50 @@ public class GraduationController {
     public String conceptNote(Model model, Authentication authentication, @RequestParam(required = false) String id) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
         model.addAttribute("mahasiswa", mahasiswa);
 
-        Note validasi = noteDao.cariKonsepNot(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), mahasiswa, StatusApprove.REJECTED);
+        Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
+        Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
 
-        List<BigDecimal> magang = krsDetailDao.nilaiMagang(StatusRecord.AKTIF, mahasiswa, "Magang");
-        List<BigDecimal> metolit = krsDetailDao.nilaiMetolit(StatusRecord.AKTIF, mahasiswa, "METOLIT");
-
-//
-
-
-        if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-            if (magang != null || !magang.isEmpty()) {
-                if (metolit == null || metolit.isEmpty()) {
-                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
+                if (magang == null && metolit == null){
                     return "redirect:alert";
+                }else {
+
+                    model.addAttribute("note", new Note());
+                    return "graduation/form";
+
                 }
+            } else {
 
-            }
-
-            if (magang == null || magang.isEmpty()) {
-                LOGGER.info("nilai magang kosong atau kurang dari 60");
-                return "redirect:alert";
-            }
-
-            if (validasi != null) {
-                return "redirect:register";
-            }
-            model.addAttribute("note", new Note());
-        } else {
-            if (magang != null || magang.isEmpty()) {
-                for (BigDecimal nilaiMagang : magang) {
-                    System.out.println(nilaiMagang);
-                }
-
-            }
-
-            if (magang != null || !magang.isEmpty()) {
-                if (metolit == null || metolit.isEmpty()) {
-                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
-                    return "redirect:alert";
-                }
                 model.addAttribute("note", noteDao.findById(id).get());
 
-            }
+                return "graduation/form";
 
-            if (magang == null || magang.isEmpty()) {
-                LOGGER.info("nilai magang kosong atau kurang dari 60");
-                return "redirect:alert";
             }
+        }
 
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
+            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
+                if (metolit == null){
+                    return "redirect:alert";
+                }else {
+
+                    model.addAttribute("note", new Note());
+                    return "graduation/form";
+
+                }
+            } else {
+
+                model.addAttribute("note", noteDao.findById(id).get());
+
+                return "graduation/form";
+
+            }
         }
 
         return "graduation/form";
-
     }
 
     @PostMapping("/graduation/form")
