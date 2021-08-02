@@ -155,7 +155,7 @@
                                                         <div class="table-responsive">
                                                             <table class="table align-items-center table-flush">
                                                                 <thead class="thead-light">
-                                                                <tr class="text-right">
+                                                                <tr class="text-center">
                                                                     <th>Tahun Akademik</th>
                                                                     <th>Bipot</th>
                                                                     <th>Total Biaya</th>
@@ -166,7 +166,7 @@
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                <tr th:each="data, row : ${sisaTagihan}">
+                                                                <tr class="text-center" th:each="data, row : ${sisaTagihan}">
                                                                     <td th:text="${data.getNamaTahun()}"></td>
                                                                     <td></td>
                                                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.getTagihan(), 0, 'POINT', 2, 'COMMA')}"></td>

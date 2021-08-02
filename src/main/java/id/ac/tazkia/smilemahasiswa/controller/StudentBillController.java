@@ -1296,7 +1296,7 @@ public class StudentBillController {
 //        }else{
 //            model.addAttribute("cicilan", "cicilan");
 //        }
-        EnableFiture cicilan = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.CICILAN, true, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        EnableFiture cicilan = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.CICILAN, true, tagihan.getTahunAkademik());
         List<RequestCicilan> cicilanAda = requestCicilanDao.findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.CICILAN, tagihan);
         model.addAttribute("adaCicilan", cicilanAda);
         model.addAttribute("custom", cicilan);
