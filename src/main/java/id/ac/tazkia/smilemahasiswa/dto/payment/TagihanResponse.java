@@ -14,6 +14,7 @@ public class TagihanResponse {
     private String debitur;
     private String jenisTagihan;
     private String kodeBiaya;
+    private String tahunAkademik;
     private BigDecimal nilaiTagihan;
     private LocalDate tanggalTagihan;
     private LocalDate tanggalJatuhTempo;

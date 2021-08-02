@@ -129,27 +129,14 @@ public class KafkaListenerService {
     private void updateTagihan(TagihanResponse tagihanResponse){
         log.info("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
+        TahunAkademik tahun = tahunAkademikDao.findById(tagihanResponse.getTahunAkademik()).get();
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
-                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
                         mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-        if (nilaiJenisTagihan == null) {
-            TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            NilaiJenisTagihan nilaiTagihan = nilaiJenisTagihanDao.
-                    findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
-                            mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-            Tagihan t =  tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun, mahasiswa, nilaiTagihan, false);
-            t.setNomor(tagihanResponse.getNomorTagihan());
-            t.setKeterangan(tagihanResponse.getKeterangan());
-
-            tagihanDao.save(t);
-        }else{
-            Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
-            tagihan.setNomor(tagihanResponse.getNomorTagihan());
-            tagihan.setKeterangan(tagihanResponse.getKeterangan());
-
-            tagihanDao.save(tagihan);
-        }
+        Tagihan t =  tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun, mahasiswa, nilaiJenisTagihan, false);
+        t.setNomor(tagihanResponse.getNomorTagihan());
+        t.setKeterangan(tagihanResponse.getKeterangan());
+        tagihanDao.save(t);
 
     }
 
