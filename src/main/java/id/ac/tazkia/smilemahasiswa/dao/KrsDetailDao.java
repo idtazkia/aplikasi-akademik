@@ -629,5 +629,20 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     KrsDetail findByTahunAkademikAndJadwalProdiAndJadwalAndMahasiswaAndStatus(TahunAkademik tahunAkademik, Prodi prodi, Jadwal jadwal, Mahasiswa mahasiswa,StatusRecord statusRecord);
 
+    @Query(value = "select kd.id,kd.id_krs,kd.id_mahasiswa,kd.id_jadwal,kd.id_matakuliah_kurikulum,kd.nilai_presensi,kd.nilai_tugas,kd.nilai_uts,kd.nilai_uas,\n" +
+            "kd.finalisasi,kd.status,kd.nilai_akhir,kd.bobot,kd.grade,kd.jumlah_kehadiran,kd.jumlah_terlambat,kd.jumlah_mangkir,kd.jumlah_izin,\n" +
+            "kd.jumlah_sakit,kd.created_by,kd.last_modified_by,kd.created_time,kd.last_modified_time,kd.kode_uts,kd.kode_uas,kd.e1,kd.e2,kd.e3,kd.e4,kd.e5,\n" +
+            "kd.status_edom,kd.id_tahun_akademik,kd.nilai_uts_final,kd.nilai_uas_final,kd.ket,kd.status_konversi,kd.nilai_sds,kd.nilai_lama,jd.id_number_elearning\n" +
+            "from krs_detail as kd\n" +
+            "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
+            "where jd.id_number_elearning = ?1 and kd.id_mahasiswa = ?2\n" +
+            "and kd.id_krs = ?3 and kd.id_tahun_akademik = ?4 and kd.status = 'AKTIF'\n", nativeQuery = true)
+    KrsDetail getKrsDetail4(String jadwal, Mahasiswa mahasiswa, Krs krs,TahunAkademik tahunAkademik, StatusRecord statusRecord);
+
+    @Query(value = "select count(*) from krs_detail as kd\n" +
+            "inner join jadwal as jd on kd.id_jadwal = jd.id\n" +
+            "where jd.id_number_elearning = ?1 and kd.id_mahasiswa = ?2\n" +
+            "and kd.id_tahun_akademik = ?3 and kd.status = 'AKTIF'", nativeQuery = true)
+    Long countKrsDetail2(String jadwal, Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
 }
