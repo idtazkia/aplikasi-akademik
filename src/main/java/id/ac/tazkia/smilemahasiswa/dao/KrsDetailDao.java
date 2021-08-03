@@ -645,4 +645,6 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "and kd.id_tahun_akademik = ?3 and kd.status = 'AKTIF'", nativeQuery = true)
     Long countKrsDetail2(String jadwal, Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
+    List<KrsDetail> findByStatusAndJadwalId(StatusRecord statusRecord, String id);
+
 }

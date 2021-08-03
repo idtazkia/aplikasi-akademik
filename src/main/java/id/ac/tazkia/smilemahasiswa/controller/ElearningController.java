@@ -213,6 +213,8 @@ public class ElearningController {
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
     }
 
+
+    //prodi
     @PostMapping("/elearning/importNilaiProdi")
     public String inputFormProdi(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
                             @RequestParam(value="action", required=true) String action){
@@ -369,6 +371,20 @@ public class ElearningController {
                         }
                     }
                 }
+        }
+
+        //SDS
+        if (action.equals("sds")) {
+            System.out.println("Masuk SDS Jalan");
+            List<String> listSds = jadwalDao.findSds1(ta,prodi);
+            if (listSds != null) {
+                for (String listSds1 : listSds) {
+                    List<KrsDetail> krsDetail1 = krsDetailDao.findByStatusAndJadwalId(StatusRecord.AKTIF,listSds1);
+
+
+
+                }
+            }
         }
 
         System.out.println("Impor Data Finished");
