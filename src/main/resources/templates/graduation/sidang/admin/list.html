@@ -97,6 +97,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">NIM</th>
                                         <th scope="col">Nama</th>
+                                        <th scope="col">Pembimbing</th>
                                         <th scope="col">Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -106,6 +107,7 @@
                                         <td>1</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
+                                        <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu jadwal sidang</button>
                                             <button class="btn btn-primary btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF}">Menunggu Penilaian & Publish Nilai</button>
