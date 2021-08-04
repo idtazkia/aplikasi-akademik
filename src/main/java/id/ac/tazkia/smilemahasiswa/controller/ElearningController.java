@@ -4,6 +4,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.GradeDto;
 import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -68,6 +69,9 @@ public class ElearningController {
 
     @Autowired
     private GradeDao gradeDao;
+
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
 
 
     @Autowired
@@ -376,13 +380,21 @@ public class ElearningController {
         //SDS
         if (action.equals("sds")) {
             System.out.println("Masuk SDS Jalan");
+            //Cari Jadwal per tahun akademik dan per prodi yang ada potongan SDS nya
             List<String> listSds = jadwalDao.findSds1(ta,prodi);
             if (listSds != null) {
+                //Looping jadwal
                 for (String listSds1 : listSds) {
+                    //Cari krs Mahasiswa per jadwal
                     List<KrsDetail> krsDetail1 = krsDetailDao.findByStatusAndJadwalId(StatusRecord.AKTIF,listSds1);
-
-
-
+                    if(krsDetail1 != null) {
+                        //looping krs mahasiswa per jadwal
+                        for (KrsDetail krsDetail : krsDetail1) {
+                            NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademik1.getKodeTahunAkademik());
+                            krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
+                            krsDetailDao.updateGradeNilai(krsDetail.getId());
+                        }
+                    }
                 }
             }
         }

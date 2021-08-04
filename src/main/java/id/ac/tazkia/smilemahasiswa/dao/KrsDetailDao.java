@@ -7,11 +7,13 @@ import id.ac.tazkia.smilemahasiswa.dto.schedule.StudentDto;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -646,5 +648,15 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     Long countKrsDetail2(String jadwal, Mahasiswa mahasiswa, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
     List<KrsDetail> findByStatusAndJadwalId(StatusRecord statusRecord, String id);
+
+
+    @Query(value = "update krs_detail set nilai_akhir = (nilai_tugas + nilai_uts_final + nilai_uas_final) - (10.00 - ?1), nilai_sds = ?1 where id = ?2", nativeQuery = true)
+    Update updateNilaiSds(BigDecimal nilaiSDS, String id);
+
+    @Query(value = "UPDATE krs_detail k, grade p, jadwal j\n" +
+            "SET k.grade = p.nama, k.bobot = p.bobot\n" +
+            "WHERE k.id_jadwal = j.id and k.nilai_akhir <= p.atas \n" +
+            "AND k.nilai_akhir >= p.bawah AND k.status = 'AKTIF' AND k.id = ?1", nativeQuery = true)
+    Update updateGradeNilai(String id);
 
 }
