@@ -385,14 +385,18 @@ public class ElearningController {
             if (listSds != null) {
                 //Looping jadwal
                 for (String listSds1 : listSds) {
+                    System.out.println("Jadwal : " + listSds1);
                     //Cari krs Mahasiswa per jadwal
                     List<KrsDetail> krsDetail1 = krsDetailDao.findByStatusAndJadwalId(StatusRecord.AKTIF,listSds1);
                     if(krsDetail1 != null) {
                         //looping krs mahasiswa per jadwal
                         for (KrsDetail krsDetail : krsDetail1) {
+                            System.out.println("NIM : " + krsDetail.getMahasiswa().getNim());
+                            System.out.println("Mahasiswa : " + krsDetail.getMahasiswa().getNama());
                             NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademik1.getKodeTahunAkademik());
                             krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
                             krsDetailDao.updateGradeNilai(krsDetail.getId());
+                            System.out.println("DONE");
                         }
                     }
                 }
