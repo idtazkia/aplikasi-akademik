@@ -395,9 +395,15 @@ public class ElearningController {
                             System.out.println("Mahasiswa : " + krsDetail.getMahasiswa().getNama());
                             NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademik1.getKodeTahunAkademik());
                             if(nilaiAbsenSdsDto != null) {
-                                System.out.println("Nilai SDS : " + nilaiAbsenSdsDto.getNilai());
-                                krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
-                                krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                if(nilaiAbsenSdsDto.getNilai() == null) {
+                                    System.out.println("Nilai SDS : 0.00");
+                                    krsDetailDao.updateNilaiSds(BigDecimal.ZERO, krsDetail.getId());
+                                    krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                }else{
+                                    System.out.println("Nilai SDS : " + nilaiAbsenSdsDto.getNilai());
+                                    krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
+                                    krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                }
                             }else{
                                 System.out.println("Nilai SDS : 0.00");
                                 krsDetailDao.updateNilaiSds(BigDecimal.ZERO, krsDetail.getId());
