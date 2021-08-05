@@ -650,7 +650,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     List<KrsDetail> findByStatusAndJadwalId(StatusRecord statusRecord, String id);
 
 
-    @Query(value = "update krs_detail set nilai_akhir = (coalesce(nilai_tugas,0) + coalesce(nilai_uts_final,0) + coalesce(nilai_uas_final,0) - (10.00 - ?1), nilai_sds = ?1 where id = ?2", nativeQuery = true)
+    @Query(value = "update krs_detail set nilai_akhir = (coalesce(nilai_tugas,0) + coalesce(nilai_uts_final,0) + coalesce(nilai_uas_final,0)) - (10.00 - ?1), nilai_sds = ?1 where id = ?2", nativeQuery = true)
     Update updateNilaiSds(BigDecimal nilaiSDS, String id);
 
     @Query(value = "UPDATE krs_detail k, grade p, jadwal j\n" +
