@@ -27,11 +27,10 @@ public class JadwalDaoTests {
         TahunAkademik ta = new TahunAkademik();
         ta.setId("20192");
 
-        List<StatusRecord> statusRecords = Arrays.asList(StatusRecord.HAPUS);
 
         Hari hari = new Hari();
         hari.setId("4");
 
-        jadwalDao.schedule(p, statusRecords, ta, hari);
+        jadwalDao.schedule(p, StatusRecord.AKTIF, ta, hari);
     }
 }

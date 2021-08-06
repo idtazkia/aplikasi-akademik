@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
+import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -159,6 +160,20 @@ public class  AcademicActivityController {
         }
         return prodiDao.findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF,search, page);
 
+    }
+
+    @GetMapping("/select2/course")
+    @ResponseBody
+    public List<CourseDto> cariMatkul(@RequestParam String search){
+
+        return matakuliahDao.cariMatakuliah(search);
+    }
+
+    @GetMapping("/course/detail")
+    @ResponseBody
+    public Matakuliah detailMatkul(@RequestParam String search){
+
+        return matakuliahDao.findById(search).get();
     }
 
     @GetMapping("/api/prodikurikulum")
@@ -866,20 +881,20 @@ public class  AcademicActivityController {
         model.addAttribute("bahasa", bahasa);
 
         if (prodi != null && tahunAkademik != null && hari != null){
-            model.addAttribute("jadwal", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hari));
+            model.addAttribute("jadwal", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hari));
             model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
         }
 
 
         if (prodi != null && tahunAkademik != null && hari == null){
             model.addAttribute("ploting", jadwalDao.ploting(prodi,tahunAkademik));
-            model.addAttribute("minggu", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("0").get()));
-            model.addAttribute("senin", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("1").get()));
-            model.addAttribute("selasa", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("2").get()));
-            model.addAttribute("rabu", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("3").get()));
-            model.addAttribute("kamis", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("4").get()));
-            model.addAttribute("jumat", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("5").get()));
-            model.addAttribute("sabtu", jadwalDao.schedule(prodi,Arrays.asList(StatusRecord.HAPUS),tahunAkademik,hariDao.findById("6").get()));
+            model.addAttribute("minggu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("0").get()));
+            model.addAttribute("senin", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("1").get()));
+            model.addAttribute("selasa", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("2").get()));
+            model.addAttribute("rabu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("3").get()));
+            model.addAttribute("kamis", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("4").get()));
+            model.addAttribute("jumat", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("5").get()));
+            model.addAttribute("sabtu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("6").get()));
         }
     }
 
