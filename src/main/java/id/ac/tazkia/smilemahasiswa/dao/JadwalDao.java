@@ -134,4 +134,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "and id_hari is not null", nativeQuery = true)
     List<String> findSds1(String idTahunAkademik, String idProdi);
 
+    @Query(value = "select a.id from jadwal as a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "where a.id =  ?1 and a.status = 'AKTIF' and b.sds > 0\n" +
+            "and id_hari is not null", nativeQuery = true)
+    String findSds2(String idJadwal);
+
 }

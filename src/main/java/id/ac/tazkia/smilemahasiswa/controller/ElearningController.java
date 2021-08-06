@@ -898,35 +898,38 @@ public class ElearningController {
                 if (nim != null) {
 
                 }else {
-                    List<KrsDetail> krsDetail1 = krsDetailDao.findByStatusAndJadwalId(StatusRecord.AKTIF, jadwal);
-                    if (krsDetail1 != null) {
-                        //looping krs mahasiswa per jadwal
-                        for (KrsDetail krsDetail : krsDetail1) {
-                            System.out.println("NIM : " + krsDetail.getMahasiswa().getNim());
-                            System.out.println("Mahasiswa : " + krsDetail.getMahasiswa().getNama());
-                            NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademik.getKodeTahunAkademik());
-                            if (nilaiAbsenSdsDto != null) {
-                                if (nilaiAbsenSdsDto.getNilai() == null) {
+                    String listSds2 = jadwalDao.findSds2(jadwal);
+                    if (listSds2 != null) {
+                        List<KrsDetail> krsDetail1 = krsDetailDao.findByStatusAndJadwalId(StatusRecord.AKTIF, listSds2);
+                        if (krsDetail1 != null) {
+                            //looping krs mahasiswa per jadwal
+                            for (KrsDetail krsDetail : krsDetail1) {
+                                System.out.println("NIM : " + krsDetail.getMahasiswa().getNim());
+                                System.out.println("Mahasiswa : " + krsDetail.getMahasiswa().getNama());
+                                NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademik.getKodeTahunAkademik());
+                                if (nilaiAbsenSdsDto != null) {
+                                    if (nilaiAbsenSdsDto.getNilai() == null) {
+                                        System.out.println("Nilai SDS : 0.00");
+                                        krsDetailDao.updateNilaiSds(BigDecimal.ZERO, krsDetail.getId());
+                                        krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                    } else {
+                                        if (nilaiAbsenSdsDto.getNilai().compareTo(BigDecimal.TEN) > 0) {
+                                            System.out.println("Nilai SDS : " + BigDecimal.TEN);
+                                            krsDetailDao.updateNilaiSds(BigDecimal.TEN, krsDetail.getId());
+                                            krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                        } else {
+                                            System.out.println("Nilai SDS : " + nilaiAbsenSdsDto.getNilai());
+                                            krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
+                                            krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                        }
+                                    }
+                                } else {
                                     System.out.println("Nilai SDS : 0.00");
                                     krsDetailDao.updateNilaiSds(BigDecimal.ZERO, krsDetail.getId());
                                     krsDetailDao.updateGradeNilai(krsDetail.getId());
-                                } else {
-                                    if (nilaiAbsenSdsDto.getNilai().compareTo(BigDecimal.TEN) > 0) {
-                                        System.out.println("Nilai SDS : " + BigDecimal.TEN);
-                                        krsDetailDao.updateNilaiSds(BigDecimal.TEN, krsDetail.getId());
-                                        krsDetailDao.updateGradeNilai(krsDetail.getId());
-                                    } else {
-                                        System.out.println("Nilai SDS : " + nilaiAbsenSdsDto.getNilai());
-                                        krsDetailDao.updateNilaiSds(nilaiAbsenSdsDto.getNilai(), krsDetail.getId());
-                                        krsDetailDao.updateGradeNilai(krsDetail.getId());
-                                    }
                                 }
-                            } else {
-                                System.out.println("Nilai SDS : 0.00");
-                                krsDetailDao.updateNilaiSds(BigDecimal.ZERO, krsDetail.getId());
-                                krsDetailDao.updateGradeNilai(krsDetail.getId());
+                                System.out.println("DONE");
                             }
-                            System.out.println("DONE");
                         }
                     }
                 }
