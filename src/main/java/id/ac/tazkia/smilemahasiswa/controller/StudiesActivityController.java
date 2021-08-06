@@ -10,6 +10,7 @@ import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.KrsSpDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -63,6 +64,7 @@ import java.time.LocalTime;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller @Slf4j
 public class StudiesActivityController {
@@ -4184,33 +4186,36 @@ public class StudiesActivityController {
     public void printTranskript1(Model model, @RequestParam(required = false)String nim){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
-        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
-        BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
+        List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
 
-//        BigDecimal Ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
-        Long totalSKS2 = totalSKS.longValue();
-        Long totalMuti1 = totalMuti.longValue();
 
-        model.addAttribute("sks", totalSKS2);
-        model.addAttribute("mutu", totalMuti1);
-//        model.addAttribute("ipk", Ipk);
+        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-//        model.addAttribute("transkriptPrint", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
-//        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.semesterTraskripPrint1(mahasiswa.getId()));
-//        model.addAttribute("semesterTranskriptPrint1", krsDetailDao.transkriptAkhir(mahasiswa.getId()));
-//        model.addAttribute("transkrip", krsDetailDao.transkripAKhir(mahasiswa));
 
-        model.addAttribute("transkrip1", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"1"));
-        model.addAttribute("transkrip2", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"2"));
-        model.addAttribute("transkrip3", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"3"));
-        model.addAttribute("transkrip4", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"4"));
-        model.addAttribute("transkrip5", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"5"));
-        model.addAttribute("transkrip6", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"6"));
-        model.addAttribute("transkrip7", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"7"));
-        model.addAttribute("transkrip8", krsDetailDao.transkriptAkhir(mahasiswa.getId(),"8"));
+        System.out.println(sks);
+        System.out.println(mutu);
+
+        BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
+
+
+        model.addAttribute("ipk", ipk);
+        model.addAttribute("sks", sks);
+        model.addAttribute("mutu", mutu);
+
+
+        model.addAttribute("transkrip1", krsDetailDao.listTranskriptSemester(mahasiswa,1));
+        model.addAttribute("transkrip2", krsDetailDao.listTranskriptSemester(mahasiswa,2));
+        model.addAttribute("transkrip3", krsDetailDao.listTranskriptSemester(mahasiswa,3));
+        model.addAttribute("transkrip4", krsDetailDao.listTranskriptSemester(mahasiswa,4));
+        model.addAttribute("transkrip5", krsDetailDao.listTranskriptSemester(mahasiswa,5));
+        model.addAttribute("transkrip6", krsDetailDao.listTranskriptSemester(mahasiswa,6));
+        model.addAttribute("transkrip7", krsDetailDao.listTranskriptSemester(mahasiswa,7));
+        model.addAttribute("transkrip8", krsDetailDao.listTranskriptSemester(mahasiswa,8));
 
     }
 
