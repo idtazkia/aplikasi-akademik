@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Custom Kelas Semester Pendek </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Custom Kelas untuk Matakuliah <span th:text="${matkul.matakuliah.namaMatakuliah}"></span></h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studiesActivity/sp/list}" class="btn btn-success btn-sm"><i class="fa fa-arrow-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form method="post" th:action="@{/studiesActivity/sp/custom}">
+                                    <input type="hidden" name="id" th:value="${matkul.id}">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="jenis">Jenis Kelas</label>
+                                                <select name="jenis" id="jenis" class="form-control">
+                                                    <div th:if="${jenis == null}">
+                                                        <option selected readonly>-- Pilih Jenis --</option>
+                                                        <option value="campur">Campur</option>
+                                                        <option value="pisah">Pisah</option>
+                                                    </div>
+                                                    <div th:if="${jenis != null}">
+                                                        <option th:text="${jenis}"></option>
+                                                        <option value="campur">Campur</option>
+                                                        <option value="pisah">Pisah</option>
+                                                    </div>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="jumlah">Jumlah kelas</label>
+                                                <input type="number" name="jumlah" id="jumlah" class="form-control" required th:value="${jumlah}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="maks">Maksimal Mahasiswa per Kelas</label>
+                                            <input type="text" name="maks" id="maks" class="form-control" th:value="${maks}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-info">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${jenis != null}">
+                            <div class="table-responsive">
+                                <form method="post" th:action="@{/studiesActivity/sp/custom/submit}">
+                                    <input type="hidden" name="id" th:value="${matkul.id}">
+                                    <input type="hidden" name="jenis" th:value="${jenis}">
+                                    <input type="hidden" name="jumlah" th:value="${jumlah}">
+                                    <input type="hidden" name="maks" th:value="${maks}">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Matakuliah</th>
+                                            <th th:if="${jenis == 'pisah'}">Kelas</th>
+                                            <th>Prodi</th>
+                                            <th>Dosen</th>
+                                            <th>Tahun Akademik</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><div th:text="${jenis}"></div>
+                                        <tr th:each="data,row:${jadwal}">
+                                            <td th:text="${row.index + 1}">1</td>
+                                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                            <td th:if="${jenis == 'pisah'}">
+                                                <select th:name="${'kelas-'+data.id}" class="form-control js-example-placeholder-single">
+                                                    <option value=""></option>
+                                                    <option th:each="kelas:${listKelas}"
+                                                            th:text="${kelas.namaKelas}"
+                                                            th:value="${kelas.id}"></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select th:name="${'prodi-'+data.id}" class="form-control js-example-placeholder-single">
+                                                    <option value=""></option>
+                                                    <option th:each="prodi:${listProdi}"
+                                                            th:text="${prodi.namaProdi}"
+                                                            th:value="${prodi.id}"></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select th:name="${'dosen-'+data.id}" class="form-control js-example-placeholder-single">
+                                                    <option value=""></option>
+                                                    <option th:each="item:${listDosen}"
+                                                            th:text="${item.karyawan.namaKaryawan}"
+                                                            th:value="${item.id}"></option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select th:name="${'tahun-'+data.id}" class="form-control js-example-placeholder-single">
+                                                    <option value=""></option>
+                                                    <option th:each="tahun : ${listTahun}"
+                                                            th:text="${tahun.namaTahunAkademik}"
+                                                            th:value="${tahun.id}"></option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <button type="submit" name="save" class="btn btn-success">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select One",
+        allowClear: true
+    });
+</script>

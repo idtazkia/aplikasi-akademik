@@ -17,4 +17,7 @@ public interface KelasDao extends PagingAndSortingRepository<Kelas,String> {
 
     @Query(value = "select a.id, a.nama_kelas from kelas as a inner join prodi as b on a.id_prodi = b.id where b.id = ?1 and a.angkatan = ?2", nativeQuery = true)
     List<Object[]> kelasAngktanProdi(String idProdi, String angkatan);
+
+    List<Kelas> findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord statusRecord, String sp);
+
 }

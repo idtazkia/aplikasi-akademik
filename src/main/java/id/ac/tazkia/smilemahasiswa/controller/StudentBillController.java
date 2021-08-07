@@ -1315,7 +1315,6 @@ public class StudentBillController {
         for (RequestCicilan cicilan : cicilanSudahAda){
             cicilan.setStatus(StatusRecord.HAPUS);
             cicilan.setStatusApprove(StatusApprove.HAPUS);
-            cicilan.setStatusApprove(StatusApprove.HAPUS);
             cicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
             requestCicilanDao.save(cicilan);
         }
