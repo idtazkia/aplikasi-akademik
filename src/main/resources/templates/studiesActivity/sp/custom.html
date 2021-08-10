@@ -48,7 +48,7 @@
                             <div class="col">
                                 <h3 class="mb-0">Custom Kelas untuk Matakuliah <span th:text="${matkul.matakuliah.namaMatakuliah}"></span></h3>
                             </div>
-                            <div class="col text-right">
+                            <div th:if="${jenis == null}" class="col text-right">
                                 <a th:href="@{/studiesActivity/sp/list}" class="btn btn-success btn-sm"><i class="fa fa-arrow-circle-left"></i> Back</a>
                             </div>
                         </div>
@@ -158,6 +158,16 @@
                                         <div class="col-md-12 text-center">
                                             <div class="form-group">
                                                 <button type="submit" name="save" class="btn btn-success">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form method="post" th:action="@{/studiesActivity/sp/cancel}">
+                                    <input type="hidden" name="id" th:value="${matkul.id}">
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-danger" name="cancel">Cancel</button>
                                             </div>
                                         </div>
                                     </div>

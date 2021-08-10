@@ -79,7 +79,7 @@
                                 <th>Type of bill</th>
                                 <th>Academic Year</th>
                                 <th>Study Program</th>
-                                <th>Program</th>
+                                <th>Category</th>
                                 <th>Generation</th>
                                 <th>Value</th>
                                 <th>Due Date</th>
@@ -102,7 +102,9 @@
                                 </td>
                                 <td th:text="${data.tahunAkademik.namaTahunAkademik}">PATRICK STAR</td>
                                 <td th:text="${data.prodi.namaProdi}">BANGUN DAN SEMANGAT</td>
-                                <td th:text="${data.program.namaProgram}">Reguler</td>
+                                <td >
+                                    <span th:if="${data.kategori != null}" class="btn btn-info btn-sm" th:text="${data.kategori}"></span>
+                                </td>
                                 <td class="text-center" th:text="${data.angkatan}"></td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilai, 0, 'POINT', 2, 'COMMA')}">BANGUN DAN SEMANGAT</td>
                                 <td>

@@ -85,9 +85,9 @@
 
                                                         <div class="modal-header bg-transparent pb-5">
                                                             <h4>Daftar Pengajuan Matakuliah <div th:text="${data[2]}"></div></h4>
-                                                            <button type="button" class="ml-3 btn btn-info btn-sm">
+                                                            <button type="button" class="ml-3 btn btn-info btn-sm text-white">
                                                                 <span class="btn-inner--icon"><i class="fa fa-download"></i></span>
-                                                                <a class="text-white" th:href="@{/download/list(matkul = ${data[0]})}" >Download list</a>
+                                                                <a class="btn-inner--text text-white" th:href="@{/download/list(matkul = ${data[0]})}" >Download list</a>
                                                             </button>
 <!--                                                            <div th:if="${data[5] == 'WAITING'}">-->
 <!--                                                                <a th:href="@{/studiesActivity/sp/custom(id = ${data[0]})}" class="btn btn-warning btn-sm text-white">-->

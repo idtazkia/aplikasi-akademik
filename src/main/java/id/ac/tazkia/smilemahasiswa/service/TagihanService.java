@@ -200,6 +200,7 @@ public class TagihanService {
                 enableFiture.setFitur(StatusRecord.KRS);
                 enableFiture.setMahasiswa(tagihan.getMahasiswa());
                 enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
+                enableFiture.setKeterangan("-");
             }
             enableFiture.setEnable(true);
             enableFitureDao.save(enableFiture);
