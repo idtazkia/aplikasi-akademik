@@ -5092,7 +5092,11 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/sp/detail")
     public void spDetail(Model model){
 
-        List<Object[]> detailSp = praKrsSpDao.allDetail();
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        }
+        List<Object[]> detailSp = praKrsSpDao.allDetail(tahun);
         model.addAttribute("detailSp", detailSp);
 
     }
@@ -5100,9 +5104,13 @@ public class StudiesActivityController {
     @GetMapping("/download/detail/sp")
     public void listDetail(HttpServletResponse response) throws IOException{
 
-        List<Object[]> listDetail = praKrsSpDao.allDetail();
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        }
+        List<Object[]> listDetail = praKrsSpDao.allDetail(tahun);
 
-        String[] columns = {"No", "Nama", "NIM", "Prodi", "Matakuliah", "SKS", "Pembayaran"};
+        String[] columns = {"No", "Nama", "NIM", "Prodi", "Matakuliah", "SKS", "Pembayaran", "Tanggal Pembayaran"};
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List detail mahasiswa request SP");
@@ -5129,12 +5137,13 @@ public class StudiesActivityController {
         for(Object[] detail : listDetail){
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
-            row.createCell(1).setCellValue(detail[0].toString());
-            row.createCell(2).setCellValue(detail[1].toString());
-            row.createCell(3).setCellValue(detail[2].toString());
-            row.createCell(4).setCellValue(detail[3].toString());
-            row.createCell(5).setCellValue(detail[4].toString());
-            row.createCell(6).setCellValue(detail[5].toString());
+            row.createCell(1).setCellValue(detail[3].toString());
+            row.createCell(2).setCellValue(detail[2].toString());
+            row.createCell(3).setCellValue(detail[4].toString());
+            row.createCell(4).setCellValue(detail[6].toString());
+            row.createCell(5).setCellValue(detail[7].toString());
+            row.createCell(6).setCellValue(detail[9].toString());
+            row.createCell(7).setCellValue(detail[10].toString());
         }
 
         for (int i = 1; i < columns.length; i++){
@@ -5151,10 +5160,15 @@ public class StudiesActivityController {
     @GetMapping("/download/list")
     public void listPerMatkul(@RequestParam(required = false) String matkul, HttpServletResponse response) throws  IOException{
 
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        }
         MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(matkul).get();
-        List<Object[]> listDownload = praKrsSpDao.excelDownlaod(matkur);
+        SpDto m = praKrsSpDao.tampilPerMatkul(matkur.getId());
+        List<Object[]> listDownload = praKrsSpDao.excelDownlaod(tahun, m.getId(), m.getIdMatakuliah(), m.getKode(), m.getNamaMatakuliah());
 
-        String[] columns = {"No", "Nim", "Nama", "Prodi", "Nomor Telepon", "Status Pembayaran"};
+        String[] columns = {"No", "Nim", "Nama", "Prodi", "Nomor Telepon", "Status Pembayaran" , "Tanggal Pembayaran"};
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("List Mahasiswa Request SP");
@@ -5183,11 +5197,12 @@ public class StudiesActivityController {
         for (Object[] list : listDownload){
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
-            row.createCell(1).setCellValue(list[1].toString());
-            row.createCell(2).setCellValue(list[2].toString());
-            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(1).setCellValue(list[2].toString());
+            row.createCell(2).setCellValue(list[3].toString());
+            row.createCell(3).setCellValue(list[5].toString());
             row.createCell(4).setCellValue(list[4].toString());
-            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(5).setCellValue(list[9].toString());
+            row.createCell(6).setCellValue(list[10].toString());
         }
 
         for (int i = 0; i < columns.length; i++){
