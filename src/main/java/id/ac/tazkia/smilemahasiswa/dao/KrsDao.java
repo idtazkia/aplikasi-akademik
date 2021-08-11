@@ -33,6 +33,19 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
             "inner join tahun_akademik as b on a.id_tahun_akademik = b.id\n" +
             "where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id \n" +
             "order by b.kode_tahun_akademik", nativeQuery = true)
+    List<Object[]> semesterTranskript1(String idMahasiswa);
+
+    @Query(value = "SET @row_number = 0;   \n" +
+            "select a.*,\n" +
+            "if(a.jenis <> 'PENDEK',(@row_number:=@row_number + 1),0) AS row_num from\n" +
+            "(select a.id, b.kode_tahun_akademik, b.nama_tahun_akademik,b.jenis\n" +
+            " from krs as a \n" +
+            "inner join krs_detail as g on a.id = g.id_krs \n" +
+            "inner join jadwal as h on g.id_jadwal = h.id \n" +
+            "inner join matakuliah_kurikulum as i on h.id_matakuliah_kurikulum = i.id \n" +
+            "inner join tahun_akademik as b on a.id_tahun_akademik = b.id \n" +
+            "where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id \n" +
+            "order by b.kode_tahun_akademik)a", nativeQuery = true)
     List<Object[]> semesterTranskript(String idMahasiswa);
 
     @Query(value = "select count(a.id) from krs as a inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and a.id_mahasiswa = ?1 and b.jenis != 'PENDEK'", nativeQuery = true)
