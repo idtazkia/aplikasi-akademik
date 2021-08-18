@@ -91,7 +91,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${listSidang}">
-                                        <td>1</td>
+                                        <td th:text="${(row.index + 1)}">1</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td>
@@ -125,6 +125,13 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
+                                                            <div class="alert alert-danger alert-with-icon" id="alertSave" style="display: none">
+                                                                <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                                                    <i class="fas fa-warning"></i>
+                                                                </button>
+                                                                <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                                                <span id="textAlert"><b> Maaf! - </b>Nilai Belum Lengkap.</span>
+                                                            </div>
                                                             <table class="table table-bordered table-hover">
                                                                 <thead class="thead-light">
                                                                 <tr class="table-primary">
@@ -170,12 +177,11 @@
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                        <form th:action="@{/graduation/sidang/dosen/publish (sidang = ${data.id})}" method="post">
                                                             <div class="modal-footer">
+                                                                <input type="hidden" id="sidangId" th:value="${data.id}">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
-                                                                <button type="submit" class="btn btn-primary">Publish</button>
+                                                                <button type="submit" id="publishData" class="btn btn-primary">Publish</button>
                                                             </div>
-                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -186,7 +192,7 @@
                                 </table>
                             </div>
                             <center>
-                                <div class="card-footer">
+                                <!--<div class="card-footer">
 
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination" sd:pagination="full">
@@ -208,7 +214,7 @@
                                     </nav>
 
 
-                                </div>
+                                </div>-->
                             </center>
 
                         </div>
@@ -223,4 +229,37 @@
 </div>
 </body>
 </html>
+<script>
+    $("#publishData").click(function(e) {
+        var token = $("input[name='_csrf']").val();
+        var sidang = $('#sidangId').val();
+        var url = "/graduation/sidang/dosen/publish";
+        e.preventDefault();
+
+        $.ajax({
+            url: url+'?sidang='+sidang,
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            method: 'post',
+            dataType: 'JSON',
+            data: JSON.stringify({
+                "id" : sidang,
+            }), error: function (data) {
+                if (data.responseText == "lengkapi"){
+                    document.getElementById('alertSave').style.display = "block";
+                    setTimeout(function () {
+                        document.getElementById('alertSave').style.display = "none";
+                    }, 5000);
+                }
+
+                if (data.responseText == "berhasil"){
+                    window.location.reload();
+                }
+
+
+            }
+        })
+
+    });
+</script>
 

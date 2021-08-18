@@ -497,7 +497,7 @@ public class SidangController {
 
     @GetMapping("/graduation/sidang/dosen/list")
     public void listDosen(@RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) Prodi prodi,
-                          @PageableDefault(size = 20) Pageable page, Model model,Authentication authentication){
+                          Model model,Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
@@ -507,7 +507,7 @@ public class SidangController {
         model.addAttribute("dosen", dosen);
 
         if (tahunAkademik != null) {
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(tahunAkademik, StatusApprove.APPROVED,StatusApprove.APPROVED, page));
+            model.addAttribute("listSidang", sidangDao.listDosenSidang(tahunAkademik,StatusApprove.APPROVED,dosen));
         }
     }
 
@@ -577,11 +577,19 @@ public class SidangController {
     }
 
     @PostMapping("/graduation/sidang/dosen/publish")
+    @ResponseBody
     public String publishSidang(@RequestParam Sidang sidang){
-        sidang.setPublish(StatusRecord.AKTIF);
-        sidangDao.save(sidang);
+        Object nilaiKosong = sidangDao.validasiPublishNilai(sidang,BigDecimal.ZERO);
+        System.out.println(nilaiKosong);
+        if (nilaiKosong == null) {
+            sidang.setPublish(StatusRecord.AKTIF);
+            sidangDao.save(sidang);
+            return "berhasil";
 
-        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+        }else {
+            return "lengkapi";
+        }
+
     }
 
     //    file
