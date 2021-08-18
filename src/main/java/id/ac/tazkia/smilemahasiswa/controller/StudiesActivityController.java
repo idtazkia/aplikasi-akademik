@@ -2026,7 +2026,7 @@ public class StudiesActivityController {
                 model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
                 model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
                 model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
-                model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+//                model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
                 model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
             }else{
                 model.addAttribute("message","error message");
@@ -4208,15 +4208,53 @@ public class StudiesActivityController {
         model.addAttribute("sks", sks);
         model.addAttribute("mutu", mutu);
 
+        List<DataTranskript> semester1 = new ArrayList<>();
+        List<DataTranskript> semester2 = new ArrayList<>();
+        List<DataTranskript> semester3 = new ArrayList<>();
+        List<DataTranskript> semester4 = new ArrayList<>();
+        List<DataTranskript> semester5 = new ArrayList<>();
+        List<DataTranskript> semester6 = new ArrayList<>();
+        List<DataTranskript> semester7 = new ArrayList<>();
+        List<DataTranskript> semester8 = new ArrayList<>();
 
-        model.addAttribute("transkrip1", krsDetailDao.listTranskriptSemester(mahasiswa,1));
-        model.addAttribute("transkrip2", krsDetailDao.listTranskriptSemester(mahasiswa,2));
-        model.addAttribute("transkrip3", krsDetailDao.listTranskriptSemester(mahasiswa,3));
-        model.addAttribute("transkrip4", krsDetailDao.listTranskriptSemester(mahasiswa,4));
-        model.addAttribute("transkrip5", krsDetailDao.listTranskriptSemester(mahasiswa,5));
-        model.addAttribute("transkrip6", krsDetailDao.listTranskriptSemester(mahasiswa,6));
-        model.addAttribute("transkrip7", krsDetailDao.listTranskriptSemester(mahasiswa,7));
-        model.addAttribute("transkrip8", krsDetailDao.listTranskriptSemester(mahasiswa,8));
+
+        for (DataTranskript data : listTranskript){
+            if (data.getSemester().equals("1")){
+                semester1.add(data);
+            }
+            if (data.getSemester().equals("2")){
+                semester2.add(data);
+            }
+            if (data.getSemester().equals("3")){
+                semester3.add(data);
+            }
+            if (data.getSemester().equals("4")){
+                semester4.add(data);
+            }
+            if (data.getSemester().equals("5")){
+                semester5.add(data);
+            }
+            if (data.getSemester().equals("6")){
+                semester6.add(data);
+            }
+            if (data.getSemester().equals("7")){
+                semester7.add(data);
+            }
+            if (data.getSemester().equals("8")){
+                semester8.add(data);
+            }
+        }
+
+
+        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+        model.addAttribute("transkrip1", semester1);
+        model.addAttribute("transkrip2", semester2);
+        model.addAttribute("transkrip3", semester3);
+        model.addAttribute("transkrip4", semester4);
+        model.addAttribute("transkrip5", semester5);
+        model.addAttribute("transkrip6", semester6);
+        model.addAttribute("transkrip7", semester7);
+        model.addAttribute("transkrip8", semester8);
 
     }
 
