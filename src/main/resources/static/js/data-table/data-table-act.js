@@ -3,7 +3,7 @@
 	
 	$(document).ready(function() {
 		 $('#data-table-basic').DataTable( {
-			 "paging":   true
+			 "paging":   false
 		 } );
 	});
  

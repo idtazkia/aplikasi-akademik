@@ -102,18 +102,32 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
 //        TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mahasiswa.getIdProdi());
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, mahasiswa.getIdProdi());
 
-        if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
+        String jenisTahunAkademik = tahunAkademik.getJenis().toString();
+
+        String kodeTahunAkademik = tahunAkademik.getKodeTahunAkademik();
+        String beforeKode = kodeTahunAkademik.substring(0, 4);
+        Integer nextKode = (Integer.valueOf(beforeKode)) + 1;
+        String tahunAkademikKode = (String.valueOf(nextKode)) + 1;
+
+        if (jenisTahunAkademik == "PENDEK"){
+            TahunAkademik tahunAkademik1 = tahunAkademikDao.findByKodeTahunAkademikAndJenis(tahunAkademikKode, StatusRecord.GANJIL);
+            TahunAkademikProdi tahunAkademikProdi1 = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik1, mahasiswa.getIdProdi());
+            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademik1.getTanggalMulaiKrs());
+            model.addAttribute("krs", tahunAkademikProdi1);
+            model.addAttribute("hari", day);
+            return "study/comingsoon";
+        } else if (tahunAkademikProdi.getMulaiKrs().compareTo(LocalDate.now()) > 0){
             Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getMulaiKrs());
 
             model.addAttribute("krs", tahunAkademikProdi);
             model.addAttribute("hari", day);
             return "study/comingsoon";
-
-        }else {
+        } else {
 
             return "redirect:krs";
 
