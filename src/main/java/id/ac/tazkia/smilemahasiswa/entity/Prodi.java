@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @JsonIdentityInfo(
@@ -57,6 +58,7 @@ import java.time.LocalDate;
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate tanggalSk;
 
+        @NotNull
         private String kodeSpmb;
 
 }

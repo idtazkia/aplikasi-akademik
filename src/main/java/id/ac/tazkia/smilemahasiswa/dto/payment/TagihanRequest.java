@@ -15,8 +15,15 @@ public class TagihanRequest {
     private String kodeBiaya;
     private String debitur;
     private BigDecimal nilaiTagihan;
+    private String tahunAkademik;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date tanggalJatuhTempo;
     private String keterangan;
+    private Type jenisRequest = Type.CREATE;
+    private String nomorTagihanLama;
+
+    public enum Type{
+        CREATE, REPLACE
+    }
 }

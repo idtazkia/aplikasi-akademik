@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import sun.security.util.Pem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +20,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b\n" +
             "on a.id_tagihan=b.id\n" +
-            "where b.id_tahun_akademik=?1 and b.id_mahasiswa=?2", nativeQuery = true)
+            "where b.id_tahun_akademik=?1 and b.id_mahasiswa=?2 and a.status='AKTIF'", nativeQuery = true)
     BigDecimal totalDibayarPerTahunDanMahasiswa(String idTahunAkademik, String idMahasiswa);
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join tahun_akademik as c on b.id_tahun_akademik=c.id where b.status!='HAPUS' and c.id=?1", nativeQuery = true)
@@ -43,6 +44,8 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
 
     @Query(value = "SELECT * FROM pembayaran where id_tagihan=?1 limit 1", nativeQuery = true)
     Pembayaran cekPembayaran(String idTagihan);
+
+    Pembayaran findByStatusAndTagihan(StatusRecord statusRecord, Tagihan tagihan);
 
     Integer countAllByTagihan(Tagihan tagihan);
 

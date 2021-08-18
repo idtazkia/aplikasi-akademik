@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .container{
+            padding-top: 30px;
+        }
+        .text{
+            font-size: 17px;
+        }
+        td{
+            font-size: 17px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+            <img src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png" width="110px" height="100px" alt="">
+        </div>
+        <div class="col-md-11 text-center">
+            <b>ATTENDANCE LIST</b>
+            <br>
+            <b>TAZKIA UNIVERSITY COLLEGE OF ISLAMIC ECONOMICS</b>
+            <br>
+            <b th:text="${'ACADEMIC YEAR ' + tahun}">ACADEMIC YEAR 2018/2019</b>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+        <div class="col-md-12">
+            <table>
+                <tr>
+                    <td class="text"><b>Departement/Group</b></td>
+                    <td class="text"><b> &nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.prodi.namaProdi + ' / ' + jadwal.kelas.namaKelas}">Islamic Business and Management/MBS-C-17</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><b>Subject</b></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">ACC2701-Islamic Business Ethic</b></td>
+                </tr>
+                <tr>
+                    <td class="text"><b>Lecture</b></td>
+                    <td class="text"><b>&nbsp; &nbsp; :</b></td>
+                    <td class="text"><b th:text="${dosen}">KholifahST, M.E.Sy/ Aminah Nuriyah S.E.I., M.E./ Andang Heryahya, M. Pd.I., M.Pd M. Pd.I., M.Pd/ Saniatun Nurhasanah S.E.I., M.Si</b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table border="1" width="100%">
+                <thead>
+                <tr>
+                    <td rowspan="2"><center>No</center></td>
+                    <td rowspan="2"><center>Nim</center></td>
+                    <td rowspan="2"><center>Name Of Student</center></td>
+                    <td colspan="16"><center>Class Meeting,Date & Sign</center></td>
+                </tr>
+                <tr>
+                    <td><center>1</center></td>
+                    <td><center>2</center></td>
+                    <td><center>3</center></td>
+                    <td><center>4</center></td>
+                    <td><center>5</center></td>
+                    <td><center>6</center></td>
+                    <td><center>7</center></td>
+                    <td><center>8</center></td>
+                    <td><center>9</center></td>
+                    <td><center>10</center></td>
+                    <td><center>11</center></td>
+                    <td><center>12</center></td>
+                    <td><center>13</center></td>
+                    <td><center>14</center></td>
+                    <td><center>15</center></td>
+                    <td><center>16</center></td>
+                </tr>
+                <tr th:each="data,row : ${attendance}">
+                    <td width="4%"><center th:text="${row.index + 1}">1</center></td>
+                    <td width="11%"><center th:text="${data[2]}">17101181</center></td>
+                    <td width="21%" th:text="${data[3]}">Muhammad Hafidz Fathoni Nurahim</td>
+                    <td width="4%"><center th:text="${data[4]}"></center></td>
+                    <td width="4%"><center th:text="${data[5]}"></center></td>
+                    <td width="4%"><center th:text="${data[6]}"></center></td>
+                    <td width="4%"><center th:text="${data[7]}"></center></td>
+                    <td width="4%"><center th:text="${data[8]}"></center></td>
+                    <td width="4%"><center th:text="${data[9]}"></center></td>
+                    <td width="4%"><center th:text="${data[10]}"></center></td>
+                    <td width="4%"><center th:text="${data[11]}"></center></td>
+                    <td width="4%"><center th:text="${data[12]}"></center></td>
+                    <td width="4%"><center th:text="${data[13]}"></center></td>
+                    <td width="4%"><center th:text="${data[14]}"></center></td>
+                    <td width="4%"><center th:text="${data[15]}"></center></td>
+                    <td width="4%"><center th:text="${data[16]}"></center></td>
+                    <td width="4%"><center th:text="${data[17]}"></center></td>
+                    <td width="4%"><center th:text="${data[18]}"></center></td>
+                    <td width="4%"><center th:text="${data[19]}"></center></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="3" style="text-align: right"><b>Sign Of Lecture :</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                </thead>
+            </table>
+
+            <table>
+                <thead>
+                <tr>
+                    <td id="tanggal">&nbsp;&nbsp;</td>
+                </tr>
+                </thead>
+                <tr>
+                    <td th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    @page
+    {
+
+        size: auto;   /* auto is the current printer page size */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
+    @media print {
+        #printbtn {
+            display :  none;
+        }
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+</body>
+</html>

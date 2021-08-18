@@ -50,6 +50,9 @@ public class MahasiswaService {
     @Autowired
     private MahasiswaDetailKeluargaDao mahasiswaDetailKeluargaDao;
 
+    @Autowired
+    private KurikulumDao kurikulumDao;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MahasiswaService.class);
 
     public Mahasiswa prosesMahasiswa(MahasiswaDto mahasiswaDto){
@@ -160,6 +163,7 @@ public class MahasiswaService {
         mahasiswa.setStatusAktif("AKTIF");
         mahasiswa.setAyah(ayah);
         mahasiswa.setIbu(ibu);
+        mahasiswa.setKurikulum(kurikulumDao.findByProdiAndStatus(mahasiswa.getIdProdi(),StatusRecord.AKTIF));
         mahasiswa.setNamaJalan(importMahasiswaDto.getAlamat());
         mahasiswa.setIdAbsen(mahasiswaDao.cariMaxAbsen()+1);
         if (importMahasiswaDto.getJenjang().equals("S1")){

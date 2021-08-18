@@ -43,6 +43,9 @@ public class NilaiJenisTagihan {
     @JoinColumn(name = "id_program")
     private Program program;
 
+    @Enumerated(EnumType.STRING)
+    private StatusTagihan kategori;
+
     @NotNull @NotEmpty
     private String angkatan;
 

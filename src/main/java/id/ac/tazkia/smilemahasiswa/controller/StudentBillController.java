@@ -17,8 +17,10 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.manager.StatusTransformer;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.tomcat.jni.Local;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +32,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -133,6 +136,9 @@ public class StudentBillController {
 
     @Autowired
     private ProgramDao programDao;
+
+    @Autowired
+    private RefundSpDao refundSpDao;
 
     @Value("classpath:kwitansi.odt")
     private Resource templateKwitansi;
@@ -338,6 +344,7 @@ public class StudentBillController {
         model.addAttribute("prodi", prodiDao.findByStatusOrderByNamaProdi(StatusRecord.AKTIF));
         model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("selectAngkatan", angkatan());
+        model.addAttribute("kategori", StatusTagihan.values());
 
         if (id != null && !id.isEmpty()){
             NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findById(id).get();
@@ -678,28 +685,74 @@ public class StudentBillController {
                 for (MahasiswaBeasiswa mb : cariBeasiswa){
                     List<TagihanBeasiswa> cariTagihan = tagihanBeasiswaDao.findByBeasiswaAndStatus(mb.getBeasiswa(), StatusRecord.AKTIF);
                     for (TagihanBeasiswa tb : cariTagihan){
-                        NilaiJenisTagihan njt = nilaiJenisTagihanDao.findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tb.getJenisTagihan().getId(), tahun, mhs.getIdProdi(), angkatan, mhs.getIdProgram(), StatusRecord.AKTIF);
-                        if (njt == null){
-                            log.info("Tidak ada tagihan untuk {} ", tb.getJenisTagihan().getNama());
-                        }else{
-                            Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(mhs, njt.getJenisTagihan(), StatusRecord.AKTIF);
-                            if (tagihan1 == null){
-                                String keteranganTagihan = "Tagihan " + njt.getJenisTagihan().getNama()
-                                        + " a.n. " + mhs.getNama();
+                        if(tb == null){
+                            List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(tahun, angkatan, mhs.getIdProdi(), mhs.getIdProgram(), StatusRecord.AKTIF);
+                            for (NilaiJenisTagihan njt : nilaiJenisTagihans){
+                                Tagihan tagihan = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(mhs, njt.getJenisTagihan(), StatusRecord.AKTIF);
+                                if (tagihan == null) {
+                                    String keteranganTagihan = "Tagihan " + njt.getJenisTagihan().getNama()
+                                            + " a.n. " + mhs.getNama();
 
-                                Tagihan tagihan = new Tagihan();
-                                tagihan.setMahasiswa(mhs);
-                                tagihan.setNilaiJenisTagihan(njt);
-                                tagihan.setKeterangan(keteranganTagihan);
-                                tagihan.setNilaiTagihan(njt.getNilai());
-                                tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
-                                tagihan.setTanggalPembuatan(LocalDate.now());
-                                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
-                                tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
-                                tagihan.setTahunAkademik(tahun);
-                                tagihan.setStatusTagihan(StatusTagihan.AKTIF);
-                                tagihan.setStatus(StatusRecord.AKTIF);
-                                tagihanDao.save(tagihan);
+                                    Tagihan t = new Tagihan();
+                                    t.setMahasiswa(mhs);
+                                    t.setNilaiJenisTagihan(njt);
+                                    t.setKeterangan(keteranganTagihan);
+                                    t.setNilaiTagihan(njt.getNilai());
+                                    t.setAkumulasiPembayaran(njt.getNilai());
+                                    t.setTanggalPembuatan(LocalDate.now());
+                                    t.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                    t.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                    t.setTahunAkademik(tahun);
+                                    t.setLunas(true);
+                                    t.setStatusTagihan(StatusTagihan.LUNAS);
+                                    t.setStatus(StatusRecord.AKTIF);
+                                    tagihanDao.save(t);
+
+                                    Pembayaran p = new Pembayaran();
+                                    p.setTagihan(t);
+                                    p.setWaktuBayar(LocalDateTime.now());
+                                    p.setAmount(t.getNilaiTagihan());
+                                    p.setStatus(StatusRecord.AKTIF);
+                                    pembayaranDao.save(p);
+
+                                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS,
+                                            true, tahun);
+                                    if (enableFiture == null) {
+                                        enableFiture = new EnableFiture();
+                                        enableFiture.setMahasiswa(mhs);
+                                        enableFiture.setFitur(StatusRecord.KRS);
+                                        enableFiture.setEnable(true);
+                                        enableFiture.setTahunAkademik(tahun);
+                                        enableFiture.setKeterangan("-");
+                                        enableFitureDao.save(enableFiture);
+                                    }
+
+                                }
+                            }
+                        }else{
+                            NilaiJenisTagihan njt = nilaiJenisTagihanDao.findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tb.getJenisTagihan().getId(), tahun, mhs.getIdProdi(), angkatan, mhs.getIdProgram(), StatusRecord.AKTIF);
+                            if (njt == null){
+                                log.info("Tidak ada tagihan untuk {} ", tb.getJenisTagihan().getNama());
+                            }else{
+                                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndStatus(mhs, njt.getJenisTagihan(), StatusRecord.AKTIF);
+                                if (tagihan1 == null){
+                                    String keteranganTagihan = "Tagihan " + njt.getJenisTagihan().getNama()
+                                            + " a.n. " + mhs.getNama();
+
+                                    Tagihan tagihan = new Tagihan();
+                                    tagihan.setMahasiswa(mhs);
+                                    tagihan.setNilaiJenisTagihan(njt);
+                                    tagihan.setKeterangan(keteranganTagihan);
+                                    tagihan.setNilaiTagihan(njt.getNilai());
+                                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                    tagihan.setTanggalPembuatan(LocalDate.now());
+                                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                    tagihan.setTahunAkademik(tahun);
+                                    tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                    tagihan.setStatus(StatusRecord.AKTIF);
+                                    tagihanDao.save(tagihan);
+                                }
                             }
                         }
                     }
@@ -914,6 +967,7 @@ public class StudentBillController {
     @PostMapping("/studentBill/billAdmin/delete")
     public String deleteBill(@RequestParam Tagihan tagihan){
         tagihan.setStatus(StatusRecord.HAPUS);
+        tagihan.setStatusTagihan(StatusTagihan.HAPUS);
         tagihanDao.save(tagihan);
         List<VirtualAccount> va = virtualAccountDao.findByTagihan(tagihan);
         for(VirtualAccount listVa : va){
@@ -1094,25 +1148,36 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/dokumen/deletep")
-    public String hapusDokumenPenangguhan(@RequestParam TagihanDocument document){
-        document.setStatus(StatusRecord.HAPUS);
-        tagihanDocumentDao.save(document);
+    public String hapusDokumenPenangguhan(@RequestParam Tagihan tagihan){
+        List<TagihanDocument> tagihanDoc = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PENANGGUHAN);
+        for (TagihanDocument document : tagihanDoc){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
 
-        return "redirect:../requestPenangguhan/date?id="+document.getTagihan().getId();
+        return "redirect:../requestPenangguhan/date?id="+tagihan.getId();
     }
 
-//    @PostMapping("/studentBill/penangguhan/reject")
-//    public String rejectPenangguhan(@RequestParam RequestPenangguhan requestPenangguhan,
-//                                    Authentication authentication){
-//        User user = currentUserService.currentUser(authentication);
-//        Karyawan karyawan = karyawanDao.findByIdUser(user);
-//        requestPenangguhan.setUserApprove(karyawan);
-//        requestPenangguhan.setTanggalApprove(LocalDate.now());
-//        requestPenangguhan.setStatusApprove(StatusApprove.REJECTED);
-//        requestPenangguhan.setStatus(StatusRecord.AKTIF);
-//        requestPenangguhanDao.save(requestPenangguhan);
-//        return "redirect:../requestPenangguhan/list";
-//    }
+    @PostMapping("/studentBill/penangguhan/reject")
+    public String rejectPenangguhan(@RequestParam RequestPenangguhan requestPenangguhan,
+                                    @RequestParam(required = false) String keterangan,
+                                    Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        requestPenangguhan.setUserApprove(karyawan);
+        requestPenangguhan.setTanggalApprove(LocalDate.now());
+        requestPenangguhan.setKeteranganReject(keterangan);
+        requestPenangguhan.setStatusApprove(StatusApprove.REJECTED);
+        requestPenangguhan.setStatus(StatusRecord.AKTIF);
+        requestPenangguhanDao.save(requestPenangguhan);
+
+        List<TagihanDocument> td = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(requestPenangguhan.getTagihan(), StatusRecord.AKTIF, StatusDocument.PENANGGUHAN);
+        for (TagihanDocument document : td){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
+        return "redirect:../requestPenangguhan/list";
+    }
 
 //    request cicilan
 
@@ -1121,32 +1186,6 @@ public class StudentBillController {
 
         model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan1(page));
 
-    }
-
-    @GetMapping("/studentBill/requestCicilan/angsuran")
-    public void cicilanTagihan(Model model, @PageableDefault(size = 10) Pageable page,
-                               @RequestParam(required = false) String id){
-        Tagihan tagihan = tagihanDao.findById(id).get();
-        StatusTagihan info = tagihan.getStatusTagihan();
-        model.addAttribute("cek", info);
-        if (info == StatusTagihan.DICICIL){
-            model.addAttribute("message", "message");
-        }
-        Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
-        model.addAttribute("cicilan", new RequestCicilan());
-        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan));
-        model.addAttribute("jumlahCicilan", jumlahCicilan);
-        model.addAttribute("jumlahNilai", requestCicilanDao.sisaCicilan(tagihan.getId()));
-        model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));
-        model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.CICILAN, page));
-        if (jumlahCicilan == 0){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(1).plusDays(15));
-        }else if (jumlahCicilan == 1){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(3));
-        }else if (jumlahCicilan == 2){
-            model.addAttribute("tanggal", LocalDate.now().plusMonths(4).plusDays(15));
-        }
-        model.addAttribute("bill", tagihan);
     }
 
     @GetMapping("/studentBill/requestCicilan/approval")
@@ -1202,7 +1241,6 @@ public class StudentBillController {
                           @RequestParam(required = false) Tagihan tagihan,
                           @RequestParam(required = false) BigDecimal nilaiCicilan){
 
-        tagihanService.hapusTagihan(tagihan);
         log.info("jumlah cicilan : {}" + nilaiCicilan);
         List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
         for (RequestCicilan sisaCicilan : cekSisaCicilan){
@@ -1214,12 +1252,13 @@ public class StudentBillController {
 
         requestCicilan.setTagihan(tagihan);
         requestCicilan.setTanggalPengajuan(LocalDate.now());
+        requestCicilan.setNilaiCicilan(nilaiCicilan);
         requestCicilan.setTanggalJatuhTempo(LocalDate.now().plusMonths(1).withDayOfMonth(10));
         requestCicilan.setStatusApprove(StatusApprove.APPROVED);
         requestCicilan.setStatus(StatusRecord.AKTIF);
         requestCicilan.setStatusCicilan(StatusCicilan.PENGAJUAN_PELUNASAN);
         requestCicilanDao.save(requestCicilan);
-        tagihanService.requestCreateCicilan(requestCicilan);
+        tagihanService.ubahJadiCicilan(requestCicilan);
 
         return "redirect:../bill/list";
     }
@@ -1280,18 +1319,135 @@ public class StudentBillController {
 
     }
 
-    @PostMapping("/studentBill/bill/cicilan")
-    public String newCicilan(@Valid RequestCicilan requestCicilan, RedirectAttributes attributes,
-                             @RequestParam(required = false) Tagihan tagihan){
+    @GetMapping("/studentBill/requestCicilan/angsuran")
+    public void cicilanTagihan(Model model, @PageableDefault(size = 10) Pageable page, Authentication authentication,
+                               @RequestParam(required = false) String id, @RequestParam(required = false) String jumlah,
+                               @RequestParam(required = false) String interval){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        requestCicilan.setStatusCicilan(StatusCicilan.CICILAN);
-        requestCicilan.setTanggalPengajuan(LocalDate.now());
-        requestCicilan.setTagihan(tagihan);
-        requestCicilan.setStatusApprove(StatusApprove.WAITING);
-        requestCicilan.setStatus(StatusRecord.AKTIF);
-        requestCicilanDao.save(requestCicilan);
+        Tagihan tagihan = tagihanDao.findById(id).get();
+        Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
+        model.addAttribute("cicilan", new RequestCicilan());
+        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan));
+        model.addAttribute("jumlahCicilan", jumlahCicilan);
+        model.addAttribute("jumlahNilai", requestCicilanDao.sisaCicilan(tagihan.getId()));
+        model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));
+        model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.CICILAN, page));
+        List<RequestCicilan> editCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.EDITED, tagihan);
+        if (jumlah == null) {
+            model.addAttribute("message", "message");
+        }
+//        List<RequestCicilan> fixCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.CICILAN, tagihan);
+//        System.out.println("cicilan : " + fixCicilan);
+//        if (fixCicilan != null) {
+//            model.addAttribute("fixCicilan", fixCicilan);
+//        }else{
+//            model.addAttribute("cicilan", "cicilan");
+//        }
+        EnableFiture cicilan = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa, StatusRecord.CICILAN, true, tagihan.getTahunAkademik());
+        List<RequestCicilan> cicilanAda = requestCicilanDao.findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.CICILAN, tagihan);
+        model.addAttribute("adaCicilan", cicilanAda);
+        model.addAttribute("custom", cicilan);
+        model.addAttribute("listCicilan", editCicilan);
+        model.addAttribute("bill", tagihan);
+        model.addAttribute("jumlah", jumlah);
+        model.addAttribute("interval", interval);
 
-        return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
+    }
+
+    @PostMapping("/studentBill/requestCicilan/cicil")
+    public String cicil(@RequestParam(required = false) int jumlah, @RequestParam(required = false) Integer interval,
+                        @RequestParam(required = false) String tagihan){
+        Tagihan t = tagihanDao.findById(tagihan).get();
+        List<RequestCicilan> cicilanSudahAda = requestCicilanDao.findByStatusAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, t);
+        for (RequestCicilan cicilan : cicilanSudahAda){
+            cicilan.setStatus(StatusRecord.HAPUS);
+            cicilan.setStatusApprove(StatusApprove.HAPUS);
+            cicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+            requestCicilanDao.save(cicilan);
+        }
+
+        for (int i = 1; i<=jumlah; i++) {
+            BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(t.getNilaiTagihan(), jumlah);
+            System.out.println("tes per cicilan : " + totalCicilan);
+            RequestCicilan rc = new RequestCicilan();
+            rc.setTagihan(t);
+            rc.setTanggalPengajuan(LocalDate.now());
+            rc.setNilaiCicilan(totalCicilan);
+            rc.setStatusCicilan(StatusCicilan.EDITED);
+            int j = 0;
+            if (interval == null) {
+                for (int a = 0; i > a; a++){
+                    j += 45;
+                }
+                rc.setTanggalJatuhTempo(LocalDate.now().plusDays(j));
+            }else{
+                for (int a = 0; i > a; a++){
+                    j += interval;
+                }
+                rc.setTanggalJatuhTempo(LocalDate.now().plusMonths(j));
+            }
+            requestCicilanDao.save(rc);
+        }
+
+        if (interval == null){
+            return "redirect:angsuran?id="+t.getId()+"&jumlah="+jumlah;
+        }else{
+            return "redirect:angsuran?id="+t.getId()+"&jumlah="+jumlah+"&interval="+interval;
+        }
+
+    }
+
+    @PostMapping("/studentBill/cicilan/ajukan")
+    public String ajukanCicilan(@RequestParam String tagihan, @RequestParam(required = false) String jumlah, @RequestParam(required = false) String interval,
+                                HttpServletRequest request, RedirectAttributes attributes){
+
+        Tagihan t = tagihanDao.findById(tagihan).get();
+
+        List<RequestCicilan> listCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.EDITED, t);
+        System.out.println("cicilan : " + listCicilan);
+        for (RequestCicilan cicilan : listCicilan){
+            String pilihan = request.getParameter("nilaiCicilan-"+cicilan.getId()+cicilan.getTanggalJatuhTempo());
+            if (pilihan != null && !pilihan.trim().isEmpty()) {
+
+                RequestCicilan rc = requestCicilanDao.findById(cicilan.getId()).get();
+                rc.setNilaiCicilan(new BigDecimal(pilihan));
+                requestCicilanDao.save(rc);
+
+            }
+        }
+
+        BigDecimal total = requestCicilanDao.sumTotalCicilan(tagihan);
+        System.out.println("cicilan : " + total);
+        System.out.println("tagihan : " + t.getNilaiTagihan());
+        if (total.compareTo(t.getNilaiTagihan()) < 0) {
+
+            attributes.addFlashAttribute("kurang", "jumlah kurang");
+            int sisa = total.intValue() - t.getNilaiTagihan().intValue();
+            attributes.addFlashAttribute("detail", sisa);
+            return "redirect:../requestCicilan/angsuran?id="+t.getId()+"&jumlah="+jumlah;
+
+        } else if (total.compareTo(t.getNilaiTagihan()) > 0) {
+            attributes.addFlashAttribute("lebih", "jumah berlebih");
+            int sisa = total.intValue() - t.getNilaiTagihan().intValue();
+            attributes.addFlashAttribute("detail", sisa);
+            return "redirect:../requestCicilan/angsuran?id="+t.getId()+"&jumlah="+jumlah;
+        }else{
+            for (RequestCicilan cicilan : listCicilan){
+                String pilihan = request.getParameter("nilaiCicilan-"+cicilan.getId()+cicilan.getTanggalJatuhTempo());
+                if (pilihan != null && !pilihan.trim().isEmpty()) {
+
+                    RequestCicilan rc = requestCicilanDao.findById(cicilan.getId()).get();
+                    rc.setStatusCicilan(StatusCicilan.CICILAN);
+                    requestCicilanDao.save(rc);
+
+                }
+            }
+        }
+
+        return "redirect:../payment/form?tagihan="+t.getId();
+
     }
 
     @PostMapping("/studentBill/billAdmin/cicilan")
@@ -1299,15 +1455,6 @@ public class StudentBillController {
                                   @RequestParam(required = false) Tagihan tagihan){
 
         List<RequestCicilan> rc = requestCicilanDao.findByTagihanAndStatusAndStatusApprove(tagihan, StatusRecord.AKTIF, StatusApprove.WAITING);
-//        for (RequestCicilan requestCicilan1 : rc){
-//            if (requestCicilan1 == null){
-//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_1);
-//            }else if(requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_1){
-//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_2);
-//            }else if (requestCicilan1.getStatusCicilan() == StatusCicilan.CICILAN_2){
-//                requestCicilan.setStatusCicilan(StatusCicilan.CICILAN_3);
-//            }
-//        }
         requestCicilan.setTagihan(tagihan);
         requestCicilan.setStatusApprove(StatusApprove.WAITING);
         requestCicilan.setStatus(StatusRecord.AKTIF);
@@ -1326,7 +1473,6 @@ public class StudentBillController {
         for(VirtualAccount listVa : va){
             virtualAccountDao.delete(listVa);
         }
-        tagihanService.hapusTagihan(bill);
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -1342,7 +1488,9 @@ public class StudentBillController {
         RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(bill);
         if (requestCicilan != null) {
             requestCicilan.setUserApprove(karyawan);
+            requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(requestCicilan);
+            tagihanService.ubahJadiCicilan(requestCicilan);
         }
 
         return "redirect:../requestCicilan/list";
@@ -1396,11 +1544,14 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/dokumen/delete")
-    public String hapusDokumen(@RequestParam TagihanDocument document){
-        document.setStatus(StatusRecord.HAPUS);
-        tagihanDocumentDao.save(document);
+    public String hapusDokumen(@RequestParam Tagihan tagihan){
+        List<TagihanDocument> doc = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN);
+        for (TagihanDocument document : doc){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
 
-        return "redirect:../requestCicilan/angsuran?id="+document.getTagihan().getId();
+        return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
     }
 
     // pembayaran
@@ -1423,7 +1574,7 @@ public class StudentBillController {
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
-        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApprove(tagihan1, StatusRecord.AKTIF, (StatusApprove.APPROVED)));
+        model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
 
     }
 
@@ -1545,7 +1696,7 @@ public class StudentBillController {
 
             response.setHeader("Content-Disposition", "attachment;filename=bukti_pembayaran_"+pembayaran.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()+".pdf");
             OutputStream out = response.getOutputStream();
-            report.  convert(ctx, options, out);
+            report.convert(ctx, options, out);
             out.flush();
         } catch (Exception err){
             log.error(err.getMessage(), err);
@@ -1694,6 +1845,33 @@ public class StudentBillController {
 //
 //    }
 
+    // refund sp
+
+    @GetMapping("/studentBill/refund/list")
+    public void listRefund(Model model, @PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
+        }else{
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
+    }
+
+    @PostMapping("/studentBill/refund/done")
+    private String doneRefund(@RequestParam(required = false) String refund, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+
+        RefundSp refSp = refundSpDao.findById(refund).get();
+        refSp.setStatusPengembalian(StatusRecord.DONE);
+        refSp.setUserUpdate(karyawan);
+        refundSpDao.save(refSp);
+
+        return "redirect:list";
+    }
+
     private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {
         EnableFiture enableFiture = new EnableFiture();
         enableFiture.setMahasiswa(tgh.getMahasiswa());
@@ -1704,38 +1882,38 @@ public class StudentBillController {
         enableFitureDao.save(enableFiture);
     }
 
-//    @Scheduled(cron = "0 21 11 11 * *", zone = "Asia/Jakarta")
-//    public void akumulasiTagihan(){
-//
-//        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().withDayOfMonth(10));
-//        for (RequestCicilan cariCicilanHariIni : requestCicilan){
-//            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
-//            requestCicilanDao.save(cariCicilanHariIni);
-//            log.info("Update status cicilan : {}", cariCicilanHariIni);
-//
-//            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
-//            if (cicilanSelanjutnya != null){
-//                tagihanService.hapusTagihan(cariCicilanHariIni.getTagihan());
-//
-//                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-//                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
-//                requestCicilanDao.save(cicilanSelanjutnya);
-//
-//                tagihanService.requestCreateCicilan(cicilanSelanjutnya);
-//
-//            }else{
-//                log.info("Tidak ada cicilan selanjutnya!");
-//                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-//                requestCicilanDao.save(cariCicilanHariIni);
-////                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
-////                userBlock.setActive(false);
-////                userDao.save(userBlock);
-////                log.info("block smile untuk user {}", userBlock);
-//            }
-//
-//        }
-//
-//    }
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
+    public void akumulasiTagihan(){
+
+        List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
+        for (RequestCicilan cariCicilanHariIni : requestCicilan){
+            cariCicilanHariIni.setStatusCicilan(StatusCicilan.LEWAT_JATUH_TEMPO);
+            requestCicilanDao.save(cariCicilanHariIni);
+
+            log.info("Update status cicilan : {}", cariCicilanHariIni);
+
+            RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
+            if (cicilanSelanjutnya != null){
+
+                cicilanSelanjutnya.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                cicilanSelanjutnya.setNilaiCicilan(cariCicilanHariIni.getNilaiCicilan().add(cicilanSelanjutnya.getNilaiCicilan()));
+                requestCicilanDao.save(cicilanSelanjutnya);
+
+                tagihanService.ubahJadiCicilan(cicilanSelanjutnya);
+
+            }else{
+                log.info("Tidak ada cicilan selanjutnya!");
+                cariCicilanHariIni.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                requestCicilanDao.save(cariCicilanHariIni);
+//                User userBlock = userDao.findById(cariCicilanHariIni.getTagihan().getMahasiswa().getUser().getId()).get();
+//                userBlock.setActive(false);
+//                userDao.save(userBlock);
+//                log.info("block smile untuk user {}", userBlock);
+            }
+
+        }
+
+    }
 //
 //    @Scheduled(cron = "0 59 20 * * *", zone = "Asia/Jakarta")
 //    public void lewatPenangguhan(){

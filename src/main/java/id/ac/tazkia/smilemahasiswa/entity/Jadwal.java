@@ -89,4 +89,7 @@ public class Jadwal {
     private StatusApprove statusUas;
 
     private Integer kapasitas;
+
+    private String idNumberElearning;
+
 }

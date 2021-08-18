@@ -27,7 +27,7 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
                                                                                                  Prodi prodi, String angkatan,
                                                                                                  Program program, StatusRecord statusRecord);
 
-    NilaiJenisTagihan findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatus(Prodi prodi, String Angkatan, TahunAkademik tahunAkademik, Program program,
-                                                                                StatusRecord statusRecord);
+    NilaiJenisTagihan findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(Prodi prodi, String Angkatan, TahunAkademik tahunAkademik, Program program,
+                                                                                StatusRecord statusRecord, JenisTagihan jenisTagihan);
 
 }

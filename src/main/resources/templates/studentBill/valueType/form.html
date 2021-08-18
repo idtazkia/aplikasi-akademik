@@ -92,6 +92,16 @@
                                 <input type="text" name="nilai" class="form-control"
                                        placeholder="0.00" th:field="*{nilai}">
                             </div>
+                            
+                            <div class="form-group">
+                                <label >Category</label>
+                                <select name="kategori" class="form-control" th:field="*{kategori}">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="ONLINE">Online</option>
+                                    <option value="OFFLINE">Offline</option>
+                                    
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label>Batch</label>

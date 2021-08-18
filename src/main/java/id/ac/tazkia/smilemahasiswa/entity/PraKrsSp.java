@@ -39,13 +39,11 @@ public class PraKrsSp {
 
     @ManyToOne
     @JoinColumn(name = "user_delete")
-    private Karyawan userDelete;
+    private User userDelete;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
-
-    private String prioritas;
 
 }

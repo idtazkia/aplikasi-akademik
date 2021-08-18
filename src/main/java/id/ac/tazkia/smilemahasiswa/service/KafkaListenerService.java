@@ -127,21 +127,16 @@ public class KafkaListenerService {
     }
 
     private void updateTagihan(TagihanResponse tagihanResponse){
-        log.debug("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
+        log.info("Update tagihan nomor {} untuk mahasiswa {} ", tagihanResponse.getNomorTagihan(), tagihanResponse.getDebitur());
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(tagihanResponse.getDebitur());
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
-        if (tahunAkademik == null) {
-            tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        }
+        TahunAkademik tahun = tahunAkademikDao.findById(tagihanResponse.getTahunAkademik()).get();
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.
-                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(),
-                        tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
+                findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(tagihanResponse.getJenisTagihan(), tahun, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(),
                         mahasiswa.getIdProgram(), StatusRecord.AKTIF);
-        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
-        tagihan.setNomor(tagihanResponse.getNomorTagihan());
-        tagihan.setKeterangan(tagihanResponse.getKeterangan());
-
-        tagihanDao.save(tagihan);
+        Tagihan t =  tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun, mahasiswa, nilaiJenisTagihan, false);
+        t.setNomor(tagihanResponse.getNomorTagihan());
+        t.setKeterangan(tagihanResponse.getKeterangan());
+        tagihanDao.save(t);
 
     }
 
@@ -169,27 +164,6 @@ public class KafkaListenerService {
 
     }
 
-    private void kirimTagihanAfterDelete(HapusTagihanResponse response){
-        Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getDebitur());
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao
-                .findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(
-                        response.getJenisTagihan(), tahunAkademik, mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), mahasiswa.getIdProgram(), StatusRecord.AKTIF
-                );
-        Tagihan tagihan = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
-        RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
-        if (requestCicilan == null){
-            log.info("Bukan tagihan cicilan!");
-        }else{
-            requestCicilan.setWaktuApprove(LocalDateTime.now());
-            requestCicilan.setStatus(StatusRecord.AKTIF);
-            requestCicilan.setStatusApprove(StatusApprove.APPROVED);
-            requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
-            requestCicilanDao.save(requestCicilan);
-            log.info("Mengirim cicilan pertama!");
-            tagihanService.requestCreateCicilan(requestCicilan);
-        }
-    }
 
     @KafkaListener(topics = "${kafka.topic.hapus.tagihan.response}", groupId = "${spring.kafka.consumer.group-id}")
     public void handleHapusTagihanResponse(String message) {
@@ -210,7 +184,7 @@ public class KafkaListenerService {
 
             if (response.getSukses()) {
                 log.debug("Hapus tagihan sukses : {}", response.getDebitur());
-                kirimTagihanAfterDelete(response);
+//                kirimTagihanAfterDelete(response);
             }
 
 

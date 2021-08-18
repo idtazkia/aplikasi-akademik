@@ -70,7 +70,7 @@ public class Seminar {
     @JoinColumn(name = "ruangan")
     private Ruangan ruangan;
 
-    private BigDecimal nilai;
+    private BigDecimal nilai = BigDecimal.ZERO;
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")

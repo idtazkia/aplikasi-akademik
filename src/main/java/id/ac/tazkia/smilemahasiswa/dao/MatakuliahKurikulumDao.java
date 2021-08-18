@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.Kurikulum;
-import id.ac.tazkia.smilemahasiswa.entity.MatakuliahKurikulum;
-import id.ac.tazkia.smilemahasiswa.entity.Prodi;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -11,11 +8,15 @@ import java.util.List;
 
 public interface MatakuliahKurikulumDao extends PagingAndSortingRepository<MatakuliahKurikulum, String> {
     List<MatakuliahKurikulum> findByStatusNotInAndKurikulumAndKurikulumProdiAndSemester(List<StatusRecord> asList, Kurikulum kurikulum, Prodi prodi, int i);
+    List<MatakuliahKurikulum> findByStatusNotInAndKurikulumAndKurikulumProdi(List<StatusRecord> asList, Kurikulum kurikulum, Prodi prodi);
 
     List<MatakuliahKurikulum> findByStatusAndKurikulumAndSemesterNotNull(StatusRecord aktif, Kurikulum kurikulum);
 
     @Query(value = "SELECT a.nama_kelas,b.id AS id_mkkur,c.kode_matakuliah,c.nama_matakuliah,c.nama_matakuliah_english,a.id FROM kelas AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_kurikulum = b.id_kurikulum INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id LEFT JOIN (SELECT aa.*,bb.id_kelas FROM mahasiswa AS aa INNER JOIN kelas_mahasiswa AS bb ON aa.id=bb.id_mahasiswa WHERE aa.status='AKTIF' AND bb.status='AKTIF' GROUP BY bb.id_kelas) d ON a.id = d.id_kelas WHERE a.status='AKTIF' and b.status = 'AKTIF' and a.id_prodi=?1 AND a.angkatan=?2 AND semester=?3 ORDER BY nama_kelas,b.id", nativeQuery = true)
     List<Object[]> plotingDosen(Prodi prodi, String kelas, Integer semester);
 
+
+    @Query(value = "select a.id_matakuliah_kurikulum as matkur, a.id_matakuliah as matkul, a.semester, a.kode_matakuliah as kode, a.nama_matakuliah as nama, group_concat(a.id_matakuliah_setara) as matakuliah_setara, group_concat(a.id_matakuliah_pras) as matakuliah_pras, group_concat(d.id_matakuliah)as prasyarat_sudah_diambil, group_concat(b.id_matakuliah) as matkul_sudah_diambil,max(b.nilai_akhir) as nilai, min(b.grade) as grade, max(b.bobot) as bobot from (select a.*,b.id_matakuliah_setara, c.id_matakuliah_pras, c.kode_matakuliah as kode_matakuliah_pras, c.nama_matakuliah as nama_matakuliah_pras,c.nama_matakuliah_english as nama_matakuliah_pras_english, c.nilai as nilai_pras from (select a.id as id_matakuliah_kurikulum, e.id as id_matakuliah, a.semester, a.jumlah_sks ,e.* from matakuliah_kurikulum as a inner join mahasiswa as d on a.id_kurikulum = d.id_kurikulum inner join matakuliah as e on a.id_matakuliah = e.id where a.status = 'AKTIF' and d.status = 'AKTIF' and d.id = ?1 order by a.semester, e.nama_matakuliah)a left join matakuliah_setara as b on a.id_matakuliah = b.id_matakuliah left join (select a.*, d.kode_matakuliah, d.nama_matakuliah, d.nama_matakuliah_english from prasyarat as a inner join matakuliah as d on a.id_matakuliah_pras = d.id) as c on a.id_matakuliah = c.id_matakuliah or b.id_matakuliah_setara = c.id_matakuliah)a left join matakuliah_setara as u on a.id_matakuliah_pras = u.id_matakuliah left join (select a.*,d.id_matakuliah,e.kode_matakuliah, e.nama_matakuliah, e.nama_matakuliah_english,c.id_matakuliah_kurikulum as mkk from krs_detail as a inner join krs as b on a.id_krs = b.id inner join jadwal as c on a.id_jadwal = c.id inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id inner join matakuliah as e on d.id_matakuliah = e.id where a.id_mahasiswa = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and c.status = 'AKTIF' and d.status = 'AKTIF' group by a.id) b on a.id_matakuliah = b.id_matakuliah or a.id_matakuliah_setara = b.id_matakuliah or a.kode_matakuliah = b.kode_matakuliah or a.nama_matakuliah = b.nama_matakuliah or a.nama_matakuliah_english = b.nama_matakuliah_english  or a.id_matakuliah_kurikulum = b.mkk left join (select a.*,d.id_matakuliah,e.kode_matakuliah, e.nama_matakuliah, e.nama_matakuliah_english,c.id_matakuliah_kurikulum as mkk from krs_detail as a inner join krs as b on a.id_krs = b.id inner join jadwal as c on a.id_jadwal = c.id inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id inner join matakuliah as e on d.id_matakuliah = e.id where a.id_mahasiswa = ?1 and a.status = 'AKTIF' and b.status = 'AKTIF' and c.status = 'AKTIF' and d.status = 'AKTIF' group by a.id) d on (d.id_matakuliah = a.id_matakuliah_pras or d.kode_matakuliah = a.kode_matakuliah_pras or d.nama_matakuliah = a.nama_matakuliah_pras or d.nama_matakuliah_english = a.nama_matakuliah_pras_english or d.id_matakuliah = u.id_matakuliah_setara) and d.bobot >= a.nilai_pras group by a.id_matakuliah_kurikulum order by a.semester", nativeQuery = true)
+    List<Object[]> listMatkulSelection(Mahasiswa mahasiswa);
 
 }

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Request Pengembalian SP </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <div class="input-group mb-3">
+                                    <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Nim</th>
+                                <th>Nama</th>
+                                <th>Nomor Rekening</th>
+                                <th>Nama bank</th>
+                                <th>Jumlah</th>
+                                <th>Telepon Seluler</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Download Bukti Pembayaran</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data,row : ${listRefund}">
+                                <td th:text="${(row.index + 1)}">1</td>
+                                <td th:text="${data.mahasiswa.nim}">PATRICK STAR</td>
+                                <td th:text="${data.mahasiswa.nama}"></td>
+                                <td th:text="${data.nomorRekening}"></td>
+                                <td th:text="${data.namaBank}"></td>
+                                <td th:text="${'Rp. '+#numbers.formatDecimal(data.jumlah, 0, 'POINT', 2, 'COMMA')}"></td>
+                                <td th:text="${data.nomorTelepon}"></td>
+                                <td th:text="${#temporals.format(data.timeUpdate, 'dd - MMM - yyyy HH:mm')}"></td>
+                                <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.pembayaran.id})}" class="fas fa-print text-lg"></a></td>
+                                <td>
+                                    <a  class="btn btn-danger btn-sm" href="#!"
+                                        th:if="${data.statusPengembalian.UNDONE} == ${data.statusPengembalian}"
+                                        th:text="${data.statusPengembalian}">
+                                    </a>
+
+                                    <a type="button" class="btn btn-success btn-sm" href="#!"
+                                       th:if="${data.statusPengembalian.DONE} == ${data.statusPengembalian}"
+                                       th:text="${data.statusPengembalian}">
+                                    </a>
+                                </td>
+                                <td th:if="${data.statusPengembalian.UNDONE} == ${data.statusPengembalian}">
+                                    <form method="post" th:action="@{/studentBill/refund/done}">
+                                        <input type="hidden" name="refund" th:value="${data.id}">
+                                        <button type="submit" class="btn btn-success btn-sm">Done</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

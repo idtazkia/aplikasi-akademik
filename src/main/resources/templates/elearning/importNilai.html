@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="sweetalert2.all.min.js"></script>
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Elearning Tazkia</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Import Penilaian Elearning </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Import Nilai</h3>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form th:action="@{/elearning/importNilai}" method="post">
+                            <div class="form-group">
+                                <label >Tahun Akademik</label>
+                                <select class="form-control" onchange="myTahun()"
+                                        id="select2-tahun" th:field="*{tahunAkademik}" required>
+                                    <option value=""></option>
+                                    <option value="" disabled>Pilih Tahun Akademik</option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}">STEI Tazkia</option>
+                                </select>
+                                <input type="hidden" name="ta" id="isiTahun">
+                            </div>
+                            <div class="form-group">
+                                <label >Prodi</label>
+                                <select class="form-control" onchange="myProdi()"
+                                        id="select2-prodi" th:field="*{prodi}" required>
+                                    <option value=""></option>
+                                    <option value="" disabled>Pilih Prodi</option>
+                                    <option th:each="pro : ${prodi}"
+                                            th:text="${pro.namaProdi}"
+                                            th:value="${pro.id}">prodi</option>
+                                </select>
+                                <input type="hidden" name="prodi" id="isiProdi">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama matakuliah</label>
+                                <select class="form-control" id="locality-dropdown" onchange="myJadwal()">
+                                </select>
+                                <input type="hidden" id="isiJadwal" name="jadwal">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Nama Mahasiswa</label>
+                                <select class="form-control" id="locality-dropdown-2" onchange="myMahasiswa()">
+                                </select>
+                                <input type="hidden" id="isiMahasiswa" name="nim">
+                            </div>
+
+<!--                            <div class="form-group">-->
+<!--                                <label>Description</label>-->
+<!--                                <input type="text" name="keterangan"-->
+<!--                                       class="form-control" placeholder="Description">-->
+<!--                            </div>-->
+
+                            <input type="hidden" name="id" >
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="tugas" >Import TUGAS</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uts" >Import UTS</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uas" >Import UAS</button>c
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="sds" >Import SDS</button>
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function($){
+        $('#locality-dropdown').select2();
+        $('#locality-dropdown-2').select2();
+        $('#select2-tahun').select2();
+        $('#select2-prodi').select2();
+
+        $('#select2-tahun').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiTahun').val(e.params.args.data.id);
+        });
+        $('#select2-prodi').on('select2:selecting', function(e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiProdi').val(e.params.args.data.id);
+        });
+
+        $('#locality-dropdown').on('select2:selecting', function (e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiJadwal').val(e.params.args.data.id);
+        });
+        $('#locality-dropdown-2').on('select2:selecting', function (e){
+            console.log('Selecting: ' , e.params.args.data.id);
+            $('#isiMahasiswa').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+
+    function myTahun(){
+
+        console.log($('#isiTahun').val());
+        const url = '/api/prodi2?ta='+$('#isiTahun').val();
+
+        $.getJSON(url, function (data){
+
+        });
+
+    }
+
+    function myProdi(){
+
+        let dropdown = $('#locality-dropdown');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Matakuliah</option>')
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiTahun').val());
+        const url = '/api/tahun2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val();
+
+        $.getJSON(url, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliahKurikulum.matakuliah.namaMatakuliah + ' - ' + entry.kelas.namaKelas + ' - ' + entry.dosen.karyawan.namaKaryawan))
+            })
+
+        });
+
+    }
+
+    function myJadwal() {
+        $('#submit').show();
+        $('#notif').hide();
+        $('#sks').hide();
+
+        var x = document.getElementById('locality-dropdown').value;
+
+        console.log(x);
+        const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
+        $.getJSON(url, function (data) {
+
+        });
+
+        let dropdown = $('#locality-dropdown-2');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Mahasiswa</option>')
+        dropdown.prop('selectedIndex', 0);
+        console.log($('#isiJadwal').val());
+        const url2 = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
+
+        $.getJSON(url2, function (data){
+            console.log(data);
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.mahasiswa.id).text(entry.mahasiswa.nim + ' - ' +entry.mahasiswa.nama))
+            })
+
+        });
+    }
+
+
+        function myMahasiswa() {
+            $('#submit').show();
+            $('#notif').hide();
+            $('#sks').hide();
+
+            var x = document.getElementById('locality-dropdown-2').value;
+            console.log(x);
+            const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&nim='+$('#isiMahasiswa').val();
+            $.getJSON(url, function (data) {
+
+
+            });
+        }
+
+
+
+
+
+
+</script>

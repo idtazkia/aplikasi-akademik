@@ -8,6 +8,36 @@ z<!DOCTYPE html>
     <title>Curriculum Courses</title>
 </head>
 <body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        var matakuliah = /*[[${matakuliah}]]*/ ["001"];
+
+        $(document).ready(function () {
+
+
+            //  var id = matakuliah.matakuliah.id;
+            //  var matkul = matakuliah.matakuliah.namaMatakuliah;
+            //  console.log(id);
+            //  console.log(matkul);
+            //
+            // var data = [
+            //     {
+            //         id: id,
+            //         text: matkul
+            //     }
+            // ];
+            //
+            // $("#courseList").select2("trigger", "select", {
+            //     data: { id: "5" }
+            // });
+             // $('#mySelect2').val(setaraId);
+             // $('#mySelect2').trigger("change");
+
+
+
+        });
+    </script>
+</th:block>
 <div layout:fragment="main">
     <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
         <div class="container-fluid">
@@ -58,19 +88,17 @@ z<!DOCTYPE html>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Courses</label>
-                                        <input type="text" th:field="*{matakuliah.namaMatakuliah}" name="namaMatakuliah" class="form-control"
-                                               id="matakuliah" placeholder="Search ..."
-                                               data-provide="typeahead"
-                                               autocomplete="off" required autofocus>
+                                        <label>Matakuliah</label>
+                                        <select id="courseList" name="matakuliah" th:field="*{matakuliah}" class="js-example-basic-multiple js-states form-control js-data-example-ajax">
+                                            <option th:if="${matakuliah.id != null}" th:text="${matakuliah.matakuliah.namaMatakuliah}" th:value="${matakuliah.matakuliah.id}"></option>
+                                        </select>
                                     </div>
                                 </div>
-                                <input type="hidden" name="matakuliah" th:field="*{matakuliah}">
-                                <input type="hidden" name="id" th:field="*{id}">
+                                <input type="hidden" name="id" id="idMatkur" th:field="*{id}">
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Code Courses</label>
+                                        <label>Kode Matakuliah</label>
                                         <input type="text" id="kodeMatkul" th:field="*{matakuliah.kodeMatakuliah}" name="kodeMatakuliah" readonly class="form-control" />
                                     </div>
                                 </div>
@@ -78,59 +106,36 @@ z<!DOCTYPE html>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Courses(English)</label>
+                                        <label>Nama Matakuliah Inggris</label>
                                         <input type="text" id="matkulEng" th:field="*{matakuliah.namaMatakuliahEnglish}" readonly name="namaMatakuliahEnglish" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Abbreviation</label>
+                                        <label>Singkatan</label>
                                         <input type="text" name=singkatan id="singkatan" th:field="*{matakuliah.singkatan}" readonly class="form-control" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Punya Responsi</label>
-                                        <br>
-                                        <input type="checkbox" th:field="*{responsi}" name="responsi" value="N" checked data-toggle="toggle">
-
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Skripsi</label>
-                                        <br>
-                                        <input type="checkbox" name="statusSkripsi" th:field="*{statusSkripsi}" value="AKTIF" data-toggle="toggle">
-                                    </div>
-                                </div>
                                 <input type="hidden" name="kurikulum" th:value="${kurikulum.id}">
-
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Validasi Konsep Note</label>
+                                        <br>
+                                        <select name="konsepNote" class="form-control" th:field="*{konsepNote}">
+                                            <option value="NONAKTIF">NONAKTIF</option>
+                                            <option value="MAGANG">Magang</option>
+                                            <option value="METOLIT">Metodelogi Penelitian</option>
+                                        </select>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Blocking Konsep Note</label>
-                                        <br>
-                                        <input type="checkbox" th:field="*{konsepNote}" name="konsepNote" value="AKTIF" data-toggle="toggle">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Blocking SEMPRO</label>
-                                        <br>
-                                        <input type="checkbox" name="sempro" th:field="*{sempro}" value="AKTIF" data-toggle="toggle">
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Access</label>
+                                        <label>Akses</label>
                                         <select name="akses" th:field="*{akses}" class="form-control">
                                             <option value="" disabled selected>-- Select One --</option>
                                             <option value="WAJIB_UMUM">WAJIB UMUM</option>
@@ -142,17 +147,17 @@ z<!DOCTYPE html>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Amount SKS</label>
-                                        <input type="text" th:field="*{jumlahSks}" name="jumlahSks" class="form-control">
+                                        <label>Total SKS</label>
+                                        <input type="text" required th:field="*{jumlahSks}" name="jumlahSks" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Concentration</label>
+                                        <label>Konsentrasi</label>
                                         <select name="konsentrasi" th:field="*{konsentrasi}" id="" class="form-control">
-                                            <option value="" disabled selected>-- Select One --</option>
+                                            <option value=""  selected>-- Select One --</option>
                                             <option th:each="data : ${konsentrasi}"
                                                     th:text="${data.namaKonsentrasi}"
                                                     th:value="${data.id}">AS-SISTEM INFORMASI</option>
@@ -162,7 +167,7 @@ z<!DOCTYPE html>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Semester</label>
-                                        <select name="semester" th:field="*{semester}" class="form-control">
+                                        <select name="semester" required th:field="*{semester}" class="form-control">
                                             <option value="" disabled selected>-- Select One --</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -179,13 +184,13 @@ z<!DOCTYPE html>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>minimum IPK</label>
+                                        <label>Minimal IPK</label>
                                         <input type="text" th:field="*{ipkMinimal}" name="ipkMinimal" class="form-control"  placeholder="0.00">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Minimum SKS</label>
+                                        <label>Minimimal SKS</label>
                                         <input type="text" th:field="*{sksMinimal}" name="sksMinimal" class="form-control" />
                                     </div>
                                 </div>
@@ -193,21 +198,21 @@ z<!DOCTYPE html>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Upload Syllabus</label>
+                                        <label>Upload Silabus</label>
                                         <input type="file" name="file" class="form-control" >
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>SDS weights <span style="color: red; font-size: 10px;">*Fields are only numbers</span></label>
+                                        <label>Bobot SDS<span style="color: red; font-size: 10px;">*Fields are only numbers</span></label>
                                         <input type="number" th:field="*{sds}" name="sds" class="form-control" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <button class="btn btn-primary">Save</button>
-                                <a th:href="@{/academic/curriculumCourses/list}" class="btn btn-danger">Cancel</a>
+                                <button class="btn btn-primary">Simpan</button>
+                                <a th:href="@{/academic/curriculumCourses/list}" class="btn btn-danger">Batal</a>
                             </div>
 
 
@@ -224,8 +229,44 @@ z<!DOCTYPE html>
 </body>
 </html>
 <script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Select One",
-        allowClear: true
+
+    $("#courseList").select2(
+        {
+            placeholder: 'Cari Matakuliah',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/select2/course?search=' + params.term;
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].id,text:data[i].text,value:data[i].id}
+                    }
+                    return {
+                        results: data
+                    };
+                }
+            },
+
+        });
+
+    $('#courseList').on('select2:selecting', function(e) {
+        console.log(e.params.args.data.id);
+        const url = '/course/detail?search='+e.params.args.data.id;
+        $.getJSON(url, function (data) {
+
+            $('#matkulEng').val(data.namaMatakuliahEnglish);
+            $('#kodeMatkul').val(data.kodeMatakuliah);
+            $('#singkatan').val(data.singkatan);
+        });
     });
+
 </script>

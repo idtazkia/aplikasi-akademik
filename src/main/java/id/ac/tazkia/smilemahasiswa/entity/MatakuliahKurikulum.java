@@ -33,10 +33,12 @@ public class MatakuliahKurikulum {
 
     private String responsi;
 
+    @NotNull
     private Integer semester;
 
     private String matakuliahKurikulumSemester;
 
+    @NotNull
     private Integer jumlahSks;
 
     private String syaratTugasAkhir;

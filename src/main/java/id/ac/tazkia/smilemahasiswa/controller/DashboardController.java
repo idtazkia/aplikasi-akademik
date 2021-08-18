@@ -5,6 +5,7 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.script.Bindings;
+import javax.swing.text.html.HTML;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -115,6 +118,15 @@ public class DashboardController {
     @Autowired
     private KurikulumDao kurikulumDao;
 
+    @Autowired
+    private PraKrsSpDao praKrsSpDao;
+
+    @Autowired
+    private BiayaSksSpDao biayaSksDao;
+
+    @Autowired
+    private RefundSpDao refundSpDao;
+
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
         return agamaDao.findByStatus(StatusRecord.AKTIF);
@@ -184,12 +196,36 @@ public class DashboardController {
         }else {
             model.addAttribute("cicilan", cekCicilan);
         }
-        List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa, ta);
+        List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa.getId(), ta.getId());
         if (cekPenangguhan.isEmpty()){
             model.addAttribute("cekPenangguhan", "cekPenangguhan");
         }else {
             model.addAttribute("penangguhan", cekPenangguhan);
         }
+
+        // tampilan pra krs sp
+        model.addAttribute("mhs", mahasiswa);
+        BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
+        List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId());
+        model.addAttribute("listSp", listSp);
+        System.out.println("sp : " + listSp);
+        if (listSp.isEmpty()) {
+            model.addAttribute("message", "message");
+        }
+        model.addAttribute("jumlah", bs.getBiaya());
+        for (Object[] list : listSp){
+            Mahasiswa mhs = mahasiswaDao.findById(list[5].toString()).get();
+            TahunAkademik tahunAkademik = tahunAkademikDao.findById(list[6].toString()).get();
+            Tagihan tagihan = tagihanDao.tagihanSp(mhs.getId(), tahunAkademik.getId());
+            if (tagihan == null){
+                model.addAttribute("cekTagihan", "cekTagihan");
+            }
+        }
+
         return "dashboard";
     }
 

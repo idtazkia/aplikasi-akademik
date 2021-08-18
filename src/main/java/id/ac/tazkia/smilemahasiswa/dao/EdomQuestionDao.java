@@ -13,6 +13,8 @@ import java.util.List;
 public interface EdomQuestionDao extends PagingAndSortingRepository<EdomQuestion, String> {
 
     List<EdomQuestion> findByStatusOrderByNomor(StatusRecord statusRecord);
+    EdomQuestion findByStatusAndNomorAndTahunAkademik(StatusRecord status,Integer nomor, TahunAkademik tahunAkademik );
+    List<EdomQuestion> findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord status,TahunAkademik tahunAkademik);
 
 
 

@@ -18,6 +18,8 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     Mahasiswa findByNim(String nim);
 
+
+
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto(m.idAbsen,m.nama,m.rfid,true ,'',0) from  Mahasiswa m where m.status = :status and m.rfid is not null")
     List<ApiRfidDto> rfidMahasiswa(@Param("status")StatusRecord statusRecord);
 

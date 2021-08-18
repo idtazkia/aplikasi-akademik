@@ -62,7 +62,12 @@
                                     <tr>
                                         <td>Number of Students</td>
                                         <td>&nbsp; :</td>
-                                        <td style="padding-left: 5px;" th:text="${jumlahMahasiswa}" >24</td>
+                                        <td style="padding-left: 5px;" th:text="${edom[4]}" >24</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number of students who have filled in</td>
+                                        <td>&nbsp; :</td>
+                                        <td style="padding-left: 5px;" th:text="${edom[5]}" >24</td>
                                     </tr>
                                 </table>
                             </div>
@@ -79,34 +84,34 @@
                                     <tbody>
                                     <tr>
                                         <td><center>1</center></td>
-                                        <td>Metelogi Pembelajaran</td>
-                                        <td th:text="${e1}"><center>4.2</center></td>
+                                        <td th:text="${edomQuestion1.pertanyaan}">Disiplin masuk kelas</td>
+                                        <td th:text="${edom[6]}"><center>4.2</center></td>
                                     </tr>
                                     <tr>
                                         <td><center>2</center></td>
-                                        <td>Materi Yang Disampaikan</td>
-                                        <td th:text="${e2}"><center>4.2</center></td>
+                                        <td th:text="${edomQuestion2.pertanyaan}">Disiplin masuk kelas</td>
+                                        <td th:text="${edom[7]}"><center>4.2</center></td>
                                     </tr>
                                     <tr>
                                         <td><center>3</center></td>
-                                        <td>Etika dalam pembelajaran</td>
-                                        <td th:text="${e3}"><center>4.2</center></td>
+                                        <td th:text="${edomQuestion3.pertanyaan}">Disiplin masuk kelas</td>
+                                        <td th:text="${edom[8]}"><center>4.2</center></td>
                                     </tr>
                                     <tr>
                                         <td><center>4</center></td>
-                                        <td>Kedisiplinan</td>
-                                        <td th:text="${e4}"><center>4.2</center></td>
+                                        <td th:text="${edomQuestion4.pertanyaan}">Disiplin masuk kelas</td>
+                                        <td th:text="${edom[9]}"><center>4.2</center></td>
                                     </tr>
                                     <tr>
                                         <td><center>5</center></td>
-                                        <td>Perhatian kepada Mahasiswa</td>
-                                        <td th:text="${e5}"><center>4.2</center></td>
+                                        <td th:text="${edomQuestion5.pertanyaan}">Disiplin masuk kelas</td>
+                                        <td th:text="${edom[10]}"><center>4.2</center></td>
                                     </tr>
                                     </tbody>
                                     <thead class="thead-light">
                                     <tr>
                                         <th colspan="2"><center>Average</center></th>
-                                        <th th:text="${rata}">4.2</th>
+                                        <th th:text="${#numbers.formatDecimal(edom[11], 0, 'COMMA', 2, 'POINT')}">4.2</th>
                                     </tr>
                                     </thead>
                                 </table>

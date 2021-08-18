@@ -78,6 +78,13 @@
                                             <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
                                         </form>
                                     </td>
+                                    <td th:if="${data.status == data.status.PRAAKTIF}">
+                                        <form th:action="@{/academic/year/active (tahunAkademik = ${data.id})}" method="post">
+                                            <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
+                                        </form>
+                                        <br>
+                                        <button class="btn btn-info btn-sm"> Praaktif</button>
+                                    </td>
                                     <td>
                                         <a th:href="@{/academic/year/form (id = ${data.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>
                                     </td>

@@ -12,11 +12,6 @@ import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -37,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -120,24 +114,13 @@ public class SidangController {
     public Object[] validasiSidang(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
-        System.out.println(tanggal.getDayOfWeek().getValue());
         if (tanggal.getDayOfWeek().getValue() == 7){
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            System.out.println(hari.getNamaHari());
-            System.out.println(ta.getId());
-            System.out.println(jamMulai);
-            System.out.println(jamSelesai);
-            System.out.println(ruangan.getNamaRuangan());
             return sidangDao.validasiJadwalSidang(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
         }else {
             Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            System.out.println(hari.getNamaHari());
-            System.out.println(tahunAkademik.getId());
-            System.out.println(jamMulai);
-            System.out.println(jamSelesai);
-            System.out.println(ruangan.getNamaRuangan());
             return sidangDao.validasiJadwalSidang(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
 
         }

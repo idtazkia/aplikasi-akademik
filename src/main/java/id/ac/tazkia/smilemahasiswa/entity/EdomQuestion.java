@@ -22,7 +22,14 @@ public class EdomQuestion {
     @NotNull
     private String pertanyaan;
 
+    @NotNull
+    private String bahasa;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tahun_akademik")
+    private TahunAkademik tahunAkademik;
 
 }

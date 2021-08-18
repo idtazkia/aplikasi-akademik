@@ -52,6 +52,13 @@
 
                     </ul>
                 </div>
+
+                <div class="alert alert-danger" th:if="${kosong != null}">
+                    <strong>
+                        <center><p th:text="${kosong}">Silahkan selesaikan dulu pembayaran, atau hubungi bagian keuangan</p></center>
+                    </strong>
+                </div>
+
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="tab-content" id="myTabContent">
@@ -584,13 +591,11 @@
 
                                                 <div class="row col-md-12">
                                                     <div class="col-md-4">
-                                                        <center>
 
-                                                        </center>
                                                     </div>
 
                                                     <div class="col-md-4">
-                                                        <center th:if="${seminar.status == seminar.status.APPROVED}">
+                                                        <center>
                                                             <b>Total Score</b>
                                                             <p th:text="${seminar.nilai}">Abu Hanifah 1</p>
                                                         </center>

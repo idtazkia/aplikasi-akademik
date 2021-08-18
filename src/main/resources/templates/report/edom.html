@@ -252,7 +252,7 @@
                                     </tr>
                                     <tr>
                                         <td>1</td>
-                                        <td>Metelogi Pembelajaran</td>
+                                        <td th:text="${question1.pertanyaan}">Disiplin masuk kelas</td>
                                         <td class="center"><input type="radio" value="1" th:name="${data.id+ '1'}"></td>
                                         <td class="center"><input type="radio" value="2" th:name="${data.id+ '1'}"></td>
                                         <td class="center"><input type="radio" value="3" th:name="${data.id+ '1'}"></td>
@@ -261,7 +261,7 @@
                                     </tr>
                                     <tr>
                                         <td>2</td>
-                                        <td>Materi Yang Disampaikan</td>
+                                        <td th:text="${question2.pertanyaan}">Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>
                                         <td class="center"><input type="radio" value="1" th:name="${data.id+ '2'}"></td>
                                         <td class="center"><input type="radio" value="2" th:name="${data.id+ '2'}"></td>
                                         <td class="center"><input type="radio" value="3" th:name="${data.id+ '2'}"></td>
@@ -270,7 +270,7 @@
                                     </tr>
                                     <tr>
                                         <td>3</td>
-                                        <td>Etika dalam pembelajaran</td>
+                                        <td th:text="${question3.pertanyaan}">Cara menyampaikan materi perkuliahan</td>
                                         <td class="center"><input type="radio" value="1" th:name="${data.id+ '3'}"></td>
                                         <td class="center"><input type="radio" value="2" th:name="${data.id+ '3'}"></td>
                                         <td class="center"><input type="radio" value="3" th:name="${data.id+ '3'}"></td>
@@ -279,7 +279,7 @@
                                     </tr>
                                     <tr>
                                         <td>4</td>
-                                        <td>Kedisiplinan</td>
+                                        <td th:text="${question4.pertanyaan}">Keragaman konten materi pada e learning</td>
                                         <td class="center"><input type="radio" value="1" th:name="${data.id+ '4'}"></td>
                                         <td class="center"><input type="radio" value="2" th:name="${data.id+ '4'}"></td>
                                         <td class="center"><input type="radio" value="3" th:name="${data.id+ '4'}"></td>
@@ -288,7 +288,7 @@
                                     </tr>
                                     <tr>
                                         <td>5</td>
-                                        <td>Perhatian kepada Mahasiswa</td>
+                                        <td th:text="${question5.pertanyaan}">Perhatian kepada Mahasiswa</td>
                                         <td class="center"><input type="radio" value="1" th:name="${data.id+ '5'}"></td>
                                         <td class="center"><input type="radio" value="2" th:name="${data.id+ '5'}"></td>
                                         <td class="center"><input type="radio" value="3" th:name="${data.id+ '5'}"></td>

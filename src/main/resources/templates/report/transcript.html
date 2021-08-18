@@ -108,17 +108,18 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Transkrip List</h2>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                        <h2>Transkrip List</h2><br>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" th:if="${tahun != null && total < 2}">
+                                            <i class="fas fa-plus"></i>
+                                            Akselerasi
+                                        </button>
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDelete" th:if="${tahun != null && total > 0}">
+                                            <i class="fas fa-plus"></i>
+                                            Hapus Request SP
+                                        </button>
+
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <!--<div class="breadcomb-report">
-                                    <a th:href="@{/study/form}">
-                                        <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add KRS</button>
-                                    </a>
-                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -130,7 +131,114 @@
     <div class="container">
         <div class="col-md-12 col-xs-12 background-color-white">
 
+            <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="post" th:action="@{/report/akselerasi}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label><center>Matakuliah</center></label>
+                                                <select name="idMatkul" class="form-control" id="select-matkul" onchange="matkul(this)" required>
+                                                    <option value="kosong"></option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] == null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] != null && data[7] != null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                </select>
+                                                <input type="hidden" id="jumlah" name="jumlah" th:value="${total}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="row2" class="row" style="display: none">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label><center>Matakuliah 2</center></label>
+                                                <select name="idMatkul2" class="form-control" id="select-matkul2" onchange="matkul2(this)" required>
+                                                    <option value="kosong"></option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] == null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                    <option th:each="data : ${matakuliah}"
+                                                            th:if="${data[11] == null && data[6] != null && data[7] != null}"
+                                                            th:text="${data[4]}"
+                                                            th:value="${data[0]}">STEI Tazkia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div id="saveButton" class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit"  class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalDelete" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                <div class="modal-dialog " role="document">
+                    <div class="modal-content">
+                        <form method="post" th:action="@{/report/sp/delete}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Delete matakuliah</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="basic-tb-hd">
+                                        <h2>Daftar Request SP</h2>
+                                    </div>
+                                    <div class="bsc-tbl-st">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Matakuliah</th>
+                                                <th>Jumlah Sks</th>
+                                                <th>Stataus</th>
+                                            </tr>
+                                            <tr th:each="data, row : ${hapusSp}">
+                                                <td th:text="${(row.index + 1)}"></td>
+                                                <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                                <td th:text="${data.matakuliahKurikulum.jumlahSks}">3</td>
+                                                <td>
+                                                    <a  class="btn btn-primary btn-sm"
+                                                        th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
+                                                        th:text="${data.statusApprove}">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                <p> <b> Note :</b> Ketika menghapus reqeust ini, maka tagihan pun akan terhapus, silahkan request ulang matakuliah</p>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit"  class="btn btn-danger">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <form method="get" th:action="@{/study/prakrssp}">
+                <input type="hidden" id="totalMatkul" name="total" th:value="${total}">
                 <div class="card-body" th:each="dataSemester,row : ${semesterTranskript}">
                     <div class="card shadow">
                         <div class="table-responsive">
@@ -149,7 +257,7 @@
                                     <th>Bobot</th>
                                     <th>Mutu</th>
                                     <div th:if="${tahun != null}">
-                                        <div th:if="${ceklis == null}">
+                                        <div th:if="${total < 2}">
                                             <th width="10%" class="text-center">Request SP</th>
                                         </div>
                                     </div>
@@ -165,8 +273,8 @@
                                     <td th:if="${dataSemester[0] == data[0]}" th:text="${data[6]}"><b>9</b></td>
                                     <td th:if="${dataSemester[0] == data[0]}">
                                         <div th:if="${tahun != null}">
-                                            <div th:if="${ceklis == null}">
-                                                <div class="text-center" th:if="${data[5] == 'C' || data[5] == 'D' || data[5] == 'E'}">
+                                            <div th:if="${total < 2}">
+                                                <div class="text-center" th:if="${data[5] == 'C+' || data[5] == 'C' || data[5] == 'D' || data[5] == 'E'}">
 
                                                     <input type="checkbox" class="select-check" name="checkBox" th:value="${data[9]}">
 
@@ -182,7 +290,7 @@
                 </div>
 
                 <div th:if="${tahun != null}">
-                    <div th:if="${ceklis == null}">
+                    <div th:if="${total < 2}">
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <button style="margin-bottom: 20px;" type="submit" class="mb-5 btn btn-success btn-sm"> Request Semester Pendek (Maks 2)</button>
@@ -201,7 +309,126 @@
 </html>
 
 <script type="text/javascript">
-    var max_limit = 2; // Max Limit
+
+    function matkul(a) {
+        var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+        console.log(x);
+
+        var row2  = document.getElementById("row2");
+
+        if (x == "kosong"){
+            row2.style.display = "none";
+        }else {
+            if ($('#jumlah').val() < 1){
+                row2.style.display = "block";
+            }else {
+                row2.style.display = "none";
+            }
+        }
+
+        };
+
+
+
+    // function matkul(a) {
+    //     var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+    //     console.log(x);
+    //
+    //     const url = '/api/prasyarat?search='+x;
+    //
+    //     $.getJSON(url, function (data) {
+    //         console.log(data.idUjian)
+    //         console.log(data.matakuliah)
+    //
+    //         var button  = document.getElementById("saveButton");
+    //         var row2  = document.getElementById("row2");
+    //         var row3  = document.getElementById("row3");
+    //         var empty  = document.getElementById("emptyButton");
+    //         if (data.idUjian == "LULUS"){
+    //             $('#prasyarat').val(data.matakuliah);
+    //             $('#status').val(data.idUjian);
+    //             if ($('#jumlah').val() < 1){
+    //                 button.style.display = "block";
+    //                 empty.style.display = "none";
+    //                 row2.style.display = "block";
+    //                 row3.style.display = "block";
+    //             }else {
+    //                 button.style.display = "block";
+    //                 empty.style.display = "none";
+    //                 row2.style.display = "none";
+    //                 row3.style.display = "none";
+    //             }
+    //
+    //         }else if (data.idUjian == "GAGAL"){
+    //             $('#prasyarat').val(data.matakuliah);
+    //             $('#status').val("Belum Mengambil Prasyarat");
+    //             empty.style.display = "block";
+    //             button.style.display = "none";
+    //             row2.style.display = "none";
+    //             row3.style.display = "none";
+    //             $('#select-matkul2').prop('selectedIndex',0);
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //         }else {
+    //                 $('#prasyarat').val("");
+    //                 $('#status').val("");
+    //                 empty.style.display = "block";
+    //                 button.style.display = "none";
+    //                 row2.style.display = "none";
+    //                 row3.style.display = "none";
+    //                 $('#select-matkul2').prop('selectedIndex',0);
+    //                 $('#prasyarat2').val("");
+    //                 $('#status2').val("");
+    //         }
+    //
+    //     });
+    // }
+
+    // function matkul2(a) {
+    //     var x = (a.value || a.options[a.selectedIndex].value);  //crossbrowser solution =)
+    //     console.log(x);
+    //
+    //     const url = '/api/prasyarat?search='+x;
+    //
+    //     $.getJSON(url, function (data) {
+    //
+    //         var button  = document.getElementById("saveButton");
+    //         var row2  = document.getElementById("row2");
+    //         var empty  = document.getElementById("emptyButton");
+    //         if (data.idUjian == "LULUS"){
+    //             $('#prasyarat2').val(data.matakuliah);
+    //             $('#status2').val(data.idUjian);
+    //             button.style.display = "block";
+    //             empty.style.display = "none";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //
+    //         }else if (data.idUjian == "GAGAL"){
+    //             $('#prasyarat2').val(data.matakuliah);
+    //             $('#status2').val("Belum Mengambil Prasyarat");
+    //             empty.style.display = "block";
+    //             button.style.display = "none";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //         }else {
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //             button.style.display = "block";
+    //             row2.style.display = "block";
+    //             row3.style.display = "block";
+    //             $('#select-matkul2').prop('selectedIndex',0);
+    //             $('#prasyarat2').val("");
+    //             $('#status2').val("");
+    //         }
+    //
+    //     });
+    // }
+
+    if ($('#totalMatkul').val() < 1){
+        var max_limit = 2; // Max Limit
+    }else {
+        max_limit = 1; // Max Limit
+    }
     $(document).ready(function (){
         $(".select-check:input:checkbox").each(function (index){
             this.checked = (".select-check:input:checkbox" < max_limit);
@@ -211,7 +438,6 @@
             }
         });
     });
-
 
 
 </script>

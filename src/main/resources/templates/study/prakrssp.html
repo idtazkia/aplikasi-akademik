@@ -133,90 +133,183 @@
             <div class="col-md-6 col-sm-12 background-color-white">
 
 
-                <form method="post" th:action="@{/prakrs/request/sp}">
-                    <div class="card-body">
-                        <div class="alert alert-danger" th:if="${gagal != null}">
-                            Prioritas tidak bisa sama, setiap matakuliah pilih salah satu, tidah bisa sama!
-                        </div>
-                        <div class="card shadow">
+                <div class="card-body">
+                    <div class="card shadow">
 
-                            <div style="margin-top: 20px;" class="row">
+                        <div style="margin-top: 20px;" class="row">
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label >Jumlah sks</label>
-                                        <input type="text" class="form-control" readonly th:value="${jumlahSks}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label >Total tagihan untuk <span th:text="${jumlahSks}"></span> sks</label>
-                                        <input type="text" class="form-control" readonly th:value="${totalTagihan}">
-                                    </div>
-                                </div>
 
-                                <div th:if="${cekbox == 1}">
-                                    <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
-                                    <div class="col-md-12">
-                                        <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
-                                        <div class="form-group">
-                                            <label >Prioritas</label>
-                                            <select name="prioritas1" class="form-control" required>
-                                                <option value="">-- Pilih Prioritas --</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                            </select>
+                            <div th:if="${cekbox == 1}">
+                                <div class="col-md-12">
+                                    <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Total sks</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahSks1}">
+                                            </div>
                                         </div>
-                                        <br>
-                                    </div>
-                                </div>
-
-                                <div th:if="${cekbox == 2}">
-                                    <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
-                                    <input type="hidden" name="idMatkul2" th:value="${cekCheckbox2.id}">
-                                    <div class="col-md-12">
-                                        <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
-                                        <div class="form-group">
-                                            <label >Prioritas</label>
-                                            <select name="prioritas1" class="form-control" required>
-                                                <option value="">-- Pilih Prioritas --</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                            </select>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Jumlah mahasiswa</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahPerMatkul1}">
+                                            </div>
                                         </div>
-                                        <br>
-                                        <h4 th:text="${cekCheckbox2.matakuliah.namaMatakuliah}"></h4>
-                                        <div class="form-group">
-                                            <label >Prioritas</label>
-                                            <select name="prioritas2" class="form-control" required>
-                                                <option value="">-- Pilih Prioritas --</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                            </select>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Total Biaya</span>
+                                                <input type="text" class="form-control" readonly th:value="${'Rp. ' + #numbers.formatDecimal(total1, 0, 'POINT', 2, 'COMMA')}">
+                                            </div>
                                         </div>
                                     </div>
+                                    <br>
                                 </div>
+                            </div>
 
-
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <label >Nomor Telepon</label>
-                                        <input type="text" name="nomorTelepon" class="form-control" th:value="${mhs.teleponSeluler}" required>
-                                        <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
-                                        <input type="hidden" th:value="${biayaSks}">
-                                        <input type="hidden" th:value="${totalTagihan}">
-                                        <input type="hidden" name="jumlahMatkul" th:value="${cekbox}">
+                            <div th:if="${cekbox == 2}">
+                                <div class="col-md-12">
+                                    <h4 th:text="${cekCheckbox1.matakuliah.namaMatakuliah}"></h4>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Jumlah sks</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahSks1}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Jumlah mahasiswa</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahPerMatkul1}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Biaya matakuliah</span>
+                                                <input type="text" class="form-control" readonly th:value="${'Rp. ' + #numbers.formatDecimal(total1, 0, 'POINT', 2, 'COMMA')}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <h4 th:text="${cekCheckbox2.matakuliah.namaMatakuliah}"></h4>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Jumlah sks</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahSks2}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Jumlah mahasiswa</span>
+                                                <input type="text" class="form-control" readonly th:value="${jumlahPerMatkul2}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class="form-group">
+                                                <span >Biaya matakuliah</span>
+                                                <input type="text" class="form-control" readonly th:value="${'Rp. ' + #numbers.formatDecimal(total2, 0, 'POINT', 2, 'COMMA')}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <span>Total sks</span>
+                                                <input type="text" readonly class="form-control" th:value="${jumlahSks}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 pull-right">
+                                            <div class="form-group">
+                                                <span>Total Biaya</span>
+                                                <input type="text" class="form-control" readonly th:value="${'Rp. ' + #numbers.formatDecimal(totalTagihan, 0, 'POINT', 2, 'COMMA')}">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
+
+                        </div>
+
+                    </div>
+                </div>
+                <br><br>
+
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalVerif">Submit</button>
+                <a th:href="@{/report/transcript}"><button type="button" class="btn btn-danger">Cancel</button></a><br>
+
+                <div class="modal fade" id="modalVerif" role="dialog">
+                    <div class="modal-dialog modals-default">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4 class="text-center">Catatan</h4>
+                                <p class="text-center">Pastikan matakuliah yang dipilih benar-benar prioritas dan sudah dikonsultasikan dengan dosen wali dan prodi</p>
+                                <p class="text-center">Setelah Anda submit, maka tagihan akan langsung terkirim sesuai matakuliah dan sks yang diambil</p>
+                            </div>
+                            <div class="modal-footer">
+
+                                <div th:if="${cekbox == 1}">
+                                    <form method="post" th:action="@{/prakrs/request/sp}">
+                                        <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
+                                        <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
+                                        <input type="hidden" th:value="${biayaSks}">
+                                        <input type="hidden" th:value="${totalTagihan}">
+                                        <input type="hidden" name="jumlahMatkul" th:value="${cekbox}">
+
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <label class="pt-3" >Nomor Telepon</label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="nomorTelepon" class="form-control" th:value="${mhs.teleponSeluler}" required>
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="submit" class="btn btn-default text-center">Submit</button>
+                                                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                                <div th:if="${cekbox == 2}">
+                                    <form method="post" th:action="@{/prakrs/request/sp}">
+                                        <input type="hidden" name="idMatkul1" th:value="${cekCheckbox1.id}">
+                                        <input type="hidden" name="idMatkul2" th:value="${cekCheckbox2.id}">
+                                        <input type="hidden" name="jumlahSks" th:value="${jumlahSks}">
+                                        <input type="hidden" th:value="${biayaSks}">
+                                        <input type="hidden" th:value="${totalTagihan}">
+                                        <input type="hidden" name="jumlahMatkul" th:value="${cekbox}">
+
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <label class="pt-3" >Nomor Telepon</label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="nomorTelepon" class="form-control" th:value="${mhs.teleponSeluler}" required>
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="submit" class="btn btn-default text-center">Submit</button>
+                                                    <button type="button" class="btn btn-default text-center" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <br><br>
+                </div>
 
-                    <button type="submit" class="btn btn-success">Submit</button>
-
-                </form>
                 <br>
 
             </div>
@@ -226,7 +319,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h3>Catatan : </h3>
-                                <p>- Matakuliah tidak bisa diubah ketika pengisian KRS, harap konsultasi kan pilihan matakuliah dengan pembibing</p>
+                                <p>- Pastikan matakuliah yang dipilih benar-benar prioritas dan sudah dikonsultasikan dengan dosen wali dan prodi</p>
                                 <p>- Setelah Anda submit, maka tagihan akan langsung terkirim sesuai matakuliah dan sks yang diambil</p>
                             </div>
                         </div>

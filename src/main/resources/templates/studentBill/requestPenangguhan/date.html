@@ -148,6 +148,7 @@
                             <div class="modal-content">
                                 <form method="post" th:action="@{/studentBill/penangguhan/document}" enctype="multipart/form-data">
                                     <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                    <h5>Maksimal ukuran file : <span style="color: red"> 10MB</span></h5>
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
@@ -226,15 +227,26 @@
                                 <div class="modal-body">
                                     <div class="">
                                         <div class="basic-tb-hd">
-                                            <h2>Daftar Berkas</h2>
+                                            <div class="col-md-6 ">
+                                                <h2>Daftar Berkas</h2>
+                                            </div>
+                                            <div th:if="${jumlahFile != 0}" class="col-md-6 text-right">
+                                                <form method="post" th:action="@{/studentBill/dokumen/deletep(tagihan = ${bill.id})}">
+                                                    <div class="center ">
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fa fa-trash"></i> Delete File
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
+                                        <br><br><br>
                                         <div class="bsc-tbl-st">
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Jenis</th>
                                                     <th>Berkas</th>
-                                                    <th>Action</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
@@ -246,15 +258,6 @@
                                                                 <small>Lihat Berkas&nbsp;</small>
                                                             </button>
                                                         </a>
-                                                    </td>
-                                                    <td>
-                                                        <form method="post" th:action="@{/studentBill/dokumen/deletep(document = ${data.id})}">
-                                                            <div class="center ">
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </form>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -270,13 +273,13 @@
                         </div>
                     </div>
 
-                    <div class="skill-content-3 ongoing-tsk">
+                    <div th:if="${jumlahFile != 0}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="bsc-tbl-st">
                                 <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
                                     <div class="form-group">
                                         <label>Proposed Deferred Payment Schedule</label>
-                                        <input type="date" name="tanggalPenangguhan" class="form-control"
+                                        <input type="date" name="tanggalPenangguhan" class="form-control" required
                                                placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">
                                     </div>
                                     <input type="hidden" name="id" th:field="*{id}">
@@ -284,6 +287,13 @@
                                         <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${jumlahFile == 0}" class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="bsc-tbl-st">
+                                <h4 class="text-center">Enter the Support Documents First</h4>
                             </div>
                         </div>
                     </div>

@@ -141,24 +141,13 @@ public class GraduationController {
     public Object[] validasiSeminar(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
                                     @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
-        System.out.println(tanggal.getDayOfWeek().getValue());
         if (tanggal.getDayOfWeek().getValue() == 7){
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            System.out.println(hari.getNamaHari());
-            System.out.println(ta.getId());
-            System.out.println(jamMulai);
-            System.out.println(jamSelesai);
-            System.out.println(ruangan.getNamaRuangan());
             return seminarDao.validasiJadwalSeminar(ta,hari,ruangan,jamMulai,jamSelesai,tanggal,1);
         }else {
             Hari hari = hariDao.findById(String.valueOf(tanggal.getDayOfWeek().getValue())).get();
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-            System.out.println(hari.getNamaHari());
-            System.out.println(tahunAkademik.getId());
-            System.out.println(jamMulai);
-            System.out.println(jamSelesai);
-            System.out.println(ruangan.getNamaRuangan());
             return seminarDao.validasiJadwalSeminar(tahunAkademik,hari,ruangan,jamMulai,jamSelesai,tanggal, 1);
 
         }
@@ -202,63 +191,50 @@ public class GraduationController {
     public String conceptNote(Model model, Authentication authentication, @RequestParam(required = false) String id) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-
         model.addAttribute("mahasiswa", mahasiswa);
 
-        Note validasi = noteDao.cariKonsepNot(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), mahasiswa, StatusApprove.REJECTED);
+        Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
+        Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
 
-        List<BigDecimal> magang = krsDetailDao.nilaiMagang(StatusRecord.AKTIF, mahasiswa, "Magang");
-        List<BigDecimal> metolit = krsDetailDao.nilaiMetolit(StatusRecord.AKTIF, mahasiswa, "METOLIT");
-
-        System.out.println(metolit);
-
-//
-
-
-        if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-            if (magang != null || !magang.isEmpty()) {
-                if (metolit == null || metolit.isEmpty()) {
-                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
+                if (magang == null && metolit == null){
                     return "redirect:alert";
+                }else {
+
+                    model.addAttribute("note", new Note());
+                    return "graduation/form";
+
                 }
+            } else {
 
-            }
-
-            if (magang == null || magang.isEmpty()) {
-                LOGGER.info("nilai magang kosong atau kurang dari 60");
-                return "redirect:alert";
-            }
-
-            if (validasi != null) {
-                return "redirect:register";
-            }
-            model.addAttribute("note", new Note());
-        } else {
-            if (magang != null || magang.isEmpty()) {
-                for (BigDecimal nilaiMagang : magang) {
-                    System.out.println(nilaiMagang);
-                }
-
-            }
-
-            if (magang != null || !magang.isEmpty()) {
-                if (metolit == null || metolit.isEmpty()) {
-                    LOGGER.info("nilai metolit kosong atau kurang dari 60");
-                    return "redirect:alert";
-                }
                 model.addAttribute("note", noteDao.findById(id).get());
 
-            }
+                return "graduation/form";
 
-            if (magang == null || magang.isEmpty()) {
-                LOGGER.info("nilai magang kosong atau kurang dari 60");
-                return "redirect:alert";
             }
+        }
 
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
+            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
+                if (metolit == null){
+                    return "redirect:alert";
+                }else {
+
+                    model.addAttribute("note", new Note());
+                    return "graduation/form";
+
+                }
+            } else {
+
+                model.addAttribute("note", noteDao.findById(id).get());
+
+                return "graduation/form";
+
+            }
         }
 
         return "graduation/form";
-
     }
 
     @PostMapping("/graduation/form")
@@ -487,10 +463,8 @@ public class GraduationController {
 
             int row = 5;
             int terakhir = sheetPertama.getLastRowNum() - row;
-            System.out.println("jumlah row  :  " +terakhir);
 
             for (int i = 0; i <= terakhir; i++) {
-                System.out.println(i);
                 Row baris = sheetPertama.getRow(row + i);
 
                 if (baris.getCell(1) != null) {
@@ -501,8 +475,6 @@ public class GraduationController {
                     nilai.setCellType(CellType.NUMERIC);
 
                     String mahasiswa = mahasiswaDao.cariIdMahasiswa(nim.getStringCellValue());
-                    System.out.println("nim  :  " + nim + "  nilai  " + nilai);
-
 
                     String krsDetail = krsDetailDao.idKrsDetail(mahasiswa, StatusRecord.AKTIF, "Magang");
 
@@ -513,7 +485,6 @@ public class GraduationController {
                     }
 
                     if (krsDetail != null) {
-                        System.out.println("nim  :  " + nim + "  Krs Detail  " + krsDetail + "   nilai  :  " + nilai);
                         KrsDetail kd = krsDetailDao.findById(krsDetail).get();
                         kd.setNilaiAkhir(new BigDecimal(nilai.getNumericCellValue()));
                         krsDetailDao.save(kd);
@@ -527,7 +498,6 @@ public class GraduationController {
 
 
                 }else {
-                    System.out.println("kosong");
                 }
 
             }
@@ -600,7 +570,6 @@ public class GraduationController {
         String lokasi = uploadFolder+File.separator+note.getMahasiswa().getNim();
         String dataDirectory = request.getServletContext().getRealPath(lokasi);
         Path file = Paths.get(lokasi, fileName);
-        System.out.println(file);
         if (Files.exists(file))
         {
             response.setContentType("application/pdf");
@@ -625,6 +594,21 @@ public class GraduationController {
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
             model.addAttribute("waiting", waiting);
             return "graduation/sempro";
+        }else {
+
+            return "redirect:register";
+        }
+
+
+    }
+
+    @GetMapping("/graduation/seminar/ulang")
+    public String daftarUlang(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
+        if (note.getStatus() == StatusApprove.APPROVED){
+            model.addAttribute("note", note);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            model.addAttribute("waiting", waiting);
+            return "graduation/seminar/ulang";
         }else {
 
             return "redirect:register";
@@ -675,11 +659,15 @@ public class GraduationController {
     public String nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Seminar seminar){
         model.addAttribute("seminar", seminar);
         List<Sidang> sidang = sidangDao.findBySeminar(seminar);
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,true);
-        if (enableFiture != null) {
-            model.addAttribute("sidang", enableFiture);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,Boolean.TRUE);
+        EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SEMPRO,Boolean.TRUE);
+        if (semprop != null) {
+            model.addAttribute("sempro", semprop);
+            if (enableFiture != null) {
+                model.addAttribute("sidang", enableFiture);
+                System.out.println(enableFiture);
+            }
         }
-        System.out.println(sidang);
         if (sidang.isEmpty()){
             return "graduation/seminar/nilai";
         }else {
@@ -994,12 +982,11 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/seminar/penilaian")
-    public void penilaianSeminar(Model model,@RequestParam Seminar seminar,Authentication authentication){
+    public void penilaianSeminar(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
-        System.out.println(seminar.getNilaiA());
         if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
             Hari hari = hariDao.findById("0").get();
             model.addAttribute("hari", hari);
@@ -1009,7 +996,10 @@ public class GraduationController {
             model.addAttribute("hari", hari);
 
         }
-        System.out.println(valueHari);
+
+        if (kosong != null){
+            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        }
         model.addAttribute("dosen", dosen);
         model.addAttribute("seminar",seminar);
 
@@ -1033,7 +1023,7 @@ public class GraduationController {
 
         if (komentarDosen1 != null){
             seminar.setKomentarDosen1(komentarDosen1);
-            seminarDao.save(seminar);
+//            seminarDao.save(seminar);
         }
 
         if (komentarDosen2 != null){
@@ -1229,12 +1219,58 @@ public class GraduationController {
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         model.addAttribute("dosen" , dosen);
 
-        if (seminar.getKetuaPenguji() == dosen){
-            seminar.setPublish(StatusRecord.AKTIF.toString());
-            seminarDao.save(seminar);
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            Object skripsi = seminarDao.validasiSemproSKripsi(seminar,BigDecimal.ZERO);
+
+            if (skripsi == null) {
+                if (seminar.getKetuaPenguji() == dosen) {
+                    seminar.setPublish(StatusRecord.AKTIF.toString());
+
+                    if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatus(StatusApprove.FAILED);
+                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                        if (enableFiture != null) {
+                            enableFiture.setEnable(Boolean.FALSE);
+                            enableFitureDao.save(enableFiture);
+                        }
+                    }
+                    seminarDao.save(seminar);
+                }
+
+                return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
+            }else {
+                return "redirect:../seminar/penilaian?seminar=" + seminar.getId()+"&kosong=true";
+
+            }
+        }else if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            Object study = seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO);
+
+            if (study == null) {
+                if (seminar.getKetuaPenguji() == dosen) {
+                    seminar.setPublish(StatusRecord.AKTIF.toString());
+
+                    if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                        seminar.setStatusSempro(StatusApprove.FAILED);
+                        seminar.setStatus(StatusApprove.FAILED);
+                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                        if (enableFiture != null) {
+                            enableFiture.setEnable(Boolean.FALSE);
+                            enableFitureDao.save(enableFiture);
+                        }
+                    }
+                    seminarDao.save(seminar);
+                }
+
+                return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
+            }else {
+                return "redirect:../seminar/penilaian?seminar=" + seminar.getId()+"&kosong=true";
+
+            }
+        }else {
+            return "redirect:sempro?tahunAkademik=" + seminar.getTahunAkademik().getId();
         }
 
-        return "redirect:sempro?tahunAkademik="+seminar.getTahunAkademik().getId();
 
     }
 

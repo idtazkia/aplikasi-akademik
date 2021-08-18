@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
@@ -19,8 +20,12 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     @Query("select sum (j.matakuliahKurikulum.jumlahSks)from Jadwal j where j.id in (:id)")
     Long totalSks(@Param("id")String[] id);
 
-    @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto(j.id,j.matakuliahKurikulum.matakuliah.kodeMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.kelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses,j.ruangan.namaRuangan, j.hari.namaHari,j.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish)from Jadwal j where j.prodi = :prodi and j.status not in (:id) and j.tahunAkademik= :tahun and j.hari= :hari")
-    List<ScheduleDto> schedule(@Param("prodi") Prodi prodi, @Param("id") List<StatusRecord> statusRecord, @Param("tahun") TahunAkademik t, @Param("hari") Hari hari);
+    Jadwal findByStatusAndId(StatusRecord statusRecord, String id);
+
+    Jadwal findByStatusAndIdNumberElearningAndId(StatusRecord statusRecord, String idNumberElearning, String idJadwal);
+
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto(j.id,j.matakuliahKurikulum.matakuliah.kodeMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.kelas.namaKelas,j.dosen.karyawan.namaKaryawan,j.matakuliahKurikulum.jumlahSks,j.jamMulai,j.jamSelesai,j.akses,j.ruangan.namaRuangan, j.hari.namaHari,j.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish)from Jadwal j where j.prodi = :prodi and j.status = :id and j.tahunAkademik= :tahun and j.hari= :hari")
+    List<ScheduleDto> schedule(@Param("prodi") Prodi prodi, @Param("id") StatusRecord statusRecord, @Param("tahun") TahunAkademik t, @Param("hari") Hari hari);
 
     @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.kodeMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish,j.kelas.namaKelas,j.matakuliahKurikulum.jumlahSks,j.dosen.karyawan.namaKaryawan,j.dosen.id,j.kelas.id) from Jadwal j where j.status = 'AKTIF' and j.tahunAkademik= :akademik and j.prodi = :prodi and j.hari is null and j.jamMulai is null and j.jamSelesai is null and j.kelas is not null")
     List<PlotingDto> ploting(@Param("prodi") Prodi prodi,@Param("akademik")TahunAkademik tahunAkademik);
@@ -105,4 +110,31 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     @Query(value = "SELECT id_krs_detail as krs, id_mahasiswa, aa.nama, nim, absensi_mahasiswa, absen_dosen, absen, nilai_absen, nilai_sds, nilai_tugas, nilai_uts, nilai_uas, nilai_akhir as nilaiakhir, bb.nama AS grade, bb.bobot as bobot FROM (SELECT a.id AS id_krs_Detail, a.id_mahasiswa, b.nama, b.nim, COALESCE(absensi_mahasiswa,0) as absensi_mahasiswa, COALESCE(absen_dosen,0)as absen_dosen, ROUND((((COALESCE(absensi_mahasiswa,0)) * 100) / COALESCE(absen_dosen,1)), 2) AS absen, ROUND(((((COALESCE(absensi_mahasiswa,0) * 100) / COALESCE(absen_dosen,1)) * COALESCE(f.bobot_presensi,0)) / 100), 2) AS nilai_absen, ROUND(((COALESCE(sds, 0) * 10 * COALESCE(sdsb, 0)) / 100), 2) AS nilai_sds, g.nilai_tugas, a.nilai_uts, a.nilai_uas, g.nilai_tugas + ((COALESCE(sds,0) * 10 * COALESCE(sdsb,0)) / 100) + ((((COALESCE(absensi_mahasiswa,1) * 100) / COALESCE(absen_dosen,1)) * COALESCE(f.bobot_presensi,0)) / 100) + (a.nilai_uts * f.bobot_uts / 100) + (a.nilai_uas * (bobot_uas / 100)) AS nilai_akhir, a.grade FROM krs_detail AS a INNER JOIN mahasiswa AS b ON a.id_mahasiswa = b.id LEFT JOIN (SELECT COUNT(a.id) AS absensi_mahasiswa, id_krs_detail FROM presensi_mahasiswa AS a INNER JOIN sesi_kuliah AS b ON a.id_sesi_kuliah = b.id INNER JOIN presensi_dosen AS c ON b.id_presensi_dosen = c.id WHERE a.status_presensi NOT IN ('MANGKIR' , 'TERLAMBAT') AND c.id_jadwal =?1 AND a.status = 'AKTIF' GROUP BY id_krs_detail) AS c ON a.id = c.id_krs_detail LEFT JOIN (SELECT COUNT(id) AS absen_dosen, id_jadwal FROM presensi_dosen WHERE id_jadwal =?1 AND STATUS = 'AKTIF') d ON a.id_jadwal = d.id_jadwal LEFT JOIN (SELECT COUNT(b.id_mahasiswa) AS sds, b.id_mahasiswa, d.sds AS bobotsds FROM presensi_mahasiswa AS a INNER JOIN krs_detail AS b ON a.id_krs_detail = b.id INNER JOIN jadwal AS c ON b.id_jadwal = c.id INNER JOIN matakuliah_kurikulum AS d ON c.id_matakuliah_kurikulum = d.id INNER JOIN matakuliah AS e ON d.id_matakuliah = e.id WHERE LEFT(e.kode_matakuliah, 3) = 'SDS' AND a.status = 'AKTIF' AND a.status_presensi NOT IN ('MANGKIR' , 'TERLAMBAT') AND c.id_tahun_akademik = '6cf08aa7-fc62-40f3-b82d-ff04be2c8905' GROUP BY a.id_mahasiswa) e ON a.id_mahasiswa = e.id_mahasiswa INNER JOIN (SELECT a.*, sds AS sdsb FROM jadwal AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum = b.id) f ON a.id_jadwal = f.id LEFT JOIN (SELECT a.id_krs_detail, ROUND(SUM(a.nilai * c.bobot / 100), 2) AS nilai_tugas FROM krs_nilai_tugas AS a INNER JOIN krs_detail AS b ON a.id_krs_detail = b.id INNER JOIN jadwal_bobot_tugas AS c ON a.id_bobot_tugas = c.id WHERE b.id_jadwal =?1 AND a.status = 'AKTIF' AND c.status = 'AKTIF' GROUP BY a.id_krs_detail) g ON a.id = g.id_krs_detail WHERE a.id_jadwal =?1 AND a.status = 'AKTIF') AS aa LEFT JOIN grade AS bb ON aa.nilai_akhir >= bawah AND nilai_akhir < atas", nativeQuery = true)
     List<ScoreHitungDto> hitungUploadScore2(Jadwal jadwal, TahunAkademik tahunAkademik);
+
+    List<Jadwal> findByStatusAndTahunAkademik(StatusRecord statusRecord, TahunAkademik tahunaAkademik);
+
+    List<Jadwal> findByMatakuliahKurikulumAndStatus(MatakuliahKurikulum matkur, StatusRecord statusRecord);
+
+    @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2 \n" +
+            " and status = 'AKTIF' and id_number_elearning is not null", nativeQuery = true)
+    List<ListJadwalDto> listJadwalDto( String idProdi, String idTahunAkademik);
+
+    @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2 and id_number_elearning = ?3 \n" +
+            " and status = 'AKTIF' and id_number_elearning is not null", nativeQuery = true)
+    List<ListJadwalDto> byJadwal1( String idProdi, String idTahunAkademik, String idNumber);
+
+    Jadwal findByIdNumberElearningAndStatus(String idNumberElearning, StatusRecord statusRecord);
+
+    @Query(value = "select a.id from jadwal as a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "where id_tahun_akademik = ?1 and b.sds is not null and a.id_prodi = ?2 and a.status = 'AKTIF' and b.sds > 0\n" +
+            "and id_hari is not null", nativeQuery = true)
+    List<String> findSds1(String idTahunAkademik, String idProdi);
+
+    @Query(value = "select a.id from jadwal as a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "where a.id =  ?1 and a.status = 'AKTIF' and b.sds > 0\n" +
+            "and id_hari is not null", nativeQuery = true)
+    String findSds2(String idJadwal);
+
 }

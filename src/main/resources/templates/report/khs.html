@@ -71,10 +71,18 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="alert alert-warning" th:if="${khs == null}">
+                        <div class="alert alert-warning" th:if="${khs == null && hidden == null}">
                             <center>
                                 <strong>
                                     Tidak ada data untuk ditampilkan
+                                </strong>
+                            </center>
+                        </div>
+
+                        <div class="alert alert-warning" th:if="${hidden != null}">
+                            <center>
+                                <strong th:text="${hidden}">
+
                                 </strong>
                             </center>
                         </div>

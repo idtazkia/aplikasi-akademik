@@ -10,6 +10,9 @@ import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -63,6 +68,12 @@ public class ReportController {
 
     @Autowired
     private ProdiDao prodiDao;
+
+    @Autowired
+    private EdomQuestionDao edomQuestionDao;
+
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
@@ -174,11 +185,81 @@ public class ReportController {
         }
     }
 
+    @GetMapping("/report/recapitulation/downloadipk")
+    public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
+                              @RequestParam(required = false) String angkatan, HttpServletResponse response) throws IOException {
+
+        List<Object[]> listDownload = krsDetailDao.cariIpk(tahunAkademik,angkatan);
+
+        String[] columns = {"No", "Nim", "Nama", "Prodi", "Tahun Akademik", "SKS Semester", "SKS Total", "IP Semester", "IPK"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List Ipk Angkatan " + angkatan);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+
+        Row headerRow = sheet.createRow(2);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 3;
+        int baris = 1;
+
+        for (Object[] list : listDownload){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[0].toString());
+            row.createCell(2).setCellValue(list[1].toString());
+            row.createCell(3).setCellValue(list[2].toString());
+            row.createCell(4).setCellValue(tahunAkademik.getNamaTahunAkademik());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[7].toString());
+            row.createCell(7).setCellValue(list[6].toString());
+            row.createCell(8).setCellValue(list[8].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=List Ipk Tahun Akademik-"+tahunAkademik.getNamaTahunAkademik()+"-"+"Angkatan " + angkatan+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
     @GetMapping("/report/recapitulation/edom")
     public void rekapEdom(Model model,@RequestParam(required = false) TahunAkademik tahunAkademik,
                           @RequestParam(required = false) Prodi prodi){
 
         if (tahunAkademik != null){
+            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademik);
+            if (edomQuestion != null){
+                EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
+                EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
+                EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
+                EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
+                EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
+                model.addAttribute("edomQuestion1",edomQuestion1);
+                model.addAttribute("edomQuestion2",edomQuestion2);
+                model.addAttribute("edomQuestion3",edomQuestion3);
+                model.addAttribute("edomQuestion4",edomQuestion4);
+                model.addAttribute("edomQuestion5",edomQuestion5);
+            }else {
+                model.addAttribute("questionNull", "Pertanyaan edom untuk tahun akademik ini belum dibuat");
+            }
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("rekapEdom",krsDetailDao.rekapEdom(tahunAkademik,prodi));
@@ -239,5 +320,32 @@ public class ReportController {
         cutiDao.save(cuti);
 
         return "redirect:/report/cuti";
+    }
+
+    @GetMapping("/report/recapitulation/nilai")
+    public void nilai(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+        model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
+    }
+
+    @GetMapping("/report/recapitulation/attendance")
+    public void attendance(Model model,@RequestParam Jadwal jadwal){
+        String tahun = jadwal.getTahunAkademik().getNamaTahunAkademik().substring(0, 9);
+
+        model.addAttribute("tahun", tahun);
+
+        model.addAttribute("jadwal", jadwal);
+
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+
+        List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
+
+        model.addAttribute("attendance", hasil);
+
+
     }
 }

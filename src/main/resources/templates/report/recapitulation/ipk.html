@@ -88,6 +88,9 @@
                         <div class="card shadow">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">"Search Result"</h3>
+                                <div class="col text-right">
+                                    <a th:href="@{/report/recapitulation/downloadipk (tahunAkademik =${selectedTahun.id}, angkatan =${selectedAngkatan})}" class="btn btn-warning btn-sm"><i class="fa fa-download"></i> Download</a>
+                                </div>
                             </div>
                             <div class="table-responsive ex1">
                                 <table class="table align-items-center table-flush">

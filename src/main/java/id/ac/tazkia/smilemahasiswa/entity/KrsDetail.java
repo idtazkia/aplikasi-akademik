@@ -39,16 +39,16 @@ public class KrsDetail extends Auditable {
     private MatakuliahKurikulum matakuliahKurikulum;
 
     @NotNull
-    private BigDecimal nilaiPresensi;
+    private BigDecimal nilaiPresensi = BigDecimal.ZERO;
 
     @NotNull
-    private BigDecimal nilaiUts;
+    private BigDecimal nilaiUts = BigDecimal.ZERO;
 
     @NotNull
-    private BigDecimal nilaiUas;
+    private BigDecimal nilaiUas = BigDecimal.ZERO;
 
     @NotNull
-    private BigDecimal nilaiTugas;
+    private BigDecimal nilaiTugas = BigDecimal.ZERO;
 
     @NotNull
     private String finalisasi;
@@ -56,7 +56,7 @@ public class KrsDetail extends Auditable {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
-    private BigDecimal nilaiAkhir;
+    private BigDecimal nilaiAkhir = BigDecimal.ZERO;
     private BigDecimal bobot;
     private String grade;
 
@@ -93,4 +93,10 @@ public class KrsDetail extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord statusKonversi;
+
+    private BigDecimal nilaiUtsFinal = BigDecimal.ZERO;
+
+    private BigDecimal nilaiUasFinal = BigDecimal.ZERO;
+
+
 }
