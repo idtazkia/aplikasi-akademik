@@ -2026,7 +2026,7 @@ public class StudiesActivityController {
                 model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
                 model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
                 model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
-//                model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+                model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
                 model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
             }else{
                 model.addAttribute("message","error message");
