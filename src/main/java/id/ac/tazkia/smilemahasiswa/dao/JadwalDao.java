@@ -137,4 +137,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "and id_hari is not null", nativeQuery = true)
     String findSds2(String idJadwal);
 
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto(j.id,j.matakuliahKurikulum.matakuliah.kodeMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliah,j.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish,j.kelas.namaKelas,j.matakuliahKurikulum.jumlahSks,j.dosen.karyawan.namaKaryawan,j.dosen.id,j.kelas.id) from Jadwal j where j.status = 'AKTIF' and j.tahunAkademik= :akademik  and j.hari is null and j.jamMulai is null and j.jamSelesai is null and j.kelas is not null")
+    List<PlotingDto> listPloting(@Param("akademik")TahunAkademik tahunAkademik);
+
 }

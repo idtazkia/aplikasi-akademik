@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
+import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.Document;
 import javax.validation.Valid;
 import java.io.File;
 import java.math.BigDecimal;
@@ -161,6 +165,72 @@ public class  AcademicActivityController {
         return prodiDao.findByStatusAndNamaProdiContainingIgnoreCaseOrderByNamaProdi(StatusRecord.AKTIF,search, page);
 
     }
+
+    @GetMapping("/getdata/ploting")
+    @ResponseBody
+    public RecordPloting getDataPloting(@RequestParam(required = false)TahunAkademik tahunAkademik,@RequestParam(required = false)List<String> kelas){
+
+
+        RecordPloting response = new RecordPloting();
+        response.setTotal(jadwalDao.listPloting(tahunAkademik).size());
+        response.setTotalNotFiltered(jadwalDao.listPloting(tahunAkademik).size());
+        if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
+            List<ListPlotingDto> plotingGanjil = matakuliahKurikulumDao.plotingDosenGanjil(tahunAkademik, kelas);
+            List<ListPlotingDto> addGenap  = matakuliahKurikulumDao.addPlotingDosenGenap(tahunAkademik, kelas);
+            plotingGanjil.addAll(addGenap);
+            response.setRows(plotingGanjil);
+        }
+        if (tahunAkademik.getJenis() == StatusRecord.GENAP){
+            List<ListPlotingDto> plotinggenap = matakuliahKurikulumDao.plotingDosenGenap(tahunAkademik, kelas);
+            List<ListPlotingDto> addGanjil  = matakuliahKurikulumDao.addPlotingDosenGanjil(tahunAkademik, kelas);
+            plotinggenap.addAll(addGanjil);
+            response.setRows(plotinggenap);
+        }
+        return response;
+    }
+
+    @GetMapping("/select2/lecture")
+    @ResponseBody
+    public List<SelectDosen> cariDosen(@RequestParam String search){
+
+        return dosenDao.searchPlotingDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),search);
+    }
+
+    @GetMapping("/detail/lecture")
+    @ResponseBody
+    public SelectDosen detailDOsen(@RequestParam String search){
+
+        return dosenDao.detailDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),dosenDao.findById(search).get());
+    }
+
+    @GetMapping("/delete/ploting")
+    @ResponseBody
+    public Jadwal detailDOsen(@RequestParam Jadwal jadwal){
+        jadwal.setStatus(StatusRecord.HAPUS);
+        jadwalDao.save(jadwal);
+        return jadwal;
+    }
+
+    @GetMapping("/detail/matkur")
+    @ResponseBody
+    public MatakuliahKurikulum detailMatkur(@RequestParam String search){
+
+        return matakuliahKurikulumDao.findById(search).get();
+    }
+
+    @GetMapping("/search/ploting")
+    @ResponseBody
+    public List<ListPlotingDto> searchPloting(@RequestParam TahunAkademik tahunAkademik,@RequestParam(required = false)List<String> kelas,@RequestParam(required = false)String search){
+
+        if (tahunAkademik.getJenis() == StatusRecord.GANJIL){
+            return matakuliahKurikulumDao.searchPlotingGenap(tahunAkademik,kelas,search);
+        }else {
+            return matakuliahKurikulumDao.searchPlotingGanjil(tahunAkademik,kelas,search);
+        }
+
+
+    }
+
 
     @GetMapping("/select2/course")
     @ResponseBody
@@ -816,56 +886,71 @@ public class  AcademicActivityController {
 
 
     @GetMapping("/academic/ploting/list")
-    public void listPloting(Model model, @RequestParam(required = false)String angkatan,
-                            @RequestParam(required = false)Prodi prodi,@RequestParam(required = false)Integer semester){
+    public void listPloting(Model model, @RequestParam(required = false)String[] kelas,
+                            @RequestParam(required = false)TahunAkademik tahun){
 
-        if (prodi != null) {
-            model.addAttribute("selectedProdi", prodi);
-            model.addAttribute("selectedAngkatan", angkatan);
-            model.addAttribute("selectedSemester", semester);
-            model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-
-            model.addAttribute("ploting", matakuliahKurikulumDao.plotingDosen(prodi, angkatan, semester));
-        }
-    }
-
-    @PostMapping("/academic/ploting/list")
-    public String prosesPloting(HttpServletRequest request,@RequestParam String angkatan,
-                                @RequestParam Prodi prodi,@RequestParam Integer semester){
-        List<Object[]> matakuliahKurikulum = matakuliahKurikulumDao.plotingDosen(prodi, angkatan, semester);
-
-        TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, prodi);
-        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahunAkademikProdi.getTahunAkademik().getId()).get();
-
-        for (Object[] mk : matakuliahKurikulum){
-            String pilihan = request.getParameter(mk[0].toString()+mk[2].toString()+mk[3].toString());
-            if (pilihan != null && !pilihan.trim().isEmpty()) {
-                Jadwal jadwal = new Jadwal();
-                jadwal.setJumlahSesi(1);
-                jadwal.setBobotUts(BigDecimal.ZERO);
-                jadwal.setBobotUas(BigDecimal.ZERO);
-                jadwal.setBobotPresensi(BigDecimal.ZERO);
-                jadwal.setBobotTugas(BigDecimal.ZERO);
-                jadwal.setKelas(kelasDao.findById(mk[5].toString()).get());
-                jadwal.setProdi(prodi);
-                jadwal.setDosen(dosenDao.findById(pilihan).get());
-                jadwal.setTahunAkademik(tahunAkademik);
-                jadwal.setTahunAkademikProdi(tahunAkademikProdi);
-                jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(mk[1].toString()).get());
-                jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
-                jadwal.setProgram(programDao.findById("01").get());
-                jadwal.setAkses(Akses.TERTUTUP);
-                jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
-                jadwalDao.save(jadwal);
-
+        model.addAttribute("listKelas",kelasDao.kelasPloting());
+        if (tahun != null) {
+            List<String> kelasList = new ArrayList<>();
+            List<Kelas> pilihanKelas = new ArrayList<>();
+            for (String s : kelas){
+                Kelas k = kelasDao.findById(s).get();
+                kelasList.add(k.getId());
+                pilihanKelas.add(k);
             }
+            model.addAttribute("selectedTahun", tahun);
+            model.addAttribute("selectedKelas", kelasList);
+            model.addAttribute("pilihanKelas", pilihanKelas);
+
+
         }
-
-        return "redirect:list";
-
-
     }
 
+    @PostMapping("/academic/ploting/save")
+    @ResponseBody
+    public void prosesPloting(@RequestBody PlotingDto plotingDto, @RequestParam TahunAkademik tahun){
+
+        if (plotingDto.getId() == null || plotingDto.getId().equals("")) {
+            Jadwal jadwal = new Jadwal();
+            jadwal.setJumlahSesi(1);
+            jadwal.setBobotUts(BigDecimal.ZERO);
+            jadwal.setBobotUas(BigDecimal.ZERO);
+            jadwal.setBobotPresensi(BigDecimal.ZERO);
+            jadwal.setBobotTugas(BigDecimal.ZERO);
+            jadwal.setKelas(kelasDao.findById(plotingDto.getKelas()).get());
+            jadwal.setProdi(kelasDao.findById(plotingDto.getKelas()).get().getIdProdi());
+            jadwal.setDosen(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setTahunAkademik(tahun);
+            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, jadwal.getProdi());
+            jadwal.setTahunAkademikProdi(tahunAkademikProdi);
+            jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(plotingDto.getMatakuliah()).get());
+            jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setProgram(programDao.findById("01").get());
+            jadwal.setAkses(Akses.PRODI);
+            jadwalDao.save(jadwal);
+        }else {
+            Jadwal jadwal = jadwalDao.findById(plotingDto.getId()).get();
+            jadwal.setJumlahSesi(1);
+            jadwal.setBobotUts(BigDecimal.ZERO);
+            jadwal.setBobotUas(BigDecimal.ZERO);
+            jadwal.setBobotPresensi(BigDecimal.ZERO);
+            jadwal.setBobotTugas(BigDecimal.ZERO);
+            jadwal.setKelas(kelasDao.findById(plotingDto.getKelas()).get());
+            jadwal.setProdi(kelasDao.findById(plotingDto.getKelas()).get().getIdProdi());
+            jadwal.setDosen(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setTahunAkademik(tahun);
+            TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, jadwal.getProdi());
+            jadwal.setTahunAkademikProdi(tahunAkademikProdi);
+            jadwal.setMatakuliahKurikulum(matakuliahKurikulumDao.findById(plotingDto.getMatakuliah()).get());
+            jadwal.setStatusUas(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
+            jadwal.setProgram(programDao.findById("01").get());
+            jadwal.setAkses(Akses.PRODI);
+            jadwalDao.save(jadwal);
+        }
+
+    }
 
     //    Schedule
 

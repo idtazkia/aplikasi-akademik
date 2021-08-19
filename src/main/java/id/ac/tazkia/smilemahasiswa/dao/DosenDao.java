@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,10 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     @Query("select d from Dosen d where d.status not in(:status) and d not in (:dosen)")
     Iterable<Dosen> validasiDosen(@Param("status") List<StatusRecord> statusRecord, @Param("dosen") List<Dosen> dosen);
     List<Dosen> findByStatusNotInAndIdNotIn(List<StatusRecord> status, List<String> dosen);
+
+    @Query(value = "select d.id,k.nama_karyawan as dosen,coalesce((SELECT sum(mk.jumlah_sks) FROM jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id where id_tahun_akademik = ?1 and id_dosen_pengampu = d.id and j.status = 'AKTIF'),0) as total from dosen as d inner join karyawan as k on d.id_karyawan = k.id where k.status = 'AKTIF' and k.nama_karyawan like %?2%", nativeQuery = true)
+    List<SelectDosen> searchPlotingDosen(TahunAkademik tahunAkademik, String namaDosen);
+
+    @Query(value = "select d.id,k.nama_karyawan as dosen,(select sum(mk.jumlah_sks) FROM jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id where id_tahun_akademik = ?1 and d.id = ?2 and j.status = 'AKTIF') as total from dosen as d inner join karyawan as k on d.id_karyawan = k.id where d.id = ?2", nativeQuery = true)
+    SelectDosen detailDosen(TahunAkademik tahunAkademik, Dosen namaDosen);
 }

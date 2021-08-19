@@ -20,4 +20,6 @@ public interface KelasDao extends PagingAndSortingRepository<Kelas,String> {
 
     List<Kelas> findByStatusAndNamaKelasContainingIgnoreCaseOrderByNamaKelas(StatusRecord statusRecord, String sp);
 
+    @Query(value = "select k.id,k.nama_kelas from kelas_mahasiswa as km inner join kelas as k on km.id_kelas = k.id inner join prodi as p on k.id_prodi = p.id inner join jenjang as j on p.id_jenjang = j.id inner join mahasiswa as m on km.id_mahasiswa = m.id where km.status = 'AKTIF'and m.status= 'AKTIF' and k.status ='AKTIF' and k.id_kurikulum is not null group by k.id order by k.nama_kelas asc",nativeQuery = true)
+    List<Object[]> kelasPloting();
 }

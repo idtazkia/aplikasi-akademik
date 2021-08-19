@@ -10,6 +10,28 @@
 <link th:href="@{/css/style.css}" rel="stylesheet">
 
 <body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        var selectedKelas = /*[[${selectedKelas}]]*/ ["001"];
+
+        $(document).ready(function () {
+            $('#selectKelas').select2({});
+
+
+             var kelasId = [];
+             for (var i = 0; i < selectedKelas.length; i++) {
+                 kelasId.push(selectedKelas[i]);
+             }
+             console.log(kelasId);
+
+             $('#selectKelas').val(kelasId);
+             $('#selectKelas').trigger("change");
+
+
+
+        });
+    </script>
+</th:block>
 <div layout:fragment="main">
     <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
         <div class="container-fluid">
@@ -45,6 +67,7 @@
             <div class="col">
                 <div class="card shadow">
                     <div class="card-header border-0">
+
                         <div class="row align-items-center">
                             <div class="col">
                                 <h3 class="mb-0">Data List</h3>
@@ -56,47 +79,29 @@
                     </div>
                     <div class="card-body">
                         <form method="get">
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Prodi</label>
-                                                <select name="prodi" class="form-control">
-                                                    <option value="" disabled selected>-- Select One --</option>
-                                                    <option th:each="prodi : ${prodi}"
-                                                            th:selected="(${prodi} == *{selectedProdi})"
-                                                            th:text="${prodi.namaProdi}"
-                                                            th:value="${prodi.id}">-- Select One --</option>
+                                                <label>Tahun Akademik</label>
+                                                <select name="tahun" class="form-control">
+                                                    <option th:each="data : ${tahunAkademik}"
+                                                            th:selected="(${data} == *{selectedTahun})"
+                                                            th:text="${data.namaTahunAkademik}"
+                                                            th:value="${data.id}">sdasd</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Tahun Angkatan</label>
-                                                <select name="angkatan" class="form-control">
-                                                    <option value="" disabled selected>-- Select One --</option>
-                                                    <option th:each="item : ${angkatan}"
-                                                            th:selected="(${item} == *{selectedAngkatan})"
-                                                            th:text="${item}"
-                                                            th:value="${item}">-- Select One --</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Semester</label>
-                                                <select name="semester" id="" class="form-control">
-                                                    <option value="" disabled selected>-- Select One --</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                    <option value="6">6</option>
-                                                    <option value="7">7</option>
-                                                    <option value="8">8</option>
-                                                    <option value="9">9</option>
+                                                <label>Kelas</label>
+                                                <select name="kelas" id="selectKelas" multiple="multiple" class="form-control">
+                                                    <option th:each="data : ${listKelas}"
+                                                            th:selected="(${data} == *{selectedKelas})"
+                                                            th:text="${data[1]}"
+                                                            th:value="${data[0]}">sdasd</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -109,67 +114,109 @@
                                         </div>
 
                                     </div>
+                                </div>
                             </div>
-                        </div>
 
                         </form>
 
-                        <form th:action="@{/academic/ploting/list (prodi = ${selectedProdi.id}, semester = ${selectedSemester}, angkatan = ${selectedAngkatan})}" method="post" th:if="${selectedProdi != null}">
-                        <div class="row">
+                        <!--                        <form th:action="@{/academic/ploting/list (prodi = ${selectedProdi.id}, semester = ${selectedSemester}, angkatan = ${selectedAngkatan})}" method="post" th:if="${selectedProdi != null}">-->
+                        <div class="row" th:if="${selectedTahun != null}">
+                            <input type="hidden" id="tahun" name="tahun" th:value="${selectedTahun.id}">
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0" th:text="${selectedProdi.namaProdi}">Magister Ekonomi Syariah</h3>
+                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#addPloting"><i class="fas fa-plus-circle"></i> Tambah</button>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="data-table-basic" class="table table-striped">
-                                                <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Course Code</th>
-                                                    <th scope="col">Name Courses</th>
-                                                    <th scope="col">English Name Courses</th>
-                                                    <th scope="col" style="width: 100px;">Lecture</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr th:each="data : ${ploting}">
-                                                    <td th:text="${data[0]}"></td>
-                                                    <td th:text="${data[2]}"></td>
-                                                    <td th:text="${data[3]}"></td>
-                                                    <td th:text="${data[4]}"></td>
-                                                    <td>
-                                                        <select th:name="${data[0] + data[2] + data[3]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
-                                                            <option value=""></option>
-                                                            <option th:each="item : ${listDosen}"
-                                                                    th:text="${item.karyawan.namaKaryawan}"
-                                                                    th:value="${item.id}"></option>
-                                                            <!--<option th:each="item : ${listDosen}"-->
-                                                                    <!--th:text="${item[1] + ' - '  + item[2] + ' SKS'}"-->
-                                                                    <!--th:value="${item[0]}"></option>-->
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
+                                            <table
+                                                    id="table"
+                                                    data-filter-control="true"
+                                                    data-search="true"
+                                                    data-show-refresh="true"
+                                                    data-flat="true"
+                                                    data-auto-refresh-interval = 8
+                                                    data-auto-refresh="true"
+                                                    data-pagination="true"
+                                                    th:attr="data-url=@{/getdata/ploting(tahunAkademik=${selectedTahun.id}, kelas=${selectedKelas})}"
+                                                    data-side-pagination="client">
                                             </table>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-md-12" style="text-align: center;">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-info"><i class="fa fa-save"></i> Save</button>
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </form>
+                        <!--                        </form>-->
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ploting Jadwal</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="alert alert-danger alert-with-icon" id="alertSave" style="display: none">
+                                    <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                        <i class="fas fa-warning"></i>
+                                    </button>
+                                    <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                    <span id="textAlert"><b> Oops! - </b> There was internal server error.</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group has-success">
+                                            <input type="text" id="kelas" placeholder="Kelas" readonly class="form-control is-valid" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group has-success">
+                                            <input type="text" id="matakuliah" placeholder="Matakuliah" readonly class="form-control is-valid" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label>Dosen</label>
+                                            <select id="dosenList" name="dosen" style="width: 100%!important;" class="js-example-basic-multiple js-states form-control js-data-example-ajax">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="idDosen" name="idDosen" class="form-control" readonly>
+                                    <input type="hidden" id="jadwal" name="jadwal" class="form-control" readonly>
+                                    <input type="hidden" id="sks" name="sks" class="form-control" readonly>
+                                    <input type="hidden" id="idKelas" name="idKelas" class="form-control" readonly>
+                                    <input type="hidden" id="idMatkur" name="idMatkur" class="form-control" readonly>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Total SKS</label>
+                                            <input type="text" id="sksDosen" readonly name="sksDosen" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row float-md-right">
+                                    <center>
+                                        <button id="saveData" class="btn btn-success">Save</button>
+                                        <button id="closemodal" class="btn btn-danger">Tutup</button>
+                                    </center>
+                                </div>
+                        </div>
+
+
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <!-- Dark table -->
@@ -177,12 +224,483 @@
 
     </div>
 
+        <div class="modal fade" id="addPloting" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ploting Jadwal</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="alert alert-danger alert-with-icon" id="alertAdd" style="display: none">
+                                    <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                        <i class="fas fa-warning"></i>
+                                    </button>
+                                    <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                    <span><b> Oops! - </b> There was internal server error.</span>
+                                </div>
+                                <div class="row">
+                                    <input type="hidden" id="selectedKelasInput" th:value="${selectedKelas}">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <select id="matkulList"  name="matakuliah" style="width: 100%!important;" class="js-example-basic-multiple js-states form-control js-data-example-ajax">
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Dosen</label>
+                                            <select id="optionDosen" name="dosen" style="width: 100%!important;" class="js-example-basic-multiple js-states form-control js-data-example-ajax">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="idDosen1" name="idDosen" class="form-control" readonly>
+                                    <input type="hidden" id="jadwal1" name="jadwal" class="form-control" readonly>
+                                    <input type="hidden" id="sks1" name="sks" class="form-control" readonly>
+                                    <input type="hidden" id="idKelas1" name="idKelas" class="form-control" readonly>
+                                    <input type="hidden" id="idMatkur1" name="idMatkur" class="form-control" readonly>
+                                    <div class="col-md-3" style="display:none;">
+                                        <div class="form-group">
+                                            <label>Total SKS</label>
+                                            <input type="text" id="sksDosen1" readonly name="sksDosen" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row float-md-right">
+                                    <center>
+                                        <button id="addData" class="btn btn-success">Save</button>
+                                        <button id="closemodal1" class="btn btn-danger">Tutup</button>
+                                    </center>
+                                </div>
+                            </div>
+
+
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Dark table -->
+
+
+        </div>
+
+</div>
 </div>
 </body>
 </html>
+
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
 <script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Select One",
-        allowClear: true
+
+    var kelasInput = $('#selectedKelasInput').val();
+    mystring = kelasInput.replace('[','');
+    valid = mystring.replace(']','')
+    $("#matkulList").select2(
+        {
+            dropdownParent: $('#addPloting'),
+            placeholder: 'Cari Matakuliah',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/search/ploting?tahunAkademik='+$('#tahun').val()+'&kelas='+valid+'&search=' + params.term;
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].idKelas,text:data[i].kelas +' ( ' + data[i].matkul +' )',value:data[i].mkkur}
+                    }
+                    return {
+                        results: data
+                    };
+                }
+            },
+
+        });
+
+    $('#matkulList').on('select2:selecting', function(e) {
+        var dosen = $('#idDosen1').val();
+        // $('#jadwal1').val(e.params.args.data.value);
+        $('#idKelas1').val(e.params.args.data.id);
+        $('#idMatkur1').val(e.params.args.data.value);
+        var sksDosen = $('#sksDosen1').val(null);
+
+        const url = '/detail/matkur?search='+e.params.args.data.value;
+        $.getJSON(url, function (data) {
+            $('#sks1').val(data.jumlahSks);
+        });
+
+
+
+    });
+
+    $("#optionDosen").select2(
+        {
+            dropdownParent: $('#addPloting'),
+            placeholder: 'Cari Dosen',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/select2/lecture?search=' + params.term;
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].id,text:data[i].dosen +' ( ' + data[i].total +' )',value:data[i].id}
+                    }
+                    return {
+                        results: data
+                    };
+                }
+            },
+
+        });
+
+    $('#optionDosen').on('select2:selecting', function(e) {
+        const url = '/detail/lecture?search='+e.params.args.data.id;
+        var sksMatkul = $('#sks1').val();
+        $.getJSON(url, function (data) {
+            $('#idDosen1').val(data.id);
+        });
+
+    });
+
+    $("#addData").click(function(e) {
+        var token = $("input[name='_csrf']").val();
+        var matkul = $('#idMatkur1').val();
+        var dosen = $('#idDosen1').val();
+        var kelas = $('#idKelas1').val();
+        var url = "/academic/ploting/save";
+        e.preventDefault();
+
+        $.ajax({
+            url: url+'?tahun='+$('#tahun').val(),
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            method: 'post',
+            dataType: 'JSON',
+            data: JSON.stringify({
+                "id" : null,
+                "kodeMatakuliah" : null,
+                "matakuliah" : matkul,
+                "course" : null,
+                "kelas" : kelas,
+                "sks" : null,
+                "idDosen" : dosen,
+                "dosen" : null,
+                "idKelas" :null
+            }), error: function (data) {
+                if (data.status == "500"){
+                    document.getElementById('alertAdd').style.display = "block";
+                    setTimeout(function () {
+                        document.getElementById('alertAdd').style.display = "none";
+                    }, 5000);
+                }
+
+                if (data.status == "200"){
+                    $('#addPloting').modal('hide');
+                    resetModalAdd();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data tersimpan, data otomatis terupdate setiap 8 detik',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+
+
+            }
+        })
+
+    });
+
+    var $table = $('#table')
+
+    $(function() {
+        $table.bootstrapTable({
+            columns: [{
+                field: 'kelas',
+                title : 'Kelas',
+                sortable: true,
+                align: 'center',
+                valign: 'middle'
+            }, {
+                title: 'Matakuliah',
+                field: 'matkul',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'SKS',
+                field: 'sks',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },{
+                title: 'Dosen',
+                field: 'dosen',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },{
+                title: 'Total SKS',
+                field: 'totsks',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },{
+                title: '#',
+                field: 'html',
+                align: 'center',
+                valign: 'middle',
+                events: window.operateEvents,
+                formatter: operateFormatter
+            }]
+        })
+    })
+
+    window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+            // alert('You click like action, row: ' + JSON.stringify(row))
+            openModal(row.idKelas,row.mkkur,row.matkul,row.kelas,row.sks,row.jadwal,row.idDos,row.dosen,row.totsks);
+        },
+        'click .create': function (e, value, row, index) {
+            // alert('You click like action, row: ' + JSON.stringify(row))
+            openModal(row.idKelas,row.mkkur,row.matkul,row.kelas,row.sks);
+        }
+        ,
+        'click .hapus': function (e, value, row, index) {
+            // alert('You click like action, row: ' + JSON.stringify(row))
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const url = '/delete/ploting?jadwal='+row.jadwal;
+                    $.getJSON(url, function (data) {
+                    });
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                }
+            })
+            // openModal(row.idKelas,row.mkkur,row.matkul,row.kelas,row.sks);
+        }
+    }
+    function operateFormatter(value, row, index) {
+        if (row.idDos == null){
+            return [
+                '<button class ="btn create col-md-12 btn-default btn-sm">',
+                '<i class ="fas fa-pencil-alt"></i>',
+                '  Buat Ploting</button>  '
+            ].join('')
+        }
+        if (row.idDos != null && row.hari != null && row.mulai != null) {
+            return [
+                '<button class ="btn btn-success col-md-12 btn-sm">',
+                '<i class ="fas fa-check"></i>',
+                '  Sudah Tejadwal</button>  '
+            ].join('')
+        }
+
+
+        if (row.idDos != null && row.hari == null && row.mulai == null){
+            return [
+                '<button class ="btn edit col-md-6 btn-default btn-sm">',
+                '<i class ="fas fa-pencil-alt"></i>',
+                '  Edit Ploting</button>  ',
+                '<button class ="btn hapus col-md-6 btn-danger btn-sm">',
+                '<i class ="fas fa-eraser"></i>',
+                '  Hapus Ploting</button>  '
+            ].join('')
+        }
+
+    }
+
+    function openModal(idKelas,matkur,matkul,kelas,sks,jadwal,idDos,dosen,totsks){
+        $('#kelas').val(kelas);
+        $('#matakuliah').val(matkul);
+        $('#idKelas').val(idKelas);
+        $('#idMatkur').val(matkur);
+        $('#jadwal').val(jadwal);
+        $('#sks').val(sks);
+        $('#idDosen').val(idDos);
+
+        var data = {
+            id: idDos,
+            text: dosen + ' ( ' + totsks + ' )'
+        };
+
+        var newOption = new Option(data.text, data.id, false, false);
+        $('#dosenList').append(newOption).trigger('change');
+
+        $("#exampleModal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    $("#dosenList").select2(
+        {
+            dropdownParent: $('#exampleModal'),
+            placeholder: 'Cari Dosen',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/select2/lecture?search=' + params.term;
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].id,text:data[i].dosen +' ( ' + data[i].total +' )',value:data[i].id}
+                    }
+                    return {
+                        results: data
+                    };
+                }
+            },
+
+        });
+
+    $('#dosenList').on('select2:selecting', function(e) {
+        const url = '/detail/lecture?search='+e.params.args.data.id;
+        var sksMatkul = $('#sks').val();
+        $('#sksDosen').val(null);
+        console.log(sksMatkul);
+        console.log(e.params.args.data.id);
+        $.getJSON(url, function (data) {
+            $('#idDosen').val(data.id);
+            $('#sksDosen').val(+data.total + +sksMatkul);
+        });
+    });
+
+
+    $('#closemodal').click(function() {
+        $('#exampleModal').modal('hide');
+        resetModal();
+    });
+
+    $('#closemodal1').click(function() {
+        $('#addPloting').modal('hide');
+        resetModalAdd();
+    });
+
+    function resetModal(){
+
+        $('#kelas').val(null);
+        $('#matakuliah').val(null);
+        $('#dosenList').val(null).trigger('change');
+        $('#idDosen').val(null);
+        $('#idKelas').val(null);
+        $('#idMatkur').val(null);
+        $('#sksDosen').val(null);
+        $('#sks').val(null);
+    }
+
+    function resetModalAdd(){
+
+        $('#idKelas1').val(null);
+        $('#optionDosen').val(null).trigger('change');
+        $('#matkulList').val(null).trigger('change');
+        $('#idDosen1').val(null);
+        $('#idMatkur1').val(null);
+        $('#sksDosen1').val(null);
+        $('#sks1').val(null);
+    }
+
+    $("#saveData").click(function(e) {
+        var token = $("input[name='_csrf']").val();
+        var matkul = $('#idMatkur').val();
+        var dosen = $('#idDosen').val();
+        var kelas = $('#idKelas').val();
+        var jadwal = $('#jadwal').val();
+        var url = "/academic/ploting/save";
+        e.preventDefault();
+
+        if (dosen == null){
+            console.log("null");
+        }
+        $.ajax({
+            url: url+'?tahun='+$('#tahun').val(),
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            method: 'post',
+            dataType: 'JSON',
+            data: JSON.stringify({
+                "id" : jadwal,
+                "kodeMatakuliah" : null,
+                "matakuliah" : matkul,
+                "course" : null,
+                "kelas" : kelas,
+                "sks" : null,
+                "idDosen" : dosen,
+                "dosen" : null,
+                "idKelas" :null
+            }), error: function (data) {
+                if (data.status == "500"){
+                        document.getElementById('alertSave').style.display = "block";
+                        setTimeout(function () {
+                            document.getElementById('alertSave').style.display = "none";
+                        }, 5000);
+                }
+
+                if (data.status == "200"){
+                    $('#exampleModal').modal('hide');
+                    resetModal();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data tersimpan, data otomatis terupdate setiap 8 detik',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+
+
+            }
+        })
+
     });
 </script>
