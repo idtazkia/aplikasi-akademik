@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.objenesis.instantiator.basic.NewInstanceInstantiator;
 
@@ -18,9 +19,13 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
 
     Integer countByStatusAndJenisTagihan(StatusRecord statusRecord, JenisTagihan jenisTagihan);
 
-    List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(TahunAkademik tahunAkademik, String angkatan , Prodi prodi, Program program, StatusRecord statusRecord);
+    List<NilaiJenisTagihan> findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(TahunAkademik tahunAkademik, String angkatan, Prodi prodi, Program program, StatusRecord statusRecord);
 
     List<NilaiJenisTagihan> findByTahunAkademikAndProdi(TahunAkademik tahunAkademik, Prodi prodi);
+
+    List<NilaiJenisTagihan> findByProdiAndProgramAndAngkatanAndTahunAkademikAndIdNotInAndStatus(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, List<String> id, StatusRecord statusRecord);
+
+    List<NilaiJenisTagihan> findByProdiAndProgramAndAngkatanAndTahunAkademikAndIdNotInAndStatusAndKategori(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, List<String> id, StatusRecord statusRecord, StatusTagihan kategori);
 
     NilaiJenisTagihan findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(String jenisTagihan,
                                                                                                  TahunAkademik tahunAkademik,
@@ -29,5 +34,9 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
 
     NilaiJenisTagihan findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(Prodi prodi, String Angkatan, TahunAkademik tahunAkademik, Program program,
                                                                                 StatusRecord statusRecord, JenisTagihan jenisTagihan);
+
+    NilaiJenisTagihan findByJenisTagihanKodeAndTahunAkademikAndProgramAndProdiAndAngkatanAndStatusAndKategori(String kode, TahunAkademik tahunAkademik,
+                                                                                                  Program program, Prodi prodi, String angkatan,
+                                                                                                  StatusRecord statusRecord, StatusTagihan kategori);
 
 }

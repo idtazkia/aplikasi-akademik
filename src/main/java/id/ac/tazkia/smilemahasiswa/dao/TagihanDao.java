@@ -188,6 +188,12 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
 
     List<Tagihan> findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(List<StatusRecord> statusRecord, boolean lunas, Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
 
-    Tagihan findByMahasiswaAndNilaiJenisTagihanAndStatusTagihanOrStatusTagihanAndStatus(Mahasiswa mahasiswa, NilaiJenisTagihan nilaiJenisTagihan, StatusTagihan st1, StatusTagihan st2, StatusRecord statusRecord);
+    List<Tagihan> findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusRecord statusRecord);
+
+    List<Tagihan> findByStatusAndStatusTagihanNotInAndMahasiswaAndLunas(StatusRecord statusRecord, List<StatusTagihan> status, Mahasiswa mahasiswa, boolean lunas);
+
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
+
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanKodeInAndTahunAkademikAndStatus(Mahasiswa mahasiswa, List<String> kode, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
 }

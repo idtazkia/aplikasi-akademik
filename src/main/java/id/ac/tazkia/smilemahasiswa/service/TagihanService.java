@@ -39,7 +39,7 @@ public class TagihanService {
     public static final String TAGIHAN_UTS = "12";
     public static final String TAGIHAN_UAS = "13";
     public static final String TAGIHAN_SP = "23";
-    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40");
+    public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
 
     @Autowired
     private PembayaranDao pembayaranDao;
@@ -174,7 +174,7 @@ public class TagihanService {
             log.info("nomor tagihan {} LUNAS", tagihan.getNomor());
         }
 
-        if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya().equals(TAGIHAN_UTS))){
+        if (TAGIHAN_UTS.equals(pt.getKodeJenisBiaya())){
             EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
                     StatusRecord.UTS, false, tagihan.getTahunAkademik());
             if (enableFiture != null){
@@ -259,15 +259,7 @@ public class TagihanService {
                 TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(listApprove.getTahunAkademik(), listApprove.getMahasiswa().getIdProdi());
                     if (k == null) {
 
-                        Krs krs = new Krs();
-                        krs.setTahunAkademik(listApprove.getTahunAkademik());
-                        krs.setTahunAkademikProdi(tahunAkademikProdi);
-                        krs.setProdi(listApprove.getMahasiswa().getIdProdi());
-                        krs.setMahasiswa(listApprove.getMahasiswa());
-                        krs.setNim(listApprove.getMahasiswa().getNim());
-                        krs.setTanggalTransaksi(LocalDateTime.now());
-                        krs.setStatus(StatusRecord.AKTIF);
-                        krsDao.save(krs);
+                        createKrs(tagihan, tahunAkademikProdi);
 
                     }
             }
