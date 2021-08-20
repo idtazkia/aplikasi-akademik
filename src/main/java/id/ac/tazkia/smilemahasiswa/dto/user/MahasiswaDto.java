@@ -54,7 +54,7 @@ public class MahasiswaDto {
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
     private User idUser;
-    private UserPassword userPassword;
+    private Integer absen;
     private String kps;
     private String nomorKps;
     private String ukuranBaju;

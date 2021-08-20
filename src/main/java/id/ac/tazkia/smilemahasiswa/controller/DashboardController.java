@@ -259,6 +259,7 @@ public class DashboardController {
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
         if (mahasiswaDetailKeluarga.getWali() != null) {
             mahasiswaDto.setId(mahasiswaDetailKeluarga.getMahasiswa().getId());
+            mahasiswaDto.setAbsen(mahasiswa.getIdAbsen());
             mahasiswaDto.setAngkatan(mahasiswaDetailKeluarga.getMahasiswa().getAngkatan());
             mahasiswaDto.setIdProdi(mahasiswaDetailKeluarga.getMahasiswa().getIdProdi());
             mahasiswaDto.setIdKonsentrasi(mahasiswaDetailKeluarga.getMahasiswa().getIdKonsentrasi());
@@ -334,6 +335,7 @@ public class DashboardController {
 
         if (mahasiswaDetailKeluarga.getWali() == null){
             mahasiswaDto.setId(mahasiswaDetailKeluarga.getMahasiswa().getId());
+            mahasiswaDto.setAbsen(mahasiswa.getIdAbsen());
             mahasiswaDto.setAngkatan(mahasiswaDetailKeluarga.getMahasiswa().getAngkatan());
             mahasiswaDto.setIdProdi(mahasiswaDetailKeluarga.getMahasiswa().getIdProdi());
             mahasiswaDto.setIdKonsentrasi(mahasiswaDetailKeluarga.getMahasiswa().getIdKonsentrasi());

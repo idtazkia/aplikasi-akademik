@@ -23,6 +23,7 @@ public class Mahasiswa {
     private String angkatan;
 
     @NotBlank
+    @NotNull
     private String nim;
 
     @NotBlank
@@ -134,6 +135,7 @@ public class Mahasiswa {
     private  Kurikulum kurikulum;
 
     private String rfid;
+    @NotNull
     private Integer idAbsen;
 
     private String nirm;
