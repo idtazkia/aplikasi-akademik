@@ -95,12 +95,14 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByProdi(String idProdi, String idTahunAkademik);
 
-    @Query(value = "select a.id as id, c.nama_prodi as prodi, a.nim as nim, a.nama as nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
-            "sum(coalesce(d.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(d.amount,0)) as sisa \n" +
-            "from mahasiswa as a inner join tagihan as b on \n" +
-            "a.id=b.id_mahasiswa inner join prodi as c on \n" +
-            "a.id_prodi=c.id left join pembayaran as d on b.id=d.id_tagihan where \n" +
-            "b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
+    @Query(value = "select a.*,sum(coalesce(b.amount,0)) as dibayar, coalesce(a.tagihan,0)-sum(coalesce(b.amount,0)) as sisa from\n" +
+            "(select a.id as id, b.id as id_tagihan, c.nama_prodi as prodi, a.nim as nim, a.nama as nama,sum(coalesce(b.nilai_tagihan,0)) as tagihan\n" +
+            "from mahasiswa as a \n" +
+            "inner join tagihan as b on a.id=b.id_mahasiswa \n" +
+            "inner join prodi as c on a.id_prodi=c.id\n" +
+            "where b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2 " +
+            "group by id order by nim)a\n" +
+            "left join pembayaran as b on a.id_tagihan = b.id_tagihan group by a.nim", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan, String idTahunAkademik);
 
     @Query(value = "select 'LANCAR' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
@@ -193,6 +195,8 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     List<Tagihan> findByStatusAndStatusTagihanNotInAndMahasiswaAndLunas(StatusRecord statusRecord, List<StatusTagihan> status, Mahasiswa mahasiswa, boolean lunas);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, StatusRecord statusRecord);
+
+    Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndLunasAndStatus(Mahasiswa mahasiswa, JenisTagihan jenisTagihan, TahunAkademik tahunAkademik, boolean lunas, StatusRecord statusRecord);
 
     Tagihan findByMahasiswaAndNilaiJenisTagihanJenisTagihanKodeInAndTahunAkademikAndStatus(Mahasiswa mahasiswa, List<String> kode, TahunAkademik tahunAkademik, StatusRecord statusRecord);
 
