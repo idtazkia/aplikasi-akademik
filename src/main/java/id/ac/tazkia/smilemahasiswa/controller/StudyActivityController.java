@@ -847,7 +847,7 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Cuti cuti = cutiDao.findCutiByStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
         if (cuti == null){
-            return "/du/form";
+            return "du/form";
         }else {
             model.addAttribute("cuti", cutiDao.findCutiByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
             return "redirect:/du/cuti/list";
