@@ -50,23 +50,24 @@
 
                             <div class="form-group">
                                 <label>Select prodi</label>
-                                <input type="text" th:if="${kelas.id == null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
-                                       data-provide="typeahead" autocomplete="off" required>
-                                <input type="text" th:if="${kelas.id != null}" class="form-control" id="prodi" placeholder="Cari Prodi ..."
-                                       data-provide="typeahead" autocomplete="off" th:field="*{idProdi.namaProdi}" required>
+                                <select name="idProdi" class="form-control js-example-placeholder-single" onchange="myProdi()"
+                                        id="select2-prodi" required>
+                                    <option th:each="data : ${prodi}"
+                                            th:selected="(${data} == *{idProdi})"
+                                            th:text="${data.namaProdi}"
+                                            th:value="${data.id}">STEI Tazkia</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
                                 <label>Select Curiculum</label>
-                                <input type="text" th:if="${kelas.id == null}" class="form-control" id="kurikulum"
-                                       placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
-                                <input type="text" th:if="${kelas.id != null}" class="form-control" id="kurikulum" th:field="*{kurikulum.namaKurikulum}"
-                                       placeholder="Cari Kurikulum ..." data-provide="typeahead" autocomplete="off" required>
+                                <select name="kurikulum" class="form-control js-example-placeholder-single"
+                                        id="select2-kurikulum" required>
+                                    <option th:if="${kelas.kurikulum != null}" selected
+                                            th:text="${kelas.kurikulum.namaKurikulum}"
+                                            th:value="${kelas.kurikulum.id}"></option>
+                                </select>
                             </div>
-                            <input type="hidden" th:if="${kelas.id == null}" id="isiProdi" name="prodi">
-                            <input type="hidden" th:if="${kelas.id == null}" id="isiKurikulum" name="kurikulum">
-                            <input type="hidden" th:if="${kelas.id != null}" id="isiProdi" name="prodi" th:value="*{idProdi.id}">
-                            <input type="hidden" th:if="${kelas.id != null}" id="isiKurikulum" name="kurikulum" th:values="*{kurikulum.id}">
 
                             <div class="form-group">
                                 <label>Angkatan</label>
@@ -74,6 +75,7 @@
                                     <option value="">Select One</option>
                                     <option th:each="data: ${angkatan}" th:text="${data}" th:value="${data}"></option>
                                 </select>
+                                <input type="hidden" id="idKurikulum" th:field="*{kurikulum}">
                             </div>
 
                             <div class="form-group">
@@ -88,7 +90,7 @@
 
                             <div class="form-group">
                                 <label>Bahasa Pengantar</label>
-                                <select name="angkatan" class="form-control" th:field="*{bahasa}">
+                                <select name="bahasa" class="form-control" th:field="*{bahasa}">
                                     <option value="">Select One</option>
                                     <option th:each="data: ${bahasa}" th:text="${data.getKeterangan()}" th:value="${data.getBahasa()}"></option>
                                 </select>
@@ -123,9 +125,65 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 <script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Select one",
-        allowClear: true
+    $(document).ready(function () {
+        $(".js-example-placeholder-single").select2({
+            placeholder: "Select one",
+            allowClear: true
+        });
+
+        console.log($('#idKurikulum').val())
+
+        if ($('#idKurikulum').val() == null || $('#idKurikulum').val() == ''){
+            let dropdown = $('#select2-kurikulum');
+
+            dropdown.empty();
+
+            dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>')
+            dropdown.prop('selectedIndex', 0);
+            const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
+
+            $.getJSON(url, function (data){
+                $.each(data, function (key, entry){
+                    dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
+                })
+
+            });
+        }
+
+        if ($('#idKurikulum').val() != null || $('#idKurikulum').val() != ''){
+            let dropdown = $('#select2-kurikulum');
+
+            const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
+
+            $.getJSON(url, function (data){
+                $.each(data, function (key, entry){
+                    dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
+                })
+
+            });
+        }
+
+
+
+
     });
 
+    function myProdi(){
+
+        let dropdown = $('#select2-kurikulum');
+
+        dropdown.empty();
+
+        dropdown.append('<option selected="true" disabled>Pilih Kurikulum</option>')
+        dropdown.prop('selectedIndex', 0);
+        const url = '/api/prodikurikulum?prodi='+$('#select2-prodi').val();
+
+        $.getJSON(url, function (data){
+            $.each(data, function (key, entry){
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaKurikulum))
+            })
+
+        });
+
+    }
 </script>
