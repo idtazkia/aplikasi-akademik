@@ -57,61 +57,67 @@
         </div>
     </div>
     <div class="row" style="margin-top: 20px;">
-        <table border="1" width="100%" style="font-size: 10px;">
-            <thead>
-            <tr>
-                <td rowspan="2" style="text-align: center;">NO</td>
-                <td rowspan="2" style="text-align: center;">DATE</td>
-                <td rowspan="2" style="text-align: center;">TIME IN</td>
-                <td rowspan="2" style="text-align: center;">TIME OUT</td>
-                <td rowspan="2" style="text-align: center;">TOPIC</td>
-                <td rowspan="2" style="text-align: center;">ASSIGNMENT</td>
-                <td rowspan="2" style="text-align: center;">STUDENT WHO DONT ATTEND</td>
-                <td rowspan="2" style="text-align: center;">LECTURE</td>
-                <td colspan="2" style="text-align: center;">SIGN</td>
+        <div class="col-md-12">
+            <table border="1" width="100%" style="font-size: 10px;">
+                <thead>
+                <tr>
+                    <td rowspan="2" style="text-align: center;">NO</td>
+                    <td rowspan="2" style="text-align: center;">DATE</td>
+                    <td rowspan="2" style="text-align: center;">TIME IN</td>
+                    <td rowspan="2" style="text-align: center;">TIME OUT</td>
+                    <td rowspan="2" style="text-align: center;">TOPIC</td>
+                    <td rowspan="2" style="text-align: center;">ASSIGNMENT</td>
+                    <td rowspan="2" style="text-align: center;">STUDENT WHO DONT ATTEND</td>
+                    <td rowspan="2" style="text-align: center;">LECTURE</td>
+                    <td colspan="2" style="text-align: center;">SIGN</td>
 
-            </tr>
-            <tr>
-                <td style="text-align: center;">LECTURE</td>
-                <td style="text-align: center;">STUDENT</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="data,row : ${topic}">
-                <td style="text-align: center;" th:text="${row.index + 1}">1</td>
-                <td style="text-align: center;" width="8%" th:text="${data[0]}">2018-09-10</td>
-                <td style="text-align: center;" width="8%" th:text="${data[1]}">09:31:00</td>
-                <td style="text-align: center;" width="8%" th:text="${data[2]}">12:00:00</td>
-                <td width="45%" th:text="${#strings.abbreviate(data[3],70)}">Measurement Application presentation from students via audio recording introductory discussion through WAG Detail materials and explanation through vc google meet</td>
-                <td style="text-align: center;" width="3%" th:text="${data[4]}">42</td>
-                <td style="text-align: center;" width="3%" th:text="${data[5]}">3</td>
-                <td style="text-align: center;" width="30%" th:text="${data[6]}">Dr. Sugiyarti Fatma Laela, M.Buss, Acc, CMA, CIBA</td>
-                <td style="text-align: center;" width="2%"></td>
-                <td style="text-align: center;" width="2%"></td>
-            </tr>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">LECTURE</td>
+                    <td style="text-align: center;">STUDENT</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data,row : ${topic}">
+                    <td style="text-align: center;" th:text="${row.index + 1}">1</td>
+                    <td style="text-align: center;" width="8%" th:text="${data[0]}">2018-09-10</td>
+                    <td style="text-align: center;" width="8%" th:text="${data[1]}">09:31:00</td>
+                    <td style="text-align: center;" width="8%" th:text="${data[2]}">12:00:00</td>
+                    <td width="45%" th:text="${#strings.abbreviate(data[3],70)}">Measurement Application presentation from students via audio recording introductory discussion through WAG Detail materials and explanation through vc google meet</td>
+                    <td style="text-align: center;" width="3%" th:text="${data[4]}">42</td>
+                    <td style="text-align: center;" width="3%" th:text="${data[5]}">3</td>
+                    <td style="text-align: center;" width="30%" th:text="${data[6]}">Dr. Sugiyarti Fatma Laela, M.Buss, Acc, CMA, CIBA</td>
+                    <td style="text-align: center;" width="2%"></td>
+                    <td style="text-align: center;" width="2%"></td>
+                </tr>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
 
-        <table>
-            <thead>
-            <tr>
-                <td id="tanggal">&nbsp;&nbsp;</td>
-            </tr>
-            </thead>
-            <tr>
-                <td th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>
-            </tr>
-            <tr>
-                <td>&nbsp;&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;&nbsp;</td>
-            </tr>
-            <tr>
-                <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>
-            </tr>
-        </table>
+        <div class="col-md-12">
+            <table>
+                <thead>
+                <tr>
+                    <td id="tanggal">&nbsp;&nbsp;</td>
+                </tr>
+                </thead>
+                <tr>
+                    <td th:text="${jadwal.prodi.jabatan}">Ketua Program Studi Akuntansi Syariah</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+                <tr>
+                    <td th:text="${jadwal.prodi.dosen.karyawan.namaKaryawan}">Grandis Imama Hendra, S.E.I., M.Sc (Acc).</td>
+                </tr>
+            </table>
+        </div>
+
+
     </div>
 </div>
 <style type="text/css">
