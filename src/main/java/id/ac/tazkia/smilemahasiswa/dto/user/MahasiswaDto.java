@@ -72,6 +72,8 @@ public class MahasiswaDto {
     private  Agama agama;
     private String hidup;
     private String nikAyah;
+    private String emailAyah;
+    private String nomorAyah;
 
     private String ibu;
     private String namaIbuKandung;
@@ -86,6 +88,8 @@ public class MahasiswaDto {
     private  Agama agamaIbu;
     private String statusHidupIbu;
     private String nikIbu;
+    private String emailIbu;
+    private String nomorIbu;
 
     private String wali;
     private String namaWali;

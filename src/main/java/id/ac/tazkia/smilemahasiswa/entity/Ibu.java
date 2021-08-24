@@ -51,4 +51,8 @@ public class Ibu {
 
     private String nik;
 
+    private String emailIbu;
+
+    private String nomorIbu;
+
 }

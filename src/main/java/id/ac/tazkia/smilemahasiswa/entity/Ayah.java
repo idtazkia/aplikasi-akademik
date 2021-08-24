@@ -51,5 +51,8 @@ public class Ayah {
 
     private String nik;
 
+    private String emailAyah;
+
+    private String nomorAyah;
 
 }

@@ -305,6 +305,8 @@ public class DashboardController {
             mahasiswaDto.setPenghasilanIbu(mahasiswaDetailKeluarga.getIbu().getPenghasilan());
             mahasiswaDto.setAgamaIbu(mahasiswaDetailKeluarga.getIbu().getAgama());
             mahasiswaDto.setStatusHidupIbu(mahasiswaDetailKeluarga.getIbu().getStatusHidup());
+            mahasiswaDto.setEmailIbu(mahasiswaDetailKeluarga.getIbu().getEmailIbu());
+            mahasiswaDto.setNomorIbu(mahasiswaDetailKeluarga.getIbu().getNomorIbu());
 
             mahasiswaDto.setAyah(mahasiswaDetailKeluarga.getAyah().getId());
             mahasiswaDto.setNamaAyah(mahasiswaDetailKeluarga.getAyah().getNamaAyah());
@@ -317,6 +319,8 @@ public class DashboardController {
             mahasiswaDto.setPenghasilan(mahasiswaDetailKeluarga.getAyah().getPenghasilan());
             mahasiswaDto.setAgama(mahasiswaDetailKeluarga.getAyah().getAgama());
             mahasiswaDto.setHidup(mahasiswaDetailKeluarga.getAyah().getStatusHidup());
+            mahasiswaDto.setEmailAyah(mahasiswaDetailKeluarga.getAyah().getEmailAyah());
+            mahasiswaDto.setNomorAyah(mahasiswaDetailKeluarga.getAyah().getNomorAyah());
 
             mahasiswaDto.setWali(mahasiswaDetailKeluarga.getWali().getId());
             mahasiswaDto.setNamaWali(mahasiswaDetailKeluarga.getWali().getNamaWali());
@@ -493,6 +497,8 @@ public class DashboardController {
         ibu.setAgama(mahasiswaDto.getAgamaIbu());
         ibu.setStatusHidup(mahasiswaDto.getStatusHidupIbu());
         ibu.setNik(mahasiswaDto.getNikIbu());
+        ibu.setEmailIbu(mahasiswaDto.getEmailIbu());
+        ibu.setNomorIbu(mahasiswaDto.getNomorIbu());
         ibuDao.save(ibu);
 
         Ayah ayah = ayahDao.findById(mahasiswaDto.getAyah()).get();
@@ -502,6 +508,8 @@ public class DashboardController {
         ayah.setTempatLahir(mahasiswaDto.getTempatLahirAyah());
         ayah.setStatusHidup(mahasiswaDto.getHidup());
         ayah.setNik(mahasiswaDto.getNikAyah());
+        ayah.setEmailAyah(mahasiswaDto.getEmailAyah());
+        ayah.setNomorAyah(mahasiswaDto.getNomorAyah());
         ayahDao.save(ayah);
         return "redirect:/study/comingsoon";
     }
