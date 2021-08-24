@@ -43,6 +43,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sun.security.util.Pem;
 
 import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
@@ -331,13 +332,20 @@ public class StudentBillController {
     }
 
     @GetMapping("/studentBill/valueType/list")
-    public void listNilai(Model model, @PageableDefault(size = 10) Pageable page, String search ){
-        if (StringUtils.hasText(search)){
-            model.addAttribute("search", search);
-            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), search, search, page));
+    public void listNilai(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page, String search ){
+
+        model.addAttribute("selectTahun", tahunAkademik);
+        if (tahunAkademik == null) {
+            model.addAttribute("tahun", "tahun");
         }else{
-            model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInOrderByAngkatan(Arrays.asList(StatusRecord.HAPUS), page));
+            if (StringUtils.hasText(search)){
+                model.addAttribute("search", search);
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+            }else{
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
+            }
         }
+
     }
 
     @GetMapping("/studentBill/valueType/form")
@@ -978,13 +986,20 @@ public class StudentBillController {
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
-        Mahasiswa mhs = nim;
         tagihan.setKaryawan(karyawan);
         log.debug("pengedit : {}" + karyawan);
+
+        if (nim.getStatusAktif().equals("BEASISWA")) {
+            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
+            p.setAmount(nilaiTagihan);
+            tagihan.setAkumulasiPembayaran(nilaiTagihan);
+            pembayaranDao.save(p);
+        }
+
         tagihan.setNilaiTagihan(nilaiTagihan);
         tagihanDao.save(tagihan);
 
-        return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+mhs.getNim();
+        return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+nim.getNim();
     }
 
     @PostMapping("/studentBill/billAdmin/date")

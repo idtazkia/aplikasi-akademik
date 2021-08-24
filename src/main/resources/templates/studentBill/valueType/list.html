@@ -56,6 +56,30 @@
                     <div class="card-body">
                         <form method="get">
                             <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="form-group input-group mb-3">
+                                        <select name="tahunAkademik" required class="form-control" id="select2-tahun">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                            th:selected="(${data} == *{selectTahun})"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}"></option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit"><i class="fa fa-eye"></i>&nbsp; Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+<!--                                <div class="col-md-2">-->
+<!--                                    <div class="input-group mb-3">-->
+<!--                                        -->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+                        </form>
+                        <form method="get" th:if="${tahun == null}">
+                            <input type="hidden" name="tahunAkademik" th:value="${selectTahun.id}">
+                            <div class="row">
 
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6">
@@ -71,7 +95,7 @@
                         </form>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="table-responsive" th:if="${tahun == null}">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr>
@@ -150,7 +174,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer py-4">
+                    <div class="card-footer py-4" th:if="${tahun == null}">
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0" sd:pagination="full">
                                 <li class="disabled"><a href="#" aria-label="Previous"><span
