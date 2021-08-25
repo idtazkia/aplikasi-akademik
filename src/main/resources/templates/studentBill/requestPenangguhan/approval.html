@@ -99,10 +99,37 @@
                 <div class="card shadow">
 
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Form Approval</h3>
+                        <h3 class="mb-0">Daftar Berkas</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <tr class="thead-light">
+                                            <th>No</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Berkas</th>
+                                        </tr>
+                                        <tr th:each="data, row : ${dokumen}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td>
+                                                <div class="text-center" th:text="${data.jenisDocument}"></div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <div>Lihat Berkas&nbsp;</div>
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" th:if="${message == null}">
                             <div class="col-md-6">
                                 <form method="post" th:action="@{/studentBill/penangguhan/approve(requestPenangguhan = ${penangguhan.id}, tagihan = ${bill.id})}"  th:object="${penangguhan}">
                                     <input type="hidden" th:field="*{tagihan}">
@@ -120,52 +147,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-info btn-block" data-toggle="modal" data-target="#daftarDocument">
-                                        <i class="fas fa-file"></i> Daftar Berkas
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal Daftar Document -->
-                        <div class="modal fade" id="daftarDocument" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
-                            <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
-                                <div class="modal-content">
 
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <div class="table-responsive">
-                                            <table class="table align-items-center table-flush">
-                                                <tr class="thead-light">
-                                                    <th>No</th>
-                                                    <th class="text-center">Jenis</th>
-                                                    <th class="text-center">Berkas</th>
-                                                </tr>
-                                                <tr th:each="data, row : ${dokumen}">
-                                                    <td th:text="${(row.index + 1)}"></td>
-                                                    <td>
-                                                        <div class="text-center" th:text="${data.jenisDocument}"></div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
-                                                            <button type="submit" class="btn btn-success btn-sm">
-                                                                <div>Lihat Berkas&nbsp;</div>
-                                                            </button>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
                         <!-- Modal Reject Request Penangguhan -->
                         <div class="modal fade" id="rejectModal">
                             <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">

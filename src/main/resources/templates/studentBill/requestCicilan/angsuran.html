@@ -181,6 +181,7 @@
                             <div class="modal-content">
                                 <form method="post" th:action="@{/studentBill/bill/document}" enctype="multipart/form-data">
                                     <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                    <h5>Maksimal ukuran file : <span style="color: red"> 10MB</span></h5>
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
@@ -188,7 +189,7 @@
                                         <div class="row ">
                                             <div class="col-md-12 col-xs-12">
                                                 <div class="form-group">
-                                                    <label >Surat permohonan penangguhan</label>
+                                                    <label >Surat permohonan cicilan</label>
                                                     <input type="hidden" name="jenisDocument1" value="PERMOHONAN_CICILAN">
                                                     <input type="file" name="fileBerkas1" required class="form-control"
                                                            placeholder="Upload Berkas" autofocus>

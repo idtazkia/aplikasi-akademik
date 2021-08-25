@@ -1058,9 +1058,13 @@ public class StudentBillController {
                          @RequestParam(required = false) Tagihan tagihan, @PageableDefault(size = 10) Pageable page){
 
         RequestPenangguhan requestPenangguhan = requestPenangguhanDao.findById(id).get();
+        StatusApprove info = requestPenangguhan.getStatusApprove();
         model.addAttribute("penangguhan", requestPenangguhan);
         model.addAttribute("bill", tagihan);
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PENANGGUHAN, page));
+        if (info != StatusApprove.WAITING){
+            model.addAttribute("message", "penangguhan sudah di approve/reject");
+        }
     }
 
     @PostMapping("/studentBill/bill/newDate")
