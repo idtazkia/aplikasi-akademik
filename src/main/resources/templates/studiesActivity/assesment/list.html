@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Assesment</title>
+    <title>Penilaian</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Assesment </span>
+                                        <span class="h2 font-weight-bold mb-0">Penilaian </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -50,7 +50,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Academic Year</label>
+                                        <label>Tahun Akademik</label>
                                         <select name="tahunAkademik" required class="form-control">
                                             <option value="" disabled selected>-- Select One --</option>
                                             <option th:each="data : ${tahunAkademik}"
@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Prody</label>
+                                        <label>Prodi</label>
                                         <select name="prodi" required class="form-control">
                                             <option value="" disabled selected>-- Select One --</option>
                                             <option th:each="data : ${prodi}"
@@ -76,7 +76,7 @@
                             <div class="row">
                                 <div class="col-md-12" style="text-align: center;">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
                                     </div>
                                 </div>
 
@@ -88,11 +88,11 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Name Lecture</th>
-                                <th scope="col">Class</th>
-                                <th scope="col">Day</th>
-                                <th scope="col">Time</th>
+                                <th scope="col">Kode Matakuliah</th>
+                                <th scope="col">Dosen</th>
+                                <th scope="col">Kelas</th>
+                                <th scope="col">Hari</th>
+                                <th scope="col">Waktu</th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -102,7 +102,7 @@
                             <tbody>
                             <tr th:each="data,row : ${list}">
                                 <td style="font-size: 10px;" th:text="${(row.index + 1)}">1</td>
-                                <td style="font-size: 10px;" th:text="${data.course}">Basic Econometrics   </td>
+                                <td style="font-size: 10px;" th:text="${data.namaMatakuliah}">Basic Econometrics   </td>
                                 <td style="font-size: 10px;" th:text="${data.namaDosen}">Aam Slamet Rusydiana  </td>
                                 <td style="font-size: 10px;" th:text="${data.namaKelas}">MBS-D-18  </td>
                                 <td style="font-size: 10px;" th:text="${data.hari}">Wednesday</td>
@@ -125,15 +125,15 @@
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Weight</span>
+                                                                    <span class="btn-inner--text">Pembobotan</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/score (jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Assesment</span>
+                                                                    <span class="btn-inner--text">Penilaian</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Submit Score</span>
+                                                                    <span class="btn-inner--text">Upload Nilai</span>
                                                                 </a>
 
                                                             </div>
@@ -143,15 +143,15 @@
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/nilai(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Score</span>
+                                                                    <span class="btn-inner--text">Nilai</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/topic(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Topic</span>
+                                                                    <span class="btn-inner--text">Berita Acara</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/attendance(jadwal = ${data.id})}" class="btn btn-warning btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Attendance</span>
+                                                                    <span class="btn-inner--text">Presensi</span>
                                                                 </a>
 
                                                             </div>
@@ -159,7 +159,7 @@
                                                         <div class="card-body px-lg-5 py-lg-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Lecturer Evaluation</i></a>
+                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Edom Dosen</i></a>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Details</h5>
-                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                        <span class="h2 font-weight-bold mb-0">Presensi</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -55,7 +55,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4" style="text-align: center; padding: 10px;">
-                            <b style="font-size: 17px;" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">Intership</b>
+                            <b style="font-size: 17px;" th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Intership</b>
                             <br>
                             <p style="font-size: 14px;" th:text="${jadwal.matakuliahKurikulum.jumlahSks + ' SKS'}">3 SKS</p>
                         </div>
@@ -65,7 +65,7 @@
                         <div class="col-md-4" style="text-align: center; padding: 10px;">
                             <b style="font-size: 17px;">Schedule</b>
                             <br>
-                            <p style="font-size: 14px;" th:text="${jadwal.hari.namaHariEng +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">Sunday, 15:31:00 - 18:00:00</p>
+                            <p style="font-size: 14px;" th:text="${jadwal.hari.namaHari +', ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">Sunday, 15:31:00 - 18:00:00</p>
                         </div>
                     </div>
                     <div class="table-responsive" th:if="${not #lists.isEmpty(detail)}">
@@ -73,10 +73,10 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Start Time</th>
-                                <th scope="col">End Time</th>
-                                <th scope="col">Lecture</th>
-                                <th scope="col">Description</th>
+                                <th scope="col">Waktu Masuk</th>
+                                <th scope="col">Waktu Selesai</th>
+                                <th scope="col">Dosen</th>
+                                <th scope="col">Keterangan</th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
@@ -145,7 +145,7 @@
                 <form th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Tambah Presensi</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -154,13 +154,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Meeting :</label>
+                                        <label>Pertemuan :</label>
                                         <input type="text" name="pertemuan" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Date :</label>
+                                        <label>Tanggal :</label>
                                         <input type="date" name="tanggal" required class="form-control">
                                     </div>
                                 </div>
@@ -168,13 +168,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Start Time :</label>
+                                        <label>Waktu Masuk :</label>
                                         <input type="text" readonly  required th:field="*{jamMulai}" max="5" name="jamMulai" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>End Time :</label>
+                                        <label>Waktu Selesai :</label>
                                         <input type="text" th:field="*{jamSelesai}" placeholder="09:30" name="jamSelesai" class="form-control" readonly>
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Lecture :</label>
+                                        <label>Dosen :</label>
                                         <select name="dosen" class="form-control">
                                             <option value=""></option>
                                             <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
@@ -191,7 +191,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Topic :</label>
+                                        <label>Berita Acara :</label>
                                         <textarea name="beritaAcara" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
@@ -200,8 +200,8 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </div>
                 </form>

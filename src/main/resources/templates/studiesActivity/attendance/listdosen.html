@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                        <span class="h2 font-weight-bold mb-0">Presensi</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -73,12 +73,12 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Room</th>
-                                <th scope="col">Day</th>
-                                <th scope="col">Time</th>
-                                <th scope="col">Course</th>
-                                <th scope="col">Class</th>
-                                <th scope="col">Lecture</th>
+                                <th scope="col">Ruangan</th>
+                                <th scope="col">Hari</th>
+                                <th scope="col">Waktu</th>
+                                <th scope="col">Matakuliah</th>
+                                <th scope="col">Kelas</th>
+                                <th scope="col">Dosen</th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
 
@@ -88,15 +88,15 @@
                             <tr th:each="jadwal,row : ${jadwal}">
                                 <td th:text="${row.index + 1}"></td>
                                 <td th:text="${jadwal.jadwal.ruangan.namaRuangan}"></td>
-                                <td th:text="${jadwal.jadwal.hari.namaHariEng}"></td>
+                                <td th:text="${jadwal.jadwal.hari.namaHari}"></td>
                                 <td><span  th:text="${jadwal.jadwal.jamMulai}"></span> -
                                     <span th:text="${jadwal.jadwal.jamSelesai}"></span></td>
-                                <td th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"></td>
+                                <td th:text="${jadwal.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
                                 <td th:text="${jadwal.jadwal.kelas.namaKelas}"></td>
                                 <td th:text="${jadwal.dosen.karyawan.namaKaryawan}"></td>
                                 <td><b th:text="${jadwal.statusJadwalDosen}"></b></td>
                                 <td>
-                                    <a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Add</a>
+                                    <a th:href="@{/studiesActivity/attendance/detail (jadwal = ${jadwal.jadwal.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Sesi Kuliah</a>
                                 </td>
                             </tr>
                             </tbody>

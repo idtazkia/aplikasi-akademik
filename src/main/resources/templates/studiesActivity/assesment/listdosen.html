@@ -61,7 +61,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                        <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
                                     </div>
                                 </div>
                             </div>
@@ -73,11 +73,11 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Name Lecture</th>
-                                <th scope="col">Class</th>
-                                <th scope="col">Day</th>
-                                <th scope="col">Time</th>
+                                <th scope="col">Kode</th>
+                                <th scope="col">Nama Dosen</th>
+                                <th scope="col">Kelas </th>
+                                <th scope="col">Hari</th>
+                                <th scope="col">Waktu</th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -87,7 +87,7 @@
                             <tbody>
                             <tr th:each="data,row : ${jadwal}">
                                 <td th:text="${(row.index + 1)}">1</td>
-                                <td th:text="${data.course}">Basic Econometrics	</td>
+                                <td th:text="${data.namaMatkuliah}">Basic Econometrics	</td>
                                 <td th:text="${data.namaDosen}">Aam Slamet Rusydiana	</td>
                                 <td th:text="${data.namaKelas}">MBS-D-18	</td>
                                 <td th:text="${data.hari}">Wednesday</td>
@@ -129,22 +129,22 @@
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/studiesActivity/assesment/weight (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
-                                                                    <span class="btn-inner--text">Weight</span>
+                                                                    <span class="btn-inner--text">Pembobotan</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/score (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
-                                                                    <span class="btn-inner--text">Recapitulation</span>
+                                                                    <span class="btn-inner--text">Penilaian</span>
                                                                 </a>
                                                                 <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${data.id})}" class="btn btn-primary btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-edit"></i></span>
-                                                                    <span class="btn-inner--text">Submit Score</span>
+                                                                    <span class="btn-inner--text">Upload Nilai</span>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <div class="card-header bg-transparent pb-5">
                                                             <div class="text-muted text-center mt-2 mb-3"><small>Evaluation</small></div>
                                                             <div class="btn-wrapper text-center">
-                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Lecturer Evaluation</i></a>
+                                                                <a th:href="@{/studiesActivity/assesment/hasiledom (jadwal = ${data.id})}" class="btn btn-primary"><i class="fas fa-cog"> Edom Dosen</i></a>
                                                             </div>
                                                         </div>
 

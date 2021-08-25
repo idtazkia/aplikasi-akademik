@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Presensi</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Attendance</span>
+                                        <span class="h2 font-weight-bold mb-0">Presensi</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -57,7 +57,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Lecture :</label>
+                                        <label>Dosen :</label>
                                         <select name="dosen" th:field="*{dosen}" class="form-control">
                                             <option value=""></option>
                                             <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Date :</label>
+                                        <label>Tanggal :</label>
                                         <input type="date" th:field="*{tanggal}" name="tanggal" class="form-control">
                                     </div>
                                 </div>
@@ -74,13 +74,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Start Time :</label>
+                                        <label>Jam Mulai :</label>
                                         <input type="text" th:field="*{jamMulai}" readonly required placeholder="07:00:00" max="8" name="jamMulai" class="time-picker form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>End Time :</label>
+                                        <label>Jam Selesai :</label>
                                         <input type="text" th:field="*{jamSelesai}" id='datetimepicker3' required placeholder="09:30:00" name="jamSelesai" class="time-picker form-control" readonly>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Description :</label>
+                                        <label>Berita Acara :</label>
                                         <textarea name="beritaAcara" th:field="*{beritaAcara}" class="form-control" id=""></textarea>
                                     </div>
                                 </div>
@@ -97,8 +97,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                        <a href="" class="btn btn-danger">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+<!--                                        <a href="" class="btn btn-danger">Batal</a>-->
                                     </div>
                                 </div>
 

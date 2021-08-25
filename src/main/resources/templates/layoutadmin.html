@@ -276,10 +276,10 @@
                                 <a th:href="@{/studiesActivity/krs/paket}" class="nav-link">Generate KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/studiesActivity/attendance/list}" class="nav-link">Absensi</a>
+                                <a th:href="@{/studiesActivity/attendance/list}" class="nav-link">Presensi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Absensi</a>
+                                <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Presensi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_SUPERUSER')">
                                 <a th:href="@{/studiesActivity/validation/list}" class="nav-link">Validasi Ujian</a>
