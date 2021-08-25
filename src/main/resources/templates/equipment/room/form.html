@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h1 font-weight-bold mb-0">Class Room</span>
+                                        <span class="h1 font-weight-bold mb-0">Ruang Kelas</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
@@ -45,7 +45,7 @@
                                 <h3 class="mb-0">Form Data</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/equipment/room/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                <a th:href="@{/equipment/room/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-circle-left"></i> Kembali</a>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <form method="post" th:action="@{/equipment/room/form}" th:object="${ruangan}">
 
                             <div class="form-group">
-                                <label>Select Building</label>
+                                <label>Gedung</label>
                                 <select style="width:100%!important;" name="gedung" th:field="*{gedung}"
                                         class="form-control js-example-placeholder-single">
                                     <option value=""></option>
@@ -64,12 +64,12 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Class Room Code</label>
-                                <input type="text" name="kodeRuangan" th:field="*{kodeRuangan}" class="form-control" placeholder="Class Room Code">
+                                <label>Kode Ruangan</label>
+                                <input type="text" name="kodeRuangan" th:field="*{kodeRuangan}" class="form-control" placeholder="Kode Ruangan">
                             </div>
 
                             <div class="form-group">
-                                <label>Select Room Type</label>
+                                <label>Jenis Ruangan</label>
                                 <select style="width:100%!important;" name="jenisRuangan" th:field="*{jenisRuangan}"
                                         class="form-control js-example-placeholder-single">
                                     <option value=""></option>
@@ -81,22 +81,22 @@
 
 
                             <div class="form-group">
-                                <label for="exampleFormControlInput1">Room Name</label>
+                                <label for="exampleFormControlInput1">Nama Ruangan</label>
                                 <input type="text" th:field="*{namaRuangan}" class="form-control" name="namaRuangan" id="exampleFormControlInput1" placeholder="Room Name">
                             </div>
 
                             <div class="form-group">
-                                <label>Capacity</label>
+                                <label>Kapasitas</label>
                                 <input type="number" name="kapasitas" th:field="*{kapasitas}" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label>Floor</label>
+                                <label>Lantai</label>
                                 <input type="number" name="lantai" th:field="*{lantai}" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <textarea class="form-control" name="keterangan" th:field="*{keterangan}" rows="3"></textarea>
                             </div>
 
@@ -108,9 +108,9 @@
                             </div>
                             <input type="hidden" name="id" th:field="*{id}">
 
-                            <input class="btn btn-primary" type="submit" value="Save">
+                            <input class="btn btn-primary" type="submit" value="Simpan">
                             <a class="btn btn-primary" th:href="@{/ruang/list}" role="button">
-                                <span aria-hidden="true"></span>Cancel
+                                <span aria-hidden="true"></span>Batal
                             </a>
                         </form>
                     </div>

@@ -134,24 +134,24 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')">
                     <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 text-default"></i>
-                        <span class="nav-link-text">Equipment</span>
+                        <span class="nav-link-text">Perlengkapan</span>
                     </a>
                     <div class="collapse" id="navbar-tables">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-                                <a th:href="@{/equipment/institution/list}" class="nav-link">Institution</a>
+                                <a th:href="@{/equipment/institution/list}" class="nav-link">Institusi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-                                <a th:href="@{/equipment/building/list}" class="nav-link">Building</a>
+                                <a th:href="@{/equipment/building/list}" class="nav-link">Gedung</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-                                <a th:href="@{/equipment/campus/list}" class="nav-link">Campus</a>
+                                <a th:href="@{/equipment/campus/list}" class="nav-link">Kampus</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
-                                <a th:href="@{/equipment/room/list}" class="nav-link">Room</a>
+                                <a th:href="@{/equipment/room/list}" class="nav-link">Ruang Kelas</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/equipment/class/list}" class="nav-link">Class</a>
+                                <a th:href="@{/equipment/class/list}" class="nav-link">Kelas</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/setting/mahasiswa/dosen_wali}" class="nav-link">Perwalian</a>
@@ -163,7 +163,7 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                     <a class="nav-link" href="#navbar-setting" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-settings text-danger"></i>
-                        <span class="nav-link-text">Setting</span>
+                        <span class="nav-link-text">Pengaturan</span>
                     </a>
                     <div class="collapse" id="navbar-setting">
                         <ul class="nav nav-sm flex-column">
@@ -175,22 +175,22 @@
                                 <a th:href="@{/setting/beasiswa/list}" class="nav-link">Beasiswa</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/setting/level/list}" class="nav-link">Level</a>
+                                <a th:href="@{/setting/level/list}" class="nav-link">Jenjang</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/setting/faculty/list}" class="nav-link">Faculty</a>
+                                <a th:href="@{/setting/faculty/list}" class="nav-link">Fakultas</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
                                 <a th:href="@{/setting/major/list}" class="nav-link">Jurusan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/setting/prody/list}" class="nav-link">Program Study</a>
+                                <a th:href="@{/setting/prody/list}" class="nav-link">Program Studi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/setting/concentration/list}" class="nav-link">Concentration</a>
+                                <a th:href="@{/setting/concentration/list}" class="nav-link">Konstrasi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2')">
-                                <a th:href="@{/setting/edomquestion/list}" class="nav-link">EDOM Questions</a>
+                                <a th:href="@{/setting/edomquestion/list}" class="nav-link">EDOM</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')">
                                 <a th:href="@{/setting/mahasiswa/dosen_wali}" class="nav-link">Perwalian</a>
@@ -202,36 +202,36 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF')">
                     <a class="nav-link" href="#navbar-academic" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-book-bookmark text-blue"></i>
-                        <span class="nav-link-text">Academic Activity</span>
+                        <span class="nav-link-text">Kegiatan Akademik</span>
                     </a>
                     <div class="collapse" id="navbar-academic">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')" th:href="@{/academic/year/list}" class="nav-link">Academic Years</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')" th:href="@{/academic/year/list}" class="nav-link">Tahun Akademik</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/curriculum/list}" class="nav-link">Curriculum</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/curriculum/list}" class="nav-link">Kurikulum</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/courses/list}" class="nav-link">Courses</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/courses/list}" class="nav-link">Matakuliah</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')"  th:href="@{/academic/curriculumCourses/list}" class="nav-link">Curriculum Courses</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')"  th:href="@{/academic/curriculumCourses/list}" class="nav-link">Matakuliah Kurikulum</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/ploting/list}" class="nav-link">Lecturer Ploting</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/ploting/list}" class="nav-link">Ploting Dosen</a>
                             </li>
                             <li class="nav-item" th:if="${not @environment.acceptsProfiles('production')}">
                                 <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" href="../../pages/tables/sortable.html" class="nav-link">Lecturer schedule</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/schedule/room}" class="nav-link">Room Schedule</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/schedule/room}" class="nav-link">Jaddal Ruangan</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF')" th:href="@{/academic/schedule/list}" class="nav-link">Studies Schedule</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF')" th:href="@{/academic/schedule/list}" class="nav-link">Jadwal Kuliah</a>
                             </li>
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/conversion/list}" class="nav-link">Value Conversion</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')" th:href="@{/academic/conversion/list}" class="nav-link">Konversi Nilai</a>
                             </li>
                         </ul>
                     </div>
@@ -245,7 +245,7 @@
                     <div class="collapse" id="navbar-prodi">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" th:href="@{/academic/prodi/list}" class="nav-link">Academic Years</a>
+                                <a sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS')" th:href="@{/academic/prodi/list}" class="nav-link">Tahun Prodi</a>
                             </li>
 
                         </ul>
@@ -255,14 +255,14 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                     <a class="nav-link " th:href="@{/mahasiswa/list}">
                         <i class="ni ni-single-02 text-yellow"></i>
-                        College student
+                        Mahasiswa
                     </a>
                 </li>
 
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                     <a class="nav-link" href="#navbar-study" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-user-run text-green"></i>
-                        <span class="nav-link-text">Studies Activity</span>
+                        <span class="nav-link-text">Aktivitas Mahasiswa</span>
                     </a>
                     <div class="collapse" id="navbar-study">
                         <ul class="nav nav-sm flex-column">
@@ -276,19 +276,19 @@
                                 <a th:href="@{/studiesActivity/krs/paket}" class="nav-link">Generate KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/studiesActivity/attendance/list}" class="nav-link">Attendance</a>
+                                <a th:href="@{/studiesActivity/attendance/list}" class="nav-link">Absensi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Attendance</a>
+                                <a th:href="@{/studiesActivity/attendance/listdosen}" class="nav-link">Absensi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_SUPERUSER')">
-                                <a th:href="@{/studiesActivity/validation/list}" class="nav-link">Exam Validation</a>
+                                <a th:href="@{/studiesActivity/validation/list}" class="nav-link">Validasi Ujian</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/studiesActivity/assesment/list}" class="nav-link">Assesment</a>
+                                <a th:href="@{/studiesActivity/assesment/list}" class="nav-link">Penilaian</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studiesActivity/assesment/listdosen}" class="nav-link">Assesment</a>
+                                <a th:href="@{/studiesActivity/assesment/listdosen}" class="nav-link">Penilaian</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/studiesActivity/khs/list}" class="nav-link">KHS</a>
@@ -314,10 +314,10 @@
                                 <a th:href="@{/activation/krs}" class="nav-link">KRS</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
-                                <a th:href="@{/activation/rfid}" class="nav-link">Student Card</a>
+                                <a th:href="@{/activation/rfid}" class="nav-link">Aktivasi Kartu</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
-                                <a th:href="@{/activation/kartu}" class="nav-link">Student Exam Card</a>
+                                <a th:href="@{/activation/kartu}" class="nav-link">Kartu Ujian</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/activation/cicilan}" class="nav-link">Custom Cicilan</a>
@@ -329,7 +329,7 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                     <a class="nav-link" href="#studentBill" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-check-bold text-pink"></i>
-                        <span class="nav-link-text">Student Bill</span>
+                        <span class="nav-link-text">Tagihan Mahasiswa</span>
                     </a>
                     <div class="collapse" id="studentBill">
                         <ul class="nav nav-sm flex-column">
@@ -367,15 +367,15 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-grad" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-paper-diploma text-warning"></i>
-                        <span class="nav-link-text">Graduation</span>
+                        <span class="nav-link-text">Kelulusan</span>
                     </a>
                     <div class="collapse" id="navbar-grad">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/graduation/admin/score}" class="nav-link">Internship Score Input</a>
+                                <a th:href="@{/graduation/admin/score}" class="nav-link">Penilain Magang</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/graduation/admin/list}" class="nav-link">Concept Note</a>
+                                <a th:href="@{/graduation/admin/list}" class="nav-link">Konsep Note</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1')">
                                 <a th:href="@{/graduation/seminar/list}" class="nav-link">Seminar Proposal</a>
@@ -384,7 +384,7 @@
                                 <a th:href="@{/graduation/sidang/admin/list}" class="nav-link">Sidang Skripsi</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/graduation/lecture/list}" class="nav-link">Concept Note</a>
+                                <a th:href="@{/graduation/lecture/list}" class="nav-link">Konsep Note</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/graduation/lecture/sempro}" class="nav-link">Penilaian Seminar</a>
@@ -402,18 +402,18 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_HUMAN')">
                     <a class="nav-link" href="#navbar-human" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-tie-bow text-orange"></i>
-                        <span class="nav-link-text">Human Resources</span>
+                        <span class="nav-link-text">Sumber Daya Manusia</span>
                     </a>
                     <div class="collapse" id="navbar-human">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a th:href="@{/humanResources/employee/list}" class="nav-link">Employee</a>
+                                <a th:href="@{/humanResources/employee/list}" class="nav-link">Karyawan</a>
                             </li>
                             <li class="nav-item">
-                                <a th:href="@{/humanResources/lecturer/list}" class="nav-link">Lecture</a>
+                                <a th:href="@{/humanResources/lecturer/list}" class="nav-link">Dosen</a>
                             </li>
                             <li class="nav-item">
-                                <a th:href="@{/report/recapitulation/salary}" class="nav-link">Salary Lecture</a>
+                                <a th:href="@{/report/recapitulation/salary}" class="nav-link">Rekap Gaji Dosen</a>
                             </li>
                         </ul>
                     </div>
@@ -422,24 +422,24 @@
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-report" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-folder-17 text-danger"></i>
-                        <span class="nav-link-text">Report</span>
+                        <span class="nav-link-text">Laporan</span>
                     </a>
                     <div class="collapse" id="navbar-report">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK1')">
-                                <a th:href="@{/report/recapitulation/lecturer}" class="nav-link">Lecturer Report</a>
+                                <a th:href="@{/report/recapitulation/lecturer}" class="nav-link">Laporan Dosen</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS')">
-                                <a th:href="@{/report/recapitulation/bkd}" class="nav-link">BKD Report</a>
+                                <a th:href="@{/report/recapitulation/bkd}" class="nav-link">Laporan BKD</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')">
-                                <a th:href="@{/report/recapitulation/edom}" class="nav-link">Edom Report</a>
+                                <a th:href="@{/report/recapitulation/edom}" class="nav-link">Laporan Edom</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
-                                <a th:href="@{/report/recapitulation/ipk}" class="nav-link">IPK</a>
+                                <a th:href="@{/report/recapitulation/ipk}" class="nav-link">Laporan IPK</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
-                                <a th:href="@{/report/historymahasiswa}" class="nav-link">History Mahasiswa</a>
+                                <a th:href="@{/report/historymahasiswa}" class="nav-link">Riwayat Mahasiswa</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                 <a th:href="@{/report/cuti}" class="nav-link">Mahasiswa Cuti</a>

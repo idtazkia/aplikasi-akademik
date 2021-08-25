@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Class </span>
+                                        <span class="h2 font-weight-bold mb-0">Kelas </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -88,7 +88,7 @@
 
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Search</button>
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Cari</button>
                                 </div>
                             </div>
                         </form>
@@ -99,12 +99,12 @@
                             <div class="table-responsive" th:if="${selected != null}">
                                 <form method="post" th:action="@{/equipment/class/mahasiswa}">
                                     <div class="card-body">
-                                        <button class="btn btn-success">Generate Student Class (<span th:text="${namaKelas}"></span>)</button>
+                                        <button class="btn btn-success">Generate Mahasiswa Kelas (<span th:text="${namaKelas}"></span>)</button>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-2">
-                                                <a th:href="@{/equipment/class/mahasiswa(angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block">All</a>
+                                                <a th:href="@{/equipment/class/mahasiswa(angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block">Semua</a>
                                             </div>
                                             <div class="col-md-2" th:each="data, row : ${konsentrasi}">
                                                 <a th:href="@{/equipment/class/mahasiswa(konsentrasi = ${data[0]},angkatan = ${selectedAngkatan}, prodi = ${selected.id}, kelas = ${selectedKelas.id})}" class="btn btn-primary btn-sm btn-block" th:text="${data[1]}"></a>
@@ -117,10 +117,10 @@
                                             <th></th>
                                             <th>#</th>
                                             <th>NIM</th>
-                                            <th>Name</th>
-                                            <th>Class</th>
+                                            <th>Nama</th>
+                                            <th>Kelas</th>
                                             <th>Konsentrasi</th>
-                                            <th>Curriculum</th>
+                                            <th>Kurikulum</th>
                                         </tr>
                                         </thead>
                                         <input type="hidden" name="kelas" th:value="${selectedKelas.id}">

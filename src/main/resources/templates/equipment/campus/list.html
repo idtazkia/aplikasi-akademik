@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Campus </span>
+                                        <span class="h2 font-weight-bold mb-0">Kampus </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -48,7 +48,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/equipment/campus/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/equipment/campus/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -57,9 +57,9 @@
                             <thead class="thead-light">
                             <tr>
                                 <th>NO</th>
-                                <th>Campus Code</th>
-                                <th>Campus Name</th>
-                                <th>Description</th>
+                                <th>Kode Kampus</th>
+                                <th>Nama Kampus</th>
+                                <th>Keterangan</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -103,9 +103,9 @@
 
                                                 <div class="modal-footer">
                                                     <form method="post" th:action="@{/equipment/campus/delete(kampus = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                 </div>
 
                                             </div>

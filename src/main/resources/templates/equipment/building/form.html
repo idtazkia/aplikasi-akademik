@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Building </span>
+                                        <span class="h2 font-weight-bold mb-0">Gedung </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -48,7 +48,7 @@
                     <div class="card-body">
                         <form method="post" th:action="@{/equipment/building/form}"  th:object="${gedung}">
                             <div class="form-group">
-                                <label>Select Institution</label>
+                                <label>Institusi</label>
                                 <select name="" required id="" class="form-control" th:field="*{kampus}">
                                     <option value=""></option>
                                     <option th:each="data : ${kampus}"
@@ -57,26 +57,26 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Building Code</label>
+                                <label>Kode Gedung</label>
                                 <input type="text" name="kodeGedung" class="form-control"
-                                       placeholder="Building Code" th:field="*{kodeGedung}">
+                                       placeholder="Kode Gedung" th:field="*{kodeGedung}">
                             </div>
 
                             <div class="form-group">
-                                <label>Building Name</label>
+                                <label>Nama Gedung</label>
                                 <input type="text" name="namaGedung" class="form-control"
-                                       placeholder="Building Code" th:field="*{namaGedung}">
+                                       placeholder="Nama Gedung" th:field="*{namaGedung}">
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <input type="text" name="keterangan" th:field="*{keterangan}"
-                                       class="form-control" placeholder="Description">
+                                       class="form-control" placeholder="Keterangan">
                             </div>
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <a th:href="@{/equipment/building/list}" class="btn btn-danger">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <a th:href="@{/equipment/building/list}" class="btn btn-danger">Batal</a>
                             </div>
                         </form>
                     </div>

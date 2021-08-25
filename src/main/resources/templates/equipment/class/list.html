@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Class </span>
+                                        <span class="h2 font-weight-bold mb-0">Kelas </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -57,7 +57,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/equipment/class/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/equipment/class/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Cari</button>
                                         </div>
                                     </div>
                                 </div>
@@ -120,11 +120,11 @@
                                                             <div class="btn-wrapper text-center">
                                                                 <a th:href="@{/equipment/class/view(kelas = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                                    <span class="btn-inner--text">Show Student</span>
+                                                                    <span class="btn-inner--text">Tampil Mahasiswa</span>
                                                                 </a>
                                                                 <a th:href="@{/equipment/class/mahasiswa(angkatan = ${data.angkatan}, prodi = ${data.idProdi.id}, kelas = ${data.id})}" class="btn btn-neutral btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-plus-circle"></i></span>
-                                                                    <span class="btn-inner--text">Add Student</span>
+                                                                    <span class="btn-inner--text">Tambah Mahasiswa </span>
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -133,7 +133,7 @@
                                                             <div class="btn-wrapper text-center">
                                                                 <button data-toggle="modal" th:data-target="${'#modal-delete' + data.id}" class="btn btn-danger btn-icon">
                                                                     <span class="btn-inner--icon"><i class="fas fa-trash"></i></span>
-                                                                    <span class="btn-inner--text">Delete</span>
+                                                                    <span class="btn-inner--text">Hapus</span>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -167,9 +167,9 @@
 
                                                 <div class="modal-footer">
                                                     <form method="post" th:action="@{/equipment/class/delete(kelas = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                 </div>
 
                                             </div>

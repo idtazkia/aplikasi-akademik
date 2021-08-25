@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Class </span>
+                                        <span class="h2 font-weight-bold mb-0">Kelas </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,7 +49,7 @@
                         <form method="post" th:action="@{/equipment/class/form}" th:object="${kelas}">
 
                             <div class="form-group">
-                                <label>Select prodi</label>
+                                <label>Prodi</label>
                                 <select name="idProdi" class="form-control js-example-placeholder-single" onchange="myProdi()"
                                         id="select2-prodi" required>
                                     <option th:each="data : ${prodi}"
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Select Curiculum</label>
+                                <label>Kurikulum</label>
                                 <select name="kurikulum" class="form-control js-example-placeholder-single"
                                         id="select2-kurikulum" required>
                                     <option th:if="${kelas.kurikulum != null}" selected
@@ -79,13 +79,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Class Room Code</label>
-                                <input type="text" name="kodeKelas" th:field="*{kodeKelas}" class="form-control" placeholder="Class Code">
+                                <label>Kode Kelas</label>
+                                <input type="text" name="kodeKelas" th:field="*{kodeKelas}" class="form-control" placeholder="Kode Kelas">
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleFormControlInput1">Class Name</label>
-                                <input type="text" th:field="*{namaKelas}" class="form-control" name="namaKelas" id="exampleFormControlInput1" placeholder="Class Name">
+                                <label for="exampleFormControlInput1">Nama Kelas</label>
+                                <input type="text" th:field="*{namaKelas}" class="form-control" name="namaKelas" id="exampleFormControlInput1" placeholder="Nama Kelas">
                             </div>
 
                             <div class="form-group">
@@ -97,7 +97,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <textarea class="form-control" name="keterangan" th:field="*{keterangan}" rows="3"></textarea>
                             </div>
 
@@ -109,9 +109,9 @@
                             </div>
                             <input type="hidden" name="id" th:field="*{id}">
 
-                            <input class="btn btn-primary" type="submit" value="Save">
+                            <input class="btn btn-primary" type="submit" value="Simpan">
                             <a class="btn btn-danger" th:href="@{/equipment/class/list}" role="button">
-                                <span aria-hidden="true"></span>Cancel
+                                <span aria-hidden="true"></span>Batal
                             </a>
                         </form>
                     </div>
