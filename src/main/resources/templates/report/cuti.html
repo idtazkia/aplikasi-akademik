@@ -53,8 +53,6 @@
                   <th>#</th>
                   <th>Nim</th>
                   <th>Nama</th>
-                  <th>Tanggal Mulai Cuti</th>
-                  <th>Tanggal Berakhir Cuti</th>
                   <th>Detail</th>
                   <th>Status</th>
                 </tr>
@@ -64,8 +62,6 @@
                   <td th:text="${(row.index + 1)}"></td>
                   <td th:text="${data.mahasiswa.nim}"></td>
                   <td th:text="${data.mahasiswa.nama}"></td>
-                  <td th:text="${#temporals.format(data.tanggalMulaiCuti, 'dd - MMM - yyyy')}"></td>
-                  <td th:text="${#temporals.format(data.tanggalBerakhirCuti, 'dd - MMM - yyyy')}"></td>
                   <td>
                     <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
                       Lihat Alasan Cuti

@@ -127,6 +127,10 @@ public class DashboardController {
     @Autowired
     private RefundSpDao refundSpDao;
 
+    @Autowired
+    private DaftarUlangDao daftarUlangDao;
+
+
     @ModelAttribute("agama")
     public Iterable<Agama> agama() {
         return agamaDao.findByStatus(StatusRecord.AKTIF);
@@ -406,7 +410,7 @@ public class DashboardController {
     }
 
     @PostMapping("/user/profile")
-    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result, MultipartFile file, MultipartFile ijazah) throws Exception {
+    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result, MultipartFile file, MultipartFile ijazah, Authentication authentication) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
 
         if (!file.isEmpty() || file != null){
@@ -511,6 +515,19 @@ public class DashboardController {
         ayah.setEmailAyah(mahasiswaDto.getEmailAyah());
         ayah.setNomorAyah(mahasiswaDto.getNomorAyah());
         ayahDao.save(ayah);
+
+
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
+        if (daftarUlang == null){
+            DaftarUlang du = new DaftarUlang();
+            du.setMahasiswa(mahasiswa);
+            du.setTahunAkademik(tahunAkademik);
+            du.setStatus(StatusRecord.AKTIF);
+            daftarUlangDao.save(du);
+        }
+
         return "redirect:/study/comingsoon";
     }
 

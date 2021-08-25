@@ -236,16 +236,6 @@
                         <p th:text="${#temporals.format(data.tanggalPengajuaan, 'dd - MMM - yyyy')}"></p>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-6 col-xs-12">
-                        <b>Tanggal Mulai Cuti</b>
-                        <p th:text="${#temporals.format(data.tanggalMulaiCuti, 'dd - MMM - yyyy')}"></p>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <b>Tanggal Berakhir Cuti</b>
-                        <p th:text="${#temporals.format(data.tanggalBerakhirCuti, 'dd - MMM - yyyy')}"></p>
-                      </div>
-                    </div>
                   </div>
                   <div class="col-md-12 col-xs-12">
                     <button class="btn btn-primary" th:if="${data.statusPengajuaan == 'APPROVED'}">Approved</button>
