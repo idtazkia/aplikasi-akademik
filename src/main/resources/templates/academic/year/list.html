@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tahun Akademik</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Academic Years </span>
+                                        <span class="h2 font-weight-bold mb-0">Tahun Akademik </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -48,7 +48,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/year/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/academic/year/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -57,10 +57,10 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Year</th>
-                                    <th scope="col">Active</th>
+                                    <th scope="col">Kode Tahun Akademik</th>
+                                    <th scope="col">Nama Tahun Akademik</th>
+                                    <th scope="col">Tahun</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col" width="30px;"></th>
                                     <th scope="col"></th>
 
@@ -72,7 +72,9 @@
                                     <td th:text="${data.kodeTahunAkademik}">12</td>
                                     <td><button type="button" class="btn btn-outline-success btn-sm" th:text="${data.namaTahunAkademik}">2019/2020 Semester Genap</button></td>
                                     <td th:text="${data.tahun}">2020</td>
-                                    <td th:if="${data.status == data.status.AKTIF}"></td>
+                                    <td th:if="${data.status == data.status.AKTIF}">
+                                        <button class="btn btn-success btn-sm"> AKTIF</button>
+                                    </td>
                                     <td th:if="${data.status == data.status.NONAKTIF}">
                                         <form th:action="@{/academic/year/active (tahunAkademik = ${data.id})}" method="post">
                                             <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
@@ -117,9 +119,9 @@
 
                                                     <div class="modal-footer">
                                                         <form th:action="@{/academic/year/delete (tahunAkademik = ${data.id})}" method="post">
-                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                            <button type="submit" class="btn btn-white">Hapus</button>
                                                         </form>
-                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                     </div>
 
                                                 </div>

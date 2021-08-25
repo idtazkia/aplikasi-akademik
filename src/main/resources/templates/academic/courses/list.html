@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Courses </span>
+                                        <span class="h2 font-weight-bold mb-0">Matakuliah </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,7 +49,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/courses/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/academic/courses/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Cari</button>
                                         </div>
                                     </div>
                                 </div>
@@ -75,10 +75,10 @@
                             <thead class="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Name Courses</th>
-                                <th scope="col">English Course Name</th>
-                                <th scope="col">Abbreviation</th>
+                                <th scope="col">Kode Matakuliah</th>
+                                <th scope="col">Nama Matakuliah</th>
+                                <th scope="col">Nama Matakuliah Inggris</th>
+                                <th scope="col">Singkatan</th>
                                 <th scope="col"></th>
 
                             </tr>
@@ -122,9 +122,9 @@
 
                                                 <div class="modal-footer">
                                                     <form th:action="@{/academic/courses/delete (id = ${item.id})}" method="post">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                 </div>
 
                                             </div>

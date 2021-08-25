@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tahun Akademik Prodi</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Academic Years (Program Studi) </span>
+                                        <span class="h2 font-weight-bold mb-0">Tahun Akademik Prodi </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -73,7 +73,7 @@
                                                     th:value="${data.id}">sdasd</option>
                                         </select>
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Cari</button>
                                         </div>
                                     </div>
                                 </div>
@@ -88,9 +88,9 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Prodi</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Year</th>
+                                    <th scope="col">Kode Tahun Akademik</th>
+                                    <th scope="col">Nama Tahun Akademik</th>
+                                    <th scope="col">Tahun</th>
                                     <th scope="col">Status</th>
                                     <th></th>
                                 </tr>
@@ -127,9 +127,9 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Prodi <span class="btn btn-warning btn-sm" style="font-size: 10px;"><i class="fa fa-check-circle"></i> Tahun Akademik Prodi Yang Aktif (<span th:text="${tahunAkademik1.namaTahunAkademik}"></span>)</span></th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Year</th>
+                                    <th scope="col">Kode </th>
+                                    <th scope="col">Nama Tahun</th>
+                                    <th scope="col">Tahun</th>
                                     <th scope="col">Status</th>
                                     <th></th>
                                 </tr>

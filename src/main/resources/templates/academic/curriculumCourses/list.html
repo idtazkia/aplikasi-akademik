@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Curriculum Courses</title>
+    <title>Matakuliah Kurikulum</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Curriculum Courses </span>
+                                        <span class="h2 font-weight-bold mb-0">Matakuliah Kurikulum </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,8 +49,8 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right" th:if="${selected != null}">
-                                <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id})}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
-                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-copy"></i> Copy Curriculum Courses</button>
+                                <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id})}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
+                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-copy"></i> Salin Matakuliah Kurikulum</button>
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Curriculum</label>
+                                                <label>Kurikulum</label>
                                                 <select class="form-control" id="locality-dropdown" onchange="myKurikulum()">
                                                 </select>
                                                 <input type="hidden" id="isiKurikulum" name="kurikulum">
@@ -87,7 +87,7 @@
                                     <div class="row">
                                         <div class="col-md-12" style="text-align: center;">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
                                             </div>
                                         </div>
 
@@ -128,8 +128,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -209,8 +209,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -287,8 +287,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -365,8 +365,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -443,8 +443,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -522,8 +522,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -603,8 +603,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -683,8 +683,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>
@@ -762,8 +762,8 @@
                                                     <td th:text="${data.jumlahSks}">3</td>
                                                     <td>
                                                         <a th:href="@{/academic/curriculumCourses/form (prodi = ${selected.id}, kurikulum =${kurikulumSelected.id}, id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Add Prerequisite</a>
-                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Add equalization</a>
+                                                        <a th:href="@{/academic/curriculumCourses/prasyarat (id = ${data.id})}" class="btn btn-success btn-sm"><i class="fas fa-plus-circle"></i> Tambah Prasyarat</a>
+                                                        <a th:href="@{/academic/curriculumCourses/matakuliahSetara/list (matakuliahKurikulum = ${data.id}, kurikulum =${kurikulumSelected.id}, prodi =${selected.id})}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i> Penyetaraan</a>
                                                         <!--button-->
                                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
                                                             <i class="fas fa-trash"></i>

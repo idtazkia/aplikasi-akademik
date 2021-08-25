@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Matakuliah</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Courses </span>
+                                        <span class="h2 font-weight-bold mb-0">Matakuliah </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,33 +49,33 @@
                                 <h3 class="mb-0">Form</h3>
                             </div>
                             <div class="col text-right">
-                                <a href="#!" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                                <a href="#!" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <form th:action="@{/academic/courses/form}" th:object="${courses}" method="post">
                             <div class="form-group">
-                                <label>Code</label>
-                                <input type="text" name="kodeMatakuliah" th:field="*{kodeMatakuliah}" class="form-control" placeholder="ex : 121277">
+                                <label>Matakuliah</label>
+                                <input type="text" name="kodeMatakuliah" th:field="*{kodeMatakuliah}" class="form-control" placeholder="Kode Matakuliah">
                             </div>
                             <div class="form-group">
-                                <label>Name Courses</label>
-                                <input type="text" name="namaMatakuliah" th:field="*{namaMatakuliah}" class="form-control" placeholder="ex : Matematika">
+                                <label>Nama matakuliah</label>
+                                <input type="text" name="namaMatakuliah" th:field="*{namaMatakuliah}" class="form-control" placeholder="Matakuliah">
                             </div>
                             <div class="form-group">
-                                <label>English Courses Name</label>
-                                <input type="text" class="form-control" name="namaMatakuliahEnglish" th:field="*{namaMatakuliahEnglish}" placeholder="ex : mathematics">
+                                <label>Nama Matakuliah Inggris</label>
+                                <input type="text" class="form-control" name="namaMatakuliahEnglish" th:field="*{namaMatakuliahEnglish}" placeholder="Matakuliah Inggris">
                             </div>
                             <div class="form-group">
-                                <label>Abbreviation</label>
+                                <label>Singkatan</label>
                                 <input type="text" name="singkatan" th:field="*{singkatan}" class="form-control" placeholder="ex : MTK">
                             </div>
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <input type="hidden" name="status" th:field="*{status}">
                             <div class="form-group">
-                                <button class="btn btn-primary">Save</button>
+                                <button class="btn btn-primary">Simpan</button>
                             </div>
                         </form>
                     </div>

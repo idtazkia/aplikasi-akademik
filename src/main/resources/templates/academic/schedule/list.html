@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Schedule</title>
+    <title>Jadwal Kuliah</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Studies Schedule </span>
+                                        <span class="h2 font-weight-bold mb-0">Jadwal Kuliah </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -58,7 +58,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Academic Year</label>
+                                                <label>Tahun Akademik</label>
                                                 <select name="tahunAkademik" required class="form-control">
                                                     <option value="" disabled selected>-- Select One --</option>
                                                     <option th:each="data : ${tahunAkademik}"
@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Prody</label>
+                                                <label>Prodi</label>
                                                 <select name="prodi" required class="form-control">
                                                     <option value="" disabled selected>-- Select One --</option>
                                                     <option th:each="data : ${prodi}"
@@ -82,20 +82,20 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Day</label>
+                                                <label>Hari</label>
                                                 <select name="hari" class="form-control">
                                                     <option value="" disabled selected>-- Select One --</option>
                                                     <option value=""></option>
                                                     <option th:each="data : ${hari}"
                                                             th:selected="(${data} == *{selectedHari})"
-                                                            th:text="${data.namaHariEng}"
+                                                            th:text="${data.namaHari}"
                                                             th:value="${data.id}">sdasd</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Language</label>
+                                                <label>Bahasa</label>
                                                 <select name="bahasa" class="form-control">
                                                     <option value="" selected disabled>-- Select a language to display course names</option>
                                                     <option value="ina">Indonesia</option>
@@ -107,7 +107,7 @@
                                     <div class="row">
                                         <div class="col-md-12" style="text-align: center;">
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Search</button>
+                                                <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
                                             </div>
                                         </div>
 
@@ -125,8 +125,8 @@
 
                                     </div>
                                     <div class="card-body">
-                                        <a th:href="@{/academic/schedule/ploting (id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
-                                            <button class="btn btn-default btn-sm"><i class="fas fa-plus-circle"></i> Add</button>
+                                        <a th:href="@{/academic/schedule/ploting (id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}" th:if="${not @environment.acceptsProfiles('production')}">
+                                            <button class="btn btn-default btn-sm"><i class="fas fa-plus-circle"></i> Tambah</button>
                                         </a>
                                         <br>
                                         <br>
@@ -135,12 +135,12 @@
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -201,7 +201,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary" th:if="${jadwal.course == 'Student Dynamic Session'}"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary" th:if="${not @environment.acceptsProfiles('production')}"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -279,19 +279,19 @@
                                 <div class="col-md-12" th:if="${not #lists.isEmpty(ploting)}">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Not Schedule Yet</h3>
+                                        <h3 class="mb-0">Belum Terjadwal</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -398,19 +398,19 @@
                                 <div class="col-md-12" th:if="${not #lists.isEmpty(minggu)}">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Sunday</h3>
+                                        <h3 class="mb-0">Minggu</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -471,7 +471,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id}) }" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id}) }" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -526,19 +526,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Monday</h3>
+                                        <h3 class="mb-0">Senin</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -599,7 +599,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -655,19 +655,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Tuesday</h3>
+                                        <h3 class="mb-0">Selasa</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -729,8 +729,8 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course == 'Student Dynamic Session'}" th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/assesment/sds (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
 
@@ -791,19 +791,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Wednesday</h3>
+                                        <h3 class="mb-0">Rabu</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -864,7 +864,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -920,19 +920,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Thursday</h3>
+                                        <h3 class="mb-0">Kamis</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -993,7 +993,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1049,19 +1049,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Friday</h3>
+                                        <h3 class="mb-0">Jumat</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -1122,7 +1122,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1178,19 +1178,19 @@
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-header border-0">
-                                        <h3 class="mb-0">Saturday</h3>
+                                        <h3 class="mb-0">Sabtu</h3>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table align-items-center table-flush">
                                                 <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Room</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Code Course</th>
-                                                    <th scope="col">Course</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Lecture</th>
+                                                    <th scope="col">Ruang Kelas</th>
+                                                    <th scope="col">Waktu</th>
+                                                    <th scope="col">Kode Matkul</th>
+                                                    <th scope="col">Matakuliah</th>
+                                                    <th scope="col">Kelas</th>
+                                                    <th scope="col">Dosen</th>
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -1252,7 +1252,7 @@
                                                                             <div class="card-body px-lg-5 py-lg-5">
                                                                                 <div class="text-center">
                                                                                     <a th:href="@{/academic/schedule/team (jadwal = ${jadwal.id})}" class="btn btn-warning"><i class="fas fa-user"> Team Teaching</i></a>
-                                                                                    <a th:if="${jadwal.course != 'Student Dynamic Session'}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
+                                                                                    <a th:if="${not @environment.acceptsProfiles('production')}" th:href="@{/academic/schedule/krs (jadwal = ${jadwal.id})}" class="btn btn-primary"><i class="fas fa-plus-circle"> Add Student</i></a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -1332,10 +1332,10 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Course(s)</th>
-                                        <th scope="col">Class</th>
+                                        <th scope="col">Matakuliah(s)</th>
+                                        <th scope="col">Kelas</th>
                                         <th scope="col">SKS</th>
-                                        <th scope="col">Lecture</th>
+                                        <th scope="col">Dosen</th>
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>

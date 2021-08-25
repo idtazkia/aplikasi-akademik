@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Transcript</title>
+    <title>Konversi Nilai</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Conversion </span>
+                                        <span class="h2 font-weight-bold mb-0">Konversi </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -60,7 +60,7 @@
                                     <div class="input-group mb-3" style="margin-top: 10px;">
                                         <input type="text" name="nim" class="form-control" placeholder="NIM" th:value="${nim}">
                                         <div class="input-group-append">
-                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Search</button>
+                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Cari</button>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                 <div class="card shadow mt-5">
                     <div class="card-header border-0">
                         <div class="col-md-12 text-right">
-                            <a class="btn btn-success btn-sm text-white mr-4 mb--5 mt--5" th:href="@{/academic/conversion/form(nim = ${nim})}"><i class="fa fa-plus-square"></i> Add Conversion</a>
+                            <a class="btn btn-success btn-sm text-white mr-4 mb--5 mt--5" th:href="@{/academic/conversion/form(nim = ${nim})}"><i class="fa fa-plus-square"></i> Tambah Konversi</a>
                         </div>
                     </div>
                     <div class="card-body">

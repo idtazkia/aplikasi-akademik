@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Jadwal</title>
 </head>
 <body onload="myFunction()">
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Studies Schedule </span>
+                                        <span class="h2 font-weight-bold mb-0">Jadwal Kuliah </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -96,7 +96,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Day</label>
+                                        <label>Hari</label>
                                         <select class="form-control js-example-placeholder-single" onchange="mySesi()"
                                                 style="width: 100%!important; height: 100px;" id="select2-hari" th:field="*{hari}">
                                             <option value=""></option>
@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Courses</label>
+                                        <label>Matakuliah</label>
                                         <input type="text" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah + '  -  ' + jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}" disabled class="form-control" />
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Room</label>
+                                        <label>Ruang Kelas</label>
                                         <select class="form-control js-example-placeholder-single" onchange="mySesi()"
                                                 style="width: 100%!important;" id="select2-ruangan" th:field="*{ruangan}">
                                             <option value=""></option>
@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Session</label>
+                                        <label>Sesi</label>
                                         <select id="locality-dropdown"  class="form-control" onchange="waktu()">
                                         </select>
                                         <input type="hidden" id="isiSesi" name="sesi" th:field="*{sesi}">
@@ -142,13 +142,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Start Time</label>
+                                        <label>Jam Mulai</label>
                                         <input type="text" th:field="*{jamMulai}" readonly maxlength="5" max="5" name="jamMulai" id="jamMulai" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>End Time</label>
+                                        <label>Jam Selesai</label>
                                         <input type="text" name="jamSelesai" th:field="*{jamSelesai}" maxlength="5" readonly id="jamSelesai" class="form-control">
                                         <input type="hidden" id="mulai" name="mulai" th:field="*{jamMulai}">
                                         <input type="hidden" id="selesai" name="selesai" th:field="*{jamSelesai}">
@@ -160,7 +160,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Class</label>
+                                        <label>Kelas</label>
                                         <input type="text" class="form-control" id="plotKelas" th:value="${jadwal.kelas.namaKelas}"
                                                placeholder="Cari Kelas ..." data-provide="typeahead" autocomplete="off" readonly required>
                                         <input type="hidden" id="isiPlotKelas" name="kelas" th:field="*{kelas}">
@@ -169,7 +169,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Lecturer</label>
+                                        <label>Dosen</label>
                                         <input type="hidden" id="idDosen" th:field="*{dosen}">
                                         <select class="form-control js-example-placeholder-single" id="select2-dosen"
                                                 style="width: 100%!important;" name="dosen"  th:field="*{dosen}" onchange="mySesi()">
@@ -184,7 +184,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Type</label>
+                                        <label>Tipe</label>
                                         <select class="form-control" th:field="*{finalStatus}"
                                                 style="width: 100%!important;" name="finalStatus">
                                             <option value=""></option>
@@ -196,7 +196,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Access</label>
+                                        <label>Akses</label>
                                         <select name="akses" class="form-control" th:field="*{akses}">
                                             <option value="TERTUTUP">Tertutup</option>
                                             <option value="PRODI" th:text="${jadwal.prodi.namaProdi}">PRODI</option>
@@ -207,7 +207,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Capacity</label>
+                                    <label>Kapasitas</label>
                                     <div class="form-group">
                                         <input type="text" name="kapasitas" th:field="*{kapasitas}" class="form-control">
                                     </div>
@@ -217,7 +217,7 @@
 
 
                             <div class="form-group">
-                                <button class="btn btn-primary">Save</button>
+                                <button class="btn btn-primary">Simpan</button>
                             </div>
                             <input type="hidden" name="prodi" th:field="*{prodi}">
                             <input type="hidden" name="program" th:field="*{program}">

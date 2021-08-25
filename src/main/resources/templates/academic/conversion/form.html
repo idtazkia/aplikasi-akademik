@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Konversi Nilai</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Value Conversion </span>
+                                        <span class="h2 font-weight-bold mb-0">Konversi Nilai </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -43,7 +43,7 @@
             <div class="col-md-6 col-xs-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Student Description</h3>
+                        <h3 class="mb-0">Mahasiswa</h3>
                     </div>
                     <div class="card-body">
                         <address>
@@ -54,12 +54,12 @@
                                     <td th:text="${mahasiswa.nim}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Generation</td>
+                                    <td>Angkatan</td>
                                     <td> : </td>
                                     <td th:text="${mahasiswa.angkatan}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Name</td>
+                                    <td>Nama</td>
                                     <td> : </td>
                                     <td th:text="${mahasiswa.nama}"></td>
                                 </tr>
@@ -69,7 +69,7 @@
                                     <td th:text="${mahasiswa.idProdi.namaProdi}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Lecturer</td>
+                                    <td>Dosen </td>
                                     <td> : </td>
                                     <td th:text="${mahasiswa.dosen.karyawan.namaKaryawan}"></td>
                                 </tr>
@@ -83,10 +83,10 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Form Conversion</h3>
+                                <h3 class="mb-0">Form Konversi</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/conversion/list(nim=${mahasiswa.nim})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                                <a th:href="@{/academic/conversion/list(nim=${mahasiswa.nim})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                                     <span class="alert-inner--text" >Mahasiswa atas nama <text th:text="${mahasiswa.nama}"></text> sudah memiliki 24 SKS</span>
                                 </div>
                                 <div class="form-group text-center" id="submit" style="display: none;">
-                                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Submit</button>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Simpan</button>
                                 </div>
                             </div>
                         </form>

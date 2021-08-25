@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Kurikulum</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Curriculum </span>
+                                        <span class="h2 font-weight-bold mb-0">Kurikulum </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,7 +49,7 @@
                                 <h3 class="mb-0">Form</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/curriculum/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/academic/curriculum/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                                <button class="btn btn-primary"><i class="fas fa-search"></i> Cari</button>
                             </div>
                         </form>
                     </div>
@@ -84,9 +84,9 @@
                                 <thead class="thead-light">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Curriculum</th>
-                                    <th scope="col">Year(s)</th>
-                                    <th scope="col">Active</th>
+                                    <th scope="col">Kurikulum</th>
+                                    <th scope="col">Tahun</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col" width="30px;"></th>
                                     <th scope="col"></th>
 
@@ -97,10 +97,12 @@
                                     <td th:text="${row.index + 1}">1</td>
                                     <td><button type="button" th:text="${item.namaKurikulum}" class="btn btn-outline-success btn-sm">Kurikulum 2018</button></td>
                                     <td th:text="${item.tahunKurikulum}">2020</td>
-                                    <td th:if="${item.status == item.status.AKTIF}"></td>
+                                    <td th:if="${item.status == item.status.AKTIF}">
+                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Aktif</button>
+                                    </td>
                                     <td th:if="${item.status == item.status.NONAKTIF}">
                                         <form th:action="@{/academic/curriculum/aktif(kurikulum = ${item.id})}" method="post">
-                                            <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Activate</button>
+                                            <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Aktifkan</button>
                                         </form>
                                     </td>
                                     <td>
@@ -135,9 +137,9 @@
 
                                                     <div class="modal-footer">
                                                         <form th:action="@{/academic/curriculum/delete (kurikulum = ${item.id})}" method="post">
-                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                            <button type="submit" class="btn btn-white">Hapus</button>
                                                         </form>
-                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                     </div>
 
                                                 </div>

@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tahun Akademik</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Academic Years </span>
+                                        <span class="h2 font-weight-bold mb-0">Tahun Akademik </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,7 +49,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/year/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                                <a th:href="@{/academic/year/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
                             </div>
                         </div>
                     </div>
@@ -58,13 +58,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Academic Year Code</label>
+                                        <label>Kode Tahun Akademik</label>
                                         <input type="text" class="form-control" name="kodeTahunAkademik" th:field="*{kodeTahunAkademik}" placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Academic Year Name</label>
+                                        <label>Nama Tahun Akademik</label>
                                         <input type="text" name="namaTahunAkademik" th:field="*{namaTahunAkademik}" placeholder="ex : 2019/2020 Semester Genap" class="form-control" />
                                     </div>
                                 </div>
@@ -72,13 +72,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Start Date</label>
+                                        <label>Tanggal Mulai</label>
                                         <input type="date" name="tanggalMulai" th:field="*{tanggalMulai}" class="form-control"  placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>End Date</label>
+                                        <label>Tanggal Selesai</label>
                                         <input type="date" name="tanggalSelesai" th:field="*{tanggalSelesai}" placeholder="ex : 2019/2020 Semester Genap" class="form-control" />
                                     </div>
                                 </div>
@@ -86,13 +86,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>KRS Start Date</label>
+                                        <label>Tanggal Mulai KRS</label>
                                         <input type="date" name="tanggalMulaiKrs" th:field="*{tanggalMulaiKrs}" class="form-control"  placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>KRS End Date</label>
+                                        <label>Tanggal Selesai KRS</label>
                                         <input type="date" name="tanggalSelesaiKrs" th:field="*{tanggalSelesaiKrs}" placeholder="ex : 2019/2020 Semester Genap" class="form-control" />
                                     </div>
                                 </div>
@@ -100,13 +100,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>College Start Date</label>
+                                        <label>Tanggal Mulai Kuliah</label>
                                         <input type="date" name="tanggalMulaiKuliah" th:field="*{tanggalMulaiKuliah}" class="form-control"  placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>College Start Date</label>
+                                        <label>Tanggal Selesai Kuliah</label>
                                         <input type="date" name="tanggalSelesaiKuliah" th:field="*{tanggalSelesaiKuliah}" placeholder="ex : 2019/2020 Semester Genap" class="form-control" />
                                     </div>
                                 </div>
@@ -114,13 +114,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Mid Term Exam Start Date (UTS)</label>
+                                        <label>Tanggal Mulai UTS</label>
                                         <input type="date" class="form-control" name="tanggalMulaiUts" th:field="*{tanggalMulaiUts}" placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Mid Term Exam End Date (UTS)</label>
+                                        <label>Tanggal Selesai UTS</label>
                                         <input type="date" placeholder="ex : 2019/2020 Semester Genap" name="tanggalSelesaiUts" th:field="*{tanggalSelesaiUts}" class="form-control" />
                                     </div>
                                 </div>
@@ -128,13 +128,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Final Exam Start Date</label>
+                                        <label>Tanggal Mulai UAS</label>
                                         <input type="date" class="form-control" name="tanggalMulaiUas" th:field="*{tanggalMulaiUas}" placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Final Exam End Date</label>
+                                        <label>Tanggal Selesai UAS</label>
                                         <input type="date" placeholder="ex : 2019/2020 Semester Genap" name="tanggalSelesaiUas" th:field="*{tanggalSelesaiUas}" class="form-control" />
                                     </div>
                                 </div>
@@ -142,13 +142,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Score Start Date</label>
+                                        <label>Tanggal Mulai Penilaian</label>
                                         <input type="date" class="form-control" name="tanggalMulaiNilai" th:field="*{tanggalMulaiNilai}"  placeholder="ex : 12121">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Score End Date</label>
+                                        <label>Tanggal Selesai Penilaian</label>
                                         <input type="date" placeholder="ex : 2019/2020 Semester Genap" name="tanggalSelesaiNilai" th:field="*{tanggalSelesaiNilai}" class="form-control" />
                                     </div>
                                 </div>
@@ -156,7 +156,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Academic Type</label>
+                                        <label>Jenis</label>
                                         <select name="jenis" th:field="*{jenis}" class="form-control">
                                             <option value=""></option>
                                             <option value="PENDEK">PENDEK</option>
@@ -167,7 +167,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Year</label>
+                                        <label>Tahun</label>
                                         <input type="text" maxlength="4" max="4" name="tahun" th:field="*{tahun}" placeholder="ex : 2019" class="form-control" />
                                     </div>
                                 </div>
@@ -176,7 +176,7 @@
                             <input type="hidden" name="status" th:field="*{status}">
 
                             <div class="form-group">
-                                <button class="btn btn-primary">Save</button>
+                                <button class="btn btn-primary">Simpan</button>
                             </div>
 
 
