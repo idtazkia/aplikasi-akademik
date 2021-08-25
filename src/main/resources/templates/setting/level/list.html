@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Jenjang</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Level </span>
+                                        <span class="h2 font-weight-bold mb-0">Jenjang </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -48,7 +48,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/setting/level/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/setting/level/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -56,25 +56,16 @@
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                             <tr class="headings">
-                                <th>
-                                    <input type="checkbox" id="check-all" class="flat">
-                                </th>
                                 <th class="column-title">#</th>
-                                <th class="column-title">Code</th>
-                                <th class="column-title">Name</th>
-                                <th class="column-title">Description</th>
-                                <th class="column-title">Action</th>
+                                <th class="column-title">Kode Jenjnag</th>
+                                <th class="column-title">Nama Jenjnag</th>
+                                <th class="column-title">Keterangan</th>
+                                <th class="column-title">*</th>
                                 <th scope="col" width="30px"></th>
-                                <th class="bulk-actions" colspan="7">
-                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="even pointer" th:each="data,row : ${list}">
-                                <td class="a-center ">
-                                    <input type="checkbox" class="flat" name="table_records">
-                                </td>
                                 <td th:text="${(row.index + 1) + (list.number * list.size)}">1</td>
                                 <td th:text="${data.kodeJenjang}">May 23, 2014 11:47:56 PM </td>
                                 <td>
@@ -114,9 +105,9 @@
 
                                                 <div class="modal-footer">
                                                     <form method="post" th:action="@{/setting/level/delete(jenjang = ${data.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                 </div>
 
                                             </div>

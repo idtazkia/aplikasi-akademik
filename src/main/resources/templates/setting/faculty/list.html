@@ -57,11 +57,11 @@
                             <thead class="thead-light">
                             <tr>
                                 <th class="column-title">#</th>
-                                <th class="column-title">Institution</th>
-                                <th class="column-title">Faculty Code</th>
-                                <th class="column-title">Faculty Name</th>
-                                <th class="column-title">Description</th>
-                                <th class="column-title" colspan="2">Action</th>
+                                <th class="column-title">Lembaga</th>
+                                <th class="column-title">Kode Fakultas</th>
+                                <th class="column-title">Nama Fakultas</th>
+                                <th class="column-title">Keterangan</th>
+                                <th class="column-title" colspan="2">#</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -108,9 +108,9 @@
 
                                                 <div class="modal-footer">
                                                     <form method="post" th:action="@{/setting/faculty/delete(fakultas = ${dataFakultas.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Simpan</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
                                                 </div>
 
                                             </div>

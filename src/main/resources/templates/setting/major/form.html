@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Jurusan</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -52,11 +52,11 @@
                             <div class="form-group">
 
                                 <div class="form-group">
-                                    <label>Majors Code</label>
+                                    <label>Kode Jurusan</label>
                                     <input type="text" name="kodeJurusan" th:field="*{kodeJurusan}" class="form-control" placeholder="Majors Code">
                                 </div>
 
-                                <label>Select Faculty</label>
+                                <label>Fakultas</label>
                                 <select style="width: 100%!important;" class="form-control js-example-placeholder-single" id="listFakultas"
                                         name="idFakultas" th:field="*{idFakultas}">
                                     <option value=""></option>
@@ -70,12 +70,12 @@
 
 
                             <div class="form-group">
-                                <label>Name of Department</label>
+                                <label>Nama Jurusan</label>
                                 <input type="text" name="namaJurusan" th:field="*{namaJurusan}" class="form-control" placeholder="Majors Name">
                             </div>
 
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Keterangan</label>
                                 <input type="text" name="keterangan" th:field="*{keterangan}" class="form-control" placeholder="Description">
                             </div>
 

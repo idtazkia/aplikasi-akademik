@@ -56,18 +56,18 @@
                         <form method="post" th:action="@{/setting/program/form}" th:object="${program}" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
 
                             <div class="form-group">
-                                <label>Program code<span class="required">*</span>
+                                <label>Kode Program<span class="required">*</span>
                                 </label>
                                 <input type="text" th:field="*{kodeProgram}" name="kodeProgram" id="kodeProgram" required="required" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label for="namaProgram">Program Name <span class="required">*</span>
+                                <label for="namaProgram">Nama Program <span class="required">*</span>
                                 </label>
                                 <input type="text" th:field="*{namaProgram}" name="namaProgram" id="namaProgram" required="required" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="keterangan">Description <span class="required">*</span>
+                                <label for="keterangan">Keterangan <span class="required">*</span>
                                 </label>
                                 <input type="text" th:field="*{keterangan}" name="keterangan" id="keterangan" required="required" class="form-control ">
                             </div>

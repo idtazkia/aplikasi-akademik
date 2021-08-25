@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Program Studi</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
-                                        <span class="h2 font-weight-bold mb-0">Study Program </span>
+                                        <span class="h2 font-weight-bold mb-0">Program Studi </span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -49,18 +49,18 @@
                         <form method="post" th:action="@{/setting/prody/form}" th:object="${programStudy}">
 
                             <div class="form-group">
-                                <label>Kode</label>
-                                <input type="text" class="form-control" th:field="*{kodeProdi}" name="kodeProdi" placeholder="Kode">
+                                <label>Kode Prodi</label>
+                                <input type="text" class="form-control" th:field="*{kodeProdi}" name="kodeProdi" placeholder="Kode Prodi">
                             </div>
 
                             <div class="form-group">
                                 <label>Nama Prodi</label>
-                                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Study Program" name="namaProdi">
+                                <input type="text" th:field="*{namaProdi}" class="form-control" placeholder="Nama Prodi" name="namaProdi">
                             </div>
 
                             <div class="form-group">
                                 <label>Nama Prodi Inggris</label>
-                                <input type="text" th:field="*{namaProdiEnglish}" class="form-control" placeholder="Study Program" name="namaProdiEnglish">
+                                <input type="text" th:field="*{namaProdiEnglish}" class="form-control" placeholder="Nama Prodi Inggris" name="namaProdiEnglish">
                             </div>
 
                             <div class="form-group">
@@ -116,9 +116,9 @@
                                 <input type="hidden" name="kodeSpmb" th:field="*{kodeSpmb}">
 
                             </div>
-                            <input class="btn btn-primary" type="submit" value="Save">
+                            <input class="btn btn-primary" type="submit" value="Simpan">
                             <a th:href="@{/setting/prody/list}" class="btn btn-primary" role="button">
-                                <span aria-hidden="true"></span>Cancel
+                                <span aria-hidden="true"></span>Batal
                             </a>
                         </form>
                     </div>

@@ -49,7 +49,7 @@
                         <form method="post" th:action="@{/setting/faculty/form}" th:object="${fakultas}">
 
                             <div class="form-group">
-                                <label>Pilih Lembaga</label>
+                                <label>Lembaga</label>
                                 <select style="width:100%!important;" name="idLembaga" th:field="*{idLembaga}" class="form-control js-example-placeholder-single">
                                     <option value=""></option>
                                     <option th:each="data : ${lembaga}"
@@ -59,22 +59,22 @@
 
                             <div class="form-group">
                                 <label>Kode Fakultas</label>
-                                <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Faculty Code">
+                                <input type="text" th:field="*{kodeFakultas}" name="kodeFakultas" class="form-control" placeholder="Kode Fakultas">
                             </div>
 
                             <div class="form-group">
                                 <label>Nama Fakultas</label>
-                                <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Faculty Name">
+                                <input type="text" th:field="*{namaFakultas}" name="namaFakultas" class="form-control" placeholder="Nama Fakultas">
                             </div>
 
                             <div class="form-group">
                                 <label>Nama Fakultas Inggris</label>
-                                <input type="text" th:field="*{namaFakultasEnglish}" name="namaFakultasEnglish" class="form-control" placeholder="Faculty Name">
+                                <input type="text" th:field="*{namaFakultasEnglish}" name="namaFakultasEnglish" class="form-control" placeholder="Nama Fakultas Inggris">
                             </div>
 
                             <div class="form-group">
                                 <label>Keterangan</label>
-                                <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Faculty Name">
+                                <input type="text" th:field="*{keterangan}" name="keterangan" class="form-control" placeholder="Keterangan">
                             </div>
 
                             <div class="form-group">
@@ -90,9 +90,9 @@
 
                             <input type="hidden" name="id" th:field="*{id}">
                             <div class="form-group">
-                                <input class="btn btn-primary" type="submit" value="Save">
+                                <input class="btn btn-primary" type="submit" value="Simpan">
                                 <a th:href="@{/setting/faculty/list}" class="btn btn-primary" role="button">
-                                    <span aria-hidden="true"></span>Cancel
+                                    <span aria-hidden="true"></span>Batal
                                 </a>
                             </div>
 

@@ -48,7 +48,7 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/setting/major/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Add</a>
+                                <a th:href="@{/setting/major/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -60,10 +60,10 @@
                                     <input type="checkbox" id="check-all" class="flat">
                                 </th>
                                 <th class="column-title">#</th>
-                                <th class="column-title">Faculty</th>
-                                <th class="column-title">Majors</th>
-                                <th class="column-title">Description</th>
-                                <th class="column-title">Action</th>
+                                <th class="column-title">Fakultas</th>
+                                <th class="column-title">Jurusan</th>
+                                <th class="column-title">Keterangan</th>
+                                <th class="column-title">*</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -114,9 +114,9 @@
 
                                                 <div class="modal-footer">
                                                     <form method="post" th:action="@{/setting/major/delete(jurusan = ${dataJ.id})}">
-                                                        <button type="submit" class="btn btn-white">Delete</button>
+                                                        <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">tutup</button>
                                                 </div>
 
                                             </div>
