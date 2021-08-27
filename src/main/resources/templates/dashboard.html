@@ -152,9 +152,12 @@
                                 <td th:text="${data[1]}"></td>
                                 <td th:text="${data[2]}"></td>
                                 <td >
-                                    <div th:if="${data[3]} == 'WAITING'" class="btn btn-primary btn-sm" th:text="${data[3]}"></div>
-                                    <div th:if="${data[3]} == 'APPROVED'" class="btn btn-success btn-sm" th:text="${data[3]}"></div>
-                                    <div th:if="${data[3]} == 'REJECTED'" class="btn btn-danger btn-sm" th:text="${data[3]}"></div>
+                                    <div th:if="${data[4]} == 'EDITED'" class="btn btn-warning btn-sm" th:text="${'NOT YET FINISHED'}"></div>
+                                    <div th:if="${data[4]} != 'EDITED'">
+                                        <div th:if="${data[3]} == 'WAITING'" class="btn btn-primary btn-sm" th:text="${data[3]}"></div>
+                                        <div th:if="${data[3]} == 'APPROVED'" class="btn btn-success btn-sm" th:text="${data[3]}"></div>
+                                        <div th:if="${data[3]} == 'REJECTED'" class="btn btn-danger btn-sm" th:text="${data[3]}"></div>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>

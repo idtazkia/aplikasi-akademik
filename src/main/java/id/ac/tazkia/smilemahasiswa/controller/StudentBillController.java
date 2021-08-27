@@ -738,6 +738,11 @@ public class StudentBillController {
 
                         } else {
 
+                            tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
+                            tagihan1.setStatus(StatusRecord.NONAKTIF);
+                            tagihanDao.save(tagihan1);
+                            tagihanService.hapusTagihan(tagihan1);
+
                             Integer sisaCicilan = tagihan1.getNilaiTagihan().intValue() - tagihan1.getAkumulasiPembayaran().intValue();
 
                             Tagihan tagihan = new Tagihan();
@@ -761,10 +766,6 @@ public class StudentBillController {
                             if (enableFiture == null) {
                                 createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
                             }
-
-                            tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
-                            tagihan1.setStatus(StatusRecord.NONAKTIF);
-                            tagihanDao.save(tagihan1);
 
                             if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
                                 List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));

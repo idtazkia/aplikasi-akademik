@@ -43,7 +43,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "and status='AKTIF' and status_approve='APPROVED' limit 1", nativeQuery = true)
     RequestCicilan cariCicilan(String idTagihan);
 
-    @Query(value = "select a.id, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status from tagihan as a inner join mahasiswa as c " +
+    @Query(value = "select a.id, e.nama as tagihan, count(b.id) as cicilan, b.status_approve as status, b.status_cicilan from tagihan as a inner join mahasiswa as c " +
             "on a.id_mahasiswa=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
             "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id left join request_cicilan as b on a.id=b.id_tagihan " +
             "where b.status='AKTIF' and a.id_tahun_akademik=?1 and c.nim=?2 " +
