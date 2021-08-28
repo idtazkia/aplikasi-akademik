@@ -39,6 +39,34 @@ public class ImportDataController  {
     private UserDao userDao;
 
 
+    @GetMapping(value = "/{nim}")
+    @ResponseBody
+    public ResponseEntity<Object> getMahasiswaBaru(@PathVariable String nim) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ImportMahasiswaDto response = restTemplate
+                .getForObject(apiUrl+"?nim="+nim, ImportMahasiswaDto.class);
+
+        if (response.getNim() == null){
+            return new ResponseEntity<>("Data Tidak ditemukan", HttpStatus.NOT_FOUND);
+        }else {
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getNim());
+            if (mahasiswa != null) {
+                return new ResponseEntity<>("Data Sudah Dilaporkan", HttpStatus.ALREADY_REPORTED);
+            }else {
+                save(response);
+                return new ResponseEntity<>("Data Tersimpan", HttpStatus.CREATED);
+            }
+        }
+
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> save(@Valid @RequestBody ImportMahasiswaDto request){
+        Mahasiswa response = mahasiswaService.importMahasiswa(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     @PostMapping(value = "/proses")
     @ResponseBody
     public ResponseEntity<Object> getMahasiswaBaru(@RequestBody ImportMahasiswaDto request) {
