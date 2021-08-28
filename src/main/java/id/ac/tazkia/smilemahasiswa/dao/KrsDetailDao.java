@@ -120,7 +120,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             ")l ON d.id = l.id OR d.kode_matakuliah = l.kode_matakuliah OR d.nama_matakuliah = l.nama_matakuliah OR d.id = l.id_matakuliah_setara OR d.nama_matakuliah = l.nama_matakuliah_setara OR d.kode_matakuliah = l.kode_matakuliah_setara\n" +
             "where b.status_jadwal_dosen = 'PENGAMPU'\n" +
             "GROUP BY a.id\n" +
-            "ORDER BY d.nama_matakuliah_english, g.nama_kelas, f.nama_karyawan)AS a WHERE (nilai_pras_sudah_diambil < nilai_prasyarat OR nilai_prasyarat IS NULL) AND sudah_diambil_semester_ini IS NULL", nativeQuery = true)
+            "ORDER BY d.nama_matakuliah_english, g.nama_kelas, f.nama_karyawan)AS a WHERE (nilai_pras_sudah_diambil > nilai_prasyarat OR nilai_prasyarat IS NULL) AND sudah_diambil_semester_ini IS NULL", nativeQuery = true)
     List<Object[]> pilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 
     @Query(value = "SELECT * FROM\n" +
