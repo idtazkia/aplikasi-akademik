@@ -30,7 +30,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
 
     @Query(value = "select t.id,m.nama,jt.nama as tagihan, rc.tanggal_pengajuan as Pengajuan, count(rc.id),rc.status_approve from tagihan as t inner join mahasiswa as m on t.id_mahasiswa = m.id \n" +
             "inner join nilai_jenis_tagihan as nt on nt.id = t.id_nilai_jenis_tagihan inner join jenis_tagihan as jt on nt.id_jenis_tagihan = jt.id inner join \n" +
-            "request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' and rc.status_cicilan='CICILAN' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve order by rc.tanggal_pengajuan desc", nativeQuery = true,
+            "request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' and rc.status_cicilan != 'EDITED' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve order by rc.tanggal_pengajuan desc", nativeQuery = true,
             countQuery = "select count(t.id) from tagihan as t inner join mahasiswa as m " +
                     "on t.id_mahasiswa = m.id inner join nilai_jenis_tagihan as nt on nt.id = t.id_nilai_jenis_tagihan inner join jenis_tagihan as jt " +
                     "on nt.id_jenis_tagihan = jt.id inner join request_cicilan as rc on rc.id_tagihan = t.id where rc.status = 'AKTIF' group by t.id,m.nama,rc.tanggal_pengajuan,rc.status_approve;")
