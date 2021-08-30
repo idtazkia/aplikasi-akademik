@@ -471,6 +471,8 @@ public class DashboardController {
         mahasiswa.setTeleponSeluler(mahasiswaDto.getTeleponSeluler());
         mahasiswa.setTeleponRumah(mahasiswaDto.getTeleponRumah());
         mahasiswa.setKewarganegaraan(mahasiswaDto.getKewarganegaraan());
+        mahasiswa.setTanggalLahir(mahasiswaDto.getTanggalLahir());
+        mahasiswa.setNik(mahasiswaDto.getNik());
         mahasiswa.setAlatTransportasi(mahasiswaDto.getAlatTransportasi());
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdNegara(mahasiswaDto.getIdNegara());
