@@ -69,11 +69,11 @@
                             <b class="card-title" style="color: #1e3d59;">Wifi Account</b>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <b class="card-title" style="color: #1e3d59;">Nim</b>
+                                    <b class="card-title" style="color: #1e3d59;">User</b>
                                     <p th:text="${mahasiswa.nim}"></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <b class="card-title" style="color: #1e3d59;">Nim</b>
+                                    <b class="card-title" style="color: #1e3d59;">Password</b>
                                     <p th:text="${mahasiswa.absen}"></p>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@
                                     <div class="form-group">
                                         <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
                                             <div class="col-md-6 col-xs-12">
-                                                <label>Personal Email</label>
+                                                <label>Personal Email <span style="color: red; font-size: 10px;"></span></label>
                                                 <input type="email" required name="email" th:field="*{emailPribadi}" class="form-control">
                                             </div>
                                             <div class="col-md-6 col-xs-12">
@@ -333,7 +333,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-6 col-xs-12">
-                                                <label>Email Father</label>
+                                                <label>Email Father <span style="color: red; font-size: 10px;">ex : test@gmail.com</span></label>
                                                 <input type="text" name="emailAyah" th:field="*{emailAyah}" class="form-control" required>
                                             </div>
                                             <div class="col-md-6 col-xs-12">
@@ -400,7 +400,7 @@
                                             <div class="col-md-6 col-xs-12">
                                                 <label>Special Needs</label>
                                                 <select class="form-control" name="kebutuhanAyah" th:field="*{kebutuhanKhusus}">
-                                                    <option value="" disabled>Pilih Salah Satu</option>
+                                                    <option value="Tidak Ada">Tidak Ada</option>
                                                     <option th:each="data : ${kebutuhan}"
                                                             th:text="${data.kode + '  -  ' + data.nama}"
                                                             th:value="${data.id}"></option>
@@ -461,7 +461,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-6 col-xs-12">
-                                                <label>Email Mother</label>
+                                                <label>Email Mother <span style="color: red; font-size: 10px;">ex : test@gmail.com</span></label>
                                                 <input type="text" name="emailIbu" th:field="*{emailIbu}" class="form-control" required>
                                             </div>
                                             <div class="col-md-6 col-xs-12">
@@ -507,7 +507,7 @@
                                             <div class="col-md-6 col-xs-12">
                                                 <label>Special Needs</label>
                                                 <select class="form-control" name="kebutuhanIbu" th:field="*{kebutuhanKhususIbu}">
-                                                    <option value=""></option>
+                                                    <option value="Tidak Ada">Tidak Ada</option>
                                                     <option th:each="data : ${kebutuhan}"
                                                             th:text="${data.kode + '  -  ' + data.nama}"
                                                             th:value="${data.id}"></option>
