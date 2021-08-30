@@ -101,7 +101,6 @@
                                         <th scope="col">Chairman</th>
                                         <th scope="col">Examiner</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Result</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -120,6 +119,13 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
+                                                        <div class="alert alert-danger alert-with-icon" id="alertSave" style="display: none">
+                                                            <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                                                <i class="fas fa-warning"></i>
+                                                            </button>
+                                                            <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                                            <span id="textAlert"><b> Maaf! - </b>Nilai Belum Lengkap.</span>
+                                                        </div>
                                                         <b>Title</b>
                                                         <p th:text="${data.note.judul}">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
                                                         <b>Title in English</b>
@@ -188,10 +194,20 @@
                                                         </span>
 
                                                         <br>
-                                                        <div class="row" th:if="${data.status == data.status.APPROVED}">
+                                                        <div class="row" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'NONAKTIF'}">
                                                             <div class="col-md-12">
                                                                 <center>
-                                                                    <a th:href="@{/graduation/seminar/view(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Validation </a>
+                                                                    <form th:action="@{/graduation/seminar/finalisasi (seminar = ${data.id})}" method="post">
+                                                                        <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-upload"></i> Publish </button>
+                                                                    </form>
+                                                                </center>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.WAITING}">
+                                                            <div class="col-md-12">
+                                                                <center>
+                                                                    <a  th:href="@{/graduation/seminar/view(id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Validation </a>
                                                                 </center>
                                                             </div>
                                                         </div>
@@ -205,17 +221,19 @@
                                         <td th:if="${data.dosenPenguji != null}" th:text="${data.dosenPenguji.karyawan.namaKaryawan}"></td>
                                         <td th:if="${data.dosenPenguji == null}"></td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" th:if="${data.status == data.status.APPROVED}" th:text="${data.status}">Approved</button>
-                                            <button class="btn btn-warning btn-sm" th:if="${data.status == data.status.WAITING}" th:text="${data.status}">Waiting</button>
+                                            <button class="btn btn-info btn-sm" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.WAITING}">Menunggu Penilaian Lengkap</button>
+                                            <button class="btn btn-primary btn-sm" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'NONAKTIF'}">Menunggu Publish</button>
+                                            <button class="btn btn-success btn-sm" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'AKTIF'}">Seminar Sudah Publish</button>
+                                            <button class="btn btn-warning btn-sm" th:if="${data.status == data.status.WAITING}">Menunggu Persetujuan</button>
 
-                                            <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Rejected</button>
+                                            <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}">Ditolak</button>
                                         </td>
-                                        <td>
+                                        <!--<td>
                                             <button class="btn btn-success btn-sm" th:if="${data.statusSempro == data.statusSempro.APPROVED}" th:text="${data.statusSempro}">Approved</button>
                                             <button class="btn btn-warning btn-sm" th:if="${data.statusSempro == data.statusSempro.WAITING}" th:text="${data.statusSempro}">Waiting</button>
 
                                             <button class="btn btn-danger btn-sm" th:if="${data.statusSempro == data.statusSempro.REJECTED}" th:text="${data.statusSempro}">Rejected</button>
-                                        </td>
+                                        </td>-->
                                         <td>
                                             <button type="button" class="btn btn-primary btn-outline-primary btn-sm" data-toggle="modal" th:data-target="${'#modal-default' + data.id}">
                                                 <i class="fas fa-list"></i> Detail Seminar
