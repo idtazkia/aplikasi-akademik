@@ -365,7 +365,7 @@
                                             <div class="col-md-6 col-xs-12">
                                                 <label>Revenue</label>
                                                 <select class="form-control" name="penghasilanAyah" th:field="*{penghasilan}">
-                                                    <option value=""></option>
+                                                    <option value="Tidak Berkerja">Tidak Berkerja</option>
                                                     <option th:each="data : ${penghasilan}"
                                                             th:text="${data.nama}"
                                                             th:value="${data.id}">
@@ -475,7 +475,7 @@
                                             <div class="col-md-6 col-xs-12">
                                                 <label>Revenue</label>
                                                 <select class="form-control" name="penghasilanIbu" th:field="*{penghasilanIbu}">
-                                                    option value=""></option>
+                                                    <option value="Tidak Berkerja">Tidak Berkerja</option>
                                                     <option th:each="data : ${penghasilan}"
                                                             th:text="${data.nama}"
                                                             th:value="${data.id}">
