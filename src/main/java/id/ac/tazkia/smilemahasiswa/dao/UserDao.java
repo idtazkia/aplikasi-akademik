@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface UserDao extends PagingAndSortingRepository<User, String> {
     User findByUsername(String username);
+    User findByUsernameAndId(String username,String id);
 
 }
