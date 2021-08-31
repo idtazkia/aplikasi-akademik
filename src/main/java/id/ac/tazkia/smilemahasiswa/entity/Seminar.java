@@ -113,7 +113,7 @@ public class Seminar {
     @Enumerated(EnumType.STRING)
     private StatusApprove statusSempro;
 
-    private String publish;
+    private String publish = "NONAKTIF";
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
