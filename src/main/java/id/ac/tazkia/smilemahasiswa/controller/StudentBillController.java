@@ -1427,7 +1427,6 @@ public class StudentBillController {
 
         for (int i = 1; i<=jumlah; i++) {
             BigDecimal totalCicilan = requestCicilanDao.hitungCicilan(t.getNilaiTagihan(), jumlah);
-            System.out.println("tes per cicilan : " + totalCicilan);
             RequestCicilan rc = new RequestCicilan();
             rc.setTagihan(t);
             rc.setTanggalPengajuan(LocalDate.now());
