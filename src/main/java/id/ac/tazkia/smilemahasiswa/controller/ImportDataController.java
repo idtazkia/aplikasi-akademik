@@ -172,7 +172,7 @@ public class ImportDataController  {
                     mahasiswaDao.save(m);
 
                     MahasiswaDetailKeluarga mahasiswaDetailKeluarga = new MahasiswaDetailKeluarga();
-                    mahasiswaDetailKeluarga.setMahasiswa(mahasiswa);
+                    mahasiswaDetailKeluarga.setMahasiswa(m);
                     mahasiswaDetailKeluarga.setAyah(ayah);
                     mahasiswaDetailKeluarga.setIbu(ibu);
 
