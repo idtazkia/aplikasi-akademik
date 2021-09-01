@@ -160,28 +160,29 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        Note note = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.WAITING);
-        Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
-        List<Note> empty = noteDao.findByMahasiswa(mahasiswa);
+
+
+        List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa,Arrays.asList(StatusApprove.HAPUS));
 
         if (empty == null || empty.isEmpty()) {
-
             return "graduation/register";
-
         } else {
-            if (approve != null) {
-                return "redirect:list";
-            }
+            List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
+            if (cekSidang == null || cekSidang.isEmpty()){
+                List<Object> seminar = seminarDao.cekSeminar(mahasiswa);
+                if (seminar == null || seminar.isEmpty()){
+                    return "redirect:list";
+                }else {
+                    Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
 
-            if (approve == null && note == null) {
-                return "redirect:list";
-            }
+                    return "redirect:seminar/waiting?id="+approve.getId();
 
-            if (note != null) {
-                return "redirect:list";
+                }
+            }else {
+                Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED,"AKTIF",new BigDecimal(70),mahasiswa);
+                return "redirect:sidang/mahasiswa/list?id="+seminar.getId();
             }
         }
-        return "graduation/register";
     }
 
     @GetMapping("/graduation/alert")

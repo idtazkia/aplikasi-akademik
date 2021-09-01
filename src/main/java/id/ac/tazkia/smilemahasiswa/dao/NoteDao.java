@@ -12,7 +12,7 @@ import java.util.List;
 public interface NoteDao extends PagingAndSortingRepository <Note, String> {
     Note findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusApprove waiting);
 
-    List<Note> findByMahasiswa(Mahasiswa mahasiswa);
+    List<Note> findByMahasiswaAndStatusNotIn(Mahasiswa mahasiswa,List<StatusApprove>statusApproves);
 
     @Query("select n from Note n where n.tahunAkademik = :tahun and n.mahasiswa = :mahasiswa and n.status not in (:status)")
     Note cariKonsepNot(@Param("tahun") TahunAkademik tahunAkademik,@Param("mahasiswa")Mahasiswa mahasiswa,@Param("status") StatusApprove statusApprove);
