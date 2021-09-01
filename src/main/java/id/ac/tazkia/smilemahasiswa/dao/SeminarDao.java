@@ -58,7 +58,7 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
     @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2)", nativeQuery = true)
     Object validasiSemproStudy(Seminar seminar, BigDecimal nilai);
 
-    @Query(value = "select * from seminar as s inner join note as n on s.id_note = n.id where n.id_mahasiswa = ?1 and s.status not in('HAPUS')",nativeQuery = true)
+    @Query(value = "select s.* from seminar as s inner join note as n on s.id_note = n.id where n.id_mahasiswa = ?1 and s.status not in('HAPUS')",nativeQuery = true)
     List<Object> cekSeminar(Mahasiswa mahasiswa);
 
     Seminar findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove approve,String publish,BigDecimal nilai,Mahasiswa mahasiswa);
