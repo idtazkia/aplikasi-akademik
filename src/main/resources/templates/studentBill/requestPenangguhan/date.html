@@ -74,7 +74,7 @@
                                         <i class="notika-icon notika-form"></i>
                                     </div>
                                     <div class="breadcomb-ctn">
-                                        <h2>Request Suspension</h2>
+                                        <h2>Request Penangguhan</h2>
                                         <p></p>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                             <div class="col-lg-6 col-md-6 col-xs-12">
                                 <div class="breadcomb-report">
                                     <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}">
-                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Kembali</button>
                                     </a>
                                 </div>
                             </div>
@@ -99,22 +99,22 @@
             <div class="col-md-6 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Information</h2>
+                        <h2>Informasi Tagihan</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
                             <tr>
-                                <td> Type of bill </td>
+                                <td> Jenis Tagihan </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                             </tr>
                             <tr>
-                                <td> Amount </td>
+                                <td> Jumlah  </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
-                                <td> Create date </td>
+                                <td> Tanggal pembuatan Tagihan </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
                             </tr>
@@ -129,12 +129,12 @@
                             <div class="row">
                                 <div class="col-md-6 col-xs-12">
                                     <div th:if="${jumlahFile == 0}" class="form-group">
-                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Supported Documents <i class="fa fa-plus-circle"></i></button>
+                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Berkas Pendukung <i class="fa fa-plus-circle"></i></button>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-xs-12 text-right">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Number of Files : ' + jumlahFile}"></button>
+                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Jumlah Berkas : ' + jumlahFile}"></button>
                                     </div>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@
                                                 <form method="post" th:action="@{/studentBill/dokumen/deletep(tagihan = ${bill.id})}">
                                                     <div class="center ">
                                                         <button type="submit" class="btn btn-danger">
-                                                            <i class="fa fa-trash"></i> Delete File
+                                                            <i class="fa fa-trash"></i> Hapus Berkas
                                                         </button>
                                                     </div>
                                                 </form>
@@ -278,7 +278,7 @@
                             <div class="bsc-tbl-st">
                                 <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
                                     <div class="form-group">
-                                        <label>Proposed Deferred Payment Schedule</label>
+                                        <label>Tanggal Pengajuan yang di ajukan</label>
                                         <input type="date" name="tanggalPenangguhan" class="form-control" required
                                                placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">
                                     </div>

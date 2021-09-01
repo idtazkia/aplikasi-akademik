@@ -1419,10 +1419,7 @@ public class StudentBillController {
         Tagihan t = tagihanDao.findById(tagihan).get();
         List<RequestCicilan> cicilanSudahAda = requestCicilanDao.findByStatusAndTagihanOrderByTanggalJatuhTempo(StatusRecord.AKTIF, t);
         for (RequestCicilan cicilan : cicilanSudahAda){
-            cicilan.setStatus(StatusRecord.HAPUS);
-            cicilan.setStatusApprove(StatusApprove.HAPUS);
-            cicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
-            requestCicilanDao.save(cicilan);
+            requestCicilanDao.delete(cicilan);
         }
 
         for (int i = 1; i<=jumlah; i++) {
