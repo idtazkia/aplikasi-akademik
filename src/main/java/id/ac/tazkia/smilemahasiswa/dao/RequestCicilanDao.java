@@ -14,7 +14,7 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
 
     Page<RequestCicilan> findByStatusNotIn(List<StatusRecord> asList, Pageable page);
 
-    Page<RequestCicilan> findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(List<StatusRecord> asList, Pageable page, Tagihan tagihan);
+    Page<RequestCicilan> findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(List<StatusRecord> asList, Tagihan tagihan, Pageable page);
 
 
     Integer countRequestCicilanByTagihanAndStatus(Tagihan tagihan, StatusRecord statusRecord);

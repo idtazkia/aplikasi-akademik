@@ -538,7 +538,7 @@ public class StudentBillController {
         }
 
         // bagian keterangan cicilan
-        model.addAttribute("cicilan", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan1));
+        model.addAttribute("cicilan", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan1, page));
 
     }
 
@@ -1254,7 +1254,7 @@ public class StudentBillController {
         if (info == StatusTagihan.DICICIL){
             model.addAttribute("message", "message");
         }
-        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan));
+        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
         model.addAttribute("jumlahCicilan", requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF));
         model.addAttribute("jumlahNilai", requestCicilanDao.sisaCicilan(tagihan.getId()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));
@@ -1272,7 +1272,7 @@ public class StudentBillController {
             model.addAttribute("message", "message");
         }
         Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
-        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan));
+        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
         model.addAttribute("bill", tagihan);
         model.addAttribute("pembayaran", pembayaranDao.findByTagihanAndStatus(tagihan, StatusRecord.AKTIF, page));
 
@@ -1386,7 +1386,7 @@ public class StudentBillController {
         Tagihan tagihan = tagihanDao.findById(id).get();
         Integer jumlahCicilan = requestCicilanDao.countRequestCicilanByTagihanAndStatus(tagihan, StatusRecord.AKTIF);
         model.addAttribute("cicilan", new RequestCicilan());
-        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), page, tagihan));
+        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
         model.addAttribute("jumlahCicilan", jumlahCicilan);
         model.addAttribute("jumlahNilai", requestCicilanDao.sisaCicilan(tagihan.getId()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.CICILAN));

@@ -322,6 +322,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/activation/cicilan}" class="nav-link">Custom Cicilan</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
+                                <a th:href="@{/activation/tugasAkhir}" class="nav-link">Tugas Akhir</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

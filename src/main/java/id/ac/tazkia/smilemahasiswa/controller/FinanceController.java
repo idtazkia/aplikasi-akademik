@@ -231,4 +231,51 @@ public class FinanceController {
         return "redirect:cicilan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
     }
 
+
+    @GetMapping("/activation/tugasAkhir")
+    public void formTugasAkhir(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String nim,
+                               @RequestParam(required = false) String status){
+
+        model.addAttribute("selectTahun", tahunAkademik);
+        model.addAttribute("selectNim", nim);
+        Mahasiswa m = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mhs", m);
+        model.addAttribute("status", status);
+
+    }
+
+    @PostMapping("/activation/tugas")
+    public String prosesTugas(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) String nim,
+                              @RequestParam(required = false) String status){
+
+        if (status.equals("SEMPRO")) {
+            Mahasiswa m = mahasiswaDao.findByNim(nim);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(m, StatusRecord.SEMPRO, true, tahunAkademik);
+            if (validasi == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setEnable(true);
+                enableFiture.setFitur(StatusRecord.SEMPRO);
+                enableFiture.setKeterangan("-");
+                enableFiture.setMahasiswa(m);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFitureDao.save(enableFiture);
+            }
+        }else{
+            Mahasiswa m = mahasiswaDao.findByNim(nim);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(m, StatusRecord.SKRIPSI, true, tahunAkademik);
+            if (validasi == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setMahasiswa(m);
+                enableFiture.setFitur(StatusRecord.SKRIPSI);
+                enableFiture.setEnable(true);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFiture.setKeterangan("-");
+                enableFitureDao.save(enableFiture);
+            }
+        }
+
+        return "redirect:tugasAkhir?tahunAkademik=" + tahunAkademik.getId()+"&nim="+nim+"&status="+status;
+
+    }
+
 }
