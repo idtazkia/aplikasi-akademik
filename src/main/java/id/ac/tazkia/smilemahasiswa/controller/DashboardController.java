@@ -583,4 +583,9 @@ public class DashboardController {
         return "redirect:/admin";
     }
 
+    @GetMapping("/email/template")
+    public void emailTemplate(){
+
+    }
+
 }
