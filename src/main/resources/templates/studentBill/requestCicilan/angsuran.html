@@ -82,7 +82,7 @@
                             <div class="col-lg-6 col-md-6 col-xs-12">
                                 <div class="breadcomb-report">
                                     <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}">
-                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Kembali</button>
                                     </a>
                                 </div>
                             </div>
@@ -97,22 +97,22 @@
             <div class="col-md-5 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Information</h2>
+                        <h2>Informasi Tagihan</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
                             <tr>
-                                <td> Type of Bill </td>
+                                <td> Jenis Tagihan </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                             </tr>
                             <tr>
-                                <td> Amount </td>
+                                <td> Jumlah Cicilan </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                             </tr>
                             <tr>
-                                <td> Create Date </td>
+                                <td> Tanggal Pembuatan Tagihan </td>
                                 <td class="text-center"> : </td>
                                 <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
                             </tr>
@@ -130,13 +130,13 @@
                                 <div class="col-md-4 col-xs-12">
                                     <div class="form-group" >
                                         <div th:if="${jumlahFile == 0}">
-                                            <h4>Enter the Support Documents first</h4>
+                                            <h4>Masukkan Berkas Pendukung terlebih dahulu. </h4>
                                         </div>
                                         <div th:if="${jumlahFile != 0}">
                                             <form method="post" th:action="@{/studentBill/requestCicilan/cicil}">
                                                 <input type="hidden" name="tagihan" th:value="${bill.id}">
                                                 <div class="form-group">
-                                                    <label >How Many</label>
+                                                    <label >Berapa banyak cicilan</label>
                                                     <div th:if="${custom == null}">
                                                         <input type="number" class="form-control" name="jumlah" required th:value="${jumlah}" max="3">
                                                     </div>
@@ -145,22 +145,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group" th:if="${custom != null}">
-                                                    <label >Due Date Inteval</label>
+                                                    <label >Selang waktu jatuh tempo cicilan</label>
                                                     <input type="number" name="interval" class="form-control" th:value="${interval}" placeholder="Month" max="3">
                                                 </div>
-                                                <button type="submit" class="btn btn-success">Add installments <i size="50" class="fa fa-plus-circle"></i></button>
+                                                <button type="submit" class="btn btn-success">Tambah Cicilan <i size="50" class="fa fa-plus-circle"></i></button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <div th:if="${jumlahFile == 0}" class="form-group">
-                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Supported Documents <i class="fa fa-plus-circle"></i></button>
+                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Berkas Pendukung <i class="fa fa-plus-circle"></i></button>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Number of Files : ' + jumlahFile}"></button>
+                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Jumlah Berkas : ' + jumlahFile}"></button>
                                     </div>
                                 </div>
                             </div>
@@ -267,7 +267,7 @@
                                                 <form method="post" th:action="@{/studentBill/dokumen/delete(tagihan = ${bill.id})}">
                                                     <div class="center ">
                                                         <button type="submit" class="btn btn-danger ">
-                                                            <i class="fa fa-trash"></i> Delete File
+                                                            <i class="fa fa-trash"></i> Hapus Berkas
                                                         </button>
                                                     </div>
                                                 </form>
@@ -278,8 +278,8 @@
                                             <table class="table table-striped">
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Type</th>
-                                                    <th>Document</th>
+                                                    <th>Tipe</th>
+                                                    <th>Berkas</th>
                                                 </tr>
                                                 <tr th:each="data, row : ${dokumen}">
                                                     <td th:text="${(row.index + 1)}"></td>
@@ -309,15 +309,15 @@
                     <div th:if="${message == null}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="basic-tb-hd">
-                                <h2>Installment Request List</h2>
+                                <h2>List Permintaan Cicilan</h2>
                             </div>
                             <div class="bsc-tbl-st">
                                 <form method="post" th:action="@{/studentBill/cicilan/ajukan}">
                                     <table class="table table-striped">
                                         <tr>
                                             <th>No</th>
-                                            <th>Amount</th>
-                                            <th>Due Date</th>
+                                            <th>Jumlah</th>
+                                            <th>Jatuh Tempo</th>
                                             <th>Status</th>
                                         </tr>
                                         <tr th:each="data, row : ${listCicilan}">
@@ -356,14 +356,14 @@
                     <div th:if="${adaCicilan != null && message != null}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="basic-tb-hd">
-                                <h2>Installment Request List</h2>
+                                <h2>List Permintaan Cicilan</h2>
                             </div>
                             <div class="bsc-tbl-st">
                                 <table class="table table-striped">
                                     <tr>
                                         <th>No</th>
-                                        <th>Amount</th>
-                                        <th>Due Date</th>
+                                        <th>Jumlah</th>
+                                        <th>Jatuh Tempo</th>
                                         <th>Status</th>
                                     </tr>
                                     <tr th:each="data, row : ${adaCicilan}">

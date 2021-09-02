@@ -28,4 +28,8 @@ public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
 
     @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3)")
     List<Sidang> listDosenSidang(TahunAkademik tahunAkademik,StatusApprove statusApprove,Dosen dosen);
+
+    @Query(value = "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id where n.id_mahasiswa = ?1 and s.status_sidang not in ('HAPUS')", nativeQuery = true)
+    List<Object> cekSidang(Mahasiswa mahasiswa);
+
 }
