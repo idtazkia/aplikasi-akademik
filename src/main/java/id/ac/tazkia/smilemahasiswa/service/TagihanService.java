@@ -275,7 +275,7 @@ public class TagihanService {
             if (cicilanLunas != null) {
                 cicilanLunas.setStatusCicilan(StatusCicilan.LUNAS);
                 requestCicilanDao.save(cicilanLunas);
-                log.info("cicilan lunas : {}", cicilanLunas);
+                log.info("cicilan lunas : {}", cicilanLunas.getTagihan().getKeterangan());
             }
 
             RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
@@ -285,7 +285,7 @@ public class TagihanService {
                 requestCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
                 requestCicilanDao.save(requestCicilan);
                 mengirimCicilanSelanjutnya(requestCicilan);
-                log.info("kirim cicilan selanjutnya : {}", requestCicilan);
+                log.info("kirim cicilan selanjutnya : {}", requestCicilan.getNilaiCicilan());
             }
         }
 
