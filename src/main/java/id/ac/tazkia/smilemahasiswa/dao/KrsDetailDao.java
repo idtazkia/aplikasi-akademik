@@ -63,64 +63,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "group by aaaa.id", nativeQuery = true)
     List<Object[]> pilihanKrs(TahunAkademik tahunAkademik, Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 
-    @Query(value = "SELECT * FROM\n" +
-            "(SELECT a.id AS id_jadwal, a.id_number_elearning,hr.nama_hari, a.jam_mulai, a.jam_selesai,d.kode_matakuliah, d.nama_matakuliah_english, d.nama_matakuliah,c.jumlah_sks, g.nama_kelas, f.nama_karyawan AS dosen,\n" +
-            "i.nama_matakuliah AS prasyarat, h.nilai AS nilai_prasyarat,\n" +
-            "j.kode_matakuliah AS pras_sudah_diambil,j.bobot AS nilai_pras_sudah_diambil,\n" +
-            "k.kode_matakuliah AS sudah_diambil_semester_sebelumnya, k.bobot AS nilai_sudah_diambil_semester_sebelumnya,\n" +
-            "l.kode_matakuliah AS sudah_diambil_semester_ini, l.bobot AS nilai_sudah_diambil_semester_ini\n" +
-            "FROM \n" +
-            "(select * from jadwal where id_tahun_akademik = ?1 and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'TERTUTUP' and id_kelas = ?2\n" +
-            "union\n" +
-            "select * from jadwal where id_tahun_akademik = ?1  and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'PRODI' and id_prodi = ?3\n" +
-            "union\n" +
-            "select * from jadwal where id_tahun_akademik = ?1  and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'UMUM') \n" +
-            " AS a \n" +
-            "INNER JOIN jadwal_dosen AS b ON a.id = b.id_jadwal\n" +
-            "INNER JOIN matakuliah_kurikulum AS c ON a.id_matakuliah_kurikulum = c.id\n" +
-            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
-            "INNER JOIN dosen AS e ON b.id_dosen = e.id\n" +
-            "INNER JOIN karyawan AS f ON e.id_karyawan = f.id\n" +
-            "INNER JOIN kelas AS g ON a.id_kelas = g.id\n" +
-            "INNER JOIN hari AS hr ON a.id_hari = hr.id\n" +
-            "LEFT JOIN prasyarat AS h ON d.id = h.id_matakuliah\n" +
-            "LEFT JOIN matakuliah AS i ON h.id_matakuliah_pras = i.id\n" +
-            "LEFT JOIN\n" +
-            "(SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM\n" +
-            "krs_detail AS a\n" +
-            "INNER JOIN krs AS v ON a.id_krs = v.id\n" +
-            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
-            "INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
-            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
-            "LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah\n" +
-            "LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id\n" +
-            "WHERE a.status = 'AKTIF' AND v.id_tahun_akademik <> ?1 AND v.id_mahasiswa = ?4\n" +
-            ") j ON i.id = j.id OR i.kode_matakuliah = j.kode_matakuliah OR i.nama_matakuliah = j.nama_matakuliah OR i.id = j.id_matakuliah_setara OR i.nama_matakuliah = j.nama_matakuliah_setara OR i.kode_matakuliah = j.kode_matakuliah_setara\n" +
-            "LEFT JOIN\n" +
-            "(SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM\n" +
-            "krs_detail AS a\n" +
-            "INNER JOIN krs AS v ON a.id_krs = v.id\n" +
-            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
-            "INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
-            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
-            "LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah\n" +
-            "LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id\n" +
-            "WHERE a.status = 'AKTIF' AND v.id_tahun_akademik <> ?1 AND v.id_mahasiswa = ?4\n" +
-            ") k ON d.id = j.id OR d.kode_matakuliah = j.kode_matakuliah OR d.nama_matakuliah = j.nama_matakuliah OR d.id = j.id_matakuliah_setara OR d.nama_matakuliah = j.nama_matakuliah_setara OR d.kode_matakuliah = j.kode_matakuliah_setara\n" +
-            "LEFT JOIN\n" +
-            "(SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM\n" +
-            "krs_detail AS a\n" +
-            "INNER JOIN krs AS v ON a.id_krs = v.id\n" +
-            "INNER JOIN jadwal AS b ON a.id_jadwal = b.id\n" +
-            "INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id\n" +
-            "INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id\n" +
-            "LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah\n" +
-            "LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id\n" +
-            "WHERE a.status = 'AKTIF' AND v.id_tahun_akademik = ?1 AND v.id_mahasiswa = ?4\n" +
-            ")l ON d.id = l.id OR d.kode_matakuliah = l.kode_matakuliah OR d.nama_matakuliah = l.nama_matakuliah OR d.id = l.id_matakuliah_setara OR d.nama_matakuliah = l.nama_matakuliah_setara OR d.kode_matakuliah = l.kode_matakuliah_setara\n" +
-            "where b.status_jadwal_dosen = 'PENGAMPU'\n" +
-            "GROUP BY a.id\n" +
-            "ORDER BY d.nama_matakuliah_english, g.nama_kelas, f.nama_karyawan)AS a WHERE (nilai_pras_sudah_diambil >= nilai_prasyarat OR nilai_prasyarat IS NULL) AND sudah_diambil_semester_ini IS NULL", nativeQuery = true)
+    @Query(value = "SELECT * FROM (SELECT a.id AS id_jadwal, a.id_number_elearning,hr.nama_hari, a.jam_mulai, a.jam_selesai,d.kode_matakuliah, d.nama_matakuliah_english, d.nama_matakuliah,c.jumlah_sks, g.nama_kelas, f.nama_karyawan AS dosen, i.kode_matakuliah as kode_pras,i.nama_matakuliah AS prasyarat, h.nilai AS nilai_prasyarat, j.kode_matakuliah AS pras_sudah_diambil,j.bobot AS nilai_pras_sudah_diambil, k.kode_matakuliah AS sudah_diambil_semester_sebelumnya, k.bobot AS nilai_sudah_diambil_semester_sebelumnya, l.kode_matakuliah AS sudah_diambil_semester_ini, l.bobot AS nilai_sudah_diambil_semester_ini  FROM (select * from jadwal where id_tahun_akademik =  ?1 and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'TERTUTUP' and id_kelas =  ?2 union  select * from jadwal where id_tahun_akademik =  ?1  and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'PRODI' and id_prodi =  ?3 union  select * from jadwal where id_tahun_akademik =  ?1  and id_hari IS NOT NULL and jam_mulai IS NOT NULL and jam_selesai IS NOT NULL and status = 'AKTIF' and akses = 'UMUM') AS a  INNER JOIN jadwal_dosen AS b ON a.id = b.id_jadwal  INNER JOIN matakuliah_kurikulum AS c ON a.id_matakuliah_kurikulum = c.id  INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id  INNER JOIN dosen AS e ON b.id_dosen = e.id  INNER JOIN karyawan AS f ON e.id_karyawan = f.id  INNER JOIN kelas AS g ON a.id_kelas = g.id  INNER JOIN hari AS hr ON a.id_hari = hr.id  LEFT JOIN prasyarat AS h ON d.id = h.id_matakuliah  LEFT JOIN matakuliah AS i ON h.id_matakuliah_pras = i.id  LEFT JOIN (SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM  krs_detail AS a  INNER JOIN krs AS v ON a.id_krs = v.id  INNER JOIN jadwal AS b ON a.id_jadwal = b.id  INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id  INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id  LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah  LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id  WHERE a.status = 'AKTIF' AND v.id_tahun_akademik <>  ?1 AND v.id_mahasiswa =  ?4 ) j ON i.id = j.id OR i.kode_matakuliah = j.kode_matakuliah OR i.nama_matakuliah = j.nama_matakuliah OR i.id = j.id_matakuliah_setara OR i.nama_matakuliah = j.nama_matakuliah_setara OR i.kode_matakuliah = j.kode_matakuliah_setara  LEFT JOIN (SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM  krs_detail AS a  INNER JOIN krs AS v ON a.id_krs = v.id  INNER JOIN jadwal AS b ON a.id_jadwal = b.id  INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id  INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id  LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah  LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id  WHERE a.status = 'AKTIF' AND v.id_tahun_akademik <>  ?1 AND v.id_mahasiswa =  ?4 ) k ON d.id = j.id OR d.kode_matakuliah = j.kode_matakuliah OR d.nama_matakuliah = j.nama_matakuliah OR d.id = j.id_matakuliah_setara OR d.nama_matakuliah = j.nama_matakuliah_setara OR d.kode_matakuliah = j.kode_matakuliah_setara  LEFT JOIN (SELECT a.bobot, d.id,d.kode_matakuliah,d.nama_matakuliah, e.id_matakuliah_setara, f.kode_matakuliah AS kode_matakuliah_setara, f.nama_matakuliah AS nama_matakuliah_setara FROM  krs_detail AS a  INNER JOIN krs AS v ON a.id_krs = v.id  INNER JOIN jadwal AS b ON a.id_jadwal = b.id  INNER JOIN matakuliah_kurikulum AS c ON b.id_matakuliah_kurikulum = c.id  INNER JOIN matakuliah AS d ON c.id_matakuliah = d.id  LEFT JOIN matakuliah_setara AS e ON d.id = e.id_matakuliah  LEFT JOIN matakuliah AS f ON e.id_matakuliah_setara = f.id  WHERE a.status = 'AKTIF' AND v.id_tahun_akademik =  ?1 AND v.id_mahasiswa =  ?4 )l ON d.id = l.id OR d.kode_matakuliah = l.kode_matakuliah OR d.nama_matakuliah = l.nama_matakuliah OR d.id = l.id_matakuliah_setara OR d.nama_matakuliah = l.nama_matakuliah_setara OR d.kode_matakuliah = l.kode_matakuliah_setara  where b.status_jadwal_dosen = 'PENGAMPU' GROUP BY a.id  ORDER BY d.nama_matakuliah_english, g.nama_kelas, f.nama_karyawan)AS a where sudah_diambil_semester_ini IS NULL", nativeQuery = true)
     List<Object[]> pilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 
     @Query(value = "SELECT * FROM\n" +

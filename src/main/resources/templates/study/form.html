@@ -145,9 +145,16 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${pilihanKrs}">
-                                        <td><input type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox"></td>
-                                        <td th:text="${data[2]}"></td>
-                                        <td th:text="${data[3]} + ' - ' + ${data[4]}"></td>
+                                        <td>
+                                            <input th:if="${data[15] >= data[13] || data[13]== null }" type="checkbox" th:id="${data[0]}" th:value="${data[0]}" name="selected" class="single-checkbox">
+                                            <span class="fas fa-times-circle text-warning" th:if="${data[15] < data[13] && data[13] != null }"></span>
+                                        </td>
+                                        <td colspan="2" th:if="${data[12] != null && data[15] <= data[13]}">
+                                            <span class="badge badge-pill badge-warning" style="text-align: center" th:text="${'Belum Mengambil/Lulus Matakuliah ' + data[12]}"></span>
+                                        </td>
+
+                                        <td th:if="${data[15] >= data[13] || data[13]== null }" th:text="${data[2]}"></td>
+                                        <td th:if="${data[15] >= data[13] || data[13]== null }" th:text="${data[3]} + ' - ' + ${data[4]}"></td>
                                         <td><button class="bd-primary" th:text="${data[6]}">Ini Subject Ini Subject</button></td>
                                         <td th:text="${data[8]}"></td>
                                         <td><button class="bd-warning" th:text="${data[9]}">Ruang 1.3</button></td>
