@@ -1370,6 +1370,75 @@ public class GraduationController {
         }
     }
 
+    @GetMapping("/dowload/dataSeminar")
+    public void downloadDataSeminar(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException{
+        String[] colums = {"No", "Nim", "Nama", "Judul Seminar","Pembimbing", "Ketua Penguji", "Dosen Penguji", "Status"};
+
+        List<Seminar> seminar = seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED));
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Seminar");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < colums.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(colums[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Seminar data : seminar){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(data.getNote().getMahasiswa().getNim());
+            row.createCell(2).setCellValue(data.getNote().getMahasiswa().getNama());
+            row.createCell(3).setCellValue(data.getNote().getJudul());
+            row.createCell(4).setCellValue(data.getNote().getDosen().getKaryawan().getNamaKaryawan());
+            if (data.getKetuaPenguji() == null){
+                row.createCell(5).setCellValue("-");
+            }else {
+                row.createCell(5).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
+            }
+            if (data.getDosenPenguji() == null){
+                row.createCell(6).setCellValue("-");
+            }else{
+                row.createCell(6).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
+            }
+
+            if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.WAITING){
+                row.createCell(7).setCellValue("Menunggu Penilaian Lengkap");
+            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "NONAKTIF"){
+                row.createCell(7).setCellValue("Menunggu Publish");
+            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "AKTIF"){
+                row.createCell(7).setCellValue("Seminar Sudah Publish");
+            }else if(data.getStatus() == StatusApprove.WAITING){
+                row.createCell(7).setCellValue("Menunggu Persetujuan");
+            }else if (data.getStatus() == StatusApprove.REJECTED){
+                row.createCell(7).setCellValue("Ditolak");
+            }
+        }
+
+        for (int i = 0; i < colums.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename;Data_Seminar_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
 
 
 

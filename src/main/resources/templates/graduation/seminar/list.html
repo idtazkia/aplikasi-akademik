@@ -90,6 +90,9 @@
                             <div class="card-header border-0">
                                 <h3 class="mb-0">List</h3>
                             </div>
+                            <div class="card-body">
+                                <a th:href="@{/dowload/dataSeminar(tahunAkademik = ${selectedTahun.id}, prodi = ${selectedProdi.id})}" class="btn btn-success">Download Excel</a>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
