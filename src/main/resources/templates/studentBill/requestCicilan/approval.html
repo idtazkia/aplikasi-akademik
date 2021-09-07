@@ -158,46 +158,51 @@
                                     <th>Nilai Cicilan</th>
                                     <th>Status</th>
                                     <th th:if="${message != null}">Status Cicilan</th>
+                                    <th>Action</th>
                                 </tr>
                                 <tr th:each="data, row : ${request}">
                                     <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data.tanggalJatuhTempo}"></td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiCicilan, 0, 'POINT', 2, 'COMMA')}"></td>
                                     <td >
-                                        <a  class="btn btn-primary btn-sm" href="form"
+                                        <a  class="btn btn-primary btn-sm" href="#!"
                                             th:if="${data.statusApprove.WAITING} == ${data.statusApprove}"
                                             th:text="${data.statusApprove}">
                                         </a>
-                                        <a  class="btn btn-success btn-sm" href="form"
+                                        <a  class="btn btn-success btn-sm" href="#!"
                                             th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}"
                                             th:text="${data.statusApprove}">
                                         </a>
                                     </td>
                                     <td th:if="${message != null}">
-                                        <a  class="btn btn-primary btn-sm" href="form"
+                                        <a  class="btn btn-primary btn-sm" href="#!"
                                             th:if="${data.statusCicilan.CICILAN} == ${data.statusCicilan}"
                                             th:text="${data.statusCicilan}">
                                         </a>
-                                        <a  class="btn btn-warning btn-sm" href="form"
+                                        <a  class="btn btn-warning btn-sm" href="#!"
                                             th:if="${data.statusCicilan.SEDANG_DITAGIHKAN} == ${data.statusCicilan}"
                                             th:text="${data.statusCicilan}">
                                         </a>
-                                        <a  class="btn btn-success btn-sm" href="form"
+                                        <a class="btn btn-warning btn-sm" href="#!"
+                                            th:if="${data.statusCicilan.PENGAJUAN_PELUNASAN} == ${data.statusCicilan}"
+                                            th:text="${data.statusCicilan}"></a>
+                                        <a  class="btn btn-success btn-sm" href="#!"
                                             th:if="${data.statusCicilan.LUNAS} == ${data.statusCicilan}"
                                             th:text="${data.statusCicilan}">
                                         </a>
                                     </td>
-                                    <td>
-<!--                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Hapus" th:data-target="${'#modal-notification' + data.id}">-->
-<!--                                            <i class="fas fa-trash"></i>-->
-<!--                                        </button>-->
+                                    <td th:if="${data.statusCicilan == data.statusCicilan.SEDANG_DITAGIHKAN || data.statusCicilan == data.statusCicilan.PENGAJUAN_PELUNASAN}">
+
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" title="Lunas" th:data-target="${'#modal-notification' + data.id}">
+                                            <i class="fas fa-check-circle"></i> Lunas
+                                        </button>
 
                                         <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-                                                <div class="modal-content bg-gradient-danger">
+                                            <div class="modal-dialog  modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content ">
 
                                                     <div class="modal-header">
-                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                        <h2>Form Pembayaran</h2>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">×</span>
                                                         </button>
@@ -205,19 +210,41 @@
 
                                                     <div class="modal-body">
 
-                                                        <div class="py-3 text-center">
-                                                            <i class="far fa-trash-alt fa-3x"></i>
-                                                            <h4 class="heading mt-4">Are you sure ?</h4>
-                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
-                                                        </div>
+                                                        <form method="post" th:action="@{/studentBill/cicilan/payment/manual}" th:object="${pembayaran}" enctype="multipart/form-data">
+                                                            <input type="hidden" name="tagihan" id="isiTagihan" th:value="${bill.id}">
+                                                            <input type="hidden" name="rc" th:value="${data.id}">
+                                                            <div class="form-group">
+                                                                <label>Bank</label>
+                                                                <select name="bank" class="form-control">
+                                                                    <option value=""></option>
+                                                                    <option th:each="data : ${bank}"
+                                                                            th:text="${data.nama}"
+                                                                            th:value="${data.id}">Bank</option>
+                                                                </select>
+                                                                <input type="hidden" id="isiBank" name="bank" th:field="*{bank}">
+                                                            </div>
 
-                                                    </div>
+                                                            <div class="form-group">
+                                                                <label >Virtual Account</label>
+                                                                <input type="text" id="nomorVa" name="nomorRekening" class="form-control" th:field="*{nomorRekening}">
+                                                            </div>
 
-                                                    <div class="modal-footer">
-                                                        <form method="post" th:action="@{/studentBill/approval/delete(cicilan = ${data.id})}">
-                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                            <div class="form-group">
+                                                                <label >Jumlah Pembayaran</label>
+                                                                <input type="text" readonly name="amount" class="form-control" th:value="${data.nilaiCicilan}">
+                                                            </div>
+
+                                                            <div class="form-group form-line">
+                                                                <label >Upload Bukti</label>
+                                                                <input type="file" name="fileBukti" class="form-control"
+                                                                        placeholder="Upload Bukti" autofocus>
+                                                            </div>
+
+                                                            <div class="text-center">
+                                                                <button type="submit" class="btn btn-success my-4">Save</button>
+                                                            </div>
                                                         </form>
-                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+
                                                     </div>
 
                                                 </div>
@@ -290,66 +317,3 @@
 </div>
 </body>
 </html>
-<script>
-
-    $(document).ready(function (){
-        $("#nilai1").keyup(function (){
-            var1s = $("#nilai1").val();
-            if(var1s.match(/^\d+$/)){
-                $('.messageError').html('');
-                sums();
-            }else{
-                $('.messageError').html('Hanya bisa memasukan angka!');
-                $('#submit').hide();
-            }
-        });
-
-        $("#nilai2").keyup(function (){
-            var2s = $("#nilai2").val();
-            if(var2s.match(/^\d+$/)){
-                $('.messageError').html('');
-                sums();
-            }else{
-                $('.messageError').html('Hanya bisa memasukan angka!');
-                $('#submit').hide();
-            }
-        });
-
-        $("#nilai3").keyup(function (){
-            var3s = $("#nilai3").val();
-            if(var3s.match(/^\d+$/)){
-                $('.messageError').html('');
-                sums();
-            }else{
-                $('.messageError').html('Hanya bisa memasukan angka!');
-                $('#submit').hide();
-            }
-        });
-
-        $('#approve').click(function (){
-            $('#submit').show();
-            sums();
-        });
-
-        function sums(){
-            varn = parseInt($("#nilai").val());
-            var1 = parseInt($("#nilai1").val());
-            var2 = parseInt($("#nilai2").val());
-            var3 = parseInt($("#nilai3").val());
-            var cicilan = document.getElementById("bnykCicilan").value;
-            if(cicilan == 2){
-                sum = (var1 + var2);
-            }else{
-                sum = (var1 + var2 + var3);
-            }
-            console.log(sum);
-            if (sum != varn){
-                $('#submit').hide();
-                $('.messageError').html("Jumlah nilai yang di masukan tidak sesuai dengan nilai tagihan sebelumnya!");
-            }else{
-                $('#submit').show();
-            }
-        }
-    })
-
-</script>
