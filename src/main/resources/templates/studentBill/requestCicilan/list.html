@@ -67,7 +67,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="data,row : ${listCicilan}">
-                                <td th:text="${(row.index + 1)}">1</td>
+                                <td th:text="${(row.index + 1) + (listCicilan.number * listCicilan.size)}">1</td>
                                 <td th:text="${data[1]}"></td>
                                 <td th:text="${data[2]}"></td>
                                 <td th:text="${data[3]}"></td>

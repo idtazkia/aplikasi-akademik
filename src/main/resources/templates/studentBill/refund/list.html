@@ -76,7 +76,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="data,row : ${listRefund}">
-                                <td th:text="${(row.index + 1)}">1</td>
+                                <td th:text="${(row.index + 1) + (listRefund.number * listRefund.size)}">1</td>
                                 <td th:text="${data.mahasiswa.nim}">PATRICK STAR</td>
                                 <td th:text="${data.mahasiswa.nama}"></td>
                                 <td th:text="${data.nomorRekening}"></td>
