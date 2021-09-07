@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import id.ac.tazkia.smilemahasiswa.dto.request.RequestCicilanDto;
 import id.ac.tazkia.smilemahasiswa.entity.JenisKelamin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -62,5 +64,7 @@ public class ImportMahasiswaDto implements Serializable {
     @NotNull
     private String ibu;
     private String id;
+
+    private List<RequestCicilanDto> cicilan;
 
 }

@@ -2,34 +2,26 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.ImportMahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
+import id.ac.tazkia.smilemahasiswa.dto.request.RequestCicilanDto;
 import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.MahasiswaService;
-import id.ac.tazkia.smilemahasiswa.utility.UrlUtil;
-import org.springframework.beans.BeanUtils;
+import id.ac.tazkia.smilemahasiswa.service.TagihanService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
-import javax.validation.Valid;
+import javax.validation.ConstraintViolationException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequestMapping(path = UrlUtil.Import.MAHASISWA)
+@RequestMapping("/request/mahasiswa/import/")
 @RestController
+@Slf4j
 public class ImportDataController  {
-
-    @Value("${spmb.mahaiswa.url}") private String apiUrl;
 
     @Autowired
     private MahasiswaService mahasiswaService;
@@ -38,155 +30,149 @@ public class ImportDataController  {
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
-    private AgamaDao agamaDao;
-
-    @Autowired
-    private AyahDao ayahDao;
-
-    @Autowired
-    private IbuDao ibuDao;
-
-    @Autowired
-    private ProgramDao programDao;
-
-    @Autowired
-    private DosenDao dosenDao;
-
-    @Autowired
-    private KurikulumDao kurikulumDao;
-
-    @Autowired
-    private ProdiDao prodiDao;
-
-    @Autowired
     private UserDao userDao;
 
     @Autowired
-    private RoleDao roleDao;
+    private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
-    private MahasiswaDetailKeluargaDao mahasiswaDetailKeluargaDao;
+    private JenisTagihanDao jenisTagihanDao;
 
-    @GetMapping(value = "/{nim}")
+    @Autowired
+    private NilaiJenisTagihanDao nilaiJenisTagihanDao;
+
+    @Autowired
+    private TagihanService tagihanService;
+
+    @Autowired
+    private RequestCicilanDao requestCicilanDao;
+
+    @Autowired
+    private TagihanDao tagihanDao;
+
+    @PostMapping(value = "/proses", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<Object> getMahasiswaBaru(@PathVariable String nim) {
-
-        RestTemplate restTemplate = new RestTemplate();
-        ImportMahasiswaDto response = restTemplate
-                .getForObject(apiUrl+"?nim="+nim, ImportMahasiswaDto.class);
-
-        if (response.getNim() == null){
-            return new ResponseEntity<>("Data Tidak ditemukan", HttpStatus.NOT_FOUND);
-        }else {
-            Mahasiswa mahasiswa = mahasiswaDao.findByNim(response.getNim());
-            if (mahasiswa != null) {
-                return new ResponseEntity<>("Data Sudah Dilaporkan", HttpStatus.ALREADY_REPORTED);
-            }else {
-                save(response);
-                return new ResponseEntity<>("Data Tersimpan", HttpStatus.CREATED);
-            }
-        }
-
-    }
-
-    @PostMapping
-    public ResponseEntity<Object> save(@Valid @RequestBody ImportMahasiswaDto request){
-        Mahasiswa response = mahasiswaService.importMahasiswa(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @PostMapping(value = "/proses")
-    @ResponseBody
-    public BaseResponse getMahasiswaBaru(@RequestBody ImportMahasiswaDto request) {
+    public BaseResponse importMahasiswa(@RequestBody ImportMahasiswaDto request) {
 
         User user = userDao.findByUsernameAndId(request.getUser(), request.getId());
-
-
         if (user != null) {
-            if (request.getNim() == null || request.getNim().equals("null")) {
-
-                return new BaseResponse(HttpStatus.NO_CONTENT.getReasonPhrase(),
-                        String.valueOf(HttpStatus.NO_CONTENT.value()));
-            } else {
-                Mahasiswa mahasiswa = mahasiswaDao.findByNim(request.getNim());
+                Mahasiswa mahasiswa = mahasiswaDao.findByNimAndStatus(request.getNim(),StatusRecord.AKTIF);
                 if (mahasiswa != null) {
 
                     return new  BaseResponse(HttpStatus.ALREADY_REPORTED.getReasonPhrase(),
                             String.valueOf(HttpStatus.ALREADY_REPORTED.value()));
                 } else {
-
-                    Ayah ayah = new Ayah();
-                    ayah.setNamaAyah(request.getAyah());
-                    ayah.setTanggalLahir(LocalDate.parse("1982-05-14"));
-                    ayah.setAgama(agamaDao.findById(request.getIdAgama()).get());
-                    ayah.setStatusHidup("H");
-                    ayahDao.save(ayah);
-
-                    Ibu ibu = new Ibu();
-                    ibu.setNamaIbuKandung(request.getIbu());
-                    ibu.setTanggalLahir(LocalDate.parse("1982-05-14"));
-                    ibu.setAgama(agamaDao.findById(request.getIdAgama()).get());
-                    ibu.setStatusHidup("H");
-                    ibuDao.save(ibu);
-
-                    Role rolePendaftar = roleDao.findById("mahasiswa").get();
-
-                    User u = new User();
-                    u.setUsername(request.getNim());
-                    u.setActive(true);
-                    u.setRole(rolePendaftar);
-                    userDao.save(u);
-
-                    Mahasiswa m = new Mahasiswa();
-                    BeanUtils.copyProperties(request,m);
-                    m.setIdProdi(prodiDao.findByKodeSpmb(request.getProdi()));
-                    m.setIdKotaKabupaten(request.getKabupaten());
-                    m.setIdProvinsi(request.getProvinsi());
-                    m.setIdNegara(request.getNegara());
-                    m.setDosen(dosenDao.findById("''").get());
-                    m.setEmailPribadi(request.getEmail());
-                    m.setTeleponRumah(request.getTelepon());
-                    m.setTeleponSeluler(request.getTelepon());
-                    m.setIdAgama(agamaDao.findById(request.getIdAgama()).get());
-                    m.setStatusMatrikulasi("N");
-                    m.setStatusAktif("AKTIF");
-                    m.setAyah(ayah);
-                    m.setIbu(ibu);
-                    m.setUser(u);
-                    m.setKurikulum(kurikulumDao.findByProdiAndStatus(m.getIdProdi(), StatusRecord.AKTIF));
-                    m.setNamaJalan(request.getAlamat());
-                    m.setIdAbsen(mahasiswaDao.cariMaxAbsen()+1);
-                    if (request.getJenjang().equals("S1")){
-                        m.setIdProgram(programDao.findById("01").get());
+                    try {
+                        mahasiswaService.importMahasiswa(request);
+                        Mahasiswa m = mahasiswaDao.findByNim(request.getNim());
+                        createTagihan(request.getCicilan(), m);
+                        log.info("Detail Import {}" , m);
+                        return new BaseResponse(HttpStatus.CREATED.getReasonPhrase(),
+                                String.valueOf(HttpStatus.CREATED.value()));
+                    }catch (ConstraintViolationException err){
+                        err.printStackTrace();
+                        log.info("ConstraintViolationException : {} ", err.getMessage());
+                        throw err;
                     }
 
-                    if (request.getJenjang().equals("S2")){
-                        if (request.getProgram().equals("Reguler")){
-                            m.setIdProgram(programDao.findById("8ec26f2c-a48a-4948-be90-e03e9374c675").get());
-                        }
-
-                        if (request.getProgram().equals("Eksekutif")){
-                            m.setIdProgram(programDao.findById("03").get());
-                        }
-                    }
-                    mahasiswaDao.save(m);
-
-                    MahasiswaDetailKeluarga mahasiswaDetailKeluarga = new MahasiswaDetailKeluarga();
-                    mahasiswaDetailKeluarga.setMahasiswa(m);
-                    mahasiswaDetailKeluarga.setAyah(ayah);
-                    mahasiswaDetailKeluarga.setIbu(ibu);
-
-                    mahasiswaDetailKeluargaDao.save(mahasiswaDetailKeluarga);
-
-                    return new BaseResponse(HttpStatus.CREATED.getReasonPhrase(),
-                            String.valueOf(HttpStatus.CREATED.value()));
                 }
-            }
         }else {
             return new BaseResponse(HttpStatus.FORBIDDEN.getReasonPhrase(),
                     String.valueOf(HttpStatus.FORBIDDEN.value()));
 
         }
+    }
+
+    private void createTagihan(List<RequestCicilanDto> cicilans, Mahasiswa mahasiswa){
+        JenisTagihan jenisTagihan = jenisTagihanDao.findByKodeAndStatus("02",StatusRecord.AKTIF);
+        NilaiJenisTagihan cekNilaiJenis = nilaiJenisTagihanDao.
+                findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa.getIdProgram(),StatusRecord.AKTIF,jenisTagihan);
+        if (cekNilaiJenis == null){
+            NilaiJenisTagihan nilaiJenisTagihan = new NilaiJenisTagihan();
+            nilaiJenisTagihan.setJenisTagihan(jenisTagihan);
+            nilaiJenisTagihan.setNilai(new BigDecimal(8000000));
+            nilaiJenisTagihan.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            nilaiJenisTagihan.setProdi(mahasiswa.getIdProdi());
+            nilaiJenisTagihan.setProgram(mahasiswa.getIdProgram());
+            nilaiJenisTagihan.setAngkatan(mahasiswa.getAngkatan());
+            nilaiJenisTagihan.setStatus(StatusRecord.AKTIF);
+            nilaiJenisTagihanDao.save(nilaiJenisTagihan);
+
+            BigDecimal totalNominal = cicilans.stream().map(RequestCicilanDto::getNominal)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
+            tagihan.setKeterangan("Sisa Tagihan Daftar Ulang SPMB");
+            tagihan.setNilaiTagihan(totalNominal);
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            tagihan.setStatusTagihan(StatusTagihan.DICICIL);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            handleCicilan(cicilans,tagihan);
+        }else {
+            BigDecimal totalNominal = cicilans.stream().map(RequestCicilanDto::getNominal)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            Tagihan tagihan = new Tagihan();
+            tagihan.setMahasiswa(mahasiswa);
+            tagihan.setNilaiJenisTagihan(cekNilaiJenis);
+            tagihan.setKeterangan("Sisa Tagihan Daftar Ulang SPMB");
+            tagihan.setNilaiTagihan(totalNominal);
+            tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+            tagihan.setTanggalPembuatan(LocalDate.now());
+            tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+            tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+            tagihan.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            tagihan.setStatusTagihan(StatusTagihan.DICICIL);
+            tagihan.setStatus(StatusRecord.AKTIF);
+            tagihanDao.save(tagihan);
+            handleCicilan(cicilans,tagihan);
+        }
+
+    }
+
+    private void handleCicilan(List<RequestCicilanDto> cicilans, Tagihan tagihan){
+        for (RequestCicilanDto detailCicilan : cicilans){
+            if (detailCicilan.getStatus() == Boolean.TRUE) {
+                RequestCicilan cicilan = new RequestCicilan();
+                cicilan.setTagihan(tagihan);
+                cicilan.setTanggalPengajuan(LocalDate.now());
+                cicilan.setNilaiCicilan(detailCicilan.getNominal());
+                cicilan.setTanggalPengajuan(LocalDate.now());
+                cicilan.setTanggalJatuhTempo(detailCicilan.getTanggalKirim().plusMonths(1));
+                cicilan.setStatusApprove(StatusApprove.APPROVED);
+                cicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                requestCicilanDao.save(cicilan);
+            }else {
+                RequestCicilan cicilan = new RequestCicilan();
+                cicilan.setTagihan(tagihan);
+                cicilan.setTanggalPengajuan(LocalDate.now());
+                cicilan.setNilaiCicilan(detailCicilan.getNominal());
+                cicilan.setTanggalPengajuan(LocalDate.now());
+                cicilan.setTanggalJatuhTempo(detailCicilan.getTanggalKirim().plusMonths(1));
+                cicilan.setStatusApprove(StatusApprove.APPROVED);
+                requestCicilanDao.save(cicilan);
+            }
+        }
+
+        RequestCicilanDto requestCicilan = cicilans.stream()
+                .filter(cicilan -> Boolean.TRUE.equals(cicilan.getStatus()))
+                .findAny()
+                .orElse(null);
+
+        if (requestCicilan == null) {
+            RequestCicilan kirimCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
+            kirimCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+            requestCicilanDao.save(kirimCicilan);
+            tagihanService.mengirimCicilanSelanjutnya(kirimCicilan);
+        }
+
+
     }
 
 

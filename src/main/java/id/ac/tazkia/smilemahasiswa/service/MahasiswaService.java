@@ -148,6 +148,14 @@ public class MahasiswaService {
         ibu.setStatusHidup("H");
         ibuDao.save(ibu);
 
+        Role rolePendaftar = roleDao.findById("mahasiswa").get();
+        User user = new User();
+        user.setUsername(importMahasiswaDto.getNim());
+        user.setActive(true);
+        user.setRole(rolePendaftar);
+        userDao.save(user);
+
+
         Mahasiswa mahasiswa = new Mahasiswa();
         BeanUtils.copyProperties(importMahasiswaDto,mahasiswa);
         mahasiswa.setIdProdi(prodiDao.findByKodeSpmb(importMahasiswaDto.getProdi()));
@@ -166,6 +174,7 @@ public class MahasiswaService {
         mahasiswa.setKurikulum(kurikulumDao.findByProdiAndStatus(mahasiswa.getIdProdi(),StatusRecord.AKTIF));
         mahasiswa.setNamaJalan(importMahasiswaDto.getAlamat());
         mahasiswa.setIdAbsen(mahasiswaDao.cariMaxAbsen()+1);
+        mahasiswa.setUser(user);
         if (importMahasiswaDto.getJenjang().equals("S1")){
             mahasiswa.setIdProgram(programDao.findById("01").get());
         }
@@ -180,20 +189,8 @@ public class MahasiswaService {
             }
         }
         mahasiswaDao.save(mahasiswa);
-        createUser(mahasiswa);
-        createDetail(mahasiswa);
 
         return mahasiswa;
     }
 
-    public MahasiswaDetailKeluarga createDetail(Mahasiswa mahasiswa){
-        MahasiswaDetailKeluarga mahasiswaDetailKeluarga = new MahasiswaDetailKeluarga();
-        mahasiswaDetailKeluarga.setMahasiswa(mahasiswa);
-        mahasiswaDetailKeluarga.setAyah(mahasiswa.getAyah());
-        mahasiswaDetailKeluarga.setIbu(mahasiswa.getIbu());
-
-        mahasiswaDetailKeluargaDao.save(mahasiswaDetailKeluarga);
-
-        return mahasiswaDetailKeluarga;
-    }
 }
