@@ -25,8 +25,6 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
 
     List<NilaiJenisTagihan> findByProdiAndProgramAndAngkatanAndTahunAkademikAndIdNotInAndStatus(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, List<String> id, StatusRecord statusRecord);
 
-    List<NilaiJenisTagihan> findByProdiAndProgramAndAngkatanAndTahunAkademikAndIdNotInAndStatusAndKategori(Prodi prodi, Program program, String angkatan, TahunAkademik tahunAkademik, List<String> id, StatusRecord statusRecord, StatusTagihan kategori);
-
     NilaiJenisTagihan findByJenisTagihanIdAndTahunAkademikAndProdiAndAngkatanAndProgramAndStatus(String jenisTagihan,
                                                                                                  TahunAkademik tahunAkademik,
                                                                                                  Prodi prodi, String angkatan,
@@ -35,8 +33,8 @@ public interface NilaiJenisTagihanDao extends PagingAndSortingRepository<NilaiJe
     NilaiJenisTagihan findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(Prodi prodi, String Angkatan, TahunAkademik tahunAkademik, Program program,
                                                                                 StatusRecord statusRecord, JenisTagihan jenisTagihan);
 
-    NilaiJenisTagihan findByJenisTagihanKodeAndTahunAkademikAndProgramAndProdiAndAngkatanAndStatusAndKategori(String kode, TahunAkademik tahunAkademik,
+    NilaiJenisTagihan findByJenisTagihanKodeAndTahunAkademikAndProgramAndProdiAndAngkatanAndStatus(String kode, TahunAkademik tahunAkademik,
                                                                                                   Program program, Prodi prodi, String angkatan,
-                                                                                                  StatusRecord statusRecord, StatusTagihan kategori);
+                                                                                                  StatusRecord statusRecord);
 
 }

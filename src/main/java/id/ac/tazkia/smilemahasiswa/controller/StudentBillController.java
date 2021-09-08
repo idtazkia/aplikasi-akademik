@@ -1203,6 +1203,30 @@ public class StudentBillController {
         tagihan.setTanggalPenangguhan(requestPenangguhan.getTanggalPenangguhan());
         tagihan.setStatusTagihan(StatusTagihan.DITANGGUHKAN);
         tagihanDao.save(tagihan);
+
+        if (TAGIHAN_KRS.contains(tagihan.getNilaiJenisTagihan().getJenisTagihan().getKode())) {
+
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan.getMahasiswa(),
+                    StatusRecord.KRS, false, tagihan.getTahunAkademik());
+            if (enableFiture == null) {
+                enableFiture = new EnableFiture();
+                enableFiture.setFitur(StatusRecord.KRS);
+                enableFiture.setMahasiswa(tagihan.getMahasiswa());
+                enableFiture.setTahunAkademik(tagihan.getTahunAkademik());
+                enableFiture.setKeterangan("-");
+            }
+            enableFiture.setEnable(true);
+            enableFitureDao.save(enableFiture);
+
+            TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi());
+
+            Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(tagihan.getMahasiswa(), tagihan.getTahunAkademik(), StatusRecord.AKTIF);
+            if (krs == null) {
+                tagihanService.createKrs(tagihan, tahunProdi);
+            }
+
+        }
+
         return "redirect:../requestPenangguhan/list";
     }
 
