@@ -642,7 +642,7 @@ public class StudiesActivityController {
             model.addAttribute("sks", sks);
         }
 
-        List<Object[]> krsDetail = krsDetailDao.pilihKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
+        List<Object[]> krsDetail = krsDetailDao.newPilihKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
         model.addAttribute("pilihanKrs", krsDetail);
         model.addAttribute("tahun", ta);
         model.addAttribute("lebih", lebih);

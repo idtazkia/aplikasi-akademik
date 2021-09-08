@@ -609,4 +609,89 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "select semester,id_matakuliah_kurikulum,kode_matakuliah as kode, nama_matakuliah as matkul, nama_matakuliah_english as course , jumlah_sks as sks, max(nilai_akhir) as nilai_akhir,b.bobot,b.nama as grade,b.bobot*jumlah_sks as mutu from (select semester,id_matakuliah_kurikulum,kode_matakuliah, nama_matakuliah, nama_matakuliah_english, jumlah_sks,max(nilai_akhir) as nilai_akhir, max(bobot)as bobot, min(grade)as grade from (select d.semester,c.id_matakuliah_kurikulum,e.kode_matakuliah, e.nama_matakuliah, e.nama_matakuliah_english, d.jumlah_sks, max(a.nilai_akhir) as nilai_akhir, max(a.bobot)as bobot, min(a.grade)as grade from krs_detail as a inner join krs as b on a.id_krs = b.id inner join jadwal as c on a.id_jadwal = c.id inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id inner join matakuliah as e on d.id_matakuliah = e.id where a.status = 'AKTIF' and a.nilai_akhir is not null and d.semester = ?2 and a.id_mahasiswa = ?1 and d.jumlah_sks > 0 group by e.kode_matakuliah)a group by nama_matakuliah)a inner join grade as b on coalesce(a.nilai_akhir,0) <= b.atas and coalesce(a.nilai_akhir,0) >= b.bawah group by nama_matakuliah_english order by semester, kode_matakuliah",nativeQuery = true)
     List<DataTranskript> listTranskriptSemester(Mahasiswa mahasiswa, Integer semester);
 
+    @Query(value = "select a.*,i.jumlah_sks, b.jam_mulai, b.jam_selesai,d.nama_karyawan as dosen,f.nama_prodi, e.nama_kelas, g.nama_hari, h.nama_ruangan, if (prasyarat like '%(NO)%','(NO)','(OK)') as validasi from\n" +
+            "(select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english, prasyarat from\n" +
+            "(select a.*,b.id_matakuliah_kurikulum_ambil from\n" +
+            "(select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english, prasyarat from\n" +
+            "(select a.*,b.id_matakuliah_ambil,coalesce(b.bobot,0) as bobot,b.grade from\n" +
+            "(select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,'(OK)' as prasyarat from\n" +
+            "\t(select a.id,a.id_matakuliah_kurikulum,b.id_matakuliah,c.kode_matakuliah,c.nama_matakuliah,c.nama_matakuliah_english, id_matakuliah_kurikulum_pras, id_matakuliah_pras from\n" +
+            "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = ?2\n" +
+            "\t\tunion\n" +
+            "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3 \n" +
+            "\t\tunion\n" +
+            "\t\tselect a.* from jadwal as a \n" +
+            "\t\tinner join prodi as b on a.id_prodi = b.id \n" +
+            "\t\twhere a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and a.akses = 'UMUM' and a.id_hari is not null \n" +
+            "\t\tand id_prodi <> ?3 and id_jenjang = '01')a\n" +
+            "\tinner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "\tinner join matakuliah as c on b.id_matakuliah = c.id\n" +
+            "\tleft join prasyarat as d on b.id = d.id_matakuliah_kurikulum where id_matakuliah_kurikulum_pras is null group by a.id)a\n" +
+            "union\n" +
+            "select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,group_concat('* ',kode_matakuliah_prasyarat,'-',nama_matakuliah_prasyarat,'-Syarat:',coalesce(nilai,0),' -Nilai:',coalesce(bobot,0),' -Status:',status SEPARATOR '\\n') as prasyarat from\n" +
+            "(select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,kode_matakuliah_prasyarat,nama_matakuliah_prasyarat,nilai,bobot, if(id_matakuliah_kurikulum_ambil is null ,'(NO)', if(bobot >= nilai,'(OK)','(NO)')) as status from\n" +
+            "(select a.*,b.kode_matakuliah as kode_matakuliah_prasyarat, b.nama_matakuliah as nama_matakuliah_prasyarat, b.nama_matakuliah_english as nama_matakuliah_prasyarat_english from\n" +
+            "(select * from\n" +
+            "\t(select a.id,b.id as id_matakuliah_kurikulum,b.id_matakuliah,c.kode_matakuliah,c.nama_matakuliah,c.nama_matakuliah_english, id_matakuliah_kurikulum_pras, id_matakuliah_pras,d.nilai,d.grade as grade_ambil  from\n" +
+            "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = ?2\n" +
+            "\t\tunion\n" +
+            "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3 \n" +
+            "\t\tunion\n" +
+            "\t\tselect a.* from jadwal as a \n" +
+            "\t\tinner join prodi as b on a.id_prodi = b.id \n" +
+            "\t\twhere a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and a.akses = 'UMUM' and a.id_hari is not null \n" +
+            "\t\tand id_prodi <> ?3 and id_jenjang = '01')a\n" +
+            "\tinner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "\tinner join matakuliah as c on b.id_matakuliah = c.id\n" +
+            "\tinner join prasyarat as d on b.id = d.id_matakuliah_kurikulum where d.status = 'AKTIF' group by a.id, d.id_matakuliah_kurikulum_pras)a\n" +
+            "left join\n" +
+            "(select a.*,b.id_matakuliah_setara,c.id_matakuliah as id_matakuliah_setara_2 from\n" +
+            "(select c.id_matakuliah_kurikulum as id_matakuliah_kurikulum_ambil,d.id_matakuliah as id_matakuliah_ambil,MAX(a.bobot) AS bobot,min(a.grade) as grade from krs_detail as a\n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id\n" +
+            "inner join matakuliah as e on d.id_matakuliah = e.id \n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik <> ?1 and b.id_mahasiswa = ?4 group by id_matakuliah)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
+            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara) as b\n" +
+            "on a.id_matakuliah_kurikulum_pras = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah_pras = b.id_matakuliah_setara or a.id_matakuliah_pras = b.id_matakuliah_setara_2)a\n" +
+            "inner join matakuliah as  b on a.id_matakuliah_pras = b.id\n" +
+            "group by a.id,id_matakuliah_pras)a)a\n" +
+            "group by id)a\n" +
+            "left join \n" +
+            "(select a.*,b.id_matakuliah_setara,c.id_matakuliah as id_matakuliah_setara_2 from\n" +
+            "(select c.id_matakuliah_kurikulum as id_matakuliah_kurikulum_ambil,d.id_matakuliah as id_matakuliah_ambil,a.bobot,a.grade from krs_detail as a\n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id\n" +
+            "inner join matakuliah as e on d.id_matakuliah = e.id \n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik <> ?1 and b.id_mahasiswa = ?4)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
+            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara)b \n" +
+            "on a.id_matakuliah_kurikulum = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah = b.id_matakuliah_setara or a.id_matakuliah = b.id_matakuliah_setara_2)a\n" +
+            "where bobot <= 2.00)a\n" +
+            "left join\n" +
+            "(select a.*,b.id_matakuliah_setara,c.id_matakuliah as id_matakuliah_setara_2 from\n" +
+            "(select c.id_matakuliah_kurikulum as id_matakuliah_kurikulum_ambil,d.id_matakuliah as id_matakuliah_ambil,a.bobot,a.grade from krs_detail as a\n" +
+            "inner join krs as b on a.id_krs = b.id\n" +
+            "inner join jadwal as c on a.id_jadwal = c.id\n" +
+            "inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id\n" +
+            "inner join matakuliah as e on d.id_matakuliah = e.id \n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik = ?1 and b.id_mahasiswa = ?4)a\n" +
+            "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
+            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara)b\n" +
+            "on a.id_matakuliah_kurikulum = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah = b.id_matakuliah_setara or a.id_matakuliah = b.id_matakuliah_setara_2)a\n" +
+            "where id_matakuliah_kurikulum_ambil is null group by id)a\n" +
+            "inner join jadwal as b on a.id = b.id\n" +
+            "inner join jadwal_dosen as c on b.id = c.id_jadwal\n" +
+            "inner join dosen as u on c.id_dosen = u.id\n" +
+            "inner join karyawan as d on u.id_karyawan = d.id \n" +
+            "inner join kelas as e on b.id_kelas = e.id\n" +
+            "inner join prodi as f on b.id_prodi = f.id\n" +
+            "inner join hari as g on b.id_hari = g.id\n" +
+            "inner join ruangan as h on b.id_ruangan = h.id\n" +
+            "inner join matakuliah_kurikulum as i on b.id_matakuliah_kurikulum = i.id\n" +
+            "where c.status_jadwal_dosen = 'PENGAMPU' group by b.id\n" +
+            "order by nama_matakuliah", nativeQuery = true)
+    List<Object[]> newPilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa);
 }
