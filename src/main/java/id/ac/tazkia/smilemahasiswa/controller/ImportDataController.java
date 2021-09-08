@@ -66,7 +66,9 @@ public class ImportDataController  {
                     try {
                         mahasiswaService.importMahasiswa(request);
                         Mahasiswa m = mahasiswaDao.findByNim(request.getNim());
-                        createTagihan(request.getCicilan(), m);
+                        if (!request.getCicilan().isEmpty() || request.getCicilan() == null) {
+                            createTagihan(request.getCicilan(), m);
+                        }
                         log.info("Detail Import {}" , m);
                         return new BaseResponse(HttpStatus.CREATED.getReasonPhrase(),
                                 String.valueOf(HttpStatus.CREATED.value()));
