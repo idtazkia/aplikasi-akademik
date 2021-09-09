@@ -623,7 +623,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "\t\tselect a.* from jadwal as a \n" +
             "\t\tinner join prodi as b on a.id_prodi = b.id \n" +
             "\t\twhere a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and a.akses = 'UMUM' and a.id_hari is not null \n" +
-            "\t\tand id_prodi <> ?3 and id_jenjang = ?5)a\n" +
+            "\t\tand id_jenjang = ?5)a\n" +
             "\tinner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
             "\tinner join matakuliah as c on b.id_matakuliah = c.id\n" +
             "\tleft join prasyarat as d on b.id = d.id_matakuliah_kurikulum where id_matakuliah_kurikulum_pras is null group by a.id)a\n" +
@@ -640,7 +640,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "\t\tselect a.* from jadwal as a \n" +
             "\t\tinner join prodi as b on a.id_prodi = b.id \n" +
             "\t\twhere a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and a.akses = 'UMUM' and a.id_hari is not null \n" +
-            "\t\tand id_prodi <> ?3 and id_jenjang = ?5)a\n" +
+            "\t\tand id_jenjang = ?5)a\n" +
             "\tinner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
             "\tinner join matakuliah as c on b.id_matakuliah = c.id\n" +
             "\tinner join prasyarat as d on b.id = d.id_matakuliah_kurikulum where d.status = 'AKTIF' group by a.id, d.id_matakuliah_kurikulum_pras)a\n" +
@@ -695,5 +695,5 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join matakuliah_kurikulum as i on b.id_matakuliah_kurikulum = i.id\n" +
             "where c.status_jadwal_dosen = 'PENGAMPU' group by b.id\n" +
             "order by nama_matakuliah", nativeQuery = true)
-    List<Object[]> newPilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa,Jenjang jenjang);
+    List<Object[]> newPilihKrs(TahunAkademik tahunAkademik,Kelas kelas, Prodi prodi, Mahasiswa mahasiswa, Jenjang jenjang);
 }
