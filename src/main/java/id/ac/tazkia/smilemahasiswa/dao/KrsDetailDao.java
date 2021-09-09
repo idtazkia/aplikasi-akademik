@@ -616,7 +616,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "(select a.*,b.id_matakuliah_ambil,coalesce(b.bobot,0) as bobot,b.grade from\n" +
             "(select id,id_matakuliah_kurikulum,id_matakuliah,kode_matakuliah,nama_matakuliah,nama_matakuliah_english,'(OK)' as prasyarat from\n" +
             "\t(select a.id,a.id_matakuliah_kurikulum,b.id_matakuliah,c.kode_matakuliah,c.nama_matakuliah,c.nama_matakuliah_english, id_matakuliah_kurikulum_pras, id_matakuliah_pras from\n" +
-            "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = '9a7647c9-da64-49c7-b101-f7a15133adeb'\n" +
+            "\t\t(select * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'TERTUTUP' and id_hari is not null and id_kelas = ?2\n" +
             "\t\tunion\n" +
             "\t\tselect * from jadwal where status = 'AKTIF' and id_tahun_akademik = ?1 and akses = 'PRODI' and id_hari is not null and id_prodi = ?3 \n" +
             "\t\tunion\n" +
@@ -656,9 +656,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
             "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara \n" +
             ") as b\n" +
-            "on a.nilai <= b.bobot and (a.id_matakuliah_kurikulum_pras = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah_pras = b.id_matakuliah_setara or a.id_matakuliah_pras = b.id_matakuliah_setara_2))a\n" +
+            "on (a.nilai <= b.bobot and a.id_matakuliah_kurikulum_pras = b.id_matakuliah_kurikulum_ambil) or  (a.nilai <= b.bobot and a.id_matakuliah_pras = b.id_matakuliah_ambil) or (a.nilai <= b.bobot and a.id_matakuliah_pras = b.id_matakuliah_setara) or (a.nilai <= b.bobot and a.id_matakuliah_pras = b.id_matakuliah_setara_2))a\n" +
             "inner join matakuliah as  b on a.id_matakuliah_pras = b.id\n" +
-            "group by a.id,id_matakuliah_pras)a)a\n" +
+            "group by a.id,id_matakuliah_pras)a group by id)a\n" +
             "group by id)a\n" +
             "left join \n" +
             "(select a.*,b.id_matakuliah_setara,c.id_matakuliah as id_matakuliah_setara_2 from\n" +
@@ -667,9 +667,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
             "inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id\n" +
             "inner join matakuliah as e on d.id_matakuliah = e.id \n" +
-            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik <> ?1 and b.id_mahasiswa = ?4)a\n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik <> ?1 and b.id_mahasiswa = ?4 group by a.id_matakuliah_kurikulum)a\n" +
             "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
-            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara)b \n" +
+            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara group by id_matakuliah_kurikulum_ambil)b \n" +
             "on a.id_matakuliah_kurikulum = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah = b.id_matakuliah_setara or a.id_matakuliah = b.id_matakuliah_setara_2)a\n" +
             "where bobot <= 2.00)a\n" +
             "left join\n" +
@@ -679,9 +679,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join jadwal as c on a.id_jadwal = c.id\n" +
             "inner join matakuliah_kurikulum as d on c.id_matakuliah_kurikulum = d.id\n" +
             "inner join matakuliah as e on d.id_matakuliah = e.id \n" +
-            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik = ?1 and b.id_mahasiswa = ?4)a\n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and b.id_tahun_akademik = ?1 and b.id_mahasiswa = ?4 group by a.id_matakuliah_kurikulum)a\n" +
             "left join matakuliah_setara as b on a.id_matakuliah_ambil = b.id_matakuliah \n" +
-            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara)b\n" +
+            "left join matakuliah_setara as c on a.id_matakuliah_ambil = c.id_matakuliah_setara group by id_matakuliah_kurikulum_ambil)b\n" +
             "on a.id_matakuliah_kurikulum = b.id_matakuliah_kurikulum_ambil or a.id_matakuliah = b.id_matakuliah_setara or a.id_matakuliah = b.id_matakuliah_setara_2)a\n" +
             "where id_matakuliah_kurikulum_ambil is null group by id)a\n" +
             "inner join jadwal as b on a.id = b.id\n" +
