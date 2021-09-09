@@ -344,7 +344,7 @@ public class StudyActivityController {
 
 //        List<Object[]> krsDetail = krsDetailDao.pilihKrs(ta,kelasMahasiswa.getKelas(),mahasiswa.getIdProdi(),mahasiswa);
 //        List<Object[]> krsDetail = krsDetailDao.pilihKrsMahasiswa(ta, mahasiswa.getIdProdi(), mahasiswa);
-        List<Object[]> krsDetail = krsDetailDao.newPilihKrs(ta, kelasMahasiswa.getKelas(), mahasiswa.getIdProdi(), mahasiswa);
+        List<Object[]> krsDetail = krsDetailDao.newPilihKrs(ta, kelasMahasiswa.getKelas(), mahasiswa.getIdProdi(), mahasiswa,mahasiswa.getIdProdi().getIdJenjang());
         model.addAttribute("pilihanKrs", krsDetail);
 
     }
