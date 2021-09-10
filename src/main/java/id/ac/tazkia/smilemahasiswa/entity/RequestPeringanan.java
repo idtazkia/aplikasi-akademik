@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class RequestKeringanan  {
+public class RequestPeringanan {
 
     @Id @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -23,7 +23,7 @@ public class RequestKeringanan  {
     private Tagihan tagihan;
 
     @Min(0)
-    private BigDecimal nilaiCicilan;
+    private BigDecimal nilai;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
