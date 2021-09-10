@@ -15,18 +15,12 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
-import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.manager.StatusTransformer;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.tomcat.jni.Local;
-import org.codehaus.groovy.transform.SourceURIASTTransformation;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -43,9 +37,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import sun.security.util.Pem;
 
-import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -127,6 +119,9 @@ public class StudentBillController {
     private RequestCicilanDao requestCicilanDao;
 
     @Autowired
+    private RequestPeringananDao requestPeringananDao;
+
+    @Autowired
     private VirtualAccountDao virtualAccountDao;
 
     @Autowired
@@ -171,6 +166,9 @@ public class StudentBillController {
 
     @Value("${upload.berkasPenangguhan}")
     private String uploadBerkasPenangguhan;
+
+    @Value("${upload.berkasPeringanan}")
+    private String uploadBerkasPeringanan;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
@@ -1734,6 +1732,167 @@ public class StudentBillController {
         return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
     }
 
+    // request keringanan
+
+    @GetMapping("/studentBill/requestPeringanan/pengajuan")
+    public void requestKeringanan(Model model, @RequestParam String id, @PageableDefault(size = 10) Pageable page){
+
+        model.addAttribute("uploadBerkas", new UploadBerkasDto());
+        model.addAttribute("peringanan", new RequestPeringanan());
+        Tagihan tagihan = tagihanDao.findById(id).get();
+        model.addAttribute("bill", tagihan);
+        model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PERINGANAN));
+        model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PERINGANAN, page));
+
+    }
+
+
+    @PostMapping("/studentBill/peringanan/pengajuan")
+    public String submitPengajuan(@ModelAttribute @Valid RequestPeringanan peringanan,
+                                  @RequestParam(required = false) Tagihan tagihan){
+
+        peringanan.setTagihan(tagihan);
+        peringanan.setTanggalPengajuan(LocalDate.now());
+        requestPeringananDao.save(peringanan);
+
+        return "redirect:../payment/form?tagihan="+tagihan.getId();
+    }
+
+    @PostMapping("/studentBill/peringanan/document")
+    public String newDocumentPeringnan(@ModelAttribute @Valid UploadBerkasDto berkasDto, BindingResult errors,
+                                       MultipartFile fileBerkas1, MultipartFile fileBerkas2, MultipartFile fileBerkas3, MultipartFile fileBerkas4,
+                                       MultipartFile fileBerkas5, Authentication authentication, String tagihan) throws Exception{
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Tagihan t = tagihanDao.findById(tagihan).get();
+
+        if (errors.hasErrors()) {
+            log.debug("Error upload berkas pendukung : {}", errors.toString());
+        }
+
+        String idPeserta = mahasiswa.getNim();
+        String lokasiUpload = uploadBerkasPeringanan + File.separator + idPeserta;
+        log.debug("Lokasi Upload : {}", lokasiUpload);
+        new File(lokasiUpload).mkdirs();
+        StatusDocument peringanan = StatusDocument.PERINGANAN;
+
+        saveBerkas(fileBerkas1, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument1(), peringanan);
+        saveBerkas(fileBerkas2, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument2(), peringanan);
+        saveBerkas(fileBerkas3, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument3(), peringanan);
+        saveBerkas(fileBerkas4, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument4(), peringanan);
+        saveBerkas(fileBerkas5, t, berkasDto, lokasiUpload, berkasDto.getJenisDocument5(), peringanan);
+
+        return "redirect:/studentBill/requestPeringanan/pengajuan?id="+t.getId();
+
+    }
+
+    @PostMapping("/studentBill/dokument/delete/peringanan")
+    public String hapusDokumenPeringanan(@RequestParam Tagihan tagihan){
+
+        List<TagihanDocument> tagihanDoc = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PERINGANAN);
+
+
+        return "redirect:../../requestPeringanan/pengajuan?id="+tagihan.getId();
+    }
+
+    @GetMapping("/tagihan/{document}/peringanan")
+    public ResponseEntity<byte[]> showDocumentPeringanan(@PathVariable TagihanDocument document) throws Exception{
+        String lokasiBerkas = uploadBerkasPeringanan + File.separator + document.getTagihan().getMahasiswa().getNim() + File.separator +
+                document.getDocument();
+
+        log.debug("lokasi file : {}", lokasiBerkas);
+
+        try{
+            HttpHeaders headers = new HttpHeaders();
+            if (document.getDocument().toLowerCase().endsWith("jpeg") || document.getDocument().toLowerCase().endsWith("jpg")){
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            }else if (document.getDocument().toLowerCase().endsWith("png")){
+                headers.setContentType(MediaType.IMAGE_PNG);
+            }else if (document.getDocument().toLowerCase().endsWith("pdf")){
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            }else{
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiBerkas));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        }catch (Exception err){
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
+    @GetMapping("/studentBill/requestPeringanan/list")
+    public void listPeringanan(Model model, @PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)){
+            model.addAttribute("search", search);
+            model.addAttribute("listPeringanan", requestPeringananDao.findByStatusNotInAndTagihanMahasiswaNamaContainingIgnoreCaseOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), search, page));
+        }else{
+            model.addAttribute("listPeringanan", requestPeringananDao.findByStatusNotInOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
+    }
+
+    @GetMapping("/studentBill/requestPeringanan/approval")
+    public void approvalPeringanan(Model model, @RequestParam(required = false) String id, @RequestParam(required = false) Tagihan tagihan,
+                                   @PageableDefault(size = 10) Pageable page){
+
+        RequestPeringanan peringanan = requestPeringananDao.findById(id).get();
+        StatusApprove info = peringanan.getStatusApprove();
+        model.addAttribute("bill", tagihan);
+        model.addAttribute("peringanan", peringanan);
+        model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PERINGANAN, page));
+        if (info != StatusApprove.WAITING) {
+            model.addAttribute("message", "request peringanan sudah di approve");
+        }
+
+    }
+
+    @PostMapping("/studentBill/peringanan/approval")
+    public String approvePeringanan(@RequestParam(required = false) RequestPeringanan peringanan, @RequestParam(required = false) Tagihan tagihan,
+                                    @RequestParam(required = false) String nilai, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+
+        peringanan.setStatusApprove(StatusApprove.APPROVED);
+        peringanan.setUserApprove(karyawan);
+        peringanan.setWaktuApprove(LocalDateTime.now());
+        requestPeringananDao.save(peringanan);
+
+        tagihan.setKaryawan(karyawan);
+        tagihan.setNilaiTagihan(new BigDecimal(nilai));
+        tagihan.setStatusTagihan(StatusTagihan.PERINGANAN);
+        tagihanDao.save(tagihan);
+        tagihanService.editTagihan(tagihan);
+
+        return "redirect:../requestPeringanan/list";
+    }
+
+    @PostMapping("/studentBill/peringanan/reject")
+    public String rejectPeringanan(@RequestParam RequestPeringanan peringanan, @RequestParam(required = false) String keterangan,
+                                   Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        peringanan.setStatusApprove(StatusApprove.REJECTED);
+        peringanan.setWaktuApprove(LocalDateTime.now());
+        peringanan.setUserApprove(karyawan);
+        peringanan.setKeterangan(keterangan);
+        requestPeringananDao.save(peringanan);
+
+        List<TagihanDocument> td = tagihanDocumentDao.findByTagihanAndStatusAndStatusDocument(peringanan.getTagihan(), StatusRecord.AKTIF, StatusDocument.PERINGANAN);
+        for (TagihanDocument document : td){
+            document.setStatus(StatusRecord.HAPUS);
+            tagihanDocumentDao.save(document);
+        }
+
+        return "redirect:../requestPeringanan/list";
+
+    }
+
     // pembayaran
 
     @GetMapping("/studentBill/payment/form")
@@ -1755,6 +1914,7 @@ public class StudentBillController {
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
         model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
+        model.addAttribute("peringanan", requestPeringananDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
 
     }
 
@@ -1882,6 +2042,14 @@ public class StudentBillController {
             log.error(err.getMessage(), err);
         }
     }
+
+    @GetMapping("/studentBill/pembayaran/list")
+    public void pembayaraList(Model model, @RequestParam(required = false) String date1, @RequestParam(required = false) String date2){
+
+
+
+    }
+
 
     // report
 

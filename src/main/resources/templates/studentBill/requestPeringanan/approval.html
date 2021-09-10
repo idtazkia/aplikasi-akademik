@@ -1,10 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Approval Peringanan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Keterangan Tagihan</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <address>
+                            <table class="table-responsive table">
+                                <tr>
+                                    <td>Nomor Tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.nomor}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nama</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.mahasiswa.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jumlah</td>
+                                    <td> : </td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tahun Akademik</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.tahunAkademik.namaTahunAkademik}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal pembuatan tagihan</td>
+                                    <td> : </td>
+                                    <td th:text="${bill.tanggalPembuatan}"></td>
+                                </tr>
+                            </table>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Daftar Berkas</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <tr class="thead-light">
+                                            <th>No</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Berkas</th>
+                                        </tr>
+                                        <tr th:each="data, row : ${dokumen}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td>
+                                                <div class="text-center" th:text="${data.jenisDocument}"></div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <div>Lihat Berkas&nbsp;</div>
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" th:if="${message == null}">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#approveModal">Approved</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">Rejected</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal approve request peringanan -->
+                        <div class="modal fade" id="approveModal">
+                            <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <div class="text-left">Set Nilai Peringanan</div>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body p-0">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <form method="post" th:action="@{/studentBill/peringanan/approval(peringanan = ${peringanan.id}, tagihan = ${bill.id})}"  th:object="${peringanan}">
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="tagihan" th:field="*{tagihan}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="hidden" th:field="*{id}">
+                                                        <label >Nilai yang di ajukan</label>
+                                                        <input type="text" name="nilai" class="form-control" th:field="*{nilai}">
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" class="btn btn-success my-4">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Reject Request peringanan -->
+                        <div class="modal fade" id="rejectModal">
+                            <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <div class="text-left">Statement Rejected</div>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body p-0">
+                                        <div class="card bg-secondary">
+                                            <div class="card-body">
+                                                <form method="post" th:action="@{/studentBill/peringanan/reject(peringanan = ${peringanan.id})}"  th:object="${peringanan}">
+                                                    <div class="form-group">
+                                                        <input type="hidden" th:field="*{tagihan}">
+                                                        <input type="hidden" th:field="*{keterangan}">
+                                                    </div>
+                                                    <input type="hidden" name="id" th:field="*{id}">
+                                                    <div class="form-group mb-3">
+                                                        <textarea name="keterangan" class="form-control" cols="30"
+                                                                  rows="10"></textarea>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="submit" class="btn btn-success my-4">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

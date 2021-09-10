@@ -252,7 +252,7 @@
                                                     <td th:text="${(row.index + 1)}"></td>
                                                     <td th:text="${data.jenisDocument}"></td>
                                                     <td>
-                                                        <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                        <a target="_blank" th:href="@{/tagihan/{document}/peringanan(document = ${data.id})}">
                                                             <button type="submit" class="btn btn-success">
                                                                 <i class="fa fa-file-image-o"></i>
                                                                 <small>Lihat Berkas&nbsp;</small>
@@ -276,15 +276,18 @@
                     <div th:if="${jumlahFile != 0}" class="skill-content-3 ongoing-tsk">
                         <div class="normal-table-list">
                             <div class="bsc-tbl-st">
-                                <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
+                                <form method="post" th:action="@{/studentBill/peringanan/pengajuan(tagihan = ${bill.id})}" th:object="${peringanan}">
                                     <div class="form-group">
-                                        <label>Tanggal Pengajuan yang di ajukan</label>
-<!--                                        <input type="date" name="tanggalPenangguhan" class="form-control" required-->
-<!--                                               placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">-->
+                                        <label>Masukkan jumlah tagihan</label>
+                                        <input type="text" id="nilai" name="nilai" class="form-control">
+                                        <text class="messageError"></text>
+                                        <div>
+                                            <text><span style="color: red">Note </span>: Jumlah bisa berubah ketika di setujui oleh keuangan. </text>
+                                        </div>
                                     </div>
                                     <input type="hidden" name="id" th:field="*{id}">
                                     <div style="margin-top: 45px;" class="form-group">
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" id="submit" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
@@ -305,3 +308,19 @@
 </section>
 </body>
 </html>
+<script>
+
+    $(document).ready(function(){
+        $("#nilai").keyup(function (){
+            var1s = $("#nilai").val();
+            if (var1s.match(/^\d+$/)){
+                $('.messageError').html('');
+                $('#submit').show();
+            }else{
+                $('.messageError').html('Hanya bisa memasukkan angka!');
+                $('#submit').hide();
+            }
+        })
+    })
+
+</script>

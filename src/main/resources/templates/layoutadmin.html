@@ -337,25 +337,31 @@
                     <div class="collapse" id="studentBill">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/refund/list}" class="nav-link">Request Refund</a>
+                                <a th:href="@{/studentBill/refund/list}" class="nav-link">Pengajuan Pengembalian</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="nav-link">Request Penangguhan</a>
+                                <a th:href="@{/studentBill/requestPenangguhan/list}" class="nav-link">Pengajuan Penangguhan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/requestCicilan/list}" class="nav-link">Request Cicilan</a>
+                                <a th:href="@{/studentBill/requestPeringanan/list}" class="nav-link">Pengajuan Peringanan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/billAdmin/list}" class="nav-link">Bill</a>
+                                <a th:href="@{/studentBill/requestCicilan/list}" class="nav-link">Pengajuan Cicilan</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/billAdmin/list}" class="nav-link">Tagihan</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/pembayaran/list}" class="nav-link">Pembayaran</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/typeBill/list}" class="nav-link">Type of Bill</a>
+                                <a th:href="@{/studentBill/typeBill/list}" class="nav-link">Jenis Tagihan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/valueType/list}" class="nav-link">Amount of Bill</a>
+                                <a th:href="@{/studentBill/valueType/list}" class="nav-link">Nilai Jenis Tagihan</a>
                             </li>
 <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
 <!--                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>-->
