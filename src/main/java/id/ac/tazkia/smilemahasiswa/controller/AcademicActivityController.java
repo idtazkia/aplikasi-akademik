@@ -314,7 +314,7 @@ public class  AcademicActivityController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
         Prodi p = prodiDao.findById(idProdi).get();
-        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndProdiAndHariNotNull(tahunAkademik, p);
+        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndProdiAndHariNotNullOrTahunAkademikAndAksesAndHariNotNullAndProdiIdJenjang(tahunAkademik, p, tahunAkademik, Akses.UMUM, p.getIdJenjang());
 
 
         return jadwal;

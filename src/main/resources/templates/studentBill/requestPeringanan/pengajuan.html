@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Profile</title>
+    <style type="text/css">
+        .card{
+            background-color: #ffffff;
+            padding: 0px;
+            border-radius: 10px;
+
+        }
+        .card-content{
+            background-color: #f49c6c;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .card-body{
+            padding: 15px;
+        }
+
+        .txt-profile{
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            color: white;
+        }
+
+        .card-body-content{
+            text-align: center;
+            padding: 5px;
+        }
+
+        .bt-edit{
+            width: 220px;
+            background-color: #f49c6c;
+            border: 2px solid white;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        .txt-title{
+            color: #292928;
+        }
+        .txt-warning{
+            color: red;
+            font-size: 10px;
+        }
+        .ohide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Pengajuan Keringanan</h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+                                    <a th:href="@{/studentBill/payment/form(tagihan = ${bill.id})}">
+                                        <button class="btn btn-primary"><i class="fa fa-arrow-circle-left"></i> Kembali</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="normal-table-list mg-t-30">
+                    <div class="basic-tb-hd">
+                        <h2>Informasi Tagihan</h2>
+                    </div>
+                    <div class="bsc-tbl-st">
+                        <table class="table table-striped">
+                            <tr>
+                                <td> Jenis Tagihan </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                            </tr>
+                            <tr>
+                                <td> Jumlah  </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td> Tanggal pembuatan Tagihan </td>
+                                <td class="text-center"> : </td>
+                                <td th:text="${#temporals.format(bill.tanggalPembuatan, 'dd - MMM - yyyy')}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="ongoing-task-inner notika-shadow mg-t-30">
+                    <div class="">
+                        <div class=" ongoing-hd-wd">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div th:if="${jumlahFile == 0}" class="form-group">
+                                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#documentModal">Berkas Pendukung <i class="fa fa-plus-circle"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12 text-right">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#totalDocument" th:text="${'Jumlah Berkas : ' + jumlahFile}"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal tambah dokumen -->
+
+                    <div class="modal fade" id="documentModal" role="dialog">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <form method="post" th:action="@{/studentBill/peringanan/document}" enctype="multipart/form-data">
+                                    <input type="hidden" name="tagihan" th:value="${bill.id}">
+                                    <h5>Maksimal ukuran file : <span style="color: red"> 10MB</span></h5>
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Surat permohonan peringanan</label>
+                                                    <input type="hidden" name="jenisDocument1" value="PERMOHONAN_PENGAJUAN">
+                                                    <input type="file" name="fileBerkas1" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Slip gaji atau keterangan penghasilan orang tua</label>
+                                                    <input type="hidden" name="jenisDocument2" value="SLIP_GAJI">
+                                                    <input type="file" name="fileBerkas2" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Surat tagihan listrik</label>
+                                                    <input type="hidden" name="jenisDocument3" value="TAGIHAN_LISTRIK">
+                                                    <input type="file" name="fileBerkas3" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Surat tagihan air</label>
+                                                    <input type="hidden" name="jenisDocument4" value="TAGIHAN_AIR">
+                                                    <input type="file" name="fileBerkas4" required class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label >Lainnya..</label>
+                                                    <input type="hidden" name="jenisDocument5" value="LAINNYA">
+                                                    <input type="file" name="fileBerkas5" class="form-control"
+                                                           placeholder="Upload Berkas" autofocus>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-12">
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal detail dokumen -->
+
+                    <div class="modal fade" id="totalDocument" role="dialog">
+                        <div class="modal-dialog ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="">
+                                        <div class="basic-tb-hd">
+                                            <div class="col-md-6 ">
+                                                <h2>Daftar Berkas</h2>
+                                            </div>
+                                            <div th:if="${jumlahFile != 0}" class="col-md-6 text-right">
+                                                <form method="post" th:action="@{/studentBill/dokumen/deletep(tagihan = ${bill.id})}">
+                                                    <div class="center ">
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fa fa-trash"></i> Hapus Berkas
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <br><br><br>
+                                        <div class="bsc-tbl-st">
+                                            <table class="table table-striped">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Jenis</th>
+                                                    <th>Berkas</th>
+                                                </tr>
+                                                <tr th:each="data, row : ${dokumen}">
+                                                    <td th:text="${(row.index + 1)}"></td>
+                                                    <td th:text="${data.jenisDocument}"></td>
+                                                    <td>
+                                                        <a target="_blank" th:href="@{/tagihan/{document}/penangguhan(document = ${data.id})}">
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="fa fa-file-image-o"></i>
+                                                                <small>Lihat Berkas&nbsp;</small>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="row">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${jumlahFile != 0}" class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="bsc-tbl-st">
+                                <form method="post" th:action="@{/studentBill/bill/newDate(tagihan = ${bill.id})}" th:object="${penangguhan}">
+                                    <div class="form-group">
+                                        <label>Tanggal Pengajuan yang di ajukan</label>
+<!--                                        <input type="date" name="tanggalPenangguhan" class="form-control" required-->
+<!--                                               placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">-->
+                                    </div>
+                                    <input type="hidden" name="id" th:field="*{id}">
+                                    <div style="margin-top: 45px;" class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${jumlahFile == 0}" class="skill-content-3 ongoing-tsk">
+                        <div class="normal-table-list">
+                            <div class="bsc-tbl-st">
+                                <h4 class="text-center">Input Berkas Pendukung terlebih dahulu</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>
