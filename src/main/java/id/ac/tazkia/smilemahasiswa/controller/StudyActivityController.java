@@ -910,7 +910,7 @@ public class StudyActivityController {
             return "redirect:/du/cuti/form";
         }else {
             model.addAttribute("cuti", cutiDao.findCutiByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
-            return "/du/cuti/list";
+            return "du/cuti/list";
         }
 
     }
