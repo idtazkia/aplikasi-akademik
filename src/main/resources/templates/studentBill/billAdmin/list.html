@@ -207,7 +207,7 @@
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
                                                             <td>
-                                                                <a  class="btn btn-primary btn-sm" href="#!"
+                                                                <a  class="btn btn-info btn-sm" href="#!"
                                                                     th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
                                                                     th:text="${data.statusTagihan}">
                                                                 </a>
@@ -222,8 +222,13 @@
                                                                    th:text="${data.statusTagihan}">
                                                                 </a>
 
-                                                                <a type="button" class="btn btn-info btn-sm" href="#!"
+                                                                <a type="button" class="btn btn-warning btn-sm" href="#!"
                                                                    th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                                                   th:text="${data.statusTagihan}">
+                                                                </a>
+
+                                                                <a type="button" class="btn btn-warning btn-sm" href="#!"
+                                                                   th:if="${data.statusTagihan.PERINGANAN} == ${data.statusTagihan}"
                                                                    th:text="${data.statusTagihan}">
                                                                 </a>
                                                             </td>

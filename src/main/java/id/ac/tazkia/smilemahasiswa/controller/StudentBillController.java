@@ -11,6 +11,7 @@ import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
@@ -1732,7 +1733,7 @@ public class StudentBillController {
         return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
     }
 
-    // request keringanan
+    // request peringanan
 
     @GetMapping("/studentBill/requestPeringanan/pengajuan")
     public void requestKeringanan(Model model, @RequestParam String id, @PageableDefault(size = 10) Pageable page){
@@ -2044,12 +2045,65 @@ public class StudentBillController {
     }
 
     @GetMapping("/studentBill/pembayaran/list")
-    public void pembayaraList(Model model, @RequestParam(required = false) String date1, @RequestParam(required = false) String date2){
+    public void pembayaraList(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) String mulaiTanggal, @RequestParam(required = false) String sampaiTanggal){
 
-
-
+        if (mulaiTanggal != null) {
+            model.addAttribute("mulai", mulaiTanggal);
+            model.addAttribute("sampai", sampaiTanggal);
+            model.addAttribute("pembayaran", pembayaranDao.listPembayaran(mulaiTanggal, sampaiTanggal, page));
+        }
     }
 
+    @GetMapping("/rekap/pembayaran")
+    public void rekapPembayaran(@RequestParam String mulai, @RequestParam String sampai, HttpServletResponse response) throws IOException{
+        String[] columns = {"No", "Nim", "Nama", "Jenis Tagihan", "Bank", "Jumlah", "Tanggal Transfer", "Referensi"};
+
+        List<PembayaranDto> listPembayaran = pembayaranDao.downloadPembayaran(mulai, sampai);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Rekap Pembayaran");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for(int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (PembayaranDto p : listPembayaran){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(p.getNim());
+            row.createCell(2).setCellValue(p.getNama());
+            row.createCell(3).setCellValue(p.getJenisTagihan());
+            row.createCell(4).setCellValue(p.getBank());
+            row.createCell(5).setCellValue(p.getJumlah());
+            row.createCell(6).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            row.createCell(7).setCellValue(p.getReferensi());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Pembayaran_"+mulai+"-"+sampai+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
 
     // report
 

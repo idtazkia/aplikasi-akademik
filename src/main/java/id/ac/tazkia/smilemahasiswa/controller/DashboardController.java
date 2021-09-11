@@ -5,7 +5,6 @@ import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +106,9 @@ public class DashboardController {
     private RequestPenangguhanDao requestPenangguhanDao;
 
     @Autowired
+    private RequestPeringananDao requestPeringananDao;
+
+    @Autowired
     private CutiDao cutiDao;
 
     @Autowired
@@ -194,17 +196,29 @@ public class DashboardController {
         if(cekTagihan.isEmpty()){
             model.addAttribute("message", "message");
         }
+
+        // request cicilan
         List<Object[]> cekCicilan = requestCicilanDao.cekCicilanPerMahasiswa(ta, mahasiswa);
         if (cekCicilan.isEmpty()){
             model.addAttribute("cekCicilan", "cekCicilan");
         }else {
             model.addAttribute("cicilan", cekCicilan);
         }
+
+        // request penangguhan
         List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa.getId(), ta.getId());
         if (cekPenangguhan.isEmpty()){
             model.addAttribute("cekPenangguhan", "cekPenangguhan");
         }else {
             model.addAttribute("penangguhan", cekPenangguhan);
+        }
+
+        // request peringanan
+        List<RequestPeringanan> cekPeringanan = requestPeringananDao.findByTagihanTahunAkademikAndTagihanMahasiswa(ta, mahasiswa);
+        if (cekPeringanan.isEmpty()) {
+            model.addAttribute("cekPeringanan", "request peringanan");
+        }else{
+            model.addAttribute("peringanan", cekPeringanan);
         }
 
         // tampilan pra krs sp

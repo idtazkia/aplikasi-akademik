@@ -38,125 +38,106 @@
         </div>
     </div>
 
-<!--    <div class="container-fluid mt&#45;&#45;7">-->
-<!--        &lt;!&ndash; Table &ndash;&gt;-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12 col-xs-12">-->
-<!--                <div class="card shadow">-->
-<!--                    <div class="card-header border-0">-->
-<!--                        <div class="row align-items-center">-->
-<!--                            <div class="col">-->
-<!--                                <h3 class="mb-0">Form</h3>-->
-<!--                            </div>-->
-<!--                            <div class="col text-right">-->
-<!--&lt;!&ndash;                                <a th:href="@{/academic/curriculum/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>&ndash;&gt;-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="card-body">-->
-<!--                        <form action="">-->
-<!--                            <div class="form-group">-->
-<!--                                <label>Prodi</label>-->
-<!--&lt;!&ndash;                                <select name="prodi" id="" class="form-control">&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <option value=""></option>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <option th:each="data : ${prodi}"&ndash;&gt;-->
-<!--&lt;!&ndash;                                            th:text="${data.NamaProdi}"&ndash;&gt;-->
-<!--&lt;!&ndash;                                            th:selected="(${data} == *{selected})"&ndash;&gt;-->
-<!--&lt;!&ndash;                                            th:value="${data.id}"></option>&ndash;&gt;-->
-<!--&lt;!&ndash;                                </select>&ndash;&gt;-->
-<!--                            </div>-->
-<!--                            <div class="form-group">-->
-<!--                                <button class="btn btn-primary"><i class="fas fa-search"></i> Cari</button>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Rekap Pembayaran</h3>
+                            </div>
+                            <div class="col text-right">
+<!--                                <a th:href="@{/academic/curriculum/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Mulai Tanggal</label>
+                                        <input type="date" name="mulaiTanggal" class="form-control" placeholder="Mulai Tanggal" th:value="${mulai}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label >Sampai Tanggal</label>
+                                        <input type="date" name="sampaiTanggal" class="form-control" placeholder="Sampai Tanggal" th:value="${sampai}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group text-center">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i> Cari</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12 col-xs-12" th:if="${selected != null}">-->
-<!--                <div class="card shadow">-->
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-xs-12" th:if="${pembayaran != null}">
+                <div class="card shadow">
 <!--                    <div class="card-header border-0">-->
 <!--                        <h3 class="mb-0" th:text="${selected.namaProdi}">Manajemn Bisnis</h3>-->
 <!--                    </div>-->
-<!--                    <div class="card-body">-->
-<!--                        <div class="table-responsive">-->
-<!--                            <table class="table align-items-center table-flush">-->
-<!--                                <thead class="thead-light">-->
-<!--                                <tr>-->
-<!--                                    <th scope="col">#</th>-->
-<!--                                    <th scope="col">Kurikulum</th>-->
-<!--                                    <th scope="col">Tahun</th>-->
-<!--                                    <th scope="col">Status</th>-->
-<!--                                    <th scope="col" width="30px;"></th>-->
-<!--                                    <th scope="col"></th>-->
 
-<!--                                </tr>-->
-<!--                                </thead>-->
-<!--                                <tbody>-->
-<!--                                <tr th:each="item,row : ${kurikulum}">-->
-<!--                                    <td th:text="${row.index + 1}">1</td>-->
-<!--                                    <td><button type="button" th:text="${item.namaKurikulum}" class="btn btn-outline-success btn-sm">Kurikulum 2018</button></td>-->
-<!--                                    <td th:text="${item.tahunKurikulum}">2020</td>-->
-<!--                                    <td th:if="${item.status == item.status.AKTIF}">-->
-<!--                                        <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Aktif</button>-->
-<!--                                    </td>-->
-<!--                                    <td th:if="${item.status == item.status.NONAKTIF}">-->
-<!--                                        <form th:action="@{/academic/curriculum/aktif(kurikulum = ${item.id})}" method="post">-->
-<!--                                            <button class="btn btn-warning btn-sm"><i class="fas fa-check"></i> Aktifkan</button>-->
-<!--                                        </form>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        <a th:href="@{/academic/curriculum/form (id = ${item.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>-->
-<!--                                    </td>-->
-<!--                                    <td>-->
-<!--                                        &lt;!&ndash;button&ndash;&gt;-->
-<!--                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+item.id}">-->
-<!--                                            <i class="fas fa-trash"></i>-->
-<!--                                        </button>-->
+                    <div class="card-body">
+                        <div class="form-group text-left">
+                            <a class="text-white btn btn-success" th:href="@{/rekap/pembayaran(mulai = ${mulai}, sampai = ${sampai})}"><i class="fas fa-download"></i> Download</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nim</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Tagihan</th>
+                                    <th scope="col">Bank</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Tanggal Transaksi</th>
+                                    <th scope="col">Referensi</th>
 
-<!--                                        <div class="modal fade" th:id="${'modal-notification'+item.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">-->
-<!--                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">-->
-<!--                                                <div class="modal-content bg-gradient-danger">-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${pembayaran}">
+                                    <td th:text="${(row.index + 1) + (pembayaran.number * pembayaran.size)}">1</td>
+                                    <td th:text="${data.Nim}"> Kurikulum 2018</td>
+                                    <td th:text="${data.Nama}">2020</td>
+                                    <td th:text="${data.JenisTagihan}"></td>
+                                    <td th:text="${data.Bank}"></td>
+                                    <td th:text="${data.jumlah}"></td>
+                                    <td th:text="${data.TanggalTransaksi}"></td>
+                                    <td th:text="${data.Referensi}"></td>
+                                </tr>
 
-<!--                                                    <div class="modal-header">-->
-<!--                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>-->
-<!--                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                                            <span aria-hidden="true">×</span>-->
-<!--                                                        </button>-->
-<!--                                                    </div>-->
-
-<!--                                                    <div class="modal-body">-->
-
-<!--                                                        <div class="py-3 text-center">-->
-<!--                                                            <i class="far fa-trash-alt fa-3x"></i>-->
-<!--                                                            <h4 class="heading mt-4">Are you sure ?</h4>-->
-<!--                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>-->
-<!--                                                        </div>-->
-
-<!--                                                    </div>-->
-
-<!--                                                    <div class="modal-footer">-->
-<!--                                                        <form th:action="@{/academic/curriculum/delete (kurikulum = ${item.id})}" method="post">-->
-<!--                                                            <button type="submit" class="btn btn-white">Hapus</button>-->
-<!--                                                        </form>-->
-<!--                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>-->
-<!--                                                    </div>-->
-
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-
-<!--                                </tbody>-->
-<!--                            </table>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Dark table -->
 
 

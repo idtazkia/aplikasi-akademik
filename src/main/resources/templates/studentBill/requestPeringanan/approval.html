@@ -71,9 +71,14 @@
                                     <td th:text="${bill.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Jumlah</td>
+                                    <td>Nilai Tagihan</td>
                                     <td> : </td>
                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(bill.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Nilai yang di ajukan</b></td>
+                                    <td><b> : </b></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(peringanan.nilai, 0, 'POINT', 2, 'COMMA')}" style="font-weight: bold;"></td>
                                 </tr>
                                 <tr>
                                     <td>Tahun Akademik</td>
