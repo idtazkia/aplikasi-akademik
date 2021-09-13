@@ -125,7 +125,7 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="alert alert-danger alert-with-icon" id="alertSave" style="display: none">
+                                                            <div class="alert alert-danger alert-with-icon" th:id="${data.id+'-alertSave'}" style="display: none">
                                                                 <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
                                                                     <i class="fas fa-warning"></i>
                                                                 </button>
@@ -180,7 +180,7 @@
                                                             <div class="modal-footer">
                                                                 <input type="hidden" id="sidangId" th:value="${data.id}">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
-                                                                <button type="submit" id="publishData" class="btn btn-primary">Publish</button>
+                                                                <button type="submit" th:id="${data.id}" class="btn btn-primary publish-data">Publish</button>
                                                             </div>
                                                     </div>
                                                 </div>
@@ -230,25 +230,25 @@
 </body>
 </html>
 <script>
-    $("#publishData").click(function(e) {
+    $(".publish-data").click(function(e) {
+        var id = this.id;
         var token = $("input[name='_csrf']").val();
-        var sidang = $('#sidangId').val();
         var url = "/graduation/sidang/dosen/publish";
         e.preventDefault();
 
         $.ajax({
-            url: url+'?sidang='+sidang,
+            url: url+'?sidang='+id,
             contentType: "application/json;charset=UTF-8",
             headers: {"X-CSRF-TOKEN": token},
             method: 'post',
             dataType: 'JSON',
             data: JSON.stringify({
-                "id" : sidang,
+                "id" : id,
             }), error: function (data) {
                 if (data.responseText == "lengkapi"){
-                    document.getElementById('alertSave').style.display = "block";
+                    document.getElementById(id+'-alertSave').style.display = "block";
                     setTimeout(function () {
-                        document.getElementById('alertSave').style.display = "none";
+                        document.getElementById(id+'alertSave').style.display = "none";
                     }, 5000);
                 }
 
