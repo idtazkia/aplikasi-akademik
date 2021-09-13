@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Aktivasi Peringanan</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Pengajuan Peringanan</h5>
+                                        <span class="h2 font-weight-bold mb-0">Aktifasi</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" th:action="@{/activation/peringanan}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun Akademik</label>
+                                        <select name="tahunAkademik" required
+                                                class="form-control js-example-placeholder-single" style="width: 100%!important;">
+                                            <option value=""></option>
+                                            <option th:each="tahun : ${tahun}" th:selected="(${selectTahun} == *{tahun})"
+                                                    th:value="${tahun.id}" th:text="${tahun.namaTahunAkademik}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>NIM</label>
+                                        <input type="text" th:value="${selectNim}" class="form-control" name="nim">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-info">Aktifasi</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="alert alert-danger" th:if="${message != null && selectTahun != null}">
+                        <center>
+                            <strong>
+                                NIM tidak ditemukan
+                            </strong>
+                        </center>
+                    </div>
+
+                    <div class="alert alert-danger" th:if="${gagal != null }">
+                        <center>
+                            <strong>
+                                Data sudah ada, Mahasiswa sudah bisa ajukan peringanan!
+                            </strong>
+                        </center>
+                    </div>
+
+                    <div class="card-body" th:if="${message == null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List Tagihan <small th:text="${'  ' + selectTahun.namaTahunAkademik}">asd</small></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table align-items-center table-flush">
+                                            <thead class="thead-dark">
+                                            <tr>
+                                                <td >#</td>
+                                                <td >Keterangan</td>
+                                                <td >Tagihan</td>
+                                                <td >Dibayar</td>
+                                                <td> Status</td>
+                                                <td></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row:${tagihanMahasiswa}">
+                                                <td th:text="${(row.index + 1)}">1</td>
+                                                <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td>
+                                                    <a  class="btn btn-primary btn-sm" href="#!"
+                                                        th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}"
+                                                        th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-success btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-warning ger btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.DICICIL} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+
+                                                    <a type="button" class="btn btn-info btn-sm" href="#!"
+                                                       th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                                       th:text="${data.statusTagihan}">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

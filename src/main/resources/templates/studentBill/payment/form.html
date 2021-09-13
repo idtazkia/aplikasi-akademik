@@ -200,10 +200,12 @@
                                             <div class="col-xs-12" th:if="${tagihan} != null">
                                                 <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
                                                 <text th:if="${penangguhan == null}">
-                                                    <text th:if="${peringanan == null}">
+                                                    <text th:if="${cekPeringanan == null}">
                                                         <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Pengajuan Penangguhan</a>
                                                         <a class="btn btn-primary" th:href="@{/studentBill/requestCicilan/angsuran(id = ${tagihan.id})}">Pengajuan Cicilan</a>
-<!--                                                        <a class="btn btn-primary" th:href="@{/studentBill/requestPeringanan/pengajuan(id = ${tagihan.id})}">Pengajuan Keringanan</a>-->
+                                                        <text th:if="${peringanan != null}">
+                                                            <a class="btn btn-primary" th:href="@{/studentBill/requestPeringanan/pengajuan(id = ${tagihan.id})}">Pengajuan Keringanan</a>
+                                                        </text>
                                                     </text>
                                                 </text>
                                             </div>

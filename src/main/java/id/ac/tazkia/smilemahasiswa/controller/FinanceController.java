@@ -278,4 +278,41 @@ public class FinanceController {
 
     }
 
+    @GetMapping("/activation/peringanan")
+    public void aktifasiPeringanan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @RequestParam(required = false) String nim, @PageableDefault(size = 10) Pageable page){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        if (mhs != null) {
+            model.addAttribute("tagihanMahasiswa", tagihanDao.findByStatusNotInAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), mhs, tahunAkademik, page));
+        }else{
+            model.addAttribute("message", "nim tidak ada");
+        }
+        model.addAttribute("selectTahun", tahunAkademik);
+        model.addAttribute("selectNim", nim);
+
+    }
+
+    @PostMapping("/activation/peringanan")
+    public String prosesPeringanan(@RequestParam TahunAkademik tahunAkademik, @RequestParam(required = false) String nim, RedirectAttributes attributes){
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        if (mhs != null) {
+            EnableFiture cekFitur = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.PERINGANAN, true, tahunAkademik);
+            if (cekFitur == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setEnable(true);
+                enableFiture.setFitur(StatusRecord.PERINGANAN);
+                enableFiture.setKeterangan("-");
+                enableFiture.setMahasiswa(mhs);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFitureDao.save(enableFiture);
+            }else{
+                attributes.addFlashAttribute("gagal", "data sudah ada!");
+                return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
+            }
+        }
+
+        return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
+
+    }
+
 }

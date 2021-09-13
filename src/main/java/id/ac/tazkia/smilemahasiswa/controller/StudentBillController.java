@@ -1915,7 +1915,8 @@ public class StudentBillController {
         model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
         model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
-        model.addAttribute("peringanan", requestPeringananDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
+        model.addAttribute("cekPeringanan", requestPeringananDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
+        model.addAttribute("peringanan", enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(tagihan1.getMahasiswa(), StatusRecord.PERINGANAN, true, tagihan1.getTahunAkademik()));
 
     }
 
@@ -2090,7 +2091,7 @@ public class StudentBillController {
             row.createCell(3).setCellValue(p.getJenisTagihan());
             row.createCell(4).setCellValue(p.getBank());
             row.createCell(5).setCellValue(p.getJumlah().intValue());
-            row.createCell(6).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            row.createCell(6).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE));
             row.createCell(7).setCellValue(p.getReferensi());
         }
 
@@ -2099,7 +2100,7 @@ public class StudentBillController {
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Pembayaran_"+mulai+"-"+sampai+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Pembayaran_"+mulai+"_"+sampai+".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
