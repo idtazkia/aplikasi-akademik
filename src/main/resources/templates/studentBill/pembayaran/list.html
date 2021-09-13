@@ -115,7 +115,7 @@
                                     <td th:text="${data.Nama}">2020</td>
                                     <td th:text="${data.JenisTagihan}"></td>
                                     <td th:text="${data.Bank}"></td>
-                                    <td th:text="${data.jumlah}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.jumlah, 0, 'POINT', 2, 'COMMA')}"></td>
                                     <td th:text="${data.TanggalTransaksi}"></td>
                                     <td th:text="${data.Referensi}"></td>
                                 </tr>

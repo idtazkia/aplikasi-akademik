@@ -2089,7 +2089,7 @@ public class StudentBillController {
             row.createCell(2).setCellValue(p.getNama());
             row.createCell(3).setCellValue(p.getJenisTagihan());
             row.createCell(4).setCellValue(p.getBank());
-            row.createCell(5).setCellValue(p.getJumlah());
+            row.createCell(5).setCellValue(p.getJumlah().intValue());
             row.createCell(6).setCellValue(p.getTanggalTransaksi().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             row.createCell(7).setCellValue(p.getReferensi());
         }
