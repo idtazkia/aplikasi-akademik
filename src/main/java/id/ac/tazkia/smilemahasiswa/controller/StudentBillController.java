@@ -341,7 +341,7 @@ public class StudentBillController {
         }else{
             if (StringUtils.hasText(search)){
                 model.addAttribute("search", search);
-                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndJenisTagihanNamaContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
+                model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikAndAngkatanContainingIgnoreCaseOrProdiNamaProdiContainingIgnoreCaseOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, search, search, page));
             }else{
                 model.addAttribute("listValue", nilaiJenisTagihanDao.findByStatusNotInAndTahunAkademikOrderByAngkatanDesc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, page));
             }
@@ -1038,7 +1038,7 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
-            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTanggalPenangguhan(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listPenangguhan", requestPenangguhanDao.findByTagihanMahasiswaNamaContainingIgnoreCaseOrTagihanMahasiswaNimContainingIgnoreCaseAndStatusNotInOrderByTanggalPenangguhan(search, search, Arrays.asList(StatusRecord.HAPUS), page));
         }else {
             model.addAttribute("listPenangguhan", requestPenangguhanDao.findByStatusNotInOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -1264,10 +1264,14 @@ public class StudentBillController {
 //    request cicilan
 
     @GetMapping("/studentBill/requestCicilan/list")
-    public void listCicilan(Model model, @PageableDefault(size = 10) Pageable page){
+    public void listCicilan(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) String search){
 
-        model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan1(page));
-
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilanSearch(search, page));
+        }else{
+            model.addAttribute("listCicilan", requestCicilanDao.listRequestCicilan1(page));
+        }
     }
 
     @GetMapping("/studentBill/requestCicilan/approval")
@@ -1829,7 +1833,7 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)){
             model.addAttribute("search", search);
-            model.addAttribute("listPeringanan", requestPeringananDao.findByStatusNotInAndTagihanMahasiswaNamaContainingIgnoreCaseOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), search, page));
+            model.addAttribute("listPeringanan", requestPeringananDao.findByTagihanMahasiswaNamaContainingIgnoreCaseOrTagihanMahasiswaNimContainingIgnoreCaseAndStatusNotInOrderByTanggalPengajuanDesc(search, search, Arrays.asList(StatusRecord.HAPUS), page));
         }else{
             model.addAttribute("listPeringanan", requestPeringananDao.findByStatusNotInOrderByTanggalPengajuanDesc(Arrays.asList(StatusRecord.HAPUS), page));
         }
@@ -2251,7 +2255,7 @@ public class StudentBillController {
     // refund sp
 
     @GetMapping("/studentBill/refund/list")
-    public void listRefund(Model model, @PageableDefault(size = 10) Pageable page, String search){
+    public void listRefund(Model model, @PageableDefault(size = 10) Pageable page, @RequestParam(required = false) String search){
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface RequestPenangguhanDao extends PagingAndSortingRepository<RequestPenangguhan, String> {
 
-    Page<RequestPenangguhan> findByStatusNotInAndTanggalPenangguhanContainingIgnoreCaseOrderByTanggalPenangguhan(List<StatusRecord> asList, String search, Pageable page);
+    Page<RequestPenangguhan> findByTagihanMahasiswaNamaContainingIgnoreCaseOrTagihanMahasiswaNimContainingIgnoreCaseAndStatusNotInOrderByTanggalPenangguhan(String nama, String nim, List<StatusRecord> asList, Pageable page);
 
     Page<RequestPenangguhan> findByStatusNotInOrderByTanggalPengajuanDesc(List<StatusRecord> asList, Pageable page);
 

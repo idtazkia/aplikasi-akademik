@@ -48,12 +48,14 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <div class="input-group mb-3">
-                                    <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                <form method="get">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>

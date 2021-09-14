@@ -47,6 +47,16 @@
                             <div class="col">
                                 <h3 class="mb-0">Data List</h3>
                             </div>
+                            <div class="col text-right">
+                                <form method="get">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -54,6 +64,7 @@
                             <thead class="thead-light">
                             <tr>
                                 <th>#</th>
+                                <th>Nim</th>
                                 <th>Nama</th>
                                 <th>Tagihan</th>
                                 <th>Tanggal Pengajuan</th>
@@ -65,6 +76,7 @@
                             <tbody>
                             <tr th:each="data,row : ${listPenangguhan}">
                                 <td th:text="${(row.index + 1) + (listPenangguhan.number * listPenangguhan.size)}">1</td>
+                                <td th:text="${data.tagihan.mahasiswa.nim}"></td>
                                 <td th:text="${data.tagihan.mahasiswa.nama}"></td>
                                 <td th:text="${data.tagihan.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                 <td th:text="${data.tanggalPengajuan}"></td>
