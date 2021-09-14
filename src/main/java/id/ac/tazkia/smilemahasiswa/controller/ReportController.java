@@ -14,20 +14,23 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -74,6 +77,12 @@ public class ReportController {
 
     @Autowired
     private PresensiMahasiswaDao presensiMahasiswaDao;
+
+    @Autowired
+    private SoalDao soalDao;
+
+    @Value("${upload.soal}")
+    private String uploadFolder;
 
     @ModelAttribute("tahunAkademik")
     public Iterable<TahunAkademik> tahunAkademik() {
@@ -345,6 +354,63 @@ public class ReportController {
         List<Object[]> hasil = presensiMahasiswaDao.bkdAttendance(jadwal);
 
         model.addAttribute("attendance", hasil);
+
+
+    }
+
+    @GetMapping("/report/fileberkas")
+    public void fileBerkas(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        if (tahunAkademik != null){
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("fileBerkas", jadwalDao.findByTahunAkademikAndDosenAndStatus(tahunAkademik, dosen, StatusRecord.AKTIF));
+        }
+    }
+
+    @RequestMapping("/download/")
+    public void downloadBerkas(HttpServletRequest request, HttpServletResponse response, @RequestParam Jadwal jadwal, @RequestParam String status){
+
+        if (status == "UAS"){
+            Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED, StatusRecord.UAS);
+            String fileName = soal.getFileApprove();
+            String lokasi = uploadFolder + File.separator + soal.getJadwal().getId();
+
+            Path file = Paths.get(lokasi, fileName);
+            if (Files.exists(file))
+            {
+                response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                response.addHeader("Content-Disposition", "attachment; filename="+fileName);
+                try
+                {
+                    Files.copy(file, response.getOutputStream());
+                    response.getOutputStream().flush();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }else if (status == "UTS"){
+            Soal soal = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED, StatusRecord.UTS);
+            String fileName = soal.getFileApprove();
+            String lokasi = uploadFolder + File.separator + soal.getJadwal().getId();
+
+            Path file = Paths.get(lokasi, fileName);
+            if (Files.exists(file))
+            {
+                response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                response.addHeader("Content-Disposition", "attachment; filename="+fileName);
+                try
+                {
+                    Files.copy(file, response.getOutputStream());
+                    response.getOutputStream().flush();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
 
 
     }

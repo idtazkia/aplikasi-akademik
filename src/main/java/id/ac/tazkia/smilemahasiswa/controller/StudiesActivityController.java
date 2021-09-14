@@ -815,6 +815,8 @@ public class StudiesActivityController {
             Karyawan karyawan = karyawanDao.findByIdUser(user);
             Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UTS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            Soal soal1 = soalDao.findByJadwalAndStatusSoalAndStatus(jadwal,StatusRecord.UTS, StatusRecord.AKTIF);
+            model.addAttribute("cek", soal1);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
@@ -828,6 +830,8 @@ public class StudiesActivityController {
             Karyawan karyawan = karyawanDao.findByIdUser(user);
             Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UAS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
+            Soal soal1 = soalDao.findByJadwalAndStatusSoalAndStatus(jadwal,StatusRecord.UAS, StatusRecord.AKTIF);
+            model.addAttribute("cek", soal1);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
@@ -878,16 +882,31 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.WAITING);
         soal.setFileUpload(idFile + "." + extension);
 
-        Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotIn(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED));
-        if (s == null){
-            soalDao.save(soal);
+        if (soal.getStatusSoal() == StatusRecord.UTS) {
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED), StatusRecord.UTS);
+            if (s == null){
+                soalDao.save(soal);
+            }
+
+            if (s != null){
+                s.setStatus(StatusRecord.NONAKTIF);
+                soalDao.save(s);
+                soalDao.save(soal);
+            }
+        } else if (soal.getStatusSoal() == StatusRecord.UAS){
+            Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED), StatusRecord.UAS);
+            if (s == null){
+                soalDao.save(soal);
+            }
+
+            if (s != null){
+                s.setStatus(StatusRecord.NONAKTIF);
+                soalDao.save(s);
+                soalDao.save(soal);
+            }
         }
 
-        if (s != null){
-            s.setStatus(StatusRecord.NONAKTIF);
-            soalDao.save(s);
-            soalDao.save(soal);
-        }
+
 
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
@@ -901,6 +920,13 @@ public class StudiesActivityController {
 
         return "redirect:soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
 
+    }
+
+    @PostMapping("/studiesActivity/assesment/upload/soal/delete")
+    public String deleteSoal(@RequestParam Soal soal){
+        soal.setStatus(StatusRecord.HAPUS);
+        soalDao.save(soal);
+        return "redirect:soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
     }
 
 

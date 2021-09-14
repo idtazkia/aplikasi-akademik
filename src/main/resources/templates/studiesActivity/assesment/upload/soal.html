@@ -81,8 +81,11 @@
                             <br>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <div class="form-group">
+                                    <div class="form-group" th:if="${cek == null}">
                                         <button type="submit" class="btn btn-info">Upload</button>
+                                    </div>
+                                    <div class="form-group" th:if="${cek != null}">
+                                        <span class="badge badge-circle badge-danger">Data sudah ada, jika ingin upload ulang silahkan hapus data yang dibawah ini.</span>
                                     </div>
 
                                 </div>
@@ -105,6 +108,8 @@
                                         <th>Uploaded Date</th>
                                         <th>Description</th>
                                         <th>Status</th>
+                                        <th>Download File</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -118,6 +123,15 @@
                                             <a th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}" class="btn btn-success btn-sm">Approved</a>
                                             <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" class="btn btn-warning btn-sm">Waiting</a>
                                             <a th:if="${data.statusApprove.REJECTED} == ${data.statusApprove}" class="btn btn-danger btn-sm">Rejected</a>
+                                        </td>
+                                        <td>
+                                            <a th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}" th:href="@{/download/(jadwal = ${data.id}, status = ${status})}" class="btn btn-primary btn-sm">Download File</a>
+                                            <p th:if="${data.statusApprove.APPROVED} != ${data.statusApprove}">-</p>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{/studiesActivity/assesment/upload/soal/delete(soal = ${data.id})}" method="post">
+                                                <button type="submit" class="btn btn-danger btn-sm">Batal</button>
+                                            </form>
                                         </td>
                                     </tr>
                                     </tbody>
