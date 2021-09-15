@@ -7,6 +7,9 @@ import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlAttendanceLogMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -372,7 +375,8 @@ public class ElearningWebClientService {
 
                         PresensiDosen pd = new PresensiDosen();
 
-                        Jadwal jadwal = jadwalDao.findById(mdldos.getIdJadwal()).get();
+//                        Jadwal jadwal = jadwalDao.findById(mdldos.getIdJadwal()).get();
+                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
 
 
 
@@ -435,6 +439,21 @@ public class ElearningWebClientService {
 
                         }
 
+
+                        //remove html tag
+                        String strHTML = mdldos.getBeritaAcara();
+                        org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
+
+                        org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
+                        outputSettings.prettyPrint(false);
+                        jsoupDoc.outputSettings(outputSettings);
+                        jsoupDoc.select("br").before("\\n");
+                        jsoupDoc.select("p").before("\\n");
+
+                        String str = jsoupDoc.html().replaceAll("\\\\n", "");
+                        String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
+
+
                         SesiKuliah sesiKuliah = new SesiKuliah();
 
                         if (jadwal != null) {
@@ -442,7 +461,7 @@ public class ElearningWebClientService {
                             sesiKuliah.setPresensiDosen(pd);
                             sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
                             sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-                            sesiKuliah.setBeritaAcara(mdldos.getBeritaAcara());
+                            sesiKuliah.setBeritaAcara(strWithNewLines);
                             sesiKuliahDao.save(sesiKuliah);
                             System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
                         }
@@ -450,9 +469,11 @@ public class ElearningWebClientService {
                         List<MdlAttendanceLogMahasiswaDto> daftarPresensiMahasiswa = getAttendanceMahasiswa2(mdldos.getIdSession());
                         for (MdlAttendanceLogMahasiswaDto mdlmah : daftarPresensiMahasiswa) {
 
-                            Jadwal j = jadwalDao.findById(mdldos.getIdJadwal()).get();
+//                            Jadwal j = jadwalDao.findById(mdldos.getIdJadwal()).get();
+                            Jadwal j = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(), ta, StatusRecord.AKTIF);
 
 
+                        if (j != null) {
                             if (mdlmah.getMahasiswa() != null) {
                                 DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                                 LocalDateTime mahasiswaIn = LocalDateTime.parse(mdlmah.getWaktuMasuk(), formatter2);
@@ -463,7 +484,8 @@ public class ElearningWebClientService {
                                     Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
 
                                     if (k != null) {
-                                        Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlmah.getIdJadwal(), k, StatusRecord.AKTIF, ta);
+                                        Long jmlData = krsDetailDao.countKrsDetail2(mdlmah.getIdJadwal(), mahasiswa, ta, StatusRecord.AKTIF);
+//                                        Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlmah.getIdJadwal(), k, StatusRecord.AKTIF, ta);
                                         System.out.println("INPUT MAHASISWA PROGRESS");
                                         System.out.println(" JUMLAH KRS = " + jmlData);
                                         System.out.println(" NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
@@ -471,7 +493,7 @@ public class ElearningWebClientService {
 
                                         if (jmlData.compareTo(Long.valueOf(1)) > 0) {
                                             Object idKrsDetail = krsDetailDao.getKrsDetailId(j, mahasiswa);
-                                            List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, jadwalDao.findById(mdlmah.getIdJadwal()).get(), mahasiswa, idKrsDetail);
+                                            List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
                                             for (KrsDetail thekrsDetail : cariDouble) {
                                                 thekrsDetail.setStatus(StatusRecord.HAPUS);
                                                 krsDetailDao.save(thekrsDetail);
@@ -506,7 +528,8 @@ public class ElearningWebClientService {
                                         if (jmlData.compareTo(Long.valueOf(1)) == 0) {
                                             PresensiMahasiswa pm = new PresensiMahasiswa();
                                             pm.setMahasiswa(mahasiswa);
-                                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwalDao.findById(mdlmah.getIdJadwal()).get(), StatusRecord.AKTIF, k, ta);
+                                            KrsDetail krsDetail = krsDetailDao.getKrsDetail4(mdlmah.getIdJadwal(), mahasiswa, k, ta, StatusRecord.AKTIF);
+//                                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwalDao.findById(mdlmah.getIdJadwal()).get(), StatusRecord.AKTIF, k, ta);
                                             pm.setKrsDetail(krsDetail);
                                             pm.setSesiKuliah(sesiKuliah);
                                             pm.setWaktuMasuk(mahasiswaIn);
@@ -585,6 +608,7 @@ public class ElearningWebClientService {
                                 }
                             }
                         }
+                        }
 
                     }
 
@@ -597,8 +621,9 @@ public class ElearningWebClientService {
 
     }
 
+//    //manual1
 ////    @Scheduled(fixedDelay = 60*60)
-//    @Scheduled(cron = "0 33 08 * * ? ", zone = "Asia/Jakarta")
+//    @Scheduled(cron = "0 39 10 * * ? ", zone = "Asia/Jakarta")
 //    public void syncPresensiMoodle2(){
 //        // 1. Cari kelas yang jadwalnya sekarang
 //
@@ -631,7 +656,7 @@ public class ElearningWebClientService {
 //
 //                        PresensiDosen pd = new PresensiDosen();
 //
-//                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndStatus(mdldos.getIdJadwal(), StatusRecord.AKTIF);
+//                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
 //
 //
 //
@@ -671,6 +696,22 @@ public class ElearningWebClientService {
 //                            }
 //                        }
 //
+//
+//                        //remove html tag
+//                        String strHTML = mdldos.getBeritaAcara();
+//                        org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
+//
+//                        org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
+//                        outputSettings.prettyPrint(false);
+//                        jsoupDoc.outputSettings(outputSettings);
+//                        jsoupDoc.select("br").before("\\n");
+//                        jsoupDoc.select("p").before("\\n");
+//
+//                        String str = jsoupDoc.html().replaceAll("\\\\n", "");
+//                        String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
+//
+//
+//
 //                        SesiKuliah sesiKuliah = new SesiKuliah();
 //
 //                        if (jadwal != null) {
@@ -678,7 +719,7 @@ public class ElearningWebClientService {
 //                            sesiKuliah.setPresensiDosen(pd);
 //                            sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
 //                            sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-//                            sesiKuliah.setBeritaAcara(mdldos.getBeritaAcara());
+//                            sesiKuliah.setBeritaAcara(strWithNewLines);
 //                            sesiKuliahDao.save(sesiKuliah);
 //                            System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
 //                        }
@@ -687,144 +728,145 @@ public class ElearningWebClientService {
 //                        for (MdlAttendanceLogMahasiswaDto mdlmah : daftarPresensiMahasiswa) {
 //
 ////                            Jadwal j = jadwalDao.findById(mdldos.getIdJadwal()).get();
-//                            Jadwal j = jadwalDao.findByIdNumberElearningAndStatus(mdldos.getIdJadwal(), StatusRecord.AKTIF);
+//                            Jadwal j = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(), ta, StatusRecord.AKTIF);
 //
 //
-//                            if (mdlmah.getMahasiswa() != null) {
-//                                DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//                                LocalDateTime mahasiswaIn = LocalDateTime.parse(mdlmah.getWaktuMasuk(), formatter2);
-//                                LocalDateTime mahasiswaOut = LocalDateTime.parse(mdlmah.getWaktuSelesai(), formatter2);
-//                                User user = userDao.findByUsername(mdlmah.getMahasiswa());
-//                                if (user != null) {
-//                                    Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-//                                    Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
-//                                    System.out.println("krs ==" + k.getId());
+//                            if (j != null) {
+//                                if (mdlmah.getMahasiswa() != null) {
+//                                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//                                    LocalDateTime mahasiswaIn = LocalDateTime.parse(mdlmah.getWaktuMasuk(), formatter2);
+//                                    LocalDateTime mahasiswaOut = LocalDateTime.parse(mdlmah.getWaktuSelesai(), formatter2);
+//                                    User user = userDao.findByUsername(mdlmah.getMahasiswa());
+//                                    if (user != null) {
+//                                        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+//                                        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
 //
-//                                    if (k != null) {
-//                                        Long jmlData = krsDetailDao.countKrsDetail2(mdlmah.getIdJadwal(), mahasiswa,ta, StatusRecord.AKTIF);
-//                                        System.out.println("INPUT MAHASISWA PROGRESS");
-//                                        System.out.println(" JUMLAH KRS = " + jmlData);
-//                                        System.out.println(" NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
+//                                        if (k != null) {
+//                                            System.out.println("krs ==" + k.getId());
+//                                            Long jmlData = krsDetailDao.countKrsDetail2(mdlmah.getIdJadwal(), mahasiswa, ta, StatusRecord.AKTIF);
+//                                            System.out.println("INPUT MAHASISWA PROGRESS");
+//                                            System.out.println(" JUMLAH KRS = " + jmlData);
+//                                            System.out.println(" NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
 //
 //
-//                                        if (jmlData.compareTo(Long.valueOf(1)) > 0) {
-//                                            Object idKrsDetail = krsDetailDao.getKrsDetailId(j, mahasiswa);
-//                                            List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
-//                                            for (KrsDetail thekrsDetail : cariDouble) {
-//                                                thekrsDetail.setStatus(StatusRecord.HAPUS);
-//                                                krsDetailDao.save(thekrsDetail);
+//                                            if (jmlData.compareTo(Long.valueOf(1)) > 0) {
+//                                                Object idKrsDetail = krsDetailDao.getKrsDetailId(j, mahasiswa);
+//                                                List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
+//                                                for (KrsDetail thekrsDetail : cariDouble) {
+//                                                    thekrsDetail.setStatus(StatusRecord.HAPUS);
+//                                                    krsDetailDao.save(thekrsDetail);
+//                                                }
+//
+//                                                PresensiMahasiswa pm = new PresensiMahasiswa();
+//                                                pm.setMahasiswa(mahasiswa);
+//                                                pm.setKrsDetail(krsDetailDao.findById(idKrsDetail.toString()).get());
+//                                                pm.setSesiKuliah(sesiKuliah);
+//                                                pm.setWaktuMasuk(mahasiswaIn);
+//                                                pm.setWaktuKeluar(mahasiswaOut);
+//                                                if (mdlmah.getStatusPresensi().equals("Present")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.HADIR);
+//                                                }
+//                                                if (mdlmah.getStatusPresensi().equals("Late")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Absent")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.MANGKIR);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Excused")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.IZIN);
+//                                                }
+//                                                pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
+//                                                presensiMahasiswaDao.save(pm);
+//                                                System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
+//
 //                                            }
 //
-//                                            PresensiMahasiswa pm = new PresensiMahasiswa();
-//                                            pm.setMahasiswa(mahasiswa);
-//                                            pm.setKrsDetail(krsDetailDao.findById(idKrsDetail.toString()).get());
-//                                            pm.setSesiKuliah(sesiKuliah);
-//                                            pm.setWaktuMasuk(mahasiswaIn);
-//                                            pm.setWaktuKeluar(mahasiswaOut);
-//                                            if (mdlmah.getStatusPresensi().equals("Present")) {
-//                                                pm.setStatusPresensi(StatusPresensi.HADIR);
-//                                            }
-//                                            if (mdlmah.getStatusPresensi().equals("Late")) {
-//                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
-//                                            }
-//
-//                                            if (mdlmah.getStatusPresensi().equals("Absent")) {
-//                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
-//                                            }
-//
-//                                            if (mdlmah.getStatusPresensi().equals("Excused")) {
-//                                                pm.setStatusPresensi(StatusPresensi.IZIN);
-//                                            }
-//                                            pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-//                                            presensiMahasiswaDao.save(pm);
-//                                            System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
-//
-//                                        }
-//
-//                                        if (jmlData.compareTo(Long.valueOf(1)) == 0) {
+//                                            if (jmlData.compareTo(Long.valueOf(1)) == 0) {
 ////                                            Jadwal j2 = jadwalDao.findByIdNumberElearningAndStatus(mdlmah.getIdJadwal(), StatusRecord.AKTIF);
-//                                            PresensiMahasiswa pm = new PresensiMahasiswa();
-//                                            pm.setMahasiswa(mahasiswa);
-//                                            KrsDetail krsDetail = krsDetailDao.getKrsDetail4(mdlmah.getIdJadwal(), mahasiswa, k, ta, StatusRecord.AKTIF);
-//                                            System.out.println("THE KRS DETAILA ==" + krsDetail.toString());
-//                                            pm.setKrsDetail(krsDetail);
-//                                            pm.setSesiKuliah(sesiKuliah);
-//                                            pm.setWaktuMasuk(mahasiswaIn);
-//                                            pm.setWaktuKeluar(mahasiswaOut);
-//                                            if (mdlmah.getStatusPresensi().equals("Present")) {
-//                                                pm.setStatusPresensi(StatusPresensi.HADIR);
-//                                            }
-//                                            if (mdlmah.getStatusPresensi().equals("Late")) {
-//                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+//                                                PresensiMahasiswa pm = new PresensiMahasiswa();
+//                                                pm.setMahasiswa(mahasiswa);
+//                                                KrsDetail krsDetail = krsDetailDao.getKrsDetail4(mdlmah.getIdJadwal(), mahasiswa, k, ta, StatusRecord.AKTIF);
+////                                                System.out.println("THE KRS DETAILA ==" + krsDetail.toString());
+//                                                pm.setKrsDetail(krsDetail);
+//                                                pm.setSesiKuliah(sesiKuliah);
+//                                                pm.setWaktuMasuk(mahasiswaIn);
+//                                                pm.setWaktuKeluar(mahasiswaOut);
+//                                                if (mdlmah.getStatusPresensi().equals("Present")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.HADIR);
+//                                                }
+//                                                if (mdlmah.getStatusPresensi().equals("Late")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Absent")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.MANGKIR);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Excused")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.IZIN);
+//                                                }
+//                                                pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
+//                                                presensiMahasiswaDao.save(pm);
+//                                                System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
 //                                            }
 //
-//                                            if (mdlmah.getStatusPresensi().equals("Absent")) {
-//                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
-//                                            }
 //
-//                                            if (mdlmah.getStatusPresensi().equals("Excused")) {
-//                                                pm.setStatusPresensi(StatusPresensi.IZIN);
+//                                            if (jmlData.compareTo(Long.valueOf(1)) < 0) {
+//                                                KrsDetail kd = new KrsDetail();
+//                                                kd.setJadwal(j);
+//                                                kd.setKrs(k);
+//                                                kd.setMahasiswa(mahasiswa);
+//                                                kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+//                                                kd.setNilaiPresensi(BigDecimal.ZERO);
+//                                                kd.setNilaiTugas(BigDecimal.ZERO);
+//                                                kd.setNilaiUas(BigDecimal.ZERO);
+//                                                kd.setNilaiUts(BigDecimal.ZERO);
+//                                                kd.setFinalisasi("N");
+//                                                kd.setJumlahMangkir(0);
+//                                                kd.setJumlahKehadiran(0);
+//                                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+//                                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+//                                                kd.setJumlahTerlambat(0);
+//                                                kd.setJumlahIzin(0);
+//                                                kd.setJumlahSakit(0);
+//                                                kd.setStatusEdom(StatusRecord.UNDONE);
+//                                                kd.setTahunAkademik(ta);
+//                                                krsDetailDao.save(kd);
+//
+//                                                PresensiMahasiswa pm = new PresensiMahasiswa();
+//                                                pm.setMahasiswa(mahasiswa);
+//                                                pm.setKrsDetail(kd);
+//                                                pm.setSesiKuliah(sesiKuliah);
+//                                                pm.setWaktuMasuk(mahasiswaIn);
+//                                                pm.setWaktuKeluar(mahasiswaOut);
+//                                                if (mdlmah.getStatusPresensi().equals("Present")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.HADIR);
+//                                                }
+//                                                if (mdlmah.getStatusPresensi().equals("Late")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Absent")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.MANGKIR);
+//                                                }
+//
+//                                                if (mdlmah.getStatusPresensi().equals("Excused")) {
+//                                                    pm.setStatusPresensi(StatusPresensi.IZIN);
+//                                                }
+//                                                pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
+//                                                presensiMahasiswaDao.save(pm);
 //                                            }
-//                                            pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-//                                            presensiMahasiswaDao.save(pm);
-//                                            System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
+//                                        } else {
+//                                            System.out.printf("Belum bayaran  > ");
 //                                        }
 //
 //
-////                                        if (jmlData.compareTo(Long.valueOf(1)) < 0) {
-////                                            KrsDetail kd = new KrsDetail();
-////                                            kd.setJadwal(j);
-////                                            kd.setKrs(k);
-////                                            kd.setMahasiswa(mahasiswa);
-////                                            kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
-////                                            kd.setNilaiPresensi(BigDecimal.ZERO);
-////                                            kd.setNilaiTugas(BigDecimal.ZERO);
-////                                            kd.setNilaiUas(BigDecimal.ZERO);
-////                                            kd.setNilaiUts(BigDecimal.ZERO);
-////                                            kd.setFinalisasi("N");
-////                                            kd.setJumlahMangkir(0);
-////                                            kd.setJumlahKehadiran(0);
-////                                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-////                                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-////                                            kd.setJumlahTerlambat(0);
-////                                            kd.setJumlahIzin(0);
-////                                            kd.setJumlahSakit(0);
-////                                            kd.setStatusEdom(StatusRecord.UNDONE);
-////                                            kd.setTahunAkademik(ta);
-////                                            krsDetailDao.save(kd);
-////
-////                                            PresensiMahasiswa pm = new PresensiMahasiswa();
-////                                            pm.setMahasiswa(mahasiswa);
-////                                            pm.setKrsDetail(kd);
-////                                            pm.setSesiKuliah(sesiKuliah);
-////                                            pm.setWaktuMasuk(mahasiswaIn);
-////                                            pm.setWaktuKeluar(mahasiswaOut);
-////                                            if (mdlmah.getStatusPresensi().equals("Present")) {
-////                                                pm.setStatusPresensi(StatusPresensi.HADIR);
-////                                            }
-////                                            if (mdlmah.getStatusPresensi().equals("Late")) {
-////                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
-////                                            }
-////
-////                                            if (mdlmah.getStatusPresensi().equals("Absent")) {
-////                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
-////                                            }
-////
-////                                            if (mdlmah.getStatusPresensi().equals("Excused")) {
-////                                                pm.setStatusPresensi(StatusPresensi.IZIN);
-////                                            }
-////                                            pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-////                                            presensiMahasiswaDao.save(pm);
-////                                        }
-//                                    } else {
-//                                        System.out.printf("Belum bayaran  > ");
 //                                    }
-//
-//
 //                                }
 //                            }
 //                        }
-//
 //                    }
 //
 //

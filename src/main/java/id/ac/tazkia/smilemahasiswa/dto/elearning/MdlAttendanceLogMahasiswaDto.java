@@ -15,4 +15,5 @@ public class MdlAttendanceLogMahasiswaDto {
     private String statusPresensi;
     private String status;
     private String mahasiswa;
+    private String nim;
 }
