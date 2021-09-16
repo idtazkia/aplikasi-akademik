@@ -250,7 +250,7 @@ public class FinanceController {
 
         if (status.equals("SEMPRO")) {
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(m, StatusRecord.SEMPRO, true, tahunAkademik);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SEMPRO, true);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setEnable(true);
@@ -262,7 +262,7 @@ public class FinanceController {
             }
         }else{
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(m, StatusRecord.SKRIPSI, true, tahunAkademik);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SKRIPSI, true);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setMahasiswa(m);
