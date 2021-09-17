@@ -124,50 +124,156 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <table class="table table-bordered table-hover">
-                                                                <thead class="thead-light">
-                                                                <tr class="table-primary">
-                                                                    <th><center><b>#</b></center></th>
-                                                                    <th><center><b>Ketua Penguji</b></center></th>
-                                                                    <th><center><b>Penguji</b></center></th>
-                                                                    <th><center><b>Pembimbing</b></center></th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Pembahasan</b></td>
-                                                                    <td align="center" th:text="${data.ka}">90.00</td>
-                                                                    <td align="center" th:text="${data.ua}">90.00</td>
-                                                                    <td align="center" th:text="${data.pa}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Penguasaan Materi</b></td>
-                                                                    <td align="center" th:text="${data.kb}">90.00</td>
-                                                                    <td align="center" th:text="${data.ub}">90.00</td>
-                                                                    <td align="center" th:text="${data.pb}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Teknik Penulisan</b></td>
-                                                                    <td align="center" th:text="${data.kc}">90.00</td>
-                                                                    <td align="center" th:text="${data.uc}">90.00</td>
-                                                                    <td align="center" th:text="${data.pc}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Presentasi dan Pemaparan</b></td>
-                                                                    <td align="center" th:text="${data.kd}">90.00</td>
-                                                                    <td align="center" th:text="${data.ud}">90.00</td>
-                                                                    <td align="center" th:text="${data.pd}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Total</b></td>
-                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
-                                                                    <td align="center">
-                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
-                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                            <div class="nav-wrapper">
+                                                                <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-calendar-grid-58 mr-2"></i>Detail Sidang</a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-send mr-2"></i>Nilai Sidang</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+
+                                                            <div class="card shadow">
+                                                                <div class="card-body">
+                                                                    <div class="tab-content" id="myTabContent">
+                                                                        <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                                                            <table class="table table-bordered table-hover">
+<!--                                                                                <thead class="thead-light">-->
+<!--                                                                                <tr class="table-primary">-->
+<!--                                                                                    <th><center><b>#</b></center></th>-->
+<!--                                                                                    <th><center><b>Ketua Penguji</b></center></th>-->
+<!--                                                                                    <th><center><b>Penguji</b></center></th>-->
+<!--                                                                                    <th><center><b>Pembimbing</b></center></th>-->
+<!--                                                                                </tr>-->
+<!--                                                                                </thead>-->
+                                                                                <tbody>
+                                                                                <tr>
+                                                                                    <td align="center"><b>Ketua Penguji</b></td>
+                                                                                    <td align="center"><b>:</b></td>
+                                                                                    <td>
+                                                                                        <h3>
+                                                                                            <center>
+                                                                                                <span class="badge badge-pill badge-success"><b th:text="${data.ketuaPenguji.karyawan.namaKaryawan}"></b></span>
+                                                                                            </center>
+                                                                                        </h3>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td align="center"><b>Dosen Penguji</b></td>
+                                                                                    <td align="center"><b>:</b></td>
+                                                                                    <td>
+                                                                                        <h3>
+                                                                                            <center>
+                                                                                                <span class="badge badge-pill badge-success"><b th:text="${data.dosenPenguji.karyawan.namaKaryawan}"></b></span>
+                                                                                            </center>
+                                                                                        </h3>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td align="center"><b>Pembimbing</b></td>
+                                                                                    <td align="center"><b>:</b></td>
+                                                                                    <td>
+                                                                                        <h3>
+                                                                                            <center>
+                                                                                                <span class="badge badge-pill badge-success"><b th:text="${data.pembimbing.karyawan.namaKaryawan}"></b></span>
+                                                                                            </center>
+                                                                                        </h3>
+                                                                                    </td>
+                                                                                </tr>
+<!--                                                                                <tr>-->
+<!--                                                                                    <td align="center"><b>Tanggal dan Jam Sidang</b></td>-->
+<!--                                                                                    <td align="center"><b>:</b></td>-->
+<!--                                                                                    <td>-->
+<!--                                                                                        <h3>-->
+<!--                                                                                            <center>-->
+<!--                                                                                                <center>-->
+<!--                                                                                                    <span class="badge badge-pill badge-warning"><b>-->
+<!--                                                                                                        <i class="far fa-calendar-alt"-->
+<!--                                                                                                           th:text="${' ' + #temporals.day(data.tanggalUjian) + ' - ' + #temporals.monthNameShort(data.tanggalUjian) + ' - ' + #temporals.year(data.tanggalUjian) +-->
+<!--                                                                                                           data.jamMulai + ' - ' + data.jamSelesai}">-->
+<!--                                                                                                        </i>-->
+<!--                                                                                                    </b>-->
+<!--                                                                                                    </span>-->
+<!--                                                                                                </center>-->
+<!--                                                                                            </center>-->
+<!--                                                                                        </h3>-->
+<!--                                                                                    </td>-->
+<!--                                                                                </tr>-->
+                                                                                <tr>
+                                                                                    <td colspan="2">
+                                                                                        <h2>
+                                                                                            <center>
+                                                                                                <span class="badge badge-pill badge-warning"><b><i class="far fa-calendar-alt" th:text="${' ' + #temporals.day(data.tanggalUjian) + ' - ' + #temporals.monthNameShort(data.tanggalUjian) + ' - ' + #temporals.year(data.tanggalUjian) + ' / ' +
+                                                                                                           data.jamMulai + ' - ' + data.jamSelesai}">
+                                                                                                    </i>
+                                                                                                    </b>
+                                                                                                </span>
+                                                                                            </center>
+                                                                                        </h2>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <h2>
+                                                                                            <center>
+                                                                                                <span class="badge badge-pill badge-warning"><b><i class="fas fa-building" th:text="${' ' + data.ruangan.namaRuangan}"></i></b></span>
+                                                                                            </center>
+                                                                                        </h2>
+                                                                                    </td>
+
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                                                            <table class="table table-bordered table-hover">
+                                                                                <thead class="thead-light">
+                                                                                <tr class="table-primary">
+                                                                                    <th><center><b>#</b></center></th>
+                                                                                    <th><center><b>Ketua Penguji</b></center></th>
+                                                                                    <th><center><b>Penguji</b></center></th>
+                                                                                    <th><center><b>Pembimbing</b></center></th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                <tr class="table-primary">
+                                                                                    <td align="center"><b>Pembahasan</b></td>
+                                                                                    <td align="center" th:text="${data.ka}">90.00</td>
+                                                                                    <td align="center" th:text="${data.ua}">90.00</td>
+                                                                                    <td align="center" th:text="${data.pa}">90.00</td>
+                                                                                </tr>
+                                                                                <tr class="table-primary">
+                                                                                    <td align="center"><b>Penguasaan Materi</b></td>
+                                                                                    <td align="center" th:text="${data.kb}">90.00</td>
+                                                                                    <td align="center" th:text="${data.ub}">90.00</td>
+                                                                                    <td align="center" th:text="${data.pb}">90.00</td>
+                                                                                </tr>
+                                                                                <tr class="table-primary">
+                                                                                    <td align="center"><b>Teknik Penulisan</b></td>
+                                                                                    <td align="center" th:text="${data.kc}">90.00</td>
+                                                                                    <td align="center" th:text="${data.uc}">90.00</td>
+                                                                                    <td align="center" th:text="${data.pc}">90.00</td>
+                                                                                </tr>
+                                                                                <tr class="table-primary">
+                                                                                    <td align="center"><b>Presentasi dan Pemaparan</b></td>
+                                                                                    <td align="center" th:text="${data.kd}">90.00</td>
+                                                                                    <td align="center" th:text="${data.ud}">90.00</td>
+                                                                                    <td align="center" th:text="${data.pd}">90.00</td>
+                                                                                </tr>
+                                                                                <tr class="table-primary">
+                                                                                    <td align="center"><b>Total</b></td>
+                                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
+                                                                                    <td align="center">
+                                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
+                                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>

@@ -265,6 +265,7 @@ public class TagihanService {
             }
         }
 
+        tagihanDao.save(tagihan);
         pembayaranDao.save(pembayaran);
         log.debug("Pembayaran untuk tagihan {} berhasil disimpan", pt.getNomorTagihan());
 

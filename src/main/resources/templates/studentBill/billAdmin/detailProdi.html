@@ -44,8 +44,15 @@
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-                            <div class="col">
+                            <div class="col-md-2">
                                 <h3 class="mb-0">Prodi : <div th:text="${prodi.namaProdi}"></div></h3>
+                            </div>
+                            <div class="col pull-right">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12 col-sm-12">
+                                        <button type="button" class="btn btn-success btn-sm"><a target="_blank" class="text-white pull-left" th:href="@{/studentBill/billReport/mahasiswaProdi(prodi=${prodi.id}, tahun=${tahun.id})}"><i class="fas fa-download"> </i> Download</a></button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col text-right">
                                 <a th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
@@ -60,7 +67,7 @@
                                         <table id="data-table-basic" class="table align-items-center table-flush table-striped">
                                             <thead class="thead-light">
                                             <tr>
-                                                <th class="text-center">#</th>
+                                                <th >#</th>
                                                 <th>Angkatan</th>
                                                 <th>Nim</th>
                                                 <th>Nama</th>
@@ -82,11 +89,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 col-xs-12 col-sm-12">
-                                    <button type="button" class="btn btn-success"><a target="_blank" class="text-white pull-left" th:href="@{/studentBill/billReport/mahasiswaProdi(prodi=${prodi.id}, tahun=${tahun.id})}">Download</a></button>
                                 </div>
                             </div>
                         </div>
