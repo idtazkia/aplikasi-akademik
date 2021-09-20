@@ -190,7 +190,7 @@ public class ReportController {
         if (tahunAkademik != null) {
             model.addAttribute("selectedAngkatan", angkatan);
             model.addAttribute("selectedTahun", tahunAkademik);
-            model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan));
+            model.addAttribute("ipk", krsDetailDao.cariIpk(tahunAkademik,angkatan, tahunAkademik.getKodeTahunAkademik()));
         }
     }
 
@@ -198,7 +198,7 @@ public class ReportController {
     public void listPerMatkul(@RequestParam(required = false) TahunAkademik tahunAkademik,
                               @RequestParam(required = false) String angkatan, HttpServletResponse response) throws IOException {
 
-        List<Object[]> listDownload = krsDetailDao.cariIpk(tahunAkademik,angkatan);
+        List<Object[]> listDownload = krsDetailDao.cariIpk(tahunAkademik,angkatan, tahunAkademik.getKodeTahunAkademik());
 
         String[] columns = {"No", "Nim", "Nama", "Prodi", "Tahun Akademik", "SKS Semester", "SKS Total", "IP Semester", "IPK"};
 

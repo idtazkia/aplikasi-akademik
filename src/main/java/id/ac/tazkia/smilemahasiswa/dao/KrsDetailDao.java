@@ -264,8 +264,26 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 AND b.semester =?2 AND bobot IS NOT NULL ORDER BY b.semester", nativeQuery = true)
     List<Object[]> transkripSemesterWithoutWaiting(Mahasiswa mahasiswa, String semester);
 
-    @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,'A' AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,coalesce(b.sks_total,0) as sks_total,coalesce(b.ipk ,0) as ipk FROM (SELECT a.* FROM krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id WHERE a.STATUS='AKTIF' AND a.id_tahun_akademik=?1 and b.angkatan=?2 )a  LEFT JOIN (SELECT id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id WHERE a.status='AKTIF' AND b.jumlah_sks > 0 AND a.nilai_akhir IS NOT NULL AND a.id_mahasiswa IS NOT NULL GROUP BY a.id_mahasiswa)b ON a.id_mahasiswa=b.id_mahasiswa INNER JOIN mahasiswa AS c ON a.id_mahasiswa = c.id INNER JOIN prodi AS d ON c.id_prodi=d.id LEFT JOIN (SELECT id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b  ON a.id_matakuliah_kurikulum=b.id inner join mahasiswa as c on a.id_mahasiswa=c.id WHERE a.status='AKTIF' AND id_tahun_akademik=?1 AND b.jumlah_sks > 0 AND a.id_mahasiswa IS NOT NULL and c.angkatan=?2 GROUP BY a.id_mahasiswa)e ON a.id_mahasiswa=e.id_mahasiswa ORDER BY d.kode_prodi, c.nim", nativeQuery = true)
-    List<Object[]> cariIpk(TahunAkademik tahunAkademik,String angkatan);
+    @Query(value = "SELECT c.nim,c.nama,d.nama_prodi,a.id_tahun_akademik,'A' AS STATUS,coalesce(e.sks_total,0) AS sks_semester,coalesce(e.ipk,0) AS ip_semester,\n" +
+            "coalesce(b.sks_total,0) as sks_total,coalesce(b.ipk ,0) as ipk \n" +
+            "FROM (SELECT a.* FROM krs as a inner join mahasiswa as b on a.id_mahasiswa=b.id \n" +
+            "inner join tahun_akademik as c on a.id_tahun_akademik = c.id\n" +
+            "WHERE a.STATUS='AKTIF' AND a.id_tahun_akademik=?1 and b.angkatan=?2 )a \n" +
+            "LEFT JOIN \n" +
+            "(SELECT a.id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk \n" +
+            "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b ON a.id_matakuliah_kurikulum=b.id \n" +
+            "inner join krs as c on a.id_krs = c.id inner join tahun_akademik as d on c.id_tahun_akademik = d.id\n" +
+            "WHERE a.status='AKTIF' AND b.jumlah_sks > 0 AND a.nilai_akhir IS NOT NULL AND a.id_mahasiswa IS NOT NULL and d.kode_tahun_akademik <= ?3\n" +
+            "GROUP BY a.id_mahasiswa)b \n" +
+            "ON a.id_mahasiswa=b.id_mahasiswa \n" +
+            "INNER JOIN mahasiswa AS c ON a.id_mahasiswa = c.id \n" +
+            "INNER JOIN prodi AS d ON c.id_prodi=d.id \n" +
+            "LEFT JOIN (SELECT a.id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk \n" +
+            "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b  ON a.id_matakuliah_kurikulum=b.id inner join mahasiswa as c on a.id_mahasiswa=c.id \n" +
+            "inner join krs as d on a.id_krs = d.id inner join tahun_akademik as e on d.id_tahun_akademik = e.id\n" +
+            "WHERE a.status='AKTIF' AND d.id_tahun_akademik=?1 AND b.jumlah_sks > 0 AND a.id_mahasiswa IS NOT NULL and c.angkatan=?3\n" +
+            "GROUP BY a.id_mahasiswa)e ON a.id_mahasiswa=e.id_mahasiswa ORDER BY d.kode_prodi, c.nim", nativeQuery = true)
+    List<Object[]> cariIpk(TahunAkademik tahunAkademik,String angkatan, String kodeTahunAkademik);
 
     @Query(value = "SELECT sum(b.jumlah_sks) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     Long totalSks(Mahasiswa mahasiswa);
