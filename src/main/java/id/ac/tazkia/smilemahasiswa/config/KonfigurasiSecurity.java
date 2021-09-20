@@ -93,7 +93,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/report/recapitulation/lecturer").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1", "VIEW_AKADEMIK2","VIEW_DOSEN_AKADEMIK")
                 .antMatchers("/report/recapitulation/bkd").hasAnyAuthority("VIEW_DOSEN", "VIEW_WAREK2", "VIEW_KPS","VIEW_DOSEN_AKADEMIK")
                 .antMatchers("/report/recapitulation/edom").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_KPS", "VIEW_DOSEN_AKADEMIK")
-                .antMatchers("/report/recapitulation/ipk").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF")
+                .antMatchers("/report/recapitulation/ipk").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_DOSEN_AKADEMIK", "VIEW_KPS")
                 .antMatchers("/report/historymahasiswa").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_KPS")
                 .antMatchers("/report/cuti").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_KPS")
                 .anyRequest().authenticated()
