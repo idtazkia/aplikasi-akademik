@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Sidang</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -124,59 +124,7 @@
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert alert-danger alert-with-icon" th:id="${data.id+'-alertSave'}" style="display: none">
-                                                                <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                                                                    <i class="fas fa-warning"></i>
-                                                                </button>
-                                                                <span data-notify="icon" class="tim-icons icon-trophy"></span>
-                                                                <span id="textAlert"><b> Maaf! - </b>Nilai Belum Lengkap.</span>
-                                                            </div>
-                                                            <table class="table table-bordered table-hover">
-                                                                <thead class="thead-light">
-                                                                <tr class="table-primary">
-                                                                    <th><center><b>#</b></center></th>
-                                                                    <th><center><b>Ketua Penguji</b></center></th>
-                                                                    <th><center><b>Penguji</b></center></th>
-                                                                    <th><center><b>Pembimbing</b></center></th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Pembahasan</b></td>
-                                                                    <td align="center" th:text="${data.ka}">90.00</td>
-                                                                    <td align="center" th:text="${data.ua}">90.00</td>
-                                                                    <td align="center" th:text="${data.pa}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Penguasaan Materi</b></td>
-                                                                    <td align="center" th:text="${data.kb}">90.00</td>
-                                                                    <td align="center" th:text="${data.ub}">90.00</td>
-                                                                    <td align="center" th:text="${data.pb}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Teknik Penulisan</b></td>
-                                                                    <td align="center" th:text="${data.kc}">90.00</td>
-                                                                    <td align="center" th:text="${data.uc}">90.00</td>
-                                                                    <td align="center" th:text="${data.pc}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Presentasi dan Pemaparan</b></td>
-                                                                    <td align="center" th:text="${data.kd}">90.00</td>
-                                                                    <td align="center" th:text="${data.ud}">90.00</td>
-                                                                    <td align="center" th:text="${data.pd}">90.00</td>
-                                                                </tr>
-                                                                <tr class="table-primary">
-                                                                    <td align="center"><b>Total</b></td>
-                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
-                                                                    <td align="center">
-                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
-                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                        
                                                             <div class="modal-footer">
                                                                 <input type="hidden" id="sidangId" th:value="${data.id}">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
