@@ -104,6 +104,11 @@ public class SidangController {
         return prodiDao.findByStatus(StatusRecord.AKTIF);
     }
 
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
+    }
+
     @ModelAttribute("tahun")
     public Iterable<TahunAkademik> tahun() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));

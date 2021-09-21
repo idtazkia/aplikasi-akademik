@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.graduation.RekapTugasAkhir;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,5 +64,21 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
     List<Object> cekSeminar(Mahasiswa mahasiswa);
 
     Seminar findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove approve,String publish,BigDecimal nilai,Mahasiswa mahasiswa);
+
+    @Query(value = "select m.nim,m.nama,s.tanggal_ujian as tanggalSempro,coalesce (kk.nama_karyawan,'-') as ketuaSempro,coalesce (pk.nama_karyawan,'-') as pembimbingSempro ,coalesce (dk.nama_karyawan,'-') as pengujiSempro,coalesce (s.jam_mulai,'-') as jamMulai,coalesce (s.nilai,'0') as Nilai,\n" +
+            "coalesce(ss.sidangs,'Belum Daftar') as statusSidang,ss.jam_mulai as mulaiSidang,ss.jam_selesai as selesaiSidang,ss.ketua as ketuaSidang,ss.pembimbing as pembimbingSidang,ss.penguji as pengujiSidang,coalesce(ss.nilai,0) as nilaiSidang, ss.tanggalSidang\n" +
+            "from seminar as s inner join note as n on s.id_note = n.id inner join mahasiswa as m on n.id_mahasiswa = m.id \n" +
+            "left join dosen as ket on s.ketua_penguji = ket.id left join karyawan as kk on ket.id_karyawan =kk.id \n" +
+            "left join dosen as pem on n.id_dosen1 = pem.id left join karyawan as pk on pem.id_karyawan =pk.id\n" +
+            "left join dosen as peng on s.dosen_penguji = peng.id left join karyawan as dk on peng.id_karyawan = dk.id\n" +
+            " left join \n" +
+            " (select sid.id_seminar,sid.id as sidangs, sid.nilai as nilai,kk.nama_karyawan as ketua,pk.nama_karyawan as pembimbing ,dk.nama_karyawan as penguji,sid.jam_mulai,sid.jam_selesai,sid.tanggal_ujian as tanggalSidang\n" +
+            " from sidang as sid inner join seminar as se on sid.id_seminar = se.id\n" +
+            " left join dosen as ket on sid.ketua_penguji = ket.id left join karyawan as kk on ket.id_karyawan =kk.id \n" +
+            "left join dosen as pem on sid.pembimbing = pem.id left join karyawan as pk on pem.id_karyawan =pk.id\n" +
+            "left join dosen as peng on sid.dosen_penguji = peng.id left join karyawan as dk on peng.id_karyawan = dk.id\n" +
+            " where sid.akademik in ('APPROVED', 'WAITING') and sid.status_sidang in ('APPROVED', 'WAITING')) ss on ss.id_seminar = s.id\n" +
+            " where s.status in ('APPROVED', 'WAITING') and m.id_prodi = ?1 and m.angkatan = ?2", nativeQuery = true)
+    List<RekapTugasAkhir> rekapTugasAkhir(Prodi prodi, String angkatan);
 
 }
