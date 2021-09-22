@@ -281,7 +281,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "LEFT JOIN (SELECT a.id_mahasiswa,ROUND(SUM(b.jumlah_sks),2) AS sks_total,ROUND(SUM(COALESCE(a.bobot,0)*b.jumlah_sks)/SUM(b.jumlah_sks),2)AS ipk \n" +
             "FROM krs_detail AS a INNER JOIN matakuliah_kurikulum AS b  ON a.id_matakuliah_kurikulum=b.id inner join mahasiswa as c on a.id_mahasiswa=c.id \n" +
             "inner join krs as d on a.id_krs = d.id inner join tahun_akademik as e on d.id_tahun_akademik = e.id\n" +
-            "WHERE a.status='AKTIF' AND d.id_tahun_akademik=?1 AND b.jumlah_sks > 0 AND a.id_mahasiswa IS NOT NULL and c.angkatan=?3\n" +
+            "WHERE a.status='AKTIF' AND d.id_tahun_akademik=?1 AND b.jumlah_sks > 0 AND a.id_mahasiswa IS NOT NULL and c.angkatan=?2\n" +
             "GROUP BY a.id_mahasiswa)e ON a.id_mahasiswa=e.id_mahasiswa ORDER BY d.kode_prodi, c.nim", nativeQuery = true)
     List<Object[]> cariIpk(TahunAkademik tahunAkademik,String angkatan, String kodeTahunAkademik);
 
