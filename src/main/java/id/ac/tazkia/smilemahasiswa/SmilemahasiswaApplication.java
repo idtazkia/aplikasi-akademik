@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa;
 
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.utility.EntityAuditorAware;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.boot.SpringApplication;
@@ -35,6 +37,11 @@ public class SmilemahasiswaApplication {
 	@Bean
 	public AuditorAware<String> auditorProvider() {
 		return new EntityAuditorAware();
+	}
+
+	@Bean
+	public MustacheFactory mustacheFactory(){
+		return new DefaultMustacheFactory();
 	}
 
 	@PostConstruct
