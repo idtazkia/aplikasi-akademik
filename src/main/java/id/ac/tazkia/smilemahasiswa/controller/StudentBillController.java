@@ -2259,9 +2259,9 @@ public class StudentBillController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdateDesc(Arrays.asList(StatusRecord.HAPUS), search, search, search, page));
         }else{
-            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByTimeUpdate(Arrays.asList(StatusRecord.HAPUS), page));
+            model.addAttribute("listRefund", refundSpDao.findByStatusNotInOrderByTimeUpdateDesc(Arrays.asList(StatusRecord.HAPUS), page));
         }
 
     }

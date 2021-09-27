@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface RefundSpDao extends PagingAndSortingRepository<RefundSp, String> {
 
-    Page<RefundSp> findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdate(List<StatusRecord> asList, String bank, String nim, String mahasiswa, Pageable page);
+    Page<RefundSp> findByStatusNotInAndNamaBankContainingIgnoreCaseOrMahasiswaNimContainingIgnoreCaseOrMahasiswaNamaContainingIgnoreCaseOrderByTimeUpdateDesc(List<StatusRecord> asList, String bank, String nim, String mahasiswa, Pageable page);
 
-    Page<RefundSp> findByStatusNotInOrderByTimeUpdate(List<StatusRecord> asList, Pageable page);
+    Page<RefundSp> findByStatusNotInOrderByTimeUpdateDesc(List<StatusRecord> asList, Pageable page);
 
     RefundSp findByPraKrsSpAndMahasiswaAndStatus(PraKrsSp praKrsSp, Mahasiswa mahasiswa, StatusRecord statusRecord);
 

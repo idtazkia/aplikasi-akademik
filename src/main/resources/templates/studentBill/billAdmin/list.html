@@ -145,8 +145,8 @@
                                                                 <tr>
                                                                     <td class="text-right">Status Semester</td>
                                                                     <td>:</td>
-                                                                    <td th:if="${status == null}">Nonaktif</td>
-                                                                    <td th:if="${status}">Aktif</td>
+                                                                    <td th:if="${status == null}">Nonaktif (<text th:text="${mhs.statusAktif}"></text>)</td>
+                                                                    <td th:if="${status}">Aktif (<text th:text="${mhs.statusAktif}"></text>)</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
