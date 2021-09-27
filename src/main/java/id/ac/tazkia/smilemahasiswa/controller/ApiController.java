@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.machine.*;
+import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikDto;
+import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.NotifikasiService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -473,6 +476,46 @@ public class ApiController {
         }
 
         return mahasiswas;
+
+    }
+
+
+
+    //tahunAkademik
+    @GetMapping("/api/getlistTahunAkademik")
+    @ResponseBody
+    public List<TahunAkademikDto> attendanceLogDosen(){
+
+        List<TahunAkademikIntDto> alog = tahunAkademikDao.apiTahunAkademik();
+        List<TahunAkademikDto> adto = new ArrayList<>();
+
+        for (TahunAkademikIntDto TahunAkademikIntDto : alog){
+            TahunAkademikDto TahunAkademikDto = new TahunAkademikDto();
+
+            TahunAkademikDto.setIdTahunAkademik(TahunAkademikIntDto.getIdTahunAkademik());
+            TahunAkademikDto.setKodeTahunAkademik(TahunAkademikIntDto.getKodeTahunAkademik());
+            TahunAkademikDto.setNamaTahunAkademik(TahunAkademikIntDto.getNamaTahunAkademik());
+            TahunAkademikDto.setTanggalMulai(TahunAkademikIntDto.getTanggalMulai());
+            TahunAkademikDto.setTanggalSelesai(TahunAkademikIntDto.getTanggalSelesai());
+            TahunAkademikDto.setTanggalMulaiKrs(TahunAkademikIntDto.getTanggalMulaiKrs());
+            TahunAkademikDto.setTanggalSelesaiKrs(TahunAkademikIntDto.getTanggalSelesaiKrs());
+            TahunAkademikDto.setTanggalMulaiKuliah(TahunAkademikIntDto.getTanggalMulaiKuliah());
+            TahunAkademikDto.setTanggalSelesaiKuliah(TahunAkademikIntDto.getTanggalSelesaiKuliah());
+            TahunAkademikDto.setTanggalMulaiUts(TahunAkademikIntDto.getTanggalMulaiUts());
+            TahunAkademikDto.setTanggalSelesaiUts(TahunAkademikIntDto.getTanggalSelesaiUts());
+            TahunAkademikDto.setTanggalMulaiUas(TahunAkademikIntDto.getTanggalMulaiUas());
+            TahunAkademikDto.setTanggalSelesaiUas(TahunAkademikIntDto.getTanggalSelesaiUas());
+            TahunAkademikDto.setTanggalMulaiNilai(TahunAkademikIntDto.getTanggalMulaiNilai());
+            TahunAkademikDto.setTanggalSelesaiNilai(TahunAkademikIntDto.getTanggalSelesaiNilai());
+            TahunAkademikDto.setTahun(TahunAkademikIntDto.getTahun());
+            TahunAkademikDto.setStatus(TahunAkademikIntDto.getStatus());
+            TahunAkademikDto.setJenis(TahunAkademikIntDto.getJenis());
+
+
+            adto.add(TahunAkademikDto);
+        }
+
+        return adto;
 
     }
 

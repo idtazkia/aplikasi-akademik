@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.TahunAkademik;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,16 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
     Page<TahunAkademik> cariTahunAkademik(@Param("status") StatusRecord hapus, Pageable page);
 
     List<TahunAkademik> findByStatusNotInOrderByNamaTahunAkademikDesc(List<StatusRecord> asList);
+
+
+    @Query(value = "select id as idTahunAkademik, kode_tahun_akademik as kodeTahunAkademik, nama_tahun_akademik as namaTahunAkademik, tanggal_mulai as tanggalMulai, tanggal_selesai as tanggalSelesai,\n" +
+            "tanggal_mulai_krs as tanggalMulaiKrs, tanggal_selesai_krs as tanggalSelesaiKrs, tanggal_mulai_kuliah as tanggalMulaiKuliah, tanggal_selesai_kuliah as tanggalSelesaiKuliah,\n" +
+            "tanggal_mulai_uts as tanggalMulaiUts, tanggal_selesai_uts as tanggalSelesaiUts, tanggal_mulai_uas as tanggalMulaiUas, tanggal_selesai_uas as tanggalSelesaiUas,\n" +
+            "tanggal_mulai_nilai as tanggalMulaiNilai, tanggal_selesai_nilai as tanggalSelesaiNilai, tahun as tahun, status as status, jenis as jenis\n" +
+            "from tahun_akademik \n" +
+            "order by kode_tahun_akademik desc", nativeQuery = true)
+    List<TahunAkademikIntDto> apiTahunAkademik();
+
 
 
 }
