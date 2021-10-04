@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
@@ -16,6 +17,7 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,20 +54,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller @Slf4j
 public class StudiesActivityController {
@@ -86,6 +84,9 @@ public class StudiesActivityController {
 
     @Autowired
     private JadwalDao jadwalDao;
+
+    @Autowired
+    private MustacheFactory mustacheFactory;
 
     @Autowired
     private SesiKuliahDao sesiKuliahDao;
@@ -160,6 +161,9 @@ public class StudiesActivityController {
 
     @Autowired
     private EdomQuestionDao edomQuestionDao;
+
+    @Autowired
+    private MailService mailService;
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -815,8 +819,8 @@ public class StudiesActivityController {
             Karyawan karyawan = karyawanDao.findByIdUser(user);
             Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UTS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
-            Soal soal1 = soalDao.findByJadwalAndStatusSoalAndStatus(jadwal,StatusRecord.UTS, StatusRecord.AKTIF);
-            model.addAttribute("cek", soal1);
+            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal,StatusRecord.UTS, StatusRecord.AKTIF,Arrays.asList(StatusApprove.WAITING,StatusApprove.APPROVED));
+            model.addAttribute("cek", validasi);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
@@ -830,8 +834,8 @@ public class StudiesActivityController {
             Karyawan karyawan = karyawanDao.findByIdUser(user);
             Soal s = soalDao.findByJadwalAndStatusAndStatusApproveAndStatusSoal(jadwal, StatusRecord.AKTIF, StatusApprove.APPROVED,StatusRecord.UAS);
             Dosen dosen = dosenDao.findByKaryawan(karyawan);
-            Soal soal1 = soalDao.findByJadwalAndStatusSoalAndStatus(jadwal,StatusRecord.UAS, StatusRecord.AKTIF);
-            model.addAttribute("cek", soal1);
+            Soal validasi = soalDao.findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(jadwal,StatusRecord.UAS, StatusRecord.AKTIF,Arrays.asList(StatusApprove.WAITING,StatusApprove.APPROVED));
+            model.addAttribute("cek", validasi);
             model.addAttribute("jadwal", jadwal);
             model.addAttribute("soal", soal);
             model.addAttribute("dosen", dosen);
@@ -868,7 +872,7 @@ public class StudiesActivityController {
         }
 
 
-        String idFile = UUID.randomUUID().toString();
+        String idFile = soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+ soal.getJadwal().getKelas().getNamaKelas();
         String lokasiUpload = uploadFolder + File.separator + soal.getJadwal().getId();
         LOGGER.debug("Lokasi upload : {}", lokasiUpload);
         new File(lokasiUpload).mkdirs();
@@ -926,7 +930,7 @@ public class StudiesActivityController {
     public String deleteSoal(@RequestParam Soal soal){
         soal.setStatus(StatusRecord.HAPUS);
         soalDao.save(soal);
-        return "redirect:soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
+        return "redirect:../soal?jadwal=" +soal.getJadwal().getId()+"&status="+soal.getStatusSoal();
     }
 
 
@@ -4381,8 +4385,8 @@ public class StudiesActivityController {
         }
 
 
-        String idFile = soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-"+soal.getStatusSoal()+"-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
-
+//        String idFile = soal.getJadwal().getTahunAkademik().getKodeTahunAkademik()+"-"+soal.getStatusSoal()+"-"+soal.getJadwal().getKelas().getNamaKelas()+"-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+soal.getDosen().getKaryawan().getNamaKaryawan();
+        String idFile = "VLD-"+soal.getJadwal().getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah()+"-"+ soal.getJadwal().getKelas().getNamaKelas();
         if (idFile.length() > 65){
 
         }
@@ -4398,6 +4402,8 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.APPROVED);
         soal.setKeteranganApprove(soal.getKeterangan());
         soalDao.save(soal);
+        mailService.validasiSoal(soal,"APPROVE");
+
 
         Jadwal jadwal =jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
@@ -4419,6 +4425,7 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.REJECTED);
         soal.setKeteranganApprove(keteranganApprove);
         soalDao.save(soal);
+        mailService.validasiSoal(soal,"REJECT");
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
@@ -4433,7 +4440,8 @@ public class StudiesActivityController {
             return "redirect:listuas?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
         }
 
-        return "redirect:list?tahun="+jadwal.getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
+
+        return "redirect:list?tahun="+soal.getJadwal().getTahunAkademik().getId()+"&status="+StatusApprove.REJECTED;
     }
 
     @RequestMapping("/filedownload/")
