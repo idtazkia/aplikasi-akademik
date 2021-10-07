@@ -160,6 +160,9 @@ public class StudiesActivityController {
     private TahunProdiDao tahunProdiDao;
 
     @Autowired
+    private EdomMahasiswaDao edomMahasiswaDao;
+
+    @Autowired
     private EdomQuestionDao edomQuestionDao;
 
     @Autowired
@@ -1970,21 +1973,34 @@ public class StudiesActivityController {
 
 
     @GetMapping("/studiesActivity/assesment/hasiledom")
-    public void hasilEdom(Model model, @RequestParam Jadwal jadwal) {
+    public void hasilEdom(Model model, @RequestParam Jadwal jadwal, Authentication authentication) {
 
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswaPerDosen(jadwal, dosen);
+        model.addAttribute("headerEdom", headerEdom);
+        if (headerEdom != null){
+            List<Object[]> detailEdom = edomQuestionDao.detailEdomPerDosen(jadwal, dosen);
+            model.addAttribute("detailEdom", detailEdom);
+        }else{
+            model.addAttribute("questionNull", "Pertanyaan Edom Belum Dibuat");
+        }
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("edom", krsDetailDao.edomJadwal(jadwal));
 
-        EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
-        EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
-        EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
-        EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,jadwal.getTahunAkademik());
-        EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,jadwal.getTahunAkademik());
-        model.addAttribute("edomQuestion1",edomQuestion1);
-        model.addAttribute("edomQuestion2",edomQuestion2);
-        model.addAttribute("edomQuestion3",edomQuestion3);
-        model.addAttribute("edomQuestion4",edomQuestion4);
-        model.addAttribute("edomQuestion5",edomQuestion5);
+//        model.addAttribute("edom", krsDetailDao.edomJadwal(jadwal));
+//
+//        EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,jadwal.getTahunAkademik());
+//        EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,jadwal.getTahunAkademik());
+//        EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,jadwal.getTahunAkademik());
+//        EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,jadwal.getTahunAkademik());
+//        EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,jadwal.getTahunAkademik());
+//        model.addAttribute("edomQuestion1",edomQuestion1);
+//        model.addAttribute("edomQuestion2",edomQuestion2);
+//        model.addAttribute("edomQuestion3",edomQuestion3);
+//        model.addAttribute("edomQuestion4",edomQuestion4);
+//        model.addAttribute("edomQuestion5",edomQuestion5);
 
 
 

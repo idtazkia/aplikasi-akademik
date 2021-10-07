@@ -75,6 +75,9 @@ public class ReportController {
     private ProdiDao prodiDao;
 
     @Autowired
+    private EdomMahasiswaDao edomMahasiswaDao;
+
+    @Autowired
     private EdomQuestionDao edomQuestionDao;
 
     @Autowired
@@ -262,18 +265,22 @@ public class ReportController {
                           @RequestParam(required = false) Prodi prodi){
 
         if (tahunAkademik != null){
-            List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademik);
-            if (edomQuestion != null){
-                EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
-                EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
-                EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
-                EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
-                EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
-                model.addAttribute("edomQuestion1",edomQuestion1);
-                model.addAttribute("edomQuestion2",edomQuestion2);
-                model.addAttribute("edomQuestion3",edomQuestion3);
-                model.addAttribute("edomQuestion4",edomQuestion4);
-                model.addAttribute("edomQuestion5",edomQuestion5);
+            List<Object[]> headerEdom = edomMahasiswaDao.headerEdomMahasiswa(tahunAkademik, prodi);
+            model.addAttribute("headerEdom", headerEdom);
+            if (headerEdom != null){
+                List<Object[]> detailEdom = edomQuestionDao.detailEdom(tahunAkademik, prodi);
+                model.addAttribute("detailEdom", detailEdom);
+
+//                EdomQuestion edomQuestion1 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
+//                EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
+//                EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
+//                EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
+//                EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
+//                model.addAttribute("edomQuestion1",edomQuestion1);
+//                model.addAttribute("edomQuestion2",edomQuestion2);
+//                model.addAttribute("edomQuestion3",edomQuestion3);
+//                model.addAttribute("edomQuestion4",edomQuestion4);
+//                model.addAttribute("edomQuestion5",edomQuestion5);
             }else {
                 model.addAttribute("questionNull", "Pertanyaan edom untuk tahun akademik ini belum dibuat");
             }
@@ -281,6 +288,62 @@ public class ReportController {
             model.addAttribute("selectedProdi", prodi);
             model.addAttribute("rekapEdom",krsDetailDao.rekapEdom(tahunAkademik,prodi));
         }
+
+    }
+
+    @GetMapping("/report/recapitulation/downloadedom")
+    public void downloadEdom(@RequestParam(required = false) TahunAkademik tahunAkademik, HttpServletResponse response) throws IOException {
+
+        List<Object[]> listEdom = edomMahasiswaDao.downloadEdom(tahunAkademik);
+
+        String[] columns = {"No", "NIDN", "Nama Dosen", "Status Dosen", "Nama Prodi", "Email", "Nama Matakuliah", "Semester", "Nama Kelas", "Jumlah Mengisi Edom", "Jumlah Mahasiswa Kelas", "Nilai Edom"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List Edom tahun akademik " + tahunAkademik.getKodeTahunAkademik());
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 11);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(2);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 3;
+        int baris = 1;
+
+        for (Object[] list : listEdom){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[1].toString());
+            row.createCell(2).setCellValue(list[2].toString());
+            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(4).setCellValue(list[4].toString());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[6].toString());
+            row.createCell(7).setCellValue(list[7].toString());
+            row.createCell(8).setCellValue(list[8].toString());
+            row.createCell(9).setCellValue(list[10].toString());
+            row.createCell(10).setCellValue(list[9].toString());
+            row.createCell(11).setCellValue(list[11].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=List Edom Tahun Akademik-"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 

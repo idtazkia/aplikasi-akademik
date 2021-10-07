@@ -84,19 +84,24 @@
                         </center>
                     </div>
                     <span th:if="${selectedTahun != null && questionNull == null}">
-                        <div class="card-body" th:each="data : ${rekapEdom}">
+                        <div class="row">
+                            <div class="col text-center">
+                                <a th:href="@{/report/recapitulation/downloadedom(tahunAkademik = ${selectedTahun.id}) }" class="btn btn-success text-white"><i class="fa fa-download"></i> Download</a>
+                            </div>
+                        </div>
+                        <div class="card-body" th:each="data : ${headerEdom}">
                             <div class="card shadow">
                                 <div class="card-body">
                                     <table>
                                         <tr>
                                             <td>Lecturer Name</td>
                                             <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[2]}">Ahmad Masykur</td>
+                                            <td style="padding-left: 5px;" th:text="${data[4]}">Ahmad Masykur</td>
                                         </tr>
                                         <tr>
                                             <td>Course Name</td>
                                             <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[1]}">Ushul Fiqh II</td>
+                                            <td style="padding-left: 5px;" th:text="${data[2]}">Ushul Fiqh II</td>
                                         </tr>
                                         <tr>
                                             <td>Class</td>
@@ -106,12 +111,12 @@
                                         <tr>
                                             <td>Number of Students</td>
                                             <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[4]}">24</td>
+                                            <td style="padding-left: 5px;" th:text="${data[5]}">24</td>
                                         </tr>
                                         <tr>
                                             <td>Number of students who have filled in</td>
                                             <td>&nbsp; :</td>
-                                            <td style="padding-left: 5px;" th:text="${data[5]}">24</td>
+                                            <td style="padding-left: 5px;" th:text="${data[6]}">24</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -126,36 +131,36 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td><center>1</center></td>
-                                            <td th:text="${edomQuestion1.pertanyaan}">Disiplin masuk kelas</td>
-                                            <td th:text="${data[6]}"><center>4.2</center></td>
+                                        <tr th:each="dataDetail : ${detailEdom}">
+                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[7]}"><center>1</center></td>
+                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[8]}">Disiplin masuk kelas</td>
+                                            <td th:if="${data[0] == dataDetail[0] and data[1] == dataDetail[1]}" th:text="${dataDetail[9]}"><center>4.2</center></td>
                                         </tr>
-                                        <tr>
-                                            <td><center>2</center></td>
-                                            <td th:text="${edomQuestion2.pertanyaan}">Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>
-                                            <td th:text="${data[7]}"><center>4.2</center></td>
-                                        </tr>
-                                        <tr>
-                                            <td><center>3</center></td>
-                                            <td th:text="${edomQuestion3.pertanyaan}">Cara menyampaikan materi perkuliahan</td>
-                                            <td th:text="${data[8]}"><center>4.2</center></td>
-                                        </tr>
-                                        <tr>
-                                            <td><center>4</center></td>
-                                            <td th:text="${edomQuestion4.pertanyaan}">Keragaman konten materi pada e learning</td>
-                                            <td th:text="${data[9]}"><center>4.2</center></td>
-                                        </tr>
-                                        <tr>
-                                            <td><center>5</center></td>
-                                            <td th:text="${edomQuestion5.pertanyaan}">Perhatian kepada Mahasiswa</td>
-                                            <td th:text="${data[10]}"><center>4.2</center></td>
-                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td><center>2</center></td>-->
+<!--                                            <td th:text="${edomQuestion2.pertanyaan}">Disiplin membaca Al Quran 5T di setiap sesi perkuliahan</td>-->
+<!--                                            <td th:text="${data[7]}"><center>4.2</center></td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td><center>3</center></td>-->
+<!--                                            <td th:text="${edomQuestion3.pertanyaan}">Cara menyampaikan materi perkuliahan</td>-->
+<!--                                            <td th:text="${data[8]}"><center>4.2</center></td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td><center>4</center></td>-->
+<!--                                            <td th:text="${edomQuestion4.pertanyaan}">Keragaman konten materi pada e learning</td>-->
+<!--                                            <td th:text="${data[9]}"><center>4.2</center></td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td><center>5</center></td>-->
+<!--                                            <td th:text="${edomQuestion5.pertanyaan}">Perhatian kepada Mahasiswa</td>-->
+<!--                                            <td th:text="${data[10]}"><center>4.2</center></td>-->
+<!--                                        </tr>-->
                                         </tbody>
                                         <thead class="thead-light">
                                         <tr>
                                             <th colspan="2"><center>Average</center></th>
-                                            <th th:text="${#numbers.formatDecimal(data[11], 0, 'COMMA', 2, 'POINT')}">4.2</th>
+                                            <th th:text="${#numbers.formatDecimal(data[7], 0, 'COMMA', 2, 'POINT')}">4.2</th>
                                         </tr>
                                         </thead>
                                     </table>

@@ -39,7 +39,7 @@
             <div class="col-md-8 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Jadwal Mapel</h2>
+                        <h2>My Schedule</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
@@ -113,10 +113,12 @@
                                 <tr th:each="data, row:${tagihan}">
                                     <td th:text="${(row.index + 1)}">1</td>
                                     <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
-                                    <td th:text="${data.nilaiTagihan}"></td>
-                                    <td th:text="${data.akumulasiPembayaran}"></td>
-                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} != ${data.statusTagihan}" th:text="${data.tanggalJatuhTempo}"></td>
-                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}" th:text="${data.tanggalPenangguhan}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} != ${data.statusTagihan}"
+                                        th:text="${#temporals.format(data.tanggalJatuhTempo, 'dd - MMM - yyyy')}"></td>
+                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
+                                        th:text="${#temporals.format(data.tanggalPenangguhan, 'dd - MMM - yyyy')}"></td>
                                     <td>
                                         <div th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-info btn-sm"></div>
                                         <div th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-success btn-sm"></div>
@@ -134,15 +136,15 @@
             <div th:if="${cekCicilan == null}" class="col-md-6 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Cicilan</h2>
+                        <h2>Bill Installment</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Tagihan</th>
-                                <th>Jumlah</th>
+                                <th>Bill</th>
+                                <th>Amount</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -168,15 +170,15 @@
             <div th:if="${cekPenangguhan == null}" class="col-md-6 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>Penangguhan</h2>
+                        <h2>Bill Hold</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>No. </th>
-                                <th>Tagihan</th>
-                                <th>Permintaan Penangguhan</th>
+                                <th>Bill</th>
+                                <th>Request Bill Hold</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -192,7 +194,7 @@
                                     <div th:if="${data[2]} == 'REJECTED'" class="btn btn-danger btn-sm" th:text="${data[2]}"></div>
                                 </td>
                                 <td th:if="${data[2] == 'REJECTED'}">
-                                    <button type="button" class="btn btn-info" data-toggle="modal" th:data-target="${'#myModaltwo-'+data[5]}">keterangan</button>
+                                    <button type="button" class="btn btn-info" data-toggle="modal" th:data-target="${'#myModaltwo-'+data[5]}">Description</button>
 
                                     <div class="modal fade" th:id="${'myModaltwo-'+data[5]}" role="dialog">
                                         <div class="modal-dialog modal-sm">
@@ -266,7 +268,7 @@
             <div class="col-md-6 col-xs-12">
                 <div class="normal-table-list mg-t-30">
                     <div class="basic-tb-hd">
-                        <h2>List Request Semester Pendek</h2>
+                        <h2>Bill Short Semester</h2>
                     </div>
                     <div class="bsc-tbl-st">
                         <table class="table table-striped">
