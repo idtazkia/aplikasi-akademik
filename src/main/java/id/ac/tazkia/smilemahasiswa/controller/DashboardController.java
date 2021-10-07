@@ -364,7 +364,7 @@ public class DashboardController {
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = uploadKtp + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + extension);
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
             file.transferTo(tujuan);
 
             mahasiswa.setFileKtp(idFile + "." + extension);
@@ -387,7 +387,7 @@ public class DashboardController {
             String idFile = UUID.randomUUID().toString();
             String lokasiUpload = uploadKtp + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
-            File tujuan = new File(lokasiUpload + File.separator + idFile + extinsion);
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extinsion);
             ijazah.transferTo(tujuan);
 
             mahasiswa.setFileIjazah(idFile + "." + extinsion);
