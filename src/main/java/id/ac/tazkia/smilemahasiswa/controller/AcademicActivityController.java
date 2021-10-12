@@ -1393,5 +1393,14 @@ public class  AcademicActivityController {
 
     }
 
+    @PostMapping("/academic/conversion/delete")
+    public String deleteConversion(@RequestParam(required = false) KrsDetail krsDetail){
+
+        krsDetail.setStatus(StatusRecord.HAPUS);
+        krsDetailDao.save(krsDetail);
+
+        return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
+    }
+
 
 }
