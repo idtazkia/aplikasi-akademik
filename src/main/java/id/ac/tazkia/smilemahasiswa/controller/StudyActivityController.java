@@ -276,7 +276,7 @@ public class StudyActivityController {
             model.addAttribute("sks", jumlahSks);
             model.addAttribute("tahunAkademikProdi", tahunAkademikProdi);
 
-            model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
+            model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF, k, mahasiswa));
         }
 
         return "study/krs";

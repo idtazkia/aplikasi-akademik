@@ -587,7 +587,7 @@ public class StudiesActivityController {
                 model.addAttribute("validation", "Krs belum aktif, Silahkan aktifasi terlebih dahulu ");
             }
 
-            model.addAttribute("listKrs", krsDetailDao.findByStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
+            model.addAttribute("listKrs", krsDetailDao.findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord.AKTIF,k,mahasiswa));
             model.addAttribute("mahasiswa", mahasiswa);
 
         }

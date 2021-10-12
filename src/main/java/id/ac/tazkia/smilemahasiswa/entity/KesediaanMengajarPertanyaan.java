@@ -13,6 +13,7 @@ public class KesediaanMengajarPertanyaan {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @Lob
     private String soal;
 
     @Enumerated(EnumType.STRING)

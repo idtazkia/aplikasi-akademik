@@ -17,6 +17,7 @@ public class KesediaanMengajarSubPertanyaan {
     @JoinColumn(name = "id_kesediaan_mengajar_pertanyaan")
     KesediaanMengajarPertanyaan kesediaanMengajarPertanyaan;
 
+    @Lob
     private String pertanyaan;
 
     @Enumerated(EnumType.STRING)
