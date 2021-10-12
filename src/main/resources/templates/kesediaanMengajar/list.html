@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Kesediaan Mengajar</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Kesediaan Mengajar </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a th:href="@{/kesediaanMengajar/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Pertanyaan</th>
+                                <th>Sub Pertanyaan</th>
+                                <th></th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="data, row:${listData}">
+                                <td th:text="${(row.index + 1 + '.')}" style="vertical-align: top;"></td>
+                                <td th:text="${data.soal}" style="white-space: pre-wrap; vertical-align: top;"></td>
+                                <td>
+                                    <table class="table" th:if="${data.tipeSoal == 'subPertanyaan'}">
+                                        <tbody>
+                                        <tr th:each="dataSub, row:${subPertanyaan}">
+                                            <td th:if="${data.id == dataSub.kesediaanMengajarPertanyaan.id}">*</td>
+                                            <td th:if="${data.id == dataSub.kesediaanMengajarPertanyaan.id}" style="white-space: pre-wrap" th:text="${dataSub.pertanyaan}"></td>
+                                            <td th:if="${data.id == dataSub.kesediaanMengajarPertanyaan.id}">
+                                                <form th:action="@{/kesediaanMengajar/delete(id = ${dataSub.id})}" method="post">
+                                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div th:if="${data.tipeSoal == 'pilihan'}">
+                                        <input type="radio"> Ya
+                                        <input type="radio"> Tidak
+                                    </div>
+                                </td>
+                                <td th:if="${data.tipeSoal == 'pilihan'}">-</td>
+                                <td style="vertical-align: top;" th:if="${data.tipeSoal == 'subPertanyaan'}">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}">
+                                        <i class="fa fa-plus-circle"></i>  Sub Pertanyaan
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" th:id="${'exampleModal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <form th:action="@{/kesediaanMengajar/subPertanyaan}" method="post" id="myform">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Tambah</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <div class='some-repeating-fields' data-ac-repeater >
+                                                                <label>Pertanyaan</label>
+                                                                <input type="text" class="form-control" name="pertanyaan">
+                                                                <input type="hidden" th:value="${data.id}" name="kesediaanMengajarPertanyaan">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <span class="btn btn-success btn-sm" th:text="${data.status}">AKTIF</span>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <form th:action="@{/kesediaanMengajar/hapus(id = ${data.id})}" method="post">
+                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script>
+    (function($, window, document, undefined) {
+        var pluginName = "formRepeater",
+            defaults = {
+                addBtnId: "#add",
+            };
+
+        function Plugin(element, options) {
+            this.container = $(element);
+            this.options = $.extend( {}, defaults, options);
+            this._defaults = defaults;
+            this._name = pluginName;
+            this.init();
+        }
+
+        Plugin.prototype.init = function() {
+            var rows = $(".row", this.container);
+
+            if (rows.length === 0) {
+                return;
+            }
+
+            this.numGroups = rows.length;
+            this.maxGroupIndex = this.numGroups - 1;
+
+            this.template = $(rows[0]).clone(true);
+            this.template.find(":input").val("");
+
+            this.lastGroup = $(rows[this.maxGroupIndex]);
+
+            rows.each($.proxy(initGroup, this));
+
+            this.container.on("click", this.options.addBtnId, $.proxy(addGroup, this));
+        };
+
+        function addFieldIds(groupIndex, group) {
+            // add unique IDs to each field to aid automation testing
+            // following is just to show that method was called
+            $(group).append("*");
+        };
+
+        function initGroup(groupIndex, group) {
+            var group = $(group);
+            $.proxy(addFieldIds, this)(groupIndex, group);
+        };
+
+        function addGroup(ev) {
+            var newGroup;
+            ev.preventDefault();
+
+            this.numGroups += 1;
+            this.maxGroupIndex += 1;
+            newGroup = this.template.clone(true);
+
+            $.proxy(initGroup, this)(this.maxGroupIndex, newGroup);
+
+            newGroup.insertAfter(this.lastGroup);
+            this.lastGroup = newGroup;
+        };
+
+        $.fn[pluginName] = function(options) {
+            return this.each(function() {
+                if (!$.data(this, "plugin_" + pluginName)) {
+                    $.data(this, "plugin_" + pluginName, new Plugin(this, options));
+                }
+            });
+        };
+
+    }(jQuery));
+
+    $("#myform").formRepeater();
+</script>
+</body>
+</html>

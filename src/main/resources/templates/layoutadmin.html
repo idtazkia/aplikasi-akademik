@@ -358,7 +358,7 @@
                                 <a th:href="@{/studentBill/pembayaran/list}" class="nav-link">Pembayaran</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
-                                <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Tagihan</a>
+                                <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/typeBill/list}" class="nav-link">Jenis Tagihan</a>
@@ -366,12 +366,12 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/valueType/list}" class="nav-link">Nilai Jenis Tagihan</a>
                             </li>
-<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
-<!--                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>-->
-<!--                            </li>-->
-<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
-<!--                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report</a>-->
-<!--                            </li>-->
+                            <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
+                            <!--                                <a th:href="@{/studentBill/jenisDiskon/list}" class="nav-link">Diskon</a>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">-->
+                            <!--                                <a th:href="@{/studentBill/payment/report}" class="nav-link">Report</a>-->
+                            <!--                            </li>-->
                         </ul>
                     </div>
                 </li>
@@ -447,7 +447,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_KPS')">
                                 <a th:href="@{/report/recapitulation/edom}" class="nav-link">Laporan Edom</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a th:href="@{/report/recapitulation/ipk}" class="nav-link">Laporan IPK</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
@@ -486,6 +486,20 @@
                     <a class="nav-link " th:href="@{/mahasiswa/rfid}">
                         <i class="ni ni-single-02 text-blue"></i>
                         RFID
+                    </a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
+                    <a class="nav-link " th:href="@{/kesediaanMengajar/list}">
+                        <i class="ni ni-collection text-green"></i>
+                        Kesediaan Mengajar
+                    </a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                    <a class="nav-link " th:href="@{/kesediaanMengajar/dosen}">
+                        <i class="ni ni-collection text-green"></i>
+                        Kesediaan Mengajar
                     </a>
                 </li>
 
@@ -606,6 +620,7 @@
 <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
 <script th:src="@{/js/data-table/jquery.dataTables.min.js}"></script>
 <script th:src="@{/js/data-table/data-table-act.js}"></script>
+<script th:src="@{/css/assets/js/plugins/repeater/jquery.ac-form-field-repeater.js}"></script>
 
 
 <script>

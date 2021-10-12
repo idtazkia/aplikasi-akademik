@@ -258,6 +258,13 @@
                       </button>
                     </div>
                   </div>
+                  <br>
+                  <br>
+                  <div class="col-md-6 col-xs-12">
+                    <form th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post" th:if="${data.statusPengajuaan != 'APPROVED'}">
+                      <button class="btn btn-danger">Batal</button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

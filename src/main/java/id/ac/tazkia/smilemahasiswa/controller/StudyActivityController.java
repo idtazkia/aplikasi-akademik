@@ -915,6 +915,13 @@ public class StudyActivityController {
 
     }
 
+    @PostMapping("/du/cuti/batal")
+    public String batalCuti(@RequestParam Cuti cuti){
+        cuti.setStatus(StatusRecord.HAPUS);
+        cutiDao.save(cuti);
+        return "redirect:/du/cuti/form";
+    }
+
 //    PRA KRS SEMESTER PENDEK
 
     @GetMapping("/study/prakrssp")

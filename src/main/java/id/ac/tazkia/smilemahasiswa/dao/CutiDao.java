@@ -19,7 +19,7 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
 
     Page<Cuti> findByStatusOrderByStatusPengajuaanDesc(StatusRecord statusRecord, Pageable pageable);
 
-    @Query(value = "select a.id, b.nim, b.nama, a.keterangan, a.tanggal_mulai_cuti, a.tanggal_berakhir_cuti, a.status_pengajuaan, a.status from cuti as a \n" +
+    @Query(value = "select a.id, b.nim, b.nama, a.keterangan, a.tanggal_mulai_cuti, a.tanggal_berakhir_cuti, a.status_pengajuaan, a.status, a.semester  from cuti as a \n" +
             "\tinner join mahasiswa as b on b.id = a.id_mahasiswa\n" +
             "    inner join dosen as c on c.id = b.id_dosen_wali\n" +
             "    inner join karyawan as d on d.id = c.id_karyawan\n" +
@@ -28,7 +28,7 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
             "    order by a.status_pengajuaan desc", nativeQuery = true)
     List<Object[]> listCutiDosenWali(User user);
 
-    @Query(value = "select a.id, b.nim, b.nama,a.tanggal_mulai_cuti,a.keterangan,a.tanggal_berakhir_cuti,a.status_pengajuaan, a.status, dosen_wali_approved from cuti as a \n" +
+    @Query(value = "select a.id, b.nim, b.nama,a.tanggal_mulai_cuti,a.keterangan,a.tanggal_berakhir_cuti,a.status_pengajuaan, a.status, dosen_wali_approved, a.semester from cuti as a \n" +
             "inner join mahasiswa as b on b.id = a.id_mahasiswa\n" +
             "inner join prodi as c on c.id = b.id_prodi\n" +
             "inner join dosen as d on d.id = c.id_dosen\n" +
