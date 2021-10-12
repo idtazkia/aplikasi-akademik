@@ -1294,102 +1294,97 @@ public class  AcademicActivityController {
         int jumlahSks;
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(ta).get();
-        if (krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()) == null){
-            jumlahSks = 0;
-        }else {
-            jumlahSks =krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()).intValue();
-
-        }
+//        if (krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()) == null){
+//            jumlahSks = 0;
+//        }else {
+//            jumlahSks =krsDetailDao.jumlahSksMahasiswa(mhs.getId(), tahunAkademik.getId()).intValue();
+//
+//        }
         Grade grade1 = gradeDao.findByNama(grade);
         Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahunAkademik, StatusRecord.AKTIF);
         TahunAkademikProdi tahunAkademikProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, mhs.getIdProdi());
         KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndTahunAkademikAndJadwalAndStatus(mhs, tahunAkademik, jadwal, StatusRecord.AKTIF);
-        if (jumlahSks <= 24) {
-            if (krsDetail == null) {
-                if (krs != null) {
-                    KrsDetail kd = new KrsDetail();
-                    kd.setKrs(krs);
-                    kd.setMahasiswa(mhs);
-                    kd.setJadwal(jadwal);
-                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                    kd.setNilaiPresensi(BigDecimal.ZERO);
-                    kd.setNilaiUts(BigDecimal.ZERO);
-                    kd.setNilaiTugas(BigDecimal.ZERO);
-                    kd.setFinalisasi("N");
-                    kd.setNilaiAkhir(grade1.getBawah());
-                    kd.setBobot(grade1.getBobot());
-                    kd.setGrade(grade1.getNama());
-                    kd.setNilaiUas(BigDecimal.ZERO);
-                    kd.setJumlahKehadiran(0);
-                    kd.setJumlahMangkir(0);
-                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-                    kd.setJumlahTerlambat(0);
-                    kd.setJumlahIzin(0);
-                    kd.setJumlahSakit(0);
-                    kd.setStatusEdom(StatusRecord.UNDONE);
-                    kd.setStatus(StatusRecord.AKTIF);
-                    kd.setTahunAkademik(tahunAkademik);
-                    kd.setStatusKonversi(StatusRecord.AKTIF);
-                    krsDetailDao.save(kd);
+        if (krsDetail == null) {
+            if (krs != null) {
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                kd.setStatusKonversi(StatusRecord.AKTIF);
+                krsDetailDao.save(kd);
 
-                    Konversi konversi = new Konversi();
-                    konversi.setKrsDetail(kd);
-                    konversi.setNamaMatakuliahLama(matakuliahLama);
-                    konversi.setStatus(StatusRecord.AKTIF);
-                    konversiDao.save(konversi);
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.AKTIF);
+                konversiDao.save(konversi);
 
-                } else {
-
-                    Krs krs1 = new Krs();
-                    krs1.setTahunAkademik(tahunAkademik);
-                    krs1.setTahunAkademikProdi(tahunAkademikProdi);
-                    krs1.setProdi(mhs.getIdProdi());
-                    krs1.setMahasiswa(mhs);
-                    krs1.setNim(mhs.getNim());
-                    krs1.setTanggalTransaksi(LocalDateTime.now());
-                    krs1.setStatus(StatusRecord.AKTIF);
-                    krsDao.save(krs1);
-
-                    KrsDetail kd = new KrsDetail();
-                    kd.setKrs(krs1);
-                    kd.setMahasiswa(mhs);
-                    kd.setJadwal(jadwal);
-                    kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
-                    kd.setNilaiPresensi(BigDecimal.ZERO);
-                    kd.setNilaiUts(BigDecimal.ZERO);
-                    kd.setNilaiTugas(BigDecimal.ZERO);
-                    kd.setFinalisasi("N");
-                    kd.setNilaiAkhir(grade1.getBawah());
-                    kd.setBobot(grade1.getBobot());
-                    kd.setGrade(grade1.getNama());
-                    kd.setNilaiUas(BigDecimal.ZERO);
-                    kd.setJumlahKehadiran(0);
-                    kd.setJumlahMangkir(0);
-                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-                    kd.setJumlahTerlambat(0);
-                    kd.setJumlahIzin(0);
-                    kd.setJumlahSakit(0);
-                    kd.setStatusEdom(StatusRecord.UNDONE);
-                    kd.setStatus(StatusRecord.AKTIF);
-                    kd.setTahunAkademik(tahunAkademik);
-                    kd.setStatusKonversi(StatusRecord.AKTIF);
-                    krsDetailDao.save(kd);
-
-                    Konversi konversi = new Konversi();
-                    konversi.setKrsDetail(kd);
-                    konversi.setNamaMatakuliahLama(matakuliahLama);
-                    konversi.setStatus(StatusRecord.AKTIF);
-                    konversiDao.save(konversi);
-
-                }
             } else {
-                attributes.addFlashAttribute("gagal", "Data sudah ada!");
-                return "redirect:form?nim=" + mhs.getNim() + "&jadwal=" + jadwal.getId();
+
+                Krs krs1 = new Krs();
+                krs1.setTahunAkademik(tahunAkademik);
+                krs1.setTahunAkademikProdi(tahunAkademikProdi);
+                krs1.setProdi(mhs.getIdProdi());
+                krs1.setMahasiswa(mhs);
+                krs1.setNim(mhs.getNim());
+                krs1.setTanggalTransaksi(LocalDateTime.now());
+                krs1.setStatus(StatusRecord.AKTIF);
+                krsDao.save(krs1);
+
+                KrsDetail kd = new KrsDetail();
+                kd.setKrs(krs1);
+                kd.setMahasiswa(mhs);
+                kd.setJadwal(jadwal);
+                kd.setMatakuliahKurikulum(jadwal.getMatakuliahKurikulum());
+                kd.setNilaiPresensi(BigDecimal.ZERO);
+                kd.setNilaiUts(BigDecimal.ZERO);
+                kd.setNilaiTugas(BigDecimal.ZERO);
+                kd.setFinalisasi("N");
+                kd.setNilaiAkhir(grade1.getBawah());
+                kd.setBobot(grade1.getBobot());
+                kd.setGrade(grade1.getNama());
+                kd.setNilaiUas(BigDecimal.ZERO);
+                kd.setJumlahKehadiran(0);
+                kd.setJumlahMangkir(0);
+                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                kd.setJumlahTerlambat(0);
+                kd.setJumlahIzin(0);
+                kd.setJumlahSakit(0);
+                kd.setStatusEdom(StatusRecord.UNDONE);
+                kd.setStatus(StatusRecord.AKTIF);
+                kd.setTahunAkademik(tahunAkademik);
+                kd.setStatusKonversi(StatusRecord.AKTIF);
+                krsDetailDao.save(kd);
+
+                Konversi konversi = new Konversi();
+                konversi.setKrsDetail(kd);
+                konversi.setNamaMatakuliahLama(matakuliahLama);
+                konversi.setStatus(StatusRecord.AKTIF);
+                konversiDao.save(konversi);
+
             }
-        }else{
-            attributes.addFlashAttribute("gagalSks", "Sks sudah lebih");
+        } else {
+            attributes.addFlashAttribute("gagal", "Data sudah ada!");
             return "redirect:form?nim=" + mhs.getNim() + "&jadwal=" + jadwal.getId();
         }
 

@@ -229,8 +229,8 @@ public class DashboardController {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         }
         List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId());
+        model.addAttribute("tahunAktif", tahun);
         model.addAttribute("listSp", listSp);
-        System.out.println("sp : " + listSp);
         if (listSp.isEmpty()) {
             model.addAttribute("message", "message");
         }
