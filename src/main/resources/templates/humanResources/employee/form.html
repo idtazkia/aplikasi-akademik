@@ -93,9 +93,10 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>RFID</label>
-                                        <input type="text" th:field="*{rfid}" class="form-control" name="rfid" placeholder="RFID">
+                                        <input type="number" th:field="*{rfid}" class="form-control" name="rfid" placeholder="RFID">
 
                                         <input type="hidden" name="id" th:field="*{id}">
+                                        <input type="hidden" name="idUser" th:field="*{idUser}">
                                         <input type="hidden" name="idAbsen" th:field="*{idAbsen}">
                                     </div>
 
