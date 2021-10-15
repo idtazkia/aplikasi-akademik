@@ -170,6 +170,11 @@ public class SidangController {
 
 //    Mahasiswa
 
+    @GetMapping("/graduation/sidang/mahasiswa/info")
+    public void infoPenutupan(){
+
+    }
+
     @GetMapping("/graduation/sidang/mahasiswa/pendaftaran")
     public String pendaftaranSidang(@RequestParam(name = "id", value = "id",required = false) Seminar seminar, Model model){
 
@@ -177,7 +182,12 @@ public class SidangController {
             return "redirect:../../seminar/nilai?id="+seminar.getId();
         }else {
             model.addAttribute("seminar",seminar);
-            return "graduation/sidang/mahasiswa/pendaftaran";
+            System.out.println(LocalDate.now());
+            if (LocalDate.now().compareTo(LocalDate.parse("2021-10-15")) > 0 && LocalDate.now().compareTo(LocalDate.parse("2021-10-29")) < 0){
+                return "redirect:info";
+            }else {
+                return "graduation/sidang/mahasiswa/pendaftaran";
+            }
         }
     }
 
