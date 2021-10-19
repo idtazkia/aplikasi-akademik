@@ -145,6 +145,7 @@ public class Mahasiswa {
     private String judul;
     private String title;
     private String noTranskript;
+    private String indukNasional;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -152,5 +153,6 @@ public class Mahasiswa {
 
     private String fileKtp;
     private String fileIjazah;
+    private String foto;
 
 }
