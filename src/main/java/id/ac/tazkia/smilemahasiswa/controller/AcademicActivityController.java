@@ -1265,8 +1265,9 @@ public class  AcademicActivityController {
     public void list(Model model, @RequestParam(required = false)String nim){
 
         if (nim != null){
+            Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
             model.addAttribute("nim", nim);
-            model.addAttribute("list", krsDetailDao.listKrsDetail(nim));
+            model.addAttribute("list", krsDetailDao.listKrsDetail(dataMahasiswa.getId()));
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
             model.addAttribute("mhs", mahasiswa);
         }

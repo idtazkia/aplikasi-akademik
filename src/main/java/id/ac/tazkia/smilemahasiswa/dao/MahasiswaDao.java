@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.ListAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,12 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);
     List<Mahasiswa> findByIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
     List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatus(Prodi prodi, Program program, String angkatan, String s, StatusRecord statusRecord);
+
+
+    @Query(value = "select a.angkatan,c.nama_jenjang as namaJenjang from mahasiswa as a\n" +
+            "inner join prodi as b on a.id_prodi = b.id\n" +
+            "inner join jenjang as c on b.id_jenjang = c.id \n" +
+            "where a.status = 'AKTIF' and a.status_aktif = 'AKTIF' group by a.angkatan order by a.angkatan\n", nativeQuery = true)
+    List<ListAngkatanDto> listAngkatanMahasiswa();
 
 }
