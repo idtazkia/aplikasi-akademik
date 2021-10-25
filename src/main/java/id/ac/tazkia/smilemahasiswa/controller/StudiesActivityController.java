@@ -572,6 +572,8 @@ public class StudiesActivityController {
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
 
         if (nim != null && tahunAkademik != null) {
+
+//            Mahasiswa dataMahasiswa = mahasiswaDao.findByNimAndStatus(nim, StatusRecord.AKTIF);
             model.addAttribute("nim", nim);
             model.addAttribute("tahun", tahunAkademik);
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
@@ -661,12 +663,14 @@ public class StudiesActivityController {
     public String prosesKrs(Authentication authentication, @RequestParam String jumlah, @RequestParam(required = false) String[] selected,
                             @RequestParam TahunAkademik tahunAkademik,@RequestParam String nim){
 
-        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        Mahasiswa mahasiswa = mahasiswaDao.findByNimAndStatus(nim,StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik,StatusRecord.AKTIF);
 
         if (k != null) {
 
-            Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+//            Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+
+            Long krsDetail = krsDetailDao.cariJumlahSks(k.getId());
 
             if (selected == null) {
 
