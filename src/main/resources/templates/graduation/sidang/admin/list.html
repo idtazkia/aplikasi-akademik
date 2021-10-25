@@ -149,7 +149,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${listSidang}">
-                                        <td>1</td>
+                                        <td th:text="${(row.index + 1) + (listSidang.number * listSidang.size)}">1</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki</td>
@@ -164,7 +164,7 @@
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Detail Nilai</h5>
+                                                            <h5 class="modal-title" >Detail Nilai</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -267,25 +267,25 @@
                                                                                     <tr>
                                                                                         <td>2</td>
                                                                                         <td>Penguasaan Materi</td>
-                                                                                        <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ua}">90.00</td>
+                                                                                        <td align="center" th:text="${data.kb}">90.00</td>
+                                                                                        <td align="center" th:text="${data.pb}">90.00</td>
+                                                                                        <td align="center" th:text="${data.ub}">90.00</td>
                                                                                     </tr>
 
                                                                                     <tr>
                                                                                         <td>3</td>
                                                                                         <td>Teknik Penulisan</td>
-                                                                                        <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ua}">90.00</td>
+                                                                                        <td align="center" th:text="${data.kc}">90.00</td>
+                                                                                        <td align="center" th:text="${data.pc}">90.00</td>
+                                                                                        <td align="center" th:text="${data.uc}">90.00</td>
                                                                                     </tr>
 
                                                                                     <tr>
                                                                                         <td>4</td>
                                                                                         <td>Presentasi dan Pemaparan</td>
-                                                                                        <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ua}">90.00</td>
+                                                                                        <td align="center" th:text="${data.kd}">90.00</td>
+                                                                                        <td align="center" th:text="${data.pd}">90.00</td>
+                                                                                        <td align="center" th:text="${data.ud}">90.00</td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
