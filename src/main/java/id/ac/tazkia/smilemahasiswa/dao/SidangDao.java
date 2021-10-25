@@ -15,7 +15,7 @@ public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
     Sidang findBySeminarAndAkademikAndJamMulaiNotNullAndJamMulaiNotNull(Seminar seminar,StatusApprove statusAppr);
     List<Sidang> findBySeminarOrderByAkademikDescTanggalInputDesc(Seminar seminar);
     List<Sidang> findBySeminar(Seminar seminar);
-    Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotIn(TahunAkademik tahunAkademik, Prodi prodi, List<StatusApprove> statusApproves,List<StatusApprove> statusSidang, Pageable page);
+    Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDesc(TahunAkademik tahunAkademik, Prodi prodi, List<StatusApprove> statusApproves,List<StatusApprove> statusSidang, Pageable page);
     Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotIn(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,List<StatusApprove> statusApprove,Pageable page);
     Page<Sidang> findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(TahunAkademik tahunAkademik, Prodi prodi, StatusApprove statusApproves,StatusApprove statusApprove, Pageable page);
     Page<Sidang> findByTahunAkademikAndAkademikAndStatusSidangAndJamMulaiNotNullAndRuanganNotNull(TahunAkademik tahunAkademik, StatusApprove statusApproves,StatusApprove statusApprove, Pageable page);

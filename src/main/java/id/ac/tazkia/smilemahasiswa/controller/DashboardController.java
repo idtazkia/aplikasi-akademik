@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +28,8 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -259,10 +265,11 @@ public class DashboardController {
 
 
     @GetMapping("/user/profile")
-    public void UserProfile(Model model, Authentication authentication){
+    public void UserProfile(Model model,@RequestParam(required = false)String type, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mhsw", mahasiswa);
+        model.addAttribute("type", type);
         model.addAttribute("transportasi", transportasiDao.findAll());
         model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
         model.addAttribute("provinsi", wilayahDao.provinsi());
@@ -275,75 +282,77 @@ public class DashboardController {
         model.addAttribute("mhsw",mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
 
-            mahasiswaDto.setId(mahasiswa.getId());
-            mahasiswaDto.setAbsen(mahasiswa.getIdAbsen());
-            mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
-            mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
-            mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
-            mahasiswaDto.setNim(mahasiswa.getNim());
-            mahasiswaDto.setNama(mahasiswa.getNama());
-            mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
-            mahasiswaDto.setUkuranBaju(mahasiswa.getUkuranBaju());
-            mahasiswaDto.setKps(mahasiswa.getKps());
-            mahasiswaDto.setNomorKps(mahasiswa.getNomorKps());
-            mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
-            mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
-            mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
-            mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
-            mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
-            mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
-            mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
-            mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
-            mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
-            mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
-            mahasiswaDto.setNik(mahasiswa.getNik());
-            mahasiswaDto.setNisn(mahasiswa.getNisn());
-            mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
-            mahasiswaDto.setRt(mahasiswa.getRt());
-            mahasiswaDto.setRw(mahasiswa.getRw());
-            mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
-            mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
-            mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
-            mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
-            mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
-            mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
-            mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
-            mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
-            mahasiswaDto.setIdUser(mahasiswa.getUser());
+        mahasiswaDto.setId(mahasiswa.getId());
+        mahasiswaDto.setAbsen(mahasiswa.getIdAbsen());
+        mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
+        mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
+        mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
+        mahasiswaDto.setNim(mahasiswa.getNim());
+        mahasiswaDto.setNama(mahasiswa.getNama());
+        mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
+        mahasiswaDto.setUkuranBaju(mahasiswa.getUkuranBaju());
+        mahasiswaDto.setKps(mahasiswa.getKps());
+        mahasiswaDto.setNomorKps(mahasiswa.getNomorKps());
+        mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
+        mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
+        mahasiswaDto.setReligion(mahasiswa.getIdAgama());
+        mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
+        mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
+        mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
+        mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
+        mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
+        mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
+        mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
+        mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
+        mahasiswaDto.setNik(mahasiswa.getNik());
+        mahasiswaDto.setNisn(mahasiswa.getNisn());
+        mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
+        mahasiswaDto.setRt(mahasiswa.getRt());
+        mahasiswaDto.setRw(mahasiswa.getRw());
+        mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
+        mahasiswaDto.setKodepos(mahasiswa.getKodepos());
+        mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
+        mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
+        mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
+        mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
+        mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
+        mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
+        mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
+        mahasiswaDto.setIdUser(mahasiswa.getUser());
 
-            mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
-            mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
-            mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
-            mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
-            mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
-            mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
-            mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+        mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
+        mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
+        mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
+        mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
+        mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
+        mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
+        mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
+        mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
+        mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
+        mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
 
-            mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
-            mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
-            mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
-            mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
-            mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
-            mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
-            mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
-            model.addAttribute("mahasiswa", mahasiswaDto);
-            mahasiswaDto.setRfid(mahasiswa.getRfid());
-        
-            model.addAttribute("mahasiswa", mahasiswaDto);
+        mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
+        mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
+        mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
+        mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
+        mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
+        mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
+        mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
+        mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
+        mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
+        mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
+        model.addAttribute("mahasiswa", mahasiswaDto);
+        mahasiswaDto.setRfid(mahasiswa.getRfid());
+
+        model.addAttribute("mahasiswa", mahasiswaDto);
 
 
     }
 
     @PostMapping("/user/profile")
-    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result, MultipartFile file, MultipartFile ijazah, Authentication authentication) throws Exception {
+    public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result,
+                             MultipartFile file, MultipartFile ijazah,MultipartFile foto,@RequestParam(required = false) String type,
+                             Authentication authentication) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
 
         if (!file.isEmpty() || file != null){
@@ -393,6 +402,29 @@ public class DashboardController {
             mahasiswa.setFileIjazah(idFile + "." + extinsion);
         }else {
             mahasiswa.setFileIjazah(mahasiswa.getFileIjazah());
+        }
+
+        if (!foto.isEmpty() || foto != null){
+            String namaFile = foto.getName();
+            String namaFileAsli = foto.getOriginalFilename();
+
+            String extinsion = "";
+            int i = namaFileAsli.lastIndexOf('.');
+            int p = Math.max(namaFileAsli.lastIndexOf('/'), namaFileAsli.lastIndexOf('\\'));
+
+            if (i > p){
+                extinsion = namaFileAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = uploadKtp + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extinsion);
+            foto.transferTo(tujuan);
+
+            mahasiswa.setFoto(idFile + "." + extinsion);
+        }else {
+            mahasiswa.setFoto(mahasiswa.getFoto());
         }
 
 
@@ -451,19 +483,22 @@ public class DashboardController {
         ayah.setNomorAyah(mahasiswaDto.getNomorAyah());
         ayahDao.save(ayah);
 
+        if (type.equals("profile")){
+            return "user/profile?type=profile";
+        }else {
 
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
+            if (daftarUlang == null) {
+                DaftarUlang du = new DaftarUlang();
+                du.setMahasiswa(mahasiswa);
+                du.setTahunAkademik(tahunAkademik);
+                du.setStatus(StatusRecord.AKTIF);
+                daftarUlangDao.save(du);
+            }
+            return "redirect:study/comingsoon";
 
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
-        if (daftarUlang == null){
-            DaftarUlang du = new DaftarUlang();
-            du.setMahasiswa(mahasiswa);
-            du.setTahunAkademik(tahunAkademik);
-            du.setStatus(StatusRecord.AKTIF);
-            daftarUlangDao.save(du);
         }
-
-        return "redirect:/study/comingsoon";
     }
 
     @GetMapping("/admin")
@@ -516,8 +551,29 @@ public class DashboardController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/email/template")
-    public void emailTemplate(){
+    @GetMapping("/upload/{foto}/mahasiswa/")
+    public ResponseEntity<byte[]> turnitin(@PathVariable Mahasiswa foto, Model model) throws Exception {
+        String lokasiFile = uploadKtp + File.separator + foto.getNim()
+                + File.separator + foto.getFoto();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (foto.getFoto().toLowerCase().endsWith("jpeg") || foto.getFoto().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (foto.getFoto().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (foto.getFoto().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
 
     }
 

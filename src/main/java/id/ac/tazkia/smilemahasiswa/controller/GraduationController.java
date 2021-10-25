@@ -1254,7 +1254,6 @@ public class GraduationController {
             if (skripsi == null) {
                 if (seminar.getKetuaPenguji() == dosen) {
                     seminar.setPublish(StatusRecord.AKTIF.toString());
-
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                         seminar.setStatusSempro(StatusApprove.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
@@ -1263,6 +1262,8 @@ public class GraduationController {
                             enableFiture.setEnable(Boolean.FALSE);
                             enableFitureDao.save(enableFiture);
                         }
+                    }else {
+                        seminar.setStatusSempro(StatusApprove.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }
@@ -1278,7 +1279,6 @@ public class GraduationController {
             if (study == null) {
                 if (seminar.getKetuaPenguji() == dosen) {
                     seminar.setPublish(StatusRecord.AKTIF.toString());
-
                     if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
                         seminar.setStatusSempro(StatusApprove.FAILED);
                         seminar.setStatus(StatusApprove.FAILED);
@@ -1287,6 +1287,8 @@ public class GraduationController {
                             enableFiture.setEnable(Boolean.FALSE);
                             enableFitureDao.save(enableFiture);
                         }
+                    }else {
+                        seminar.setStatusSempro(StatusApprove.APPROVED);
                     }
                     seminarDao.save(seminar);
                 }

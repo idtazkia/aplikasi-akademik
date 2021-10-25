@@ -53,7 +53,8 @@
                     <div class="card-body color-header">
                         <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
                             <div class="col-md-12 col-xs-12 text-center">
-                                <img th:src="@{/img/profile.png}" class="profile-picture">
+                                <img th:if="${mahasiswa.foto != null}" th:src="@{/upload/{foto}/mahasiswa/(foto=${mahasiswa.id})}"  class="profile-picture">
+                                <img th:if="${mahasiswa.foto == null}"  th:src="@{/img/profile.png}"  class="profile-picture">
                             </div>
                         </div>
                     </div>
@@ -498,6 +499,7 @@
                                 </div>
                             </div>
 
+                            <input th:if="${type != null}" type="hidden" name="type" th:value="${type}">
 
                             <div class="form-group">
                                 <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
@@ -512,6 +514,14 @@
                                     <div class="col-md-12 col-xs-12">
                                         <label>Upload Ijazah</label>
                                         <input type="file" name="ijazah" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row" style="margin-top: 12px; margin-bottom: 12px;">
+                                    <div class="col-md-12 col-xs-12">
+                                        <label>Upload Foto Mahasiswa</label>
+                                        <input type="file" name="foto" class="form-control">
                                     </div>
                                 </div>
                             </div>

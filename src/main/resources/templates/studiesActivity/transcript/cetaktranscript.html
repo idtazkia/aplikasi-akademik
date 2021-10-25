@@ -60,95 +60,192 @@
             </div>
         </div>
         <br>
-        <div class="row">
+        <div class="row" th:if="${mahasiswa != null}">
             <div class="col-md-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <h3 class="mb-0">Result Search</h3>
-                    </div>
-                    <div class="card-body" th:if="${mahasiswa != null}">
-                        <form method="post" th:action="@{/studiesActivity/transcript/cetaktranscript (mahasiswa = ${mahasiswa.id})}" th:object="${mahasiswa}">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>NIM</label>
-                                        <input type="text" readonly th:value="${mahasiswa.nim}" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Nama</label>
-                                        <input type="text" readonly th:value="${mahasiswa.nama}" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tanggal Lulus</label>
-                                        <input type="date" th:field="*{tanggalLulus}" required name="tanggalLulus" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>No Transkript</label>
-                                        <input type="text" th:field="*{noTranskript}" required name="noTranskript" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Judul Skripsi/ Tesis</label>
-                                        <input type="text" th:field="*{judul}" required name="judul" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Thesis Title</label>
-                                        <input type="text" th:field="*{title}" required name="title" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>NIRM</label>
-                                        <input type="text" th:field="*{nirm}" required name="nirm" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>NIRL</label>
-                                        <input type="text" th:field="*{nirl}" required name="nirl" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <center>
-                                    <button type="submit" class="btn btn-success">Save</button>
-                                </center>
-                            </div>
-                        </form>
-                        <div class="alert alert-danger" th:if="${mahasiswa.tanggalLahir == null}">
-                            <center>
-                                <strong>Silahkan lengkapi tanggal lahir mahasiswa terlebih dahulu!</strong>
-                            </center>
-                        </div>
-                        <div class="form-group" th:if="${mahasiswa.nirl != null && mahasiswa.tanggalLahir != null}">
-                            <center>
-                                <a  th:href="@{/studiesActivity/transcript/transkriptindo (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-warning">Indonesia</a>
-                                <a  th:href="@{/studiesActivity/transcript/transkriptexcel (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-primary">Inggris</a>
-                            </center>
+                        <div class="nav-wrapper">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1"
+                                       role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="fas fa-file"></i> Format 1</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2"
+                                       role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="fas fa-file"></i> Format 2</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                    <form method="post" th:action="@{/studiesActivity/transcript/cetaktranscript (mahasiswa = ${mahasiswa.id})}" th:object="${mahasiswa}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>NIM</label>
+                                                    <input type="text" readonly th:value="${mahasiswa.nim}" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Nama</label>
+                                                    <input type="text" readonly th:value="${mahasiswa.nama}" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Tanggal Lulus</label>
+                                                    <input type="date" th:field="*{tanggalLulus}" required name="tanggalLulus" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>No Transkript</label>
+                                                    <input type="text" th:field="*{noTranskript}" required name="noTranskript" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Judul Skripsi/ Tesis</label>
+                                                    <input type="text" th:field="*{judul}" required name="judul" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Thesis Title</label>
+                                                    <input type="text" th:field="*{title}" required name="title" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>NIRM</label>
+                                                    <input type="text" th:field="*{nirm}" required name="nirm" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>NIRL</label>
+                                                    <input type="text" th:field="*{nirl}" required name="nirl" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <center>
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </center>
+                                        </div>
+                                    </form>
+                                    <div class="alert alert-danger" th:if="${mahasiswa.tanggalLahir == null}">
+                                        <center>
+                                            <strong>Silahkan lengkapi tanggal lahir mahasiswa terlebih dahulu!</strong>
+                                        </center>
+                                    </div>
+                                    <div class="form-group" th:if="${mahasiswa.nirl != null && mahasiswa.tanggalLahir != null}">
+                                        <center>
+                                            <a  th:href="@{/studiesActivity/transcript/transkriptindo (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-warning">Indonesia</a>
+                                            <a  th:href="@{/studiesActivity/transcript/transkriptexcel (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-primary">Inggris</a>
+                                        </center>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                    <form method="post" th:action="@{/studiesActivity/transcript/cetaktranscript (mahasiswa = ${mahasiswa.id})}" th:object="${mahasiswa}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>NIM</label>
+                                                    <input type="text" readonly th:value="${mahasiswa.nim}" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Nama</label>
+                                                    <input type="text" readonly th:value="${mahasiswa.nama}" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Tanggal Lulus</label>
+                                                    <input type="date" th:field="*{tanggalLulus}" required name="tanggalLulus" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>No Transkript</label>
+                                                    <input type="text" th:field="*{noTranskript}" required name="noTranskript" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Judul Skripsi/ Tesis</label>
+                                                    <input type="text" th:field="*{judul}" required name="judul" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Thesis Title</label>
+                                                    <input type="text" th:field="*{title}" required name="title" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Nomor Induk Nasional</label>
+                                                    <input type="text" th:field="*{indukNasional}" required name="indukNasional" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <center>
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </center>
+                                        </div>
+                                    </form>
+                                    <div class="alert alert-danger" th:if="${mahasiswa.tanggalLahir == null}">
+                                        <center>
+                                            <strong>Silahkan lengkapi tanggal lahir mahasiswa terlebih dahulu!</strong>
+                                        </center>
+                                    </div>
+                                    <div class="form-group" th:if="${mahasiswa.nirl != null && mahasiswa.tanggalLahir != null}">
+                                        <center>
+                                            <a  th:href="@{/studiesActivity/transcript/transkriptindo2 (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-warning">Indonesia</a>
+                                            <a  th:href="@{/studiesActivity/transcript/transkriptexcel2 (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-primary">Inggris</a>
+                                        </center>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
