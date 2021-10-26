@@ -100,9 +100,6 @@
                                         <th scope="col">#</th>
                                         <th scope="col">NIM</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">Mentor</th>
-                                        <th scope="col">Chairman</th>
-                                        <th scope="col">Examiner</th>
                                         <th scope="col">Status</th>
                                         <th></th>
                                     </tr>
@@ -218,11 +215,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <td th:text="${data.note.dosen.karyawan.namaKaryawan}"></td>
-                                        <td th:if="${data.ketuaPenguji != null}" th:text="${data.ketuaPenguji.karyawan.namaKaryawan}"></td>
-                                        <td th:if="${data.ketuaPenguji == null}"></td>
-                                        <td th:if="${data.dosenPenguji != null}" th:text="${data.dosenPenguji.karyawan.namaKaryawan}"></td>
-                                        <td th:if="${data.dosenPenguji == null}"></td>
                                         <td>
                                             <button class="btn btn-info btn-sm" th:data-target="${'#modal-publish'+data.id}" data-toggle="modal" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.WAITING}">Menunggu Penilaian Lengkap</button>
                                             <button class="btn btn-primary btn-sm" th:data-target="${'#modal-publish'+data.id}" data-toggle="modal" th:if="${data.status == data.status.APPROVED && data.statusSempro == data.statusSempro.APPROVED && data.publish == 'NONAKTIF'}">Menunggu Publish</button>
