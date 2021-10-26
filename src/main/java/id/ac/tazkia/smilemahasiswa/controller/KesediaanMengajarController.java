@@ -1,13 +1,11 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import id.ac.tazkia.smilemahasiswa.dao.KesediaanMengajarJawabanDao;
 import id.ac.tazkia.smilemahasiswa.dao.KesediaanMengajarPertanyaanDao;
 import id.ac.tazkia.smilemahasiswa.dao.KesediaanMengajarSubPertanyaanDao;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Controller
 public class KesediaanMengajarController {
