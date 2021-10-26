@@ -142,7 +142,7 @@
                                                         </div>
                                                         <br>
 
-<!--                                                        <span th:if="${data.statusSempro != data.statusSempro.APPROVED}">-->
+                                                        <!--                                                        <span th:if="${data.statusSempro != data.statusSempro.APPROVED}">-->
                                                         <span>
                                                               <div class="row" th:if="${data.status == data.status.APPROVED}">
                                                                 <div class="col-md-6">
@@ -236,9 +236,7 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="exampleModalLabel">Detail Nilai</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <a th:href="@{/graduation/seminar/score(seminar = ${data.id})}" class="btn btn-sm btn-default"><i class="fas fa-edit"></i></i> Edit Nilai</a>
                                                         </div>
                                                         <div class="modal-body">
                                                             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -444,7 +442,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
-<!--                                                            <button type="button" class="btn btn-primary">Publish</button>-->
+                                                            <!--                                                            <button type="button" class="btn btn-primary">Publish</button>-->
                                                         </div>
                                                     </div>
                                                 </div>
