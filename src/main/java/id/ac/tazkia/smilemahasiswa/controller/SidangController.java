@@ -117,8 +117,8 @@ public class SidangController {
     @GetMapping("/api/sidang")
     @ResponseBody
     public Object[] validasiSidang(@RequestParam Ruangan ruangan, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
-                                    @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
+                                   @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime jamMulai,
+                                   @RequestParam @DateTimeFormat(pattern = "HH:mm:ss")LocalTime jamSelesai){
         if (tanggal.getDayOfWeek().getValue() == 7){
             Hari hari = hariDao.findById("0").get();
             TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -182,7 +182,7 @@ public class SidangController {
             return "redirect:../../seminar/nilai?id="+seminar.getId();
         }else {
             model.addAttribute("seminar",seminar);
-              System.out.println(LocalDate.now());
+            System.out.println(LocalDate.now());
             if (LocalDate.now().compareTo(LocalDate.parse("2021-10-29")) <= 0 ){
                 return "redirect:info";
             }else {
@@ -445,7 +445,7 @@ public class SidangController {
         model.addAttribute("selectedProdi",prodi);
 
         if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDesc(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),Arrays.asList(StatusApprove.REJECTED),page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikNotInAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(tahunAkademik,prodi,Arrays.asList(StatusApprove.REJECTED),Arrays.asList(StatusApprove.REJECTED),page));
         }
     }
 
@@ -455,7 +455,7 @@ public class SidangController {
         model.addAttribute("selectedProdi",prodi);
 
         if (tahunAkademik != null){
-            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotIn(tahunAkademik,prodi,StatusApprove.APPROVED,Arrays.asList(StatusApprove.REJECTED),page));
+            model.addAttribute("listSidang", sidangDao.findByTahunAkademikAndSeminarNoteMahasiswaIdProdiAndAkademikAndStatusSidangNotInOrderByAkademikDescStatusSidangDescPublishDesc(tahunAkademik,prodi,StatusApprove.APPROVED,Arrays.asList(StatusApprove.REJECTED),page));
         }
     }
 

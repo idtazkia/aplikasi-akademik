@@ -1,8 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
+import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
 import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
-import id.ac.tazkia.smilemahasiswa.entity.Sidang;
+import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,61 @@ import java.math.RoundingMode;
 public class SidangService {
     @Autowired
     private SidangDao sidangDao;
+
+    @Autowired
+    private SeminarDao seminarDao;
+
+    @Autowired
+    private EnableFitureDao enableFitureDao;
+
+    public Seminar updatePublish(Seminar seminar,SeminarDto seminarDto){
+        BeanUtils.copyProperties(seminarDto,seminar);
+        if (seminarDto.getJenis() == StatusRecord.SKRIPSI){
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiF = seminar.getKf().add(seminar.getUf()).add(seminar.getPf()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilaiF(nilaiF);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+        }
+
+        if (seminarDto.getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.25));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+
+        }
+
+        seminar.setPublish(StatusRecord.AKTIF.toString());
+        if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+            seminar.setStatusSempro(StatusApprove.FAILED);
+            seminar.setStatus(StatusApprove.FAILED);
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+            if (enableFiture != null) {
+                enableFiture.setEnable(Boolean.FALSE);
+                enableFitureDao.save(enableFiture);
+            }
+        }else {
+            seminar.setStatusSempro(StatusApprove.APPROVED);
+        }
+        seminarDao.save(seminar);
+        return seminar;
+    }
 
     public SidangDto getKetua(Sidang sidang){
         SidangDto sidangDto = new SidangDto();

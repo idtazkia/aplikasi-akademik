@@ -65,7 +65,7 @@
                                         </button>
                                     </div>
                                     <form method="get" th:action="@{/report/tugas_akhir}">
-                                    <div class="modal-body" th:if="${selectedProdi != null}">
+                                        <div class="modal-body" th:if="${selectedProdi != null}">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -86,11 +86,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Create</button>
-                                    </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -188,10 +188,10 @@
                                                                         <div class="col-12 col-lg-10 offset-lg-1">
                                                                             <div class="row">
                                                                                 <div class="col-12">
-                                                                                    <div class="text-center text-150">
-                                                                                        <i class="fa fa-book fa-2x text-success-m2 mr-1"></i>
-                                                                                        <span class="text-default-d3">Detail Sidang</span>
-                                                                                    </div>
+                                                                                    <b>Judul Skripsi/Tesis</b>
+                                                                                    <p class="text-sm" style="white-space: pre-wrap" th:text="${data.judulTugasAkhir}">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+                                                                                    <b>Judul Inggris Skripsi/Tesis</b>
+                                                                                    <p class="text-sm" style="white-space: pre-wrap" th:text="${data.judulInggris}">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                                                                                 </div>
                                                                             </div>
                                                                             <!-- .row -->
@@ -242,54 +242,54 @@
                                                                                 <div class="row border-b-2 brc-default-l2"></div>
                                                                                 <!-- or use a table instead -->
 
-                                                                        <div class="table-responsive">
-                                                                            <table class="table table-striped table-borderless border-0 border-b-2 brc-default-l1">
-                                                                                <thead class="bg-none bgc-default-tp1">
-                                                                                    <tr class="text-black">
-                                                                                        <th class="opacity-2">#</th>
-                                                                                        <th>Komponen</th>
-                                                                                        <th>Ketua</th>
-                                                                                        <th>Pembimbing</th>
-                                                                                        <th>Penguji</th>
-                                                                                    </tr>
-                                                                                </thead>
+                                                                                <div class="table-responsive">
+                                                                                    <table class="table table-striped table-borderless border-0 border-b-2 brc-default-l1">
+                                                                                        <thead class="bg-none bgc-default-tp1">
+                                                                                        <tr class="text-black">
+                                                                                            <th class="opacity-2">#</th>
+                                                                                            <th>Komponen</th>
+                                                                                            <th>Ketua</th>
+                                                                                            <th>Pembimbing</th>
+                                                                                            <th>Penguji</th>
+                                                                                        </tr>
+                                                                                        </thead>
 
-                                                                                <tbody class="text-95 text-secondary-d3">
-                                                                                    <tr></tr>
-                                                                                    <tr>
-                                                                                        <td>1</td>
-                                                                                        <td>Pembahasan</td>
-                                                                                        <td align="center" th:text="${data.ka}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pa}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ua}">90.00</td>
-                                                                                    </tr>
+                                                                                        <tbody class="text-95 text-secondary-d3">
+                                                                                        <tr></tr>
+                                                                                        <tr>
+                                                                                            <td>1</td>
+                                                                                            <td>Pembahasan</td>
+                                                                                            <td align="center" th:text="${data.ka}">90.00</td>
+                                                                                            <td align="center" th:text="${data.pa}">90.00</td>
+                                                                                            <td align="center" th:text="${data.ua}">90.00</td>
+                                                                                        </tr>
 
-                                                                                    <tr>
-                                                                                        <td>2</td>
-                                                                                        <td>Penguasaan Materi</td>
-                                                                                        <td align="center" th:text="${data.kb}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pb}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ub}">90.00</td>
-                                                                                    </tr>
+                                                                                        <tr>
+                                                                                            <td>2</td>
+                                                                                            <td>Penguasaan Materi</td>
+                                                                                            <td align="center" th:text="${data.kb}">90.00</td>
+                                                                                            <td align="center" th:text="${data.pb}">90.00</td>
+                                                                                            <td align="center" th:text="${data.ub}">90.00</td>
+                                                                                        </tr>
 
-                                                                                    <tr>
-                                                                                        <td>3</td>
-                                                                                        <td>Teknik Penulisan</td>
-                                                                                        <td align="center" th:text="${data.kc}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pc}">90.00</td>
-                                                                                        <td align="center" th:text="${data.uc}">90.00</td>
-                                                                                    </tr>
+                                                                                        <tr>
+                                                                                            <td>3</td>
+                                                                                            <td>Teknik Penulisan</td>
+                                                                                            <td align="center" th:text="${data.kc}">90.00</td>
+                                                                                            <td align="center" th:text="${data.pc}">90.00</td>
+                                                                                            <td align="center" th:text="${data.uc}">90.00</td>
+                                                                                        </tr>
 
-                                                                                    <tr>
-                                                                                        <td>4</td>
-                                                                                        <td>Presentasi dan Pemaparan</td>
-                                                                                        <td align="center" th:text="${data.kd}">90.00</td>
-                                                                                        <td align="center" th:text="${data.pd}">90.00</td>
-                                                                                        <td align="center" th:text="${data.ud}">90.00</td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
+                                                                                        <tr>
+                                                                                            <td>4</td>
+                                                                                            <td>Presentasi dan Pemaparan</td>
+                                                                                            <td align="center" th:text="${data.kd}">90.00</td>
+                                                                                            <td align="center" th:text="${data.pd}">90.00</td>
+                                                                                            <td align="center" th:text="${data.ud}">90.00</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
 
 
                                                                                 <div class="row mt-3">

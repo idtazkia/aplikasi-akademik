@@ -8,10 +8,13 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
+import id.ac.tazkia.smilemahasiswa.dto.request.RequestCicilanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.SidangService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -106,6 +109,9 @@ public class GraduationController {
 
     @Autowired
     private SidangDao sidangDao;
+
+    @Autowired
+    private SidangService sidangService;
 
     @Value("classpath:sample/example.xlsx")
     private Resource example;
@@ -819,7 +825,7 @@ public class GraduationController {
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
-            model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputAsc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
+            model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
         }
     }
 
@@ -1003,6 +1009,44 @@ public class GraduationController {
         }
         model.addAttribute("dosen", dosen);
         model.addAttribute("seminar",seminar);
+
+    }
+
+    @GetMapping("/graduation/seminar/score")
+    public void nilaiProdi(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+
+        if (kosong != null){
+            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        }
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("seminar",seminar);
+
+    }
+
+    @PostMapping("/graduation/seminar/updatescore")
+    public String updatePublish(Model model, Authentication authentication,@RequestParam Seminar seminar ,@Valid SeminarDto seminarDto){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        model.addAttribute("dosen" , dosen);
+
+        sidangService.updatePublish(seminar,seminarDto);
+
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+
 
     }
 
@@ -1307,31 +1351,31 @@ public class GraduationController {
 
     @PostMapping("/graduation/seminar/finalisasi")
     public String finalisasiSeminar(@RequestParam Seminar seminar){
-                Object jenis = null;
-                if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
-                    jenis = seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO);
-                }
-                if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
-                    jenis = seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO);
-                }
-                if (jenis == null) {
-                    seminar.setPublish(StatusRecord.AKTIF.toString());
+        Object jenis = null;
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            jenis = seminarDao.validasiSemproStudy(seminar,BigDecimal.ZERO);
+        }
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            jenis = seminarDao.validasiSemproSKripsi(seminar, BigDecimal.ZERO);
+        }
+        if (jenis == null) {
+            seminar.setPublish(StatusRecord.AKTIF.toString());
 
-                    if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-                        seminar.setStatusSempro(StatusApprove.FAILED);
-                        seminar.setStatus(StatusApprove.FAILED);
-                        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
-                        if (enableFiture != null) {
-                            enableFiture.setEnable(Boolean.FALSE);
-                            enableFitureDao.save(enableFiture);
-                        }
-                    }
-                    seminarDao.save(seminar);
-                    return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
-
-                }else {
-                    return "lengkapi";
+            if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                seminar.setStatusSempro(StatusApprove.FAILED);
+                seminar.setStatus(StatusApprove.FAILED);
+                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                if (enableFiture != null) {
+                    enableFiture.setEnable(Boolean.FALSE);
+                    enableFitureDao.save(enableFiture);
                 }
+            }
+            seminarDao.save(seminar);
+            return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+
+        }else {
+            return "lengkapi";
+        }
 
     }
 

@@ -20,7 +20,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
-                                        <span class="h2 font-weight-bold mb-0">Seminar</span>
+                                        <span class="h2 font-weight-bold mb-0">Sidang</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
@@ -104,7 +104,7 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="data,row : ${listSidang}">
-                                        <td>1</td>
+                                        <td th:text="${(row.index + 1) + (listSidang.number * listSidang.size)}">1</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.seminar.note.mahasiswa.nama}">Muhammmad Rafizki</td>
                                         <td th:text="${data.seminar.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki</td>
