@@ -99,7 +99,8 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">NIM</th>
-                                        <th scope="col">Name</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Pembimbing</th>
                                         <th scope="col">Status</th>
                                         <th></th>
                                     </tr>
@@ -109,6 +110,7 @@
                                         <td th:text="${(row.index + 1) + (listSempro.number * listSempro.size)}">1</td>
                                         <td th:text="${data.note.mahasiswa.nim}">12121</td>
                                         <td th:text="${data.note.mahasiswa.nama}">Muhammmad Rafizki</td>
+                                        <td th:text="${data.note.dosen.karyawan.namaKaryawan}">Muhammmad Rafizki</td>
                                         <div class="modal fade" th:id="${'modal-default' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
