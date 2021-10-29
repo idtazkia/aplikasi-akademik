@@ -97,6 +97,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/report/historymahasiswa").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_KPS")
                 .antMatchers("/report/cuti").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1","VIEW_AKADEMIK2", "VIEW_STAFF", "VIEW_KPS")
                 .anyRequest().authenticated()
+                .and().headers().frameOptions().sameOrigin()
                 .and().logout().permitAll()
                 .and().oauth2Login().loginPage("/login").permitAll()
                 .userInfoEndpoint()

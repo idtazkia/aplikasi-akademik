@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                                        <span class="h2 font-weight-bold mb-0">Memo Keuangan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Form</h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="alert alert-danger" th:if="${gagal != null}">
+                            <span>Maksimal Memo 4</span><br>
+                            Memo pada <text th:text="${tahun.namaTahunAkademik}"></text> dan Angkatan <text th:text="${ang}"></text> Sudah maksimal
+                        </div>
+
+                        <form method="post" th:action="@{/memoKeuangan/form}" enctype="multipart/form-data" th:object="${newMemo}">
+                            <div class="form-group">
+                                <label>Nama</label>
+                                <input type="text" name="nama" class="form-control" th:field="*{nama}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tahun Akademik</label>
+                                <select class="form-control" required name="tahunAkademik"
+                                        id="select2-tahun" th:field="*{tahunAkademik}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${tahunAkademik}"
+                                            th:text="${data.namaTahunAkademik}"
+                                            th:value="${data.id}"></option>
+                                </select>
+                                <input type="hidden" name="tahun" id="isiTahun">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Angkatan</label>
+                                <select name="angkatan" id="select2-angkatan" required class="form-control" th:field="*{angkatan}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${angkatan}"
+                                            th:text="${data}"
+                                            th:value="${data}"></option>
+                                </select>
+                                <input type="hidden" name="ang" id="isiAngkatan">
+                            </div>
+
+                            <div class="form-group">
+                                <label >Memo</label>
+                                <input type="file" name="file" required class="form-control" placeholder="Upload Memo" autofocus>
+                            </div>
+
+                            <div class="form-group" id="statusMemo" style="display: none">
+                                <label>Status Memo</label>
+                                <select name="angkatan" id="" required class="form-control" th:field="*{statusMemo}">
+                                    <option value=""></option>
+                                    <option th:each="data : ${status}"
+                                            th:text="${data}"
+                                            th:value="${data}"></option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" name="id" th:field="*{id}">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a th:href="@{/memoKeuangan/list}" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+
+    (function ($){
+        $('#select2-tahun').select2();
+        $('#select2-angkatan').select2();
+
+        $('#select2-tahun').on('select2:selecting', function (e){
+            console.log('Selecting: ', e.params.args.data.id);
+            $('#isiTahun').val(e.params.args.data.id);
+        });
+
+        $('#select2-angkatan').on('select2:selecting', function (e){
+            console.log('Selecting: ', e.params.args.data);
+            $('#isiAngkatan').val(e.params.args.data.id);
+        });
+
+    })(jQuery);
+
+    // function cekMemo(){
+    //     const url = '/api/memo?idTahun='+$('#isiTahun').val()+'&angkatan='+$('#isiAngkatan').val();
+    //
+    //     var memo = document.getElementById("statusMemo");
+    //
+    //     $.getJSON(url, function (data){
+    //         console.log(data);
+    //
+    //         if (data.length > 0){
+    //             memo.style.display = "block";
+    //         }else{
+    //             memo.style.display = "none";
+    //         }
+    //
+    //     });
+    //
+    // }
+
+</script>

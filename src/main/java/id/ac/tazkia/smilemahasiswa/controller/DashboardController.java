@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -137,6 +138,9 @@ public class DashboardController {
 
     @Autowired
     private DaftarUlangDao daftarUlangDao;
+    
+    @Autowired
+    private MemoKeuanganDao memoKeuanganDao;
 
 
     @ModelAttribute("agama")
@@ -181,7 +185,7 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboardUtama(Model model, Authentication authentication){
+    public String dashboardUtama(Model model, Authentication authentication, Device device){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -248,6 +252,14 @@ public class DashboardController {
             if (tagihan == null){
                 model.addAttribute("cekTagihan", "cekTagihan");
             }
+        }
+
+        model.addAttribute("memo", memoKeuanganDao.findByTahunAkademikAndAngkatanAndStatusOrderByCreateTime(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), mahasiswa.getAngkatan(), StatusRecord.AKTIF));
+
+        if (device.isMobile()) {
+            model.addAttribute("mobile", "mobile device");
+        }else{
+            model.addAttribute("normal", "normal devide");
         }
 
         return "dashboard";

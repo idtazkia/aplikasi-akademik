@@ -1,25 +1,44 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import com.lowagie.text.pdf.codec.wmf.MetaDo;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.payment.SisaTagihanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.authenticator.SpnegoAuthenticator;
 import org.apache.commons.math3.geometry.enclosing.EnclosingBall;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
-@Controller
+@Controller @Slf4j
 public class FinanceController {
 
     @Autowired
@@ -40,6 +59,12 @@ public class FinanceController {
     private KrsDetailDao krsDetailDao;
     @Autowired
     private TagihanDao tagihanDao;
+    @Autowired
+    private MemoKeuanganDao memoKeuanganDao;
+    @Autowired
+    private CurrentUserService currentUserService;
+    @Autowired
+    private KaryawanDao karyawanDao;
 
 
     @ModelAttribute("prodi")
@@ -61,6 +86,9 @@ public class FinanceController {
     public Iterable<TahunAkademik> tahun() {
         return tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS));
     }
+
+    @Value("${upload.memoKeuangan}")
+    private String uploadMemo;
 
     @GetMapping("/activation/krs")
     public void aktifasiKrs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
@@ -313,6 +341,145 @@ public class FinanceController {
 
         return "redirect:peringanan?tahunAkademik="+tahunAkademik.getId()+"&nim="+nim;
 
+    }
+
+    // memo keuangan
+
+    @GetMapping("/memoKeuangan/list")
+    public void listMemo(Model model, @PageableDefault(size = 10) Pageable page, String search){
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listMemo", memoKeuanganDao.findByStatusNotInAndNamaContainingIgnoreCaseOrderByCreateTime(Arrays.asList(StatusRecord.HAPUS), search, page));
+        }else{
+            model.addAttribute("listMemo", memoKeuanganDao.findByStatusNotInOrderByCreateTime(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
+    }
+
+    @GetMapping("/memoKeuangan/form")
+    public void formMemo(Model model){
+
+        model.addAttribute("newMemo", new MemoKeuangan());
+        model.addAttribute("tahunAkademik", tahun());
+        model.addAttribute("angkatan", angkatan());
+        model.addAttribute("status", StatusMemo.values());
+
+    }
+
+    @GetMapping("/api/memo")
+    @ResponseBody
+    public List<MemoKeuangan> memo(@RequestParam(required = false) String idTahun,
+                                   @RequestParam(required = false) String angkatan){
+
+        TahunAkademik tahun = tahunAkademikDao.findById(idTahun).get();
+        List<MemoKeuangan> mk = memoKeuanganDao.findByTahunAkademikAndAngkatanAndStatusOrderByCreateTime(tahun, angkatan, StatusRecord.AKTIF);
+
+        return mk;
+
+    }
+
+    @PostMapping("/memoKeuangan/form")
+    public String inputMemo(@ModelAttribute @Valid MemoKeuangan memoKeuangan, BindingResult errors, MultipartFile file, Authentication authentication,
+                            RedirectAttributes attributes) throws IOException {
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+
+        Integer jumlah = memoKeuanganDao.countAllByTahunAkademikAndAngkatanAndStatus(memoKeuangan.getTahunAkademik(), memoKeuangan.getAngkatan(), StatusRecord.AKTIF);
+        if (jumlah < 4) {
+            if (memoKeuangan.getStatusMemo() == StatusMemo.MENGGANTI) {
+                List<MemoKeuangan> memo = memoKeuanganDao.findByTahunAkademikAndAngkatanAndStatusOrderByCreateTime(memoKeuangan.getTahunAkademik(), memoKeuangan.getAngkatan(), StatusRecord.AKTIF);
+                for (MemoKeuangan m : memo){
+                    m.setStatus(StatusRecord.NONAKTIF);
+                    memoKeuanganDao.save(m);
+                }
+            }
+
+            String namaFile = file.getName();
+            String jenisFile = file.getContentType();
+            String namaAsli = file.getOriginalFilename();
+            Long ukuran = file.getSize();
+
+            log.debug("nama file : {}", namaFile);
+            log.debug("jenis file : {}", jenisFile);
+            log.debug("nama asli : {}", namaAsli);
+            log.debug("ukuran file : {}", ukuran);
+
+            if (errors.hasErrors()) {
+                log.debug("Error upload memo : {}", errors);
+            }
+
+            // Memisahkan file
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i+1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = uploadMemo + File.separator;
+            log.info("Lokasi Upload : {}", lokasiUpload);
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            memoKeuangan.setDocument(idFile + "." + extension);
+            file.transferTo(tujuan);
+            log.debug("file sudah dicopy ke : {}", tujuan.getAbsolutePath());
+            memoKeuangan.setCreateUser(karyawan);
+            memoKeuanganDao.save(memoKeuangan);
+        }else{
+            attributes.addFlashAttribute("tahun", memoKeuangan.getTahunAkademik());
+            attributes.addFlashAttribute("ang", memoKeuangan.getAngkatan());
+            attributes.addFlashAttribute("gagal", "memo sudah maksimal");
+            return "redirect:form";
+        }
+
+        return "redirect:list";
+    }
+
+    @GetMapping("/upload/{memo}/keuangan/")
+    public ResponseEntity<byte[]> tampilkanMemo(@PathVariable MemoKeuangan memo) throws Exception {
+        String lokasiFile = uploadMemo + File.separator + memo.getDocument();
+        log.info("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (memo.getDocument().toLowerCase().endsWith("jpeg") || memo.getDocument().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (memo.getDocument().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (memo.getDocument().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            log.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
+    @SneakyThrows
+    @PostMapping("/memoKeuangan/delete")
+    public String deleteMemo(@RequestParam MemoKeuangan memo){
+
+        memo.setStatus(StatusRecord.HAPUS);
+        memoKeuanganDao.save(memo);
+
+//        Path path = Paths.get(uploadMemo + File.separator + memo.getDocument());
+//        try {
+//            Files.delete(path);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        return "redirect:list";
     }
 
 }

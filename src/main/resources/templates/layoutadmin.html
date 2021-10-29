@@ -375,6 +375,12 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE')">
+                    <a class="nav-link " th:href="@{/memoKeuangan/list}">
+                        <i class="ni ni-book-bookmark text-info"></i>
+                        Memo Keuangan
+                    </a>
+                </li>
 
                 <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-grad" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
