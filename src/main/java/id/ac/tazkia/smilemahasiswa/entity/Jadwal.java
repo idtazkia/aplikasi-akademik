@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Entity
 @Data
-public class Jadwal {
+public class Jadwal extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid" )
@@ -91,5 +91,13 @@ public class Jadwal {
     private Integer kapasitas;
 
     private String idNumberElearning;
+
+    @ManyToOne
+    @JoinColumn(name = "akses_uts")
+    private Dosen aksesUts;
+
+    @ManyToOne
+    @JoinColumn(name = "akses_uas")
+    private Dosen aksesUas;
 
 }

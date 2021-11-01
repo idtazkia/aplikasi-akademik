@@ -134,6 +134,8 @@
                                         <select id="locality-dropdown"  class="form-control" onchange="waktu()">
                                         </select>
                                         <input type="hidden" id="isiSesi" name="sesi" th:field="*{sesi}">
+                                        <input type="hidden" name="aksesUts" th:field="*{aksesUts}">
+                                        <input type="hidden" name="aksesUas" th:field="*{aksesUas}">
                                         <input type="hidden" id="idNumberElearning" name="idNumberElearning" th:field="*{idNumberElearning}">
                                         <input type="hidden" id="sks" th:value="${jadwal.matakuliahKurikulum.jumlahSks}">
                                     </div>
