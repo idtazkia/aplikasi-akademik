@@ -34,7 +34,7 @@ public interface CutiDao extends PagingAndSortingRepository<Cuti, String> {
             "inner join dosen as d on d.id = c.id_dosen\n" +
             "inner join karyawan as e on e.id = d.id_karyawan\n" +
             "inner join s_user as g on g.id = e.id_user\n" +
-            "where e.id = ?1 and a.status = 'AKTIF' and a.status_pengajuaan = 'APPROVED_DOSEN_WALI' or a.status_pengajuaan = 'APPROVED'\n" +
+            "where a.dosen_wali_approved = ?1 and a.status = 'AKTIF' and a.status_pengajuaan = 'APPROVED_DOSEN_WALI' or a.status_pengajuaan = 'APPROVED'\n" +
             "order by a.status_pengajuaan desc", nativeQuery = true)
     List<Object[]> listCutiKps(User user);
 
