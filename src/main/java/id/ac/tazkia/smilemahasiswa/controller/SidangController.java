@@ -183,7 +183,7 @@ public class SidangController {
         }else {
             model.addAttribute("seminar",seminar);
             System.out.println(LocalDate.now());
-            if (LocalDate.now().compareTo(LocalDate.parse("2021-10-29")) <= 0 ){
+            if (LocalDate.now().compareTo(LocalDate.parse("2021-11-30")) <= 0 ){
                 return "redirect:info";
             }else {
                 return "graduation/sidang/mahasiswa/pendaftaran";
