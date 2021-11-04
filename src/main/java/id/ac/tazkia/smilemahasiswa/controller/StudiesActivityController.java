@@ -53,6 +53,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -789,12 +790,30 @@ public class StudiesActivityController {
 
             TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
             model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahunAkademik));
+            model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademik));
         }else{
             TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
             model.addAttribute("jadwal", jadwalDao.lecturerAssesment(dosen,StatusRecord.AKTIF, tahun));
         }
 
 
+    }
+
+    @PostMapping("/studiesActivity/assesment/setting")
+    public String saveAkses(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uts, @RequestParam(required = false) String uas){
+
+        log.info("jadwal: {}", jadwal.getId());
+        log.info("uts: {}", uts);
+        log.info("uas: {}", uas);
+
+        Dosen Duts = dosenDao.findById(uts).get();
+        Dosen Duas = dosenDao.findById(uas).get();
+
+        jadwal.setAksesUts(Duts);
+        jadwal.setAksesUas(Duas);
+        jadwalDao.save(jadwal);
+
+        return "redirect:listdosen?tahunAkademik="+jadwal.getTahunAkademik().getId();
     }
 
     @GetMapping("/studiesActivity/assesment/edit")
@@ -7448,5 +7467,28 @@ public class StudiesActivityController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+    // BERKAS
+
+    @GetMapping("/berkas/uploadSoal/list")
+    public void listBerkas(Model model, Authentication authentication){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan k = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(k);
+
+        List<Jadwal> listUts = jadwalDao.findByTahunAkademikAndAksesUtsAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen, StatusRecord.AKTIF);
+        List<Jadwal> listUas = jadwalDao.findByTahunAkademikAndAksesUasAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen, StatusRecord.AKTIF);
+
+        model.addAttribute("listUts", listUts);
+        model.addAttribute("listUas", listUas);
+
+        List<Soal> soalUts = soalDao.findByStatusAndStatusSoalAndStatusApproveAndDosen(StatusRecord.AKTIF, StatusRecord.UTS, StatusApprove.APPROVED, dosen);
+        List<Soal> soalUas = soalDao.findByStatusAndStatusSoalAndStatusApproveAndDosen(StatusRecord.AKTIF, StatusRecord.UAS, StatusApprove.APPROVED, dosen);
+        model.addAttribute("soalUts", soalUts);
+        model.addAttribute("soalUas", soalUas);
+
+    }
+
 }
 

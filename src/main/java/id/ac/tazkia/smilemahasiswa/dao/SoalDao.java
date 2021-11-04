@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.Soal;
-import id.ac.tazkia.smilemahasiswa.entity.StatusApprove;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
@@ -18,4 +15,7 @@ public interface SoalDao extends PagingAndSortingRepository<Soal, String> {
 
     Soal findByJadwalAndStatusAndStatusApprove(Jadwal jadwal, StatusRecord aktif, StatusApprove approved);
     Soal findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(Jadwal jadwal, StatusRecord tipe, StatusRecord statusRecord,List<StatusApprove> statusApproves);
+
+    List<Soal> findByStatusAndStatusSoalAndStatusApproveAndDosen(StatusRecord statusRecord, StatusRecord uas, StatusApprove statusApprove, Dosen dosen);
+
 }

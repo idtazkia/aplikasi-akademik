@@ -47,4 +47,6 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
             "WHERE a.id_jadwal = ?1", nativeQuery = true)
     String headerJadwal(String idJadwal);
 
+    List<JadwalDosen> findByJadwalTahunAkademik(TahunAkademik tahunAkademik);
+
 }

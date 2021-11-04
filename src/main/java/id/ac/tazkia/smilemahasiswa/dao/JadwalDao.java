@@ -143,4 +143,9 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     List<PlotingDto> listPloting(@Param("akademik")TahunAkademik tahunAkademik);
 
     List<Jadwal> findByTahunAkademikAndDosenAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+
+    List<Jadwal> findByTahunAkademikAndAksesUtsAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+
+    List<Jadwal> findByTahunAkademikAndAksesUasAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+
 }
