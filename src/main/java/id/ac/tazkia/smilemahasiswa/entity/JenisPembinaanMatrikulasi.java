@@ -1,4 +1,4 @@
-package id.ac.tazkia.smilemahasiswa.entity.matrikulasi;
+package id.ac.tazkia.smilemahasiswa.entity;
 
 
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;

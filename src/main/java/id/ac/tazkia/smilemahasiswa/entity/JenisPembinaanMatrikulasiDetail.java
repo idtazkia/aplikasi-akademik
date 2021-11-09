@@ -1,13 +1,10 @@
-package id.ac.tazkia.smilemahasiswa.entity.matrikulasi;
+package id.ac.tazkia.smilemahasiswa.entity;
 
-import id.ac.tazkia.smilemahasiswa.entity.Pendidikan;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -22,10 +19,22 @@ public class JenisPembinaanMatrikulasiDetail {
     @JoinColumn(name = "id_jenis_pembinaan_matrikulasi")
     private JenisPembinaanMatrikulasi jenisPembinaanMatrikulasi;
 
-    @NotNull
+    @Column(name = "nama_pembinaan_matrikulasi_detail")
     private String namaPembinaanMatrikulasiDetail;
 
-    private BigDecimal bobot;
+    @Column(name = "nilai")
+    private String nilai;
+
+    @Column(name = "keterangan")
+    private String keterangan;
+
+    @ManyToOne
+    @JoinColumn(name = "id_mahasiswa")
+    private Mahasiswa mahasiswa;
+
+    @ManyToOne
+    @JoinColumn(name = "id_tahun_akademik")
+    private TahunAkademik tahunAkademik;
 
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
