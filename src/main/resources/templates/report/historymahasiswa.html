@@ -213,6 +213,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
+                                    <div class="card shadow">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="col text-right">
+                                                        <a th:href="@{/report/pembinaanMatrikulasi(nim = ${mhs.nim})}" class="btn btn-md btn-info" ><i class="fas fa-plus-circle"></i> Matriculation Program</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <br>
@@ -231,6 +244,7 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Rekaman Transkrip</a>
                                                     </li>
+
                                                 </ul>
                                             </div>
                                             <div class="card shadow">
@@ -310,6 +324,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -325,5 +340,23 @@
     </div>
 </div>
 </body>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script>
+    var current_id = 0;
+    $('#btn').click(function(){
+        nextElement($('#Meal_00'));
+    })
+
+    function nextElement(element){
+        var newElement = element.clone();
+        var id = current_id+1;
+        current_id = id;
+        if(id <10)id = "0"+id;
+        newElement.attr("id",element.attr("id").split("_")[0]+"_"+id);
+        var field = $('input', newElement).attr("id");
+        $('input', newElement).attr("id", field.split("_")[0]+"_"+id );
+        newElement.appendTo($("#elements"));
+    }
+</script>
 
 </html>
