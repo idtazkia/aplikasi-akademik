@@ -7,8 +7,11 @@ import id.ac.tazkia.smilemahasiswa.dto.report.RekapDetailDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapSksDosenDto;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.entity.JenisPembinaanMatrikulasi;
+import id.ac.tazkia.smilemahasiswa.entity.JenisPembinaanMatrikulasiDetail;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -91,6 +94,12 @@ public class ReportController {
 
     @Autowired
     private SeminarDao seminarDao;
+
+    @Autowired
+    private PembinaanDao pembinaanDao;
+
+    @Autowired
+    private PembinaanDetailDao pembinaanDetailDao;
 
     @Value("${upload.soal}")
     private String uploadFolder;
@@ -384,8 +393,10 @@ public class ReportController {
             model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
             model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
             model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+
         }
     }
+
 
     @GetMapping("/report/cuti")
     public void mahasiswaCuti(Model model,@PageableDefault(size = 10)Pageable pageable){
@@ -1153,4 +1164,54 @@ public class ReportController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+    @GetMapping("/report/pembinaanMatrikulasi")
+    public void pembinaanMatrikulasi(Model model,@RequestParam(required = false) String nim,@RequestParam(required = false) TahunAkademik tahunAkademik){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        List<JenisPembinaanMatrikulasi> jenisPembinaanMatrikulasi = pembinaanDao.findByStatus(StatusRecord.AKTIF);
+        List<JenisPembinaanMatrikulasiDetail> jenisPembinaanMatrikulasiDetailList = pembinaanDetailDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF,tahunAkademik);
+
+        model.addAttribute("tahunAkademikList", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("nim", nim);
+        model.addAttribute("mhs",mhs);
+        model.addAttribute("thn",tahunAkademik);
+        model.addAttribute("pembinaanList",jenisPembinaanMatrikulasi);
+        model.addAttribute("pembinaanDetail",jenisPembinaanMatrikulasiDetailList);
+        for (JenisPembinaanMatrikulasi idJenis : jenisPembinaanMatrikulasi){
+            for (JenisPembinaanMatrikulasiDetail idJenisDetail : jenisPembinaanMatrikulasiDetailList){
+                if (idJenis.getId().equals(idJenisDetail.getJenisPembinaanMatrikulasi())){
+                    model.addAttribute("pembimbingDetail2",pembinaanDetailDao.cariJenis(idJenis.getId()));
+                    System.out.println("KATEGORI = " + pembinaanDetailDao.cariJenis(idJenis.getId()));
+                }
+
+            }
+
+        }
+
+    }
+
+    @PostMapping("/pembinaanDetail/detail")
+    public String saveDetail(@Valid JenisPembinaanMatrikulasiDetail jenisPembinaanMatrikulasiDetail, @RequestParam(required = false) JenisPembinaanMatrikulasi jenisPembinaanMatrikulasi,
+                             @RequestParam(required = false) Mahasiswa mahasiswa,@RequestParam(required = false) TahunAkademik tahunAkademik){
+
+
+            jenisPembinaanMatrikulasiDetail.setJenisPembinaanMatrikulasi(jenisPembinaanMatrikulasi);
+            jenisPembinaanMatrikulasiDetail.setMahasiswa(mahasiswa);
+            jenisPembinaanMatrikulasiDetail.setTahunAkademik(tahunAkademik);
+            jenisPembinaanMatrikulasiDetail.setStatus(StatusRecord.AKTIF);
+            pembinaanDetailDao.save(jenisPembinaanMatrikulasiDetail);
+
+
+        return "redirect:/report/pembinaanMatrikulasi?nim=" + mahasiswa.getNim() + "&tahunAkademik=" + tahunAkademik.getId();
+    }
+
+    @PostMapping("/pembinaanDetail/delete")
+    public String deleteSubPertanyaan(@RequestParam(required = false) JenisPembinaanMatrikulasiDetail id, @RequestParam(required = false) Mahasiswa mahasiswa){
+        id.setStatus(StatusRecord.HAPUS);
+        pembinaanDetailDao.save(id);
+        return "redirect:/report/pembinaanMatrikulasi?nim=" + mahasiswa.getNim();
+    }
+
+
 }
