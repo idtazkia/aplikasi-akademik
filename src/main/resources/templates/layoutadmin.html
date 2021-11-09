@@ -199,7 +199,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_STAFF') or hasAuthority('')">
                     <a class="nav-link" href="#navbar-academic" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-book-bookmark text-blue"></i>
                         <span class="nav-link-text">Aktivitas Akademik</span>
@@ -298,6 +298,9 @@
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
                                 <a th:href="@{/studiesActivity/transcript/cetaktranscript}" class="nav-link">Transcript Akhir</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/berkas/uploadSoal/list}" class="nav-link">Upload & Download Soal</a>
                             </li>
                         </ul>
                     </div>
@@ -529,26 +532,6 @@
                         <i class="ni ni-collection text-green"></i>
                         Kesediaan Mengajar
                     </a>
-                </li>
-
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_WAREK2')">
-                    <a class="nav-link" href="#navbar-berkas" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
-                        <i class="ni ni-align-left-2 ni-archive-2 text-primary"></i>
-                        <span class="nav-link-text">Berkas</span>
-                    </a>
-                    <div class="collapse" id="navbar-berkas">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a th:href="@{/berkas/uploadSoal/list}" class="nav-link">Upload Soal</a>
-                            </li>
-<!--                            <li class="nav-item">-->
-<!--                                <a th:href="@{/humanResources/lecturer/list}" class="nav-link">Dosen</a>-->
-<!--                            </li>-->
-<!--                            <li class="nav-item">-->
-<!--                                <a th:href="@{/report/recapitulation/salary}" class="nav-link">Rekap Gaji Dosen</a>-->
-<!--                            </li>-->
-                        </ul>
-                    </div>
                 </li>
 
             </ul>

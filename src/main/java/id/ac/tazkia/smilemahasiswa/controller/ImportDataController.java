@@ -172,6 +172,9 @@ public class ImportDataController  {
             kirimCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(kirimCicilan);
             tagihanService.mengirimCicilanSelanjutnya(kirimCicilan);
+        }else{
+            tagihan.setNomor(requestCicilan.getNomorTagihan());
+            tagihanDao.save(tagihan);
         }
 
 
