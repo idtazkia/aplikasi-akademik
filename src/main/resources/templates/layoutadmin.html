@@ -465,6 +465,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
                                 <a th:href="@{/report/cuti}" class="nav-link">Mahasiswa Cuti</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS')">
+                                <a th:href="@{/report/mahasiswaPembinaanList}" class="nav-link">Pembinaan Matrikulasi</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

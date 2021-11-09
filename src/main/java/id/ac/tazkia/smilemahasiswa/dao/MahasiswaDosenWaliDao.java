@@ -36,5 +36,13 @@ public interface MahasiswaDosenWaliDao extends PagingAndSortingRepository <Mahas
     @Query(value = "select m.id,m.nim,m.nama,k.nama_karyawan from mahasiswa as m inner join dosen as d on m.id_dosen_wali = d.id inner join karyawan as k on d.id_karyawan = k.id where m.status = 'AKTIF' and m.angkatan = ?1 and m.id_prodi = ?2 order by m.nim asc " , nativeQuery = true)
     List<Object[]> listMahasiswa(String angkatan, Prodi prodi);
 
+    @Query(value = "select m.id,m.nim,m.nama,k.nama_karyawan \n" +
+            "from mahasiswa as m \n" +
+            "inner join dosen as d on m.id_dosen_wali = d.id \n" +
+            "inner join karyawan as k on d.id_karyawan = k.id \n" +
+            "where m.status = 'AKTIF' and m.angkatan = ?1 and m.id_prodi = ?2 and m.id_dosen_wali = ?3\n" +
+            "order by m.nim asc" , nativeQuery = true)
+    List<Object[]> listMahasiswaByDosen(String angkatan, Prodi prodi, String dosen);
+
 
 }
