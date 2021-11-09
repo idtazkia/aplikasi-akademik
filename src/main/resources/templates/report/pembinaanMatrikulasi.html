@@ -52,7 +52,7 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Pembinaan</h3>
+                                <h3 class="mb-0">Pembinaan <span th:text="${mhs.nama}"></span> | <span th:text="${mhs.nim}"></span></h3>
                                 <hr>
                             </div>
                         </div>
@@ -80,7 +80,8 @@
                                                         <br>
                                                         <br>
                                                         <button type="submit" class="btn btn-sm btn-primary">Pilih Semester</button>
-                                                        <a th:href="@{/report/historymahasiswa (nim = ${mhs.nim})}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Kembali</a>
+                                                        <a th:href="@{/report/historymahasiswa (nim = ${mhs.nim})}" class="btn btn-sm btn-default" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" >
+                                                            <i class="fas fa-plus-circle" ></i> Kembali</a>
                                                     </form>
                                                 </div>
 
