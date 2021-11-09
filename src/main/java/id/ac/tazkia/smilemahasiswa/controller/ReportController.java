@@ -101,6 +101,9 @@ public class ReportController {
     @Autowired
     private PembinaanDetailDao pembinaanDetailDao;
 
+    @Autowired
+    private MahasiswaDosenWaliDao mahasiswaDosenWaliDao;
+
     @Value("${upload.soal}")
     private String uploadFolder;
 
@@ -1170,7 +1173,7 @@ public class ReportController {
 
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         List<JenisPembinaanMatrikulasi> jenisPembinaanMatrikulasi = pembinaanDao.findByStatus(StatusRecord.AKTIF);
-        List<JenisPembinaanMatrikulasiDetail> jenisPembinaanMatrikulasiDetailList = pembinaanDetailDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF,tahunAkademik);
+        List<JenisPembinaanMatrikulasiDetail> jenisPembinaanMatrikulasiDetailList = pembinaanDetailDao.findByStatusAndTahunAkademikAndMahasiswa(StatusRecord.AKTIF,tahunAkademik,mhs);
 
         model.addAttribute("tahunAkademikList", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("nim", nim);
@@ -1213,5 +1216,36 @@ public class ReportController {
         return "redirect:/report/pembinaanMatrikulasi?nim=" + mahasiswa.getNim();
     }
 
+    @GetMapping("/report/mahasiswaPembinaanList")
+    public String mahasiswaPembinaanList(Model model,
+                                     @PageableDefault(size = 20) Pageable page, @RequestParam(required = false) Prodi prodi,
+                                     @RequestParam(required = false) String angkatan, Authentication authentication){
+
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("angkatan", mahasiswaDao.cariAngkatan());
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        model.addAttribute("selectedAngkatan",angkatan);
+        model.addAttribute("selectedProdi",prodi);
+        model.addAttribute("dosen", dosen.getId());
+        System.out.println("DOSENNYA : " + dosen.getId());
+
+        if(prodi == null){
+
+//            model.addAttribute("listMahasiswaDosenWali", mahasiswaDosenWaliDao.listMahasiswaDosenWali(page));
+
+        }else{
+
+
+            model.addAttribute("listMahasiswaDosenWali", mahasiswaDosenWaliDao.listMahasiswaDosenWaliProdi(prodi.getId(),page));
+            model.addAttribute("selectedMahasiswa",mahasiswaDosenWaliDao.listMahasiswaByDosen(angkatan,prodi,dosen.getId()));
+        }
+
+
+        return "report/mahasiswaPembinaanList";
+
+    }
 
 }
