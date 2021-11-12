@@ -148,4 +148,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByTahunAkademikAndAksesUasAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
 
+    Jadwal findByIdNumberElearning(String idNumber);
+
 }

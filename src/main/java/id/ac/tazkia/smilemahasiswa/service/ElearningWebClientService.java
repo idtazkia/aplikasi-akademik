@@ -382,7 +382,7 @@ public class ElearningWebClientService {
 
                         if (jadwal != null) {
                             pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-                            pd.setJadwal(jadwalDao.findById(mdldos.getIdJadwal()).get());
+                            pd.setJadwal(jadwalDao.findByIdNumberElearning(mdldos.getIdJadwal()));
                             if (jadwal.getJamMulai() != null){
                                 pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
                             }
