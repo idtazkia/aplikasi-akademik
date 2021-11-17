@@ -4279,6 +4279,7 @@ public class StudiesActivityController {
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+        listTranskript.removeIf(e -> e.getGrade().equals("E"));
 
         int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
 
