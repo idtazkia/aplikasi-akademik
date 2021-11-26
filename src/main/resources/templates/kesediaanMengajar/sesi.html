@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Kesediaan Mengajar Dosen</title>
+    <style type="text/css">
+
+        .card-grey{
+            background-color: #EEEEEE;
+            border-radius: 10px;
+        }
+        .card-blue{
+            background-color: #4285f4;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Kesediaan Mengajar </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+
+                    <div class="card-body">
+                        <div class="card-grey">
+                            <div class="card-blue">
+                                <b class="text-white">Data Pendukung</b>
+                            </div>
+                            <div class="card-body">
+                                <p>Permohonan Jadwal ini dibuat agar dapat memudahkan kami menyusun Jadwal Perkuliahan yang sesuai dengan Agenda Bapak dan Ibu, dengan ini kami mohon bersedia menceklis Alternatif Hari dan Sesi perkuliahan mata kuliah yang akan diampu pada Semester Ganjil Tahun Akademik 2021/2022. </p>
+                                <br>
+                                <span>Batas waktu pengisian Jadwal terakhir pada tanggal 11 Agustus 2021.</span>
+                                <br><br>
+                                <p>Waktu yang WAJIB dikosongkan untuk Perkuliahan dan diagendakan untuk kegiatan: <br>
+                                    1. Senin pukul 09.30 - 12.00 WIB agenda rutin Monday Forum khususnya Dosen Tetap dan Dosen Tidak Tetap;
+                                    <br>
+                                    2. Selasa pukul 13.00 - 15.30 WIB menjadi Agenda Student Dynamic Session (SDS) dihadiri seluruh mahasiswa;
+                                    <br>
+                                    3. Dosen Tetap memangku jabatan, Selasa pukul 09.30 - 12.00 WIB Agenda Rapat Manajemen Tazkia;
+                                    <br>
+                                    4. Dosen Tetap memangku jabatan Tim Akademik, Senin pukul 13.00 - 15.00 WIB Agenda Rapat Akademik.</p>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <form th:action="@{/kesediaanMengajar/sesi}" method="post">
+                        <input type="hidden" name="kesediaanDosen" th:value="${kesediaanDosen.id}">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <tr>
+                                        <th class="text-center pt-5" rowspan="2">Hari</th>
+                                        <th class="text-center" colspan="6">Sesi</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">07.00-09.30 </th>
+                                        <th class="text-center">09.31-12.00 </th>
+                                        <th class="text-center">13.00-15.30	</th>
+                                        <th class="text-center">15.31-18.00 </th>
+                                        <th class="text-center">Agenda Lain</th>
+                                        <th class="text-center"></th>
+                                    </tr>
+                                    <tr th:each="hari, row:${hari}">
+                                        <td class="text-center" style="font-weight: bold" >
+                                            <div th:if="${hari.id == '0'}" th:text="${'Ahad'}"></div>
+                                            <div th:if="${hari.id != '0'}" th:text="${hari.namaHari}"></div>
+                                        </td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id+ '-1'}" th:name="${hari.id+ '-1'}"></td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id+ '-2'}" th:name="${hari.id+ '-2'}"></td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id+ '-3'}" th:name="${hari.id+ '-3'}"></td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id+ '-4'}" th:name="${hari.id+ '-4'}"></td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id+ '-5'}" th:name="${hari.id+ '-5'}"></td>
+                                        <td class="text-center"><input type="checkbox" th:id="${hari.id}" th:value="${hari.id}" onchange="ceklisAll(this)"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-body text-center">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-download"></i> Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+
+    function ceklisAll(arg){
+
+        var value = arg.value;
+        var active = $(arg).prop("checked") ? 1 : 0;
+
+        if (active == 0){
+            for (var i = 0; i<=5;i++){
+                $(document.getElementById(value+"-"+i)).prop('checked', false);
+            }
+        }else{
+            for (var i = 0; i<=5;i++){
+                $(document.getElementById(value+"-"+i)).prop('checked', true);
+            }
+        }
+
+        console.log(active);
+
+    }
+
+</script>

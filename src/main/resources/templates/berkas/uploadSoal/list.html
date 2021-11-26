@@ -73,6 +73,8 @@
                                             <th>Waktu</th>
                                             <th>Matakuliah</th>
                                             <th>Kelas</th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                         </thead>
 
@@ -84,6 +86,33 @@
                                             <td th:text="${data.jamMulai+' - '+data.jamSelesai}"></td>
                                             <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
                                             <td th:text="${data.kelas.namaKelas}"></td>
+                                            <td>
+                                                <div th:each="soal,row:${soalUts}">
+                                                    <div th:if="${data.id} == ${soal.jadwal.id}">
+
+                                                        <a  class="btn btn-success btn-sm text-white"
+                                                            th:if="${soal.statusApprove.WAITING} == ${soal.statusApprove}"
+                                                            th:text="${'MENUNGGU'}">
+                                                        </a>
+
+                                                        <a  class="btn btn-success btn-sm text-white"
+                                                            th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}"
+                                                            th:text="${'DISETUJUI'}">
+                                                        </a>
+
+                                                        <a type="button" class="btn btn-danger btn-sm"
+                                                           th:if="${soal.statusApprove.REJECTED} == ${soal.statusApprove}"
+                                                           th:text="${'DITOLAK'}">
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                                <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
+                                                    <a type="button" class="btn btn-warning btn-sm text-white"
+                                                       th:text="${'BELUM DI UPLOAD'}">
+                                                    </a>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div th:if="${data.statusUts.APPROVED} == ${data.statusUts}">
                                                     <div th:each="soal, row:${soalUts}">
@@ -115,6 +144,8 @@
                                             <th>Waktu</th>
                                             <th>Matakuliah</th>
                                             <th>Kelas</th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                         </thead>
 
@@ -126,6 +157,33 @@
                                             <td th:text="${data.jamMulai+' - '+data.jamSelesai}"></td>
                                             <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
                                             <td th:text="${data.kelas.namaKelas}"></td>
+                                            <td>
+                                                <div th:each="soal,row:${soalUas}">
+                                                    <div th:if="${data.id} == ${soal.jadwal.id}">
+
+                                                        <a  class="btn btn-primary btn-sm text-white"
+                                                            th:if="${soal.statusApprove.WAITING} == ${soal.statusApprove}"
+                                                            th:text="${'MENUNGGU'}">
+                                                        </a>
+
+                                                        <a  class="btn btn-success btn-sm text-white"
+                                                            th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}"
+                                                            th:text="${'DISETUJUI'}">
+                                                        </a>
+
+                                                        <a type="button" class="btn btn-danger btn-sm"
+                                                           th:if="${soal.statusApprove.REJECTED} == ${soal.statusApprove}"
+                                                           th:text="${'DITOLAK'}">
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                                <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
+                                                    <a type="button" class="btn btn-warning btn-sm text-white"
+                                                       th:text="${'BELUM DI UPLOAD'}">
+                                                    </a>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div th:if="${data.statusUas.APPROVED} == ${data.statusUas}">
                                                     <div th:each="soal, row:${soalUas}">

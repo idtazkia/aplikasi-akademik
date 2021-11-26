@@ -1400,6 +1400,10 @@ public class  AcademicActivityController {
         krsDetail.setStatus(StatusRecord.HAPUS);
         krsDetailDao.save(krsDetail);
 
+        Konversi konversi = konversiDao.findByKrsDetailAndStatus(krsDetail, StatusRecord.AKTIF);
+        konversi.setStatus(StatusRecord.HAPUS);
+        konversiDao.save(konversi);
+
         return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
     }
 

@@ -29,6 +29,7 @@ public class Mahasiswa {
     @NotBlank
     private String nama;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private  JenisKelamin jenisKelamin;
 

@@ -42,7 +42,17 @@
             <div class="col">
                 <div class="card shadow">
 
-                    <div class="card-body">
+                    <div class="card-body" th:if="${cekDosen != null}">
+                        <div class="alert alert-danger">
+                            <center>
+                                <strong>
+                                    <i class="fas fa-exclamation-triangle"></i> &nbsp; Anda sudah mengisi kesediaan mengajar &nbsp; <i class="fas fa-exclamation-triangle"></i>
+                                </strong>
+                            </center>
+                        </div>
+                    </div>
+
+                    <div class="card-body" th:if="${cekDosen == null}">
                         <form th:action="@{/kesediaanMengajar/menjawab}" method="post">
                             <div class="card shadow" th:each="data, row:${pertanyaan}" style="margin-top: 10px; margin-bottom: 10px;">
                                 <div class="card-header border-1">
@@ -70,6 +80,24 @@
                                             <td th:if="${data.id == dataSub.kesediaanMengajarPertanyaan.id}">
                                                 <input type="hidden" name="kesediaanMengajarSubPertanyaan" th:value="${dataSub.id}">
                                                 <select required th:name="${dataSub.id + 'jwb'}" class="form-control">
+                                                    <option value="" disabled selected>-- Pilih ya atau tidak --</option>
+                                                    <option value="Ya">Ya</option>
+                                                    <option value="Tidak">Tidak</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card shadow" style="margin-top: 10px; margin-bottom: 10px;">
+                                <div class="card-header border-1">
+                                    <h4 class="mb-0">Dengan ini in syaa Allah, saya menyatakan bersedia untuk mengampu mata kuliah baik dengan online maupun offline sesuai dengan ketentuan di atas *</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table aligh-items-center table-flush">
+                                        <tr>
+                                            <td>
+                                                <select required name="jawDosen" class="form-control">
                                                     <option value="" disabled selected>-- Pilih ya atau tidak --</option>
                                                     <option value="Ya">Ya</option>
                                                     <option value="Tidak">Tidak</option>
