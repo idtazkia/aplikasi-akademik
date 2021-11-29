@@ -122,7 +122,10 @@
                                     </div>
                                 </td>
                                 <td style="vertical-align: top;">
-                                    <span class="btn btn-success btn-sm" th:text="${data.status}">AKTIF</span>
+                                    <form th:action="@{/kesediaanMengajar/status(id = ${data.id})}" method="post">
+                                        <button th:if="${data.status.AKTIF} == ${data.status}" type="submit" class="btn btn-success btn-sm" th:text="${data.status}">AKTIF</button>
+                                        <button th:if="${data.status.NONAKTIF} == ${data.status}" type="submit" class="btn btn-danger btn-sm" th:text="${data.status}">AKTIF</button>
+                                    </form>
                                 </td>
                                 <td style="vertical-align: top;">
                                     <form th:action="@{/kesediaanMengajar/hapus(id = ${data.id})}" method="post">

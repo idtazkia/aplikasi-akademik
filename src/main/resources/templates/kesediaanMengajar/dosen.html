@@ -43,16 +43,26 @@
                 <div class="card shadow">
 
                     <div class="card-body" th:if="${cekDosen != null}">
-                        <div class="alert alert-danger">
+                        <div class="alert alert-success">
                             <center>
                                 <strong>
-                                    <i class="fas fa-exclamation-triangle"></i> &nbsp; Anda sudah mengisi kesediaan mengajar &nbsp; <i class="fas fa-exclamation-triangle"></i>
+                                    <i class="far fa-check-circle"></i> &nbsp; Anda sudah mengisi kesediaan mengajar &nbsp; <i class="far fa-check-circle"></i>
                                 </strong>
                             </center>
                         </div>
                     </div>
 
-                    <div class="card-body" th:if="${cekDosen == null}">
+                    <div class="card-body" th:if="${cekTahun != null}">
+                        <div class="alert alert-danger">
+                            <center>
+                                <strong>
+                                    <i class="fas fa-exclamation-triangle"></i> &nbsp; Pengisian kesediaan mengajar sudah di tutup &nbsp; <i class="fas fa-exclamation-triangle"></i>
+                                </strong>
+                            </center>
+                        </div>
+                    </div>
+
+                    <div class="card-body" th:if="${cekDosen == null && cekTahun == null}">
                         <form th:action="@{/kesediaanMengajar/menjawab}" method="post">
                             <div class="card shadow" th:each="data, row:${pertanyaan}" style="margin-top: 10px; margin-bottom: 10px;">
                                 <div class="card-header border-1">

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.ws.RequestWrapper;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -51,7 +53,7 @@ public class KesediaanMengajarController {
 
     @GetMapping("/kesediaanMengajar/list")
     public void listKesediaanMengajar(Model model){
-        model.addAttribute("listData", kesediaanMengajarPertanyaanDao.findByStatusOrderByUrutanAsc(StatusRecord.AKTIF));
+        model.addAttribute("listData", kesediaanMengajarPertanyaanDao.findByStatusNotInOrderByUrutanAsc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("subPertanyaan", kesediaanMengajarSubPertanyaanDao.findByStatus(StatusRecord.AKTIF));
     }
 
@@ -91,6 +93,19 @@ public class KesediaanMengajarController {
         return "redirect:list";
     }
 
+    @PostMapping("/kesediaanMengajar/status")
+    public String nonaktifPertanyaan(@RequestParam KesediaanMengajarPertanyaan id){
+
+        if (id.getStatus() == StatusRecord.AKTIF) {
+            id.setStatus(StatusRecord.NONAKTIF);
+        }else{
+            id.setStatus(StatusRecord.AKTIF);
+        }
+
+        kesediaanMengajarPertanyaanDao.save(id);
+        return "redirect:list";
+    }
+
     @PostMapping("/kesediaanMengajar/hapus")
     public String hapusPertanyaan(@RequestParam KesediaanMengajarPertanyaan id){
         id.setStatus(StatusRecord.HAPUS);
@@ -113,6 +128,11 @@ public class KesediaanMengajarController {
 
         KesediaanMengajarDosen d = kesediaanMengajarDosenDao.findByDosenAndTahunAkademikAndStatus(dosen, tahunAkademikDao.findByStatus(StatusRecord.AKTIF), StatusRecord.AKTIF);
         List<KesediaanMengajarSesi> kesediaanSesi = kesediaanMengajarSesiDao.findByKesediaanDosenAndStatus(d, StatusRecord.AKTIF);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        if (d == null && tahunAkademik.getTanggalMulai().compareTo(LocalDate.now()) < 0) {
+            model.addAttribute("cekTahun", "Sudah lewat");
+        }
 
         if (d != null && !kesediaanSesi.isEmpty()) {
             model.addAttribute("cekDosen", "sudah mengisi");
