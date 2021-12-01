@@ -101,8 +101,9 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "inner join tagihan as b on a.id=b.id_mahasiswa \n" +
             "inner join prodi as c on a.id_prodi=c.id\n" +
             "where b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2)a\n" +
-            "left join pembayaran as b on a.id_tagihan = b.id_tagihan \n" +
-            "group by a.nim", nativeQuery = true)
+            "left join \n" +
+            "(select id_tagihan,sum(amount)as amount from pembayaran group by id_tagihan) as b on a.id_tagihan = b.id_tagihan \n" +
+            "group by a.nim;", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan, String idTahunAkademik);
 
     @Query(value = "select 'LANCAR' as keterangan, count(id_mahasiswa)as jumlah, coalesce(selisih, 100) from\n" +
