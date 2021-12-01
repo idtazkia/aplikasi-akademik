@@ -89,16 +89,33 @@ public class TugasAkhirController {
     public void listKategori(Model model, @RequestParam(required = false) Prodi prodi, @PageableDefault(size = 10) Pageable page){
 
         model.addAttribute("selectProdi", prodi);
-        model.addAttribute("listNote", kategoriDao.findByProdiAndJenisStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS), Jenis.NOTE, page));
-        model.addAttribute("listSeminar", kategoriDao.findByProdiAndJenisStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS), Jenis.SEMINAR, page));
-        model.addAttribute("listSidang", kategoriDao.findByProdiAndJenisStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS), Jenis.SIDANG, page));
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listNote", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.NOTE, Arrays.asList(StatusRecord.HAPUS), page));
+        model.addAttribute("listSeminar", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SEMINAR, Arrays.asList(StatusRecord.HAPUS), page));
+        model.addAttribute("listSidang", kategoriDao.findByProdiAndJenisAndStatusNotIn(prodi, Jenis.SIDANG, Arrays.asList(StatusRecord.HAPUS), page));
+
+        // modal add kategori
+        model.addAttribute("jenis", Jenis.values());
+        model.addAttribute("jenisValidasi", JenisValidasi.values());
 
     }
 
-    @GetMapping("/graduation/kategori/form")
-    public void formKategori(){
+    @PostMapping("/graduation/kategori/new")
+    public String saveKategori(@RequestParam(required = false) String[] prodi, @RequestParam(required = false) String nama,
+                               @RequestParam(required = false) Jenis jenis, @RequestParam(required = false) JenisValidasi jenisValidasi){
 
+        for (String p : prodi){
+            Prodi prod = prodiDao.findById(p).get();
+            KategoriTugasAkhir kategori = new KategoriTugasAkhir();
+            kategori.setNama(nama);
+            kategori.setProdi(prod);
+            kategori.setJenis(jenis);
+            kategori.setJenisValidasi(jenisValidasi);
+            kategori.setStatus(StatusRecord.AKTIF);
+            kategoriDao.save(kategori);
+        }
 
+        return "redirect:list";
 
     }
 

@@ -19,7 +19,7 @@ public class SettingTugasAkhir {
     @JoinColumn(name = "id_kategori")
     private KategoriTugasAkhir kategori;
 
-    private String name;
+    private String nama;
 
     private BigDecimal bobot;
 

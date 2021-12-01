@@ -12,6 +12,6 @@ import java.util.List;
 
 public interface KategoriTugasAkhirDao extends PagingAndSortingRepository<KategoriTugasAkhir, String> {
 
-    Page<KategoriTugasAkhir> findByProdiAndJenisStatusNotIn(Prodi prodi, List<StatusRecord> asList, Jenis jenis, Pageable page);
+    Page<KategoriTugasAkhir> findByProdiAndJenisAndStatusNotIn(Prodi prodi, Jenis jenis, List<StatusRecord> asList, Pageable page);
 
 }
