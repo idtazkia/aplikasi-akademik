@@ -7,6 +7,9 @@ import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jboss.jandex.Index;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -25,9 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.Document;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1038,6 +1043,61 @@ public class  AcademicActivityController {
 
         return "redirect:list?tahunAkademik="+tahunAkademik.getId()+"&prodi="+prodi.getId();
 
+
+    }
+
+    @GetMapping("/academic/schedule/download")
+    public void downloadJadwal(@RequestParam(required = false) TahunAkademik tahunAkademik, HttpServletResponse response) throws IOException {
+
+        String[] columns = {"No", "Ruangan", "Hari", "Waktu", "Prodi", "Kode Matkul", "Matakuliah", "Kelas", "Dosen", "Total Sks Dosen", "Jumlah Mahasiswa"};
+
+        List<Object[]> listJadwal = jadwalDao.downloadJadwal(tahunAkademik);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Rekap Jadwal");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listJadwal){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[3].toString());
+            row.createCell(2).setCellValue(list[11].toString());
+            row.createCell(3).setCellValue(list[4].toString()+" - "+list[5].toString());
+            row.createCell(4).setCellValue(list[6].toString());
+            row.createCell(5).setCellValue(list[7].toString());
+            row.createCell(6).setCellValue(list[8].toString());
+            row.createCell(7).setCellValue(list[9].toString());
+            row.createCell(8).setCellValue(list[10].toString());
+            row.createCell(9).setCellValue(list[12].toString());
+            row.createCell(10).setCellValue(list[13].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Jadwal_Angkatan_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 

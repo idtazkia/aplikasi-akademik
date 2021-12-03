@@ -137,7 +137,11 @@ public class KesediaanMengajarController {
         if (d != null && !kesediaanSesi.isEmpty()) {
             model.addAttribute("cekDosen", "sudah mengisi");
         } else if (d != null && kesediaanSesi.isEmpty()) {
-            return "redirect:sesi?kmd="+d.getId();
+            if (d.getJawaban().equals("Ya")) {
+                return "redirect:sesi?kmd=" + d.getId();
+            }else {
+                model.addAttribute("cekDosen", "sudah mengisi");
+            }
         }
 
         model.addAttribute("pertanyaan", kesediaanMengajarPertanyaanDao.findByStatusOrderByUrutanAsc(StatusRecord.AKTIF));

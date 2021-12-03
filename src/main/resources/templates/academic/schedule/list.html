@@ -272,6 +272,9 @@
                                     <div class="card-body">
                                         <a th:href="@{/academic/schedule/ploting (id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
                                             <button class="btn btn-default btn-sm"><i class="fas fa-plus-circle"></i> Add</button>
+                                        </a>&nbsp;
+                                        <a th:href="@{/academic/schedule/download(tahunAkademik = ${selectedTahun.id})}">
+                                            <button class="btn btn-success btn-sm"><i class="fas fa-download"></i> Download</button>
                                         </a>
                                         <br><br>
 
