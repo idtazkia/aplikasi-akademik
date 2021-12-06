@@ -1095,7 +1095,7 @@ public class  AcademicActivityController {
         }
 
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Jadwal_Angkatan_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap_Jadwal_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
