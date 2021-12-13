@@ -375,96 +375,101 @@ public class ElearningWebClientService {
 
                         PresensiDosen pd = new PresensiDosen();
 
-//                        Jadwal jadwal = jadwalDao.findById(mdldos.getIdJadwal()).get();
-                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
-
-
-
-                        if (jadwal != null) {
-                            pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-                            pd.setJadwal(jadwalDao.findByIdNumberElearning(mdldos.getIdJadwal()));
-                            if (jadwal.getJamMulai() != null){
-                                pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
-                            }
-                            if (jadwal.getJamMulai() == null){
-                                pd.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
-                            }
-                            if (jadwal.getJamSelesai() != null){
-                                pd.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
-                            }
-                            if (jadwal.getJamSelesai() == null){
-                                pd.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
-                            }
-                            pd.setStatusPresensi(StatusPresensi.valueOf(mdldos.getStatusPresensi()));
-                            pd.setStatus(StatusRecord.valueOf(mdldos.getStatus()));
-                            pd.setDosen(dosen);
-                            presensiDosenDao.save(pd);
-//                            update(mdldos.getIdLog());
-                            System.out.println("INPUT DOSEN SUKSES  = " + mdldos.getIdDosen());
-                            System.out.println("ID LOG  =  " + mdldos.getIdLog());
-                            if (jadwal.getJamMulai() != null){
-                                System.out.println(" JAM MULAI == " + LocalDateTime.of(timeIn,jadwal.getJamMulai()));
-                            }
-                            if (jadwal.getJamMulai() == null){
-                                System.out.println(" JAM MULAI NULL ");
-                            }
-                            if (jadwal.getJamSelesai() != null){
-                                System.out.println(" JAM SELESAI == " + LocalDateTime.of(timeIn,jadwal.getJamSelesai()));
-                            }
-                            if (jadwal.getJamSelesai() == null){
-                                System.out.println(" JAM SELESAI NULL");
-                            }
-
-                            AttendanceImportBerhasil ib = new AttendanceImportBerhasil();
-                            ib.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-                            ib.setJadwal(jadwal);
-                            ib.setKelas(jadwal.getKelas().getNamaKelas());
-                            ib.setDosen(dosen);
-                            if (jadwal.getJamMulai() != null){
-                                ib.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
-                            }
-                            if (jadwal.getJamMulai() == null){
-                                ib.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
-                            }
-                            if (jadwal.getJamSelesai() != null){
-                                ib.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
-                            }
-                            if (jadwal.getJamSelesai() == null){
-                                ib.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
-                            }
-                            ib.setTanggalImport(LocalDateTime.of(timeIp, jamNya));
-                            ib.setStatus(StatusRecord.AKTIF);
-                            listImportBerhasilDao.save(ib);
-                            System.out.println("Tanggal Input =" + LocalDateTime.of(timeIp,jamNya));
-
-                        }
-
-
-                        //remove html tag
-                        String strHTML = mdldos.getBeritaAcara();
-                        org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
-
-                        org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
-                        outputSettings.prettyPrint(false);
-                        jsoupDoc.outputSettings(outputSettings);
-                        jsoupDoc.select("br").before("\\n");
-                        jsoupDoc.select("p").before("\\n");
-
-                        String str = jsoupDoc.html().replaceAll("\\\\n", "");
-                        String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
-
-
                         SesiKuliah sesiKuliah = new SesiKuliah();
 
-                        if (jadwal != null) {
-                            sesiKuliah.setJadwal(pd.getJadwal());
-                            sesiKuliah.setPresensiDosen(pd);
-                            sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
-                            sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-                            sesiKuliah.setBeritaAcara(strWithNewLines);
-                            sesiKuliahDao.save(sesiKuliah);
-                            System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
-                        }
+//                        Jadwal jadwal = jadwalDao.findById(mdldos.getIdJadwal()).get();
+//                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
+                        List<Jadwal> jadwalList1 = jadwalDao.findByTahunAkademikAndIdNumberElearningAndStatus(ta,mdldos.getIdJadwal(),StatusRecord.AKTIF);
+
+
+                        if (jadwalList1 != null) {
+                            for (Jadwal jadwal : jadwalList1){
+                                pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
+                                pd.setJadwal(jadwal);
+                                if (jadwal.getJamMulai() != null){
+                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+                                }
+                                if (jadwal.getJamMulai() == null){
+                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
+                                }
+                                if (jadwal.getJamSelesai() != null){
+                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
+                                }
+                                if (jadwal.getJamSelesai() == null){
+                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
+                                }
+                                pd.setStatusPresensi(StatusPresensi.valueOf(mdldos.getStatusPresensi()));
+                                pd.setStatus(StatusRecord.valueOf(mdldos.getStatus()));
+                                pd.setDosen(dosen);
+                                presensiDosenDao.save(pd);
+//                            update(mdldos.getIdLog());
+                                System.out.println("INPUT DOSEN SUKSES  = " + mdldos.getIdDosen());
+                                System.out.println("ID LOG  =  " + mdldos.getIdLog());
+                                if (jadwal.getJamMulai() != null){
+                                    System.out.println(" JAM MULAI == " + LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+                                }
+                                if (jadwal.getJamMulai() == null){
+                                    System.out.println(" JAM MULAI NULL ");
+                                }
+                                if (jadwal.getJamSelesai() != null){
+                                    System.out.println(" JAM SELESAI == " + LocalDateTime.of(timeIn,jadwal.getJamSelesai()));
+                                }
+                                if (jadwal.getJamSelesai() == null){
+                                    System.out.println(" JAM SELESAI NULL");
+                                }
+
+                                AttendanceImportBerhasil ib = new AttendanceImportBerhasil();
+                                ib.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
+                                ib.setJadwal(jadwal);
+                                ib.setKelas(jadwal.getKelas().getNamaKelas());
+                                ib.setDosen(dosen);
+                                if (jadwal.getJamMulai() != null){
+                                    ib.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+                                }
+                                if (jadwal.getJamMulai() == null){
+                                    ib.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
+                                }
+                                if (jadwal.getJamSelesai() != null){
+                                    ib.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
+                                }
+                                if (jadwal.getJamSelesai() == null){
+                                    ib.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
+                                }
+                                ib.setTanggalImport(LocalDateTime.of(timeIp, jamNya));
+                                ib.setStatus(StatusRecord.AKTIF);
+                                listImportBerhasilDao.save(ib);
+                                System.out.println("Tanggal Input =" + LocalDateTime.of(timeIp,jamNya));
+
+                            }
+
+
+                            //remove html tag
+                            String strHTML = mdldos.getBeritaAcara();
+                            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
+
+                            org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
+                            outputSettings.prettyPrint(false);
+                            jsoupDoc.outputSettings(outputSettings);
+                            jsoupDoc.select("br").before("\\n");
+                            jsoupDoc.select("p").before("\\n");
+
+                            String str = jsoupDoc.html().replaceAll("\\\\n", "");
+                            String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
+
+
+
+
+                            if (jadwalList1 != null) {
+                                sesiKuliah.setJadwal(pd.getJadwal());
+                                sesiKuliah.setPresensiDosen(pd);
+                                sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
+                                sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
+                                sesiKuliah.setBeritaAcara(strWithNewLines);
+                                sesiKuliahDao.save(sesiKuliah);
+                                System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
+                                }
+                            }
+
 
                         List<MdlAttendanceLogMahasiswaDto> daftarPresensiMahasiswa = getAttendanceMahasiswa2(mdldos.getIdSession());
                         for (MdlAttendanceLogMahasiswaDto mdlmah : daftarPresensiMahasiswa) {
@@ -622,8 +627,9 @@ public class ElearningWebClientService {
     }
 
 //    //manual1
+//
+////    @Scheduled(cron = "0 32 10 * * ? ", zone = "Asia/Jakarta")
 ////    @Scheduled(fixedDelay = 60*60)
-//    @Scheduled(cron = "0 39 10 * * ? ", zone = "Asia/Jakarta")
 //    public void syncPresensiMoodle2(){
 //        // 1. Cari kelas yang jadwalnya sekarang
 //
@@ -656,73 +662,84 @@ public class ElearningWebClientService {
 //
 //                        PresensiDosen pd = new PresensiDosen();
 //
-//                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
-//
-//
-//
-//                        if (jadwal != null) {
-//                            pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-//                            pd.setJadwal(jadwalDao.findById(jadwal.getId()).get());
-//                            if (jadwal.getJamMulai() != null){
-//                                pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
-//                            }
-//                            if (jadwal.getJamMulai() == null){
-//                                pd.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
-//                            }
-//                            if (jadwal.getJamSelesai() != null){
-//                                pd.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
-//                            }
-//                            if (jadwal.getJamSelesai() == null){
-//                                pd.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
-//                            }
-//                            pd.setStatusPresensi(StatusPresensi.valueOf(mdldos.getStatusPresensi()));
-//                            pd.setStatus(StatusRecord.valueOf(mdldos.getStatus()));
-//                            pd.setDosen(dosen);
-//                            presensiDosenDao.save(pd);
-////                            update(mdldos.getIdLog());
-//                            System.out.println("INPUT DOSEN SUKSES  = " + mdldos.getIdDosen());
-//                            System.out.println("ID LOG  =  " + mdldos.getIdLog());
-//                            if (jadwal.getJamMulai() != null){
-//                                System.out.println(" JAM MULAI == " + LocalDateTime.of(timeIn,jadwal.getJamMulai()));
-//                            }
-//                            if (jadwal.getJamMulai() == null){
-//                                System.out.println(" JAM MULAI NULL ");
-//                            }
-//                            if (jadwal.getJamSelesai() != null){
-//                                System.out.println(" JAM SELESAI == " + LocalDateTime.of(timeIn,jadwal.getJamSelesai()));
-//                            }
-//                            if (jadwal.getJamSelesai() == null){
-//                                System.out.println(" JAM SELESAI NULL");
-//                            }
-//                        }
-//
-//
-//                        //remove html tag
-//                        String strHTML = mdldos.getBeritaAcara();
-//                        org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
-//
-//                        org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
-//                        outputSettings.prettyPrint(false);
-//                        jsoupDoc.outputSettings(outputSettings);
-//                        jsoupDoc.select("br").before("\\n");
-//                        jsoupDoc.select("p").before("\\n");
-//
-//                        String str = jsoupDoc.html().replaceAll("\\\\n", "");
-//                        String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
-//
-//
-//
 //                        SesiKuliah sesiKuliah = new SesiKuliah();
 //
-//                        if (jadwal != null) {
-//                            sesiKuliah.setJadwal(pd.getJadwal());
-//                            sesiKuliah.setPresensiDosen(pd);
-//                            sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
-//                            sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-//                            sesiKuliah.setBeritaAcara(strWithNewLines);
-//                            sesiKuliahDao.save(sesiKuliah);
-//                            System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
+////                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
+//                        List<Jadwal> jadwalList1 = jadwalDao.findByTahunAkademikAndIdNumberElearningAndStatus(ta,mdldos.getIdJadwal(),StatusRecord.AKTIF);
+//
+//
+//                        if (jadwalList1 != null) {
+//                        for (Jadwal jadwal : jadwalList1){
+//                                pd.setTahunAkademik(jadwal.getTahunAkademik());
+//                                pd.setJadwal(jadwal);
+////                            pd.setJadwal(jadwalDao.findByIdNumberElearning(mdldos.getIdJadwal()));
+//                                if (jadwal.getJamMulai() != null){
+//                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+//                                }
+//                                if (jadwal.getJamMulai() == null){
+//                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
+//                                }
+//                                if (jadwal.getJamSelesai() != null){
+//                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal.getJamSelesai()));
+//                                }
+//                                if (jadwal.getJamSelesai() == null){
+//                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
+//                                }
+//                                pd.setStatusPresensi(StatusPresensi.valueOf(mdldos.getStatusPresensi()));
+//                                pd.setStatus(StatusRecord.valueOf(mdldos.getStatus()));
+//                                pd.setDosen(dosen);
+//                                presensiDosenDao.save(pd);
+////                            update(mdldos.getIdLog());
+//                                System.out.println("INPUT DOSEN SUKSES  = " + mdldos.getIdDosen());
+//                                System.out.println("ID LOG  =  " + mdldos.getIdLog());
+//                                if (jadwal.getJamMulai() != null){
+//                                    System.out.println(" JAM MULAI == " + LocalDateTime.of(timeIn,jadwal.getJamMulai()));
+//                                }
+//                                if (jadwal.getJamMulai() == null){
+//                                    System.out.println(" JAM MULAI NULL ");
+//                                }
+//                                if (jadwal.getJamSelesai() != null){
+//                                    System.out.println(" JAM SELESAI == " + LocalDateTime.of(timeIn,jadwal.getJamSelesai()));
+//                                }
+//                                if (jadwal.getJamSelesai() == null){
+//                                    System.out.println(" JAM SELESAI NULL");
+//                                }
+//
+//                            //remove html tag
+//                            String strHTML = mdldos.getBeritaAcara();
+//                            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
+//
+//                            org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
+//                            outputSettings.prettyPrint(false);
+//                            jsoupDoc.outputSettings(outputSettings);
+//                            jsoupDoc.select("br").before("\\n");
+//                            jsoupDoc.select("p").before("\\n");
+//
+//                            String str = jsoupDoc.html().replaceAll("\\\\n", "");
+//                            String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
+//
+//
+//
+//
+//
+//                            if (jadwalList1 != null) {
+//                                sesiKuliah.setJadwal(pd.getJadwal());
+//                                sesiKuliah.setPresensiDosen(pd);
+//                                sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
+//                                sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
+//                                sesiKuliah.setBeritaAcara(strWithNewLines);
+//                                sesiKuliahDao.save(sesiKuliah);
+//                                System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
+//                            }
+//
+//
+//
+//                            }
 //                        }
+//
+//
+//
+//
 //
 //                        List<MdlAttendanceLogMahasiswaDto> daftarPresensiMahasiswa = getAttendanceMahasiswa2(mdldos.getIdSession());
 //                        for (MdlAttendanceLogMahasiswaDto mdlmah : daftarPresensiMahasiswa) {

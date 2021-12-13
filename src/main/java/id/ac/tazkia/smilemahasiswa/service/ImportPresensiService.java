@@ -37,15 +37,15 @@ public class ImportPresensiService {
                 .block();
     }
 
-    //    @Scheduled(fixedDelay = 60*60)
-    //    @Scheduled(cron = "0 51 14 * * ? ", zone = "Asia/Jakarta")
+//        @Scheduled(fixedDelay = 60*60)
+//    @Scheduled(cron = "0 30 11 * * ? ", zone = "Asia/Jakarta")
     @Scheduled(cron = "0 0 22 * * ? ", zone = "Asia/Jakarta")
     public void importPresensi(){
 
         LocalDate tanggalProses = terakhirImport().plusDays(1);
         LocalDate tanggalProses2 = terakhirImport();
 //         dibatasi sampai yang ditentukan
-//        if(tanggalProses.compareTo(LocalDate.of(2021,5,8)) <= 0) {
+//        if(tanggalProses.compareTo(LocalDate.of(2021,11,30)) <= 0) {
             System.out.println("HASIL TANGGAL = " + terakhirImport().plusDays(1));
             importPresensi(tanggalProses);
 //        }
