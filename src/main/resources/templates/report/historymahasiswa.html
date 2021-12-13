@@ -81,6 +81,22 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
+
+
+
+                                                <div class="col-md-12">
+
+                                                    <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.PRIA}">
+                                                        <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4392/4392947.png" alt="card image"></p>
+                                                    </div>
+                                                    <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.WANITA}">
+                                                        <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4264/4264378.png" alt="card image"></p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <br>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <label>Nama</label>
                                                     <h4 th:text="${mhs.nama}">Muhammad Arif Rahmatullah</h4>

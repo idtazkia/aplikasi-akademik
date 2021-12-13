@@ -99,7 +99,7 @@
                                             <th>Nama</th>
                                             <th>Detail</th>
                                             <th></th>
-                                            <th>Status</th>
+                                            <th sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" >Status</th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -131,7 +131,7 @@
                                                                 <form  th:action="@{/pembinaanDetail/delete}" method="post">
                                                                     <input type="hidden" th:value="${pemdet.id}" name="id">
                                                                     <input type="hidden" th:value="${mhs.nim}" name="mahasiswa">
-                                                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                                                    <button sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                                                                 </form>
                                                             </td>
                                                         </span>
@@ -203,11 +203,11 @@
                                                 </div>
                                             </td>
                                             <td style="vertical-align: top;">
-                                                <span class="btn btn-success btn-sm" >AKTIF</span>
+                                                <span class="btn btn-success btn-sm" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" >AKTIF</span>
                                             </td>
                                             <td style="vertical-align: top;">
                                                 <form method="post">
-                                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                                    <button sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                                                 </form>
                                             </td>
                                         </tr>
