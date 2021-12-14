@@ -1,6 +1,5 @@
 package id.ac.tazkia.smilemahasiswa.entity;
 
-import com.sun.tracing.dtrace.ModuleName;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 

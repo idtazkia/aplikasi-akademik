@@ -234,7 +234,7 @@
                                             <strong>Silahkan lengkapi tanggal lahir mahasiswa terlebih dahulu!</strong>
                                         </center>
                                     </div>
-                                    <div class="form-group" th:if="${mahasiswa.nirl != null && mahasiswa.tanggalLahir != null}">
+                                    <div class="form-group" th:if="${mahasiswa.indukNasional != null && mahasiswa.tanggalLahir != null}">
                                         <center>
                                             <a  th:href="@{/studiesActivity/transcript/transkriptindo2 (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-warning">Indonesia</a>
                                             <a  th:href="@{/studiesActivity/transcript/transkriptexcel2 (nim = ${mahasiswa.nim})}" class="btn btn-danger btn-outline-primary">Inggris</a>
