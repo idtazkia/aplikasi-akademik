@@ -17,7 +17,7 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.MailService;
+//import id.ac.tazkia.smilemahasiswa.service.MailService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -166,8 +166,8 @@ public class StudiesActivityController {
     @Autowired
     private EdomQuestionDao edomQuestionDao;
 
-    @Autowired
-    private MailService mailService;
+//    @Autowired
+//    private MailService mailService;
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -4462,7 +4462,7 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.APPROVED);
         soal.setKeteranganApprove(soal.getKeterangan());
         soalDao.save(soal);
-        mailService.validasiSoal(soal,"APPROVE");
+//        mailService.validasiSoal(soal,"APPROVE");
 
 
         Jadwal jadwal =jadwalDao.findById(soal.getJadwal().getId()).get();
@@ -4485,7 +4485,7 @@ public class StudiesActivityController {
         soal.setStatusApprove(StatusApprove.REJECTED);
         soal.setKeteranganApprove(keteranganApprove);
         soalDao.save(soal);
-        mailService.validasiSoal(soal,"REJECT");
+//        mailService.validasiSoal(soal,"REJECT");
 
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {

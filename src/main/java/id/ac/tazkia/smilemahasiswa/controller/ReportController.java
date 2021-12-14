@@ -1169,12 +1169,18 @@ public class ReportController {
     }
 
     @GetMapping("/report/pembinaanMatrikulasi")
-    public void pembinaanMatrikulasi(Model model,@RequestParam(required = false) String nim,@RequestParam(required = false) TahunAkademik tahunAkademik){
+    public void pembinaanMatrikulasi(Model model,@RequestParam(required = false) String nim,@RequestParam(required = false) TahunAkademik tahunAkademik, Authentication authentication){
 
+        User user = currentUserService.currentUser(authentication);
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         List<JenisPembinaanMatrikulasi> jenisPembinaanMatrikulasi = pembinaanDao.findByStatus(StatusRecord.AKTIF);
         List<JenisPembinaanMatrikulasiDetail> jenisPembinaanMatrikulasiDetailList = pembinaanDetailDao.findByStatusAndTahunAkademikAndMahasiswa(StatusRecord.AKTIF,tahunAkademik,mhs);
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mhs, StatusRecord.AKTIF);
 
+
+
+        model.addAttribute("currentUser",user);
+        model.addAttribute("kelas", kelasMahasiswa);
         model.addAttribute("tahunAkademikList", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("nim", nim);
         model.addAttribute("mhs",mhs);
@@ -1196,13 +1202,15 @@ public class ReportController {
 
     @PostMapping("/pembinaanDetail/detail")
     public String saveDetail(@Valid JenisPembinaanMatrikulasiDetail jenisPembinaanMatrikulasiDetail, @RequestParam(required = false) JenisPembinaanMatrikulasi jenisPembinaanMatrikulasi,
-                             @RequestParam(required = false) Mahasiswa mahasiswa,@RequestParam(required = false) TahunAkademik tahunAkademik){
+                             @RequestParam(required = false) Mahasiswa mahasiswa,@RequestParam(required = false) TahunAkademik tahunAkademik, Authentication authentication){
 
+            User user = currentUserService.currentUser(authentication);
 
             jenisPembinaanMatrikulasiDetail.setJenisPembinaanMatrikulasi(jenisPembinaanMatrikulasi);
             jenisPembinaanMatrikulasiDetail.setMahasiswa(mahasiswa);
             jenisPembinaanMatrikulasiDetail.setTahunAkademik(tahunAkademik);
             jenisPembinaanMatrikulasiDetail.setStatus(StatusRecord.AKTIF);
+            jenisPembinaanMatrikulasiDetail.setUser(user);
             pembinaanDetailDao.save(jenisPembinaanMatrikulasiDetail);
 
 

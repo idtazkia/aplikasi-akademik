@@ -58,6 +58,121 @@
                         </div>
                     </div>
 
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h3 class="mb-0">Data Rekam Mahasiswa</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+
+
+
+                                    <div class="col-md-12">
+
+                                        <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.PRIA}">
+                                            <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4392/4392947.png" alt="card image"></p>
+                                        </div>
+                                        <div th:if="${mhs.jenisKelamin == mhs.jenisKelamin.WANITA}">
+                                            <p><img class="img-fluid"  width="200px" src="https://image.flaticon.com/icons/png/512/4264/4264378.png" alt="card image"></p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Nama</label>
+                                        <h4 th:text="${mhs.nama}">Muhammad Arif Rahmatullah</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>NIM</label>
+                                        <h4 th:text="${mhs.nim}">18120029</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>NIK</label>
+                                        <h4 th:if="${mhs.nik} == null">-</h4>
+                                        <h4 th:text="${mhs.nik}"></h4>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>TTL</label>
+                                        <h4 th:text="${mhs.tempatLahir}">Bogor, 29 November 2000</h4>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Alamat</label>
+                                        <h4 th:if="${mhs.namaJalan} == null">-</h4>
+                                        <h4 th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}" th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }">Bogor</h4>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>No. HP</label>
+                                        <h4 th:if="${mhs.teleponSeluler} == null">-</h4>
+                                        <h4><a th:href="${url}" th:text="${mhs.teleponSeluler}">085819531387</a></h4>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Program Studi</label>
+                                        <h4><a th:href="${urlProdi}" th:text="${mhs.idProdi.namaProdi}">Ekonomi Syariah</a></h4>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Kelas Program Studi</label>
+                                        <h4 th:text="${kelas.kelas.namaKelas}">-</h4>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Tahun Akademik Masuk</label>
+                                        <h4>2019</h4>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Asal Program Studi</label>
+                                        <h4 th:text="${mhs.idProdi.namaProdi}">-</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Asal Perguruan Tinggi Sebelumnya</label>
+                                        <h4>-</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Dosen Wali</label>
+                                        <h4 th:if="${mhs.dosen} == null">-</h4>
+                                        <h4 th:if="${mhs.dosen.karyawan} != null" th:text="${mhs.dosen.karyawan.namaKaryawan}">Sopian Lc, MA</h4>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Kelas Matrikulasi</label>
+                                        <h4>-</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Beasiswa</label>
+                                        <h4>-</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Pembina</label>
+                                        <h4>-</h4>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body">
                             <div class="card" style="margin-bottom: 5px;" >
                                 <div class="card-header border-0">
@@ -70,7 +185,7 @@
                                                         <label >Tahun Akademik</label>
                                                         <input type="hidden" name="nim" th:value="${mhs.nim}"/>
                                                         <select class="form-control js-example-placeholder-single" name="tahunAkademik">
-                                                            <option value="" th:text="${thn.namaTahunAkademik}" th:value="${thn.id}" th:if="${thn != null}"></option>
+                                                            <option value="" th:text="${thn.namaTahunAkademik} && ${}" th:value="${thn.id}" th:if="${thn != null}"></option>
                                                             <option value="" th:if="${thn == null}" disabled selected>Pilih Semester Disini</option>
                                                             <option value="" disabled>Pilih Tahun Akademik Lain</option>
                                                             <option th:each="data : ${tahunAkademikList}"
@@ -128,10 +243,10 @@
                                                             <td  style="white-space: pre-wrap" th:text="${pemdet.nilai}"></td>
                                                             <td  style="white-space: pre-wrap" th:text="${pemdet.keterangan}"></td>
                                                             <td >
-                                                                <form  th:action="@{/pembinaanDetail/delete}" method="post">
+                                                                <form th:if="${currentUser == pemdet.user}"  th:action="@{/pembinaanDetail/delete}" method="post">
                                                                     <input type="hidden" th:value="${pemdet.id}" name="id">
                                                                     <input type="hidden" th:value="${mhs.nim}" name="mahasiswa">
-                                                                    <button sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                                                    <button  class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                                                                 </form>
                                                             </td>
                                                         </span>
@@ -140,8 +255,7 @@
                                                 </table>
                                             </td>
                                             <td style="vertical-align: top;" >
-                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + pem.id}"
-                                                        sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK2')">
+                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + pem.id}">
                                                     <i class="fa fa-plus-circle"></i> Add Detail
                                                 </button>
 

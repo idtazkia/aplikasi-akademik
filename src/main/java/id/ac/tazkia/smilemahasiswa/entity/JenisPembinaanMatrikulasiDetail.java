@@ -39,5 +39,9 @@ public class JenisPembinaanMatrikulasiDetail {
     @NotNull @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
+    @ManyToOne
+    @JoinColumn(name = "id_s_user")
+    private User user;
+
 
 }
