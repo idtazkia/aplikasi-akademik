@@ -185,7 +185,7 @@
                                                         <label >Tahun Akademik</label>
                                                         <input type="hidden" name="nim" th:value="${mhs.nim}"/>
                                                         <select class="form-control js-example-placeholder-single" name="tahunAkademik">
-                                                            <option value="" th:text="${thn.namaTahunAkademik} && ${}" th:value="${thn.id}" th:if="${thn != null}"></option>
+                                                            <option value="" th:text="${thn.namaTahunAkademik}" th:value="${thn.id}" th:if="${thn != null}"></option>
                                                             <option value="" th:if="${thn == null}" disabled selected>Pilih Semester Disini</option>
                                                             <option value="" disabled>Pilih Tahun Akademik Lain</option>
                                                             <option th:each="data : ${tahunAkademikList}"
@@ -301,7 +301,7 @@
 
                                                                 </div>
 
-                                                                <button id="btn" class="btn btn-primary">ADD</button>
+<!--                                                                <button id="btn" class="btn btn-primary">ADD</button>-->
 
                                                             </div>
 
