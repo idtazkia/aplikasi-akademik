@@ -627,6 +627,7 @@
                                                                 <thead class="thead-light">
                                                                 <tr>
                                                                     <td>#</td>
+                                                                    <td class="text-center">Status</td>
                                                                     <td class="text-center">Keterangan</td>
                                                                     <td class="text-center">Jumlah</td>
                                                                     <td class="text-center"></td>
@@ -636,9 +637,10 @@
                                                                 <tr th:each="data, row:${listPiutang}">
                                                                     <td th:text="${(row.index + 1)}">1</td>
                                                                     <td class="text-center">
-                                                                        <a class="text-default" th:href="@{/studentBill/billAdmin/detailPiutang(tahunAkademik=${selectTahun.id}, selisih=${data[2]})}"
+                                                                        <a class="text-default" th:href="@{/studentBill/billAdmin/detailPiutang(tahunAkademik=${selectTahun.id}, status=${data[0]})}"
                                                                            th:text="${data[0]}"></a>
                                                                     </td>
+                                                                    <td class="text-center" th:text="${data[3]}"></td>
                                                                     <td class="text-center" th:text="${data[1]}"></td>
                                                                 </tr>
                                                                 </tbody>

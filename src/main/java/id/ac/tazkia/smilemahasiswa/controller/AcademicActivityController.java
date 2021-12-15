@@ -1049,7 +1049,7 @@ public class  AcademicActivityController {
     @GetMapping("/academic/schedule/download")
     public void downloadJadwal(@RequestParam(required = false) TahunAkademik tahunAkademik, HttpServletResponse response) throws IOException {
 
-        String[] columns = {"No", "Ruangan", "Hari", "Waktu", "Prodi", "Kode Matkul", "Matakuliah", "Kelas", "Dosen", "Total Sks Dosen", "Jumlah Mahasiswa"};
+        String[] columns = {"No", "Ruangan", "Hari", "Waktu", "Prodi", "Kode Matkul", "Matakuliah", "Sks Matkul", "Kelas", "Dosen", "Total Sks Dosen", "Jumlah Mahasiswa"};
 
         List<Object[]> listJadwal = jadwalDao.downloadJadwal(tahunAkademik);
 
@@ -1079,15 +1079,16 @@ public class  AcademicActivityController {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(list[3].toString());
-            row.createCell(2).setCellValue(list[11].toString());
+            row.createCell(2).setCellValue(list[12].toString());
             row.createCell(3).setCellValue(list[4].toString()+" - "+list[5].toString());
             row.createCell(4).setCellValue(list[6].toString());
             row.createCell(5).setCellValue(list[7].toString());
             row.createCell(6).setCellValue(list[8].toString());
             row.createCell(7).setCellValue(list[9].toString());
             row.createCell(8).setCellValue(list[10].toString());
-            row.createCell(9).setCellValue(list[12].toString());
+            row.createCell(9).setCellValue(list[11].toString());
             row.createCell(10).setCellValue(list[13].toString());
+            row.createCell(11).setCellValue(list[14].toString());
         }
 
         for (int i = 0; i < columns.length; i++){

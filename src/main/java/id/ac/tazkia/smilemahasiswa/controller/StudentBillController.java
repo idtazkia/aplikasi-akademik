@@ -15,6 +15,7 @@ import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -158,6 +159,9 @@ public class StudentBillController {
 
     @Autowired
     public TagihanService tagihanService;
+
+    @Autowired
+    public KafkaSender kafkaSender;
 
     @Value("${upload.buktiPembayaran}")
     private String uploadFolder;
@@ -454,7 +458,7 @@ public class StudentBillController {
             model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
 
             // list klasifikasi piutang
-            model.addAttribute("listPiutang", tagihanDao.listPiutang(tahunAkademik.getId()));
+            model.addAttribute("listPiutang", tagihanDao.listPiutang(tahunAkademik.getKodeTahunAkademik()));
 
         }
 
@@ -565,10 +569,26 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/billAdmin/detailPiutang")
     public void detailPiutang(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                              @RequestParam(required = false) String selisih){
+                              @RequestParam(required = false) String status){
 
         model.addAttribute("tahun", tahunAkademik);
-        model.addAttribute("detailPiutang", tagihanDao.detailPiutang(tahunAkademik.getId(), selisih));
+        if (status.equals("LANCAR")){
+            model.addAttribute("detailPiutang", tagihanDao.detailLancar(tahunAkademik.getKodeTahunAkademik(), status));
+        }else if(status.equals("KURANG LANCAR")){
+            model.addAttribute("detailPiutang", tagihanDao.detailKurangLancar(tahunAkademik.getKodeTahunAkademik(), status));
+        }else if (status.equals("PERHATIAN KHUSUS")){
+            model.addAttribute("detailPiutang", tagihanDao.detailPerhatianKhusus(tahunAkademik.getKodeTahunAkademik(), status));
+        } else if (status.equals("HAMPIR DIRAGUKAN")) {
+            model.addAttribute("detailPiutang", tagihanDao.detailHampirDiragukan(tahunAkademik.getKodeTahunAkademik(), status));
+        } else if (status.equals("DIRAGUKAN")) {
+            model.addAttribute("detailPiutang", tagihanDao.detailDiragukan(tahunAkademik.getKodeTahunAkademik(), status));
+        } else if (status.equals("SANGAT DIRAGUKAN")) {
+            model.addAttribute("detailPiutang", tagihanDao.detailSangatDiragukan(tahunAkademik.getKodeTahunAkademik(), status));
+        } else if (status.equals("TERSENDAT")) {
+            model.addAttribute("detailPiutang", tagihanDao.detailTersendat(tahunAkademik.getKodeTahunAkademik(), status));
+        } else if (status.equals("MACET")) {
+            model.addAttribute("detailPiutang", tagihanDao.detailMacet(tahunAkademik.getKodeTahunAkademik(), status));
+        }
 
     }
 
@@ -1624,12 +1644,12 @@ public class StudentBillController {
                 for (int a = 0; i > a; a++){
                     j += 45;
                 }
-                rc.setTanggalJatuhTempo(LocalDate.now().plusDays(j));
+                rc.setTanggalJatuhTempo(t.getTanggalPembuatan().plusDays(j));
             }else{
                 for (int a = 0; i > a; a++){
                     j += interval;
                 }
-                rc.setTanggalJatuhTempo(LocalDate.now().plusMonths(j));
+                rc.setTanggalJatuhTempo(t.getTanggalPembuatan().plusMonths(j));
             }
             requestCicilanDao.save(rc);
         }
@@ -2212,46 +2232,6 @@ public class StudentBillController {
 
     }
 
-//    @GetMapping("/studentBill/billReport/prodi")
-//    public void reportProdi(Model model, @RequestParam(required = false) String tahun){
-//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-//        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
-//
-//        model.addAttribute("tahun", thn);
-//        model.addAttribute("listProdi", tagihanDao.listTagihanPerProdi(tahunAkademik));
-//        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
-//        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
-//    }
-//
-//    @GetMapping("/studentBill/billReport/mahasiswaProdi")
-//    public void reportMahasiswaProdi(Model model, @RequestParam(required = false) String prodi,
-//                                        @RequestParam(required = false) String tahun){
-//
-//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-//        Prodi prd = prodiDao.findById(prodi).get();
-//
-//        String tahun1 = tahunAkademik.getNamaTahunAkademik().substring(1,9);
-//
-//        model.addAttribute("prodi", prd);
-//        model.addAttribute("tahun", tahun1);
-//        model.addAttribute("tagihanProdi", tagihanDao.listTagihanPerMahasiswaByProdi(prodi, tahun));
-//
-//
-//
-//    }
-//
-//    @GetMapping("/studentBill/billReport/angkatan")
-//    public void reportAngkatan(Model model, @RequestParam(required = false) String tahun){
-//        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
-//        String thn = tahunAkademik.getNamaTahunAkademik().substring(0,9);
-//
-//        model.addAttribute("tahun", thn);
-//        model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
-//        model.addAttribute("toTagihan", tagihanDao.totalTagihan(tahunAkademik));
-//        model.addAttribute("toDibayar", pembayaranDao.totalDibayar(tahunAkademik));
-//
-//    }
-
     // refund sp
 
     @GetMapping("/studentBill/refund/list")
@@ -2286,6 +2266,7 @@ public class StudentBillController {
         enableFiture.setFitur(status);
         enableFiture.setEnable(enabled);
         enableFiture.setKeterangan("-");
+
         enableFitureDao.save(enableFiture);
     }
 
@@ -2321,6 +2302,19 @@ public class StudentBillController {
         }
 
     }
+
+    @Scheduled(cron = "0 44 11 * * *", zone = "Asia/Jakarta")
+    public void kirimUlangNotifikasi(){
+
+        List<RequestCicilan> cicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusWeeks(1));
+        for (RequestCicilan cariCicilan : cicilan){
+            log.info("Scheduler untuk {} berhasil", cariCicilan.getTagihan().getKeterangan());
+
+//            kafkaSender.sendNotifikasiTagihan(cariCicilan.getTagihan());
+        }
+
+    }
+
 //
 //    @Scheduled(cron = "0 59 20 * * *", zone = "Asia/Jakarta")
 //    public void lewatPenangguhan(){
