@@ -32,5 +32,5 @@ public class Dosen {
 
     private BigDecimal honor;
 
-    private String StatusDosen;
+    private String statusDosen;
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -21,6 +22,8 @@ public class KesediaanMengajarDosen {
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
+
+    private LocalDate tanggalInput = LocalDate.now();
 
     private String jawaban;
 

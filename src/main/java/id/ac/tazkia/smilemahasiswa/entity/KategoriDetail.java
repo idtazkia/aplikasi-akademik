@@ -24,6 +24,8 @@ public class KategoriDetail {
 
     private Integer nomorUrut;
 
+    private String jenis;
+
     @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 
