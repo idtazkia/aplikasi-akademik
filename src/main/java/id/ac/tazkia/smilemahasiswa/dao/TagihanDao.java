@@ -89,21 +89,10 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by angkatan order by angkatan asc", nativeQuery = true)
     List<Object[]> listTagihanPerAngkatanDate(String tanggal3, String tanggal4, TahunAkademik tahunAkademik);
 
-    @Query(value = "select a.id as id, a.angkatan, a.nim as nim, a.nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, \n" +
-            "sum(coalesce(c.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(c.amount,0)) as sisa \n" +
-            "from mahasiswa as a inner join tagihan as b on a.id=b.id_mahasiswa left join pembayaran as c \n" +
-            "on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
+    @Query(value = "select a.id as id, a.angkatan, a.nim as nim, a.nama, sum(coalesce(b.nilai_tagihan,0)) as tagihan, sum(coalesce(c.amount,0)) as dibayar, sum(coalesce(b.nilai_tagihan,0))-sum(coalesce(c.amount,0)) as sisa, a.status_aktif as status from mahasiswa as a inner join tagihan as b on a.id=b.id_mahasiswa left join pembayaran as c on b.id=c.id_tagihan where a.id_prodi=?1 and b.status='AKTIF' and b.id_tahun_akademik=?2 group by id order by nim", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByProdi(String idProdi, String idTahunAkademik);
 
-    @Query(value = "select a.id,a.id_tagihan,a.prodi,a.nim,a.nama,sum(a.tagihan) as tagihan,coalesce(sum(b.amount),0) as dibayar, sum(coalesce(a.tagihan,0))-sum(coalesce(b.amount,0)) as sisa from\n" +
-            "(select a.id as id, b.id as id_tagihan, c.nama_prodi as prodi, a.nim as nim, a.nama as nama,b.nilai_tagihan as tagihan\n" +
-            "from mahasiswa as a \n" +
-            "inner join tagihan as b on a.id=b.id_mahasiswa \n" +
-            "inner join prodi as c on a.id_prodi=c.id\n" +
-            "where b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2)a\n" +
-            "left join \n" +
-            "(select id_tagihan,sum(amount)as amount from pembayaran group by id_tagihan) as b on a.id_tagihan = b.id_tagihan \n" +
-            "group by a.nim;", nativeQuery = true)
+    @Query(value = "select a.id,a.id_tagihan,a.prodi,a.nim,a.nama,sum(a.tagihan) as tagihan,coalesce(sum(b.amount),0) as dibayar, sum(coalesce(a.tagihan,0))-sum(coalesce(b.amount,0)) as sisa, status from (select a.id as id, b.id as id_tagihan, c.nama_prodi as prodi, a.nim as nim, a.nama as nama, a.status_aktif as status,b.nilai_tagihan as tagihan from mahasiswa as a inner join tagihan as b on a.id=b.id_mahasiswa inner join prodi as c on a.id_prodi=c.id where b.status='AKTIF' and a.angkatan=?1 and b.id_tahun_akademik=?2)a left join (select id_tagihan,sum(amount)as amount from pembayaran group by id_tagihan) as b on a.id_tagihan = b.id_tagihan group by a.nim", nativeQuery = true)
     List<Object[]> listTagihanPerMahasiswaByAngkatan(String angkatan, String idTahunAkademik);
 
     @Query(value = "select 'LANCAR' as status, count(id_mahasiswa)as jumlah, coalesce(selisih, 100),'Lunas dan tepat waktu' as keterangan from (select a.id_mahasiswa, tanggal_pembuatan,\n" +

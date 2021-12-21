@@ -87,10 +87,10 @@
                                         <th class="text-center" colspan="6">Sesi</th>
                                     </tr>
                                     <tr>
-                                        <th class="text-center">07.00-09.30 </th>
-                                        <th class="text-center">09.31-12.00 </th>
-                                        <th class="text-center">13.00-15.30	</th>
-                                        <th class="text-center">15.31-18.00 </th>
+                                        <th class="text-center">07.00 - 09.30 </th>
+                                        <th class="text-center">09.31 - 12.00 </th>
+                                        <th class="text-center">13.00 - 15.30	</th>
+                                        <th class="text-center">15.31 - 18.00 </th>
                                         <th class="text-center">Agenda Lain</th>
                                         <th class="text-center">Pilih Semua Sesi</th>
                                     </tr>
@@ -128,11 +128,11 @@
         var active = $(arg).prop("checked") ? 1 : 0;
 
         if (active == 0){
-            for (var i = 0; i<=5;i++){
+            for (var i = 0; i<=4;i++){
                 $(document.getElementById(value+"-"+i)).prop('checked', false);
             }
         }else{
-            for (var i = 0; i<=5;i++){
+            for (var i = 0; i<=4;i++){
                 $(document.getElementById(value+"-"+i)).prop('checked', true);
             }
         }
