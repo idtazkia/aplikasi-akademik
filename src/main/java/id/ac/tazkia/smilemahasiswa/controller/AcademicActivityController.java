@@ -196,9 +196,9 @@ public class  AcademicActivityController {
 
     @GetMapping("/select2/lecture")
     @ResponseBody
-    public List<SelectDosen> cariDosen(@RequestParam String search){
+    public List<SelectDosen> cariDosen(@RequestParam String search,TahunAkademik tahun){
 
-        return dosenDao.searchPlotingDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),search);
+        return dosenDao.searchPlotingDosen(tahun,search);
     }
 
     @GetMapping("/detail/lecture")

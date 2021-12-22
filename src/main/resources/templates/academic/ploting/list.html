@@ -364,7 +364,7 @@
             minimumInputLength: 3,
             ajax: {
                 url: function (params) {
-                    return '/select2/lecture?search=' + params.term;
+                    return '/select2/lecture?search=' + params.term+'&tahun='+$('#tahun').val();
                 },
                 dataType: 'json',
                 type: "GET",
@@ -585,7 +585,7 @@
             minimumInputLength: 3,
             ajax: {
                 url: function (params) {
-                    return '/select2/lecture?search=' + params.term;
+                    return '/select2/lecture?search=' + params.term+'&tahun='+$('#tahun').val();
                 },
                 dataType: 'json',
                 type: "GET",
