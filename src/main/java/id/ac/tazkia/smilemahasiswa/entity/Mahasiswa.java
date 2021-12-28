@@ -152,6 +152,10 @@ public class Mahasiswa {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLulus;
 
+    @ManyToOne
+    @JoinColumn(name = "id_beasiswa")
+    private Beasiswa beasiswa;
+
     private String fileKtp;
     private String fileIjazah;
     private String foto;

@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.http.client.support.InterceptingHttpAccessor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,6 +24,8 @@ public class TagihanBeasiswa extends Auditable {
     @ManyToOne
     @JoinColumn(name = "id_jenis_tagihan")
     private JenisTagihan jenisTagihan;
+
+    private Integer potongan;
 
     @Enumerated(value = EnumType.STRING)
     @NotNull

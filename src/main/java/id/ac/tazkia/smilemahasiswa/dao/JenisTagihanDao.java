@@ -18,7 +18,10 @@ public interface JenisTagihanDao extends PagingAndSortingRepository<JenisTagihan
 
     Page<JenisTagihan> findByStatusNotInOrderByKode(List<StatusRecord> asList, Pageable page);
 
-    List<JenisTagihan> findByStatusOrderByNama(StatusRecord statusRecord);
+    List<JenisTagihan> findByStatusOrderByKode(StatusRecord statusRecord);
 
     JenisTagihan findByKodeAndStatus(String kode, StatusRecord statusRecord);
+
+    List<JenisTagihan> findByStatusAndIdNotInOrderByKode(StatusRecord statusRecord, List<String> id);
+
 }

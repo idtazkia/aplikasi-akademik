@@ -356,7 +356,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/valueType/form")
     public void formNilai(Model model, @RequestParam(required = false) String id){
         model.addAttribute("valueBill", new NilaiJenisTagihan());
-        model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByNama(StatusRecord.AKTIF));
+        model.addAttribute("jenisTagihan", jenisTagihanDao.findByStatusOrderByKode(StatusRecord.AKTIF));
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByNamaTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatusOrderByNamaProdi(StatusRecord.AKTIF));
         model.addAttribute("program", programDao.findByStatus(StatusRecord.AKTIF));

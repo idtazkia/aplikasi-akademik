@@ -3,6 +3,8 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -61,6 +65,12 @@ public class SettingController {
 
     @Autowired
     private CurrentUserService currentUserService;
+
+    @Autowired
+    private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private MahasiswaBeasiswaDao mahasiswaBeasiswaDao;
 
 //    Attribute
 
@@ -391,8 +401,19 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     @GetMapping("/setting/beasiswa/tagihan")
     public void tagihanList(Model model, @RequestParam Beasiswa id){
         model.addAttribute("id", id.getId());
-        model.addAttribute("listTagiahanBeasiswa", tagihanBeasiswaDao.findByBeasiswaAndStatus(id, StatusRecord.AKTIF));
-        model.addAttribute("listJenisTagihan", jenisTagihanDao.findByStatusOrderByNama(StatusRecord.AKTIF));
+        List<TagihanBeasiswa> tBeasiswa = tagihanBeasiswaDao.findByBeasiswaAndStatus(id, StatusRecord.AKTIF);
+        List<String> idTagihan = new ArrayList<>();
+        List<JenisTagihan> listTagihan = null;
+        for (TagihanBeasiswa t : tBeasiswa){
+            idTagihan.add(t.getJenisTagihan().getId());
+        }
+        if (idTagihan.isEmpty()){
+            listTagihan = jenisTagihanDao.findByStatusOrderByKode(StatusRecord.AKTIF);
+        }else {
+            listTagihan = jenisTagihanDao.findByStatusAndIdNotInOrderByKode(StatusRecord.AKTIF, idTagihan);
+        }
+        model.addAttribute("listTagiahanBeasiswa", tBeasiswa);
+        model.addAttribute("listJenisTagihan", listTagihan);
     }
 
     @PostMapping("/setting/beasiswa/tagihan")
@@ -410,6 +431,15 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         return "redirect:/setting/beasiswa/tagihan?id=" + idBeasiswa;
     }
 
+    @PostMapping("/setting/beasiswa/tagihan/potongan")
+    public String potonganTagihan(@RequestParam TagihanBeasiswa tagihan, @RequestParam(required = false) Integer potongan){
+
+        tagihan.setPotongan(potongan);
+        tagihanBeasiswaDao.save(tagihan);
+
+        return "redirect:../tagihan?id="+tagihan.getBeasiswa().getId();
+    }
+
     @PostMapping("/setting/beasiswa/deteletagihan")
     public String tagihanBeasiswaHapus(@RequestParam TagihanBeasiswa tagihanBeasiswa, Authentication authentication){
         tagihanBeasiswa.setStatus(StatusRecord.HAPUS);
@@ -419,6 +449,45 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
 
     @GetMapping("/setting/beasiswa/mahasiswa")
     public void listMahasiswa(Model model,@RequestParam String id){
-        model.addAttribute("mahasiswa", beasiswaDao.listBeasiswaMahasiwa(id, StatusRecord.AKTIF));
+        Beasiswa beasiswa = beasiswaDao.findById(id).get();
+        model.addAttribute("beasiswa", beasiswa);
+        model.addAttribute("mahasiswa", beasiswaDao.listBeasiswaMahasiwa(id));
+        model.addAttribute("listMahasiswa", mahasiswaDao.findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord.AKTIF, "AKTIF"));
     }
+
+    @PostMapping("/setting/beasiswa/mahasiswa")
+    public String inputMahasiswaBeasiswa(@RequestParam(required = false) String[] mahasiswa, @RequestParam(required = false) String tanggalMulai, @RequestParam(required = false) String beasiswa){
+        Beasiswa b = beasiswaDao.findById(beasiswa).get();
+        LocalDate mulai = LocalDate.parse(tanggalMulai);
+        for (String m : mahasiswa){
+            Mahasiswa mhs = mahasiswaDao.findById(m).get();
+            MahasiswaBeasiswa mBeasiswa = new MahasiswaBeasiswa();
+            mBeasiswa.setMahasiswa(mhs);
+            mBeasiswa.setBeasiswa(b);
+            mBeasiswa.setTanggalMulaiBerlaku(mulai);
+            mahasiswaBeasiswaDao.save(mBeasiswa);
+
+            mhs.setBeasiswa(b);
+            mahasiswaDao.save(mhs);
+
+        }
+
+        return "redirect:mahasiswa?id="+b.getId();
+
+    }
+
+    @PostMapping("/setting/beasiswa/mahasiswa/delete")
+    public String deleteMahasiswaBeasiswa(@RequestParam MahasiswaBeasiswa mahasiswa){
+
+        mahasiswa.setStatus(StatusRecord.HAPUS);
+        mahasiswaBeasiswaDao.save(mahasiswa);
+
+        Mahasiswa m = mahasiswaDao.findByNim(mahasiswa.getMahasiswa().getNim());
+        m.setBeasiswa(null);
+        mahasiswaDao.save(m);
+
+        return "redirect:../mahasiswa?id="+mahasiswa.getBeasiswa().getId();
+
+    }
+
 }

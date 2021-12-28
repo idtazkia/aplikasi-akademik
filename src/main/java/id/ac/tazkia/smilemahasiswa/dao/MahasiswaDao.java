@@ -59,4 +59,6 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
             "where a.status = 'AKTIF' and a.status_aktif = 'AKTIF' group by a.angkatan order by a.angkatan\n", nativeQuery = true)
     List<ListAngkatanDto> listAngkatanMahasiswa();
 
+    List<Mahasiswa> findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord statusRecord, String status);
+
 }

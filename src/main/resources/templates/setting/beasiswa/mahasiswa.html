@@ -8,6 +8,15 @@
     <title>Title</title>
 </head>
 <body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function (){
+            $('#mySelect2').select2({
+                dropdownParent: $('#exampleModal')
+            });
+        });
+    </script>
+</th:block>
 <div layout:fragment="main">
     <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
         <div class="container-fluid">
@@ -48,9 +57,52 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/mahasiswa/list}" class="btn btn-sm btn-warning"><i class="fa fa-plus-circle"></i> Tambah Mahasiswa</a>
-                                <a th:href="@{/setting/beasiswa/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-left"></i> Back</a>
+                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="fas fa-plus-circle"></i> Tambah Mahasiwa
+                                </button>
+                                <a th:href="@{/setting/beasiswa/list}" class="btn btn-sm btn-default"><i class="fas fa-arrow-left"></i> Kembali</a>
                             </div>
+
+                            <!-- modal beasiswa -->
+                            <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form th:action="@{/setting/beasiswa/mahasiswa}" method="post">
+                                            <input type="hidden" name="beasiswa" th:value="${beasiswa.id}">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Pilih Mahasiswa untuk <span th:text="${beasiswa.namaBeasiswa}"></span></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="col-md-12">
+
+                                                    <div class="form-group">
+                                                        <label>Mahasiswa</label>
+                                                        <select autofocus class="form-control" id="mySelect2"
+                                                                style="width: 100%!important;" required name="mahasiswa" multiple="multiple">
+                                                            <option th:each="data,row : ${listMahasiswa}"
+                                                                    th:text="${(data.nim) + ' - ' + (data.nama) + ' - ' + (data.idProdi.namaProdi)}"
+                                                                    th:value="${data.id}"></option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <p>Tanggal Mulai Berlaku</p>
+                                                        <input type="date" name="tanggalMulai" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                <button type="submit" id="save" class="btn btn-primary">Simpan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -61,15 +113,53 @@
                                 <th>Nim</th>
                                 <th>Nama</th>
                                 <th>Status</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="data, row:${mahasiswa}">
-                                <td th:text="${(row.index + 1)}"></td>
-                                <td th:text="${data[1]}"></td>
-                                <td th:text="${data[2]}"></td>
-                                <td><span th:text="${data[3]}" class="btn btn-success btn-sm"></span></td>
-                            </tr>
+                                <tr th:each="data, row:${mahasiswa}">
+                                    <td th:text="${(row.index + 1)}"></td>
+                                    <td th:text="${data[1]}"></td>
+                                    <td th:text="${data[2]}"></td>
+                                    <td><span th:text="${data[3]}" class="btn btn-success btn-sm"></span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                        <div class="modal fade" th:id="${'modal-notification' + data[0]}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                                <div class="modal-content bg-gradient-danger">
+
+                                                    <div class="modal-header">
+                                                        <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="py-3 text-center">
+                                                            <i class="far fa-trash-alt fa-3x"></i>
+                                                            <h4 class="heading mt-4">Are you sure ?</h4>
+                                                            <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <form method="post" th:action="@{/setting/beasiswa/mahasiswa/delete(mahasiswa = ${data[0]})}">
+                                                            <button type="submit" class="btn btn-white">Delete</button>
+                                                        </form>
+                                                        <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -80,3 +170,8 @@
 </div>
 </body>
 </html>
+<script>
+    $(document).ready(function (){
+        $('.js-example-placeholder-single').select2();
+    });
+</script>
