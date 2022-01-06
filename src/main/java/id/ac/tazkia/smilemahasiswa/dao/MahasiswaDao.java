@@ -50,7 +50,8 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     List<Mahasiswa> findByStatusAndAngkatanAndIdProdiAndIdProgram(StatusRecord aktif, String angkatan, Prodi prodi, Program program);
     List<Mahasiswa> findByIdProdiAndStatus(Prodi prodi, StatusRecord statusRecord);
-    List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatus(Prodi prodi, Program program, String angkatan, String s, StatusRecord statusRecord);
+    List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatusAndBeasiswaIsNull(Prodi prodi, Program program, String angkatan, String s, StatusRecord statusRecord);
+    List<Mahasiswa> findByIdProdiAndIdProgramAndAngkatanAndStatusAndStatusAktifAndBeasiswaIsNotNull(Prodi prodi, Program program, String angkatan, StatusRecord statusRecord, String status);
 
 
     @Query(value = "select a.angkatan,c.nama_jenjang as namaJenjang from mahasiswa as a\n" +

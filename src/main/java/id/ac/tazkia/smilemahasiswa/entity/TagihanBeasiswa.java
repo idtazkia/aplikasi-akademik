@@ -27,6 +27,8 @@ public class TagihanBeasiswa extends Auditable {
 
     private Integer potongan;
 
+    private String jenisPotongan;
+
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private StatusRecord status = StatusRecord.AKTIF;

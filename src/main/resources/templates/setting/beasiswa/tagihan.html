@@ -45,7 +45,7 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Data List</h3>
+                                <h3 class="mb-0">Data <span th:text="${beasiswa.namaBeasiswa}"></span></h3>
                             </div>
                             <div class="col text-right">
                                 <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal">
@@ -57,7 +57,7 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Pilih Jenis Tagihan</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -104,6 +104,7 @@
                                 <th>Jenis Tagihan</th>
                                 <th>Potongan</th>
                                 <th>Status</th>
+                                <th>Setting Potongan</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -112,19 +113,18 @@
                                 <td th:text="${(row.index + 1)}"></td>
                                 <td th:text="${data.jenisTagihan.nama}"></td>
                                 <td>
-                                    <div th:if="${data.potongan} != null" th:text="${data.potongan+' %'}"></div>
+                                    <div th:if="${data.potongan} != null">
+                                        <div th:if="${data.jenisPotongan} == 'PERSEN'" th:text="${data.potongan+' %'}"></div>
+                                        <div th:if="${data.jenisPotongan} == 'JUMLAH'" th:text="${'Rp. ' + #numbers.formatDecimal(data.potongan, 0, 'POINT', 2, 'COMMA')}"></div>
+                                    </div>
                                 </td>
                                 <td><span class="btn btn-success btn-sm" th:text="${data.status}"></span></td>
                                 <td>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#modal-potongan' + data.id}">
-                                        <i class="fas fa-cog"></i>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#potongan-persen' + data.id}">
+                                        <i class="fas fa-percent"></i>&nbsp; Persen
                                     </button>
 
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-
-                                    <div class="modal fade" th:id="${'modal-potongan' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-potongan" aria-hidden="true">
+                                    <div class="modal fade" th:id="${'potongan-persen' + data.id}" tabindex="-1" role="dialog" aria-labelledby="potongan-persen" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-" role="document">
                                             <div class="modal-content">
 
@@ -139,10 +139,10 @@
 
                                                     <div class="card shadow">
                                                         <div class="card-body">
-                                                            <form method="post" th:action="@{/setting/beasiswa/tagihan/potongan(tagihan = ${data.id})}">
+                                                            <form method="post" th:action="@{/setting/beasiswa/potongan/persen(tagihan = ${data.id})}">
                                                                 <input type="hidden" name="id" th:field="*{id}">
                                                                 <div class="input-group mb-3">
-                                                                    <input type="number" name="potongan" class="form-control" aria-labelledby="addon-1">&nbsp;
+                                                                    <input type="number" name="potongan" max="100" class="form-control" aria-labelledby="addon-1">&nbsp;
                                                                     <span class="input-group-text" id="addon-1" >%</span>
                                                                 </div>
                                                                 <div class="text-center">
@@ -156,6 +156,48 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" th:data-target="${'#potongan-jumlah' + data.id}">
+                                        <i class="fas fa-money-bill-wave"></i>&nbsp; Jumlah
+                                    </button>
+
+                                    <div class="modal fade" th:id="${'potongan-jumlah' + data.id}" tabindex="-1" role="dialog" aria-labelledby="potongan-jumlah" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-" role="document">
+                                            <div class="modal-content">
+
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Setting potongan beasiswa</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="card-body">
+                                                        <form method="post" th:action="@{/setting/beasiswa/potongan/jumlah(tagihan = ${data.id})}">
+                                                            <input type="hidden" name="id" th:field="*{id}">
+                                                            <div class="input-group mb-3">
+                                                                <span class="input-group-text" id="addon-2" >Rp. </span>&nbsp;
+                                                                <input type="number" name="jumlah" class="form-control" aria-labelledby="addon-2">
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <button type="submit" class="btn btn-success my-4">Submit</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
 
                                     <div class="modal fade" th:id="${'modal-notification' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
                                         <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
@@ -179,7 +221,7 @@
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <form method="post" th:action="@{/setting/beasiswa/deteletagihan(tagihanBeasiswa = ${data.id})}">
+                                                    <form method="post" th:action="@{/setting/beasiswa/deletetagihan(tagihanBeasiswa = ${data.id})}">
                                                         <button type="submit" class="btn btn-white">Delete</button>
                                                     </form>
                                                     <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>

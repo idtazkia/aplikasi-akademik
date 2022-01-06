@@ -89,8 +89,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>NIM</label>
-                                                        <input type="number" name="nim" th:value="${selectNim}" required class="form-control">
+                                                        <label for="nim">NIM</label>
+                                                        <input type="number" name="nim" th:value="${selectNim}" required class="form-control" id="nim">
                                                     </div>
                                                 </div>
                                             </div>
@@ -314,7 +314,7 @@
                                                             <td class="text-center" th:text="${data.getTanggal()}"></td>
                                                             <td class="text-center" th:text="${data.getNomorBukti()}"></td>
                                                             <td class="text-right" th:text="${'Rp. ' + #numbers.formatDecimal(data.getJumlah(), 0, 'POINT', 2, 'COMMA')}"></td>
-                                                            <td></td>
+                                                            <td class="text-center" th:text="${data.getKeterangan()}"></td>
                                                             <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.getNomorBukti()})}" class="fas fa-print text-lg"></a></td>
                                                         </tr>
                                                         </tbody>
@@ -669,8 +669,14 @@
             localStorage.setItem('activeTab', $(e.target).attr('href'));
         });
         var activeTab = localStorage.getItem('activeTab');
-        if (activeTab){
+        var nim = document.getElementById("nim").value;
+        if (nim){
+            var tab = "#tabs-icons-text-1";
+            $('#tabs-icons-text a[href="' + tab + '"]').tab('show');
+            console.log(nim);
+        }else if (activeTab){
             $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
+            console.log(activeTab);
         }
     });
 

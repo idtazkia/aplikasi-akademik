@@ -228,7 +228,7 @@ public class MahasiswaController {
             mahasiswaDto.setRfid(mahasiswa.getRfid());
             
         model.addAttribute("mahasiswa", mahasiswaDto);
-        model.addAttribute("listbeasiswa", beasiswaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listbeasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
         model.addAttribute("beasiswa", mahasiswaBeasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
     }
 

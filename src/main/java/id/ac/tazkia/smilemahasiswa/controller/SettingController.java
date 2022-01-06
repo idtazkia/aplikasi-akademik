@@ -365,7 +365,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
 
     @GetMapping("/setting/beasiswa/list")
     public void listBeasiswa(Model model){
-        model.addAttribute("beasiswa", beasiswaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("beasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
     }
 
     @GetMapping("/setting/beasiswa/form")
@@ -401,6 +401,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
     @GetMapping("/setting/beasiswa/tagihan")
     public void tagihanList(Model model, @RequestParam Beasiswa id){
         model.addAttribute("id", id.getId());
+        model.addAttribute("beasiswa", id);
         List<TagihanBeasiswa> tBeasiswa = tagihanBeasiswaDao.findByBeasiswaAndStatus(id, StatusRecord.AKTIF);
         List<String> idTagihan = new ArrayList<>();
         List<JenisTagihan> listTagihan = null;
@@ -431,16 +432,27 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         return "redirect:/setting/beasiswa/tagihan?id=" + idBeasiswa;
     }
 
-    @PostMapping("/setting/beasiswa/tagihan/potongan")
-    public String potonganTagihan(@RequestParam TagihanBeasiswa tagihan, @RequestParam(required = false) Integer potongan){
+    @PostMapping("/setting/beasiswa/potongan/persen")
+    public String potonganPersen(@RequestParam TagihanBeasiswa tagihan, @RequestParam(required = false) Integer potongan){
 
+        tagihan.setJenisPotongan("PERSEN");
         tagihan.setPotongan(potongan);
         tagihanBeasiswaDao.save(tagihan);
 
         return "redirect:../tagihan?id="+tagihan.getBeasiswa().getId();
     }
 
-    @PostMapping("/setting/beasiswa/deteletagihan")
+    @PostMapping("/setting/beasiswa/potongan/jumlah")
+    public String potonganJumlah(@RequestParam TagihanBeasiswa tagihan, @RequestParam(required = false) Integer jumlah){
+
+        tagihan.setJenisPotongan("JUMLAH");
+        tagihan.setPotongan(jumlah);
+        tagihanBeasiswaDao.save(tagihan);
+
+        return "redirect:../tagihan?id="+tagihan.getBeasiswa().getId();
+    }
+
+    @PostMapping("/setting/beasiswa/deletetagihan")
     public String tagihanBeasiswaHapus(@RequestParam TagihanBeasiswa tagihanBeasiswa, Authentication authentication){
         tagihanBeasiswa.setStatus(StatusRecord.HAPUS);
         tagihanBeasiswaDao.save(tagihanBeasiswa);

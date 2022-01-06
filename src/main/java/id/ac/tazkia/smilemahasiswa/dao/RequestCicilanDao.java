@@ -63,7 +63,10 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
 
     RequestCicilan findByTagihanAndStatusCicilanAndStatus(Tagihan tagihan, StatusCicilan sc, StatusRecord statusRecord);
 
-    Integer countByTagihanAndStatusAndStatusCicilanNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusCicilan> asList);
+    // Integer countByTagihanAndStatusAndStatusCicilanNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusCicilan> asList);
+
+    @Query(value = "select count(id) from request_cicilan where id_tagihan=?1 and status='AKTIF' and status_cicilan not in ('LUNAS', 'LEWAT_JATUH_TEMPO')", nativeQuery = true)
+    Integer jumlahCicilan(Tagihan tagihan);
 
     List<RequestCicilan> findByTagihanAndStatusAndStatusCicilanNotIn(Tagihan tagihan, StatusRecord statusRecord, List<StatusCicilan> asList);
 

@@ -31,9 +31,7 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
             "where b.id_mahasiswa=?1 and b.status = 'AKTIF'", nativeQuery = true)
     BigDecimal totalDibayarMahasiswa(String idMahasiswa);
 
-    @Query(value = "select b.id_mahasiswa, b.id_tahun_akademik, a.waktu_bayar as tanggal, a.id as nomorBukti, a.amount as jumlah,\n" +
-            "a.referensi as keterangan from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id\n" +
-            "where b.id_tahun_akademik=?1 and id_mahasiswa=?2 and a.status='AKTIF'", nativeQuery = true)
+    @Query(value = "select b.id_mahasiswa, b.id_tahun_akademik, a.waktu_bayar as tanggal, b.nomor as nomorBukti, a.amount as jumlah, d.nama as keterangan from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id where b.id_tahun_akademik=?1 and id_mahasiswa=?2 and a.status='AKTIF' order by tanggal", nativeQuery = true)
     List<DaftarPembayaranDto> daftarPembayaran(String idTahunAkademik, String idMahasiswa);
 
     @Query(value = "select b.id_mahasiswa, e.nama_tahun_akademik as namaTahun, d.nama as tagihan, a.waktu_bayar as tanggal,\n" +
