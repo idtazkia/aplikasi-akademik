@@ -89,8 +89,7 @@
                                             <td>
                                                 <div th:each="soal,row:${soalUts}">
                                                     <div th:if="${data.id} == ${soal.jadwal.id}">
-
-                                                        <a  class="btn btn-success btn-sm text-white"
+                                                        <a  class="btn btn-primary btn-sm text-white"
                                                             th:if="${soal.statusApprove.WAITING} == ${soal.statusApprove}"
                                                             th:text="${'MENUNGGU'}">
                                                         </a>
@@ -122,6 +121,12 @@
                                                     </div>
                                                 </div>
                                                 <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
+                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
+                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                        <span class="btn-inner--text">Upload Soal UTS</span>
+                                                    </a>
+                                                </div>
+                                                <div th:if="${data.statusUts.WAITING} == ${data.statusUts}">
                                                     <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                         <span class="btn-inner--text">Upload Soal UTS</span>
@@ -193,6 +198,12 @@
                                                     </div>
                                                 </div>
                                                 <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
+                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
+                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                        <span class="btn-inner--text">Upload Soal UAS</span>
+                                                    </a>
+                                                </div>
+                                                <div th:if="${data.statusUas.WAITING} == ${data.statusUas}">
                                                     <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
                                                         <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                         <span class="btn-inner--text">Upload Soal UAS</span>

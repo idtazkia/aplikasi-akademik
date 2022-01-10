@@ -413,7 +413,7 @@ public void daftarProgramStudi(Model model, @PageableDefault(size = 10) Pageable
         }else {
             listTagihan = jenisTagihanDao.findByStatusAndIdNotInOrderByKode(StatusRecord.AKTIF, idTagihan);
         }
-        model.addAttribute("listTagiahanBeasiswa", tBeasiswa);
+        model.addAttribute("listTagihanBeasiswa", tBeasiswa);
         model.addAttribute("listJenisTagihan", listTagihan);
     }
 
