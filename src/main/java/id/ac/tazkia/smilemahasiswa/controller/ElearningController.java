@@ -7,14 +7,14 @@ import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeGradesDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.DisableMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.MahasiswaDisabledDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -23,11 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,6 +65,9 @@ public class ElearningController {
 
     @Autowired
     private KrsNilaiTugasMoodleDao krsNilaiTugasMoodleDao;
+
+    @Autowired
+    private TagihanDao tagihanDao;
 
     @Autowired
     private GradeDao gradeDao;
@@ -215,6 +217,42 @@ public class ElearningController {
 
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+    }
+
+    // api disabled mahasiswa
+    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
+    @GetMapping("/api/disabled/mahasiswa")
+    @ResponseBody
+    public List<MahasiswaDisabledDto> disableMahasiswa(){
+
+        TahunAkademik tahunAktif = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        LocalDate hariMulaiKuliah = tahunAktif.getTanggalMulaiKuliah();
+        LocalDate hariIni = LocalDate.now();
+        List<MahasiswaDisabledDto> mhs = new ArrayList<>();
+
+        System.out.println("Hari mulai kuliah: " + hariMulaiKuliah);
+        System.out.println("Hari ini : " + hariIni);
+
+        if (hariMulaiKuliah.equals(hariIni)){
+
+            List<DisableMahasiswaDto> listMhs = tagihanDao.disableMahasiswa(tahunAktif);
+
+            for (DisableMahasiswaDto m : listMhs){
+
+                MahasiswaDisabledDto disable = new MahasiswaDisabledDto();
+                disable.setNim(m.getNim());
+                disable.setNama(m.getNama());
+                disable.setEmailPribadi(m.getEmailPribadi());
+                disable.setEmailTazkia(m.getEmailTazkia());
+
+                mhs.add(disable);
+
+            }
+
+        }
+
+        return mhs;
     }
 
 

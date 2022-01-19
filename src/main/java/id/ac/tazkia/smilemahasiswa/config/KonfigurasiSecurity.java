@@ -163,6 +163,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/getjadwal")
                 .antMatchers("/api/getdataMahasiswa")
                 .antMatchers("/api/akademikAktif")
+                .antMatchers("/api/disabled/mahasiswa")
                 .antMatchers("/404")
                 .antMatchers("/uploaded/{note}/bukti/")
                 .antMatchers("/images/**");

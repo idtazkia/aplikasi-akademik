@@ -10,10 +10,7 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
-import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
@@ -381,7 +378,7 @@ public class StudentBillController {
             nilaiJenisTagihan.setStatus(StatusRecord.NONAKTIF);
         }
         nilaiJenisTagihanDao.save(nilaiJenisTagihan);
-        return "redirect:list";
+        return "redirect:list?tahunAkademik="+nilaiJenisTagihan.getTahunAkademik().getId();
     }
 
     @PostMapping("/studentBill/valueType/delete")
@@ -1061,12 +1058,12 @@ public class StudentBillController {
         tagihan.setKaryawan(karyawan);
         log.debug("pengedit : {}" + karyawan);
 
-        if (nim.getStatusAktif().equals("BEASISWA")) {
-            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
-            p.setAmount(nilaiTagihan);
-            tagihan.setAkumulasiPembayaran(nilaiTagihan);
-            pembayaranDao.save(p);
-        }
+//        if (nim.getStatusAktif().equals("BEASISWA")) {
+//            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
+//            p.setAmount(nilaiTagihan);
+//            tagihan.setAkumulasiPembayaran(nilaiTagihan);
+//            pembayaranDao.save(p);
+//        }
 
         tagihan.setNilaiTagihan(nilaiTagihan);
         tagihanDao.save(tagihan);
