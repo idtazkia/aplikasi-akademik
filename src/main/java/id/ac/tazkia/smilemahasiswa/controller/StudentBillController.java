@@ -1068,7 +1068,7 @@ public class StudentBillController {
         tagihan.setNilaiTagihan(nilaiTagihan);
         tagihanDao.save(tagihan);
 
-        return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+nim.getNim();
+        return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
 
     @PostMapping("/studentBill/billAdmin/date")

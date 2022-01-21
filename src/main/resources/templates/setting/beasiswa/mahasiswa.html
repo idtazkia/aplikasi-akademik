@@ -112,6 +112,7 @@
                                 <th>No</th>
                                 <th>Nim</th>
                                 <th>Nama</th>
+                                <th>Prodi</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -121,7 +122,8 @@
                                     <td th:text="${(row.index + 1)}"></td>
                                     <td th:text="${data[1]}"></td>
                                     <td th:text="${data[2]}"></td>
-                                    <td><span th:text="${data[3]}" class="btn btn-success btn-sm"></span></td>
+                                    <td th:text="${data[3]}"></td>
+                                    <td><span th:text="${data[4]}" class="btn btn-success btn-sm"></span></td>
                                     <td>
                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
                                             <i class="fas fa-trash"></i>

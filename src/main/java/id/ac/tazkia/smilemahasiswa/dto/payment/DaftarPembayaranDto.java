@@ -6,6 +6,8 @@ import java.util.Date;
 
 public interface DaftarPembayaranDto {
 
+    String getIdPembayaran();
+    String getIdTagihan();
     String getIdMahasiswa();
     String getIdTahunAkademik();
     Date getTanggal();

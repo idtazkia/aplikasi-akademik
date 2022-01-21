@@ -315,7 +315,7 @@
                                                             <td class="text-center" th:text="${data.getNomorBukti()}"></td>
                                                             <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data.getJumlah(), 0, 'POINT', 2, 'COMMA')}"></td>
                                                             <td class="text-center" th:text="${data.getKeterangan()}"></td>
-                                                            <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.getNomorBukti()})}" class="fas fa-print text-lg"></a></td>
+                                                            <td class="text-center"><a th:href="@{/buktiPembayaran(pembayaran = ${data.getIdPembayaran()})}" class="fas fa-print text-lg"></a></td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
