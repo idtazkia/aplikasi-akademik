@@ -51,7 +51,8 @@
                                 <a href="#" style="width: 100%;" class="btn btn-primary">Pembobotan</a>
                             </div>
                             <div class="col-md-3">
-                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${jadwal.id})}"  style="width: 100%;" class="btn btn-secondary">Penilaian</a>
+                                <a th:href="@{/studiesActivity/assesment/score (jadwal = ${jadwal.id})}" th:if="${jadwal.finalStatus != 'FINAL'}" style="width: 100%;" class="btn btn-secondary">Penilaian</a>
+                                <a th:href="@{/studiesActivity/assesment/rekap(jadwal = ${jadwal.id})}" th:if="${jadwal.finalStatus == 'FINAL'}" style="width: 100%;" class="btn btn-secondary">Rekap Penilaian</a>
                             </div>
                             <div class="col-md-3">
                                 <a th:href="@{/studiesActivity/assesment/uploadnilai (jadwal = ${jadwal.id})}" style="width: 100%;" class="btn btn-secondary">Submit Nilai</a>
@@ -123,7 +124,11 @@
                             Save data gagal, total bobot tidak boleh lebih dari 100%....
                         </div>
 
-                        <div class="card shadow">
+                        <div class="alert alert-warning" th:if="${jadwal.finalStatus == 'FINAL'}">
+                            Data sudah difinalisasi, Anda tidak dapat mengubah nilai
+                        </div>
+
+                        <div class="card shadow" th:if="${jadwal.finalStatus != 'FINAL'}">
                             <div class="card-header border-0">
                                 <h3 class="mb-0">Bobot Penilaian</h3>
                             </div>

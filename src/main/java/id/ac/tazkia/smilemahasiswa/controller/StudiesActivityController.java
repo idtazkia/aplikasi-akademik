@@ -1065,22 +1065,26 @@ public class StudiesActivityController {
             }
         }
 
+        if (jadwal.getFinalStatus().equals("FINAL")){
+            return "redirect:weight?jadwal="+jadwal.getId();
 
-        if (jadwal.getMatakuliahKurikulum().getSds() != null){
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
-            if (totalBobot.toBigInteger().intValueExact() < 100) {
-                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                return "redirect:weight ?jadwal="+jadwal.getId();
-            }
         }else {
-            BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
-            if (totalBobot.toBigInteger().intValueExact() < 100) {
-                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                return "redirect:weight?jadwal="+jadwal.getId();
-            }
-            if (totalBobot.toBigInteger().intValueExact() > 100) {
-                attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
-                return "redirect:weight?jadwal="+jadwal.getId();
+            if (jadwal.getMatakuliahKurikulum().getSds() != null){
+                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts()).add(new BigDecimal(jadwal.getMatakuliahKurikulum().getSds()));
+                if (totalBobot.toBigInteger().intValueExact() < 100) {
+                    attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                    return "redirect:weight ?jadwal="+jadwal.getId();
+                }
+            }else {
+                BigDecimal totalBobot = jadwal.getBobotPresensi().add(jadwal.getBobotTugas()).add(jadwal.getBobotUas()).add(jadwal.getBobotUts());
+                if (totalBobot.toBigInteger().intValueExact() < 100) {
+                    attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                    return "redirect:weight?jadwal="+jadwal.getId();
+                }
+                if (totalBobot.toBigInteger().intValueExact() > 100) {
+                    attributes.addFlashAttribute("tidakvalid", "Melebihi Batas");
+                    return "redirect:weight?jadwal="+jadwal.getId();
+                }
             }
         }
 
@@ -1098,8 +1102,15 @@ public class StudiesActivityController {
         model.addAttribute("bobot", bobotTugasDao.bobotTugas(jadwal.getId(),StatusRecord.AKTIF));
         model.addAttribute("bobotTugas", bobotTugasDao.Tugas(jadwal.getId(),StatusRecord.AKTIF));
 
-        return null;
+        return "studiesActivity/assesment/score";
 
+    }
+
+    @GetMapping("/studiesActivity/assesment/rekap")
+    public void rekapScore(@RequestParam Jadwal jadwal, Model model, RedirectAttributes attributes){
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("dosen", jadwalDosenDao.headerJadwal(jadwal.getId()));
+        model.addAttribute("nilai", presensiMahasiswaDao.bkdNilai(jadwal));
     }
 
     @PostMapping(value = "/studiesActivity/assesment/score")
@@ -1166,12 +1177,18 @@ public class StudiesActivityController {
 
 
     @GetMapping("/studiesActivity/assesment/uploadnilai")
-    public void upload(Model model,@RequestParam Jadwal jadwal){
+    public String upload(Model model,@RequestParam Jadwal jadwal){
 
         List<BobotTugas> listTugas = bobotTugasDao.findByJadwalAndStatus(jadwal,StatusRecord.AKTIF);
         model.addAttribute("jadwal", jadwal);
         model.addAttribute("listTugas",listTugas);
 
+        if (jadwal.getFinalStatus().equals("FINAL")){
+            return "redirect:weight?jadwal="+jadwal.getId();
+
+        }else {
+            return "studiesActivity/assesment/uploadnilai";
+        }
     }
 
     @GetMapping("/studiesActivity/assesment/sds")
