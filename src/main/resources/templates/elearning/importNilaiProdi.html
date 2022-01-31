@@ -101,8 +101,58 @@
                             </div>
                         </form>
                     </div>
+                    <div class="card-footer">
+
+                    </div>
+
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Keterangan</th>
+                                    <th scope="col">Tanggal</th>
+                                    <th scope="col">Tanggal Mulai</th>
+                                    <th scope="col">Tanggal Selesai</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
 
 
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listProses}">
+                                    <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
+                                    <td th:text="${data.getKeterangan}">12</td>
+                                    <td th:text="${data.getTanggalInput}">2020</td>
+                                    <td th:text="${data.getTanggalMulai}">2020</td>
+                                    <td th:text="${data.getTanggalSelesai}">2020</td>
+                                    <td th:text="${data.getStatus}">2020</td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
