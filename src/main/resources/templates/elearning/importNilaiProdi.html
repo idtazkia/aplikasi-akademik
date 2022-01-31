@@ -118,6 +118,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Keterangan</th>
+                                    <th scope="col">Kategori</th>
                                     <th scope="col">Tanggal</th>
                                     <th scope="col">Tanggal Mulai</th>
                                     <th scope="col">Tanggal Selesai</th>
@@ -131,6 +132,7 @@
                                 <tr th:each="data,row : ${listProses}">
                                     <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
                                     <td th:text="${data.getKeterangan()}">12</td>
+                                    <td th:text="${data.getNamaProses()}">12</td>
                                     <td th:text="${data.getTanggalInput()}">2020</td>
                                     <td th:text="${data.getTanggalMulai()}">2020</td>
                                     <td th:text="${data.getTanggalSelesai()}">2020</td>

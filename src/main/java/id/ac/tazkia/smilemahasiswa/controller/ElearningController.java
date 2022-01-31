@@ -290,7 +290,7 @@ public class ElearningController {
             prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
-            return "redirect:../importNilaiProdi";
+            return "redirect:importNilaiProdi";
 
 //                System.out.println("Masuk Prodi Jalan");
 //                List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
@@ -356,7 +356,7 @@ public class ElearningController {
             prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
-            return "redirect:../importNilaiProdi";
+            return "redirect:importNilaiProdi";
 
 //                List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
 //                if (listJadwalDtos != null){
@@ -416,7 +416,7 @@ public class ElearningController {
             prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
-            return "redirect:../importNilaiProdi";
+            return "redirect:importNilaiProdi";
 
 //                List<ListJadwalDto> listJadwalDtos = jadwalDao.listJadwalDto(prodi, ta);
 //                if (listJadwalDtos != null){
@@ -476,7 +476,7 @@ public class ElearningController {
             prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
-            return "redirect:../importNilaiProdi";
+            return "redirect:importNilaiProdi";
 
 //            System.out.println("Masuk SDS Jalan");
 //            //Cari Jadwal per tahun akademik dan per prodi yang ada potongan SDS nya
