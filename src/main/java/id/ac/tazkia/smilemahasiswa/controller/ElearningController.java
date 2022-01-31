@@ -286,6 +286,8 @@ public class ElearningController {
             prosesBackground.setNamaProses("TUGAS");
             prosesBackground.setStatus(StatusRecord.WAITING);
             prosesBackground.setTanggalInput(LocalDateTime.now());
+            prosesBackground.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
             return "redirect:../importNilaiProdi";
@@ -350,6 +352,8 @@ public class ElearningController {
             prosesBackground.setNamaProses("UTS");
             prosesBackground.setStatus(StatusRecord.WAITING);
             prosesBackground.setTanggalInput(LocalDateTime.now());
+            prosesBackground.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
             return "redirect:../importNilaiProdi";
@@ -408,6 +412,8 @@ public class ElearningController {
             prosesBackground.setNamaProses("UAS");
             prosesBackground.setStatus(StatusRecord.WAITING);
             prosesBackground.setTanggalInput(LocalDateTime.now());
+            prosesBackground.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
             return "redirect:../importNilaiProdi";
@@ -466,6 +472,8 @@ public class ElearningController {
             prosesBackground.setNamaProses("SDS");
             prosesBackground.setStatus(StatusRecord.WAITING);
             prosesBackground.setTanggalInput(LocalDateTime.now());
+            prosesBackground.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackground.setProdi(prodi1.getId());
             prosesBackground.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + tahunAkademik1.getNamaTahunAkademik() + " - " + prodi1.getNamaProdi());
             prosesBackgroundDao.save(prosesBackground);
             return "redirect:../importNilaiProdi";

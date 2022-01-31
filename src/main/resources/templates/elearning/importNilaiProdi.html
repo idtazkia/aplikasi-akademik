@@ -130,11 +130,11 @@
                                 <tbody>
                                 <tr th:each="data,row : ${listProses}">
                                     <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
-                                    <td th:text="${data.getKeterangan}">12</td>
-                                    <td th:text="${data.getTanggalInput}">2020</td>
-                                    <td th:text="${data.getTanggalMulai}">2020</td>
-                                    <td th:text="${data.getTanggalSelesai}">2020</td>
-                                    <td th:text="${data.getStatus}">2020</td>
+                                    <td th:text="${data.getKeterangan()}">12</td>
+                                    <td th:text="${data.getTanggalInput()}">2020</td>
+                                    <td th:text="${data.getTanggalMulai()}">2020</td>
+                                    <td th:text="${data.getTanggalSelesai()}">2020</td>
+                                    <td th:text="${data.getStatus()}">2020</td>
                                     <td></td>
                                 </tr>
                                 </tbody>
