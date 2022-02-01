@@ -133,9 +133,9 @@
                                     <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
                                     <td th:text="${data.getKeterangan()}">12</td>
                                     <td th:text="${data.getNamaProses()}">12</td>
-                                    <td th:text="${data.getTanggalInput()}">2020</td>
-                                    <td th:text="${data.getTanggalMulai()}">2020</td>
-                                    <td th:text="${data.getTanggalSelesai()}">2020</td>
+                                    <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                    <td th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                    <td th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
                                     <td th:text="${data.getStatus()}">2020</td>
                                     <td></td>
                                 </tr>
