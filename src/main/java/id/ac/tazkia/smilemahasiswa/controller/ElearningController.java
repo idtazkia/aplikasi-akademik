@@ -224,7 +224,7 @@ public class ElearningController {
 
     @GetMapping("/elearning/importNilaiProdi")
     public void importNilaiProdi(Model model,
-                                 @PageableDefault(size = 25) Pageable page){
+                                 @PageableDefault(size = 10) Pageable page){
 
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
