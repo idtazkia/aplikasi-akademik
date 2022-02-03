@@ -315,7 +315,7 @@ public class ImporNilaiElearningService {
                     for (KrsDetail krsDetail : krsDetail1) {
                         System.out.println("NIM : " + krsDetail.getMahasiswa().getNim());
                         System.out.println("Mahasiswa : " + krsDetail.getMahasiswa().getNama());
-                        NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademikDao.findByStatusAndId(StatusRecord.AKTIF, ta).getKodeTahunAkademik());
+                        NilaiAbsenSdsDto nilaiAbsenSdsDto = presensiMahasiswaDao.listNilaiAbsenSds(krsDetail.getMahasiswa().getId(), tahunAkademikDao.findByStatusNotAndId(StatusRecord.HAPUS, ta).getKodeTahunAkademik());
                         if(nilaiAbsenSdsDto != null) {
                             if(nilaiAbsenSdsDto.getNilai() == null) {
                                 System.out.println("Nilai SDS : 0.00");

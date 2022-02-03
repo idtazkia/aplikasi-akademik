@@ -18,6 +18,8 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
     TahunAkademik findByStatusAndId(StatusRecord statusRecord, String id);
 
+    TahunAkademik findByStatusNotAndId(StatusRecord statusRecord, String id);
+
     TahunAkademik findByKodeTahunAkademik(String kode);
 
     TahunAkademik findByKodeTahunAkademikAndJenis(String kode,StatusRecord statusRecord);
