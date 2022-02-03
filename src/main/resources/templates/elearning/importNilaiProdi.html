@@ -135,7 +135,7 @@
                                     <td th:text="${data.getNamaProses()}">12</td>
                                     <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
                                     <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
-                                    <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                    <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
                                     <td th:text="${data.getStatus()}">2020</td>
                                     <td></td>
                                 </tr>
