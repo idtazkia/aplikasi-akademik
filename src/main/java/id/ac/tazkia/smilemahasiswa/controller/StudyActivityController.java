@@ -132,7 +132,7 @@ public class StudyActivityController {
 
 
         if (daftarUlang == null){
-            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getMulaiKrs());
+            Long day = ChronoUnit.DAYS.between(LocalDate.now(),tahunAkademikProdi.getSelesaiKrs());
 
             model.addAttribute("krs", tahunAkademikProdi);
             model.addAttribute("hari", day);
@@ -179,9 +179,8 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        Konsentrasi idKonstrasi = mahasiswa.getIdKonsentrasi();
         String prodi = mahasiswa.getIdProdi().getId();
-        if (idKonstrasi == null){
+        if (mahasiswa.getIdKonsentrasi() == null){
             Integer semester = krsDao.countSemester(mahasiswa.getNim());
             if (semester == 5){
                 // Manajemen Bisnis Syariah
@@ -438,7 +437,7 @@ public class StudyActivityController {
 
         }
 
-            return "redirect:krs";
+        return "redirect:krs";
 
 
     }
@@ -1234,6 +1233,23 @@ public class StudyActivityController {
         }
 
         return "redirect:/dashboard";
+    }
+
+    @PostMapping("/du/register")
+    public String registerDu(Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
+        if (daftarUlang == null) {
+            DaftarUlang du = new DaftarUlang();
+            du.setMahasiswa(mahasiswa);
+            du.setTahunAkademik(tahunAkademik);
+            du.setStatus(StatusRecord.AKTIF);
+            daftarUlangDao.save(du);
+        }
+
+        return "redirect:../study/comingsoon";
     }
 
 }
