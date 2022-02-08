@@ -2403,7 +2403,13 @@ public class StudentBillController {
 
         for (Tagihan t : listPotongan){
 
-            Integer potongan = 500000;
+            Integer potongan;
+            if (program.equals("03")){
+                potongan = 1000000;
+            }else{
+                potongan = 500000;
+            }
+
             Integer newNilai = t.getNilaiTagihan().intValue() - potongan;
 
             t.setNilaiTagihan(new BigDecimal(newNilai));
