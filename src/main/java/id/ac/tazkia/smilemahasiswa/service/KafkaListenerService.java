@@ -135,7 +135,6 @@ public class KafkaListenerService {
                         mahasiswa.getIdProgram(), StatusRecord.AKTIF);
         Tagihan t =  tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahun, mahasiswa, nilaiJenisTagihan, false);
         t.setNomor(tagihanResponse.getNomorTagihan());
-        t.setKeterangan(tagihanResponse.getKeterangan());
         tagihanDao.save(t);
 
     }

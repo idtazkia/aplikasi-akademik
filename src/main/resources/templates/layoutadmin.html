@@ -364,6 +364,9 @@
                                 <a th:href="@{/studentBill/billAdmin/generate}" class="nav-link">Generate Bill</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/billAdmin/potongan}" class="nav-link">Generate Potongan</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/typeBill/list}" class="nav-link">Jenis Tagihan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
@@ -416,6 +419,12 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/graduation/sidang/dosen/list}" class="nav-link">Penilaian Sidang Skripsi</a>
                             </li>
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">-->
+<!--                                <a th:href="@{/graduation/periodeWisuda/list}" class="nav-link">Periode Wisuda</a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">-->
+<!--                                <a th:href="@{/graduation/kategori/list}" class="nav-link">Kategori Tugas Akhir</a>-->
+<!--                            </li>-->
                         </ul>
                     </div>
                 </li>
@@ -536,6 +545,16 @@
                         Kesediaan Mengajar
                     </a>
                 </li>
+
+<!--                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">-->
+<!--                    <form method="post" th:action="@{/setting/jadwal}">-->
+<!--                        <button class="btn btn-success btn-lg" type="submit">-->
+<!--                            <i class="ni ni-collection text-green"></i>-->
+<!--                            Test Kesediaan Mengajar-->
+<!--                        </button>-->
+<!--                    </form>-->
+<!--                    </a>-->
+<!--                </li>-->
 
             </ul>
 

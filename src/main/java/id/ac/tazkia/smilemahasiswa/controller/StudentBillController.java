@@ -2383,4 +2383,37 @@ public class StudentBillController {
 //    }
 
 
+    // GENERATE POTONGAN
+
+    @GetMapping("/studentBill/billAdmin/potongan")
+    public void formPotongan(Model model, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Program program,
+                             @RequestParam(required = false) String angkatan){
+
+        model.addAttribute("selectAngkatan", angkatan);
+        model.addAttribute("selectProdi", prodi);
+        model.addAttribute("selectProgram", program);
+
+    }
+
+    @PostMapping("/studentBill/billAdmin/potongan")
+    public String inputPotongan(@RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Program program,
+                                @RequestParam(required = false) String angkatan){
+
+        List<Tagihan> listPotongan = tagihanDao.generatePotongan(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), prodi.getId(), program.getId(), angkatan);
+
+        for (Tagihan t : listPotongan){
+
+            Integer potongan = 500000;
+            Integer newNilai = t.getNilaiTagihan().intValue() - potongan;
+
+            t.setNilaiTagihan(new BigDecimal(newNilai));
+            t.setKeterangan("Potongan "+t.getKeterangan());
+            tagihanDao.save(t);
+            tagihanService.editTagihan(t);
+
+        }
+
+        return "redirect:potongan";
+    }
+
 }

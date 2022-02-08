@@ -68,6 +68,7 @@
                                                 <th>Dibayar</th>
                                                 <th>Sisa</th>
                                                 <th>Status Mahasiswa</th>
+                                                <th>Beasiswa</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -89,11 +90,6 @@
                                                         th:text="AKTIF">
                                                     </a>
 
-                                                    <a  class="btn btn-primary btn-sm" href="#!"
-                                                        th:if="${data[8]} == 'BEASISWA'"
-                                                        th:text="BEASISWA">
-                                                    </a>
-
                                                     <a type="button" class="btn btn-success btn-sm" href="#!"
                                                        th:if="${data[8]} == 'L'"
                                                        th:text="LULUS">
@@ -108,13 +104,16 @@
                                                        th:if="${data[8]} == 'C'"
                                                        th:text="CUTI">
                                                     </a>
-
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" th:if="${data[9] != '-'}" th:text="${data[9]}"></button>
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
