@@ -74,48 +74,51 @@
                                                 <th>Tagihan</th>
                                                 <th>Dibayar</th>
                                                 <th>Sisa</th>
-                                                <th>Status</th>
+                                                <th>Status Mahasiswa</th>
+                                                <th>Beasiswa</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr th:each="data, row:${tagihanProdi}">
                                                 <td th:text="${(row.index + 1)}">1</td>
-                                                <td th:text="${data[1]}"></td>
+                                                <td th:text="${data[2]}"></td>
                                                 <td>
-                                                    <a class="text-black-50" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id}, nim=${data[2]})}" th:text="${data[2]}"></a>
+                                                    <a class="text-black-50" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id}, nim=${data[3]})}" th:text="${data[3]}"></a>
                                                 </td>
                                                 <td>
-                                                    <a class="text-black-50" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id}, nim=${data[2]})}" th:text="${data[3]}"></a>
+                                                    <a class="text-black-50" th:href="@{/studentBill/billAdmin/list(tahunAkademik=${tahun.id}, nim=${data[3]})}" th:text="${data[4]}"></a>
                                                 </td>
-                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[4], 0, 'POINT', 2, 'COMMA')}"></td>
                                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>
                                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>
+                                                <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>
                                                 <td>
                                                     <a  class="btn btn-info btn-sm" href="#!"
                                                         th:if="${data[7]} == 'AKTIF'"
                                                         th:text="AKTIF">
                                                     </a>
 
-                                                    <a  class="btn btn-primary btn-sm" href="#!"
-                                                        th:if="${data[7]} == 'BEASISWA'"
-                                                        th:text="BEASISWA">
+                                                    <a  class="btn btn-info btn-sm" href="#!"
+                                                        th:if="${data[8]} == 'AKTIF'"
+                                                        th:text="AKTIF">
                                                     </a>
 
                                                     <a type="button" class="btn btn-success btn-sm" href="#!"
-                                                       th:if="${data[7]} == 'L'"
+                                                       th:if="${data[8]} == 'L'"
                                                        th:text="LULUS">
                                                     </a>
 
                                                     <a type="button" class="btn btn-danger ger btn-sm" href="#!"
-                                                       th:if="${data[7]} == 'K'"
+                                                       th:if="${data[8]} == 'K'"
                                                        th:text="KELUAR">
                                                     </a>
 
                                                     <a type="button" class="btn btn-warning btn-sm" href="#!"
-                                                       th:if="${data[7]} == 'C'"
+                                                       th:if="${data[8]} == 'C'"
                                                        th:text="CUTI">
                                                     </a>
-
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" th:if="${data[9] != '-'}" th:text="${data[9]}"></button>
                                                 </td>
                                             </tr>
                                             </tbody>
