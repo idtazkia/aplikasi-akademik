@@ -1,7 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
@@ -10,7 +9,10 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.payment.*;
+import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerAngkatanDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.DaftarTagihanPerProdiDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.PembayaranDto;
+import id.ac.tazkia.smilemahasiswa.dto.payment.UploadBerkasDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
@@ -51,7 +53,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Controller @Slf4j
 public class StudentBillController {
