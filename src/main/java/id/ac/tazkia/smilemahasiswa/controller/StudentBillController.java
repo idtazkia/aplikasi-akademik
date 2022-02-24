@@ -19,6 +19,7 @@ import id.ac.tazkia.smilemahasiswa.service.KafkaSender;
 import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1094,6 +1095,18 @@ public class StudentBillController {
         tagihan.setStatus(StatusRecord.HAPUS);
         tagihan.setStatusTagihan(StatusTagihan.HAPUS);
         tagihanDao.save(tagihan);
+        StatusTagihan info = tagihan.getStatusTagihan();
+        if (info == StatusTagihan.DICICIL) {
+            List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+            if (cekSisaCicilan != null) {
+                for (RequestCicilan cicilan : cekSisaCicilan){
+                    cicilan.setStatus(StatusRecord.HAPUS);
+                    cicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                    cicilan.setStatusApprove(StatusApprove.HAPUS);
+                    requestCicilanDao.save(cicilan);
+                }
+            }
+        }
         List<VirtualAccount> va = virtualAccountDao.findByTagihan(tagihan);
         for(VirtualAccount listVa : va){
             virtualAccountDao.delete(listVa);
@@ -1637,7 +1650,7 @@ public class StudentBillController {
 
     }
 
-    @GetMapping("/studentBill/requestCicilan/angsuran")
+    @GetMapping("/studentBill/`requestCicilan/`angsuran")
     public void cicilanTagihan(Model model, @PageableDefault(size = 10) Pageable page, Authentication authentication,
                                @RequestParam(required = false) String id, @RequestParam(required = false) String jumlah,
                                @RequestParam(required = false) String interval){
@@ -2235,6 +2248,60 @@ public class StudentBillController {
 
     }
 
+    @GetMapping("/billReport/permahasiswa/prodi")
+    public void reportPerMahasiswaProdi(@RequestParam String prodi, @RequestParam String tahun, HttpServletResponse response) throws IOException{
+        String[] columns = {"No", "Angkatan", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Beasiswa"};
+
+        Prodi p = prodiDao.findById(prodi).get();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        List<Object[]> listTagihan = tagihanDao.listTagihanPerMahasiswaByProdi(prodi, tahun);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Tagihan per mahasiswa by prodi");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listTagihan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[2].toString());
+            row.createCell(2).setCellValue(list[3].toString());
+            row.createCell(3).setCellValue(list[4].toString());
+            row.createCell(4).setCellValue(list[5].toString());
+            row.createCell(5).setCellValue(list[6].toString());
+            row.createCell(6).setCellValue(list[7].toString());
+            row.createCell(7).setCellValue(list[8].toString());
+            row.createCell(8).setCellValue(list[9].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap Tagihan Prodi "+p.getNamaProdi()+" dan Tahun Akademik " + tahunAkademik.getNamaTahunAkademik() + " per tanggal "+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
     @GetMapping("/billReport/angkatan")
     public void reportTagihanAngkatan(@RequestParam String tahun, HttpServletResponse response) throws IOException{
         String[] colums = {"No","Angkatan","Total Tagihan", "Dibayar", "Sisa", "Persentase Sisa"};
@@ -2280,6 +2347,58 @@ public class StudentBillController {
 
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=Rekap_Tagihan_Angkatan_"+LocalDate.now()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
+    @GetMapping("/billReport/permahasiswa/angkatan")
+    public void reportPerMahasiswaAngkatan(@RequestParam String angkatan, @RequestParam String tahun, HttpServletResponse response) throws IOException{
+        String[] columns = {"No", "Prodi", "Nim", "Nama", "Tagihan", "Dibayar", "Sisa", "Status Mahasiswa", "Beasiswa"};
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+        List<Object[]> listTagihan = tagihanDao.listTagihanPerMahasiswaByAngkatan(angkatan, tahun);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Tagihan per mahasiswa by angkatan");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listTagihan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[2].toString());
+            row.createCell(2).setCellValue(list[3].toString());
+            row.createCell(3).setCellValue(list[4].toString());
+            row.createCell(4).setCellValue(list[5].toString());
+            row.createCell(5).setCellValue(list[6].toString());
+            row.createCell(6).setCellValue(list[7].toString());
+            row.createCell(7).setCellValue(list[8].toString());
+            row.createCell(8).setCellValue(list[9].toString());
+        }
+
+        for (int i = 0; i < columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap Tagihan Angkatan "+angkatan+" dan Tahun Akademik " + tahunAkademik.getNamaTahunAkademik()+" per tanggal "+ LocalDate.now()+".xlsx");
         workbook.write(response.getOutputStream());
         workbook.close();
 
