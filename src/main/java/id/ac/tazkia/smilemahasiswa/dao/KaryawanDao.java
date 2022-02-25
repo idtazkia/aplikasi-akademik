@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String> {
-    @Query("select new id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto(k.idAbsen,k.namaKaryawan,k.rfid,true ,'',0) from  Karyawan k where k.status = :status and k.rfid is not null")
+    @Query("select new id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto(k.idAbsen,k.namaKaryawan,k.rfid,true ,'',0) from  Karyawan k where k.status = :status and k.idAbsen is not null and k.rfid is not null")
     List<ApiRfidDto> rfidKaryawan(@Param("status")StatusRecord statusRecord);
 
     Karyawan findByIdUser(User user);

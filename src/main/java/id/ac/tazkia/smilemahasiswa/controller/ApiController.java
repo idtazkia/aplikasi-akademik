@@ -373,7 +373,7 @@ public class ApiController {
     public List<ApiRfidDto> getRfid(){
 
         List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
-        List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF);
+        List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF, StatusRecord.AKTIF);
         for (ApiRfidDto api : mahasiswa){
             api.setJumlah(mahasiswa.size());
             apiRfidDtos.add(api);
