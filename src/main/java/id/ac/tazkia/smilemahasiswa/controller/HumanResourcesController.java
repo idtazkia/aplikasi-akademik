@@ -6,23 +6,35 @@ import id.ac.tazkia.smilemahasiswa.entity.Dosen;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
+import java.io.File;
 import java.util.Arrays;
 import java.util.SplittableRandom;
+import java.util.UUID;
 
 @Controller
 public class HumanResourcesController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HumanResourcesController.class);
+
+
     @Autowired
     private KaryawanDao karyawanDao;
 
@@ -37,6 +49,9 @@ public class HumanResourcesController {
 
     @Autowired
     private RoleDao roleDao;
+
+    @Value("${upload.fotoKaryawan}")
+    private String uploadFolder;
 
 //Employee
 
@@ -63,8 +78,54 @@ public class HumanResourcesController {
     }
 
     @PostMapping("/humanResources/employee/save")
-    public String saveKaryawan(@Valid Karyawan karyawan){
-        karyawanDao.save(karyawan);
+    public String saveKaryawan(@Valid Karyawan karyawan, BindingResult error, MultipartFile foto){
+
+
+        try {
+//           persiapan lokasi upload
+
+            String idKaryawan = karyawan.getNamaKaryawan();
+            String lokasiUpload = uploadFolder + File.separator + idKaryawan;
+            logger.debug("Lokasi upload : {}", lokasiUpload);
+            new File(lokasiUpload).mkdirs();
+
+            if (foto == null || foto.isEmpty()) {
+                logger.info("File berkas kosong, tidak diproses");
+                return idKaryawan;
+            }
+
+            String namaFile = foto.getName();
+            String jenisFile = foto.getContentType();
+            String namaAsli = foto.getOriginalFilename();
+            Long ukuran = foto.getSize();
+
+            logger.debug("Nama File : {}", namaFile);
+            logger.debug("Jenis File : {}", jenisFile);
+            logger.debug("Nama Asli File : {}", namaAsli);
+            logger.debug("Ukuran File : {}", ukuran);
+
+            //memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            karyawan.setFoto(idFile + "." + extension);
+            File tujuan = new File(lokasiUpload + File.separator + karyawan.getFoto());
+            foto.transferTo(tujuan);
+            logger.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+            karyawanDao.save(karyawan);
+
+
+        } catch (Exception er) {
+            logger.error(er.getMessage(), er);
+        }
+
         return "redirect:list";
     }
 
@@ -255,4 +316,57 @@ public class HumanResourcesController {
 
         return "redirect:list";
     }
+
+    public void uploadFotoKaryawan(@ModelAttribute @Valid Karyawan karyawan, BindingResult bindingResult,
+                                   MultipartFile foto){
+
+        try {
+
+//           persiapan lokasi upload
+
+            String idKaryawan = karyawan.getNamaKaryawan();
+            String lokasiUpload = uploadFolder + File.separator + idKaryawan;
+            logger.debug("Lokasi upload : {}", lokasiUpload);
+            new File(lokasiUpload).mkdirs();
+
+            if (foto == null || foto.isEmpty()) {
+                logger.info("File berkas kosong, tidak diproses");
+                return;
+            }
+
+            String namaFile = foto.getName();
+            String jenisFile = foto.getContentType();
+            String namaAsli = foto.getOriginalFilename();
+            Long ukuran = foto.getSize();
+
+            logger.debug("Nama File : {}", namaFile);
+            logger.debug("Jenis File : {}", jenisFile);
+            logger.debug("Nama Asli File : {}", namaAsli);
+            logger.debug("Ukuran File : {}", ukuran);
+
+            //memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+            String idFile = UUID.randomUUID().toString();
+            karyawan.setFoto(idFile + "." + extension);
+            File tujuan = new File(lokasiUpload + File.separator + karyawan.getFoto());
+            foto.transferTo(tujuan);
+            logger.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+            karyawanDao.save(karyawan);
+
+        } catch (Exception er) {
+            logger.error(er.getMessage(), er);
+        }
+
+    }
+
+
+
 }

@@ -45,7 +45,7 @@
                         <h3 class="mb-0">Form</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" th:object="${karyawan}" th:action="@{/humanResources/employee/save}">
+                        <form method="post" th:object="${karyawan}" th:action="@{/humanResources/employee/save}" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -102,6 +102,26 @@
 
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Upload Foto</label>
+                                        <input  type="file" th:field="*{foto}" name="foto" class="form-control" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
