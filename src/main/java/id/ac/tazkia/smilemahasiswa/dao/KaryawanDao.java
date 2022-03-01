@@ -1,5 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
@@ -26,5 +28,11 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
 
     @Query(value = "SELECT COALESCE(id_absen,0) + 1 AS id_absen FROM karyawan ORDER BY id_absen DESC LIMIT 1" , nativeQuery = true)
     Integer cariIDAbesen();
+
+    @Query(value = "select id as id, nik as nik, nama_karyawan as namaKaryawan, gelar as gelar, jenis_kelamin as jenisKelamin, status as status, id_user as idUser, nidn as nidn,email as email,\n" +
+            "tanggal_lahir as tanggalLahir, rfid as rfid, id_absen as idAbsen, foto as foto\n" +
+            "from karyawan where status = 'AKTIF'\n" +
+            "order by nama_karyawan asc", nativeQuery = true)
+    List<KaryawanIntDto> apiGetKaryawan();
 
 }

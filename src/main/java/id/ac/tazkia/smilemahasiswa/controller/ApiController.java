@@ -4,6 +4,8 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanDto;
+import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasDto;
 import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.*;
@@ -528,9 +530,9 @@ public class ApiController {
     //detailJadwal
     @GetMapping("/api/getDetailJadwal")
     @ResponseBody
-    public List<DetailJadwalDto> getDetailJadwal(String namaJadwal){
+    public List<DetailJadwalDto> getDetailJadwal(){
 
-        List<DetailJadwalIntDto> alog = jadwalDao.getDetailJadwal(namaJadwal);
+        List<DetailJadwalIntDto> alog = jadwalDao.getDetailJadwal();
         List<DetailJadwalDto> adto = new ArrayList<>();
 
         for (DetailJadwalIntDto detailJadwalIntDto : alog){
@@ -582,6 +584,38 @@ public class ApiController {
 
 
             adto.add(kelasDto);
+        }
+
+        return adto;
+
+    }
+
+    //kelas
+    @GetMapping("/api/apiGetKaryawan")
+    @ResponseBody
+    public List<KaryawanDto> getKaryawan(){
+
+        List<KaryawanIntDto> alog = karyawanDao.apiGetKaryawan();
+        List<KaryawanDto> adto = new ArrayList<>();
+
+        for (KaryawanIntDto karyawanIntDto : alog){
+            KaryawanDto karyawanDto = new KaryawanDto();
+
+            karyawanDto.setId(karyawanIntDto.getId());
+            karyawanDto.setNik(karyawanIntDto.getNik());
+            karyawanDto.setNamaKaryawan(karyawanIntDto.getNamaKaryawan());
+            karyawanDto.setGelar(karyawanIntDto.getGelar());
+            karyawanDto.setJenisKelamin(karyawanIntDto.getJenisKelamin());
+            karyawanDto.setStatus(karyawanIntDto.getStatus());
+            karyawanDto.setIdUser(karyawanIntDto.getIdUser());
+            karyawanDto.setNidn(karyawanIntDto.getNidn());
+            karyawanDto.setEmail(karyawanIntDto.getEmail());
+            karyawanDto.setTanggalLahir(karyawanIntDto.getTanggalLahir());
+            karyawanDto.setRfid(karyawanIntDto.getRfid());
+            karyawanDto.setIdAbsen(karyawanIntDto.getIdAbsen());
+            karyawanDto.setFoto(karyawanIntDto.getFoto());
+
+            adto.add(karyawanDto);
         }
 
         return adto;
