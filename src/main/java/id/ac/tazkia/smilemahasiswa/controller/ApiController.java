@@ -2,6 +2,10 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasDto;
+import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.*;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikDto;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
@@ -59,6 +63,8 @@ public class ApiController {
     private NotifikasiService notifikasiService;
     @Autowired
     private PresensiService presensiService;
+    @Autowired
+    private KelasDao kelasDao;
 
     @GetMapping("/api/tarikData")
     @ResponseBody
@@ -513,6 +519,69 @@ public class ApiController {
 
 
             adto.add(TahunAkademikDto);
+        }
+
+        return adto;
+
+    }
+
+    //detailJadwal
+    @GetMapping("/api/getDetailJadwal")
+    @ResponseBody
+    public List<DetailJadwalDto> getDetailJadwal(String namaJadwal){
+
+        List<DetailJadwalIntDto> alog = jadwalDao.getDetailJadwal(namaJadwal);
+        List<DetailJadwalDto> adto = new ArrayList<>();
+
+        for (DetailJadwalIntDto detailJadwalIntDto : alog){
+            DetailJadwalDto detailJadwalDto = new DetailJadwalDto();
+
+            detailJadwalDto.setId(detailJadwalIntDto.getId());
+            detailJadwalDto.setNamaProdi(detailJadwalIntDto.getNamaProdi());
+            detailJadwalDto.setNamaKelas(detailJadwalIntDto.getNamaKelas());
+            detailJadwalDto.setKodeMatakuliah(detailJadwalIntDto.getKodeMatakuliah());
+            detailJadwalDto.setNamaMatakuliah(detailJadwalIntDto.getNamaMatakuliah());
+            detailJadwalDto.setNamaMatakuliahEnglish(detailJadwalIntDto.getNamaMatakuliahEnglish());
+            detailJadwalDto.setIdDosen(detailJadwalIntDto.getIdDosen());
+            detailJadwalDto.setDosen(detailJadwalIntDto.getDosen());
+            detailJadwalDto.setJamMulai(detailJadwalIntDto.getJamMulai());
+            detailJadwalDto.setJamSelesai(detailJadwalIntDto.getJamSelesai());
+            detailJadwalDto.setIdNumberElearning(detailJadwalIntDto.getIdNumberElearning());
+            detailJadwalDto.setIdTahunAkademik(detailJadwalIntDto.getIdTahunAkademik());
+            detailJadwalDto.setStatus(detailJadwalIntDto.getStatus());
+
+            adto.add(detailJadwalDto);
+        }
+
+        return adto;
+
+    }
+
+
+    //kelas
+    @GetMapping("/api/getKelas")
+    @ResponseBody
+    public List<KelasDto> getKelas(){
+
+        List<KelasIntDto> alog = kelasDao.apiKelas();
+        List<KelasDto> adto = new ArrayList<>();
+
+        for (KelasIntDto kelasIntDto : alog){
+            KelasDto kelasDto = new KelasDto();
+
+            kelasDto.setIdKelas(kelasIntDto.getIdKelas());
+            kelasDto.setKodeKelas(kelasIntDto.getKodeKelas());
+            kelasDto.setNamaKelas(kelasIntDto.getNamaKelas());
+            kelasDto.setKeterangan(kelasIntDto.getKeterangan());
+            kelasDto.setIdProdi(kelasIntDto.getIdProdi());
+            kelasDto.setStatus(kelasIntDto.getStatus());
+            kelasDto.setKurikulum(kelasIntDto.getKurikulum());
+            kelasDto.setKonsentrasi(kelasIntDto.getKonsentrasi());
+            kelasDto.setAngkatan(kelasIntDto.getAngkatan());
+            kelasDto.setBahasa(kelasIntDto.getBahasa());
+
+
+            adto.add(kelasDto);
         }
 
         return adto;

@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
+import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
@@ -154,6 +155,18 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     @Query(value = "select a.id as id_jadwal, id_dosen, id_kelas, coalesce(b.nama_ruangan,'-')as ruangan, coalesce(jam_mulai,'-')as jam_mulai, coalesce(jam_selesai,'-') as jam_selesai, nama_prodi, kode_matakuliah, nama_matakuliah, coalesce(jumlah_sks,0) as jumlah_sks, nama_kelas, nama_karyawan, coalesce(c.nama_hari,'-')as hari,total_sks_dosen, coalesce(total_mahasiswa,0) as total_mahasiswa from (select a.*, d.id as id_dosen, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english, b.jumlah_sks, f.nama_kelas, e.nama_karyawan, g.nama_prodi from jadwal as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id inner join matakuliah as c on b.id_matakuliah = c.id inner join dosen as d on a.id_dosen_pengampu = d.id inner join karyawan as e on d.id_karyawan = e.id inner join kelas as f on a.id_kelas =f.id inner join prodi as g on a.id_prodi=g.id where a.id_tahun_akademik = ?1 and a.status = 'AKTIF')as a left join ruangan as b on a.id_ruangan = b.id left join hari as c on a.id_hari = c.id left join (select id_dosen_pengampu,sum(jumlah_sks) as total_sks_dosen from jadwal as a inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id where a.status = 'AKTIF' and a.id_tahun_akademik = ?1 group by id_dosen_pengampu)d on a.id_dosen_pengampu = d.id_dosen_pengampu left join (select b.id as id_jadwal, count(id_mahasiswa)as total_mahasiswa from krs_detail as a inner join jadwal as b on a.id_jadwal = b.id where b.id_tahun_akademik = ?1 and a.status = 'AKTIF' group by a.id_jadwal) as e on a.id = e.id_jadwal order by nama_prodi, nama_kelas", nativeQuery = true)
     List<Object[]> downloadJadwal(TahunAkademik tahunAkademik);
+
+    @Query(value = "select a.id as id,d.nama_prodi as namaProdi, e.nama_kelas as namaKelas, c.kode_matakuliah as kodeMatakuliah, c.nama_matakuliah as namaMatakuliah, c.nama_matakuliah_english as namaMatakuliahEnglish, g.id as idDosen, h.nama_karyawan as dosen,jam_mulai as jamMulai, jam_selesai as jamSelesai, a.id_number_elearning as idNumberElearning, id_tahun_akademik as idTahunAkademik, a.status as status\n" +
+            "from jadwal as a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "inner join matakuliah as c on b.id_matakuliah = c.id\n" +
+            "inner join prodi as d on a.id_prodi = d.id\n" +
+            "inner join kelas as e on a.id_kelas = e.id\n" +
+            "inner join jadwal_dosen as f on a.id = f.id_jadwal\n" +
+            "inner join dosen as g on f.id_dosen = g.id\n" +
+            "inner join karyawan as h on g.id_karyawan = h.id\n" +
+            "where c.nama_matakuliah = ?1 and a.status = 'AKTIF'",nativeQuery = true)
+    List<DetailJadwalIntDto> getDetailJadwal(String namaJadwal);
 
 //    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
 //
