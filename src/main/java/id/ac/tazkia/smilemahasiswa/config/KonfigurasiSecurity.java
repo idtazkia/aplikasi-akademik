@@ -168,11 +168,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/uploaded/{note}/bukti/")
                 .antMatchers("/images/**");
 
-
-
     }
-
-
 
     @Bean
     public SpringSecurityDialect springSecurityDialect() {

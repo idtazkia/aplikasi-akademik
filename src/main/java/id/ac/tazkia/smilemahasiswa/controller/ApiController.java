@@ -372,13 +372,14 @@ public class ApiController {
     @ResponseBody
     public List<ApiRfidDto> getRfid(){
 
+        mahasiswaDao.updataIdAbsenMahasiswa();
+
         List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
         List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF, StatusRecord.AKTIF);
         for (ApiRfidDto api : mahasiswa){
             api.setJumlah(mahasiswa.size());
             apiRfidDtos.add(api);
         }
-
 
         return apiRfidDtos;
 
@@ -387,6 +388,8 @@ public class ApiController {
     @GetMapping("/api/rfidkaryawan")
     @ResponseBody
     public List<ApiRfidDto> rfidKaryawan(){
+
+        karyawanDao.updateIdAbsenKaryawan();
 
         List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
         List<ApiRfidDto> karyawan = karyawanDao.rfidKaryawan(StatusRecord.AKTIF);

@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
 import id.ac.tazkia.smilemahasiswa.entity.User;
+import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +27,8 @@ public interface KaryawanDao extends PagingAndSortingRepository<Karyawan, String
 
     @Query(value = "SELECT COALESCE(id_absen,0) + 1 AS id_absen FROM karyawan ORDER BY id_absen DESC LIMIT 1" , nativeQuery = true)
     Integer cariIDAbesen();
+
+    @Query(value = "UPDATE karyawan SET id_absen= FLOOR(RAND() * (9999 - 7777) + 999)", nativeQuery = true)
+    Update updateIdAbsenKaryawan();
 
 }
