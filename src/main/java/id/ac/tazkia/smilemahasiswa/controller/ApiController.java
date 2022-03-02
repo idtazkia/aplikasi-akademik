@@ -380,7 +380,7 @@ public class ApiController {
     @ResponseBody
     public List<ApiRfidDto> getRfid(){
 
-        mahasiswaDao.updataIdAbsenMahasiswa();
+//        mahasiswaDao.updataIdAbsenMahasiswa();
 
         List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
         List<ApiRfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF, StatusRecord.AKTIF);
@@ -397,7 +397,7 @@ public class ApiController {
     @ResponseBody
     public List<ApiRfidDto> rfidKaryawan(){
 
-        karyawanDao.updateIdAbsenKaryawan();
+//        karyawanDao.updateIdAbsenKaryawan();
 
         List<ApiRfidDto> apiRfidDtos = new ArrayList<>();
         List<ApiRfidDto> karyawan = karyawanDao.rfidKaryawan(StatusRecord.AKTIF);
