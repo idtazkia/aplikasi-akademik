@@ -3,6 +3,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 import id.ac.tazkia.smilemahasiswa.dto.ListAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -61,5 +62,9 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     List<ListAngkatanDto> listAngkatanMahasiswa();
 
     List<Mahasiswa> findByStatusAndStatusAktifAndBeasiswaIsNull(StatusRecord statusRecord, String status);
+
+
+    @Query(value = "UPDATE mahasiswa SET id_absen= FLOOR(RAND() * (99999 - 77777) + 9999)", nativeQuery = true)
+    Update updataIdAbsenMahasiswa();
 
 }
