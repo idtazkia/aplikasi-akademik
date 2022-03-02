@@ -117,6 +117,8 @@ public class HumanResourcesController {
             String idFile = UUID.randomUUID().toString();
             karyawan.setFoto(idFile + "." + extension);
             File tujuan = new File(lokasiUpload + File.separator + karyawan.getFoto());
+            Integer idAbesen = karyawanDao.cariIDAbesen();
+            karyawan.setIdAbsen(idAbesen);
             foto.transferTo(tujuan);
             logger.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
             karyawanDao.save(karyawan);
