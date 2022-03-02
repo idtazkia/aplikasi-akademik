@@ -1650,7 +1650,7 @@ public class StudentBillController {
 
     }
 
-    @GetMapping("/studentBill/`requestCicilan/`angsuran")
+    @GetMapping("/studentBill/requestCicilan/angsuran")
     public void cicilanTagihan(Model model, @PageableDefault(size = 10) Pageable page, Authentication authentication,
                                @RequestParam(required = false) String id, @RequestParam(required = false) String jumlah,
                                @RequestParam(required = false) String interval){

@@ -42,5 +42,7 @@ public class Karyawan {
 
     private Integer idAbsen;
 
+    private String foto;
+
 
 }

@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.Kelas;
 import id.ac.tazkia.smilemahasiswa.entity.Prodi;
 import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
@@ -22,4 +23,11 @@ public interface KelasDao extends PagingAndSortingRepository<Kelas,String> {
 
     @Query(value = "select k.id,k.nama_kelas from kelas_mahasiswa as km inner join kelas as k on km.id_kelas = k.id inner join prodi as p on k.id_prodi = p.id inner join jenjang as j on p.id_jenjang = j.id inner join mahasiswa as m on km.id_mahasiswa = m.id where km.status = 'AKTIF'and m.status= 'AKTIF' and k.status ='AKTIF' and k.id_kurikulum is not null group by k.id order by k.nama_kelas asc",nativeQuery = true)
     List<Object[]> kelasPloting();
+
+
+    @Query(value = "select id as idKelas, kode_kelas as kodeKelas, nama_kelas as namaKelas, keterangan as keterangan, id_prodi as idProdi, status as status,id_kurikulum as idKurikulum,\n" +
+            "konsentrasi as konsentrasi, angkatan as angkatan, bahasa as bahasa \n" +
+            "from kelas where status = 'AKTIF'\n" +
+            "order by angkatan desc", nativeQuery = true)
+    List<KelasIntDto> apiKelas();
 }
