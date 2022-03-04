@@ -89,10 +89,10 @@ public class HumanResourcesController {
             logger.debug("Lokasi upload : {}", lokasiUpload);
             new File(lokasiUpload).mkdirs();
 
-            if (foto == null || foto.isEmpty()) {
-                logger.info("File berkas kosong, tidak diproses");
-                return idKaryawan;
-            }
+//            if (foto == null || foto.isEmpty()) {
+//                logger.info("File berkas kosong, tidak diproses");
+//                return idKaryawan;
+//            }
 
             String namaFile = foto.getName();
             String jenisFile = foto.getContentType();
@@ -121,9 +121,9 @@ public class HumanResourcesController {
             karyawan.setIdAbsen(idAbesen);
             foto.transferTo(tujuan);
             logger.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
+
+
             karyawanDao.save(karyawan);
-
-
         } catch (Exception er) {
             logger.error(er.getMessage(), er);
         }
@@ -319,55 +319,7 @@ public class HumanResourcesController {
         return "redirect:list";
     }
 
-    public void uploadFotoKaryawan(@ModelAttribute @Valid Karyawan karyawan, BindingResult bindingResult,
-                                   MultipartFile foto){
 
-        try {
-
-//           persiapan lokasi upload
-
-            String idKaryawan = karyawan.getNamaKaryawan();
-            String lokasiUpload = uploadFolder + File.separator + idKaryawan;
-            logger.debug("Lokasi upload : {}", lokasiUpload);
-            new File(lokasiUpload).mkdirs();
-
-            if (foto == null || foto.isEmpty()) {
-                logger.info("File berkas kosong, tidak diproses");
-                return;
-            }
-
-            String namaFile = foto.getName();
-            String jenisFile = foto.getContentType();
-            String namaAsli = foto.getOriginalFilename();
-            Long ukuran = foto.getSize();
-
-            logger.debug("Nama File : {}", namaFile);
-            logger.debug("Jenis File : {}", jenisFile);
-            logger.debug("Nama Asli File : {}", namaAsli);
-            logger.debug("Ukuran File : {}", ukuran);
-
-            //memisahkan extensi
-            String extension = "";
-
-            int i = namaAsli.lastIndexOf('.');
-            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
-
-            if (i > p) {
-                extension = namaAsli.substring(i + 1);
-            }
-
-            String idFile = UUID.randomUUID().toString();
-            karyawan.setFoto(idFile + "." + extension);
-            File tujuan = new File(lokasiUpload + File.separator + karyawan.getFoto());
-            foto.transferTo(tujuan);
-            logger.debug("File sudah dicopy ke : {}", tujuan.getAbsolutePath());
-            karyawanDao.save(karyawan);
-
-        } catch (Exception er) {
-            logger.error(er.getMessage(), er);
-        }
-
-    }
 
 
 
