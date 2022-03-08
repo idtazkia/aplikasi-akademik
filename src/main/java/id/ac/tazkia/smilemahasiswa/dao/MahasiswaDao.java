@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.ListAngkatanDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto;
+import id.ac.tazkia.smilemahasiswa.dto.machine.RfidDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,8 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     Mahasiswa findByNimAndStatus(String nim,StatusRecord status);
 
-    @Query("select new id.ac.tazkia.smilemahasiswa.dto.machine.ApiRfidDto(m.idAbsen,m.nama,m.rfid,true ,'',0) from  Mahasiswa m where m.status = :status and m.statusAktif = :statusAktif and m.rfid is not null")
-    List<ApiRfidDto> rfidMahasiswa(@Param("status")StatusRecord statusRecord, @Param("statusAktif")StatusRecord statusRecord1);
+    @Query(value = "select id_absen,nama,rfid,'true' as sukses,'' as pesanError,(select count(*) from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null) as jumlah from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null;", nativeQuery = true)
+    List<RfidDto> rfidMahasiswa();
 
     @Query("select m.id from Mahasiswa m where m.nim = :nim")
     String cariIdMahasiswa(@Param("nim")String nim);

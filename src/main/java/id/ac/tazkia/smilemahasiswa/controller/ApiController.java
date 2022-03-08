@@ -380,7 +380,7 @@ public class ApiController {
     @ResponseBody
     public List<RfidDto> getRfid(){
 
-        List<RfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa(StatusRecord.AKTIF);
+        List<RfidDto> mahasiswa = mahasiswaDao.rfidMahasiswa();
 
         return mahasiswa;
 
