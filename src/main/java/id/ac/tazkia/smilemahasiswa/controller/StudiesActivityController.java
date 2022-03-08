@@ -799,21 +799,32 @@ public class StudiesActivityController {
 
     }
 
-    @PostMapping("/studiesActivity/assesment/setting")
-    public String saveAkses(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uts, @RequestParam(required = false) String uas){
+    @PostMapping("/berkas/uts/setting")
+    public String saveAksesUts(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uts){
 
         log.info("jadwal: {}", jadwal.getId());
         log.info("uts: {}", uts);
-        log.info("uas: {}", uas);
 
         Dosen Duts = dosenDao.findById(uts).get();
-        Dosen Duas = dosenDao.findById(uas).get();
 
         jadwal.setAksesUts(Duts);
+        jadwalDao.save(jadwal);
+
+        return "redirect:../uploadSoal/list";
+    }
+
+    @PostMapping("/berkas/uas/setting")
+    public String saveAksesUas(@RequestParam Jadwal jadwal, @RequestParam(required = false) String uas){
+
+        log.info("jadwal: {}", jadwal.getId());
+        log.info("uas: {}", uas);
+
+        Dosen Duas = dosenDao.findById(uas).get();
+
         jadwal.setAksesUas(Duas);
         jadwalDao.save(jadwal);
 
-        return "redirect:listdosen?tahunAkademik="+jadwal.getTahunAkademik().getId();
+        return "redirect:../uploadSoal/list";
     }
 
     @GetMapping("/studiesActivity/assesment/edit")
@@ -7533,8 +7544,11 @@ public class StudiesActivityController {
         Karyawan k = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(k);
 
-        List<Jadwal> listUts = jadwalDao.findByTahunAkademikAndAksesUtsAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen, StatusRecord.AKTIF);
-        List<Jadwal> listUas = jadwalDao.findByTahunAkademikAndAksesUasAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen, StatusRecord.AKTIF);
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+
+        List<Jadwal> listUts = jadwalDao.listUts(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
+        List<Jadwal> listUas = jadwalDao.listUas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
 
         model.addAttribute("listUts", listUts);
         model.addAttribute("listUas", listUas);

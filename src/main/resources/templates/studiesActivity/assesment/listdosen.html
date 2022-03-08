@@ -80,7 +80,6 @@
                                 <th scope="col">Waktu</th>
                                 <th></th>
                                 <th></th>
-                                <th></th>
 
                             </tr>
                             </thead>
@@ -141,62 +140,6 @@
                                                         </div>
 
                                                     </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="btn btn-default btn-sm" data-toggle="modal" th:data-target="${'#modal-akses'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
-
-                                    <div class="modal fade" th:id="${'modal-akses'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-body p-0">
-
-                                                    <form method="post" th:action="@{/studiesActivity/assesment/setting}">
-                                                        <input type="hidden" name="jadwal" th:value="${data.id}">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Akses Upload Soal <span th:text="${data.namaMatkuliah}"></span></h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>Upload UTS</label>
-                                                                        <select name="uts" class="form-control">
-                                                                            <option th:each="dosen : ${dosenAkses}"
-                                                                                    th:if="${data.id} == ${dosen.jadwal.id}"
-                                                                                    th:selected="(${dosen.dosen} == *{dosen.jadwal.aksesUts})"
-                                                                                    th:text="${dosen.dosen.karyawan.namaKaryawan}"
-                                                                                    th:value="${dosen.dosen.id}"></option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>Upload UAS</label>
-                                                                        <select name="uas" class="form-control">
-                                                                            <option th:each="dosen : ${dosenAkses}"
-                                                                                    th:if="${data.id} == ${dosen.jadwal.id}"
-                                                                                    th:selected="(${dosen.dosen} == *{dosen.jadwal.aksesUas})"
-                                                                                    th:text="${dosen.dosen.karyawan.namaKaryawan}"
-                                                                                    th:value="${dosen.dosen.id}"></option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <input type="hidden" name="jadwal" id="jadwal">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                                        </div>
-                                                    </form>
 
                                                 </div>
                                             </div>

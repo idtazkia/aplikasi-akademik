@@ -147,9 +147,11 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByTahunAkademikAndDosenAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
 
-    List<Jadwal> findByTahunAkademikAndAksesUtsAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+    @Query(value = "select * from jadwal where id_tahun_akademik=?1 and status='AKTIF' and id_hari is not null and jam_mulai is not null and jam_selesai is not null and (id_dosen_pengampu = ?2 or akses_uts=?2)", nativeQuery = true)
+    List<Jadwal> listUts(TahunAkademik tahunAkademik, Dosen dosen);
 
-    List<Jadwal> findByTahunAkademikAndAksesUasAndHariNotNullAndJamMulaiNotNullAndJamSelesaiNotNullAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+    @Query(value = "select * from jadwal where id_tahun_akademik=?1 and status='AKTIF' and id_hari is not null and jam_mulai is not null and jam_selesai is not null and (id_dosen_pengampu = ?2 or akses_uas=?2)", nativeQuery = true)
+    List<Jadwal> listUas(TahunAkademik tahunAkademik, Dosen dosen);
 
     Jadwal findByIdNumberElearning(String idNumber);
 
@@ -169,8 +171,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "where i.status = 'AKTIF'",nativeQuery = true)
     List<DetailJadwalIntDto> getDetailJadwal();
 
-//    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
-//
-//    Jadwal findByTahunAkademikAndDosenAndHariAndRuanganAndSesiAndStatus(TahunAkademik tahunAkademik, Dosen dosen, Hari hari, Ruangan ruangan, String sesi, StatusRecord statusRecord);
+    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+
+    Jadwal findByTahunAkademikAndDosenAndHariAndRuanganAndSesiAndStatus(TahunAkademik tahunAkademik, Dosen dosen, Hari hari, Ruangan ruangan, String sesi, StatusRecord statusRecord);
 
 }

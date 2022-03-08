@@ -23,7 +23,7 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
 
     Mahasiswa findByNimAndStatus(String nim,StatusRecord status);
 
-    @Query(value = "select idAbsen,nama,rfid,'true' as sukses,'' as pesanError,(select count(*) from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null) as jumlah from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null;", nativeQuery = true)
+    @Query(value = "select id_absen as idAbsen,nama,rfid,'true' as sukses,'' as pesanError,(select count(*) from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null) as jumlah from mahasiswa where status = 'AKTIF' and status_aktif = 'AKTIF' and rfid is not null;", nativeQuery = true)
     List<RfidDto> rfidMahasiswa();
 
     @Query("select m.id from Mahasiswa m where m.nim = :nim")

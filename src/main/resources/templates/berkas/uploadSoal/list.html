@@ -75,6 +75,7 @@
                                             <th>Kelas</th>
                                             <th></th>
                                             <th></th>
+                                            <th></th>
                                         </tr>
                                         </thead>
 
@@ -120,17 +121,63 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
-                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
-                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                        <span class="btn-inner--text">Upload Soal UTS</span>
-                                                    </a>
+                                                <div th:if="${dosen} == ${data.aksesUts}">
+                                                    <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                        </a>
+                                                    </div>
+                                                    <div th:if="${data.statusUts.WAITING} == ${data.statusUts}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div th:if="${data.statusUts.WAITING} == ${data.statusUts}">
-                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-neutral btn-icon">
-                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                        <span class="btn-inner--text">Upload Soal UTS</span>
-                                                    </a>
+                                            </td>
+                                            <td th:if="${data.statusUts.APPROVED} == ${data.statusUts}"></td>
+                                            <td th:if="${data.statusUts.APPROVED} != ${data.statusUts}">
+                                                <button th:if="${dosen} == ${data.dosen}" class="btn btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uts'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
+
+                                                <div class="modal fade" th:id="${'modal-akses-uts'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body p-0">
+
+                                                                <form method="post" th:action="@{/berkas/uts/setting}">
+                                                                    <input type="hidden" name="jadwal" th:value="${data.id}">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label>Upload UTS</label>
+                                                                                    <select name="uts" class="form-control">
+                                                                                        <option th:each="dosen : ${dosenAkses}"
+                                                                                                th:if="${data.id} == ${dosen.jadwal.id}"
+                                                                                                th:selected="(${dosen.dosen} == *{dosen.jadwal.aksesUts})"
+                                                                                                th:text="${dosen.dosen.karyawan.namaKaryawan}"
+                                                                                                th:value="${dosen.dosen.id}"></option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -149,6 +196,7 @@
                                             <th>Waktu</th>
                                             <th>Matakuliah</th>
                                             <th>Kelas</th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -197,17 +245,64 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
-                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
-                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                        <span class="btn-inner--text">Upload Soal UAS</span>
-                                                    </a>
+                                                <div th:if="${dosen} == ${data.aksesUas}">
+                                                    <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UAS</span>
+                                                        </a>
+                                                    </div>
+                                                    <div th:if="${data.statusUas.WAITING} == ${data.statusUas}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UAS</span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div th:if="${data.statusUas.WAITING} == ${data.statusUas}">
-                                                    <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-neutral btn-icon">
-                                                        <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                        <span class="btn-inner--text">Upload Soal UAS</span>
-                                                    </a>
+                                            </td>
+                                            <td th:if="${data.statusUas.APPROVED} == ${data.statusUas}"></td>
+                                            <td th:if="${data.statusUas.APPROVED} != ${data.statusUas}">
+                                                <button class="btn btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uas'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
+
+                                                <div class="modal fade" th:id="${'modal-akses-uas'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body p-0">
+
+                                                                <form method="post" th:action="@{/berkas/uas/setting}">
+                                                                    <input type="hidden" name="jadwal" th:value="${data.id}">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label>Upload UAS</label>
+                                                                                    <select name="uas" class="form-control">
+                                                                                        <option th:each="dosen : ${dosenAkses}"
+                                                                                                th:if="${data.id} == ${dosen.jadwal.id}"
+                                                                                                th:selected="(${dosen.dosen} == *{dosen.jadwal.aksesUas})"
+                                                                                                th:text="${dosen.dosen.karyawan.namaKaryawan}"
+                                                                                                th:value="${dosen.dosen.id}"></option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <input type="hidden" name="jadwal" id="jadwal">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
