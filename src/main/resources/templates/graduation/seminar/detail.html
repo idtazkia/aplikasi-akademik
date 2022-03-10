@@ -74,7 +74,7 @@
                                 <label><b class="font">Co-examiner 1</b></label>
                                 <p th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Muhammad Lc, MA</p>
                             </div>
-                            <div class="form-group" th:if="${seminar.ketuaPenguji == dosen}">
+                            <!--<div class="form-group" th:if="${seminar.ketuaPenguji == dosen}">
                                 <label><b class="font">Comment</b></label>
                                 <textarea name="komentarDosen1" th:field="*{komentarDosen1}" class="form-control"></textarea>
                             </div>
@@ -88,7 +88,7 @@
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
+                            </div>-->
                         </form>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
             <div class="col-md-8 col-xs-12">
                 <div class="card shadow">
                     <div class="card-body">
-                        <div class="nav-wrapper">
+                        <div class="nav-wrapper" th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link mb-sm-3 mb-md-0"  th:href="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}" target="_blank" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Lihat File Seminar</a>
@@ -107,19 +107,29 @@
                                 </li>
                             </ul>
                         </div>
-<!--                        <div class="card shadow">-->
-<!--                            <div class="card-body">-->
-<!--                                        <embed th:src="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}"  width="100%" height="600px">-->
-<!--                                </div>-->
-<!--                            </div>-->
+                        <div class="nav-wrapper" th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0"  th:href="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}" target="_blank" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Lihat File Seminar</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0"  th:href="@{/graduation/seminar/penilaianpasca (seminar = ${seminar.id})}" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false">Penilaian</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <embed th:src="@{/sempro/{seminar}/bukti/(seminar=${seminar.id})}"  width="100%" height="600px">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Dark table -->
-
     </div>
+    <!-- Dark table -->
+
+</div>
 </div>
 </body>
 </html>
