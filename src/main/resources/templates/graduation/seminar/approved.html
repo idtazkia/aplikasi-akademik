@@ -52,7 +52,7 @@
                         <h3>Pengajuan Judul Skripsi/Tugas Akhir/Tesis</h3>
                         <h3><span th:text="${seminar.note.mahasiswa.nama}"></span> - <span th:text="${seminar.note.mahasiswa.nim}">12212121</span></h3>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                         <form th:action="@{/graduation/seminar/approved}" method="post" th:object="${seminar}">
                             <input type="hidden" name="id" th:value="${seminar.id}">
                             <input type="hidden" name="note" th:value="${seminar.note.id}">
@@ -128,6 +128,96 @@
 
                         </form>
                     </div>
+                    <!--                    pasca-->
+
+                    <div class="card-body" th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                        <form th:action="@{/graduation/seminar/approved}" method="post" th:object="${seminar}">
+                            <input type="hidden" name="id" th:value="${seminar.id}">
+                            <input type="hidden" name="note" th:value="${seminar.note.id}">
+                            <input type="hidden" name="tahunAkademik" th:value="${seminar.tahunAkademik.id}">
+                            <input type="hidden" name="filePengesahan" th:value="${seminar.filePengesahan}">
+                            <input type="hidden" name="fileBimbingan" th:value="${seminar.fileBimbingan}">
+                            <input type="hidden" name="fileSkripsi" th:value="${seminar.fileSkripsi}">
+                            <input type="hidden" name="status" th:value="${seminar.status}">
+                            <input type="hidden" name="statusSempro" th:value="${seminar.statusSempro}">
+                            <input type="hidden" name="tanggalInput" th:value="${seminar.tanggalInput}">
+                            <input type="hidden" name="fileTurnitin" th:value="${seminar.fileTurnitin}">
+                            <input type="hidden" name="fileCoverNote" th:value="${seminar.fileCoverNote}">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label><b class="font">Judul</b></label>
+                                        <p th:text="${seminar.note.judul}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto, cupiditate dolorum eius excepturi fuga fugiat id, incidunt magni minus molestias nostrum officiis perspiciatis sapiente soluta tempora temporibus veritatis vero voluptatem!</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">Ketua</b></label>
+                                        <select name="ketuaPenguji" onchange="waktu()" th:field="*{ketuaPenguji}" class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data : ${listDosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">Penguji 1</b></label>
+                                        <select name="dosenPenguji" onchange="waktu()" th:field="*{dosenPenguji}"  class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data : ${listDosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                    <!--<div class="form-group">
+                                        <label><b class="font">Penguji 2</b></label>
+                                        <select name="penguji" onchange="waktu()"   class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data : ${listDosen}"
+                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>-->
+                                    <div class="form-group">
+                                        <label><b class="font">Ruang</b></label>
+                                        <select name="ruangan" onchange="waktu()" id="ruangan" th:field="*{ruangan}" class="form-control js-example-placeholder-single">
+                                            <option value=""></option>
+                                            <option th:each="data: ${ruangan}"
+                                                    th:text="${data.namaRuangan}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><b class="font">Date</b></label>
+                                        <input type="date" onchange="waktu()" id="tanggal" th:field="*{tanggalUjian}" name="tanggalUjian" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><b class="font">Start Time</b></label>
+                                        <input autocomplete="off" class="form-control" onchange="waktu()" th:field="*{jamMulai}" id="input-a" name="jamMulai" data-default="20:48">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b class="font">End Time</b></label>
+                                        <input autocomplete="off" class="form-control" onchange="waktu()" th:field="*{jamSelesai}" id="input-b" name="jamSelesai" data-default="20:48">
+                                    </div>
+                                    <div class="alert alert-warning" id="myDIV" style="display: none;">
+                                        <span class="alert-inner--icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                        <span class="alert-inner--text" id="mySpan"></span>
+                                    </div>
+                                    <div class="form-group text-center" id="myButton" style="display:none;">
+                                        <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Approved</button>
+                                        <a class="btn btn-warning" th:href="@{/graduation/seminar/view (id=${seminar.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                    </div>
+                                    <div class="form-group text-center" id="myButton1" style="display:block;">
+                                        <!--                                        <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Approved</button>-->
+                                        <a class="btn btn-warning" th:href="@{/graduation/seminar/view (id=${seminar.id})}"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
                 </div>
             </div>
 
