@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Penilaian Seminar</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Penilaian</h5>
+                                        <span class="h2 font-weight-bold mb-0">Sidang</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <form th:action="@{/graduation/seminar/penilaianPasca}" method="post" th:object="${data}">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card shadow">
+                                <div class="card-header border-1 text-center">
+                                    <b style="font-size: 15px">
+                                        PENILAIAN SIDANG SKRIPSI INSTITUT TAZKIA
+                                        <br>
+                                        TAHUN AKADEMIK 2019/2020
+                                    </b>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Nama</b>
+                                            <p th:text="${seminar.note.mahasiswa.nama}">Muhammad Rafizki</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Judul Seminar</b>
+                                            <p th:text="${seminar.note.judul}">Faktor-faktor yang mempengaruhi minat nasabah dalam mengajukan pembiayaan mudharobah di Bank BTN Syariah Pekanbaru	</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Hari, Tanggal, Jam</b>
+                                            <p th:text="${hari.namaHari + ', ' + seminar.tanggalUjian + '' + seminar.jamMulai}">Senin, 31 Februari 2020 08:00:00</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Tim Penguji</b>
+                                            <ul>
+                                                <li><span><strong>Ketua Penguji &nbsp; : </strong></span><span th:text="${ seminar.ketuaPenguji.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Dosen Penguji  &nbsp;:  </strong></span><span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Pembimbing I &nbsp; :  </strong></span><span th:text="${seminar.note.dosen.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Pembimbing II &nbsp;: </strong></span><span th:text="${seminar.note.dosen2.karyawan.namaKaryawan}"></span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Komentar</b>
+                                            <textarea name="komentar" th:field="*{komentar}" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="margin-top: 15px; margin-bottom: 15px;" th:if="${seminar.ketuaPenguji == dosen}">
+                            <div class="card shadow">
+                                <div class="card-header border-1 text-center">
+                                    <b style="font-size: 15px">
+                                        BERITA ACARA SIDANG SKRIPSI INSTITUT TAZKIA
+                                        <br>
+                                        <span th:text="${seminar.tahunAkademik.namaTahunAkademik}"></span>
+                                    </b>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Nama</b>
+                                            <p th:text="${seminar.note.mahasiswa.nama}">Muhammad Rafizki</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Judul Tugas Akhir</b>
+                                            <p th:text="${seminar.note.judul}">Faktor-faktor yang mempengaruhi minat nasabah dalam mengajukan pembiayaan mudharobah di Bank BTN Syariah Pekanbaru	</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Hari, Tanggal, Jam</b>
+                                            <p th:text="${hari.namaHari + ', ' + seminar.tanggalUjian + '' + seminar.jamMulai}">Senin, 31 Februari 2020 08:00:00</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Tim Penguji</b>
+                                            <ul>
+                                                <li><span><strong>Ketua Penguji &nbsp; : </strong></span><span th:text="${ seminar.ketuaPenguji.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Dosen Penguji  &nbsp;:  </strong></span><span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Pembimbing I &nbsp; :  </strong></span><span th:text="${seminar.note.dosen.karyawan.namaKaryawan}"></span></li>
+                                                <li><span><strong>Pembimbing II &nbsp;: </strong></span><span th:text="${seminar.note.dosen2.karyawan.namaKaryawan}"></span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <b style="color: #4285f4; font-size: 15px;">Dengan Catatan/Kejadian</b>
+                                            <textarea name="beritaAcara" th:field="*{beritaAcara}"  class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card shadow">
+                                <div class="card-header border-1">
+                                    <h3 class="mb-0">Penilain Sidang</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Presentasi</label>
+                                        <input type="text" name="nilaiA" th:field="*{nilaiA}" class="form-control">
+                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Penguasaan Materi</label>
+                                        <input type="text" name="nilaiB" th:field="*{nilaiB}" class="form-control">
+                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Teknik Penulisan</label>
+                                        <input type="text" name="nilaiC" th:field="*{nilaiC}" class="form-control">
+                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Argumentasi</label>
+                                        <input type="text" name="nilaiD" th:field="*{nilaiD}" class="form-control">
+                                        <input type="hidden" name="seminar" th:value="${seminar.id}" class="form-control">
+                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Orisinalitas</label>
+                                        <input type="text" name="nilaiE" th:field="*{nilaiE}" class="form-control">
+                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="container">
+                    <div class="row">
+                        <div class="col text-center">
+                            <button class="btn btn-success" type="submit">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+    function changeHandler(val)
+    {
+        if (Number(val.value) > 100)
+        {
+            val.value = 100
+        }
+    }
+</script>

@@ -34,6 +34,8 @@ public class Seminar {
 
     private String fileSkripsi;
     private String fileFormulir;
+    private String fileTurnitin;
+    private String fileCoverNote;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -53,6 +55,10 @@ public class Seminar {
     @ManyToOne
     @JoinColumn(name = "dosen_penguji")
     private Dosen dosenPenguji;
+
+    @ManyToOne
+    @JoinColumn(name = "penguji_eksternal")
+    private Dosen penguji;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -102,6 +108,13 @@ public class Seminar {
     @Column(columnDefinition = "LONGTEXT")
     private String komentarPembimbing;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarPembimbing2;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarPembimbing3;
 
     private BigDecimal pa = BigDecimal.ZERO;
     private BigDecimal pb = BigDecimal.ZERO;
@@ -109,6 +122,21 @@ public class Seminar {
     private BigDecimal pd = BigDecimal.ZERO;
     private BigDecimal pe = BigDecimal.ZERO;
     private BigDecimal pf = BigDecimal.ZERO;
+
+    private BigDecimal pa2 = BigDecimal.ZERO;
+    private BigDecimal pb2 = BigDecimal.ZERO;
+    private BigDecimal pc2 = BigDecimal.ZERO;
+    private BigDecimal pd2 = BigDecimal.ZERO;
+    private BigDecimal pe2 = BigDecimal.ZERO;
+    private BigDecimal pf2 = BigDecimal.ZERO;
+
+
+    private BigDecimal ea = BigDecimal.ZERO;
+    private BigDecimal eb = BigDecimal.ZERO;
+    private BigDecimal ec = BigDecimal.ZERO;
+    private BigDecimal ed = BigDecimal.ZERO;
+    private BigDecimal ee = BigDecimal.ZERO;
+    private BigDecimal ef = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     private StatusApprove statusSempro;

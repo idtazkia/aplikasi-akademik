@@ -81,4 +81,13 @@ public interface SeminarDao extends PagingAndSortingRepository<Seminar, String> 
             " where s.status in ('APPROVED', 'WAITING') and m.id_prodi = ?1 and m.angkatan = ?2", nativeQuery = true)
     List<RekapTugasAkhir> rekapTugasAkhir(Prodi prodi, String angkatan);
 
+    @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2)", nativeQuery = true)
+    Object validasiPublishNilaiStudy(Seminar seminar, BigDecimal nilai);
+
+    @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or kf = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or uf = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2 or pf = ?2)", nativeQuery = true)
+    Object validasiPublishNilaiSkripsi(Seminar seminar, BigDecimal nilai);
+
+    @Query(value = "select * from seminar where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ke = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or ue = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pe = ?2 or pa2 = ?2 or pb2 = ?2 or pc2 = ?2 or pd2 = ?2 or pe2 = ?2)", nativeQuery = true)
+    Object validasiPublishNilaiTesis(Seminar seminar, BigDecimal nilai);
+
 }
