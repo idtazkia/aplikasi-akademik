@@ -9,8 +9,8 @@ import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.TahunDto;
-import id.ac.tazkia.smilemahasiswa.dto.request.RequestCicilanDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
@@ -111,6 +111,9 @@ public class GraduationController {
     private SidangDao sidangDao;
 
     @Autowired
+    private TagihanDao tagihanDao;
+
+    @Autowired
     private SidangService sidangService;
 
     @Value("classpath:sample/example.xlsx")
@@ -203,8 +206,8 @@ public class GraduationController {
         Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
         Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
 
-        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
-            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
+        if (mahasiswa.getIdProdi().getIdJenjang().equals("01") || mahasiswa.getIdProdi().getIdJenjang().equals("03")){
+            if (id == null || id.isEmpty()) {
                 if (magang == null && metolit == null){
                     return "redirect:alert";
                 }else {
@@ -384,10 +387,25 @@ public class GraduationController {
     public String success(Model model, @RequestParam Note note){
         List<Seminar> seminar = seminarDao.findByNote(note);
         model.addAttribute("note", note);
-        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
+        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(note.getMahasiswa(),StatusRecord.SEMPRO,true,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         if (enableFiture != null) {
             model.addAttribute("sempro", enableFiture);
+        }else {
+            if (tagihanDao.cekTagihanLunas(note.getMahasiswa().getNim()).isEmpty()){
+                EnableFiture fiture = new EnableFiture();
+                fiture.setEnable(true);
+                fiture.setFitur(StatusRecord.SEMPRO);
+                fiture.setKeterangan("-");
+                fiture.setMahasiswa(note.getMahasiswa());
+                fiture.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(fiture);
+                model.addAttribute("sempro", fiture);
+                return "graduation/success";
+
+            }
+
         }
+
         if (!seminar.isEmpty()){
             return "redirect:seminar/waiting?id="+note.getId();
         }else {
@@ -609,6 +627,21 @@ public class GraduationController {
 
     }
 
+    @GetMapping("/graduation/sempropasca")
+    public String semproPasca(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
+        if (note.getStatus() == StatusApprove.APPROVED){
+            model.addAttribute("note", note);
+            Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
+            model.addAttribute("waiting", waiting);
+            return "graduation/sempropasca";
+        }else {
+
+            return "redirect:register";
+        }
+
+
+    }
+
     @GetMapping("/graduation/seminar/ulang")
     public String daftarUlang(Model model,@RequestParam(name = "id", value = "id", required = false) Note note){
         if (note.getStatus() == StatusApprove.APPROVED){
@@ -819,6 +852,186 @@ public class GraduationController {
 
     }
 
+    @PostMapping("/graduation/sempropasca")
+    public String prosesSeminarPasca(@Valid Seminar seminar,MultipartFile turnitin,MultipartFile coverNote,
+                                     BindingResult error, MultipartFile kartu,MultipartFile skripsi,MultipartFile pengesahan,
+                                     Authentication currentUser,MultipartFile formulir) throws Exception {
+        User user = currentUserService.currentUser(currentUser);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        if (kartu.getSize() > 0) {
+            String namaAsli = kartu.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            kartu.transferTo(tujuan);
+
+
+            seminar.setFileBimbingan(idFile + "." + extension);
+
+        }else {
+            seminar.setFileBimbingan(seminar.getFileBimbingan());
+        }
+
+        if (formulir.getSize() > 0) {
+            String namaAsli = formulir.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            formulir.transferTo(tujuan);
+
+
+            seminar.setFileFormulir(idFile + "." + extension);
+
+        }else {
+            seminar.setFileFormulir(seminar.getFileBimbingan());
+        }
+
+        if (pengesahan.getSize() > 0) {
+            String namaAsli = pengesahan.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            pengesahan.transferTo(tujuan);
+
+
+            seminar.setFilePengesahan(idFile + "." + extension);
+
+        }else {
+            seminar.setFilePengesahan(seminar.getFilePengesahan());
+        }
+
+        if (skripsi.getSize() > 0) {
+            String namaAsli = skripsi.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            skripsi.transferTo(tujuan);
+
+
+            seminar.setFileSkripsi(idFile + "." + extension);
+
+        }else {
+            seminar.setFileSkripsi(seminar.getFileSkripsi());
+        }
+
+        if (turnitin.getSize() > 0) {
+            String namaAsli = turnitin.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            turnitin.transferTo(tujuan);
+
+
+            seminar.setFileTurnitin(idFile + "." + extension);
+
+        }else {
+            seminar.setFileTurnitin(seminar.getFileSkripsi());
+        }
+
+        if (coverNote.getSize() > 0) {
+            String namaAsli = coverNote.getOriginalFilename();
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = seminarFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            coverNote.transferTo(tujuan);
+
+
+            seminar.setFileCoverNote(idFile + "." + extension);
+
+        }else {
+            seminar.setFileCoverNote(seminar.getFileSkripsi());
+        }
+
+        seminar.setTanggalInput(LocalDate.now());
+        seminar.setStatus(StatusApprove.WAITING);
+        seminar.setStatusSempro(StatusApprove.WAITING);
+        seminar.setPublish(StatusRecord.NONAKTIF.toString());
+        seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        seminarDao.save(seminar);
+
+        return "redirect:seminar/waiting?id="+seminar.getNote().getId();
+
+    }
+
     @GetMapping("/graduation/seminar/list")
     public void seminarList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
                             @RequestParam(required = false) Prodi prodi, Pageable pageable){
@@ -842,7 +1055,16 @@ public class GraduationController {
         model.addAttribute("seminar",seminar);
         List<String> dosenList = new ArrayList<>();
         dosenList.add(seminar.getNote().getDosen().getId());
-        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS),dosenList));
+        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.HAPUS,StatusRecord.NONAKTIF),dosenList));
+
+    }
+
+    @GetMapping("/graduation/seminar/approvalpasca")
+    public void approvalSeminarPasca(@RequestParam(name = "id", value = "id") Seminar seminar,Model model){
+        model.addAttribute("seminar",seminar);
+        List<String> dosenList = new ArrayList<>();
+        dosenList.add(seminar.getNote().getDosen().getId());
+        model.addAttribute("listDosen", dosenDao.findByStatusNotInAndIdNotIn(Arrays.asList(StatusRecord.NONAKTIF,StatusRecord.HAPUS),dosenList));
 
     }
 
@@ -978,6 +1200,64 @@ public class GraduationController {
 
     }
 
+    @GetMapping("/upload/{seminar}/covernote/")
+    public ResponseEntity<byte[]> fileCoverNote(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileCoverNote();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileCoverNote().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileCoverNote().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileCoverNote().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{seminar}/fileturnitin/")
+    public ResponseEntity<byte[]> fileTurnitin(@PathVariable Seminar seminar, Model model) throws Exception {
+        String lokasiFile = seminarFolder + File.separator + seminar.getNote().getMahasiswa().getNim()
+                + File.separator + seminar.getFileTurnitin();
+        LOGGER.debug("Lokasi file bukti : {}", lokasiFile);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (seminar.getFileTurnitin().toLowerCase().endsWith("jpeg") || seminar.getFilePengesahan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (seminar.getFileTurnitin().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (seminar.getFileTurnitin().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            LOGGER.warn(err.getMessage(), err);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+
+
     @GetMapping("/graduation/seminar/detail")
     public void detailSempro(Model model, @RequestParam Seminar seminar, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
@@ -1010,6 +1290,84 @@ public class GraduationController {
         model.addAttribute("dosen", dosen);
         model.addAttribute("seminar",seminar);
 
+    }
+
+    @GetMapping("/graduation/seminar/penilaianpasca")
+    public void penilaianSeminarPasca(Model model,@RequestParam Seminar seminar,@RequestParam(required = false) String kosong,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue());
+        if (seminar.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+
+        if (kosong != null){
+            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        }
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("seminar",seminar);
+
+        if (seminar.getKetuaPenguji() == dosen){
+            model.addAttribute("data", sidangService.getKetuaSempro(seminar));
+        }
+
+        if (seminar.getDosenPenguji() == dosen){
+            model.addAttribute("data", sidangService.getPengujiSempro(seminar));
+        }
+
+        if (seminar.getNote().getDosen() == dosen){
+            model.addAttribute("data", sidangService.getPembimbingSempro1(seminar));
+        }
+
+        if (seminar.getNote().getDosen2() == dosen){
+            model.addAttribute("data", sidangService.getPembimbingSempro2(seminar));
+        }
+
+    }
+
+    @PostMapping("/graduation/seminar/penilaianPasca")
+    public String saveKetua(@RequestParam Seminar seminar,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
+                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
+                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) BigDecimal nilaiE,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        SemproDto semproDto = new SemproDto();
+        semproDto.setId(seminar.getId());
+        semproDto.setKomentar(komentar);
+        semproDto.setBeritaAcara(beritaAcara);
+        semproDto.setNilaiA(nilaiA);
+        semproDto.setNilaiB(nilaiB);
+        semproDto.setNilaiC(nilaiC);
+        semproDto.setNilaiD(nilaiD);
+        semproDto.setNilaiE(nilaiE);
+
+        if (seminar.getKetuaPenguji() == dosen){
+            sidangService.saveKetuaSeminar(semproDto);
+        }
+
+        if (seminar.getDosenPenguji() == dosen){
+            sidangService.savePengujiSempro(semproDto);
+        }
+
+        if (seminar.getNote().getDosen() == dosen){
+            sidangService.savePembimbingSempro(semproDto);
+        }
+
+        if (seminar.getNote().getDosen2() == dosen){
+            sidangService.savePembimbing2Sempro(semproDto);
+        }
+
+
+        return "redirect:detail?seminar="+seminar.getId();
     }
 
     @GetMapping("/graduation/seminar/score")
@@ -1486,6 +1844,51 @@ public class GraduationController {
     }
 
 
+    @PostMapping("/graduation/seminar/dosen/publish")
+    @ResponseBody
+    public String publishSeminar(@RequestParam Seminar seminar){
+        if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
+            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar,BigDecimal.ZERO);
+            System.out.println(nilaiKosong);
+            if (nilaiKosong == null) {
+                seminar.setPublish("AKTIF");
+                seminarDao.save(seminar);
+                return "berhasil";
+
+            }else {
+                return "lengkapi";
+            }
+        }
+
+        if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
+            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar,BigDecimal.ZERO);
+            System.out.println(nilaiKosong);
+            if (nilaiKosong == null) {
+                seminar.setPublish("AKTIF");
+                seminarDao.save(seminar);
+                return "berhasil";
+
+            }else {
+                return "lengkapi";
+            }
+        }
+
+        if (seminar.getNote().getJenis() == StatusRecord.TESIS){
+            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,BigDecimal.ZERO);
+            System.out.println(nilaiKosong);
+            if (nilaiKosong == null) {
+                seminar.setPublish("AKTIF");
+                seminarDao.save(seminar);
+                return "berhasil";
+
+            }else {
+                return "lengkapi";
+            }
+        }
+
+        return "kosong";
+
+    }
 
 
 }
