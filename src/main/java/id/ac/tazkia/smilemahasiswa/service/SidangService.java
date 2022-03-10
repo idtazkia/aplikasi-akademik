@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
 import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
 import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.beans.BeanUtils;
@@ -86,6 +87,60 @@ public class SidangService {
         return sidangDto;
     }
 
+    public SemproDto getKetuaSempro(Seminar seminar){
+        SemproDto semproDto = new SemproDto();
+        semproDto.setId(seminar.getId());
+        semproDto.setKomentar(seminar.getKomentarKetua());
+        semproDto.setBeritaAcara(seminar.getBeritaAcara());
+        semproDto.setNilaiA(seminar.getKa());
+        semproDto.setNilaiB(seminar.getKb());
+        semproDto.setNilaiC(seminar.getKc());
+        semproDto.setNilaiD(seminar.getKd());
+        semproDto.setNilaiE(seminar.getKe());
+
+        return semproDto;
+    }
+
+    public SemproDto getPengujiSempro(Seminar seminar){
+        SemproDto semproDto = new SemproDto();
+        semproDto.setId(seminar.getId());
+        semproDto.setKomentar(seminar.getKomentarKetua());
+        semproDto.setNilaiA(seminar.getUa());
+        semproDto.setNilaiB(seminar.getUb());
+        semproDto.setNilaiC(seminar.getUc());
+        semproDto.setNilaiD(seminar.getUd());
+        semproDto.setNilaiE(seminar.getUe());
+
+        return semproDto;
+    }
+
+    public SemproDto getPembimbingSempro1(Seminar seminar){
+        SemproDto semproDto = new SemproDto();
+        semproDto.setId(seminar.getId());
+        semproDto.setKomentar(seminar.getKomentarKetua());
+        semproDto.setNilaiA(seminar.getPa());
+        semproDto.setNilaiB(seminar.getPb());
+        semproDto.setNilaiC(seminar.getPc());
+        semproDto.setNilaiD(seminar.getPd());
+        semproDto.setNilaiE(seminar.getPe());
+
+        return semproDto;
+    }
+
+    public SemproDto getPembimbingSempro2(Seminar seminar){
+        SemproDto semproDto = new SemproDto();
+        semproDto.setId(seminar.getId());
+        semproDto.setKomentar(seminar.getKomentarKetua());
+        semproDto.setBeritaAcara(seminar.getBeritaAcara());
+        semproDto.setNilaiA(seminar.getPa2());
+        semproDto.setNilaiB(seminar.getPb2());
+        semproDto.setNilaiC(seminar.getPc2());
+        semproDto.setNilaiD(seminar.getPd2());
+        semproDto.setNilaiE(seminar.getPe2());
+
+        return semproDto;
+    }
+
     public SidangDto getPenguji(Sidang sidang){
         SidangDto sidangDto = new SidangDto();
         sidangDto.setId(sidang.getId());
@@ -124,6 +179,21 @@ public class SidangService {
 
     }
 
+    public void saveKetuaSeminar(SemproDto semproDto){
+        Seminar seminar = seminarDao.findById(semproDto.getId()).get();
+        seminar.setKomentarKetua(semproDto.getKomentar());
+        seminar.setBeritaAcara(semproDto.getBeritaAcara());
+        seminar.setKa(semproDto.getNilaiA());
+        seminar.setKb(semproDto.getNilaiB());
+        seminar.setKc(semproDto.getNilaiC());
+        seminar.setKd(semproDto.getNilaiD());
+        seminar.setKe(semproDto.getNilaiE());
+        seminarDao.save(seminar);
+        akumulasiNilaiSempro(seminar);
+        System.out.println("berhasil");
+
+    }
+
     public void savePenguji(SidangDto sidangDto){
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarPenguji(sidangDto.getKomentar());
@@ -133,6 +203,45 @@ public class SidangService {
         sidang.setUd(sidangDto.getNilaiD());
         sidangDao.save(sidang);
         akumulasiNilai(sidang);
+
+    }
+
+    public void savePengujiSempro(SemproDto semproDto){
+        Seminar seminar = seminarDao.findById(semproDto.getId()).get();
+        seminar.setKomentarPenguji(semproDto.getKomentar());
+        seminar.setUa(semproDto.getNilaiA());
+        seminar.setUb(semproDto.getNilaiB());
+        seminar.setUc(semproDto.getNilaiC());
+        seminar.setUd(semproDto.getNilaiD());
+        seminar.setUe(semproDto.getNilaiE());
+        seminarDao.save(seminar);
+        akumulasiNilaiSempro(seminar);
+
+    }
+
+    public void savePembimbingSempro(SemproDto semproDto){
+        Seminar seminar = seminarDao.findById(semproDto.getId()).get();
+        seminar.setKomentarPenguji(semproDto.getKomentar());
+        seminar.setPa(semproDto.getNilaiA());
+        seminar.setPb(semproDto.getNilaiB());
+        seminar.setPc(semproDto.getNilaiC());
+        seminar.setPd(semproDto.getNilaiD());
+        seminar.setPe(semproDto.getNilaiE());
+        seminarDao.save(seminar);
+        akumulasiNilaiSempro(seminar);
+
+    }
+
+    public void savePembimbing2Sempro(SemproDto semproDto){
+        Seminar seminar = seminarDao.findById(semproDto.getId()).get();
+        seminar.setKomentarPenguji(semproDto.getKomentar());
+        seminar.setPa2(semproDto.getNilaiA());
+        seminar.setPb2(semproDto.getNilaiB());
+        seminar.setPc2(semproDto.getNilaiC());
+        seminar.setPd2(semproDto.getNilaiD());
+        seminar.setPe2(semproDto.getNilaiE());
+        seminarDao.save(seminar);
+        akumulasiNilaiSempro(seminar);
 
     }
 
@@ -159,5 +268,20 @@ public class SidangService {
         sidang.setNilaiD(nilaiD);
         sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
         sidangDao.save(sidang);
+    }
+
+    private void akumulasiNilaiSempro(Seminar seminar){
+        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        seminar.setNilaiA(nilaiA);
+        seminar.setNilaiB(nilaiB);
+        seminar.setNilaiC(nilaiC);
+        seminar.setNilaiD(nilaiD);
+        seminar.setNilaiE(nilaiE);
+        seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+        seminarDao.save(seminar);
     }
 }

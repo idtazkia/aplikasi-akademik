@@ -139,17 +139,20 @@
 
         <div class="col-md-12 alert alert-info" th:if="${sempro == null}">
             <p>
-                <center>
-                    <strong>
-                        Silahkan selesaikan pembayaran tugas akhir terlebih dahulu untuk melanjutkan Seminar Proposal (minimal 50%).
-                    </strong>
-                </center>
+            <center>
+                <strong>
+                    Silahkan selesaikan pembayaran terlebih dahulu untuk melanjutkan seminar proposal .
+                </strong>
+            </center>
             </p>
         </div>
 
         <div class="col-md-6 col-lg-offset-3" th:if="${sempro != null}">
-            <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;">
-            Lanjut ke sempro !
+            <a th:href="@{/graduation/sempro (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;" th:if="${note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                Lanjut ke sempro !
+            </a>
+            <a th:href="@{/graduation/sempropasca (id = ${note.id})}" class="btn" style="background-color: #4DA8A8;" th:if="${note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                Lanjut ke sempro !
             </a>
         </div>
         <div class="col-md-6 col-lg-offset-3" th:if="${sempro != null}" style="padding: 10px;">
@@ -159,7 +162,7 @@
         </div>
         <div class="col-md-6 col-lg-offset-3" th:if="${sempro == null}">
             <a th:href="@{/studentBill/bill/list}" class="btn" style="background-color: #4DA8A8;">
-            Lihat Tagihan
+                Lihat Tagihan
             </a>
         </div>
 
