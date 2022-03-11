@@ -1063,12 +1063,12 @@ public class StudentBillController {
         tagihan.setKaryawan(karyawan);
         log.debug("pengedit : {}" + karyawan);
 
-//        if (nim.getStatusAktif().equals("BEASISWA")) {
-//            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
-//            p.setAmount(nilaiTagihan);
-//            tagihan.setAkumulasiPembayaran(nilaiTagihan);
-//            pembayaranDao.save(p);
-//        }
+        if (nim.getBeasiswa() != null) {
+            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
+            p.setAmount(nilaiTagihan);
+            tagihan.setAkumulasiPembayaran(nilaiTagihan);
+            pembayaranDao.save(p);
+        }
 
         tagihan.setNilaiTagihan(nilaiTagihan);
         tagihanDao.save(tagihan);
