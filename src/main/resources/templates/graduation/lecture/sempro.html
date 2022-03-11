@@ -110,12 +110,12 @@
                                                         <b>Title in English</b>
                                                         <p th:text="${data.note.judulInggris}">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                                                         <hr>
-                                                                <center >
-                                                                    <b>Main Examiner</b>
-                                                                   <center>
-                                                                       <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
-                                                                   </center>
-                                                                </center>
+                                                        <center >
+                                                            <b>Main Examiner</b>
+                                                            <center>
+                                                                <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                            </center>
+                                                        </center>
 
                                                         <div class="row col-md-12">
                                                             <div class="col-md-6">
@@ -207,9 +207,9 @@
                                             </td>
                                         </span>
 
-                                            <td colspan="2" th:if="${data.publish == 'AKTIF'}" tyle="text-align:center;" >
-                                                <button class="btn btn-success btn-sm" style="width:100%;" >Published</button>
-                                            </td>
+                                        <td colspan="2" th:if="${data.publish == 'AKTIF'}" tyle="text-align:center;" >
+                                            <button class="btn btn-success btn-sm" style="width:100%;" >Published</button>
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-outline-primary btn-sm" th:data-target="${'#modal-default' + data.id}" data-toggle="modal" >
                                                 <i class="fas fa-list"></i> Detail Seminar
@@ -218,6 +218,150 @@
                                                 <i class="fas fa-edit"></i> Assesment
                                             </a>
 
+                                            <button th:if="${data.ketuaPenguji == dosen && data.publish == 'NONAKTIF'}" type="button" class="btn btn-info btn-outline-primary btn-sm fas fa-share"
+                                                    data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"> Publish</button>
+
+                                            <div class="modal fade bd-example-modal-lg fade" th:id="${'modal-publish'+data.id}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Detail Nilai</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-danger alert-with-icon" th:id="${data.id+'-alertSave'}" style="display: none">
+                                                                <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                                                    <i class="fas fa-warning"></i>
+                                                                </button>
+                                                                <span data-notify="icon" class="tim-icons icon-trophy"></span>
+                                                                <span id="textAlert"><b> Maaf! - </b>Nilai Belum Lengkap.</span>
+                                                            </div>
+                                                            <table class="table table-bordered table-hover">
+                                                                <thead class="thead-light">
+                                                                <tr class="table-primary"  th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
+                                                                    <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Ketua Penguji</b></center></th>
+                                                                    <th><center><b>Penguji</b></center></th>
+                                                                    <th><center><b>Pembimbing</b></center></th>
+                                                                </tr>
+                                                                <tr class="table-primary"  th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                    <th><center><b>#</b></center></th>
+                                                                    <th><center><b>Ketua Penguji</b></center></th>
+                                                                    <th><center><b>Penguji</b></center></th>
+                                                                    <th><center><b>Pembimbing 1</b></center></th>
+                                                                    <th><center><b>Pembimbing 2</b></center></th>
+                                                                </tr>
+                                                                </thead>
+
+                                                                <tbody th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01' || data.note.mahasiswa.idProdi.idJenjang.id == '03'}">
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Inovasi Produk</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Perumusan Masalah</b></td>
+                                                                    <td align="center" th:text="${data.ka}">90.00</td>
+                                                                    <td align="center" th:text="${data.ua}">90.00</td>
+                                                                    <td align="center" th:text="${data.pa}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Manfaat Produk/Bisnis</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Tinjauan Pustaka</b></td>
+                                                                    <td align="center" th:text="${data.kb}">90.00</td>
+                                                                    <td align="center" th:text="${data.ub}">90.00</td>
+                                                                    <td align="center" th:text="${data.pb}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Kelayakan Bisnis</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Metode Penelitian</b></td>
+                                                                    <td align="center" th:text="${data.kc}">90.00</td>
+                                                                    <td align="center" th:text="${data.uc}">90.00</td>
+                                                                    <td align="center" th:text="${data.pc}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Tinjauan Syariah</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Manfaat Tugas Akhir</b></td>
+                                                                    <td align="center" th:text="${data.kd}">90.00</td>
+                                                                    <td align="center" th:text="${data.ud}">90.00</td>
+                                                                    <td align="center" th:text="${data.pd}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}"><b>Tinajauan Pustaka</b></td>
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Kelayakan Tugas Akhir</b></td>
+                                                                    <td align="center" th:text="${data.ke}">90.00</td>
+                                                                    <td align="center" th:text="${data.ue}">90.00</td>
+                                                                    <td align="center" th:text="${data.pe}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center" th:if="${data.note.jenis == data.note.jenis.SKRIPSI}"><b>Kedalaman Tinjauan Syariah</b></td>
+                                                                    <td align="center" th:text="${data.kf}">90.00</td>
+                                                                    <td align="center" th:text="${data.uf}">90.00</td>
+                                                                    <td align="center" th:text="${data.pf}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="2"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center">
+                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+
+                                                                <tbody th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Presentasi</b></td>
+                                                                    <td align="center" th:text="${data.ka}">90.00</td>
+                                                                    <td align="center" th:text="${data.ua}">90.00</td>
+                                                                    <td align="center" th:text="${data.pa}">90.00</td>
+                                                                    <td align="center" th:text="${data.pa2}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Penguasaan Materi</b></td>
+                                                                    <td align="center" th:text="${data.kb}">90.00</td>
+                                                                    <td align="center" th:text="${data.ub}">90.00</td>
+                                                                    <td align="center" th:text="${data.pb}">90.00</td>
+                                                                    <td align="center" th:text="${data.pb2}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Teknik Penulisan</b></td>
+                                                                    <td align="center" th:text="${data.kc}">90.00</td>
+                                                                    <td align="center" th:text="${data.uc}">90.00</td>
+                                                                    <td align="center" th:text="${data.pc}">90.00</td>
+                                                                    <td align="center" th:text="${data.pc2}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Argumentasi</b></td>
+                                                                    <td align="center" th:text="${data.kd}">90.00</td>
+                                                                    <td align="center" th:text="${data.ud}">90.00</td>
+                                                                    <td align="center" th:text="${data.pd}">90.00</td>
+                                                                    <td align="center" th:text="${data.pd2}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Orisinalitas</b></td>
+                                                                    <td align="center" th:text="${data.ke}">90.00</td>
+                                                                    <td align="center" th:text="${data.ue}">90.00</td>
+                                                                    <td align="center" th:text="${data.pe}">90.00</td>
+                                                                    <td align="center" th:text="${data.pe2}">90.00</td>
+                                                                </tr>
+                                                                <tr class="table-primary">
+                                                                    <td align="center"><b>Total</b></td>
+                                                                    <td align="center" colspan="3"><b th:text="${data.nilai}">90.00</b></td>
+                                                                    <td align="center">
+                                                                        <h3 th:if="${data.nilai >= 70}"><span class="badge badge-success">LULUS</span></h3>
+                                                                        <h3 th:if="${data.nilai < 70}"><span class="badge badge-success">TIDAK LULUS</span></h3>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" id="sidangId" th:value="${data.id}">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">tutup</button>
+                                                            <button type="submit" th:id="${data.id}" class="btn btn-primary publish-data">Publish</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -238,3 +382,37 @@
 </div>
 </body>
 </html>
+<script>
+    $(".publish-data").click(function(e) {
+        var id = this.id;
+        var token = $("input[name='_csrf']").val();
+        var url = "/graduation/seminar/dosen/publish";
+        e.preventDefault();
+        console.log(id)
+
+        $.ajax({
+            url: url+'?seminar='+id,
+            contentType: "application/json;charset=UTF-8",
+            headers: {"X-CSRF-TOKEN": token},
+            method: 'post',
+            dataType: 'JSON',
+            data: JSON.stringify({
+                "id" : id,
+            }), error: function (data) {
+                if (data.responseText == "lengkapi"){
+                    document.getElementById(id+'-alertSave').style.display = "block";
+                    setTimeout(function () {
+                        document.getElementById(id+'alertSave').style.display = "none";
+                    }, 5000);
+                }
+
+                if (data.responseText == "berhasil"){
+                    window.location.reload();
+                }
+
+
+            }
+        })
+
+    });
+</script>
