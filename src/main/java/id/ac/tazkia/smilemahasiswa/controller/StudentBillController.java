@@ -54,6 +54,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -131,6 +132,9 @@ public class StudentBillController {
 
     @Autowired
     private EnableFitureDao enableFitureDao;
+
+    @Autowired
+    private BeasiswaDao beasiswaDao;
 
     @Autowired
     private MahasiswaBeasiswaDao mahasiswaBeasiswaDao;
@@ -1063,15 +1067,30 @@ public class StudentBillController {
         tagihan.setKaryawan(karyawan);
         log.debug("pengedit : {}" + karyawan);
 
-        if (nim.getBeasiswa() != null) {
-            Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
-            p.setAmount(nilaiTagihan);
-            tagihan.setAkumulasiPembayaran(nilaiTagihan);
-            pembayaranDao.save(p);
+        List<TagihanBeasiswa> listBeasiswaTagihan = tagihanBeasiswaDao.findByStatus(StatusRecord.AKTIF);
+
+        List<String> listId = new ArrayList<>();
+        for (TagihanBeasiswa list : listBeasiswaTagihan){
+            listId.add(list.getBeasiswa().getId());
+        }
+        List<Beasiswa> listBeasiswa = beasiswaDao.findByStatusAndIdNotIn(StatusRecord.AKTIF, listId);
+
+        if (listBeasiswa != null){
+            for (Beasiswa beasiswa : listBeasiswa){
+                if (nim.getBeasiswa() == beasiswa) {
+                    Pembayaran p = pembayaranDao.findByStatusAndTagihan(StatusRecord.AKTIF, tagihan);
+                    p.setAmount(nilaiTagihan);
+                    tagihan.setAkumulasiPembayaran(nilaiTagihan);
+                    pembayaranDao.save(p);
+                }
+            }
         }
 
         tagihan.setNilaiTagihan(nilaiTagihan);
         tagihanDao.save(tagihan);
+        if (tagihan.getStatusTagihan() != StatusTagihan.LUNAS){
+            tagihanService.editTagihan(tagihan);
+        }
 
         return "redirect:list?tahunAkademik="+tahun.getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
