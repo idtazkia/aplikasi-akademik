@@ -288,9 +288,11 @@
 
                                                                                         <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Ketua :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">asdasdasd</span> </div>
 
+                                                                                        <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Dosen Penguji :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.dosenPenguji.karyawan.namaKaryawan}">asdasdasd</span></div>
+
                                                                                         <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.note.dosen.karyawan.namaKaryawan}">asdasdasd</span> </div>
 
-                                                                                        <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Dosen Penguji :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.dosenPenguji.karyawan.namaKaryawan}">asdasdasd</span></div>
+                                                                                        <div class="my-2" th:if="${data .note.mahasiswa.idProdi.idJenjang.id == '02'}"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Pembimbing 2 :</span> <span class="text-600 text-110 text-blue align-middle" th:text="${data.note.dosen2.karyawan.namaKaryawan}">asdasdasd</span> </div>
 
                                                                                         <div th:if="${'NONAKTIF' == data.publish}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-warning badge-pill px-25">Belum Publish</span></div>
                                                                                         <div th:if="${'AKTIF' == data.publish && data.nilai >= 70}" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Status:</span> <span class="badge badge-success badge-pill px-25">Lulus</span></div>

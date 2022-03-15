@@ -205,9 +205,10 @@ public class GraduationController {
 
         Object[] metolit = krsDetailDao.validasiMetolit(mahasiswa);
         Object[] magang = krsDetailDao.validasiMagang(mahasiswa);
+        model.addAttribute("note", new Note());
 
-        if (mahasiswa.getIdProdi().getIdJenjang().equals("01") || mahasiswa.getIdProdi().getIdJenjang().equals("03")){
-            if (id == null || id.isEmpty()) {
+        if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+            if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
                 if (magang == null && metolit == null){
                     return "redirect:alert";
                 }else {
