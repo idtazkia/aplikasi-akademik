@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
+import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.TugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.study.Kartu;
@@ -67,6 +68,12 @@ public class ReportMahasiswaController {
 
     @Autowired
     private NilaiJenisTagihanDao nilaiJenisTagihanDao;
+
+    @Autowired
+    JadwalDao jadwalDao;
+
+    @Autowired
+    DosenDao dosenDao;
 
     @Autowired
     private JenisTagihanDao jenisTagihanDao;
@@ -176,18 +183,12 @@ public class ReportMahasiswaController {
         model.addAttribute("mahasiswa", mahasiswa);
 
         List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
-        EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
-        EdomQuestion edomQuestion2 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
-        EdomQuestion edomQuestion3 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
-        EdomQuestion edomQuestion4 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
-        EdomQuestion edomQuestion5 = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
 
-        model.addAttribute("detail", krsDetail);
-        model.addAttribute("question1", edomQuestion);
-        model.addAttribute("question2", edomQuestion2);
-        model.addAttribute("question3", edomQuestion3);
-        model.addAttribute("question4", edomQuestion4);
-        model.addAttribute("question5", edomQuestion5);
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,tahunAkademik);
+        List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
+
+        model.addAttribute("detail", detailEdoms);
+        model.addAttribute("question", listQuestion);
         model.addAttribute("tahun", tahunAkademik);
     }
 
@@ -198,129 +199,36 @@ public class ReportMahasiswaController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<KrsDetail> krsDetail = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF,StatusRecord.UNDONE);
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,tahunAkademik);
+        List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
 
-
-        for(KrsDetail daftarEdom : krsDetail) {
-            String pertanyaan1 = request.getParameter(daftarEdom.getId() + "1");
-            String pertanyaan2 = request.getParameter(daftarEdom.getId() + "2");
-            String pertanyaan3 = request.getParameter(daftarEdom.getId() + "3");
-            String pertanyaan4 = request.getParameter(daftarEdom.getId() + "4");
-            String pertanyaan5 = request.getParameter(daftarEdom.getId() + "5");
-
-            if (pertanyaan1 == null){
-                daftarEdom.setE1(Integer.valueOf("3"));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
-                EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
-                edomMahasiswa.setEdomQuestion(edomQuestion);
-                edomMahasiswa.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa.setKrsDetail(daftarEdom);
-                edomMahasiswa.setNilai(3);
-                edomMahasiswa.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa);
-            }else {
-                daftarEdom.setE1(Integer.valueOf(pertanyaan1));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,1,tahunAkademik);
-                EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
-                edomMahasiswa.setEdomQuestion(edomQuestion);
-                edomMahasiswa.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa.setKrsDetail(daftarEdom);
-                edomMahasiswa.setNilai(Integer.valueOf(pertanyaan1));
-                edomMahasiswa.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa);
+        for (DetailEdom edom : detailEdoms){
+            for (EdomQuestion question : listQuestion){
+                String pertanyaan1 = request.getParameter(edom.getKrs()+"-"+edom.getDosen()+"-"+question.getNomor());
+                KrsDetail krsDetail = krsDetailDao.findById(edom.getKrs()).get();
+                if (pertanyaan1 == null){
+                    EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
+                    edomMahasiswa.setEdomQuestion(question);
+                    edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
+                    edomMahasiswa.setKrsDetail(krsDetail);
+                    edomMahasiswa.setNilai(3);
+                    edomMahasiswa.setTahunAkademik(tahunAkademik);
+                    edomMahasiswa.setDosen(dosenDao.findById(edom.getDosen()).get());
+                    edomMahasiswaDao.save(edomMahasiswa);
+                }else {
+                    EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
+                    edomMahasiswa.setEdomQuestion(question);
+                    edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
+                    edomMahasiswa.setKrsDetail(krsDetail);
+                    edomMahasiswa.setNilai(Integer.valueOf(pertanyaan1));
+                    edomMahasiswa.setTahunAkademik(tahunAkademik);
+                    edomMahasiswa.setDosen(dosenDao.findById(edom.getDosen()).get());
+                    edomMahasiswaDao.save(edomMahasiswa);
+                }
+                if (krsDetail.getStatusEdom() == StatusRecord.UNDONE) {
+                    krsDetail.setStatusEdom(StatusRecord.DONE);
+                }
             }
-
-            if (pertanyaan2 == null){
-                daftarEdom.setE2(Integer.valueOf("3"));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
-                EdomMahasiswa edomMahasiswa2 = new EdomMahasiswa();
-                edomMahasiswa2.setEdomQuestion(edomQuestion);
-                edomMahasiswa2.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa2.setKrsDetail(daftarEdom);
-                edomMahasiswa2.setNilai(3);
-                edomMahasiswa2.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa2);
-            }else {
-                daftarEdom.setE2(Integer.valueOf(pertanyaan2));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,2,tahunAkademik);
-                EdomMahasiswa edomMahasiswa2 = new EdomMahasiswa();
-                edomMahasiswa2.setEdomQuestion(edomQuestion);
-                edomMahasiswa2.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa2.setKrsDetail(daftarEdom);
-                edomMahasiswa2.setNilai(Integer.valueOf(pertanyaan2));
-                edomMahasiswa2.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa2);
-            }
-
-            if (pertanyaan3 == null){
-                daftarEdom.setE3(Integer.valueOf("3"));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
-                EdomMahasiswa edomMahasiswa3 = new EdomMahasiswa();
-                edomMahasiswa3.setEdomQuestion(edomQuestion);
-                edomMahasiswa3.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa3.setKrsDetail(daftarEdom);
-                edomMahasiswa3.setNilai(3);
-                edomMahasiswa3.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa3);
-            }else {
-                daftarEdom.setE3(Integer.valueOf(pertanyaan3));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,3,tahunAkademik);
-                EdomMahasiswa edomMahasiswa3 = new EdomMahasiswa();
-                edomMahasiswa3.setEdomQuestion(edomQuestion);
-                edomMahasiswa3.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa3.setKrsDetail(daftarEdom);
-                edomMahasiswa3.setNilai(Integer.valueOf(pertanyaan3));
-                edomMahasiswa3.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa3);
-            }
-
-            if (pertanyaan4 == null){
-                daftarEdom.setE4(Integer.valueOf("3"));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
-                EdomMahasiswa edomMahasiswa4 = new EdomMahasiswa();
-                edomMahasiswa4.setEdomQuestion(edomQuestion);
-                edomMahasiswa4.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa4.setKrsDetail(daftarEdom);
-                edomMahasiswa4.setNilai(3);
-                edomMahasiswa4.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa4);
-            }else {
-                daftarEdom.setE4(Integer.valueOf(pertanyaan4));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,4,tahunAkademik);
-                EdomMahasiswa edomMahasiswa4 = new EdomMahasiswa();
-                edomMahasiswa4.setEdomQuestion(edomQuestion);
-                edomMahasiswa4.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa4.setKrsDetail(daftarEdom);
-                edomMahasiswa4.setNilai(Integer.valueOf(pertanyaan4));
-                edomMahasiswa4.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa4);
-            }
-
-            if (pertanyaan5 == null){
-                daftarEdom.setE5(Integer.valueOf("3"));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
-                EdomMahasiswa edomMahasiswa5 = new EdomMahasiswa();
-                edomMahasiswa5.setEdomQuestion(edomQuestion);
-                edomMahasiswa5.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa5.setKrsDetail(daftarEdom);
-                edomMahasiswa5.setNilai(3);
-                edomMahasiswa5.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa5);
-            }else {
-                daftarEdom.setE5(Integer.valueOf(pertanyaan5));
-                EdomQuestion edomQuestion = edomQuestionDao.findByStatusAndNomorAndTahunAkademik(StatusRecord.AKTIF,5,tahunAkademik);
-                EdomMahasiswa edomMahasiswa5 = new EdomMahasiswa();
-                edomMahasiswa5.setEdomQuestion(edomQuestion);
-                edomMahasiswa5.setJadwal(daftarEdom.getJadwal());
-                edomMahasiswa5.setKrsDetail(daftarEdom);
-                edomMahasiswa5.setNilai(Integer.valueOf(pertanyaan5));
-                edomMahasiswa5.setTahunAkademik(tahunAkademik);
-                edomMahasiswaDao.save(edomMahasiswa5);
-            }
-            daftarEdom.setStatusEdom(StatusRecord.DONE);
-            krsDetailDao.save(daftarEdom);
-
-
         }
 
         return "redirect:khs";

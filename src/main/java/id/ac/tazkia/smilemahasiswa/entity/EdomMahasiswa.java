@@ -33,6 +33,10 @@ public class EdomMahasiswa {
     @JoinColumn(name = "id_edom_question")
     private EdomQuestion edomQuestion;
 
+    @ManyToOne
+    @JoinColumn(name = "id_dosen")
+    private Dosen dosen;
+
     @NotNull
     private Integer nilai;
 
