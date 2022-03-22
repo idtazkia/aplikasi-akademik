@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class GraduationController {
@@ -92,6 +93,9 @@ public class GraduationController {
 
     @Autowired
     private SeminarDao seminarDao;
+
+    @Autowired
+    private JenjangDao jenjangDao;
 
     @Autowired private ScoreService scoreService;
 
@@ -1415,8 +1419,16 @@ public class GraduationController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
         if(tahunAkademik != null){
+            List<Seminar> seminarS1 = seminarDao.cariSeminar(dosen,dosen,dosen,dosen,tahunAkademik);
+            List<Seminar> seminarPasca = seminarDao.cariSeminarPasca(dosen,jenjangDao.findById("02").get(),tahunAkademik);
+            List<Seminar> daftarSeminar = new ArrayList<>();
+            daftarSeminar.addAll(seminarS1);
+            daftarSeminar.addAll(seminarPasca);
+
             model.addAttribute("akademik", tahunAkademik);
-            model.addAttribute("list", seminarDao.cariSeminar(dosen,dosen,dosen,tahunAkademik));
+            model.addAttribute("list", daftarSeminar.stream()
+                    .distinct()
+                    .collect(Collectors.toList()));
             model.addAttribute("dosen", dosen);
         }
     }

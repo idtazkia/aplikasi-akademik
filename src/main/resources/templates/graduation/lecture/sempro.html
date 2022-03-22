@@ -86,7 +86,6 @@
                                         <th scope="col">NIM</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Seminar</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -105,30 +104,61 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <b>Title</b>
+                                                        <b>Judul</b>
                                                         <p th:text="${data.note.judul}">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-                                                        <b>Title in English</b>
+                                                        <b>Judul Inggris</b>
                                                         <p th:text="${data.note.judulInggris}">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
                                                         <hr>
-                                                        <center >
-                                                            <b>Main Examiner</b>
-                                                            <center>
-                                                                <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
-                                                            </center>
-                                                        </center>
-
-                                                        <div class="row col-md-12">
+                                                        <div class="row col-md-12" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
                                                             <div class="col-md-6">
                                                                 <center >
-                                                                    <b>Co-examiner 2</b>
+                                                                    <b>Ketua Penguji</b>
+                                                                    <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Dosen Penguji</b>
+                                                                    <p th:text="${data.dosenPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row col-md-12" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Pembimbing 1</b>
                                                                     <p th:text="${data.note.dosen.karyawan.namaKaryawan}">Abu Hanifah 1</p>
                                                                 </center>
                                                             </div>
 
                                                             <div class="col-md-6">
                                                                 <center >
-                                                                    <b>Co-examiner 1</b>
+                                                                    <b>Pembimbing 2</b>
+                                                                    <p th:text="${data.note.dosen2.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+                                                        </div>
+
+                                                        <center th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                            <b>Ketua Penguji</b>
+                                                            <center>
+                                                                <p th:text="${data.ketuaPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                            </center>
+                                                        </center>
+
+                                                        <div class="row col-md-12" th:if="${data.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Pembimbing 1</b>
                                                                     <p th:text="${data.dosenPenguji.karyawan.namaKaryawan}">Abu Hanifah 1</p>
+                                                                </center>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <center >
+                                                                    <b>Pembimbing 2</b>
+                                                                    <p th:text="${data.note.dosen.karyawan.namaKaryawan}">Abu Hanifah 1</p>
                                                                 </center>
                                                             </div>
                                                         </div>
@@ -136,21 +166,21 @@
                                                         <span th:if="${data.statusSempro != data.statusSempro.APPROVED}">
                                                         <div class="text-muted text-center mt-2 mb-3"><small>Schedule</small></div>
                                                         <center >
-                                                            <b>Room</b>
+                                                            <b>Ruangan</b>
                                                             <p th:text="${data.ruangan.namaRuangan}">Abu Hanifah 1</p>
                                                         </center>
                                                         <br>
                                                         <div class="row col-md-12">
                                                             <div class="col-md-6">
                                                                 <center >
-                                                                    <b>Date</b>
+                                                                    <b>Hari</b>
                                                                     <p th:text="${data.tanggalUjian}">Abu Hanifah 1</p>
                                                                 </center>
                                                             </div>
 
                                                             <div class="col-md-6">
                                                                 <center >
-                                                                    <b>Time</b>
+                                                                    <b>Jam</b>
                                                                     <p th:text="${data.jamMulai + ' - ' + data.jamSelesai}">Abu Hanifah 1</p>
                                                                 </center>
                                                             </div>
@@ -162,14 +192,14 @@
                                                             <div class="row" th:if="${data.status == data.status.APPROVED}">
                                                                 <div class="col-md-4">
                                                                     <center>
-                                                                        <b>Main Examiner </b>
+                                                                        <b>Ketua Penguji </b>
                                                                         <p th:if="${data.note.jenis == data.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((data.ka * 0.25) + (data.kb * 0.15) + (data.kc * 0.2) + (data.kd * 0.1) + (data.ke * 0.15) + (data.kf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                         <p th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((data.ka * 0.3) + (data.kb * 0.25) + (data.kc * 0.2) + (data.kd * 0.15) + (data.ke * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                     </center>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <center>
-                                                                        <b>Co-examiner 1</b>
+                                                                        <b>Dosen Penguji </b>
                                                                          <p th:if="${data.note.jenis == data.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((data.ua * 0.25) + (data.ub * 0.15) + (data.uc * 0.2) + (data.ud * 0.1) + (data.ue * 0.15) + (data.uf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                          <p th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((data.ua * 0.3) + (data.ub * 0.25) + (data.uc * 0.2) + (data.ud * 0.15) + (data.ue * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
 
@@ -177,7 +207,7 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <center>
-                                                                        <b>Co-examiner 2</b>
+                                                                        <b>Pembimbing </b>
                                                                         <p th:if="${data.note.jenis == data.note.jenis.SKRIPSI}" th:text="${#numbers.formatDecimal((data.pa * 0.25) + (data.pb * 0.15) + (data.pc * 0.2) + (data.pd * 0.1) + (data.pe * 0.15) + (data.pf * 0.15), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                         <p th:if="${data.note.jenis == data.note.jenis.STUDI_KELAYAKAN}" th:text="${#numbers.formatDecimal((data.pa * 0.3) + (data.pb * 0.25) + (data.pc * 0.2) + (data.pd * 0.15) + (data.pe * 0.1), 0, 'COMMA', 2, 'POINT')}">2019-01-01</p>
                                                                     </center>
@@ -193,22 +223,15 @@
                                             </div>
                                         </div>
                                         <span th:if="${data.publish != 'AKTIF'}">
-                                            <td>
-                                                <button class="btn btn-success btn-sm" th:if="${data.status == data.status.APPROVED}" th:text="${data.status}">Approved</button>
-                                                <button class="btn btn-warning btn-sm" th:if="${data.status == data.status.WAITING}" th:text="${data.status}">Waiting</button>
-
-                                                <button class="btn btn-danger btn-sm" th:if="${data.status == data.status.REJECTED}" th:text="${data.status}">Rejected</button>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-success btn-sm" th:if="${data.statusSempro == data.statusSempro.APPROVED}" th:text="${data.statusSempro}">Approved</button>
-                                                <button class="btn btn-warning btn-sm" th:if="${data.statusSempro == data.statusSempro.WAITING}" th:text="${data.statusSempro}">Waiting</button>
-
-                                                <button class="btn btn-danger btn-sm" th:if="${data.statusSempro == data.statusSempro.REJECTED}" th:text="${data.statusSempro}">Rejected</button>
+                                            <td style="text-align:center;">
+                                                <button style="width:100%;"  class="btn btn-primary btn-sm" th:if="${data.statusSempro == data.statusSempro.APPROVED}">Menunggu Publish</button>
+                                                <button style="width:100%;"  class="btn btn-warning btn-sm" th:if="${data.statusSempro == data.statusSempro.WAITING}">Menunggu Penilaian Lengkap</button>
+                                                <button style="width:100%;"  class="btn btn-danger btn-sm" th:if="${data.statusSempro == data.statusSempro.REJECTED}">Ditolak</button>
                                             </td>
                                         </span>
 
-                                        <td colspan="2" th:if="${data.publish == 'AKTIF'}" tyle="text-align:center;" >
-                                            <button class="btn btn-success btn-sm" style="width:100%;" >Published</button>
+                                        <td  th:if="${data.publish == 'AKTIF'}" style="text-align:center;" >
+                                            <button class="btn btn-success btn-sm" style="width:100%;" >Sudah dipublish</button>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-outline-primary btn-sm" th:data-target="${'#modal-default' + data.id}" data-toggle="modal" >
