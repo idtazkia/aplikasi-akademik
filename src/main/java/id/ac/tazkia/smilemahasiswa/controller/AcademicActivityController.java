@@ -1376,7 +1376,7 @@ public class  AcademicActivityController {
                 kd.setNilaiPresensi(BigDecimal.ZERO);
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
-                kd.setFinalisasi("N");
+                kd.setFinalisasi("FINAL");
                 kd.setNilaiAkhir(grade1.getBawah());
                 kd.setBobot(grade1.getBobot());
                 kd.setGrade(grade1.getNama());
@@ -1420,7 +1420,7 @@ public class  AcademicActivityController {
                 kd.setNilaiPresensi(BigDecimal.ZERO);
                 kd.setNilaiUts(BigDecimal.ZERO);
                 kd.setNilaiTugas(BigDecimal.ZERO);
-                kd.setFinalisasi("N");
+                kd.setFinalisasi("FINAL");
                 kd.setNilaiAkhir(grade1.getBawah());
                 kd.setBobot(grade1.getBobot());
                 kd.setGrade(grade1.getNama());
