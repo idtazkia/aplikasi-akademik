@@ -26,4 +26,10 @@ public class SeminarDto {
     private BigDecimal pd;
     private BigDecimal pe;
     private BigDecimal pf;
+    private BigDecimal pa2;
+    private BigDecimal pb2;
+    private BigDecimal pc2;
+    private BigDecimal pd2;
+    private BigDecimal pe2;
+    private BigDecimal pf2;
 }

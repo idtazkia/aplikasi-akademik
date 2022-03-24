@@ -58,6 +58,26 @@ public class SidangService {
 
         }
 
+        if (seminarDto.getJenis() == StatusRecord.TESIS){
+            seminar.setPa2(seminarDto.getPa2());
+            seminar.setPb2(seminarDto.getPb2());
+            seminar.setPc2(seminarDto.getPc2());
+            seminar.setPd2(seminarDto.getPd2());
+            seminar.setPe2(seminarDto.getPe2());
+            BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+            BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+            BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+            seminar.setNilaiA(nilaiA);
+            seminar.setNilaiB(nilaiB);
+            seminar.setNilaiC(nilaiC);
+            seminar.setNilaiD(nilaiD);
+            seminar.setNilaiE(nilaiE);
+            seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+
+        }
+
         seminar.setPublish(StatusRecord.AKTIF.toString());
         if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
             seminar.setStatusSempro(StatusApprove.FAILED);
@@ -271,9 +291,9 @@ public class SidangService {
     }
 
     private void akumulasiNilaiSempro(Seminar seminar){
-        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
-        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
-        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
+        BigDecimal nilaiA = seminar.getKa().add(seminar.getUa()).add(seminar.getPa()).add(seminar.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = seminar.getKb().add(seminar.getUb()).add(seminar.getPb()).add(seminar.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = seminar.getKc().add(seminar.getUc()).add(seminar.getPc()).add(seminar.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
         BigDecimal nilaiD = seminar.getKd().add(seminar.getUd()).add(seminar.getPd()).add(seminar.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.1));
         BigDecimal nilaiE = seminar.getKe().add(seminar.getUe()).add(seminar.getPe()).add(seminar.getPe2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         seminar.setNilaiA(nilaiA);
