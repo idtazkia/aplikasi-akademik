@@ -3,7 +3,7 @@ package id.ac.tazkia.smilemahasiswa;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.utility.EntityAuditorAware;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
