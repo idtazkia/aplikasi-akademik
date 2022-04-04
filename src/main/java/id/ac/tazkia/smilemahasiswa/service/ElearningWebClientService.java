@@ -498,7 +498,7 @@ public class ElearningWebClientService {
 
                                         if (jmlData.compareTo(Long.valueOf(1)) > 0) {
                                             Object idKrsDetail = krsDetailDao.getKrsDetailId(j, mahasiswa);
-                                            List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
+                                            List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNot(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
                                             for (KrsDetail thekrsDetail : cariDouble) {
                                                 thekrsDetail.setStatus(StatusRecord.HAPUS);
                                                 krsDetailDao.save(thekrsDetail);

@@ -10,6 +10,7 @@ import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -171,8 +172,12 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "where i.status = 'AKTIF'",nativeQuery = true)
     List<DetailJadwalIntDto> getDetailJadwal();
 
-    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+//    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
+//
+//    Jadwal findByTahunAkademikAndDosenAndHariAndRuanganAndSesiAndStatus(TahunAkademik tahunAkademik, Dosen dosen, Hari hari, Ruangan ruangan, String sesi, StatusRecord statusRecord);
 
-    Jadwal findByTahunAkademikAndDosenAndHariAndRuanganAndSesiAndStatus(TahunAkademik tahunAkademik, Dosen dosen, Hari hari, Ruangan ruangan, String sesi, StatusRecord statusRecord);
+    @Modifying
+    @Query(value = "update jadwal set final_status='FINAL' where id_tahun_akademik=?1 and status='AKTIF' and id_hari is not null and jam_mulai is not null and jam_selesai is not null", nativeQuery = true)
+    void updateFinalStatus(String idTahunAkademik);
 
 }

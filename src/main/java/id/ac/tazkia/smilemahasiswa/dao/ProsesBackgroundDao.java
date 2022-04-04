@@ -16,6 +16,6 @@ public interface ProsesBackgroundDao extends PagingAndSortingRepository<ProsesBa
 
     ProsesBackground findFirstByStatusOrderByTanggalInputDesc(StatusRecord statusRecord);
 
-    Page<ProsesBackground> findByStatusNotInOrderByTanggalInputDesc(StatusRecord statusRecord, Pageable page);
+    Page<ProsesBackground> findByStatusNotInOrderByTanggalInputDesc(List<StatusRecord> asList, Pageable page);
 
 }

@@ -228,7 +228,7 @@ public class ElearningController {
 
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listProses", prosesBackgroundDao.findByStatusNotInOrderByTanggalInputDesc(StatusRecord.HAPUS, page));
+        model.addAttribute("listProses", prosesBackgroundDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
 
     }
 
@@ -1313,7 +1313,7 @@ public class ElearningController {
                                 if (jmlData.compareTo(Long.valueOf(1)) > 0) {
                                     Object idKrsDetail = krsDetailDao.getKrsDetailId(jadwal1, mahasiswa);
                                     System.out.println("idKrsDetailOjject  == "  + idKrsDetail);
-                                    List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord.AKTIF, jadwal1, mahasiswa, idKrsDetail);
+                                    List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNot(StatusRecord.AKTIF, jadwal1, mahasiswa, idKrsDetail);
                                     System.out.println("caridouble  == "  + cariDouble);
 
                                     if (cariDouble != null) {

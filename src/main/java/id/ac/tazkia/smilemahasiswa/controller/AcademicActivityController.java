@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -254,7 +255,7 @@ public class  AcademicActivityController {
     @GetMapping("/api/prodikurikulum")
     @ResponseBody
     public List<Kurikulum> prodiList(@RequestParam(required = false) Prodi prodi){
-        List<Kurikulum> kurikulum = kurikulumDao.findByProdiAndStatusNotIn(prodi, StatusRecord.HAPUS);
+        List<Kurikulum> kurikulum = kurikulumDao.findByProdiAndStatusNotIn(prodi, Arrays.asList(StatusRecord.HAPUS));
 
         return kurikulum;
 
@@ -360,10 +361,40 @@ public class  AcademicActivityController {
     @GetMapping("/academic/year/form")
     public void academicForm(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("tahunAkademik", new TahunAkademik());
+        TahunAkademik tahunSebelum = tahunAkademikDao.findTopByStatusNotInOrderByKodeTahunAkademikDesc(Arrays.asList(StatusRecord.HAPUS));
+
+        String kode;
+        if (tahunSebelum.getJenis() == StatusRecord.PENDEK) {
+            Integer ta = new Integer(tahunSebelum.getTahun());
+            Integer t = ta + 1;
+            kode = t + "1";
+        }else{
+            Integer kd = new Integer(tahunSebelum.getKodeTahunAkademik());
+            Integer k = kd + 1;
+            kode = k.toString();
+        }
+
+        Integer tahun = new Integer(kode.substring(0,4));
+        Integer next = tahun+1;
+        String kodeJenis = kode.substring(4,5);
+        String jenis = null;
+        if (kodeJenis.equals("1")){
+            jenis = "Ganjil";
+        } else if (kodeJenis.equals("2")) {
+            jenis = "Genap";
+        }else if (kodeJenis.equals("3")){
+            jenis = "Pendek";
+        }
+        String nama = tahun + "/" + next + " Semester " + jenis;
+
+        model.addAttribute("kode", kode);
+        model.addAttribute("nama", nama);
 
         if (id != null && !id.isEmpty()) {
             model.addAttribute("stringId", id);
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
+            model.addAttribute("kode", tahunAkademik.getKodeTahunAkademik());
+            model.addAttribute("nama", tahunAkademik.getNamaTahunAkademik());
             if (tahunAkademik != null) {
                 model.addAttribute("tahunAkademik", tahunAkademik);
             }
@@ -374,25 +405,25 @@ public class  AcademicActivityController {
     public String prosesForm(@RequestParam String kodeTahunAkademik,
                              @RequestParam String tanggalMulai, @RequestParam String tanggalMulaiKrs, @RequestParam String tanggalMulaiKuliah,
                              @RequestParam String tanggalMulaiUts, @RequestParam String tanggalMulaiUas,
-                             @RequestParam String tanggalMulaiNilai, @RequestParam StatusRecord jenis, @RequestParam String namaTahunAkademik,
+                             @RequestParam String tanggalMulaiNilai, @RequestParam String namaTahunAkademik,
                              @RequestParam String tanggalSelesai, @RequestParam String tanggalSelesaiKrs,
                              @RequestParam String tanggalSelesaiKuliah, @RequestParam String tanggalSelesaiUts,
                              @RequestParam String tanggalSelesaiUas, @RequestParam String tanggalSelesaiNilai,
-                             @RequestParam String tahun, @RequestParam StatusRecord status, @RequestParam(required = false) String id){
+                             @RequestParam StatusRecord status, @RequestParam(required = false) String id){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
         if (id != null){
             TahunAkademik tahunAkademik = tahunAkademikDao.findById(id).get();
-            tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
+            tahunAkademik.setKodeTahunAkademik(tahunAkademik.getKodeTahunAkademik());
             tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
             tahunAkademik.setTanggalMulaiKrs(LocalDate.parse(tanggalMulaiKrs, formatter));
             tahunAkademik.setTanggalMulaiKuliah(LocalDate.parse(tanggalMulaiKuliah, formatter));
             tahunAkademik.setTanggalMulaiUts(LocalDate.parse(tanggalMulaiUts, formatter));
             tahunAkademik.setTanggalMulaiUas(LocalDate.parse(tanggalMulaiUas, formatter));
             tahunAkademik.setTanggalMulaiNilai(LocalDate.parse(tanggalMulaiNilai, formatter));
-            tahunAkademik.setJenis(jenis);
+            tahunAkademik.setJenis(tahunAkademik.getJenis());
             tahunAkademik.setNamaTahunAkademik(namaTahunAkademik);
             tahunAkademik.setTanggalSelesai(LocalDate.parse(tanggalSelesai, formatter));
             tahunAkademik.setTanggalSelesaiKrs(LocalDate.parse(tanggalSelesaiKrs, formatter));
@@ -400,7 +431,7 @@ public class  AcademicActivityController {
             tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiUas, formatter));
             tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
-            tahunAkademik.setTahun(tahun);
+            tahunAkademik.setTahun(tahunAkademik.getTahun());
             tahunAkademik.setStatus(status);
             tahunAkademikDao.save(tahunAkademik);
 
@@ -452,6 +483,16 @@ public class  AcademicActivityController {
 
             List<EdomQuestion> edomQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
 
+            String tahun = kodeTahunAkademik.substring(0,4);
+            String kode = kodeTahunAkademik.substring(4,5);
+            StatusRecord jenis = null;
+            if (kode.equals("1")){
+                jenis = StatusRecord.GANJIL;
+            } else if (kode.equals("2")) {
+                jenis = StatusRecord.GENAP;
+            }else if (kode.equals("3")){
+                jenis = StatusRecord.PENDEK;
+            }
 
             tahunAkademik.setKodeTahunAkademik(kodeTahunAkademik);
             tahunAkademik.setTanggalMulai(LocalDate.parse(tanggalMulai, formatter));
@@ -1466,6 +1507,19 @@ public class  AcademicActivityController {
         konversiDao.save(konversi);
 
         return "redirect:list?nim="+krsDetail.getMahasiswa().getNim();
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 59 23 * * *", zone = "Asia/Jakarta")
+    public void setFinal(){
+
+        TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (LocalDate.now().compareTo(tahun.getTanggalSelesaiNilai().plusDays(2)) == 0){
+            krsDetailDao.updateFinalisasi(tahun.getId());
+            jadwalDao.updateFinalStatus(tahun.getId());
+            System.out.println("TerUpdate final.");
+        }
+
     }
 
 

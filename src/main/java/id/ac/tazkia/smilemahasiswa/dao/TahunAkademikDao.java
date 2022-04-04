@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkademik, String> {
 
@@ -51,6 +52,6 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
             "order by kode_tahun_akademik desc", nativeQuery = true)
     List<TahunAkademikIntDto> apiTahunAkademik();
 
-
+    TahunAkademik findTopByStatusNotInOrderByKodeTahunAkademikDesc(List<StatusRecord> asList);
 
 }

@@ -18,7 +18,7 @@ public interface KurikulumDao extends PagingAndSortingRepository<Kurikulum, Stri
     List<Kurikulum> findByStatusNotIn(List<StatusRecord> asList);
 
     List<Kurikulum> findByProdiAndStatusNotInAndIdNotIn(Prodi prodi, List<StatusRecord> asList, List<String> id);
-    List<Kurikulum> findByProdiAndStatusNotIn(Prodi prodi, StatusRecord statusRecord);
+    List<Kurikulum> findByProdiAndStatusNotIn(Prodi prodi, List<StatusRecord> asList);
 
     List<Kurikulum> findByStatusNotInAndProdiAndNamaKurikulumContainingIgnoreCaseOrderByNamaKurikulum(List<StatusRecord> asList, Prodi prodi, String search);
 

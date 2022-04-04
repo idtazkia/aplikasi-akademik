@@ -59,13 +59,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Kode Tahun Akademik</label>
-                                        <input type="text" class="form-control" name="kodeTahunAkademik" th:field="*{kodeTahunAkademik}" placeholder="ex : 12121">
+                                        <input type="text" class="form-control" name="kodeTahunAkademik" readonly th:value="${kode}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Nama Tahun Akademik</label>
-                                        <input type="text" name="namaTahunAkademik" th:field="*{namaTahunAkademik}" placeholder="ex : 2019/2020 Semester Genap" class="form-control" />
+                                        <input type="text" name="namaTahunAkademik" th:value="${nama}" readonly class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -153,25 +153,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Jenis</label>
-                                        <select name="jenis" th:field="*{jenis}" class="form-control">
-                                            <option value=""></option>
-                                            <option value="PENDEK">PENDEK</option>
-                                            <option value="GANJIL">GANJIL</option>
-                                            <option value="GENAP">GENAP</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tahun</label>
-                                        <input type="text" maxlength="4" max="4" name="tahun" th:field="*{tahun}" placeholder="ex : 2019" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label>Jenis</label>-->
+<!--                                        <select name="jenis" th:field="*{jenis}" class="form-control">-->
+<!--                                            <option value=""></option>-->
+<!--                                            <option value="PENDEK">PENDEK</option>-->
+<!--                                            <option value="GANJIL">GANJIL</option>-->
+<!--                                            <option value="GENAP">GENAP</option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label>Tahun</label>-->
+<!--                                        <input type="text" maxlength="4" max="4" name="tahun" th:field="*{tahun}" placeholder="ex : 2019" class="form-control" />-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <input th:if="${stringId != null}" type="hidden" name="id" th:field="*{id}">
                             <input type="hidden" name="status" th:field="*{status}">
 

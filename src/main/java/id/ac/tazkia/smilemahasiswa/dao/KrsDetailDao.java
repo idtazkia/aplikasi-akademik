@@ -569,7 +569,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "update krs_detail set status = 'HAPUS' where id_jadwal = ?1 and id_mahasiswa = ?2 and status = 'AKTIF' and id not in(?3)", nativeQuery = true)
     void updateKrsDetail(Jadwal jadwal, Mahasiswa mahasiswa, String id);
 
-    List<KrsDetail> findByStatusAndJadwalAndMahasiswaAndIdNotIn(StatusRecord statusRecord, Jadwal jadwal, Mahasiswa mahasiswa, Object Id);
+    List<KrsDetail> findByStatusAndJadwalAndMahasiswaAndIdNot(StatusRecord statusRecord, Jadwal jadwal, Mahasiswa mahasiswa, Object Id);
 
     Long countByJadwalIdAndKrsAndStatusAndTahunAkademik(String jadwal, Krs krs , StatusRecord statusRecord, TahunAkademik tahunAkademik);
 
@@ -743,4 +743,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     @Query(value = "select count(*) from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id where id_mahasiswa = ?1 and mk.jumlah_sks not in (6,0) and finalisasi = 'FINAL' and kd.status = 'AKTIF' and grade not in ('A','A-','B','B+')", nativeQuery = true)
     Long checkGrade(Mahasiswa mahasiswa);
+
+    @Modifying
+    @Query(value = "update krs_detail set finalisasi='FINAL' where id_tahun_akademik=?1 and status='AKTIF'", nativeQuery = true)
+    void updateFinalisasi(String idTahunAkademik);
+
 }
