@@ -16,6 +16,6 @@ public interface SoalDao extends PagingAndSortingRepository<Soal, String> {
     Soal findByJadwalAndStatusAndStatusApprove(Jadwal jadwal, StatusRecord aktif, StatusApprove approved);
     Soal findByJadwalAndStatusSoalAndStatusAndStatusApproveIn(Jadwal jadwal, StatusRecord tipe, StatusRecord statusRecord,List<StatusApprove> statusApproves);
 
-    List<Soal> findByStatusAndStatusSoalAndDosen(StatusRecord statusRecord, StatusRecord uas, Dosen dosen);
+    List<Soal> findTopByStatusAndStatusSoalAndDosenOrderByTanggalUploadDesc(StatusRecord statusRecord, StatusRecord uas, Dosen dosen);
 
 }

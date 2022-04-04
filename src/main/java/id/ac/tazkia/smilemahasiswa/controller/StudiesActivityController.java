@@ -7553,8 +7553,8 @@ public class StudiesActivityController {
         model.addAttribute("listUts", listUts);
         model.addAttribute("listUas", listUas);
 
-        List<Soal> soalUts = soalDao.findByStatusAndStatusSoalAndDosen(StatusRecord.AKTIF, StatusRecord.UTS, dosen);
-        List<Soal> soalUas = soalDao.findByStatusAndStatusSoalAndDosen(StatusRecord.AKTIF, StatusRecord.UAS, dosen);
+        List<Soal> soalUts = soalDao.findTopByStatusAndStatusSoalAndDosenOrderByTanggalUploadDesc(StatusRecord.AKTIF, StatusRecord.UTS, dosen);
+        List<Soal> soalUas = soalDao.findTopByStatusAndStatusSoalAndDosenOrderByTanggalUploadDesc(StatusRecord.AKTIF, StatusRecord.UAS, dosen);
         model.addAttribute("soalUts", soalUts);
         model.addAttribute("soalUas", soalUas);
 
