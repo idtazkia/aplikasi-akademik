@@ -7569,8 +7569,6 @@ public class StudiesActivityController {
 
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
-//        Long totalSKS = krsDetailDao.totalSks(mahasiswa);
-//        BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
 
 //        file
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
@@ -7627,17 +7625,6 @@ public class StudiesActivityController {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
         workbook.setSheetName(workbook.getSheetIndex(sheet), mahasiswa.getNama());
-
-        /*sheet.addMergedRegion(CellRangeAddress.valueOf("A7:C7"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A8:C8"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A9:C9"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A10:C10"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A11:C11"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A12:C12"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A13:C13"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A14:C14"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A15:C15"));
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A16:C16"));*/
 
         Font manajemenFont = workbook.createFont();
         manajemenFont.setItalic(true);
@@ -8453,6 +8440,8 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(excellent,excellent,8,10));
         excellentRow.createCell(1).setCellValue("3,80-4,00");
         excellentRow.createCell(2).setCellValue("Pujian Tertinggi (Minimal B)");
+        excellentRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
+        excellentRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
         excellentRow.createCell(6).setCellValue("A");
         excellentRow.createCell(7).setCellValue("4");
         excellentRow.createCell(8).setCellValue("Baik Sekali");
@@ -8468,6 +8457,8 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(veryGood,veryGood,8,10));
         veryGoodRow.createCell(1).setCellValue("3,50-3,79");
         veryGoodRow.createCell(2).setCellValue("Pujian (Minimal B)");
+        veryGoodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
+        veryGoodRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
         veryGoodRow.createCell(6).setCellValue("A-");
         veryGoodRow.createCell(7).setCellValue("3,7");
         veryGoodRow.createCell(8).setCellValue("Baik Sekali");
@@ -8483,6 +8474,8 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(good,good,8,10));
         goodRow.createCell(1).setCellValue("3,00-3,49");
         goodRow.createCell(2).setCellValue("Sangat Memuaskan");
+        goodRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
+        goodRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
         goodRow.createCell(6).setCellValue("B+");
         goodRow.createCell(7).setCellValue("3,3");
         goodRow.createCell(8).setCellValue("Baik");
@@ -8498,6 +8491,8 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(satisfactory,satisfactory,8,10));
         satisfactoryRow.createCell(1).setCellValue("2,75-2,99");
         satisfactoryRow.createCell(2).setCellValue("Memuaskan");
+        satisfactoryRow.createCell(3).setCellStyle(styleDataPrestasiAkademik);
+        satisfactoryRow.createCell(4).setCellStyle(styleDataPrestasiAkademik);
         satisfactoryRow.createCell(6).setCellValue("B");
         satisfactoryRow.createCell(7).setCellValue("3");
         satisfactoryRow.createCell(8).setCellValue("Baik");
