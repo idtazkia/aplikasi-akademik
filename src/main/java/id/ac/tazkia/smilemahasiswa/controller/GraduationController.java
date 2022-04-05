@@ -199,7 +199,9 @@ public class GraduationController {
     }
 
     @GetMapping("/graduation/alert")
-    public void alert(){}
+    public void alert(@RequestParam(required = false) String matkul,Model model){
+        model.addAttribute("matkul", matkul);
+    }
 
     @GetMapping("/graduation/form")
     public String conceptNote(Model model, Authentication authentication, @RequestParam(required = false) String id) {
@@ -213,13 +215,17 @@ public class GraduationController {
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-                if (magang == null && metolit == null){
-                    return "redirect:alert";
+                System.out.println(magang.length);
+                System.out.println(metolit.length);
+                if (magang.length == 0){
+                    return "redirect:alert?matkul=Magang";
                 }else {
-
-                    model.addAttribute("note", new Note());
+                    if (metolit.length == 0) {
+                        return "redirect:alert?matkul=Metolit";
+                    } else {
+                        model.addAttribute("note", new Note());
                     return "graduation/form";
-
+                    }
                 }
             } else {
 
@@ -232,8 +238,8 @@ public class GraduationController {
 
         if (mahasiswa.getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
             if (id == null || id.isEmpty() || !StringUtils.hasText(id)) {
-                if (metolit == null){
-                    return "redirect:alert";
+                if (metolit.length == 0){
+                    return "redirect:alert?matkul=Metolit";
                 }else {
 
                     model.addAttribute("note", new Note());

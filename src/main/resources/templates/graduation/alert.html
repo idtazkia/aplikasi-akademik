@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>404 Page | Notika - Notika Admin Template</title>
+    <title>Validasi Konsep Note</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- favicon
@@ -109,7 +109,8 @@
     <div class="error-page-wrap bounceIn" style="border-radius: 10px; ">
         <i class="notika-icon notika-close" style="color: #d9534f;"></i>
         <h2>Konsep <span style="color: #d9534f;">Note</span></h2>
-        <p>Maaf Anda tidak bisa daftar konsep note, karena belum ambil matakuliah</p>
+        <p th:if="${matkul != null}" th:text="${'Maaf Anda tidak bisa daftar konsep note, karena belum menyelesaikan matakuliah ' + matkul}"> </p>
+        <p th:if="${matkul == null}" th:text="${'Maaf Anda tidak bisa daftar konsep note, karena belum menyelesaikan matakuliah 'Z}"> </p>
         <a th:href="@{/dashboard}" class="btn" style="background-color: #d9534f;">Kembali</a>
 
     </div>
