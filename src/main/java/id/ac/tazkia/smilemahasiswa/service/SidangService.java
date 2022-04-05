@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
+import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
 import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
 import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
@@ -21,6 +22,9 @@ public class SidangService {
 
     @Autowired
     private SeminarDao seminarDao;
+
+    @Autowired
+    private JenjangDao jenjangDao;
 
     @Autowired
     private EnableFitureDao enableFitureDao;
@@ -78,7 +82,7 @@ public class SidangService {
 
         }
 
-        seminar.setPublish(StatusRecord.AKTIF.toString());
+        /*seminar.setPublish(StatusRecord.AKTIF.toString());
         if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
             seminar.setStatusSempro(StatusApprove.FAILED);
             seminar.setStatus(StatusApprove.FAILED);
@@ -89,9 +93,29 @@ public class SidangService {
             }
         }else {
             seminar.setStatusSempro(StatusApprove.APPROVED);
-        }
+        }*/
         seminarDao.save(seminar);
         return seminar;
+    }
+
+    public Sidang updateSidangPasca(Sidang sidang,SeminarDto seminarDto){
+        BeanUtils.copyProperties(seminarDto,sidang);
+
+       sidang.setPa2(seminarDto.getPa2());
+       sidang.setPb2(seminarDto.getPb2());
+       sidang.setPc2(seminarDto.getPc2());
+       sidang.setPd2(seminarDto.getPd2());
+       BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+       BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+       BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+       BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+       sidang.setNilaiA(nilaiA);
+       sidang.setNilaiB(nilaiB);
+       sidang.setNilaiC(nilaiC);
+       sidang.setNilaiD(nilaiD);
+       sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
+        sidangDao.save(sidang);
+        return sidang;
     }
 
     public SidangDto getKetua(Sidang sidang){
@@ -185,6 +209,18 @@ public class SidangService {
         return sidangDto;
     }
 
+    public SidangDto getPembimbing2(Sidang sidang){
+        SidangDto sidangDto = new SidangDto();
+        sidangDto.setId(sidang.getId());
+        sidangDto.setKomentar(sidang.getKomentarPembimbing2());
+        sidangDto.setNilaiA(sidang.getPa2());
+        sidangDto.setNilaiB(sidang.getPb2());
+        sidangDto.setNilaiC(sidang.getPc2());
+        sidangDto.setNilaiD(sidang.getPd2());
+
+        return sidangDto;
+    }
+
     public void saveKetua(SidangDto sidangDto){
         Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
         sidang.setKomentarKetua(sidangDto.getKomentar());
@@ -195,6 +231,22 @@ public class SidangService {
         sidang.setKd(sidangDto.getNilaiD());
         sidangDao.save(sidang);
         akumulasiNilai(sidang);
+
+        System.out.println("berhasil");
+
+    }
+
+    public void saveKetuaPasca(SidangDto sidangDto){
+        Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
+        sidang.setKomentarKetua(sidangDto.getKomentar());
+        sidang.setBeritaAcara(sidangDto.getBeritaAcara());
+        sidang.setKa(sidangDto.getNilaiA());
+        sidang.setKb(sidangDto.getNilaiB());
+        sidang.setKc(sidangDto.getNilaiC());
+        sidang.setKd(sidangDto.getNilaiD());
+        sidangDao.save(sidang);
+        akumulasiNilai(sidang);
+
         System.out.println("berhasil");
 
     }
@@ -221,8 +273,18 @@ public class SidangService {
         sidang.setUb(sidangDto.getNilaiB());
         sidang.setUc(sidangDto.getNilaiC());
         sidang.setUd(sidangDto.getNilaiD());
-        sidangDao.save(sidang);
         akumulasiNilai(sidang);
+
+    }
+
+    public void savePengujiPasca(SidangDto sidangDto){
+        Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
+        sidang.setKomentarPenguji(sidangDto.getKomentar());
+        sidang.setUa(sidangDto.getNilaiA());
+        sidang.setUb(sidangDto.getNilaiB());
+        sidang.setUc(sidangDto.getNilaiC());
+        sidang.setUd(sidangDto.getNilaiD());
+        akumulasiNilaiPasca(sidang);
 
     }
 
@@ -277,11 +339,48 @@ public class SidangService {
 
     }
 
+    public void savePembimbingPasca(SidangDto sidangDto){
+        Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
+        sidang.setKomentarPembimbing(sidangDto.getKomentar());
+        sidang.setPa(sidangDto.getNilaiA());
+        sidang.setPb(sidangDto.getNilaiB());
+        sidang.setPc(sidangDto.getNilaiC());
+        sidang.setPd(sidangDto.getNilaiD());
+        sidangDao.save(sidang);
+        akumulasiNilaiPasca(sidang);
+
+    }
+
+    public void savePembimbing2(SidangDto sidangDto){
+        Sidang sidang = sidangDao.findById(sidangDto.getId()).get();
+        sidang.setKomentarPembimbing2(sidangDto.getKomentar());
+        sidang.setPa2(sidangDto.getNilaiA());
+        sidang.setPb2(sidangDto.getNilaiB());
+        sidang.setPc2(sidangDto.getNilaiC());
+        sidang.setPd2(sidangDto.getNilaiD());
+        sidangDao.save(sidang);
+        akumulasiNilaiPasca(sidang);
+
+    }
+
     private void akumulasiNilai(Sidang sidang){
         BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
         BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
         BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
         BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        sidang.setNilaiA(nilaiA);
+        sidang.setNilaiB(nilaiB);
+        sidang.setNilaiC(nilaiC);
+        sidang.setNilaiD(nilaiD);
+        sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
+        sidangDao.save(sidang);
+    }
+
+    private void akumulasiNilaiPasca(Sidang sidang){
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).add(sidang.getPa2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).add(sidang.getPb2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).add(sidang.getPc2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).add(sidang.getPd2()).divide(BigDecimal.valueOf(4), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.2));
         sidang.setNilaiA(nilaiA);
         sidang.setNilaiB(nilaiB);
         sidang.setNilaiC(nilaiC);
