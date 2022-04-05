@@ -25,6 +25,10 @@ public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
 
     @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2)", nativeQuery = true)
     Object validasiPublishNilai(Sidang sidang, BigDecimal nilai);
+
+    @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pa2 = ?2 or pb2 = ?2 or pc2 = ?2 or pd2 = ?2)", nativeQuery = true)
+    Object validasiPublishNilaiPasca(Sidang sidang, BigDecimal nilai);
+
     @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3) order by s.akademik desc, s.statusSidang desc , s.publish desc")
     List<Sidang> listDosenSidang(TahunAkademik tahunAkademik,StatusApprove statusApprove,Dosen dosen);
 

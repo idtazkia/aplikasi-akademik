@@ -58,6 +58,10 @@ public class Sidang {
     @JoinColumn(name = "pembimbing")
     private Dosen pembimbing;
 
+    @ManyToOne
+    @JoinColumn(name = "pembimbing2")
+    private Dosen pembimbing2;
+
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalUjian;
@@ -119,6 +123,15 @@ public class Sidang {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String komentarPembimbing;
+
+    private BigDecimal pa2 = BigDecimal.ZERO;
+    private BigDecimal pb2 = BigDecimal.ZERO;
+    private BigDecimal pc2 = BigDecimal.ZERO;
+    private BigDecimal pd2 = BigDecimal.ZERO;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentarPembimbing2;
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
