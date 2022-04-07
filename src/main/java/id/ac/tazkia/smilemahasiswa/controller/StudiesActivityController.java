@@ -7640,6 +7640,15 @@ public class StudiesActivityController {
         subHeaderFont.setFontName("Cambria");
         subHeaderFont.setBold(true);
 
+        Font judulFont = workbook.createFont();
+        judulFont.setFontHeightInPoints((short) 10);
+        judulFont.setFontName("Cambria");
+        judulFont.setBold(true);
+
+        Font thesisFont = workbook.createFont();
+        thesisFont.setFontHeightInPoints((short) 10);
+        thesisFont.setFontName("Cambria");
+
         Font symbolFont = workbook.createFont();
         symbolFont.setFontHeightInPoints((short) 10);
         symbolFont.setFontName("Cambria");
@@ -7648,13 +7657,29 @@ public class StudiesActivityController {
         dataFont.setFontHeightInPoints((short) 10);
         dataFont.setFontName("Cambria");
 
-        Font penilaianFont = workbook.createFont();
-        penilaianFont.setFontHeightInPoints((short) 10);
-        penilaianFont.setFontName("Cambria");
+        Font dataTableFont = workbook.createFont();
+        dataTableFont.setFontHeightInPoints((short) 10);
+        dataTableFont.setFontName("Cambria");
 
         Font prestasiFont = workbook.createFont();
         prestasiFont.setFontHeightInPoints((short) 10);
         prestasiFont.setFontName("Cambria");
+
+        Font judulSkripsiFont = workbook.createFont();
+        judulSkripsiFont.setFontHeightInPoints((short) 10);
+        judulSkripsiFont.setFontName("Cambria");
+
+        Font dataKhsFont = workbook.createFont();
+        dataKhsFont.setFontHeightInPoints((short) 10);
+        dataKhsFont.setFontName("Cambria");
+
+        Font dataIpkFont = workbook.createFont();
+        dataIpkFont.setFontHeightInPoints((short) 10);
+        dataIpkFont.setFontName("Cambria");
+
+        Font penilaianFont = workbook.createFont();
+        penilaianFont.setFontHeightInPoints((short) 10);
+        penilaianFont.setFontName("Cambria");
 
         Font prestasiFont2 = workbook.createFont();
         prestasiFont2.setFontHeightInPoints((short) 10);
@@ -7665,8 +7690,8 @@ public class StudiesActivityController {
         dataPrestasiFont.setFontName("Cambria");
 
         Font matkulFont = workbook.createFont();
-        dataFont.setFontHeightInPoints((short) 10);
-        dataFont.setFontName("Cambria");
+        matkulFont.setFontHeightInPoints((short) 10);
+        matkulFont.setFontName("Cambria");
 
         Font dataFontNew = workbook.createFont();
         dataFontNew.setFontHeightInPoints((short) 10);
@@ -7730,6 +7755,18 @@ public class StudiesActivityController {
         styleSubHeader.setAlignment(HorizontalAlignment.LEFT);
         styleSubHeader.setVerticalAlignment(VerticalAlignment.CENTER);
 
+        CellStyle styleJudul = workbook.createCellStyle();
+        styleJudul.setFont(judulFont);
+        styleJudul.setAlignment(HorizontalAlignment.LEFT);
+        styleJudul.setVerticalAlignment(VerticalAlignment.TOP);
+
+        CellStyle styleThesis = workbook.createCellStyle();
+        styleThesis.setFont(thesisFont);
+        styleThesis.setAlignment(HorizontalAlignment.LEFT);
+        styleThesis.setVerticalAlignment(VerticalAlignment.TOP);
+        styleThesis.setWrapText(true);
+
+
         CellStyle styleData = workbook.createCellStyle();
         styleData.setFont(dataFont);
 
@@ -7740,7 +7777,12 @@ public class StudiesActivityController {
         CellStyle styleDataKhs = workbook.createCellStyle();
         styleDataKhs.setAlignment(HorizontalAlignment.CENTER);
         styleDataKhs.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataKhs.setFont(dataFont);
+        styleDataKhs.setFont(dataKhsFont);
+
+        CellStyle styleIsiIpk = workbook.createCellStyle();
+        styleIsiIpk.setAlignment(HorizontalAlignment.CENTER);
+        styleIsiIpk.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleIsiIpk.setFont(dataIpkFont);
 
         CellStyle stylePenilaian = workbook.createCellStyle();
         stylePenilaian.setAlignment(HorizontalAlignment.CENTER);
@@ -7748,13 +7790,19 @@ public class StudiesActivityController {
         stylePenilaian.setFont(penilaianFont);
 
         CellStyle styleDataTale = workbook.createCellStyle();
-        styleDataTale.setFont(dataFont);
+        styleDataTale.setFont(dataTableFont);
         styleDataTale.setAlignment(HorizontalAlignment.CENTER);
         styleDataTale.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataTale.setBorderBottom(BorderStyle.THIN);
-        styleDataTale.setBorderTop(BorderStyle.THIN);
         styleDataTale.setBorderRight(BorderStyle.THIN);
         styleDataTale.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle styleDataTale2 = workbook.createCellStyle();
+        styleDataTale2.setFont(dataTableFont);
+        styleDataTale2.setAlignment(HorizontalAlignment.CENTER);
+        styleDataTale2.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleDataTale2.setBorderRight(BorderStyle.THIN);
+        styleDataTale2.setBorderBottom(BorderStyle.THIN);
+        styleDataTale2.setBorderLeft(BorderStyle.THIN);
 
         CellStyle styleDataPrestasiAkademik = workbook.createCellStyle();
         styleDataPrestasiAkademik.setFont(prestasiFont);
@@ -7769,16 +7817,22 @@ public class StudiesActivityController {
         styleDataKhsTable.setAlignment(HorizontalAlignment.LEFT);
         styleDataKhsTable.setVerticalAlignment(VerticalAlignment.CENTER);
         styleDataKhsTable.setFont(matkulFont);
-        styleDataKhsTable.setBorderBottom(BorderStyle.THIN);
-        styleDataKhsTable.setBorderTop(BorderStyle.THIN);
         styleDataKhsTable.setBorderRight(BorderStyle.THIN);
         styleDataKhsTable.setBorderLeft(BorderStyle.THIN);
+
+        CellStyle styleDataKhsTable2 = workbook.createCellStyle();
+        styleDataKhsTable2.setAlignment(HorizontalAlignment.LEFT);
+        styleDataKhsTable2.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleDataKhsTable2.setFont(matkulFont);
+        styleDataKhsTable2.setBorderBottom(BorderStyle.THIN);
+        styleDataKhsTable2.setBorderRight(BorderStyle.THIN);
+        styleDataKhsTable2.setBorderLeft(BorderStyle.THIN);
 
 
         CellStyle stylePrestasiAkademik = workbook.createCellStyle();
         stylePrestasiAkademik.setAlignment(HorizontalAlignment.LEFT);
         stylePrestasiAkademik.setVerticalAlignment(VerticalAlignment.CENTER);
-        stylePrestasiAkademik.setFont(dataFont);
+        stylePrestasiAkademik.setFont(prestasiFont);
 
         CellStyle styleSubHeader1 = workbook.createCellStyle();
         styleSubHeader1.setAlignment(HorizontalAlignment.LEFT);
@@ -7786,15 +7840,15 @@ public class StudiesActivityController {
         styleSubHeader1.setFont(ipFont);
 
         CellStyle styleJudulSkripsi = workbook.createCellStyle();
-        styleJudulSkripsi.setFont(dataFont);
+        styleJudulSkripsi.setFont(judulSkripsiFont);
         styleJudulSkripsi.setWrapText(true);
 
         CellStyle styleSymbol = workbook.createCellStyle();
-        styleSymbol.setAlignment(HorizontalAlignment.CENTER);
+        styleSymbol.setAlignment(HorizontalAlignment.RIGHT);
         styleSymbol.setFont(symbolFont);
 
         CellStyle styleTotal = workbook.createCellStyle();
-        styleTotal.setAlignment(HorizontalAlignment.CENTER);
+        styleTotal.setAlignment(HorizontalAlignment.LEFT);
         styleTotal.setVerticalAlignment(VerticalAlignment.CENTER);
         styleTotal.setFont(ipFont);
 
@@ -7826,34 +7880,34 @@ public class StudiesActivityController {
 
         int rowInfoNama = 12 ;
         Row nama = sheet.createRow(rowInfoNama);
-        nama.createCell(1).setCellValue("Nama Mahasiswa ");
+        nama.createCell(2).setCellValue("Nama Mahasiswa ");
         nama.createCell(4).setCellValue(":");
         nama.createCell(5).setCellValue(mahasiswa.getNama());
-        nama.getCell(1).setCellStyle(styleData);
+        nama.getCell(2).setCellStyle(styleData);
         nama.getCell(4).setCellStyle(styleSymbol);
         nama.getCell(5).setCellStyle(styleData);
 
         int rowInfoNim = 13 ;
         Row matricNo = sheet.createRow(rowInfoNim);
-        matricNo.createCell(1).setCellValue("NIM");
+        matricNo.createCell(2).setCellValue("NIM");
         matricNo.createCell(4).setCellValue(":");
         matricNo.createCell(5).setCellValue(mahasiswa.getNim());
-        matricNo.getCell(1).setCellStyle(styleData);
+        matricNo.getCell(2).setCellStyle(styleData);
         matricNo.getCell(4).setCellStyle(styleSymbol);
         matricNo.getCell(5).setCellStyle(styleData);
 
         int rowInfoEntry = 14 ;
         Row entry = sheet.createRow(rowInfoEntry);
-        entry.createCell(1).setCellValue("Penomoran Induk Nasional");
+        entry.createCell(2).setCellValue("Nomor Ijazah Nasional");
         entry.createCell(4).setCellValue(":");
         entry.createCell(5).setCellValue(mahasiswa.getIndukNasional());
-        entry.getCell(1).setCellStyle(styleData);
+        entry.getCell(2).setCellStyle(styleData);
         entry.getCell(4).setCellStyle(styleSymbol);
         entry.getCell(5).setCellStyle(styleData);
 
         int rowInfoBirth = 15 ;
         Row birthDay = sheet.createRow(rowInfoBirth);
-        birthDay.createCell(1).setCellValue("Tempat, Tanggal lahir");
+        birthDay.createCell(2).setCellValue("Tempat, Tanggal lahir");
         birthDay.createCell(4).setCellValue(":");
 
         if (mahasiswa.getTanggalLahir().getMonthValue() == 1){
@@ -7928,12 +7982,12 @@ public class StudiesActivityController {
 
         }
 
-        birthDay.getCell(1).setCellStyle(styleData);
+        birthDay.getCell(2).setCellStyle(styleData);
         birthDay.getCell(4).setCellStyle(styleSymbol);
 
         int rowInfoLevel = 16 ;
         Row level = sheet.createRow(rowInfoLevel);
-        level.createCell(1).setCellValue("Program Pendidikan");
+        level.createCell(2).setCellValue("Program Pendidikan");
         level.createCell(4).setCellValue(":");
 
         if(mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
@@ -7949,40 +8003,40 @@ public class StudiesActivityController {
             level.getCell(5).setCellStyle(styleData);
 
         }
-        level.getCell(1).setCellStyle(styleData);
+        level.getCell(2).setCellStyle(styleData);
         level.getCell(4).setCellStyle(styleSymbol);
 
         int rowInfoDepartment = 17 ;
         Row department = sheet.createRow(rowInfoDepartment);
-        department.createCell(1).setCellValue("Program Studi");
+        department.createCell(2).setCellValue("Program Studi");
         department.createCell(4).setCellValue(":");
         department.createCell(5).setCellValue(mahasiswa.getIdProdi().getNamaProdi() );
-        department.getCell(1).setCellStyle(styleData);
+        department.getCell(2).setCellStyle(styleData);
         department.getCell(4).setCellStyle(styleSymbol);
         department.getCell(5).setCellStyle(styleData);
 
         int rowInfoFaculty = 18 ;
         Row faculty = sheet.createRow(rowInfoFaculty);
-        faculty.createCell(1).setCellValue("Fakultas");
+        faculty.createCell(2).setCellValue("Fakultas");
         faculty.createCell(4).setCellValue(":");
         faculty.createCell(5).setCellValue(mahasiswa.getIdProdi().getFakultas().getNamaFakultas() );
-        faculty.getCell(1).setCellStyle(styleData);
+        faculty.getCell(2).setCellStyle(styleData);
         faculty.getCell(4).setCellStyle(styleSymbol);
         faculty.getCell(5).setCellStyle(styleData);
 
         int rowInfoNoAcred = 19 ;
         Row accreditation = sheet.createRow(rowInfoNoAcred);
-        accreditation.createCell(1).setCellValue("No SK BAN - PT");
+        accreditation.createCell(2).setCellValue("No SK BAN - PT");
         accreditation.createCell(4).setCellValue(":");
         accreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getNoSk());
-        accreditation.getCell(1).setCellStyle(styleData);
+        accreditation.getCell(2).setCellStyle(styleData);
         accreditation.getCell(4).setCellStyle(styleSymbol);
         accreditation.getCell(5).setCellStyle(styleData);
 
 
         int rowInfoDateAcred = 20 ;
         Row dateAccreditation = sheet.createRow(rowInfoDateAcred);
-        dateAccreditation.createCell(1).setCellValue("Tanggal SK BAN - PT ");
+        dateAccreditation.createCell(2).setCellValue("Tanggal SK BAN - PT ");
         dateAccreditation.createCell(4).setCellValue(":");
         if (mahasiswa.getIdProdi().getTanggalSk().getMonthValue() == 1){
             dateAccreditation.createCell(5).setCellValue(mahasiswa.getIdProdi().getTanggalSk().getDayOfMonth() + " Januari" + " " + mahasiswa.getIdProdi().getTanggalSk().getYear());
@@ -8056,12 +8110,12 @@ public class StudiesActivityController {
 
         }
 
-        dateAccreditation.getCell(1).setCellStyle(styleData);
+        dateAccreditation.getCell(2).setCellStyle(styleData);
         dateAccreditation.getCell(4).setCellStyle(styleSymbol);
 
         int rowInfoGraduatedDate = 21 ;
         Row graduatedDate = sheet.createRow(rowInfoGraduatedDate);
-        graduatedDate.createCell(1).setCellValue("Tanggal Kelulusan");
+        graduatedDate.createCell(2).setCellValue("Tanggal Kelulusan");
         graduatedDate.createCell(4).setCellValue(":");
         if (mahasiswa.getTanggalLulus().getMonthValue() == 1){
             graduatedDate.createCell(5).setCellValue(mahasiswa.getTanggalLulus().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalLulus().getYear());
@@ -8136,12 +8190,13 @@ public class StudiesActivityController {
         }
 
 
-        graduatedDate.getCell(1).setCellStyle(styleData);
+        graduatedDate.getCell(2).setCellStyle(styleData);
         graduatedDate.getCell(4).setCellStyle(styleSymbol);
 
 
         int rowInfoTranscript = 10 ;
         Row transcript = sheet.createRow(rowInfoTranscript);
+        sheet.addMergedRegion(new CellRangeAddress(rowInfoTranscript,rowInfoTranscript,1,10));
         transcript.createCell(1).setCellValue("Nomor : " +mahasiswa.getNoTranskript());
         transcript.getCell(1).setCellStyle(styleDataNew);
 
@@ -8157,14 +8212,31 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem1.getGrade());
             row.createCell(8).setCellValue(sem1.getBobot().toString());
             row.createCell(10).setCellValue(sem1.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
+
 
             rowNumSemester1++;
+
+            if (24 + semester1.size() == rowNumSemester1){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester2 = 24+semester1.size() ;
@@ -8179,14 +8251,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem2.getGrade());
             row.createCell(8).setCellValue(sem2.getBobot().toString());
             row.createCell(10).setCellValue(sem2.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester2++;
+
+            if (24 + semester1.size() + semester2.size() == rowNumSemester2){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester3 = 24+semester1.size()+semester2.size() ;
@@ -8201,14 +8289,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem3.getGrade());
             row.createCell(8).setCellValue(sem3.getBobot().toString());
             row.createCell(10).setCellValue(sem3.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester3++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() == rowNumSemester3){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester4 = 24+semester1.size()+semester2.size()+semester3.size() ;
@@ -8223,14 +8327,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem4.getGrade());
             row.createCell(8).setCellValue(sem4.getBobot().toString());
             row.createCell(10).setCellValue(sem4.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester4++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() == rowNumSemester4){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester5 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size() ;
@@ -8245,14 +8365,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem5.getGrade());
             row.createCell(8).setCellValue(sem5.getBobot().toString());
             row.createCell(10).setCellValue(sem5.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester5++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() == rowNumSemester5){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester6 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size() ;
@@ -8267,14 +8403,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem6.getGrade());
             row.createCell(8).setCellValue(sem6.getBobot().toString());
             row.createCell(10).setCellValue(sem6.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester6++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() == rowNumSemester6){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester7 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size();
@@ -8289,14 +8441,30 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem7.getGrade());
             row.createCell(8).setCellValue(sem7.getBobot().toString());
             row.createCell(10).setCellValue(sem7.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
 
             rowNumSemester7++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() + semester7.size() == rowNumSemester7){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
 
         int rowNumSemester8 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size();
@@ -8311,32 +8479,49 @@ public class StudiesActivityController {
             row.createCell(7).setCellValue(sem8.getGrade());
             row.createCell(8).setCellValue(sem8.getBobot().toString());
             row.createCell(10).setCellValue(sem8.getMutu().toString());
-            row.getCell(1).setCellStyle(styleDataTale);
-            row.getCell(2).setCellStyle(styleDataKhsTable);
-            row.getCell(6).setCellStyle(styleDataTale);
-            row.getCell(7).setCellStyle(styleDataTale);
-            row.getCell(8).setCellStyle(styleDataTale);
-            row.getCell(10).setCellStyle(styleDataTale);
-
             rowNumSemester8++;
+
+            if (24 + semester1.size() + semester2.size() + semester3.size() + semester4.size() + semester5.size() + semester6.size() + semester7.size() + semester8.size() == rowNumSemester8){
+                row.getCell(1).setCellStyle(styleDataTale2);
+                row.getCell(2).setCellStyle(styleDataKhsTable2);
+                row.createCell(3).setCellStyle(styleDataKhsTable2);
+                row.createCell(4).setCellStyle(styleDataKhsTable2);
+                row.createCell(5).setCellStyle(styleDataKhsTable2);
+                row.getCell(6).setCellStyle(styleDataTale2);
+                row.getCell(7).setCellStyle(styleDataTale2);
+                row.getCell(8).setCellStyle(styleDataTale2);
+                row.getCell(10).setCellStyle(styleDataTale2);
+            }else{
+                row.getCell(1).setCellStyle(styleDataTale);
+                row.getCell(2).setCellStyle(styleDataKhsTable);
+                row.createCell(3).setCellStyle(styleDataKhsTable);
+                row.createCell(4).setCellStyle(styleDataKhsTable);
+                row.createCell(5).setCellStyle(styleDataKhsTable);
+                row.getCell(6).setCellStyle(styleDataTale);
+                row.getCell(7).setCellStyle(styleDataTale);
+                row.getCell(8).setCellStyle(styleDataTale);
+                row.getCell(10).setCellStyle(styleDataTale);
+            }
         }
         int total = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size();
         Row rowTotal = sheet.createRow(total);
         sheet.addMergedRegion(new CellRangeAddress(total,total,2,5));
         rowTotal.createCell(2).setCellValue("Jumlah");
+        rowTotal.createCell(3).setCellStyle(styleTotalBorder);
+        rowTotal.createCell(4).setCellStyle(styleTotalBorder);
+        rowTotal.createCell(5).setCellStyle(styleTotalBorder);
         rowTotal.createCell(6).setCellValue(totalSKS);
         rowTotal.createCell(10).setCellValue(totalMuti.toString());
         rowTotal.getCell(2).setCellStyle(styleTotalBorder);
-        rowTotal.getCell(6).setCellStyle(styleDataTale);
-        rowTotal.getCell(10).setCellStyle(styleDataTale);
+        rowTotal.getCell(6).setCellStyle(styleDataTale2);
+        rowTotal.getCell(10).setCellStyle(styleDataTale2);
 
         int ipKomulatif = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+2;
         Row rowIpk = sheet.createRow(ipKomulatif);
-        sheet.addMergedRegion(new CellRangeAddress(ipKomulatif,ipKomulatif,0,2));
         rowIpk.createCell(1).setCellValue("Indeks Prestasi Kumulatif");
         rowIpk.createCell(6).setCellValue(ipk.toString());
         rowIpk.getCell(1).setCellStyle(styleTotal);
-        rowIpk.getCell(6).setCellStyle(styleDataKhs);
+        rowIpk.getCell(6).setCellStyle(styleIsiIpk);
 
         int predicate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+4;
         Row predicateRow = sheet.createRow(predicate);
@@ -8382,18 +8567,22 @@ public class StudiesActivityController {
 
         int thesis = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+5;
         Row thesisRow = sheet.createRow(thesis);
+        sheet.addMergedRegion(new CellRangeAddress(thesis,thesis +1,1,1));
+        sheet.addMergedRegion(new CellRangeAddress(thesis,thesis +1,2,10));
         if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("01").get()){
-            thesisRow.createCell(1).setCellValue("Judul skripsi :");
+            thesisRow.createCell(1).setCellValue("Judul Skripsi :");
             thesisRow.createCell(2).setCellValue(mahasiswa.getJudul());
-            thesisRow.getCell(1).setCellStyle(styleSubHeader);
-            thesisRow.getCell(2).setCellStyle(styleData);
+            thesisRow.getCell(1).setCellStyle(styleJudul);
+            thesisRow.getCell(2).getRow().setHeightInPoints(thesisRow.getSheet().getDefaultRowHeightInPoints() * 2);
+            thesisRow.getCell(2).setCellStyle(styleThesis);
         }
 
         if (mahasiswa.getIdProdi().getIdJenjang() == jenjangDao.findById("02").get()){
             thesisRow.createCell(1).setCellValue("Judul Tesis :");
             thesisRow.createCell(2).setCellValue(mahasiswa.getJudul());
-            thesisRow.getCell(1).setCellStyle(styleSubHeader);
-            thesisRow.getCell(2).setCellStyle(styleData);
+            thesisRow.getCell(1).setCellStyle(styleJudul);
+            thesisRow.getCell(2).getRow().setHeightInPoints(thesisRow.getSheet().getDefaultRowHeightInPoints() * 2);
+            thesisRow.getCell(2).setCellStyle(styleThesis);
         }
 
 
@@ -8415,6 +8604,10 @@ public class StudiesActivityController {
 
         int border = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+9;
         Row borderRow = sheet.createRow(border);
+        borderRow.createCell(1).setCellStyle(stylePres);
+        borderRow.createCell(2).setCellStyle(stylePres);
+        borderRow.createCell(3).setCellStyle(stylePres);
+        borderRow.createCell(4).setCellStyle(stylePres);
         borderRow.createCell(6).setCellStyle(stylePres);
         borderRow.createCell(7).setCellStyle(stylePres);
         borderRow.createCell(8).setCellStyle(stylePres);
@@ -8426,6 +8619,9 @@ public class StudiesActivityController {
         sheet.addMergedRegion(new CellRangeAddress(remark,remark,1,4));
         sheet.addMergedRegion(new CellRangeAddress(remark,remark,8,10));
         remarkRow.createCell(1).setCellValue("Keterangan");
+        remarkRow.createCell(2).setCellStyle(stylePres);
+        remarkRow.createCell(3).setCellStyle(stylePres);
+        remarkRow.createCell(4).setCellStyle(stylePres);
         remarkRow.createCell(6).setCellValue("HM");
         remarkRow.createCell(7).setCellValue("AM");
         remarkRow.createCell(8).setCellValue("Arti");
@@ -8552,7 +8748,7 @@ public class StudiesActivityController {
         failRow.getCell(7).setCellStyle(stylePenilaian);
         failRow.getCell(8).setCellStyle(styleManajemen);
 
-        int createDate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
+        int createDate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+22;
         Row createDateRow = sheet.createRow(createDate);
         HijrahDate islamicDate = HijrahDate.from(LocalDate.now());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
@@ -8800,22 +8996,22 @@ public class StudiesActivityController {
 
         }
 
-        int facultyy = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+26;
+        int facultyy = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+24;
         Row facultyRow = sheet.createRow(facultyy);
         facultyRow.createCell(6).setCellValue("Dekan ");
         facultyRow.getCell(6).setCellStyle(styleData);
 
-        int faculty2 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+27;
+        int faculty2 = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+25;
         Row facultyRow2 = sheet.createRow(faculty2);
         facultyRow2.createCell(6).setCellValue("Fakultas " + mahasiswa.getIdProdi().getFakultas().getNamaFakultas());
         facultyRow2.getCell(6).setCellStyle(styleData);
 
-        int lecture = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+32;
+        int lecture = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+30;
         Row lectureRow = sheet.createRow(lecture);
         lectureRow.createCell(6).setCellValue(mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNamaKaryawan());
         lectureRow.getCell(6).setCellStyle(styleDosen);
 
-        int nik = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+33;
+        int nik = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+31;
         Row nikRow = sheet.createRow(nik);
         nikRow.createCell(6).setCellValue("NIK : " + mahasiswa.getIdProdi().getFakultas().getDosen().getKaryawan().getNik());
         nikRow.getCell(6).setCellStyle(styleNik);
