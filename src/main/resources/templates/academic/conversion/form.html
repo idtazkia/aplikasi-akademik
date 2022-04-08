@@ -198,7 +198,7 @@
         $.getJSON(url, function (data){
             console.log(data);
             $.each(data, function (key, entry){
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliahKurikulum.matakuliah.namaMatakuliah + ' - ' + entry.dosen.karyawan.namaKaryawan))
+                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaMatakuliah + ' - ' + entry.dosen))
             })
 
         });

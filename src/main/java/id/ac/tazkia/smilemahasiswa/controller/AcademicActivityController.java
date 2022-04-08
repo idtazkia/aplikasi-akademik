@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
 import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
@@ -315,13 +316,12 @@ public class  AcademicActivityController {
 
     @GetMapping("/api/tahun")
     @ResponseBody
-    public List<Jadwal> tahun(@RequestParam(required = false) String idTahun,
-                              @RequestParam(required = false) String idProdi) {
+    public List<MatkulKonversiDto> tahun(@RequestParam(required = false) String idTahun,
+                                         @RequestParam(required = false) String idProdi) {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
         Prodi p = prodiDao.findById(idProdi).get();
-        List<Jadwal> jadwal = jadwalDao.findByTahunAkademikAndProdiAndHariNotNullOrTahunAkademikAndAksesAndHariNotNullAndProdiIdJenjang(tahunAkademik, p, tahunAkademik, Akses.UMUM, p.getIdJenjang());
-
+        List<MatkulKonversiDto> jadwal = jadwalDao.cariMatkulKonversi(idTahun, idProdi, p.getIdJenjang().getId());
 
         return jadwal;
     }

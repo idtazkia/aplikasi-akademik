@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.ListJadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.SoalDto;
@@ -95,7 +96,20 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByStatusAndTahunAkademikAndHariAndRuangan(StatusRecord aktif, TahunAkademik tahunAkademik, Hari hari, Ruangan ruang1);
 
-    List<Jadwal> findByTahunAkademikAndProdiAndHariNotNullOrTahunAkademikAndAksesAndHariNotNullAndProdiIdJenjang(TahunAkademik tahunAkademik, Prodi prodi, TahunAkademik tahunAkademik1, Akses akses, Jenjang jenjang);
+    @Query(value = "select a.id as id, c.nama_matakuliah as namaMatakuliah, c.nama_matakuliah_english as namaMatakuliahEnglish, c.kode_matakuliah as kodeMatakuliah, f.nama_karyawan as dosen from\n" +
+            "(select * from jadwal where id_tahun_akademik = ?1 and id_prodi = ?2 and status = 'AKTIF' and id_hari is not null and jam_mulai is not null\n" +
+            "union\n" +
+            "select * from jadwal where id_tahun_akademik = ?1 and id_prodi <> ?2 and akses = 'UMUM' and status = 'AKTIF' and id_hari is not null and jam_mulai is not null)a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "inner join matakuliah as c on b.id_matakuliah= c.id\n" +
+            "inner join prodi as d on a.id_prodi = d.id\n" +
+            "inner join dosen as e on a.id_dosen_pengampu = e.id\n" +
+            "inner join karyawan as f on e.id_karyawan = f.id \n" +
+            "where d.id_jenjang = ?3 and b.jumlah_sks > 0\n" +
+            "order by nama_matakuliah", nativeQuery = true)
+    List<MatkulKonversiDto> cariMatkulKonversi(String idTahun, String idProdi, String idJenjang);
+
+//    List<Jadwal> findByStatusAndTahunAkademikAndProdiAndHariNotNullOrStatusAndTahunAkademikAndAksesAndHariNotNullAndProdiIdJenjang(StatusRecord status1, TahunAkademik tahunAkademik, Prodi prodi, StatusRecord status2, TahunAkademik tahunAkademik1, Akses akses, Jenjang jenjang);
 
     List<Jadwal> findByTahunAkademikAndProdiAndHariNotNull(TahunAkademik tahunAkademik, Prodi prodi);
 
