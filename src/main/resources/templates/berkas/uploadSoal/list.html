@@ -82,83 +82,58 @@
                                         <tbody>
                                         <tr th:each="data,row : ${listUts}">
                                             <td th:text="${(row.index + 1)}"></td>
-                                            <td th:text="${data.ruangan.namaRuangan}"></td>
-                                            <td th:text="${data.hari.namaHari}"></td>
-                                            <td th:text="${data.jamMulai+' - '+data.jamSelesai}"></td>
-                                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
-                                            <td th:text="${data.kelas.namaKelas}"></td>
+                                            <td th:text="${data.ruangan}"></td>
+                                            <td th:text="${data.hari}"></td>
+                                            <td th:text="${data.mulai+' - '+data.selesai}"></td>
+                                            <td th:text="${data.matkul}"></td>
+                                            <td th:text="${data.kelas}"></td>
                                             <td>
-                                                <div th:each="soal,row:${soalUts}">
-                                                    <div th:if="${data.id} == ${soal.jadwal.id}">
-                                                        <a  class="btn btn-primary btn-sm text-white"
-                                                            th:if="${soal.statusApprove.WAITING} == ${soal.statusApprove}"
-                                                            th:text="${'MENUNGGU'}">
-                                                        </a>
-
-                                                        <a  class="btn btn-success btn-sm text-white"
-                                                            th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}"
-                                                            th:text="${'DISETUJUI'}">
-                                                        </a>
-
-                                                        <a type="button" class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
-                                                           th:if="${soal.statusApprove.REJECTED} == ${soal.statusApprove}"
-                                                           th:text="${'DITOLAK'}">
-                                                        </a>
-
-                                                        <div class="modal fade" th:id="${'modal-keterangan'+soal.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h2 class="modal-title" id="modal-title-default">Keterangan</h2>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <p th:text="${soal.keteranganApprove}"></p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
-                                                    <a type="button" class="btn btn-warning btn-sm text-white"
-                                                       th:text="${'BELUM DI UPLOAD'}">
-                                                    </a>
-                                                </div>
+                                                <a  class="btn btn-warning btn-sm text-white"
+                                                    th:if="${data.status == 'WAITING'}"
+                                                    th:text="${'MENUNGGU'}">
+                                                </a>
+                                                <a  class="btn btn-success btn-sm text-white"
+                                                    th:if="${data.status == 'APPROVED'}"
+                                                    th:text="${'DISETUJUI'}">
+                                                </a>
+                                                <a  class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
+                                                    th:if="${data.status == 'REJECTED'}"
+                                                    th:text="${'DITOLAK'}">
+                                                </a>
+                                                <a  class="btn btn-primary btn-sm text-white"
+                                                    th:if="${data.status == 'NOT_UPLOADED_YET'}"
+                                                    th:text="${'BELUM UPLOAD'}">
+                                                </a>
                                             </td>
                                             <td>
-                                                <div th:if="${data.statusUts.APPROVED} == ${data.statusUts}">
-                                                    <div th:each="soal, row:${soalUts}">
-                                                        <div th:if="${data.id} == ${soal.jadwal.id}">
-                                                            <a th:href="@{/filedownload/(soal=${soal.id})}" class="btn btn-primary btn-sm">Download File</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div th:if="${dosen} == ${data.aksesUts}">
-                                                    <div th:if="${data.statusUts.NOT_UPLOADED_YET} == ${data.statusUts}">
+                                                 <span th:if="${dosen.id == data.akses}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" th:if="${data.status == 'NOT_UPLOADED_YET'}" class="btn btn-sm btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                        </a>
+                                                    <div th:if="${data.status == 'WAITING'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                             <span class="btn-inner--text">Upload Soal UTS</span>
                                                         </a>
                                                     </div>
-                                                    <div th:if="${data.statusUts.WAITING} == ${data.statusUts}">
-                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-sm btn-neutral btn-icon">
-                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Soal UTS</span>
-                                                        </a>
-                                                    </div>
-                                                    <div th:if="${data.statusUts.REJECTED} == ${data.statusUts}">
+                                                    <div th:if="${data.status == 'REJECTED'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UTS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
                                                             <span class="btn-inner--text">Upload Ulang Soal UTS</span>
                                                         </a>
                                                     </div>
-                                                </div>
+                                                    <div th:if="${data.status == 'APPROVED'}">
+                                                        <a th:href="@{/filedownload/(soal=${data.soal})}" class="btn btn-sm btn-success btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                                                            <span class="btn-inner--text">Download File</span>
+                                                        </a>
+                                                    </div>
+                                                </span>
                                             </td>
-                                            <td th:if="${data.statusUts.APPROVED} == ${data.statusUts}"></td>
-                                            <td th:if="${data.statusUts.APPROVED} != ${data.statusUts}">
-                                                <button th:if="${dosen} == ${data.dosen}" class="btn btn-sm btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uts'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
+                                            <td>
 
+                                                <button th:if="${dosen.id == data.idDos}" class="btn btn-sm btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uts'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
                                                 <div class="modal fade" th:id="${'modal-akses-uts'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered modal-" role="document">
                                                         <div class="modal-content">
@@ -167,7 +142,7 @@
                                                                 <form method="post" th:action="@{/berkas/uts/setting}">
                                                                     <input type="hidden" name="jadwal" th:value="${data.id}">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></h5>
+                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matkul}"></span></h5>
                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>
@@ -224,84 +199,58 @@
                                         <tbody>
                                         <tr th:each="data,row : ${listUas}">
                                             <td th:text="${(row.index + 1)}"></td>
-                                            <td th:text="${data.ruangan.namaRuangan}"></td>
-                                            <td th:text="${data.hari.namaHari}"></td>
-                                            <td th:text="${data.jamMulai+' - '+data.jamSelesai}"></td>
-                                            <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
-                                            <td th:text="${data.kelas.namaKelas}"></td>
+                                            <td th:text="${data.ruangan}"></td>
+                                            <td th:text="${data.hari}"></td>
+                                            <td th:text="${data.mulai+' - '+data.selesai}"></td>
+                                            <td th:text="${data.matkul}"></td>
+                                            <td th:text="${data.kelas}"></td>
                                             <td>
-                                                <div th:each="soal,row:${soalUas}">
-                                                    <div th:if="${data.id} == ${soal.jadwal.id}">
-
-                                                        <a  class="btn btn-primary btn-sm text-white"
-                                                            th:if="${soal.statusApprove.WAITING} == ${soal.statusApprove}"
-                                                            th:text="${'MENUNGGU'}">
-                                                        </a>
-
-                                                        <a  class="btn btn-success btn-sm text-white"
-                                                            th:if="${soal.statusApprove.APPROVED} == ${soal.statusApprove}"
-                                                            th:text="${'DISETUJUI'}">
-                                                        </a>
-
-                                                        <a type="button" class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
-                                                           th:if="${soal.statusApprove.REJECTED} == ${soal.statusApprove}"
-                                                           th:text="${'DITOLAK'}">
-                                                        </a>
-
-                                                        <div class="modal fade" th:id="${'modal-keterangan'+soal.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h2 class="modal-title" id="modal-title-default">Keterangan</h2>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <p th:text="${soal.keteranganApprove}"></p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                                <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
-                                                    <a type="button" class="btn btn-warning btn-sm text-white"
-                                                       th:text="${'BELUM DI UPLOAD'}">
-                                                    </a>
-                                                </div>
+                                                <a  class="btn btn-warning btn-sm text-white"
+                                                    th:if="${data.status == 'WAITING'}"
+                                                    th:text="${'MENUNGGU'}">
+                                                </a>
+                                                <a  class="btn btn-success btn-sm text-white"
+                                                    th:if="${data.status == 'APPROVED'}"
+                                                    th:text="${'DISETUJUI'}">
+                                                </a>
+                                                <a  class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
+                                                    th:if="${data.status == 'REJECTED'}"
+                                                    th:text="${'DITOLAK'}">
+                                                </a>
+                                                <a  class="btn btn-primary btn-sm text-white"
+                                                    th:if="${data.status == 'NOT_UPLOADED_YET'}"
+                                                    th:text="${'BELUM UPLOAD'}">
+                                                </a>
                                             </td>
                                             <td>
-                                                <div th:if="${data.statusUas.APPROVED} == ${data.statusUas}">
-                                                    <div th:each="soal, row:${soalUas}">
-                                                        <div th:if="${data.id} == ${soal.jadwal.id}">
-                                                            <a th:href="@{/filedownload/(soal=${soal.id})}" class="btn btn-primary btn-sm">Download File</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div th:if="${dosen} == ${data.aksesUas}">
-                                                    <div th:if="${data.statusUas.NOT_UPLOADED_YET} == ${data.statusUas}">
+                                                 <span th:if="${dosen.id == data.akses}">
+                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" th:if="${data.status == 'NOT_UPLOADED_YET'}" class="btn btn-sm btn-neutral btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
+                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                        </a>
+                                                    <div th:if="${data.status == 'WAITING'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Soal UAS</span>
+                                                            <span class="btn-inner--text">Upload Soal UTS</span>
                                                         </a>
                                                     </div>
-                                                    <div th:if="${data.statusUas.WAITING} == ${data.statusUas}">
+                                                    <div th:if="${data.status == 'REJECTED'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Soal UAS</span>
+                                                            <span class="btn-inner--text">Upload Ulang Soal UTS</span>
                                                         </a>
                                                     </div>
-                                                    <div th:if="${data.statusUas.REJECTED} == ${data.statusUas}">
-                                                        <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-sm btn-neutral btn-icon">
-                                                            <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Ulang Soal UAS</span>
+                                                    <div th:if="${data.status == 'APPROVED'}">
+                                                        <a th:href="@{/filedownload/(soal=${data.soal})}" class="btn btn-sm btn-success btn-icon">
+                                                            <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
+                                                            <span class="btn-inner--text">Download File</span>
                                                         </a>
                                                     </div>
-                                                </div>
+                                                </span>
                                             </td>
-                                            <td th:if="${data.statusUas.APPROVED} == ${data.statusUas}"></td>
-                                            <td th:if="${data.statusUas.APPROVED} != ${data.statusUas}">
-                                                <button class="btn btn-sm btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uas'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
+                                            <td>
 
+                                                <button th:if="${dosen.id == data.idDos}" class="btn btn-sm btn-default" data-toggle="modal" th:data-target="${'#modal-akses-uas'+data.id}"><i class="ni ni-settings-gear-65"></i> Akses Upload Soal</button>
                                                 <div class="modal fade" th:id="${'modal-akses-uas'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered modal-" role="document">
                                                         <div class="modal-content">
@@ -310,7 +259,7 @@
                                                                 <form method="post" th:action="@{/berkas/uas/setting}">
                                                                     <input type="hidden" name="jadwal" th:value="${data.id}">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></span></h5>
+                                                                        <h5 class="modal-title">Akses Upload Soal <span th:text="${data.matkul}"></span></h5>
                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>

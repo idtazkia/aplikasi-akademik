@@ -3,10 +3,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
-import id.ac.tazkia.smilemahasiswa.dto.assesment.BobotDto;
-import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
-import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
-import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreInput;
+import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.KrsSpDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
@@ -7550,16 +7547,11 @@ public class StudiesActivityController {
         model.addAttribute("dosen", dosen);
         model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
 
-        List<Jadwal> listUts = jadwalDao.listUts(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
-        List<Jadwal> listUas = jadwalDao.listUas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
+        List<SoalDto> listUts = jadwalDao.listUts(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
+        List<SoalDto> listUas = jadwalDao.listUas(tahunAkademikDao.findByStatus(StatusRecord.AKTIF), dosen);
 
         model.addAttribute("listUts", listUts);
         model.addAttribute("listUas", listUas);
-
-        List<Soal> soalUts = soalDao.findTopByStatusAndStatusSoalAndDosenOrderByTanggalUploadDesc(StatusRecord.AKTIF, StatusRecord.UTS, dosen);
-        List<Soal> soalUas = soalDao.findTopByStatusAndStatusSoalAndDosenOrderByTanggalUploadDesc(StatusRecord.AKTIF, StatusRecord.UAS, dosen);
-        model.addAttribute("soalUts", soalUts);
-        model.addAttribute("soalUas", soalUas);
 
     }
 
