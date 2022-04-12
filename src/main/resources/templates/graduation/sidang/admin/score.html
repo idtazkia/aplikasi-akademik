@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Nilai</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Penilaian</h5>
+                                        <span class="h2 font-weight-bold mb-0">Seminar</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="alert alert-danger" th:if="${kosong != null}">
+                    <strong>
+                        <center><p th:text="${kosong}">Silahkan selesaikan dulu pembayaran, atau hubungi bagian keuangan</p></center>
+                    </strong>
+                </div>
+
+                <div class="card shadow">
+                    <form th:action="@{/graduation/sidang/updatescore(sidang = ${sidang.id})}" method="post">
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+
+                                    <input type="hidden" name="akses" th:value="${akses}">
+                                    <input type="hidden" th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}" name="jenjang" th:value="${'sarjana'}">
+                                    <input type="hidden" th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}" name="jenjang" th:value="${'pascasarjana'}">
+                                    <div class="row" th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                                        <div class="col-md-4">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span  th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Ketua Penguji</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Pembahasan</label>
+                                                        <input th:field="*{ka}" type="text" name="ua" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi</label>
+                                                        <input th:field="*{kb}" type="text" name="ub" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Teknik Penulisan</label>
+                                                        <input th:field="*{kc}" type="text" name="uc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi dan Pemaparan</label>
+                                                        <input th:field="*{kd}" type="text" name="ud" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Penguji </h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Pembahasan</label>
+                                                        <input th:field="*{ua}" type="text" name="ua" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi</label>
+                                                        <input th:field="*{ub}" type="text" name="ub" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Teknik Penulisan</label>
+                                                        <input th:field="*{uc}" type="text" name="uc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi dan Pemaparan</label>
+                                                        <input th:field="*{ud}" type="text" name="ud" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--                                    -->
+
+                                        <div class="col-md-4">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Pembimbing 1</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Pembahasan</label>
+                                                        <input th:field="*{pa}" type="text" name="pa" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi</label>
+                                                        <input th:field="*{pb}" type="text" name="pb" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Teknik Penulisan</label>
+                                                        <input th:field="*{pc}" type="text" name="pc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi dan Pemaparan</label>
+                                                        <input th:field="*{pd}" type="text" name="pd" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+<!--                                    pasca-->
+                                    <div class="row" th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                                        <div class="col-md-3">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span  th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Ketua Penguji</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi</label>
+                                                        <input th:field="*{ka}" type="text" name="ua" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi dan Metodologi</label>
+                                                        <input th:field="*{kb}" type="text" name="ub" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penulisandan Pengembangan Materi Metodologi</label>
+                                                        <input th:field="*{kc}" type="text" name="uc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Argumentasi</label>
+                                                        <input th:field="*{kd}" type="text" name="ud" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Penguji </h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi</label>
+                                                        <input th:field="*{ua}" type="text" name="ua" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi dan Metodologi</label>
+                                                        <input th:field="*{ub}" type="text" name="ub" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penulisandan Pengembangan Materi Metodologi</label>
+                                                        <input th:field="*{uc}" type="text" name="uc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Argumentasi</label>
+                                                        <input th:field="*{ud}" type="text" name="ud" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--                                    -->
+
+                                        <div class="col-md-3">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Pembimbing 1</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi</label>
+                                                        <input th:field="*{pa}" type="text" name="pa" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi dan Metodologi</label>
+                                                        <input th:field="*{pb}" type="text" name="pb" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penulisandan Pengembangan Materi Metodologi</label>
+                                                        <input th:field="*{pc}" type="text" name="pc" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Argumentasi</label>
+                                                        <input th:field="*{pd}" type="text" name="pd" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="card shadow">
+                                                <div class="card-body">
+                                                <span th:object="${sidang}">
+                                                    <div class="card-header border-1">
+                                                        <center>
+                                                            <h3 class="mb-0">Pembimbing 2</h3>
+                                                        </center>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Presentasi</label>
+                                                        <input th:field="*{pa2}" type="text" name="pa2" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penguasaan Materi dan Metodologi</label>
+                                                        <input th:field="*{pb2}" type="text" name="pb2" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Penulisandan Pengembangan Materi Metodologi</label>
+                                                        <input th:field="*{pc2}" type="text" name="pc2" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Argumentasi</label>
+                                                        <input th:field="*{pd2}" type="text" name="pd2" class="form-control">
+                                                        <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
+                                                    </div>
+                                                </span>
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col text-center">
+                                <button type="submit" class="btn btn-primary btn-outline-primary">
+                                    <i class="fas fa-check"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+
+    </div>
+    <br>
+</div>
+</body>
+</html>
