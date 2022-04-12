@@ -1871,6 +1871,7 @@ public class GraduationController {
             System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
+                seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
@@ -1884,6 +1885,7 @@ public class GraduationController {
             System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
+                seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
@@ -1897,6 +1899,7 @@ public class GraduationController {
             System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
+                seminar.setStatusSempro(StatusApprove.APPROVED);
                 seminarDao.save(seminar);
                 return "berhasil";
 
