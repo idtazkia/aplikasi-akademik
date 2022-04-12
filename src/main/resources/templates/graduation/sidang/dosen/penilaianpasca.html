@@ -39,7 +39,7 @@
     </div>
 
     <div class="container-fluid mt--7">
-        <form th:action="@{/graduation/sidang/dosen/penilaian}" method="post" th:object="${data}">
+        <form th:action="@{/graduation/sidang/dosen/penilaianpasca}" method="post" th:object="${data}">
             <div class="row">
                 <div class="col-md-8">
                     <div class="row">
@@ -47,7 +47,7 @@
                             <div class="card shadow">
                                 <div class="card-header border-1 text-center">
                                     <b style="font-size: 15px">
-                                        PENILAIAN SIDANG SKRIPSI INSTITUT TAZKIA
+                                        PENILAIAN SIDANG TESIS INSTITUT TAZKIA
                                         <br>
                                         <span th:text="${sidang.tahunAkademik.namaTahunAkademik}"></span>
                                     </b>
@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-xs-12">
-                                            <b style="color: #4285f4; font-size: 15px;">Judul Sidang Skripsi</b>
+                                            <b style="color: #4285f4; font-size: 15px;">Judul Sidang Tesis</b>
                                             <p th:text="${sidang.judulTugasAkhir}">Faktor-faktor yang mempengaruhi minat nasabah dalam mengajukan pembiayaan mudharobah di Bank BTN Syariah Pekanbaru	</p>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@
                             <div class="card shadow">
                                 <div class="card-header border-1 text-center">
                                     <b style="font-size: 15px">
-                                        BERITA ACARA SIDANG SKRIPSI INSTITUT TAZKIA
+                                        BERITA ACARA SIDANG TESIS INSTITUT TAZKIA
                                         <br>
                                         <span th:text="${sidang.tahunAkademik.namaTahunAkademik}"></span>
                                     </b>
@@ -126,6 +126,7 @@
                                                 <li th:text="${sidang.ketuaPenguji.karyawan.namaKaryawan}">Contoh Lc, MA</li>
                                                 <li th:text="${sidang.dosenPenguji.karyawan.namaKaryawan}">Contoh Lc, MA</li>
                                                 <li th:text="${sidang.seminar.note.dosen.karyawan.namaKaryawan}">Contoh Lc, MA</li>
+                                                <li th:text="${sidang.seminar.note.dosen2.karyawan.namaKaryawan}">Contoh Lc, MA</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -151,22 +152,22 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label>Pembahasan</label>
+                                        <label>Presentasi</label>
                                         <input type="text" name="nilaiA" th:field="*{nilaiA}" class="form-control">
                                         <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
                                     </div>
                                     <div class="form-group">
-                                        <label>Penguasaan Materi</label>
+                                        <label>Penguasaan Materi dan Metodologi</label>
                                         <input type="text" name="nilaiB" th:field="*{nilaiB}" class="form-control">
                                         <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
                                     </div>
                                     <div class="form-group">
-                                        <label>Teknik Penulisan</label>
+                                        <label>Penulisandan Pengembangan Materi Metodologi</label>
                                         <input type="text" name="nilaiC" th:field="*{nilaiC}" class="form-control">
                                         <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
                                     </div>
                                     <div class="form-group">
-                                        <label>Presentasi dan Pemaparan</label>
+                                        <label>Argumentasi</label>
                                         <input type="text" name="nilaiD" th:field="*{nilaiD}" class="form-control">
                                         <input type="hidden" name="sidang" th:value="${sidang.id}" class="form-control">
                                         <span style="font-size: 10px; color: red;">*Wajib diisi (Gunakan titik(.)untuk decimal)</span>
