@@ -8,6 +8,7 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class SidangController {
@@ -81,6 +83,9 @@ public class SidangController {
 
     @Autowired
     private SidangService sidangService;
+
+    @Autowired
+    private JenjangDao jenjangDao;
 
     @Value("classpath:sample/filesidang.odt")
     private Resource fileNilai;
@@ -609,6 +614,9 @@ public class SidangController {
     public void successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
         model.addAttribute("sidang", sidang);
 
+        if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
+            model.addAttribute("waiting","waiting");
+        }
 //        if (seminar.getPublish() != null) {
 //
 //            if (seminar.getPublish().equals("AKTIF")) {
@@ -686,6 +694,10 @@ public class SidangController {
         sidang.setAkademik(StatusApprove.APPROVED);
         sidang.setStatusSidang(StatusApprove.APPROVED);
         sidang.setPembimbing(sidang.getSeminar().getNote().getDosen());
+
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
+            sidang.setPembimbing2(sidang.getSeminar().getNote().getDosen2());
+        }
         sidangDao.save(sidang);
 
         return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
@@ -725,12 +737,17 @@ public class SidangController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        model.addAttribute("selectedTahun", tahunAkademik);
-        model.addAttribute("selectedProdi", prodi);
-        model.addAttribute("dosen", dosen);
+
 
         if (tahunAkademik != null) {
-            model.addAttribute("listSidang", sidangDao.listDosenSidang(tahunAkademik,StatusApprove.APPROVED,dosen));
+            List<Sidang> sidang = sidangDao.listDosenSidang(tahunAkademik,dosen);
+
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("listSidang",sidang);
+            model.addAttribute("dosen", dosen);
+            model.addAttribute("selectedProdi", prodi);
+
+
         }
     }
 
@@ -764,6 +781,46 @@ public class SidangController {
             model.addAttribute("data", sidangService.getPembimbing(sidang));
         }
 
+        if (sidang.getPembimbing2() == dosen){
+            model.addAttribute("data", sidangService.getPembimbing2(sidang));
+        }
+
+    }
+
+    @GetMapping("/graduation/sidang/dosen/penilaianpasca")
+    public void penilaiaanSidangTesis(Model model,@RequestParam Sidang sidang,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("sidang",sidang);
+
+        if (sidang.getKetuaPenguji() == dosen){
+            model.addAttribute("data", sidangService.getKetua(sidang));
+        }
+
+        if (sidang.getDosenPenguji() == dosen){
+            model.addAttribute("data", sidangService.getPenguji(sidang));
+        }
+
+        if (sidang.getPembimbing() == dosen){
+            model.addAttribute("data", sidangService.getPembimbing(sidang));
+        }
+
+        if (sidang.getPembimbing2() == dosen){
+            model.addAttribute("data", sidangService.getPembimbing2(sidang));
+        }
+
     }
 
     @PostMapping("/graduation/sidang/dosen/penilaian")
@@ -795,6 +852,47 @@ public class SidangController {
             sidangService.savePembimbing(sidangDto);
         }
 
+        if (sidang.getPembimbing2() == dosen){
+            sidangService.savePembimbing2(sidangDto);
+        }
+
+
+        return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/sidang/dosen/penilaianpasca")
+    public String savePasca(@RequestParam Sidang sidang,@RequestParam(required = false) BigDecimal nilaiA,Authentication authentication,
+                            @RequestParam(required = false) BigDecimal nilaiB,@RequestParam(required = false) BigDecimal nilaiC,
+                            @RequestParam(required = false) BigDecimal nilaiD,@RequestParam(required = false) String beritaAcara,@RequestParam(required = false) String komentar){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        SidangDto sidangDto = new SidangDto();
+        sidangDto.setId(sidang.getId());
+        sidangDto.setKomentar(komentar);
+        sidangDto.setBeritaAcara(beritaAcara);
+        sidangDto.setNilaiA(nilaiA);
+        sidangDto.setNilaiB(nilaiB);
+        sidangDto.setNilaiC(nilaiC);
+        sidangDto.setNilaiD(nilaiD);
+
+        if (sidang.getKetuaPenguji() == dosen){
+            sidangService.saveKetuaPasca(sidangDto);
+        }
+
+        if (sidang.getDosenPenguji() == dosen){
+            sidangService.savePengujiPasca(sidangDto);
+        }
+
+        if (sidang.getPembimbing() == dosen){
+            sidangService.savePembimbingPasca(sidangDto);
+        }
+
+        if (sidang.getPembimbing2() == dosen){
+            sidangService.savePembimbing2(sidangDto);
+        }
+
 
         return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
     }
@@ -802,8 +900,13 @@ public class SidangController {
     @PostMapping("/graduation/sidang/dosen/publish")
     @ResponseBody
     public String publishSidang(@RequestParam Sidang sidang){
-        Object nilaiKosong = sidangDao.validasiPublishNilai(sidang,BigDecimal.ZERO);
-        System.out.println(nilaiKosong);
+        Object nilaiKosong = null;
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")){
+            nilaiKosong = sidangDao.validasiPublishNilai(sidang,BigDecimal.ZERO);
+        }
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
+            nilaiKosong = sidangDao.validasiPublishNilaiPasca(sidang,BigDecimal.ZERO);
+        }
         if (nilaiKosong == null) {
             sidang.setPublish(StatusRecord.AKTIF);
             sidangDao.save(sidang);
@@ -879,6 +982,32 @@ public class SidangController {
             } else if (sidang.getFileIjazah().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (sidang.getFileIjazah().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+
+    }
+
+    @GetMapping("/upload/{sidang}/persetujuan/")
+    public ResponseEntity<byte[]> persetujuan(@PathVariable Sidang sidang, Model model) throws Exception {
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
+                + File.separator + sidang.getFilePersetujuan();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sidang.getFilePersetujuan().toLowerCase().endsWith("jpeg") || sidang.getFilePersetujuan().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sidang.getFilePersetujuan().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sidang.getFilePersetujuan().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -995,6 +1124,60 @@ public class SidangController {
         }
     }
 
+    @GetMapping("/graduation/sidang/admin/score")
+    public void nilaiProdi(Model model,@RequestParam Sidang sidang,@RequestParam(required = false) String kosong,
+                           @RequestParam(required = false) String akses,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        String valueHari = String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue());
+        if (sidang.getTanggalUjian().getDayOfWeek().getValue() == 7){
+            Hari hari = hariDao.findById("0").get();
+            model.addAttribute("hari", hari);
+
+        }else {
+            Hari hari = hariDao.findById(valueHari).get();
+            model.addAttribute("hari", hari);
+
+        }
+
+        if (kosong != null){
+            model.addAttribute("kosong", "Seminar tidak bisa di publish, karena nilai belum lengkap. Silahkan cek nilai Anda dan penguji lainnya");
+        }
+        model.addAttribute("dosen", dosen);
+        model.addAttribute("akses", akses);
+        model.addAttribute("sidang",sidang);
+
+    }
+
+    @PostMapping("/graduation/sidang/updatescore")
+    public String updatePublish(@RequestParam(required = false) String akses , Model model, Authentication authentication,
+                                @RequestParam Sidang sidang ,@Valid SeminarDto seminarDto,@RequestParam(required = false) String jenjang ){
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        model.addAttribute("dosen" , dosen);
+
+        if (jenjang.equals("sarjana")){
+            sidangService.updateSidang(sidang,seminarDto);
+        }
+        if (jenjang.equals("pascasarjana")){
+            sidangService.updateSidangPasca(sidang,seminarDto);
+        }
 
 
+        if (akses.equals("prodi")){
+            return "redirect:../sidang/prodi/list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+
+        }
+
+        if (akses.equals("admin")){
+            return "redirect:../sidang/admin/list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+
+        }
+
+        return "redirect:list?tahunAkademik=" + sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+
+
+    }
 }

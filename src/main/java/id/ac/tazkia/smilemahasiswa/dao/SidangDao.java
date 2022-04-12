@@ -29,8 +29,14 @@ public interface SidangDao extends PagingAndSortingRepository<Sidang, String> {
     @Query(value = "select * from sidang where id = ?1 and (ka = ?2 or kb = ?2 or kc = ?2 or kd = ?2 or ua = ?2 or ub = ?2 or uc = ?2 or ud = ?2 or pa = ?2 or pb = ?2 or pc = ?2 or pd = ?2 or pa2 = ?2 or pb2 = ?2 or pc2 = ?2 or pd2 = ?2)", nativeQuery = true)
     Object validasiPublishNilaiPasca(Sidang sidang, BigDecimal nilai);
 
-    @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3) order by s.akademik desc, s.statusSidang desc , s.publish desc")
-    List<Sidang> listDosenSidang(TahunAkademik tahunAkademik,StatusApprove statusApprove,Dosen dosen);
+    @Query(value = "SELECT s.* FROM sidang as s where id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and ( ketua_penguji = ?2 or dosen_penguji = ?2 or pembimbing = ?2)\n" +
+            "UNION\n" +
+            "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id inner join mahasiswa as m on n.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id where s.id_tahun_akademik = ?1 and akademik = 'APPROVED' and status_sidang = 'APPROVED' and  s.pembimbing2 = ?2\n" +
+            "order by 2", nativeQuery = true)
+    List<Sidang> listDosenSidang(TahunAkademik tahunAkademik,Dosen dosen);
+
+    @Query("select s from Sidang s where s.tahunAkademik = ?1 and s.akademik = ?2 and s.statusSidang = ?2 and s.seminar.note.mahasiswa.idProdi.idJenjang = ?4 and  (s.ketuaPenguji = ?3 or s.pembimbing = ?3 or s.dosenPenguji = ?3 or s.pembimbing2 = ?3) order by s.akademik desc, s.statusSidang desc , s.publish desc")
+    List<Sidang> listDosenSidangThesis(TahunAkademik tahunAkademik,StatusApprove statusApprove,Dosen dosen, Jenjang jenjang);
 
     @Query(value = "SELECT s.* FROM sidang as s inner join seminar as se on s.id_seminar = se.id inner join note as n on se.id_note = n.id where n.id_mahasiswa = ?1 and s.status_sidang not in ('HAPUS')", nativeQuery = true)
     List<Object> cekSidang(Mahasiswa mahasiswa);

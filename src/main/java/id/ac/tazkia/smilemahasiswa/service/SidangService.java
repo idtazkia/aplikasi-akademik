@@ -101,6 +101,7 @@ public class SidangService {
     public Sidang updateSidangPasca(Sidang sidang,SeminarDto seminarDto){
         BeanUtils.copyProperties(seminarDto,sidang);
 
+
        sidang.setPa2(seminarDto.getPa2());
        sidang.setPb2(seminarDto.getPb2());
        sidang.setPc2(seminarDto.getPc2());
@@ -114,6 +115,22 @@ public class SidangService {
        sidang.setNilaiC(nilaiC);
        sidang.setNilaiD(nilaiD);
        sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
+        sidangDao.save(sidang);
+        return sidang;
+    }
+
+    public Sidang updateSidang(Sidang sidang,SeminarDto seminarDto){
+        BeanUtils.copyProperties(seminarDto,sidang);
+
+        BigDecimal nilaiA = sidang.getKa().add(sidang.getUa()).add(sidang.getPa()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.4));
+        BigDecimal nilaiB = sidang.getKb().add(sidang.getUb()).add(sidang.getPb()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.3));
+        BigDecimal nilaiC = sidang.getKc().add(sidang.getUc()).add(sidang.getPc()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        BigDecimal nilaiD = sidang.getKd().add(sidang.getUd()).add(sidang.getPd()).divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.15));
+        sidang.setNilaiA(nilaiA);
+        sidang.setNilaiB(nilaiB);
+        sidang.setNilaiC(nilaiC);
+        sidang.setNilaiD(nilaiD);
+        sidang.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD));
         sidangDao.save(sidang);
         return sidang;
     }
@@ -245,7 +262,7 @@ public class SidangService {
         sidang.setKc(sidangDto.getNilaiC());
         sidang.setKd(sidangDto.getNilaiD());
         sidangDao.save(sidang);
-        akumulasiNilai(sidang);
+        akumulasiNilaiPasca(sidang);
 
         System.out.println("berhasil");
 
