@@ -111,6 +111,9 @@
                         <br>
                         <span style="color: #b8b8b8;">Your Score Total</span>
                         <br>
+                        <b class="card-text" style="color: #53b86b;" th:if="${seminar.nilai >= 70}" th:text="${seminar.nilai}">Lulus</b>
+                        <b class="card-text" style="color: #f25a50;" th:if="${seminar.nilai < 70}" th:text="${seminar.nilai}">Tidak Lulus</b>
+                        <br>
                         <b class="card-title">
                             <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.SKRIPSI}" th:text="${seminar.nilai}">2019-01-01</p>
                             <p style="font-size: 25px;" class="card-text"  th:if="${seminar.note.jenis == seminar.note.jenis.STUDI_KELAYAKAN}" th:text="${seminar.nilai}">2019-01-01</p>
@@ -124,27 +127,61 @@
                             Comment
                         </b>
                     </div>
-                    <div class="col-md-12 col-xs-12 margin-col">
-                        <div class="card-green">
-                            <b class="card-title">Komentar Ketua Penguji (<span th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
-                            <p class="p-comment" th:text="${seminar.komentarKetua}" th:if="${seminar.komentarKetua != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
-                                Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                    <span th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-green">
+                                <b class="card-title">Komentar Ketua Penguji (<span th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarKetua}" th:if="${seminar.komentarKetua != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-12 col-xs-12 margin-col">
-                        <div class="card-blue">
-                            <b class="card-title">Komentar Penguji 1 (<span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
-                            <p class="p-comment" th:text="${seminar.komentarPenguji}" th:if="${seminar.komentarPenguji != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
-                                Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-blue">
+                                <b class="card-title">Komentar Penguji 1 (<span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarPenguji}" th:if="${seminar.komentarPenguji != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-12 col-xs-12 margin-col">
-                        <div class="card-red">
-                            <b class="card-title">Komentar Penguji 2 (<span th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
-                            <p class="p-comment" th:text="${seminar.komentarPembimbing}" th:if="${seminar.komentarPembimbing != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
-                                Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-red">
+                                <b class="card-title">Komentar Penguji 2 (<span th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarPembimbing}" th:if="${seminar.komentarPembimbing != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
                         </div>
-                    </div>
+                    </span>
+
+                    <span th:if="${seminar.note.mahasiswa.idProdi.idJenjang.id == '02'}">
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-green">
+                                <b class="card-title">Komentar Ketua Penguji (<span th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarKetua}" th:if="${seminar.komentarKetua != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-blue">
+                                <b class="card-title">Komentar Dosen Penguji (<span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarPenguji}" th:if="${seminar.komentarPenguji != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-red">
+                                <b class="card-title">Pembimbing 1 (<span th:text="${seminar.note.dosen.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarPembimbing}" th:if="${seminar.komentarPembimbing != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-xs-12 margin-col">
+                            <div class="card-red">
+                                <b class="card-title">Pembimbing 2 (<span th:text="${seminar.note.dosen2.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <p class="p-comment" th:text="${seminar.komentarPembimbing2}" th:if="${seminar.komentarPembimbing2 != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+                            </div>
+                        </div>
+                    </span>
                     <div class="col-md-12 col-xs-12 margin-col" th:if="${sidang == null}">
                         <div class="card-red">
                             <center>
