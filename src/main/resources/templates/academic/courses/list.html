@@ -90,9 +90,9 @@
                                 <td><button type="button" class="btn btn-outline-success btn-sm" th:text="${item.namaMatakuliah}">Matematika</button></td>
                                 <td th:text="${item.namaMatakuliahEnglish}">mathematics</td>
                                 <td th:text="${item.singkatan}">MTK</td>
-                                <td>
-                                    <a th:href="@{/academic/courses/form (id = ${item.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>
-                                </td>
+<!--                                <td>-->
+<!--                                    <a th:href="@{/academic/courses/form (id = ${item.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>-->
+<!--                                </td>-->
                                 <td>
                                     <!--button-->
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+item.id}">
