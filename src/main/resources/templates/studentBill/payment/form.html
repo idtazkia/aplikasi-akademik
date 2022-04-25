@@ -198,7 +198,7 @@
                                     <div th:if="${cekCicilan == null}">
                                         <div th:if="${tagihan.status.AKTIF} == ${tagihan.status}">
                                             <div class="col-xs-12" th:if="${tagihan} != null">
-                                                <a th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
+                                                <a target="_blank" th:href="@{/panduanPembayaran}" class="btn btn-success">Panduan Pembayaran</a>
                                                 <text th:if="${penangguhan == null}">
                                                     <text th:if="${cekPeringanan == null}">
                                                         <a class="btn btn-primary" th:href="@{/studentBill/requestPenangguhan/date(id = ${tagihan.id})}">Pengajuan Penangguhan</a>

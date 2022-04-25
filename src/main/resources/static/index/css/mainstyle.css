@@ -1,0 +1,888 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: roboto;
+    background: #FFF9F2;
+}
+
+/* utilities */
+.anchor {
+    display: block;
+    height: 40px;
+    margin-top: -40px;
+    visibility: hidden;
+}
+
+/* button */
+.btn-blue {
+    color: #FFF9F2;
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    border-radius: 15px;
+}
+
+.btn-blue:hover {
+    color: #FFF9F2;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.btn-white {
+    color: #13263D;
+    background-color: white;
+    border-radius: 15px;
+}
+
+.btn-white:hover {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.tombol-aksi {
+    background: #023E88;
+    font-weight: normal;
+    color: white;
+    padding: 8px 15px;
+    margin: 2px 2px 2px 2px;
+}
+
+.tombol-aksi:hover {
+    background-color: #F47920;
+    color: white;
+}
+
+.tombol-aksi-merah {
+    background-color: #b90000;
+    font-weight: normal;
+    color: white;
+    padding: 6px;
+    margin: 2px 2px 2px 2px;
+}
+
+.tombol-aksi-merah:hover {
+    color: white;
+}
+
+/* divider */
+.divider {
+    width: 70px;
+    height: 8px;
+    border-radius: 4px;
+    background: #F47920;
+
+}
+
+/* modals */
+.modal-content {
+    background-color: #FFF9F2;
+    border-radius: 10px;
+    border: none;
+}
+
+.modal .header {
+    text-align: center;
+    color: white;
+    border: none;
+    border-radius: 10px 10px 0px 0px;
+    padding: 0px;
+}
+
+.modal .header img {
+    width: 100%;
+    margin-top: -15px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.modal .header .close {
+    position: relative;
+    margin-right: -10px;
+    margin-top: -10px;
+}
+
+.modal .header .close i {
+    color: white;
+    border: none;
+}
+
+.modal-body {
+    margin: 10px 30px 20px 30px;
+}
+
+/* data table */
+.data-table {
+    background-color: white;
+    border: 20px solid white;
+    border-radius: 10px;
+    min-height: 200px;
+    margin-bottom: 30px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.10);
+}
+
+.data-table thead {
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+    border: none;
+    outline: none;
+}
+
+.data-table thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.data-table thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.data-table thead th {
+    height: 60px;
+    vertical-align: middle;
+}
+
+.data-table td {
+    vertical-align: middle;
+}
+
+/* end utilities */
+
+/* navbar */
+.navbar {
+    background-color: white;
+    box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.05);
+}
+
+.navbar .navbar-toggler i {
+    font-size: 35px;
+    color: #13263D;
+}
+
+.navbar-nav .nav-link {
+    color: #13263D;
+    margin-right: 30px;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #F47920;
+    font-weight: 400;
+}
+
+.navbar .profil {
+    margin-top: 5px;
+}
+
+.navbar .profil img {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+}
+
+/* end navbar */
+
+/* slider */
+.slider .heading {
+    margin-top: 125px;
+    margin-bottom: 70px;
+}
+
+.main-slider img {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    width: auto !important;
+    height: 430px;
+}
+
+.slider-1 {
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+    height: 600px;
+    width: 100%;
+}
+
+.slider-2 {
+    background: linear-gradient(106.64deg, #F47920 33.71%, #FFA667 100%);
+    color: white;
+    height: 600px;
+    width: 100%;
+}
+
+/* end slider */
+
+/* program section */
+.program {
+    background-color: white;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    margin-top: -50px;
+    padding: 30px 20px;
+    position: relative;
+    z-index: 9;
+}
+
+.program img {
+    margin-right: 10px;
+}
+
+.program p {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* end program section */
+
+/* faculty section */
+.faculty {
+    margin-top: 150px;
+}
+
+.faculty img {
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.faculty h6 {
+    margin-bottom: 20px;
+}
+
+.faculty a {
+    text-decoration: none;
+    color: #13263D;
+}
+
+.faculty a:hover {
+    color: #F47920;
+}
+
+.faculty a i {
+    color: #F47920;
+}
+
+/* modals faculty*/
+
+.modal-body-faculty ul {
+    margin-top: 20px;
+}
+
+.modal-body-faculty ul span {
+    color: #F47920;
+    font-size: 25px;
+    margin-right: 30px;
+}
+
+.modal-body-faculty ul li {
+    margin-bottom: 10px;
+}
+
+.modal-body-faculty ul li p {
+    margin-bottom: -1px;
+}
+
+.modal-body-faculty ul li a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.modal-body-faculty ul li a:hover {
+    color: #F47920;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #FFF9F2;
+}
+
+/* end modal faculty */
+/* end faculty section */
+/* test section */
+.jalur-test {
+    margin-top: 90px;
+}
+
+.jalur-test img {
+    height: 55px;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.jalur-test h6 {
+    margin-bottom: 20px;
+}
+
+.jalur-test a {
+    text-decoration: none;
+    color: #13263D;
+    display: block;
+    line-height: 5px;
+}
+
+.jalur-test a:hover {
+    color: #F47920;
+}
+
+.jalur-test a i {
+    color: #F47920;
+}
+
+/* modal jalur test */
+.modal-body-test img {
+    height: 350px;
+}
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.timeline:before {
+    content: ' ';
+    background: #F47920;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+
+ul.timeline>li {
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+ul.timeline>li:before {
+    content: '';
+    background: white;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #F47920;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 400;
+}
+
+.timeline a {
+    color: #023E88;
+    text-decoration: none;
+}
+
+.timeline a:hover {
+    color: #F47920;
+}
+
+/* end modal jalur test */
+/* end test section */
+/* download brosur section */
+.download-brosur {
+    margin-top: 150px;
+}
+
+.download-brosur img {
+    margin-bottom: 30px;
+}
+
+.download-brosur a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    line-height: 40px;
+}
+
+.download-brosur a:hover {
+    color: #F47920;
+}
+
+.download-brosur i {
+    color: #F47920;
+    width: 30px;
+}
+
+/* end download brosur section */
+/* info akreditasi section */
+.info-akreditasi {
+    margin-top: 85px;
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    padding: 60px 0px 60px 0px;
+    color: white;
+}
+
+/* end info akreditasi section */
+/* video section */
+.video-section {
+    margin-top: 150px;
+}
+
+.video-frame {
+    padding: 10px;
+    border-radius: 10px;
+    border-color: white;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+    margin: 20px 0px 20px 0px;
+}
+
+/* end video section */
+/* partners section */
+.partners {
+    margin-top: 100px;
+}
+
+.partners .item {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.11);
+    border-radius: 10px;
+    margin: 15px;
+    overflow: hidden;
+}
+
+/* end partners section */
+/* email subscribetion section */
+.email-subscribe {
+    margin-top: 150px;
+    padding: 100px 0px 100px 0px;
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+}
+
+.email-subscribe form input {
+    height: 50px;
+}
+
+.email-subscribe button {
+    background-color: #F47920;
+    color: white;
+    height: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.email-subscribe button:hover {
+    background-color: white;
+    color: #F47920;
+}
+
+.email-subscribe p {
+    font-size: 30px;
+    font-weight: normal;
+    margin-bottom: 50px;
+}
+
+/* end email subscribetion section */
+/* footer section */
+footer {
+    margin-top: 130px;
+    margin-bottom: 100px;
+}
+
+footer .logo {
+    display: block;
+    margin-bottom: 10px;
+}
+
+footer .logo img {
+    width: 220px;
+}
+
+footer .sosial-icon {
+    display: flex;
+    width: 220px;
+    justify-content: space-between;
+}
+
+footer .sosial-icon a {
+    color: #F47920;
+    font-size: 35px;
+}
+
+footer .sosial-icon a:hover {
+    color: #023E88;
+}
+
+footer .address a {
+    text-decoration: none;
+    color: #212529;
+}
+
+footer .address a:hover {
+    color: #F47920;
+}
+
+footer .contact-info a {
+    display: block;
+    text-decoration: none;
+    line-height: 37px;
+    color: #212529;
+}
+
+footer .contact-info a:hover {
+    color: #F47920;
+}
+
+footer .contact-info i {
+    width: 25px;
+    color: #F47920;
+    font-size: 18px;
+}
+
+.sub-footer a {
+    text-decoration: none;
+    color: #6c757d;
+}
+
+.sub-footer a:hover {
+    color: #F47920;
+}
+
+/* end footer section */
+/* form buat akun & login */
+.buat-akun {
+    margin-top: 100px;
+    margin-bottom: 100px;
+
+}
+
+.brand h2 {
+    font-weight: 300;
+    color: #13263D;
+}
+
+.brand h2 strong {
+    font-weight: 700;
+}
+
+.buat-akun .sosial-icon p {
+    margin: 0;
+    font-size: 12px;
+}
+
+.buat-akun .sosial-icon a {
+    color: #F47920;
+    font-size: 40px;
+    margin-right: 10px;
+}
+
+.buat-akun .sosial-icon a:hover {
+    color: #023E88;
+}
+
+.form-area {
+    background-color: white;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.10);
+    border-radius: 15px;
+    padding: 40px;
+}
+
+.form-area .btn-submit {
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+    height: 42px;
+
+}
+
+.form-area .btn-submit:hover {
+    background: #F47920;
+}
+
+.form-area .btn-google {
+    background: white;
+    height: 42px;
+    border: 1px solid #dddddd;
+}
+
+.form-area .btn-google:hover {
+    background: #FFF9F2;
+}
+
+/* end form buat akun & login */
+/* jumbotron */
+.jumbotron {
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+}
+
+.header-smartTest {
+    min-height: 590px;
+}
+
+/* end jumbotron */
+/* smartTest */
+.header-smartTest form {
+    margin-top: 48px;
+}
+
+.header-smartTest form input {
+    height: 50px;
+    border-radius: 8px;
+}
+
+.header-smartTest form .input-group-text {
+    background-color: white;
+    border-radius: 8px;
+}
+
+.header-smartTest button {
+    background-color: #F47920;
+    color: white;
+    height: 50px;
+    padding: 0px 40px 0px 40px;
+    border-radius: 8px;
+}
+
+.header-smartTest button:hover {
+    background-color: white;
+    color: #F47920;
+}
+
+.hasil-samrttest {
+    margin-top: -200px;
+}
+
+/* end smartTest */
+/* form daftar smart test */
+.form-smartTest {
+    background-color: white;
+    border-radius: 10px;
+    padding: 60px;
+    margin-top: -300px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.10);
+}
+
+/* end form daftar smart test */
+/* halaman pesan buat akun berhasil */
+.pesan-berhasil {
+    margin-top: 100px;
+}
+
+/* end halaman pesan buat akun berhasil */
+/* lendingpage MBS */
+.about {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.konsentrasi {
+    background-color: #13263D;
+    color: white;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    margin-top: 50px;
+}
+
+.konsentrasi a {
+    text-decoration: none;
+    color: #FFA667;
+}
+
+.konsentrasi a:hover {
+    color: #ffffff;
+}
+
+.proker {
+    margin-top: 100px;
+}
+
+.matkul {
+    background-color: white;
+    margin-top: 100px;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.matkul .list-matkul {
+    border: none;
+    color: #13263D;
+    background-color: #FFF;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.matkul .list-matkul:hover {
+    background-color: #FFF9F2;
+}
+
+.matkul .list-matkul h5 {
+    margin: 0px;
+}
+
+.matkul .list-matkul i {
+    margin-right: 10px;
+    color: #F47920;
+}
+
+.testimoni-section {
+    margin-top: 100px;
+    margin-bottom: 50px;
+}
+
+.testimoni img {
+    border-radius: 10px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profil-alumni .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 15px;
+}
+
+.profil-alumni .card p {
+    font-size: 14px;
+    font-style: italic;
+    margin-top: -5px;
+}
+
+/* end lendingpage MBS */
+
+/* panduan pembayaran */
+.panduan-pembayaran {
+    margin-top: 70px;
+}
+
+.panduan-pembayaran .nav .nav-item a {
+    color: black;
+}
+
+.panduan-pembayaran ol {
+    list-style: none;
+    counter-reset: my-awesome-counter;
+}
+
+.panduan-pembayaran ol li {
+    counter-increment: my-awesome-counter;
+    margin-bottom: 10px;
+}
+
+.panduan-pembayaran ol li::before {
+    content: counter(my-awesome-counter);
+    background: #F47920;
+    color: white;
+    font-size: 12px;
+    padding: 3px;
+    text-align: center;
+    border-radius: 50%;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    left: 18px;
+}
+
+/* end panduan pembayaran */
+
+/* btn scroll to top */
+#myBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    font-size: 25px;
+    border: none;
+    outline: none;
+    background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#myBtn:hover {
+    background: white;
+    color: #F47920;
+}
+
+/* end btn scroll to top */
+
+/* mobile version style */
+@media (max-width: 767.98px) {
+    .main-slider {
+        text-align: center;
+    }
+
+    .main-slider img {
+        visibility: hidden;
+    }
+
+    .modal-body {
+        margin: 10px 20px 20px 20px;
+    }
+
+    .program {
+        margin-top: -150px;
+    }
+
+    .faculty {
+        text-align: center;
+        margin-top: 80px;
+    }
+
+    .email-subscribe p {
+        font-size: 25px;
+    }
+
+    .partners .item {
+        border-radius: 5px;
+    }
+
+    .form-area {
+        padding: 20px;
+    }
+
+    .buat-akun {
+        margin-top: -170px;
+    }
+
+    .buat-akun .brand {
+        display: none;
+    }
+
+    .header-devider {
+        height: 250px;
+        background: linear-gradient(128.23deg, #023E88 30.51%, #0256BD 77.84%);
+    }
+
+    .header-smartTest button {
+        padding: 0px 20px 0px 20px;
+    }
+
+    .form-smartTest {
+        padding: 30px;
+        margin-top: -230px;
+    }
+
+    .hasil-samrttest {
+        margin-top: -100px;
+    }
+
+    .why {
+        flex-direction: column-reverse;
+    }
+
+    .matkul {
+        padding: 20px;
+    }
+}
+
+/* tablet version style */
+@media (max-width: 991.98px) {
+    .program img {
+        margin-bottom: 25px;
+    }
+
+    .jalur-test img {
+        margin-top: 40px;
+    }
+
+    .address {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .form-area {
+        padding: 25px;
+    }
+}
