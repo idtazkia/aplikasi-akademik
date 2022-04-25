@@ -45,6 +45,21 @@ public class SidangService {
             seminar.setNilaiE(nilaiE);
             seminar.setNilaiF(nilaiF);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE).add(nilaiF));
+            Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar,BigDecimal.ZERO);
+            if (nilaiKosong == null) {
+                if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                    seminar.setStatusSempro(StatusApprove.FAILED);
+                    seminar.setStatus(StatusApprove.FAILED);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                    if (enableFiture != null) {
+                        enableFiture.setEnable(Boolean.FALSE);
+                        enableFitureDao.save(enableFiture);
+                    }
+                }else {
+                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                }
+            }
+
         }
 
         if (seminarDto.getJenis() == StatusRecord.STUDI_KELAYAKAN){
@@ -59,7 +74,20 @@ public class SidangService {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
-
+            Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar,BigDecimal.ZERO);
+            if (nilaiKosong == null) {
+                if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                    seminar.setStatusSempro(StatusApprove.FAILED);
+                    seminar.setStatus(StatusApprove.FAILED);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                    if (enableFiture != null) {
+                        enableFiture.setEnable(Boolean.FALSE);
+                        enableFitureDao.save(enableFiture);
+                    }
+                }else {
+                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                }
+            }
         }
 
         if (seminarDto.getJenis() == StatusRecord.TESIS){
@@ -79,21 +107,24 @@ public class SidangService {
             seminar.setNilaiD(nilaiD);
             seminar.setNilaiE(nilaiE);
             seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
+            Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,BigDecimal.ZERO);
+            if (nilaiKosong == null) {
+                if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
+                    seminar.setStatusSempro(StatusApprove.FAILED);
+                    seminar.setStatus(StatusApprove.FAILED);
+                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
+                    if (enableFiture != null) {
+                        enableFiture.setEnable(Boolean.FALSE);
+                        enableFitureDao.save(enableFiture);
+                    }
+                }else {
+                    seminar.setStatusSempro(StatusApprove.APPROVED);
+                }
+            }
 
         }
 
-        /*seminar.setPublish(StatusRecord.AKTIF.toString());
-        if (seminar.getNilai().compareTo(new BigDecimal(70)) < 0) {
-            seminar.setStatusSempro(StatusApprove.FAILED);
-            seminar.setStatus(StatusApprove.FAILED);
-            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(), StatusRecord.SEMPRO, Boolean.TRUE);
-            if (enableFiture != null) {
-                enableFiture.setEnable(Boolean.FALSE);
-                enableFitureDao.save(enableFiture);
-            }
-        }else {
-            seminar.setStatusSempro(StatusApprove.APPROVED);
-        }*/
+
         seminarDao.save(seminar);
         return seminar;
     }

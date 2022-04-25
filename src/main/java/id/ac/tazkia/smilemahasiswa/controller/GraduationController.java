@@ -1868,7 +1868,6 @@ public class GraduationController {
     public String publishSeminar(@RequestParam Seminar seminar){
         if (seminar.getNote().getJenis() == StatusRecord.STUDI_KELAYAKAN){
             Object nilaiKosong = seminarDao.validasiPublishNilaiStudy(seminar,BigDecimal.ZERO);
-            System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
@@ -1882,7 +1881,6 @@ public class GraduationController {
 
         if (seminar.getNote().getJenis() == StatusRecord.SKRIPSI){
             Object nilaiKosong = seminarDao.validasiPublishNilaiSkripsi(seminar,BigDecimal.ZERO);
-            System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
@@ -1896,7 +1894,6 @@ public class GraduationController {
 
         if (seminar.getNote().getJenis() == StatusRecord.TESIS){
             Object nilaiKosong = seminarDao.validasiPublishNilaiTesis(seminar,BigDecimal.ZERO);
-            System.out.println(nilaiKosong);
             if (nilaiKosong == null) {
                 seminar.setPublish("AKTIF");
                 seminar.setStatusSempro(StatusApprove.APPROVED);
