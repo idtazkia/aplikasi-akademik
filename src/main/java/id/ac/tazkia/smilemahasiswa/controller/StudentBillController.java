@@ -2101,11 +2101,13 @@ public class StudentBillController {
     }
 
     @GetMapping("/panduanPembayaran")
-    public void getPanduanPembayaran(HttpServletResponse response) throws Exception{
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=Panduan_Pembayaran.pdf");
-        FileCopyUtils.copy(panduanPembayaran.getInputStream(), response.getOutputStream());
-        response.getOutputStream().flush();
+    public void panduanPembayaran(){
+
+
+//        response.setContentType("application/pdf");
+//        response.setHeader("Content-Disposition", "attachment; filename=Panduan_Pembayaran.pdf");
+//        FileCopyUtils.copy(panduanPembayaran.getInputStream(), response.getOutputStream());
+//        response.getOutputStream().flush();
     }
 
     @GetMapping("/studentBill/payment/report")

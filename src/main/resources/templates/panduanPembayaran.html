@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+     <!-- Required meta tags -->
+     <meta charset="utf-8">
+     <meta name="description" content="Seleksi Penerimaan Mahasiswa Baru Institut Tazkia">
+     <meta name="author" content="Institut Tazkia">
+     <meta name="keywords" content="institut tazkia, kampus ekonomi syariah, kampus swasta terbaik">
+     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+     <!-- fonts -->
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <!-- fontawesome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+     <!-- owl carousel -->
+     <link rel="stylesheet" th:href="@{/index/css/owl.carousel.min.css}">
+     <link rel="stylesheet" th:href="@{/index/css/owl.theme.default.min.css}">
+     <!-- favicon -->
+     <link rel="shortcut icon" th:href="@{/index/img/favicon.png}" type="image/x-icon">
+     <!-- my style -->
+     <link rel="stylesheet" th:href="@{/index/css/mainstyle.css}">
+     <title>panduan Pembayaran - Institut Tazkia</title>
+</head>
+
+<body>
+     <!-- jumbotron -->
+     <div class="jumbotron">
+          <div class="container">
+               <div class="row">
+                    <div class="col-md-6">
+                         <h1 class="display-4 mt-5">Panduan Pembayaran</h1>
+                         <p class="lead">Panduan dan Tatacara Melakukan Pembayaran Biaya Perkuliahan Mahasiswa Institut Agama Islam Tazkia</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                         <img class="img-fluid" th:src="@{/img/panduan.svg}" alt="panduan">
+                    </div>
+               </div>
+          </div>
+     </div>
+     <!-- end jumbotron -->
+     <!-- panduan pembayaran cimb niaga syariah -->
+     <div class="container panduan-pembayaran">
+          <h4>Panduan Pembayaran <br>Rekening Virtual Account CIMB Niaga Syariah</h4>
+          <ul class="nav nav-tabs mt-4" id="cimb" role="tablist">
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="cimbATM-tab" data-toggle="tab" href="#cimbATM" role="tab"
+                         aria-controls="cimbATM" aria-selected="true">Via ATM</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="cimbMBanking-tab" data-toggle="tab" href="#cimbMBanking" role="tab"
+                         aria-controls="cimbMBanking" aria-selected="false">Via Mobile Banking</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="cimbInternet-tab" data-toggle="tab" href="#cimbInternet" role="tab"
+                         aria-controls="cimbInternet" aria-selected="false">Via Internet Banking</a>
+               </li>
+          </ul>
+          <div class="tab-content" id="cimbContent">
+               <div class="tab-pane fade show active" id="cimbATM" role="tabpanel" aria-labelledby="cimbATM-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari ATM CIMB/CIMB Niaga Syariah</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih menu Pembayaran > Lanjut > Virtual Account Transfer</li>
+                                   <li>Masukkan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Pilih rekening debit</li>
+                                   <li>Nomor, nama virtual account dan jumlah billing ditampilkan pada layar</li>
+                                   <li>Pilih OK untuk melakukan pembayaran</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Bank lain</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih menu TRANSFER > TRANSFER KE BANK LAIN</li>
+                                   <li>Masukkan kode bank CIMB Niaga : 022</li>
+                                   <li>Masukkan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="cimbMBanking" role="tabpanel" aria-labelledby="cimbMBanking-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari Octo Mobile CIMB</h6>
+                              <ol>
+                                   <li>Login ke OCTO Mobile CIMB</li>
+                                   <li>Pilih menu Transfer</li>
+                                   <li>Pilh menu transfer to Other CIMB Niaga Account</li>
+                                   <li>Pilih rekening sumber</li>
+                                   <li>Masukan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Masukan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Klik Lanjutkan</li>
+                                   <li>Masukan PIN</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Mobile Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke mobile banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>pilih transfer KE BANK LAIN</li>
+                                   <li>pilih CIMB/CIMB Niaga Syariah</li>
+                                   <li>Masukkan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="cimbInternet" role="tabpanel" aria-labelledby="cimbInternet-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari Octo Click</h6>
+                              <ol>
+                                   <li>Login ke Octo Click</li>
+                                   <li>Pilih menu pembayaran tagihan</li>
+                                   <li>Pilh menu rekening virtual/virtual account</li>
+                                   <li>Pilih rekening sumber</li>
+                                   <li>Masukan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Klik Lanjutkan</li>
+                                   <li>Verifikasi transaksi, pastikan nama dan tagihan sesuai</li>
+                                   <li>Kirim OTP</li>
+                                   <li>Masukan kode OTP anda dan lanjutkan</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Internet Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke internet banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>pilih transfer KE BANK LAIN</li>
+                                   <li>pilih CIMB/CIMB Niaga Syariah</li>
+                                   <li>Masukkan nomor virtual account contoh : 6989012020100015</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+     <!-- end panduan pembayaran cimb niaga syariah -->
+     <!-- panduan pembayaran mandiri syariah -->
+     <div class="container panduan-pembayaran">
+          <h4>Panduan Pembayaran <br>Rekening Virtual Account Mandiri Syariah</h4>
+          <p>Virtual Account Bank Mandiri Syariah terdiri dari kode sebagai berikut :<br>Kode BPI : 900<br>Kode
+               Institusi 4 digit : 9001<br>Kode Pembayaran 8 digit : contoh 20100015</p>
+          <p>No Virtual Account secara keseluruhan menjadi 900900120100015</p>
+          <ul class="nav nav-tabs mt-4" id="bsi" role="tablist">
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="bsiATM-tab" data-toggle="tab" href="#bsiATM" role="tab"
+                         aria-controls="bsiATM" aria-selected="true">Via ATM</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="bsiMBanking-tab" data-toggle="tab" href="#bsiMBanking" role="tab"
+                         aria-controls="bsiMBanking" aria-selected="false">Via Mobile Banking</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="bsiInternet-tab" data-toggle="tab" href="#bsiInternet" role="tab"
+                         aria-controls="bsiInternet" aria-selected="false">Via Internet Banking</a>
+               </li>
+          </ul>
+          <div class="tab-content" id="bsiContent">
+               <div class="tab-pane fade show active" id="bsiATM" role="tabpanel" aria-labelledby="bsiATM-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari ATM Mandiri/Mandiri Syariah</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih Menu Utama</li>
+                                   <li>Pilih Menu Pembayaran/Pembelian</li>
+                                   <li>Pilih Menu Akademik</li>
+                                   <li>Masukan kode Institusi dan kode pembayaran (Contoh : 900120100015)</li>
+                                   <li>Masukkan nomor virtual account (contoh : 8311012020100015)</li>
+                                   <li>Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.</li>
+                                   <li>Konfirmasi, apabila telah sesuai, lanjutkan transaksi.</li>
+                                   <li>Transaksi Anda telah selesai.</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Bank lain</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>Pilih TRANSFER KE BANK LAIN</li>
+                                   <li>Masukkan kode Bank Mandiri Syariah (451) dan 15 Digit Nomor Virtual Account
+                                        (Contoh: 900900120100015).</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Konfirmasi rincian Anda akan tampil pada layar.</li>
+                                   <li>Jika sudah sesuai, klik 'Ya' untuk melanjutkan.</li>
+                                   <li>Transaksi Anda telah berhasil.</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="bsiMBanking" role="tabpanel" aria-labelledby="bsiMBanking-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari Mandiri Syariah Mobile</h6>
+                              <ol>
+                                   <li>Login ke Mandiri Syariah Mobile</li>
+                                   <li>Pilih Menu Bayar</li>
+                                   <li>Pilih Menu Akademik.</li>
+                                   <li>Pada Kolom Nama Akademik pilih Institut Tazkia</li>
+                                   <li>Masukan kode pembayaran 8 digit (Contoh : 20100015)</li>
+                                   <li>Masukan PIN</li>
+                                   <li>Konfirmasi rincian tagihan akan ditampilkan lalu klik lanjutkan.</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Mobile Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke mobile banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>Pilih transfer KE BANK LAIN</li>
+                                   <li>Pilih Bank Mandiri Syariah</li>
+                                   <li>Masukkan nomor virtual account (Contoh: 900900120100015)</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="bsiInternet" role="tabpanel" aria-labelledby="bsiInternet-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari BSM Net Banking</h6>
+                              <ol>
+                                   <li>Login ke bsm net banking</li>
+                                   <li>Pilih Menu Pembayaran</li>
+                                   <li>Pilih Rekening Sumber</li>
+                                   <li>Pada kolom jenis pembayaran pilih Institusi</li>
+                                   <li>Pada kolom nama lembaga pilih Institut Tazkia</li>
+                                   <li>Pada kolom no pembayaran masukan kode pembayaran 8 digit (Contoh : 20100015)</li>
+                                   <li>Klik verifikasi aplikasi pembayaran</li>
+                                   <li>verifikasi rincian pembayaran akan ditampilkan</li>
+                                   <li>Masukan kode tan dan pin dan klik submit</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Internet Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke internet banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>pilih transfer KE BANK LAIN</li>
+                                   <li>pilih Mandiri Syariah</li>
+                                   <li>Masukkan nomor virtual account (Contoh: 900900120100015)</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+     <!-- end panduan pembayaran Mandiri syariah -->
+     <!-- panduan pembayaran bni syariah -->
+     <div class="container panduan-pembayaran">
+          <h4>Panduan Pembayaran <br>Rekening Virtual Account BNI Syariah</h4>
+          <ul class="nav nav-tabs mt-4" id="bni" role="tablist">
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="bniATM-tab" data-toggle="tab" href="#bniATM" role="tab"
+                         aria-controls="bniATM" aria-selected="true">Via ATM</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="bniMBanking-tab" data-toggle="tab" href="#bniMBanking" role="tab"
+                         aria-controls="bniMBanking" aria-selected="false">Via Mobile Banking</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="bniInternet-tab" data-toggle="tab" href="#bniInternet" role="tab"
+                         aria-controls="bniInternet" aria-selected="false">Via Internet Banking</a>
+               </li>
+          </ul>
+          <div class="tab-content" id="bniContent">
+               <div class="tab-pane fade show active" id="bniATM" role="tabpanel" aria-labelledby="bniATM-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari ATM BNI Syariah</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih menu Lainnya > Transfer</li>
+                                   <li>Pilih jenis rekening (contoh tabungan)</li>
+                                   <li>Pilih Virtual Account Billing</li>
+                                   <li>Masukkan nomor virtual account (contoh : 8311012020100015)</li>
+                                   <li>Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.</li>
+                                   <li>Konfirmasi, apabila telah sesuai, lanjutkan transaksi.</li>
+                                   <li>Transaksi Anda telah selesai.</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Bank lain</h6>
+                              <ol>
+                                   <li>Masukkan Kartu ATM dan PIN</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>Pilih TRANSFER KE BANK LAIN</li>
+                                   <li>Masukkan kode bank BNI (009) dan 16 Digit Nomor Virtual Account (Contoh:
+                                        8311012020100015).</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Konfirmasi rincian Anda akan tampil pada layar.</li>
+                                   <li>Jika sudah sesuai, klik 'Ya' untuk melanjutkan.</li>
+                                   <li>Transaksi Anda telah berhasil.</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="bniMBanking" role="tabpanel" aria-labelledby="bniMBanking-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari BNI Mobile</h6>
+                              <ol>
+                                   <li>Login ke BNI Mobile</li>
+                                   <li>Pilih menu Transfer</li>
+                                   <li>Pilih menu Virtual Account Billing, lalu pilih rekening debet.</li>
+                                   <li>Masukkan nomor Virtual Account Anda (Contoh: 8311012020100015)</li>
+                                   <li>Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.</li>
+                                   <li>Konfirmasi transaksi dan masukkan Password Transaksi.</li>
+                                   <li>Pembayaran Anda Telah Berhasil.</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Mobile Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke mobile banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>Pilih transfer KE BANK LAIN</li>
+                                   <li>Pilih BNI Syariah</li>
+                                   <li>Masukkan nomor virtual account (Contoh: 8311012020100015)</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+               <div class="tab-pane fade" id="bniInternet" role="tabpanel" aria-labelledby="bniInternet-tab">
+                    <div class="row mt-4">
+                         <div class="col-md-6">
+                              <h6 class="mb-3">Dari BNI Ibanking</h6>
+                              <ol>
+                                   <li>Login ke ibank.bni.co.id</li>
+                                   <li>Pilih menu Transfer</li>
+                                   <li>Pilih Virtual Account Billing.</li>
+                                   <li>Masukan nomor virtual account (Contoh: 8311012020100015)</li>
+                                   <li>Pilih rekening debet yang akan digunakan. Kemudian tekan Lanjut.</li>
+                                   <li>Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.</li>
+                                   <li>Masukkan Kode Otentikasi Token.</li>
+                              </ol>
+                         </div>
+                         <div class="col-md-6">
+                              <h6>Dari Internet Banking Bank lain</h6>
+                              <ol>
+                                   <li>Login ke internet banking</li>
+                                   <li>Pilih menu TRANSFER</li>
+                                   <li>pilih transfer KE BANK LAIN</li>
+                                   <li>pilih BNI Syariah</li>
+                                   <li>Masukkan nomor virtual account (Contoh: 8311012020100015)</li>
+                                   <li>Masukkan jumlah pembayaran sesuai tagihan</li>
+                                   <li>Ikuti instruksi untuk menyelesaikan transaksi</li>
+                              </ol>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+     <!-- end panduan pembayaran BNI syariah -->
+     <!-- footer section -->
+     <footer>
+          <div class="container">
+               <div class="row">
+                    <div class="col-lg-6">
+                         <div class="logo">
+                              <a href="https://smile.tazkia.ac.id"><img class="img-fluid" src="https://tazkia.ac.id/wp-content/uploads/2019/08/menu1.png"
+                                        alt="logo institut tazkia"></a>
+                         </div>
+                         <div class="sosial-icon">
+                              <a href="https://www.facebook.com/kampustazkia/"><i
+                                        class="fab fa-facebook-square"></i></a>
+                              <a href="https://www.linkedin.com/company/tazkia/"><i class="fab fa-linkedin"></i></a>
+                              <a href="https://www.youtube.com/c/TazkiaTV"><i class="fab fa-youtube-square"></i></a>
+                              <a href="https://www.instagram.com/tazkiaofficial/"><i
+                                        class="fab fa-instagram-square"></i></a>
+                         </div>
+                    </div>
+                    <div class="col-lg-6">
+                         <div class="address">
+                              <h5><a
+                                        href="https://www.google.com/maps/place/STEI+Tazkia/@-6.5679603,106.8466874,16z/data=!4m5!3m4!1s0x0:0xc5ab7788a51fc54b!8m2!3d-6.569154!4d106.84702">kampus
+                                        Utama</a></h5>
+                              <p>Jl. Ir. H. Djuanda No. 78 Sentul City, Bogor 16810<br>Indonesia Telp. +62 (21)
+                                   87962291-93
+                              </p>
+                              <h5><a
+                                        href="https://www.google.com/maps/place/Kampus+Matrikulasi+STEI+TAZKIA/@-6.5685895,106.7762874,12z/data=!4m8!1m2!2m1!1smatrikulasi+di+dekat+Institut+Tazkia,+Citaringgul,+Bogor,+Jawa+Barat!3m4!1s0x0:0x1e468c4f8f667574!8m2!3d-6.5727201!4d106.7428207">Kampus
+                                        Matrikulasi</a></h5>
+                              <p>Jl. Raya Dramaga Km.7 Dramaga, Bogor 16680<br>Indonesia Telp. +62 (251) 8421076</p>
+                              <h5><a href="https://goo.gl/maps/x9Bfm69Lqe9PJtf19">Kampus Tahfizh</a></h5>
+                              <p>Jl. Cilember No.156 Cilember, Bogor 16750 Indonesia</p>
+                         </div>
+                    </div>
+<!--                    <div class="col-lg-4">-->
+<!--                         <div class="contact-info">-->
+<!--                              <h5>Kontak Informasi SPMB</h5>-->
+<!--                              <a href="mailto:spmb@tazkia.ac.id"><i class="fas fa-envelope"></i>spmb@tazkia.ac.id</a>-->
+<!--                              <a href="https://wa.me/628159551299"><i class="fab fa-whatsapp-square"></i>+6281-5955-1299-->
+<!--                                   (Irma)</a>-->
+<!--                              <a href="https://wa.me/6285211464969"><i-->
+<!--                                        class="fab fa-whatsapp-square"></i>+62852-1146-4969-->
+<!--                                   (Sadam)</a>-->
+<!--                              <a href="https://wa.me/6287870765572"><i class="fab fa-whatsapp-square"></i>+62-->
+<!--                                   878-7076-5572-->
+<!--                                   (Usnaeni)</a>-->
+<!--                              <a href="https://wa.me/6285811224465"><i class="fab fa-whatsapp-square"></i>+62-->
+<!--                                   858-1122-4465-->
+<!--                                   (Joko)</a>-->
+<!--                              <a href="https://wa.me/6281211620867"><i class="fab fa-whatsapp-square"></i>+62-->
+<!--                                   812-1162-0867-->
+<!--                                   (Hadi)</a>-->
+<!--                         </div>-->
+<!--                    </div>-->
+               </div>
+          </div>
+     </footer>
+     <!-- end footer section -->
+     <!-- sub footer -->
+     <div class="container sub-footer text-center">
+          <hr>
+          <p class="my-5 text-muted">Copyright © 2020 Institut Tazkia. All Right Reserved. Template By <a
+                    href="https://dofirfauzi.com">Dofir Fauzi</a></p>
+     </div>
+     <!-- end sub footer -->
+
+
+     <!-- Optional JavaScript -->
+     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js">
+     </script>
+     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js">
+     </script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+     </script>
+     <script th:src="@{/index/js/owl.carousel.min.js}"></script>
+     <script th:src="@{/index/js/script.js}"></script>
+</body>
+
+</html>
