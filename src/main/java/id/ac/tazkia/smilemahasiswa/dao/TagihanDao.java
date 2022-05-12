@@ -75,11 +75,12 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
             "group by prodi order by prodi asc", nativeQuery = true)
     List<Object[]> listTagihanPerProdiAndDate(String tanggal1, String tanggal2, TahunAkademik tahunAkademik);
 
-    @Query(value = "select distinct b.angkatan as angkatan, sum(coalesce(a.nilai_tagihan,0)) as tagihan, sum(coalesce(c.amount,0)) as \n" +
-            "dibayar, coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(c.amount,0))) as sisa, \n" +
-            "substr(coalesce(sum(coalesce(a.nilai_tagihan,0))-sum(coalesce(c.amount,0))) * 100/sum(coalesce(a.nilai_tagihan,0)), 1,4) as percentage \n" +
-            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join tahun_akademik as d on a.id_tahun_akademik=d.id \n" +
-            "left join pembayaran as c on a.id=c.id_tagihan where a.status='AKTIF' and d.id=?1 group by angkatan \n" +
+    @Query(value = "select a.angkatan as angkatan, coalesce(tagihan,0) as tagihan,  coalesce(dibayar,0) as dibayar, coalesce(tagihan-dibayar,0) as sisa, substr((coalesce(tagihan,0)-coalesce(dibayar,0)) * 100/coalesce(tagihan,0), 1,4) as percentage  from\n" +
+            "(select a.angkatan as angkatan, sum(coalesce(a.tagihan,0)) as tagihan from\n" +
+            "(select a.id,b.angkatan as angkatan, coalesce(a.nilai_tagihan,0) as tagihan\n" +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as u on b.id_prodi = u.id inner join tahun_akademik as d on a.id_tahun_akademik=d.id where a.status='AKTIF' and d.id=?1)as a group by angkatan) a\n" +
+            "left join \n" +
+            "(select angkatan, sum(a.amount)as dibayar from pembayaran as a inner join tagihan as b on b.id=a.id_tagihan inner join mahasiswa as c on b.id_mahasiswa = c.id where a.status = 'AKTIF' and b.status='AKTIF' and c.status = 'AKTIF' and b.id_tahun_akademik=?1  group by c.angkatan) as b on a.angkatan = b.angkatan\n" +
             "order by angkatan asc", nativeQuery = true)
     List<DaftarTagihanPerAngkatanDto> listTagihanPerAngkatan(TahunAkademik tahunAkademik);
 
