@@ -130,7 +130,7 @@
                     <span th:if="${sidang.seminar.note.mahasiswa.idProdi.idJenjang.id == '01'}">
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-green">
-                                <b class="card-title">Komentar Ketua Penguji (<span th:text="${seminar.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <b class="card-title">Komentar Ketua Penguji (<span th:text="${sidang.ketuaPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${sidang.komentarKetua}" th:if="${sidang.komentarKetua != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
                                     Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
                             </div>
@@ -199,7 +199,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 margin-col text-center">
-                        <a th:href="@{/graduation/seminar/ulang (id = ${sidang.seminar.note.id})}" th:if="${sidang != null && sidang.nilai < 70}" class="hvr-sweep-to-top">Daftar Ulang</a>
+<!--                        <a th:href="@{/graduation/seminar/ulang (id = ${sidang.seminar.note.id})}" th:if="${sidang != null && sidang.nilai < 70}" class="hvr-sweep-to-top">Daftar Ulang</a>-->
                         <a th:href="@{/studentBill/bill/list}" th:if="${sidang == null}" class="hvr-sweep-to-top">Lihat Tagihan</a>
                         <a th:href="@{/dashboard}" class="hvr-sweep-to-top" style="background-color: #fc6258">Kembali ke Dashboard</a>
                     </div>
