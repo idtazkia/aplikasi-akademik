@@ -137,14 +137,14 @@
                         </div>
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-blue">
-                                <b class="card-title">Komentar Penguji 1 (<span th:text="${seminar.dosenPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <b class="card-title">Komentar Penguji 1 (<span th:text="${sidang.dosenPenguji.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${sidang.komentarPenguji}" th:if="${sidang.komentarPenguji != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
                                     Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
                             </div>
                         </div>
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-red">
-                                <b class="card-title">Komentar Penguji 2 (<span th:text="${sidang.seminar.note.dosen.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <b class="card-title">Komentar Penguji 2 (<span th:text="${sidang.pembimbing.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${sidang.komentarPembimbing}" th:if="${sidang.komentarPembimbing != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
                                     Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
                             </div>
@@ -168,7 +168,7 @@
                         </div>
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-red">
-                                <b class="card-title">Pembimbing 1 (<span th:text="${sidang.seminar.note.dosen.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <b class="card-title">Pembimbing 1 (<span th:text="${sidang.pembimbing.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${sidang.komentarPembimbing}" th:if="${sidang.komentarPembimbing != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
                                     Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
                             </div>
@@ -176,7 +176,7 @@
 
                         <div class="col-md-12 col-xs-12 margin-col">
                             <div class="card-red">
-                                <b class="card-title">Pembimbing 2 (<span th:text="${sidang.seminar.note.dosen2.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
+                                <b class="card-title">Pembimbing 2 (<span th:text="${sidang.pembimbing2.karyawan.namaKaryawan}">Nama Dosen</span>)</b>
                                 <p class="p-comment" th:text="${sidang.komentarPembimbing2}" th:if="${sidang.komentarPembimbing2 != null}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
                                     Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
                             </div>
