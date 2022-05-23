@@ -12,6 +12,7 @@ import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -56,6 +58,9 @@ public class SidangController {
 
     @Autowired
     private HariDao hariDao;
+
+    @Autowired
+    ScoreService scoreService;
 
     @Autowired
     private KaryawanDao karyawanDao;
@@ -611,20 +616,39 @@ public class SidangController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/success")
-    public void successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
+    public String successPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
         model.addAttribute("sidang", sidang);
-
-        if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
+        /*if (LocalDate.now().plusDays(1).compareTo(sidang.getTanggalUjian()) > 0){
+            System.out.println("lewat");
             model.addAttribute("waiting","waiting");
+        }*/
+
+        if (sidang.getPublish() == StatusRecord.AKTIF) {
+            System.out.println("aktif");
+            return "redirect:nilai?id="+sidang.getId();
+        }else {
+            return "graduation/sidang/mahasiswa/success";
+
         }
-//        if (seminar.getPublish() != null) {
-//
-//            if (seminar.getPublish().equals("AKTIF")) {
-//                return "redirect:nilai?id="+seminar.getId();
-//            }
-//        }
-//
-//        return "graduation/seminar/success";
+
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/nilai")
+    public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
+        model.addAttribute("sidang", sidang);
+       /* List<Sidang> sidang = sidangDao.findBySeminar(seminar);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,Boolean.TRUE);
+        EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SEMPRO,Boolean.TRUE);
+        if (semprop != null) {
+            model.addAttribute("sempro", semprop);
+            if (enableFiture != null) {
+                model.addAttribute("sidang", enableFiture);
+                System.out.println(enableFiture);
+            }
+        }*/
+//        if (
+
+
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/list")
@@ -908,8 +932,40 @@ public class SidangController {
             nilaiKosong = sidangDao.validasiPublishNilaiPasca(sidang,BigDecimal.ZERO);
         }
         if (nilaiKosong == null) {
-            sidang.setPublish(StatusRecord.AKTIF);
-            sidangDao.save(sidang);
+
+            if (sidang.getNilai().compareTo(new BigDecimal(70))>= 0){
+                Mahasiswa mahasiswa = mahasiswaDao.findById(sidang.getSeminar().getNote().getMahasiswa().getId()).get();
+                mahasiswa.setTanggalLulus(LocalDate.now());
+                mahasiswa.setStatusAktif("LULUS");
+                mahasiswaDao.save(mahasiswa);
+
+                sidang.setPublish(StatusRecord.AKTIF);
+                sidangDao.save(sidang);
+
+                KrsDetail cariThesis = krsDetailDao.cariThesis(mahasiswa);
+                if (cariThesis != null){
+                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")){
+                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(60)).divide(new BigDecimal(100));
+                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(40)).divide(new BigDecimal(100));
+                        BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
+                        cariThesis.setNilaiAkhir(nilaiAKhir);
+                        scoreService.hitungNilaiAkhir(cariThesis);
+
+                    }
+                    if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getId().equals("02")){
+                        BigDecimal nilaiSidang = sidang.getNilai().multiply(new BigDecimal(50)).divide(new BigDecimal(100));
+                        BigDecimal nilaiSempro = sidang.getSeminar().getNilai().multiply(new BigDecimal(50)).divide(new BigDecimal(100));
+                        BigDecimal nilaiAKhir = nilaiSidang.add(nilaiSempro).setScale(2, RoundingMode.HALF_UP);
+                        cariThesis.setNilaiAkhir(nilaiAKhir);
+                        scoreService.hitungNilaiAkhir(cariThesis);
+                    }
+                }
+
+
+
+            }else {
+                return "nilai tidak ada";
+            }
             return "berhasil";
 
         }else {
@@ -1180,4 +1236,6 @@ public class SidangController {
 
 
     }
+
+
 }

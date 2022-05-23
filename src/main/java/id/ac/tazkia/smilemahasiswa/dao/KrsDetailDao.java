@@ -748,4 +748,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "update krs_detail set finalisasi='FINAL' where id_tahun_akademik=?1 and status='AKTIF'", nativeQuery = true)
     void updateFinalisasi(String idTahunAkademik);
 
+    @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id \n" +
+            "inner join matakuliah as m on mk.id_matakuliah = m.id inner join tahun_akademik as t on kd.id_tahun_akademik = t.id\n" +
+            "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and m.nama_matakuliah_english = 'Thesis' order by t.kode_tahun_akademik desc limit 1", nativeQuery = true)
+    KrsDetail cariThesis(Mahasiswa mahasiswa);
+
 }
