@@ -11,6 +11,7 @@ import org.apache.catalina.authenticator.SpnegoAuthenticator;
 import org.apache.commons.math3.geometry.enclosing.EnclosingBall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -278,7 +279,7 @@ public class FinanceController {
 
         if (status.equals("SEMPRO")) {
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SEMPRO, true);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(m, StatusRecord.SEMPRO, tahunAkademik);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setEnable(true);
@@ -287,10 +288,15 @@ public class FinanceController {
                 enableFiture.setMahasiswa(m);
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFitureDao.save(enableFiture);
+            }else {
+                if (validasi.getEnable() == false) {
+                    validasi.setEnable(true);
+                    enableFitureDao.save(validasi);
+                }
             }
         }else{
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SKRIPSI, true);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(m, StatusRecord.SKRIPSI, tahunAkademik);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setMahasiswa(m);
@@ -299,6 +305,11 @@ public class FinanceController {
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFiture.setKeterangan("-");
                 enableFitureDao.save(enableFiture);
+            }else{
+                if (validasi.getEnable() == false) {
+                    validasi.setEnable(true);
+                    enableFitureDao.save(validasi);
+                }
             }
         }
 
