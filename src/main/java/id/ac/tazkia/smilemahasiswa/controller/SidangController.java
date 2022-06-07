@@ -235,7 +235,7 @@ public class SidangController {
 
     @PostMapping("/graduation/sidang/mahasiswa/pendaftaran")
     public String saveSidang(@ModelAttribute @Valid Sidang sidang, MultipartFile ijazah, MultipartFile ktp, Authentication authentication,
-                             MultipartFile kartu,MultipartFile plagiat, MultipartFile draft,MultipartFile pendaftaran) throws Exception{
+                             MultipartFile kartu,MultipartFile plagiat, MultipartFile draft,MultipartFile pendaftaran,MultipartFile berita) throws Exception{
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -267,7 +267,36 @@ public class SidangController {
             sidang.setFilePendaftaran(idFile + "." + extension);
 
         }else {
-            sidang.setFilePendaftaran(sidang.getFileBimbingan());
+            sidang.setFilePendaftaran(sidang.getFilePendaftaran());
+        }
+
+        if (!berita.isEmpty() || berita != null) {
+
+            String namaAsli = berita.getOriginalFilename();
+
+
+//        memisahkan extensi
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String idFile = UUID.randomUUID().toString();
+            String lokasiUpload = sidangFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + idFile + "." + extension);
+            berita.transferTo(tujuan);
+
+
+            sidang.setFileBerita(idFile + "." + extension);
+
+        }else {
+            sidang.setFileBerita(sidang.getFileBerita());
         }
 
         if (!kartu.isEmpty() || kartu != null) {
@@ -327,7 +356,7 @@ public class SidangController {
             sidang.setFileIjazah(idFile + "." + extension);
 
         }else {
-            sidang.setFileIjazah(sidang.getFileBimbingan());
+            sidang.setFileIjazah(sidang.getFileIjazah());
         }
 
         if (!ktp.isEmpty() || ktp != null) {
@@ -357,7 +386,7 @@ public class SidangController {
             sidang.setFileKtp(idFile + "." + extension);
 
         }else {
-            sidang.setFileKtp(sidang.getFileBimbingan());
+            sidang.setFileKtp(sidang.getFileKtp());
         }
 
         if (!plagiat.isEmpty() || plagiat != null) {
@@ -387,7 +416,7 @@ public class SidangController {
             sidang.setFileTurnitin(idFile + "." + extension);
 
         }else {
-            sidang.setFileTurnitin(sidang.getFileBimbingan());
+            sidang.setFileTurnitin(sidang.getFileTurnitin());
         }
 
         if (!draft.isEmpty() || draft != null) {
@@ -417,7 +446,7 @@ public class SidangController {
             sidang.setFileSidang(idFile + "." + extension);
 
         }else {
-            sidang.setFileSidang(sidang.getFileBimbingan());
+            sidang.setFileSidang(sidang.getFileSidang());
         }
         sidang.setTanggalInput(LocalDate.now());
         sidang.setStatusSidang(StatusApprove.WAITING);
@@ -491,7 +520,7 @@ public class SidangController {
 
             sidang.setFilePendaftaran(idFile + "." + extension);
         }else{
-            sidang.setFilePendaftaran(sidang.getFileBimbingan());
+            sidang.setFilePendaftaran(sidang.getFilePendaftaran());
         }
 
         if (!persetujuan.isEmpty() || persetujuan != null){
@@ -518,7 +547,7 @@ public class SidangController {
 
             sidang.setFilePersetujuan(idFile + "." + extension);
         }else{
-            sidang.setFilePersetujuan(sidang.getFileBimbingan());
+            sidang.setFilePersetujuan(sidang.getFilePersetujuan());
         }
 
         if (!cv.isEmpty() || cv != null){
@@ -545,7 +574,7 @@ public class SidangController {
 
             sidang.setFileKtp(idFile + "." + extension);
         }else{
-            sidang.setFileKtp(sidang.getFileBimbingan());
+            sidang.setFileKtp(sidang.getFileKtp());
         }
 
         if (!kehadiran.isEmpty() || kehadiran != null){
@@ -599,7 +628,7 @@ public class SidangController {
 
             sidang.setFileTurnitin(idFile + "." + extension);
         }else{
-            sidang.setFileTurnitin(sidang.getFileBimbingan());
+            sidang.setFileTurnitin(sidang.getFileTurnitin());
         }
 
         sidang.setTanggalInput(LocalDate.now());
@@ -987,6 +1016,31 @@ public class SidangController {
             } else if (sidang.getFileSidang().toLowerCase().endsWith("png")) {
                 headers.setContentType(MediaType.IMAGE_PNG);
             } else if (sidang.getFileSidang().toLowerCase().endsWith("pdf")) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            }
+            byte[] data = Files.readAllBytes(Paths.get(lokasiFile));
+            return new ResponseEntity<byte[]>(data, headers, HttpStatus.OK);
+        } catch (Exception err) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+
+        }
+    }
+
+    @GetMapping("/upload/{sidang}/berita/")
+    public ResponseEntity<byte[]> berita(@PathVariable Sidang sidang, Model model) throws Exception {
+        String lokasiFile = sidangFolder + File.separator + sidang.getSeminar().getNote().getMahasiswa().getNim()
+                + File.separator + sidang.getFileBerita();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            if (sidang.getFileBerita().toLowerCase().endsWith("jpeg") || sidang.getFileBerita().toLowerCase().endsWith("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (sidang.getFileBerita().toLowerCase().endsWith("png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (sidang.getFileBerita().toLowerCase().endsWith("pdf")) {
                 headers.setContentType(MediaType.APPLICATION_PDF);
             } else {
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

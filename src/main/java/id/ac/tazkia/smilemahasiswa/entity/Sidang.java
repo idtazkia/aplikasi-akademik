@@ -41,6 +41,7 @@ public class Sidang {
     private String fileBimbingan;
     private String fileTurnitin;
     private String filePersetujuan;
+    private String fileBerita;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
