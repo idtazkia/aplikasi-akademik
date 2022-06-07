@@ -9,4 +9,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface EnableFitureDao extends PagingAndSortingRepository<EnableFiture,String> {
     EnableFiture findByMahasiswaAndFiturAndEnableAndTahunAkademik(Mahasiswa mhsw, StatusRecord uts, Boolean enabled, TahunAkademik byStatus);
     EnableFiture findByMahasiswaAndFiturAndEnable(Mahasiswa mhsw, StatusRecord uts, Boolean enabled);
+    EnableFiture findByMahasiswaAndFiturAndTahunAkademik(Mahasiswa mahasiswa, StatusRecord uts, TahunAkademik tahunAkademik);
+
 }
