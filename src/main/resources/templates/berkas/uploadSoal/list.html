@@ -226,18 +226,18 @@
                                                  <span th:if="${dosen.id == data.akses}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" th:if="${data.status == 'NOT_UPLOADED_YET'}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                            <span class="btn-inner--text">Upload Soal UAS</span>
                                                         </a>
                                                     <div th:if="${data.status == 'WAITING'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Soal UTS</span>
+                                                            <span class="btn-inner--text">Upload Soal UAS</span>
                                                         </a>
                                                     </div>
                                                     <div th:if="${data.status == 'REJECTED'}">
                                                         <a th:href="@{/studiesActivity/assesment/upload/soal(jadwal= ${data.id}, status = 'UAS')}" class="btn btn-sm btn-neutral btn-icon">
                                                             <span class="btn-inner--icon"><i class="fas fa-list"></i></span>
-                                                            <span class="btn-inner--text">Upload Ulang Soal UTS</span>
+                                                            <span class="btn-inner--text">Upload Ulang Soal UAS</span>
                                                         </a>
                                                     </div>
                                                     <div th:if="${data.status == 'APPROVED'}">

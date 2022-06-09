@@ -51,7 +51,6 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -185,7 +184,7 @@ public class StudiesActivityController {
     @Value("classpath:sample/uas.doc")
     private Resource contohSoalUas;
 
-    @Value("classpath:tazkia.png")
+    @Value("classpath:static/images/tazkia.png")
     private Resource logoTazkia;
 
     @Value("classpath:tazkia1.png")
