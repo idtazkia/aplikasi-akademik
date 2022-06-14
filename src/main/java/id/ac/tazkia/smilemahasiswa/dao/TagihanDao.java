@@ -238,7 +238,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     @Query(value = "select a.* from tagihan as a inner join mahasiswa as b on a.id_mahasiswa = b.id inner join nilai_jenis_tagihan as c on a.id_nilai_jenis_tagihan=c.id inner join jenis_tagihan as d on c.id_jenis_tagihan=d.id where a.id_tahun_akademik=?1 and b.id_prodi=?2 and b.id_program=?3 and b.angkatan=?4 and a.status='AKTIF' and status_tagihan in('AKTIF', 'DITANGGUHKAN') and akumulasi_pembayaran='0' and d.kode not in('02oke','03','50') and nomor is not null order by nim", nativeQuery = true)
     List<Tagihan> generatePotongan(TahunAkademik tahunAkademik, String idProid, String idProgram, String angkatan);
 
-    @Query(value = "select a.* from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id where a.status_tagihan='AKTIF' and lunas='0' and b.nim=?1 and status = 'AKTIF'", nativeQuery = true)
+    @Query(value = "select a.* from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id where a.status_tagihan='AKTIF' and lunas='0' and b.nim=?1 and a.status = 'AKTIF'", nativeQuery = true)
     List<Tagihan> cekTagihanLunas(String nim);
 
 }
