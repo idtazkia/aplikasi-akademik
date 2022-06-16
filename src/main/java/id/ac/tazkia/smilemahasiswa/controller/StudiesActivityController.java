@@ -7544,6 +7544,18 @@ public class StudiesActivityController {
         Karyawan k = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(k);
 
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        LocalDate mulaiUts = tahunAkademik.getTanggalMulaiUts().minusWeeks(3);
+        LocalDate mulaiUas = tahunAkademik.getTanggalMulaiUas().minusWeeks(3);
+
+        if (LocalDate.now().compareTo(mulaiUts) >= 0 && LocalDate.now().compareTo(mulaiUts.plusWeeks(1)) <= 0){
+            model.addAttribute("upload", "jadwal upload soal");
+        }
+
+        if (LocalDate.now().compareTo(mulaiUas) >= 0 && LocalDate.now().compareTo(mulaiUas.plusWeeks(1)) <= 0){
+            model.addAttribute("upload", "jadwal upload soal");
+        }
+
         model.addAttribute("dosen", dosen);
         model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
 
