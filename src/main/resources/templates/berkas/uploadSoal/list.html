@@ -48,7 +48,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+
+                    <div class="card-body" th:if="${tidakvalid == null}">
+                        <div class="alert alert-danger">
+                            <strong>Upload Soal Ujian telah berakhir sesuai agenda kalendar akademik.</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-body" th:if="${upload != null}">
 
                         <div class="nav-wrapper mb-4">
                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
@@ -96,7 +103,7 @@
                                                     th:if="${data.status == 'APPROVED'}"
                                                     th:text="${'DISETUJUI'}">
                                                 </a>
-                                                <a  class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
+                                                <a  class="btn btn-danger btn-sm text-white"
                                                     th:if="${data.status == 'REJECTED'}"
                                                     th:text="${'DITOLAK'}">
                                                 </a>
@@ -213,7 +220,7 @@
                                                     th:if="${data.status == 'APPROVED'}"
                                                     th:text="${'DISETUJUI'}">
                                                 </a>
-                                                <a  class="btn btn-danger btn-sm text-white" data-toggle="modal" th:data-target="${'#modal-keterangan'+soal.id}"
+                                                <a  class="btn btn-danger btn-sm text-white"
                                                     th:if="${data.status == 'REJECTED'}"
                                                     th:text="${'DITOLAK'}">
                                                 </a>

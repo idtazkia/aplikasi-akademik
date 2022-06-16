@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -223,6 +224,13 @@ public class StudyActivityController {
             model.addAttribute("kelas", kelasMahasiswa);
         }
 
+        if (LocalDate.now().compareTo(ta.getTanggalSelesaiUts()) <= 0){
+            model.addAttribute("kartuUts","Download Kartu");
+        }
+
+        if (LocalDate.now().compareTo(ta.getTanggalSelesaiUas()) <= 0){
+            model.addAttribute("kartuUas","Download Kartu");
+        }
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
 
@@ -885,7 +893,7 @@ public class StudyActivityController {
 
         cuti.setMahasiswa(mahasiswa);
         cuti.setTanggalPengajuaan(LocalDate.now());
-        cuti.setStatusPengajuaan("WAITING");
+        cuti.setStatusPengajuaan(StatusApprove.WAITING);
         cutiDao.save(cuti);
 
         return "redirect:/du/cuti/list";
@@ -1235,6 +1243,72 @@ public class StudyActivityController {
         return "redirect:/dashboard";
     }
 
+    @GetMapping("/study/kartu/uas")
+    public void kartu(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa",mahasiswa);
+        model.addAttribute("tahunAkademik",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+
+        model.addAttribute("kartu",krsDetailDao.kartuUasMahasiswa(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        model.addAttribute("tahun",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("bulan",LocalDate.now().getMonth());
+        model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+        model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+    }
+
+    @GetMapping("/study/kartu/uts")
+    public void kartuUts(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa",mahasiswa);
+        model.addAttribute("tahunAkademik",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+
+        model.addAttribute("kartu",krsDetailDao.kartuUtsMahasiswa(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        model.addAttribute("tahun",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("bulan",LocalDate.now().getMonth());
+        model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+        model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+    }
+
+    @GetMapping("/study/kartu/hpuas")
+    public void kartuHpUas(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa",mahasiswa);
+        model.addAttribute("tahunAkademik",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+
+        model.addAttribute("kartu",krsDetailDao.kartuUasMahasiswa(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        model.addAttribute("tahun",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("bulan",LocalDate.now().getMonth());
+        model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+        model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+    }
+
+    @GetMapping("/study/kartu/hputs")
+    public void kartuHpUts(Model model,Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa",mahasiswa);
+        model.addAttribute("tahunAkademik",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+
+
+        model.addAttribute("kartu",krsDetailDao.kartuUtsMahasiswa(mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
+        model.addAttribute("tahun",tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("bulan",LocalDate.now().getMonth());
+        model.addAttribute("tanggal",LocalDate.now().getLong(ChronoField.DAY_OF_MONTH));
+        model.addAttribute("tahun",LocalDate.now().getLong(ChronoField.YEAR));
+
+    }
+
+
+
     @PostMapping("/du/register")
     public String registerDu(Authentication authentication){
         User user = currentUserService.currentUser(authentication);
@@ -1251,5 +1325,6 @@ public class StudyActivityController {
 
         return "redirect:../study/comingsoon";
     }
+
 
 }
