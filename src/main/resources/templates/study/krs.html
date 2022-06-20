@@ -50,9 +50,22 @@
                             <div class="col-md-6 col-xs-12">
                                <strong>Daftar KRS</strong>
                             </div>
-                            <div class="col-md-6 col-xs-12 text-right" th:if="${validasi != null}">
-                                <a th:href="@{/study/form}">
+                            <div class="col-md-6 col-xs-12 text-right">
+                                <a th:href="@{/study/form}" th:if="${validasi != null}">
                                     <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> Tambah KRS</button>
+                                </a>
+                                <a th:href="@{/study/kartu/hputs}" th:id="mobile" style="display:none;" th:if="${kartuUts != null}">
+                                    <button class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download Midterm Exam Card</button>
+                                </a>
+                                <a th:href="@{/study/kartu/uts}" target="_blank" th:id="pc" th:if="${kartuUts != null}">
+                                    <button class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download Midterm Exam Card</button>
+                                </a>
+
+                                <a th:href="@{/study/kartu/hpuas}" th:id="mobile" style="display:none;" th:if="${kartuUas != null}">
+                                    <button class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download Final Exam Card</button>
+                                </a>
+                                <a th:href="@{/study/kartu/uas}" th:id="pc" th:if="${kartuUas != null}">
+                                    <button class="btn btn-primary"><i class="fa fa-cloud-download"></i> Download Final Exam Card</button>
                                 </a>
                             </div>
                         </div>
@@ -145,3 +158,21 @@
 </section>
 </body>
 </html>
+<script>
+    /* Storing user's device details in a variable*/
+    $( document ).ready(function() {
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+
+        var mobile = document.getElementById("mobile");
+        var pc = document.getElementById("pc");
+
+        if (isMobileDevice) {
+            mobile.style.display = "block";
+            pc.style.display = "none";
+        } else {
+            mobile.style.display = "none";
+        }
+    });
+</script>
