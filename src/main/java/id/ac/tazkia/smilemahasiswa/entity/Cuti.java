@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -38,9 +39,12 @@ public class Cuti {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPengajuaan;
 
-    private String statusPengajuaan;
+    @Enumerated(EnumType.STRING)
+    private StatusApprove statusPengajuaan;
 
-    private String dosenWaliApproved;
+    @Enumerated(EnumType.STRING)
+    private StatusApprove dosenWaliApproved;
 
-    private String kpsApproved;
+    @Enumerated(EnumType.STRING)
+    private StatusApprove kpsApproved;
 }

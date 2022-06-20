@@ -25,6 +25,12 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
 
     List<KrsDetail> findByStatusKonversiIsNullAndStatusAndKrsAndMahasiswaOrderByJadwalHariAscJadwalJamMulaiAsc(StatusRecord status,Krs krs, Mahasiswa mahasiswa);
 
+    @Query(value = "select kd.id,kd.kode_uts,m.nama_matakuliah,coalesce((select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=kd.id and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR')),0) as total from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id  where kd.id_mahasiswa = ?1 and kd.id_tahun_akademik = ?2 and kd.status = 'AKTIF'", nativeQuery = true)
+    List<Object> kartuUtsMahasiswa(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
+    @Query(value = "select kd.id,kd.kode_uas,m.nama_matakuliah,coalesce((select count(a.id)as jml_mangkir from presensi_mahasiswa as a inner join sesi_kuliah as b on a.id_sesi_kuliah = b.id inner join presensi_dosen as c on b.id_presensi_dosen = c.id where a.id_mahasiswa=?1 and a.id_krs_detail=kd.id and a.status='AKTIF' and c.status='AKTIF' and a.status_presensi in ('MANGKIR')),0) as total from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id  where kd.id_mahasiswa = ?1 and kd.id_tahun_akademik = ?2 and kd.status = 'AKTIF'", nativeQuery = true)
+    List<Object> kartuUasMahasiswa(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
     @Query(value = "select aaaa.id,bbbb.nama_hari,cccc.nama_kelas,aaaa.jam_mulai,aaaa.jam_selesai,aaaa.sks,eeee.nama_karyawan as dosen," +
             "aaaa.nama_matakuliah,aaaa.kapasitas,'0' as mhsw,cmkk,bmkk as bmk,prass,matkul_prass as bmkk,nama_prass, " +
             "aaaa.nama_matakuliah_english from (select aaa.*,bbb.id_jadwal as cmkk,ccc.kode_matakuliah bmkk,ddd.kode_matakuliah as prass," +

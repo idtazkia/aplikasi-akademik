@@ -163,7 +163,6 @@
                                     <tr class="headings">
                                         <th>#</th>
                                         <th>Matakuliah</th>
-                                        <th>Kelas</th>
                                         <th>Dosen</th>
                                         <th>Status Upload</th>
                                         <th></th>
@@ -177,7 +176,6 @@
                                     <tr th:each="data,row : ${jadwal}">
                                         <td th:text="${(row.index + 1) + (jadwal.number * jadwal.size)}"></td>
                                         <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
-                                        <td th:text="${data.kelas.namaKelas}"></td>
                                         <td th:text="${data.dosen.karyawan.namaKaryawan}"></td>
                                         <td>
                                             <a th:if="${data.statusUts.APPROVED} == ${data.statusUts}" href="#" data-toggle="popover" class="label label-success"

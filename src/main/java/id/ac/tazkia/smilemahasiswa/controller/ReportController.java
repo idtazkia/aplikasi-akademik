@@ -410,7 +410,7 @@ public class ReportController {
     public String prosesCuti(@Valid Cuti cuti, @RequestParam Mahasiswa mahasiswa){
         cuti.setMahasiswa(mahasiswa);
         cuti.setTanggalPengajuaan(LocalDate.now());
-        cuti.setStatusPengajuaan("DIAJUKAN");
+        cuti.setStatusPengajuaan(StatusApprove.DIAJUKAN);
         cutiDao.save(cuti);
 
         return "redirect:/report/cuti";

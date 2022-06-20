@@ -1,6 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.AsuransiDto;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -138,9 +140,15 @@ public class DashboardController {
 
     @Autowired
     private DaftarUlangDao daftarUlangDao;
-    
+
     @Autowired
     private MemoKeuanganDao memoKeuanganDao;
+
+    @Autowired
+    private AsuransiMahasiswaDao asuransiMahasiswaDao;
+
+    @Autowired
+    private AsuransiDao asuransiDao;
 
 
     @ModelAttribute("agama")
@@ -175,6 +183,13 @@ public class DashboardController {
     public List<Wilayah> kecamatanList(@RequestParam String id){
         List<Wilayah> wilayah = wilayahDao.kecamatan(id);
         return wilayah;
+    }
+
+    @GetMapping("/get-asuransi")
+    @ResponseBody
+    public List<AsuransiMahasiswa> getAsuransiMahsiswa(@RequestParam String id){
+        List<AsuransiMahasiswa> asuransiMahasiswaList = asuransiMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(id).get(), StatusRecord.AKTIF);
+        return asuransiMahasiswaList;
     }
 
     @GetMapping("/api/desa")
@@ -265,6 +280,72 @@ public class DashboardController {
         return "dashboard";
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/asuransi-post", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse simpanJenjang(@RequestBody AsuransiDto asuransiDto){
+        AsuransiMahasiswa cekAsuransi =
+                asuransiMahasiswaDao.findByMahasiswaAndAsuransiAndJenisAsuransiAndStatus(mahasiswaDao.findById(asuransiDto.getMahasiswa()).get(),asuransiDao.findById(asuransiDto.getAsuransi()).get(),asuransiDto.getJenis(),StatusRecord.AKTIF);
+        if (cekAsuransi == null) {
+            AsuransiMahasiswa asuransiMahasiswa = new AsuransiMahasiswa();
+            asuransiMahasiswa.setAsuransi(asuransiDao.findById(asuransiDto.getAsuransi()).get());
+            asuransiMahasiswa.setMahasiswa(mahasiswaDao.findById(asuransiDto.getMahasiswa()).get());
+            asuransiMahasiswa.setJenisAsuransi(asuransiDto.getJenis());
+            asuransiMahasiswa.setDurasiTahun(asuransiDto.getDurasi());
+            asuransiMahasiswaDao.save(asuransiMahasiswa);
+            String message = "Data Asuransi "+ asuransiMahasiswa.getMahasiswa().getNama() + " " + asuransiMahasiswa.getJenisAsuransi() + " telah ditambahkan";
+
+            return new BaseResponse(message,
+                    HttpStatus.CREATED.toString());
+        }else {
+
+            String message = "Data Asuransi Sudah Ada";
+
+            return new BaseResponse(message,
+                    String.valueOf(HttpStatus.ALREADY_REPORTED.value()));
+        }
+
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/asuransi-update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse updateJenjang(@PathVariable String id, @RequestBody AsuransiDto request){
+        AsuransiMahasiswa asuransiMahasiswa = asuransiMahasiswaDao.findById(id).get();
+        asuransiMahasiswa.setAsuransi(asuransiDao.findById(request.getAsuransi()).get());
+        asuransiMahasiswa.setJenisAsuransi(request.getJenis());
+        asuransiMahasiswa.setDurasiTahun(request.getDurasi());
+        asuransiMahasiswaDao.save(asuransiMahasiswa);
+
+        String message = "Data Asuransi telah diubah ";
+
+        return new BaseResponse(message, HttpStatus.OK.toString());
+    }
+
+    @PostMapping(value = "/asuransi-delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse hapusAsuransi(@PathVariable String id){
+        AsuransiMahasiswa asuransiMahasiswa = asuransiMahasiswaDao.findById(id).get();
+        asuransiMahasiswa.setStatus(StatusRecord.HAPUS);
+        asuransiMahasiswaDao.save(asuransiMahasiswa);
+
+        return new BaseResponse("Asuransi " +asuransiMahasiswa.getMahasiswa().getNama() + " " + asuransiMahasiswa.getJenisAsuransi() + " Berhasil Dihapus", HttpStatus.OK.toString());
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/asuransi-detail/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AsuransiDto detailAsuransi(@PathVariable String id){
+        AsuransiMahasiswa asuransiMahasiswa = asuransiMahasiswaDao.findById(id).get();
+        AsuransiDto asuransiDto = new AsuransiDto();
+        asuransiDto.setAsuransi(asuransiMahasiswa.getAsuransi().getId());
+        asuransiDto.setDurasi(asuransiMahasiswa.getDurasiTahun());
+        asuransiDto.setJenis(asuransiMahasiswa.getJenisAsuransi());
+        asuransiDto.setMahasiswa(asuransiMahasiswa.getMahasiswa().getId());
+
+        return asuransiDto;
+    }
+
     @GetMapping("/")
     public String formAwal(){
         return "redirect:/dashboard";
@@ -288,8 +369,8 @@ public class DashboardController {
         model.addAttribute("listProdi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
-
         model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("listAsuransi", asuransiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
@@ -544,8 +625,8 @@ public class DashboardController {
         String idMahasiswa = cuti.getMahasiswa().getNim();
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
 
-        cuti.setStatusPengajuaan("APPROVED_DOSEN_WALI");
-        cuti.setDosenWaliApproved(user.getId());
+        cuti.setStatusPengajuaan(StatusApprove.APPROVED);
+        cuti.setDosenWaliApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);
         return "redirect:/admin";
     }
@@ -557,8 +638,8 @@ public class DashboardController {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
 
         mahasiswa.setStatusAktif("CUTI");
-        cuti.setStatusPengajuaan("APPROVED");
-        cuti.setKpsApproved(user.getId());
+        cuti.setStatusPengajuaan(StatusApprove.APPROVED);
+        cuti.setKpsApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);
         return "redirect:/admin";
     }

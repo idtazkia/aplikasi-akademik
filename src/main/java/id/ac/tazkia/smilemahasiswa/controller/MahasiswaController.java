@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -88,7 +89,8 @@ public class MahasiswaController {
     @Autowired
     private BeasiswaDao beasiswaDao;
 
-
+    @Autowired
+    private CutiDao cutiDao;
 
 
     @ModelAttribute("penghasilan")
@@ -166,67 +168,67 @@ public class MahasiswaController {
 
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
 
-            mahasiswaDto.setId(mahasiswa.getId());
-            mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
-            mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
-            mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
-            mahasiswaDto.setNim(mahasiswa.getNim());
-            mahasiswaDto.setNama(mahasiswa.getNama());
-            mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
-            mahasiswaDto.setUkuranBaju(mahasiswa.getUkuranBaju());
-            mahasiswaDto.setKps(mahasiswa.getKps());
-            mahasiswaDto.setNomorKps(mahasiswa.getNomorKps());
-            mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
-            mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
-            mahasiswaDto.setReligion(mahasiswa.getIdAgama());
-            mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
-            mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
-            mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
-            mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
-            mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
-            mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
-            mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
-            mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
-            mahasiswaDto.setNik(mahasiswa.getNik());
-            mahasiswaDto.setNisn(mahasiswa.getNisn());
-            mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
-            mahasiswaDto.setRt(mahasiswa.getRt());
-            mahasiswaDto.setRw(mahasiswa.getRw());
-            mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
-            mahasiswaDto.setKodepos(mahasiswa.getKodepos());
-            mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
-            mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
-            mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
-            mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
-            mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
-            mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
-            mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
-            mahasiswaDto.setIdUser(mahasiswa.getUser());
+        mahasiswaDto.setId(mahasiswa.getId());
+        mahasiswaDto.setAngkatan(mahasiswa.getAngkatan());
+        mahasiswaDto.setIdProdi(mahasiswa.getIdProdi());
+        mahasiswaDto.setIdKonsentrasi(mahasiswa.getIdKonsentrasi());
+        mahasiswaDto.setNim(mahasiswa.getNim());
+        mahasiswaDto.setNama(mahasiswa.getNama());
+        mahasiswaDto.setStatusMatrikulasi(mahasiswa.getStatusMatrikulasi());
+        mahasiswaDto.setUkuranBaju(mahasiswa.getUkuranBaju());
+        mahasiswaDto.setKps(mahasiswa.getKps());
+        mahasiswaDto.setNomorKps(mahasiswa.getNomorKps());
+        mahasiswaDto.setIdProgram(mahasiswa.getIdProgram());
+        mahasiswaDto.setJenisKelamin(mahasiswa.getJenisKelamin());
+        mahasiswaDto.setReligion(mahasiswa.getIdAgama());
+        mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
+        mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
+        mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
+        mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
+        mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
+        mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
+        mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
+        mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
+        mahasiswaDto.setNik(mahasiswa.getNik());
+        mahasiswaDto.setNisn(mahasiswa.getNisn());
+        mahasiswaDto.setNamaJalan(mahasiswa.getNamaJalan());
+        mahasiswaDto.setRt(mahasiswa.getRt());
+        mahasiswaDto.setRw(mahasiswa.getRw());
+        mahasiswaDto.setNamaDusun(mahasiswa.getNamaDusun());
+        mahasiswaDto.setKodepos(mahasiswa.getKodepos());
+        mahasiswaDto.setJenisTinggal(mahasiswa.getJenisTinggal());
+        mahasiswaDto.setAlatTransportasi(mahasiswa.getAlatTransportasi());
+        mahasiswaDto.setTeleponRumah(mahasiswa.getTeleponRumah());
+        mahasiswaDto.setTeleponSeluler(mahasiswa.getTeleponSeluler());
+        mahasiswaDto.setEmailPribadi(mahasiswa.getEmailPribadi());
+        mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
+        mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
+        mahasiswaDto.setIdUser(mahasiswa.getUser());
 
-            mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
-            mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
-            mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
-            mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
-            mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
-            mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
-            mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
+        mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
+        mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
+        mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
+        mahasiswaDto.setTempatLahirIbu(mahasiswa.getIbu().getTempatLahir());
+        mahasiswaDto.setTanggalLahirIbu(mahasiswa.getIbu().getTanggalLahir());
+        mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
+        mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
+        mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
+        mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
+        mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
 
-            mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
-            mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
-            mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
-            mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
-            mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
-            mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
-            mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
-            mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
-            mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
-            mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
-            model.addAttribute("mahasiswa", mahasiswaDto);
-            mahasiswaDto.setRfid(mahasiswa.getRfid());
-            
+        mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
+        mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
+        mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
+        mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
+        mahasiswaDto.setTanggalLahirAyah(mahasiswa.getAyah().getTanggalLahir());
+        mahasiswaDto.setIdJenjangPendidikan(mahasiswa.getAyah().getIdJenjangPendidikan());
+        mahasiswaDto.setIdPekerjaan(mahasiswa.getAyah().getIdPekerjaan());
+        mahasiswaDto.setPenghasilan(mahasiswa.getAyah().getPenghasilan());
+        mahasiswaDto.setAgama(mahasiswa.getAyah().getAgama());
+        mahasiswaDto.setHidup(mahasiswa.getAyah().getStatusHidup());
+        model.addAttribute("mahasiswa", mahasiswaDto);
+        mahasiswaDto.setRfid(mahasiswa.getRfid());
+
         model.addAttribute("mahasiswa", mahasiswaDto);
         model.addAttribute("listbeasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
         model.addAttribute("beasiswa", mahasiswaBeasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
@@ -319,30 +321,52 @@ public class MahasiswaController {
         return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswaBeasiswa1.getMahasiswa().getId();
     }
 
-    @PostMapping("/mahasiswa/aktif")
+    @GetMapping("/mahasiswa/aktif")
     public String statusAktif(@RequestParam Mahasiswa mahasiswa){
         mahasiswa.setStatusAktif("AKTIF");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list";
+        return "redirect:list?search="+ mahasiswa.getNama();
     }
 
-    @PostMapping("/mahasiswa/lulus")
-    public String statusLulus(@RequestParam Mahasiswa mahasiswa){
-        mahasiswa.setStatusAktif("L");
+    @GetMapping("/mahasiswa/nonaktif")
+    public String statusNonaktif(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("NONAKTIF");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list";
+        return "redirect:list?search="+ mahasiswa.getNama();
+    }
+
+    @GetMapping("/mahasiswa/lulus")
+    public String statusLulus(@RequestParam Mahasiswa mahasiswa){
+        mahasiswa.setStatusAktif("LULUS");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @PostMapping("/mahasiswa/cuti")
     public String statusCuti(@RequestParam Mahasiswa mahasiswa){
         mahasiswa.setStatusAktif("CUTI");
         mahasiswaDao.save(mahasiswa);
-        return "redirect:list";
+        return "redirect:list?search="+ mahasiswa.getNama();
+    }
+
+
+    @PostMapping("/mahasiswa/cuti-approved")
+    public String approvedCuti(@Valid Cuti cuti){
+        cuti.setTanggalPengajuaan(LocalDate.now());
+        cuti.setStatusPengajuaan(StatusApprove.APPROVED);
+        cuti.setKpsApproved(StatusApprove.APPROVED);
+        cuti.setDosenWaliApproved(StatusApprove.APPROVED);
+        cutiDao.save(cuti);
+
+        Mahasiswa mahasiswa = mahasiswaDao.findById(cuti.getMahasiswa().getId()).get();
+        mahasiswa.setStatusAktif("CUTI");
+        mahasiswaDao.save(mahasiswa);
+        return "redirect:list?search="+ mahasiswa.getNama();
     }
 
     @PostMapping("/mahasiswa/keluar")
     public String statusKeluar(@RequestParam Mahasiswa mahasiswa){
-        mahasiswa.setStatusAktif("K");
+        mahasiswa.setStatusAktif("KELUAR");
         mahasiswaDao.save(mahasiswa);
         return "redirect:list";
     }
