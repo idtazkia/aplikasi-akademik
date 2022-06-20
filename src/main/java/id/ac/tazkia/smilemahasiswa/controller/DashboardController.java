@@ -1,10 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.AsuransiDto;
-import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
-import id.ac.tazkia.smilemahasiswa.dto.user.ProfileDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +22,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.script.Bindings;
-import javax.swing.text.html.HTML;
 import javax.validation.Valid;
 import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -144,11 +137,11 @@ public class DashboardController {
     @Autowired
     private MemoKeuanganDao memoKeuanganDao;
 
-    @Autowired
-    private AsuransiMahasiswaDao asuransiMahasiswaDao;
+//    @Autowired
+//    private AsuransiMahasiswaDao asuransiMahasiswaDao;
 
-    @Autowired
-    private AsuransiDao asuransiDao;
+    /*@Autowired
+    private AsuransiDao asuransiDao;*/
 
 
     @ModelAttribute("agama")
@@ -185,12 +178,12 @@ public class DashboardController {
         return wilayah;
     }
 
-    @GetMapping("/get-asuransi")
-    @ResponseBody
-    public List<AsuransiMahasiswa> getAsuransiMahsiswa(@RequestParam String id){
-        List<AsuransiMahasiswa> asuransiMahasiswaList = asuransiMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(id).get(), StatusRecord.AKTIF);
-        return asuransiMahasiswaList;
-    }
+//    @GetMapping("/get-asuransi")
+//    @ResponseBody
+//    public List<AsuransiMahasiswa> getAsuransiMahsiswa(@RequestParam String id){
+//        List<AsuransiMahasiswa> asuransiMahasiswaList = asuransiMahasiswaDao.findByMahasiswaAndStatus(mahasiswaDao.findById(id).get(), StatusRecord.AKTIF);
+//        return asuransiMahasiswaList;
+//    }
 
     @GetMapping("/api/desa")
     @ResponseBody
@@ -280,7 +273,7 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @ResponseBody
+   /* @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/asuransi-post", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse simpanJenjang(@RequestBody AsuransiDto asuransiDto){
@@ -344,7 +337,7 @@ public class DashboardController {
         asuransiDto.setMahasiswa(asuransiMahasiswa.getMahasiswa().getId());
 
         return asuransiDto;
-    }
+    }*/
 
     @GetMapping("/")
     public String formAwal(){
@@ -370,7 +363,7 @@ public class DashboardController {
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
         model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("listAsuransi", asuransiDao.findByStatus(StatusRecord.AKTIF));
+//        model.addAttribute("listAsuransi", asuransiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
