@@ -53,8 +53,8 @@
             <div class="col-md-8">
                 <div class="">
                     <center>
-                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GANJIL == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND FIRST SEMESTER MIDTERM TEST SCORE</b></h5>
-                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GENAP == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND SECOND SEMESTER MIDTERM TEST SCORE</b></h5>
+                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GANJIL == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND FIRST SEMESTER FINAL EXAMINATION</b></h5>
+                        <h5><b th:if="${jadwal.tahunAkademik.jenis.GENAP == jadwal.tahunAkademik.jenis}">ATTENDANCE LIST AND SECOND SEMESTER FINAL EXAMINATION</b></h5>
                         <h5><b>INSTITUT AGAMA ISLAM TAZKIA</b></h5>
                         <h5><b th:text="${' ACADEMIC YEAR ' + tahun}">ACADEMIC YEAR 2018/2019</b></h5>
                     </center>
@@ -101,7 +101,7 @@
                         <thead>
                         <tr>
                             <th rowspan="2">No.</th>
-                            <th rowspan="2">UTS ID</th>
+                            <th rowspan="2">UAS ID</th>
                             <th rowspan="2">NIM</th>
                             <th rowspan="2">Student Name</th>
                             <th rowspan="2">Signature</th>
