@@ -101,6 +101,9 @@ public class SidangController {
     @Value("classpath:sample/skripsi.odt")
     private Resource formulirSkripsi;
 
+    @Value("classpath:sample/skripsipasca.odt")
+    private Resource formulirSkripsiPasca;
+
     @ModelAttribute("dosen")
     public Iterable<Dosen> dosen() {
         return dosenDao.cariDosen(StatusRecord.HAPUS);
@@ -152,6 +155,43 @@ public class SidangController {
 
             // 1. Load template dari file
             InputStream in = formulirSkripsi.getInputStream();
+
+            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
+            IXDocReport report = XDocReportRegistry.getRegistry().
+                    loadReport(in, TemplateEngineKind.Freemarker);
+
+            // 3. Context object, untuk mengisi variabel
+            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(seminar.getNote().getMahasiswa().getId());
+            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(seminar.getNote().getMahasiswa().getId());
+
+            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+
+            IContext ctx = report.createContext();
+            ctx.put("nama", seminar.getNote().getMahasiswa().getNama());
+            ctx.put("nim", seminar.getNote().getMahasiswa().getNim());
+            ctx.put("prodi",seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi());
+            ctx.put("ipk", ipk);
+            ctx.put("sks", totalSKS);
+            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+
+            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Skripsi-"+ seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "-" + seminar.getNote().getMahasiswa().getNim() +".pdf");
+            OutputStream out = response.getOutputStream();
+            report.convert(ctx, options, out);
+            out.flush();
+        } catch (Exception err){
+//            logger.error(err.getMessage(), err);
+        }
+    }
+
+    @GetMapping("/graduation/sidang/formulirpasca")
+    public void formulirTesis(@RequestParam(name = "id") Seminar seminar,
+                               HttpServletResponse response){
+        try {
+            // 0. Setup converter
+            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+
+            // 1. Load template dari file
+            InputStream in = formulirSkripsiPasca.getInputStream();
 
             // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
             IXDocReport report = XDocReportRegistry.getRegistry().

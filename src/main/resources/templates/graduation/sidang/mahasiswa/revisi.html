@@ -5,7 +5,7 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Revisi</title>
     <style type="text/css">
         .bd-primary{
             background-color: white;
@@ -92,7 +92,9 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="dropdown">
-                                        <a class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${sidang.seminar.id})}">Download Formulir
+                                        <a th:if="${S1 != null}" class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulir(id = ${seminar.id})}">Download Formulir
+                                            <span class="caret"></span></a>
+                                        <a th:if="${S2 != null}" class="btn btn-primary dropdown-toggle" type="button" th:href="@{/graduation/sidang/formulirpasca(id = ${seminar.id})}">Download Formulir
                                             <span class="caret"></span></a>
                                     </div>
                                 </div>
