@@ -279,7 +279,7 @@ public class FinanceController {
 
         if (status.equals("SEMPRO")) {
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(m, StatusRecord.SEMPRO, tahunAkademik);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SEMPRO, true);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setEnable(true);
@@ -288,15 +288,10 @@ public class FinanceController {
                 enableFiture.setMahasiswa(m);
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFitureDao.save(enableFiture);
-            }else {
-                if (validasi.getEnable() == false) {
-                    validasi.setEnable(true);
-                    enableFitureDao.save(validasi);
-                }
             }
         }else{
             Mahasiswa m = mahasiswaDao.findByNim(nim);
-            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(m, StatusRecord.SKRIPSI, tahunAkademik);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SKRIPSI, true);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setMahasiswa(m);
@@ -305,11 +300,6 @@ public class FinanceController {
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFiture.setKeterangan("-");
                 enableFitureDao.save(enableFiture);
-            }else{
-                if (validasi.getEnable() == false) {
-                    validasi.setEnable(true);
-                    enableFitureDao.save(validasi);
-                }
             }
         }
 
