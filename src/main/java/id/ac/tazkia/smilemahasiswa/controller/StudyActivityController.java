@@ -224,12 +224,19 @@ public class StudyActivityController {
             model.addAttribute("kelas", kelasMahasiswa);
         }
 
+
         if (LocalDate.now().compareTo(ta.getTanggalSelesaiUts()) <= 0){
-            model.addAttribute("kartuUts","Download Kartu");
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,StatusRecord.UTS,Boolean.TRUE,ta);
+            if (enableFiture != null) {
+                model.addAttribute("kartuUts", "Download Kartu");
+            }
         }
 
         if (LocalDate.now().compareTo(ta.getTanggalSelesaiUas()) <= 0){
-            model.addAttribute("kartuUas","Download Kartu");
+            EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,StatusRecord.UAS,Boolean.TRUE,ta);
+            if (enableFiture != null) {
+                model.addAttribute("kartuUas", "Download Kartu");
+            }
         }
 
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta,StatusRecord.AKTIF);
