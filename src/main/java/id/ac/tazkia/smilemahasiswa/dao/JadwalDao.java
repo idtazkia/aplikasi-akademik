@@ -109,8 +109,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "order by nama_matakuliah", nativeQuery = true)
     List<MatkulKonversiDto> cariMatkulKonversi(String idTahun, String idProdi, String idJenjang);
 
-//    List<Jadwal> findByStatusAndTahunAkademikAndProdiAndHariNotNullOrStatusAndTahunAkademikAndAksesAndHariNotNullAndProdiIdJenjang(StatusRecord status1, TahunAkademik tahunAkademik, Prodi prodi, StatusRecord status2, TahunAkademik tahunAkademik1, Akses akses, Jenjang jenjang);
-
     List<Jadwal> findByTahunAkademikAndProdiAndHariNotNull(TahunAkademik tahunAkademik, Prodi prodi);
 
     Page<Jadwal> findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord aktif, TahunAkademik tahun, String search,StatusRecord status, TahunAkademik akademik, String search1, Pageable page);
@@ -163,10 +161,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByTahunAkademikAndDosenAndStatus(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
 
-    @Query(value = "select j.id,j.id_dosen_pengampu as idDos,j.akses_uts as akses ,r.nama_ruangan as ruangan,h.nama_hari as hari,j.jam_mulai as mulai,j.jam_selesai as selesai,m.nama_matakuliah as matkul,ke.nama_kelas as kelas,k.nama_karyawan as nama,j.status_uts as status,(select id from soal where id_jadwal = j.id and status = 'AKTIF' and status_approve = 'APPROVED') as soal from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id inner join kelas as ke on j.id_kelas = ke.id inner join hari as h on j.id_hari = h.id inner join ruangan as r on j.id_ruangan = r.id  where j.id_tahun_akademik= ?1 and j.status='AKTIF' and j.id_hari is not null and j.jam_mulai is not null and j.jam_selesai is not null and (j.id_dosen_pengampu = ?2 or j.akses_uts=?2)", nativeQuery = true)
+    @Query(value = "select j.id,j.id_dosen_pengampu as idDos,j.akses_uts as akses ,r.nama_ruangan as ruangan,h.nama_hari as hari,j.jam_mulai as mulai,j.jam_selesai as selesai,m.nama_matakuliah as matkul,ke.nama_kelas as kelas,k.nama_karyawan as nama,j.status_uts as status,ss.id as soal from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id inner join kelas as ke on j.id_kelas = ke.id inner join hari as h on j.id_hari = h.id inner join ruangan as r on j.id_ruangan = r.id left join (select s.id as id, s.id_jadwal as jad from soal as s where status = 'AKTIF' and status_approve = 'APPROVED' and status_soal = 'UTS') ss on j.id = ss.jad where j.id_tahun_akademik= ?1 and j.status='AKTIF' and j.id_hari is not null and j.jam_mulai is not null and j.jam_selesai is not null and (j.id_dosen_pengampu = ?2 or j.akses_uts=?2);", nativeQuery = true)
     List<SoalDto> listUts(TahunAkademik tahunAkademik, Dosen dosen);
 
-    @Query(value = "select j.id,j.id_dosen_pengampu as idDos,j.akses_uas as akses ,r.nama_ruangan as ruangan,h.nama_hari as hari,j.jam_mulai as mulai,j.jam_selesai as selesai,m.nama_matakuliah as matkul,ke.nama_kelas as kelas,k.nama_karyawan as nama,j.status_uas as status,(select id from soal where id_jadwal = j.id and status = 'AKTIF' and status_approve = 'APPROVED') as soal from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id inner join kelas as ke on j.id_kelas = ke.id inner join hari as h on j.id_hari = h.id inner join ruangan as r on j.id_ruangan = r.id  where j.id_tahun_akademik= ?1 and j.status='AKTIF' and j.id_hari is not null and j.jam_mulai is not null and j.jam_selesai is not null and (j.id_dosen_pengampu = ?2 or j.akses_uas=?2)", nativeQuery = true)
+    @Query(value = "select j.id,j.id_dosen_pengampu as idDos,j.akses_uas as akses ,r.nama_ruangan as ruangan,h.nama_hari as hari,j.jam_mulai as mulai,j.jam_selesai as selesai,m.nama_matakuliah as matkul,ke.nama_kelas as kelas,k.nama_karyawan as nama,j.status_uas as status, ss.id as soal from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id inner join kelas as ke on j.id_kelas = ke.id inner join hari as h on j.id_hari = h.id inner join ruangan as r on j.id_ruangan = r.id left join (select s.id as id, s.id_jadwal as jad from soal as s where status = 'AKTIF' and status_approve = 'APPROVED' and status_soal = 'UAS') ss on j.id = ss.jad where j.id_tahun_akademik= ?1 and j.status='AKTIF' and j.id_hari is not null and j.jam_mulai is not null and j.jam_selesai is not null and (j.id_dosen_pengampu = ?2 or j.akses_uas=?2)", nativeQuery = true)
     List<SoalDto> listUas(TahunAkademik tahunAkademik, Dosen dosen);
 
     Jadwal findByIdNumberElearning(String idNumber);
@@ -186,10 +184,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "inner join tahun_akademik as i on a.id_tahun_akademik = i.id\n" +
             "where i.status = 'AKTIF'",nativeQuery = true)
     List<DetailJadwalIntDto> getDetailJadwal();
-
-//    List<Jadwal> findByTahunAkademikAndDosenAndStatusAndRuanganIsNullAndHariIsNullAndJamMulaiIsNullAndJamSelesaiIsNull(TahunAkademik tahunAkademik, Dosen dosen, StatusRecord statusRecord);
-//
-//    Jadwal findByTahunAkademikAndDosenAndHariAndRuanganAndSesiAndStatus(TahunAkademik tahunAkademik, Dosen dosen, Hari hari, Ruangan ruangan, String sesi, StatusRecord statusRecord);
 
     @Modifying
     @Query(value = "update jadwal set final_status='FINAL' where id_tahun_akademik=?1 and status='AKTIF' and id_hari is not null and jam_mulai is not null and jam_selesai is not null", nativeQuery = true)
