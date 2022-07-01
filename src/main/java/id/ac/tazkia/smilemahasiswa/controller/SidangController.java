@@ -252,7 +252,8 @@ public class SidangController {
         }else {
             model.addAttribute("seminar",seminar);
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
-            if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
+//            if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
+            if (LocalDate.now().compareTo(LocalDate.parse("2022-07-05")) <= 0 ){
                 return "redirect:info";
             }else {
                 return "graduation/sidang/mahasiswa/pendaftaran";
