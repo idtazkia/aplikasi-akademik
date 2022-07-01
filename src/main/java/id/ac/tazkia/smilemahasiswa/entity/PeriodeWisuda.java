@@ -21,13 +21,25 @@ public class PeriodeWisuda {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalWisuda;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalMulai;
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalSelesai;
 
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate bukaSidang;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tutupSidang;
+
     @Enumerated(EnumType.STRING)
-    private StatusRecord status = StatusRecord.AKTIF;
+    private StatusRecord status = StatusRecord.NONAKTIF;
 
 }
