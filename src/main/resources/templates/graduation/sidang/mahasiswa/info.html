@@ -68,16 +68,10 @@
     <div class="middle">
         <h1>PENGUMUMAN</h1>
         <hr>
-                <p>Maaf pendaftaran sidang telah ditutp !</p>
-                <p>Batas akhir pendaftaran tanggal 15 Oktober 2021</p>
-<!--        <p th:text="${' Tahun Akademik : ' + krs.getTahunAkademik().getNamaTahunAkademik()}"></p>-->
-<!--        <P th:text="${' Pengisian krs dimulai pada tanggal : ' + #temporals.format(krs.getMulaiKrs(),'dd-MMMM-yyyy')}"></P>-->
-<!--        <p> Untuk Info lebih lanjut silahkan hubungi bagian akademik. </p>-->
-<!--        <p>(Program Sarjana) +62 811-9966-772 (WhatsApp Only)</p>-->
-<!--        <p>(Program Pascasarjana) +62 813-8070-9596 (WhatsApp Only)</p>-->
+        <p>Maaf pendaftaran sidang telah ditutup !</p>
+        <p th:text="'Batas akhir pendaftaran tanggal ' + ${ #temporals.format(periode.getBukaSidang(),'dd-MMMM-yyyy')}">Batas akhir pendaftaran tanggal 15 Oktober 2021</p>
+        <p> Untuk Info lebih lanjut silahkan hubungi bagian akademik. </p>
         <a th:href="@{/dashboard}" class="btn-df">Kembali ke Halaman Utama</a>
-
-
     </div>
     <div class="bottomleft">
         <!--        <p>Please fulfill the payment</p>-->
