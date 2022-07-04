@@ -69,7 +69,7 @@
         <h1>PENGUMUMAN</h1>
         <hr>
         <p>Maaf pendaftaran sidang telah ditutup !</p>
-        <p th:text="'Batas akhir pendaftaran tanggal ' + ${ #temporals.format(periode.getBukaSidang(),'dd-MMMM-yyyy')}">Batas akhir pendaftaran tanggal 15 Oktober 2021</p>
+        <p th:text="'Batas akhir pendaftaran tanggal ' + ${ #temporals.format(periode.getTutupSidang(),'dd-MMMM-yyyy')}">Batas akhir pendaftaran tanggal 15 Oktober 2021</p>
         <p> Untuk Info lebih lanjut silahkan hubungi bagian akademik. </p>
         <a th:href="@{/dashboard}" class="btn-df">Kembali ke Halaman Utama</a>
     </div>
