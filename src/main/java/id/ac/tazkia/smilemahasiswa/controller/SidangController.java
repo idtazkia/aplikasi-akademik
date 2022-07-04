@@ -253,10 +253,14 @@ public class SidangController {
             model.addAttribute("seminar",seminar);
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 //            if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
-            if (LocalDate.now().compareTo(LocalDate.parse("2022-07-05")) <= 0 ){
-                return "redirect:info";
-            }else {
+            if (jenjang.equals("02")) {
                 return "graduation/sidang/mahasiswa/pendaftaran";
+            }else {
+                if (LocalDate.now().compareTo(LocalDate.parse("2022-07-05")) <= 0) {
+                    return "redirect:info";
+                } else {
+                    return "graduation/sidang/mahasiswa/pendaftaran";
+                }
             }
         }
     }
