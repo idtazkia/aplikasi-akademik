@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Controller
 public class SidangController {
@@ -90,7 +89,7 @@ public class SidangController {
     private SidangService sidangService;
 
     @Autowired
-    private JenjangDao jenjangDao;
+    private TagihanDao tagihanDao;
 
     @Autowired
     PeriodeWisudaDao periodeWisudaDao;
@@ -259,7 +258,12 @@ public class SidangController {
                 if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
                     return "redirect:info";
                 } else {
-                    return "graduation/sidang/mahasiswa/pendaftaran";
+                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                    if (krsDetail != null) {
+                        return "graduation/sidang/mahasiswa/pendaftaran";
+                    }else {
+                        return "graduation/info";
+                    }
                 }
             }
         }
@@ -715,18 +719,10 @@ public class SidangController {
     @GetMapping("/graduation/sidang/mahasiswa/nilai")
     public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
         model.addAttribute("sidang", sidang);
-       /* List<Sidang> sidang = sidangDao.findBySeminar(seminar);
-        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SKRIPSI,Boolean.TRUE);
-        EnableFiture semprop = enableFitureDao.findByMahasiswaAndFiturAndEnable(seminar.getNote().getMahasiswa(),StatusRecord.SEMPRO,Boolean.TRUE);
-        if (semprop != null) {
-            model.addAttribute("sempro", semprop);
-            if (enableFiture != null) {
-                model.addAttribute("sidang", enableFiture);
-                System.out.println(enableFiture);
-            }
-        }*/
-//        if (
-
+        if (!tagihanDao.cekTagihanLunas(sidang.getSeminar().getNote().getMahasiswa().getNim()).isEmpty()) {
+            System.out.printf("teaaegj");
+            model.addAttribute("wisuda", "wisuda");
+        }
 
     }
 
