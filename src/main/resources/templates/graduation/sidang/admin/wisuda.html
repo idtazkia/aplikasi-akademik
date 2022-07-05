@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Wisuda Detail</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                    <span class="h2 font-weight-bold mb-0">Detail Validation</span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-calendar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-xl-4 mb-xl-0 mb-4">
+            <div class="card bg-transparent shadow-xl">
+                <img th:src="@{/upload/{wisuda}/fotowisuda/(wisuda=${wisuda.id})}">
+            </div>
+          </div>
+          <div class="col-xl-8">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header mx-4 p-3 text-center">
+                    <div class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
+                      <i class="fas fa-info "></i>
+                    </div>
+                  </div>
+                  <div class="card-body pt-0 p-3 text-center">
+                    <h6 class="text-center mb-0">Info</h6>
+                    <span class="text-xs">Ukuran Foto</span>
+                    <hr class="horizontal dark my-3">
+                    <h5 class="mb-0" th:text="${wisuda.ukuran}">+$2000</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mt-md-0 mt-4">
+                <div class="card">
+                  <div class="card-header mx-4 p-3 text-center">
+                    <div class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
+                      <i class="fas fa-download"></i>
+                    </div>
+                  </div>
+                  <div class="card-body pt-0 p-3 text-center">
+                    <h6 class="text-center mb-0">Info</h6>
+                    <span class="text-xs">Lihat Detail Foto</span>
+                    <hr class="horizontal dark my-3">
+                    <a class="btn-sm btn-info" target="_blank" th:href="@{/upload/{wisuda}/fotowisuda/(wisuda=${wisuda.id})}">Lihat Foto</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card h-100">
+                  <div class="card-header pb-0 p-3">
+                    <div class="row">
+                      <div class="col-6 d-flex align-items-center">
+                        <h6 class="mb-0">Detail Daftar Wisuda</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-3 pb-0">
+                    <ul class="list-group">
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                        <div class="d-flex flex-column">
+                          <h6 class="mb-1 text-dark font-weight-bold text-sm" th:text="${wisuda.tanggalUpload}">March, 01, 2020</h6>
+                          <span class="text-xs" th:text="${wisuda.mahasiswa.nama}">#MS-415646</span>
+                        </div>
+                        <div class="d-flex align-items-center text-sm">
+                          <a th:href="@{/graduation/sidang/admin/approve (wisuda = ${wisuda.id})}" class="btn btn-sm btn-link btn-success text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-check text-lg me-1"></i> Setujui</a>
+                          <a th:href="@{/graduation/sidang/admin/reject (wisuda = ${wisuda.id})}" class="btn btn-sm btn-danger btn-link text-sm mb-0 px-0 ms-4"><i class="fas fa-times text-lg me-1"></i> Tolak</a>
+                        </div>
+                      </li>
+
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                        <div class="d-flex flex-column">
+                          <h6 class="mb-1 text-dark font-weight-bold text-sm" th:text="${wisuda.sidang.judulTugasAkhir}">March, 01, 2020</h6>
+                          <span class="text-xs" th:text="${wisuda.sidang.judulInggris}">#MS-415646</span>
+                        </div>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 mb-lg-0 mb-4">
+            <div class="card mt-4">
+              <div class="card-header pb-0 p-3">
+                <div class="row">
+                  <div class="col-6 d-flex align-items-center">
+                    <h6 class="mb-0">Detail Diri</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body p-3">
+                <div class="row">
+                  <div class="col-md-4">
+                    <center><label>Nama</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.nama}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;7852</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <center><label>Tanggal Lahir</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.tanggalLahir}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <center><label>Ukuran Toga</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.ukuranBaju}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
