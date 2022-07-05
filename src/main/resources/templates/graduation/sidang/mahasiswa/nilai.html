@@ -198,9 +198,17 @@
                             </center>
                         </div>
                     </div>
+                    <div class="col-md-12 col-xs-12 margin-col" th:if="${wisuda !=null}">
+                        <div class="card-red">
+                            <center>
+                                <b class="card-title">Pemberitahuan!</b>
+                                <p class="p-comment">Silahkan selesaikan pembayaran terlebih dahulu untuk mendaftar wisuda</p>
+                            </center>
+                        </div>
+                    </div>
                     <div class="col-md-12 col-xs-12 margin-col text-center">
-<!--                        <a th:href="@{/graduation/seminar/ulang (id = ${sidang.seminar.note.id})}" th:if="${sidang != null && sidang.nilai < 70}" class="hvr-sweep-to-top">Daftar Ulang</a>-->
-                        <a th:href="@{/studentBill/bill/list}" th:if="${sidang == null}" class="hvr-sweep-to-top">Lihat Tagihan</a>
+                        <a th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${sidang.id})}" th:if="${wisuda == null && sidang.nilai > 70}" class="hvr-sweep-to-top">Daftar Wisuda</a>
+                        <a th:href="@{/studentBill/bill/list}" th:if="${wisuda !=null}" class="hvr-sweep-to-top">Lihat Tagihan</a>
                         <a th:href="@{/dashboard}" class="hvr-sweep-to-top" style="background-color: #fc6258">Kembali ke Dashboard</a>
                     </div>
                 </div>
