@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Wisuda</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Wisuda</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                            <div class="col text-right">
+<!--                                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#rekap"><i class="fas fa-book"></i> Rekap Tugas Akhir</button>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Periode Wisuda</label>
+                                        <select name="periode" required class="form-control">
+                                            <option value="" selected disabled>-- Select One --</option>
+                                            <option th:each="periode : ${periode}"
+                                                    th:selected="(${periode} == *{selectedPeriode})"
+                                                    th:text="${periode.nama}"
+                                                    th:value="${periode.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Program Study</label>
+                                        <select name="prodi"  class="form-control">
+                                            <option value="" selected disabled>-- Select One --</option>
+                                            <option th:each="prodi : ${prodi}"
+                                                    th:selected="(${prodi} == *{selectedProdi})"
+                                                    th:text="${prodi.namaProdi}"
+                                                    th:value="${prodi.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-list"></i> Show</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body" th:if="${list != null}">
+                        <div class="card shadow">
+                            <div class="card-header border-0">
+                                <h3 class="mb-0">List</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">NIM</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="data,row : ${list}">
+                                            <td th:text="${(row.index + 1) + (list.number * list.size)}"></td>
+                                            <td th:text="${data.mahasiswa.nim}"></td>
+                                            <td th:text="${data.mahasiswa.nama}"></td>
+                                            <td>
+                                                <span th:if="${data.status == data.status.APPROVED}" class="btn btn-success btn-sm">Disetujui</span>
+                                                <span th:if="${data.status == data.status.WAITING}" class="btn btn-warning btn-sm">Menunggu</span>
+                                                <span th:if="${data.status == data.status.REJECTED}" class="btn btn-danger btn-sm">Ditolak</span>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/graduation/sidang/admin/wisuda (id = ${data.id} )}" class="btn btn-sm btn-info">Detail</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+<!--                            <center>-->
+<!--                                <div class="card-footer">-->
+
+<!--                                    <nav aria-label="Page navigation example">-->
+<!--                                        <ul class="pagination" sd:pagination="full">-->
+<!--                                            <li class="page-item">-->
+<!--                                                <a class="page-link" href="#" aria-label="Previous">-->
+<!--                                                    <i class="fa fa-angle-left"></i>-->
+<!--                                                    <span class="sr-only">Previous</span>-->
+<!--                                                </a>-->
+<!--                                            </li>-->
+<!--                                            <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+
+<!--                                            <li class="page-item">-->
+<!--                                                <a class="page-link" href="#" aria-label="Next">-->
+<!--                                                    <i class="fa fa-angle-right"></i>-->
+<!--                                                    <span class="sr-only">Next</span>-->
+<!--                                                </a>-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </nav>-->
+
+
+<!--                                </div>-->
+<!--                            </center>-->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>
