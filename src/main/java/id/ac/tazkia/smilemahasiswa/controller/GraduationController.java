@@ -640,8 +640,19 @@ public class GraduationController {
         if (note.getStatus() == StatusApprove.APPROVED){
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
-            model.addAttribute("waiting", waiting);
-            return "graduation/sempro";
+
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (krsDetail != null) {
+                if (waiting != null) {
+                    model.addAttribute("seminar", waiting);
+                }else {
+                    model.addAttribute("seminar", new Seminar());
+                }
+                return "graduation/sempro";
+            }else {
+                return "redirect:info";
+            }
+
         }else {
 
             return "redirect:register";
@@ -655,8 +666,18 @@ public class GraduationController {
         if (note.getStatus() == StatusApprove.APPROVED){
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
-            model.addAttribute("waiting", waiting);
-            return "graduation/sempropasca";
+
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            if (krsDetail != null) {
+                if (waiting != null) {
+                    model.addAttribute("seminar", waiting);
+                } else {
+                    model.addAttribute("seminar", new Seminar());
+                }
+                return "graduation/sempropasca";
+            }else {
+                return "redirect:info";
+            }
         }else {
 
             return "redirect:register";
