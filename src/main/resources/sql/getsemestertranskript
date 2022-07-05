@@ -1,0 +1,20 @@
+DELIMITER $$
+
+CREATE PROCEDURE `getsemestertranskript`(
+    IN idMahasiswa VARCHAR(255)
+)
+BEGIN
+SET @row_number = 0; 
+SELECT a.*,
+IF(a.jenis <> 'PENDEK',(@row_number:=@row_number + 1),0) AS row_num FROM
+(SELECT a.id, b.kode_tahun_akademik, b.nama_tahun_akademik,b.jenis
+ FROM krs AS a 
+INNER JOIN krs_detail AS g ON a.id = g.id_krs 
+INNER JOIN jadwal AS h ON g.id_jadwal = h.id 
+INNER JOIN matakuliah_kurikulum AS i ON h.id_matakuliah_kurikulum = i.id 
+INNER JOIN tahun_akademik AS b ON a.id_tahun_akademik = b.id 
+WHERE a.status = 'AKTIF' AND g.status='AKTIF' AND i.jumlah_sks > 0 AND a.id_mahasiswa = idMahasiswa GROUP BY a.id 
+ORDER BY b.kode_tahun_akademik)a;
+END$$
+
+DELIMITER ;

@@ -1,0 +1,51 @@
+DELIMITER $$
+
+CREATE PROCEDURE `getabsensi`(
+    IN idJadwal VARCHAR(255)
+)
+BEGIN
+SELECT id_mahasiswa,id_jadwal,nim,nama,
+	COALESCE(MIN(CASE num WHEN 1 THEN status_presensi END),'-') AS p1,
+	COALESCE(MIN(CASE num WHEN 2 THEN status_presensi END),'-') AS p2,
+	COALESCE(MIN(CASE num WHEN 3 THEN status_presensi END),'-') AS p3,
+	COALESCE(MIN(CASE num WHEN 4 THEN status_presensi END),'-') AS p4,
+	COALESCE(MIN(CASE num WHEN 5 THEN status_presensi END),'-') AS p5,
+	COALESCE(MIN(CASE num WHEN 6 THEN status_presensi END),'-') AS p6,
+	COALESCE(MIN(CASE num WHEN 7 THEN status_presensi END),'-') AS p7,
+	COALESCE(MIN(CASE num WHEN 8 THEN status_presensi END),'-') AS p8,
+	COALESCE(MIN(CASE num WHEN 9 THEN status_presensi END),'-') AS p9,
+	COALESCE(MIN(CASE num WHEN 10 THEN status_presensi END),'-') AS p10,
+	COALESCE(MIN(CASE num WHEN 11 THEN status_presensi END),'-') AS p11,
+	COALESCE(MIN(CASE num WHEN 12 THEN status_presensi END),'-') AS p12,
+	COALESCE(MIN(CASE num WHEN 13 THEN status_presensi END),'-') AS p13,
+	COALESCE(MIN(CASE num WHEN 14 THEN status_presensi END),'-') AS p14,
+	COALESCE(MIN(CASE num WHEN 15 THEN status_presensi END),'-') AS p15,
+	COALESCE(MIN(CASE num WHEN 16 THEN status_presensi END),'-') AS p16
+FROM
+(SELECT a.*, (
+ SELECT COUNT(*) FROM 
+ (SELECT a.waktu_masuk, b.id_mahasiswa, b.id AS krs_detail, c.id AS sesi_kuliah, d.nim, d.nama, a.id_jadwal
+		FROM presensi_dosen AS a
+		LEFT JOIN krs_detail AS b ON a.id_jadwal = b.id_jadwal
+		LEFT JOIN sesi_kuliah AS c ON a.id = c.id_presensi_dosen
+		LEFT JOIN mahasiswa AS d ON b.id_mahasiswa = d.id
+		WHERE a.id_jadwal = idJadwal AND a.status='AKTIF' AND b.status = 'AKTIF'
+		GROUP BY id_mahasiswa,waktu_masuk) b WHERE a.waktu_masuk >= b.waktu_masuk AND a.nim = b.nim
+) AS num FROM 
+(SELECT aa.id_jadwal,aa.id_mahasiswa,waktu_masuk, aa.nim, aa.nama, COALESCE(LEFT(bb.status_presensi,1),'-') AS status_presensi FROM
+		(SELECT a.waktu_masuk, b.id_mahasiswa, b.id AS krs_detail, c.id AS sesi_kuliah, d.nim, d.nama, a.id_jadwal
+		FROM presensi_dosen AS a
+		LEFT JOIN krs_detail AS b ON a.id_jadwal = b.id_jadwal
+		LEFT JOIN sesi_kuliah AS c ON a.id = c.id_presensi_dosen
+		LEFT JOIN mahasiswa AS d ON b.id_mahasiswa = d.id
+		WHERE a.id_jadwal = idJadwal AND a.status='AKTIF' AND b.status = 'AKTIF')aa
+		LEFT JOIN
+		(SELECT a.id,a.id_sesi_kuliah,b.id_mahasiswa,b.id AS krs_detail, status_presensi FROM presensi_mahasiswa AS a LEFT JOIN krs_detail AS b ON a.id_krs_detail = b.id
+		WHERE b.id_jadwal = idJadwal AND a.status = 'AKTIF' AND b.status = 'AKTIF' GROUP BY a.id)bb 
+		ON aa.sesi_kuliah = bb.id_sesi_kuliah  AND aa.id_mahasiswa = bb.id_mahasiswa AND aa.krs_detail = bb.krs_detail
+		GROUP BY id_mahasiswa,waktu_masuk) a
+ORDER BY a.id_mahasiswa, a.waktu_masuk)bbb
+GROUP BY id_mahasiswa;
+END$$
+
+DELIMITER ;
