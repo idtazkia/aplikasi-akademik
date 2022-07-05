@@ -74,6 +74,12 @@ public class GraduationController {
     private DosenDao dosenDao;
 
     @Autowired
+    WisudaDao wisudaDao;
+
+    @Autowired
+    PeriodeWisudaDao periodeWisudaDao;
+
+    @Autowired
     private CurrentUserService currentUserService;
 
     @Autowired
@@ -192,8 +198,14 @@ public class GraduationController {
 
                 }
             }else {
-                Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED,"AKTIF",new BigDecimal(70),mahasiswa);
-                return "redirect:sidang/mahasiswa/list?id="+seminar.getId();
+                List<Wisuda> wisuda = wisudaDao.findByMahasiswaAndStatusNotIn(mahasiswa,Arrays.asList(StatusApprove.HAPUS));
+                if (wisuda.isEmpty()) {
+                    Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
+                    return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                }else {
+                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+
+                }
             }
         }
     }
