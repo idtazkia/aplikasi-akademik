@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Mahasiswa</title>
     <style type="text/css">
         @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
         #team {
@@ -349,18 +349,18 @@
                             </div>
                         </div>
 
-<!--                        <form method="get">-->
-<!--                            <div class="row">-->
-<!--                                <div class="col-md-12 col-xs-12">-->
-<!--                                    <div class="input-group mb-3">-->
-<!--                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">-->
-<!--                                        <div class="input-group-append">-->
-<!--                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
+                        <!--                        <form method="get">-->
+                        <!--                            <div class="row">-->
+                        <!--                                <div class="col-md-12 col-xs-12">-->
+                        <!--                                    <div class="input-group mb-3">-->
+                        <!--                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">-->
+                        <!--                                        <div class="input-group-append">-->
+                        <!--                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>-->
+                        <!--                                        </div>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </form>-->
                     </div>
                     <hr>
                     <div class="card-body" th:if="${status == null}">
@@ -372,10 +372,10 @@
                                             <div class="card">
                                                 <div class="card-body text-center">
                                                     <div th:if="${data.jenisKelamin == data.jenisKelamin.PRIA}">
-                                                        <p><img class="img-fluid" src="https://image.flaticon.com/icons/png/512/4392/4392947.png" alt="card image"></p>
+                                                        <p><img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/3048/3048122.png" alt="card image"></p>
                                                     </div>
                                                     <div th:if="${data.jenisKelamin == data.jenisKelamin.WANITA}">
-                                                        <p><img class="img-fluid" src="https://image.flaticon.com/icons/png/512/4264/4264378.png" alt="card image"></p>
+                                                        <p><img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/3220/3220315.png" alt="card image"></p>
                                                     </div>
 
                                                     <h5 class="card-title" th:text="${data.nim}">Sunlimetech</h5>
@@ -384,11 +384,11 @@
 
                                                     <a th:if="${data.statusAktif == 'AKTIF'}" href="" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
                                                     <a th:if="${data.statusAktif == 'CUTI'}" href="" class="btn btn-info btn-sm"><i class="fa fa-plus"></i></a>
-                                                    <a th:if="${data.statusAktif == 'L'}" href="" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
-                                                    <a th:if="${data.statusAktif == 'K'}" href="" class="btn btn-danger btn-sm"><i class="fa fa-close"></i></a>
+                                                    <a th:if="${data.statusAktif == 'LULUS'}" href="" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></a>
+                                                    <a th:if="${data.statusAktif == 'NONAKTIF'}" href="" class="btn btn-danger btn-sm"><i class="fa fa-close"></i></a>
 
-                                                    <td th:if="${data.statusAktif == 'K'}"><span class="btn btn-danger btn-sm">NONAKTIF</span></td>
-                                                    <td th:if="${data.statusAktif == 'L'}"><span class="btn btn-success btn-sm">LULUS</span></td>
+                                                    <td th:if="${data.statusAktif == 'NONAKTIF'}"><span class="btn btn-danger btn-sm">NONAKTIF</span></td>
+                                                    <td th:if="${data.statusAktif == 'LULUS'}"><span class="btn btn-success btn-sm">LULUS</span></td>
                                                     <td th:if="${data.statusAktif == 'CUTI'}"><span class="btn btn-info btn-sm">CUTI</span></td>
                                                     <td th:if="${data.statusAktif == 'AKTIF'}"><span class="btn btn-primary btn-sm">AKTIF</span></td>
                                                     <td th:if="${data.statusAktif == 'BEASISWA'}"><span class="btn btn-warning btn-sm">BEASISWA</span></td>
@@ -406,13 +406,118 @@
 
                                                     <br>
 
-                                                    <a th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> Lihat Lebih Detail</a>
+                                                    <a th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> Lihat Lebih Detail</a>
+                                                    <a href="!#" data-toggle="modal" class="btn btn-primary btn-sm" th:data-target="${'#exampleModal' + data.id}"
+                                                       sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')"><i class="fa fa-pencil"></i> Ubah Status</a>
+                                                    </a>
+
 
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
+
+                                <div class="modal fade" th:id="${'exampleModal'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-content">
+
+                                            <div class="modal-body p-0">
+
+
+                                                <div class="card bg-secondary shadow border-0">
+                                                    <div class="card-header bg-transparent pb-5">
+                                                        <div class="text-muted text-center mt-2 mb-3"><small>Detail Mahasiswa</small></div>
+                                                        <div class="btn-wrapper text-center">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Nim</label>
+                                                                        <h4 th:text="${data.nim}"></h4>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Nama</label>
+                                                                        <h4 th:text="${data.nama}"></h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="formOpt" class="card-header bg-transparent pb-5">
+                                                        <div class="text-muted text-center mt-2 mb-3"><small>Ubah Status</small></div>
+                                                        <div class="btn-wrapper text-center">
+                                                            <a th:href="@{/mahasiswa/aktif(mahasiswa = ${data.id})}" class="btn btn-primary text-white    btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-check"></i></span>
+                                                                <span class="btn-inner--text">AKTIF</span>
+                                                            </a>
+                                                            <a th:href="@{/mahasiswa/nonaktif(mahasiswa = ${data.id})}" class="btn btn-danger text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
+                                                                <span class="btn-inner--text">NONAKTIF</span>
+                                                            </a>
+                                                            <a onclick="myFunction()" class="btn btn-warning text-dark btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-hourglass-start"></i></span>
+                                                                <span class="btn-inner--text">Cuti</span>
+                                                            </a>
+                                                            <a th:href="@{/mahasiswa/lulus(mahasiswa = ${data.id})}" class="btn btn-success text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-graduation-cap"></i></span>
+                                                                <span class="btn-inner--text">Lulus</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="formCuti" class="card-header bg-transparent pb-5" style="display:none;">
+                                                        <div class="text-muted text-center mt-2 mb-3"><small>Form Cuti</small></div>
+                                                        <form name="cutiForm" th:action="@{/mahasiswa/cuti-approved}" method="post">
+                                                        <div class="btn-wrapper text-center">
+                                                            <div class="form-group">
+                                                                <div class="row">
+                                                                    <div class="col-md-4 ">
+                                                                        <div class="form-group">
+                                                                            <label>Tanggal Mulai</label>
+                                                                            <input type="date" name="tanggalMulaiCuti" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label>Tanggal Berakhir Cuti</label>
+                                                                            <input type="date" name="tanggalBerakhirCuti" class="form-control">
+                                                                            <input type="hidden" th:value="${data.id}" name="mahasiswa" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group">
+                                                                            <label>Alasan</label>
+                                                                            <input type="text" class="form-control" name="keterangan">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </form>
+                                                        <center>
+                                                            <a href="javascript: document.cutiForm.submit()" class="btn btn-success text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-save"></i></span>
+                                                                <span class="btn-inner--text">Simpan</span>
+                                                            </a>
+                                                            <a onclick="batal()" class="btn btn-danger text-white btn-icon">
+                                                                <span class="btn-inner--icon"><i class="fas fa-times"></i></span>
+                                                                <span class="btn-inner--text">Batal</span>
+                                                            </a>
+                                                        </center>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -420,208 +525,30 @@
                 </div>
             </div>
         </div>
-<!--        <br>-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12 col-xs-12">-->
-<!--                <div class="card shadow">-->
-<!--                    <div class="card-header border-0">-->
-<!--                        <h3 class="mb-0">Data</h3>-->
-<!--                    </div>-->
-<!--                    <div class="card-body">-->
-<!--                        <form method="get">-->
-<!--                            <div class="row">-->
-
-<!--                                <div class="col-md-6"></div>-->
-<!--                                <div class="col-md-6">-->
-<!--                                    <div class="input-group mb-3">-->
-<!--                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">-->
-<!--                                        <div class="input-group-append">-->
-<!--                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                            </div>-->
-<!--                        </form>-->
-
-
-<!--                    </div>-->
-<!--                    <div class="table-responsive">-->
-<!--                        <table class="table align-items-center table-flush">-->
-<!--                            <thead class="thead-light">-->
-<!--                            <tr>-->
-<!--                                <th scope="col">#</th>-->
-<!--                                <th scope="col">NIM</th>-->
-<!--                                <th scope="col">Name</th>-->
-<!--                                <th scope="col">Program Study</th>-->
-<!--                                <th scope="col">Status</th>-->
-<!--                                <th scope="col" width="30px"></th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr th:each="data,row : ${list}">-->
-<!--                                <th th:text="${(row.index + 1) + (list.number * list.size)}">1</th>-->
-<!--                                <td th:text="${data.nim}">1519001</td>-->
-<!--                                <td sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">-->
-<!--                                    <a class="btn btn-success btn-outline-success btn-sm"-->
-<!--                                       th:if="${data.status.AKTIF} == ${data.status}"-->
-<!--                                       th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">-->
-<!--                                    </a>-->
-
-<!--                                    <a class="btn btn-danger btn-outline-danger btn-sm"-->
-<!--                                       th:if="${data.status.NONAKTIF} == ${data.status}"-->
-<!--                                       th:text="${data.nama}"  th:href="@{/mahasiswa/form(mahasiswa = ${data.id})}">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td sec:authorize="hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_STAFF')">-->
-<!--                                    <a class="btn btn-success btn-outline-success btn-sm"-->
-<!--                                       th:if="${data.status.AKTIF} == ${data.status}"-->
-<!--                                       th:text="${data.nama}" >-->
-<!--                                    </a>-->
-
-<!--                                    <a class="btn btn-danger btn-outline-danger btn-sm"-->
-<!--                                       th:if="${data.status.NONAKTIF} == ${data.status}"-->
-<!--                                       th:text="${data.nama}">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                                <td th:text="${data.idProdi.namaProdi}">Akuntansi Syariah</td>-->
-<!--                                <td th:if="${data.statusAktif == 'K'}"><span class="badge badge-danger badge-md">NONAKTIF</span></td>-->
-<!--                                <td th:if="${data.statusAktif == 'L'}"><span class="badge badge-info badge-md">LULUS</span></td>-->
-<!--                                <td th:if="${data.statusAktif == 'CUTI'}"><span class="badge badge-warning badge-md">CUTI</span></td>-->
-<!--                                <td th:if="${data.statusAktif == 'AKTIF'}"><span class="badge badge-success badge-md">AKTIF</span></td>-->
-<!--                                <td align="center">-->
-<!--                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#exampleModal' + data.id}" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">-->
-<!--                                        Select to change student status-->
-<!--                                    </button>-->
-
-<!--                                    &lt;!&ndash; Modal &ndash;&gt;-->
-<!--                                    <div class="modal fade bd-example-modal-lg" th:id="${'exampleModal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">-->
-<!--                                            <div class="modal-content">-->
-<!--                                                <div class="modal-header">-->
-<!--                                                    <h5 class="modal-title" id="exampleModalLabel">Select to change student status</h5>-->
-<!--                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                                        <span aria-hidden="true">&times;</span>-->
-<!--                                                    </button>-->
-<!--                                                </div>-->
-<!--                                                <div class="modal-body">-->
-<!--                                                    <div class="row">-->
-<!--                                                        <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                            <div class="form-group">-->
-<!--                                                                <label>Nim</label>-->
-<!--                                                                <h4 th:text="${data.nim}"></h4>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                            <div class="form-group">-->
-<!--                                                                <label>Nama</label>-->
-<!--                                                                <h4 th:text="${data.nama}"></h4>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="row">-->
-<!--                                                        <div class="col-md-3">-->
-<!--                                                            <form method="post" th:action="@{/mahasiswa/aktif(mahasiswa = ${data.id})}">-->
-<!--                                                                <button type="submit" class="btn btn-primary btn-success">AKTIF</button>-->
-<!--                                                            </form>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-3">-->
-<!--                                                            <form method="post" th:action="@{/mahasiswa/lulus(mahasiswa = ${data.id})}">-->
-<!--                                                                <button type="submit" class="btn btn-primary btn-info">LULUS</button>-->
-<!--                                                            </form>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-3" th:if="${data.statusAktif == 'AKTIF'}">-->
-<!--                                                            <button type="button" class="btn btn-primary" data-toggle="modal" th:data-target="${'#cuti' + data.id}">-->
-<!--                                                                Cuti-->
-<!--                                                            </button>-->
-
-<!--                                                            &lt;!&ndash; Modal &ndash;&gt;-->
-<!--                                                        </div>-->
-<!--                                                        <div class="col-md-3">-->
-<!--                                                            <form method="post" th:action="@{/mahasiswa/keluar(mahasiswa = ${data.id})}">-->
-<!--                                                                <button type="submit" class="btn btn-primary btn-danger">NONAKTIF</button>-->
-<!--                                                            </form>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-
-<!--                                    <div class="modal fade bd-example-modal-lg" th:id="${'cuti' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">-->
-<!--                                            <div class="modal-content">-->
-<!--                                                <div class="modal-header">-->
-<!--                                                    <h5 class="modal-title">Ajukan Cuti</h5>-->
-<!--                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--                                                        <span aria-hidden="true">&times;</span>-->
-<!--                                                    </button>-->
-<!--                                                </div>-->
-<!--                                                <form th:action="@{/proses/cuti(mahasiswa = ${data.id})}" method="post">-->
-<!--                                                    <div class="modal-body">-->
-<!--                                                        <div class="row">-->
-<!--                                                            <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label>Nim</label>-->
-<!--                                                                    <h4 th:text="${data.nim}"></h4>-->
-<!--                                                                </div>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label>Nama</label>-->
-<!--                                                                    <h4 th:text="${data.nama}"></h4>-->
-<!--                                                                </div>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label>Tanggal Mulai</label>-->
-<!--                                                                    <input type="date" name="tanggalMulaiCuti" class="form-control">-->
-<!--                                                                </div>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label>Tanggal Berakhir Cuti</label>-->
-<!--                                                                    <input type="date" name="tanggalBerakhirCuti" class="form-control">-->
-<!--                                                                </div>-->
-<!--                                                            </div>-->
-<!--                                                            <div class="col-md-12 col-xs-12 text-left">-->
-<!--                                                                <div class="form-group">-->
-<!--                                                                    <label>Alasan</label>-->
-<!--                                                                    <input type="text" class="form-control" name="keterangan">-->
-<!--                                                                </div>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="modal-footer">-->
-<!--                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-<!--                                                        <button type="submit" class="btn btn-primary">Save changes</button>-->
-<!--                                                    </div>-->
-<!--                                                </form>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
-<!--                    <div class="card-footer py-4">-->
-<!--                        <nav aria-label="...">-->
-<!--                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">-->
-<!--                                <li class="disabled"><a href="#" aria-label="Previous"><span-->
-<!--                                        aria-hidden="true">&laquo;</span></a>-->
-<!--                                </li>-->
-<!--                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>-->
-<!--                                </li>-->
-<!--                            </ul>-->
-<!--                        </nav>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-        <!-- Dark table -->
-
     </div>
 </div>
 </body>
 </html>
+<script>
+    function myFunction() {
+        var x = document.getElementById("formCuti");
+        var y = document.getElementById("formOpt");
+        if (x.style.display === "none") {
+            y.style.display = "none";
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+            y.style.display = "block";
+
+        }
+    }
+
+    function batal() {
+        var x = document.getElementById("formCuti");
+        var y = document.getElementById("formOpt");
+        if (x.style.display === "block") {
+            x.style.display = "none";
+            y.style.display = "block";
+        }
+    }
+</script>
