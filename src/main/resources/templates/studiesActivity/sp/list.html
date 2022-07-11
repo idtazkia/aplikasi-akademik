@@ -54,26 +54,23 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <form method="get" th:action="@{/studiesActivity/sp/proses}">
+                            <div class="table-responsive">
 
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Matakuliah</th>
-                                    <th>Jumlah Permintaan</th>
-                                    <th>Jumlah Pembayaran</th>
-                                    <th>Prodi</th>
-                                    <th>Dosen</th>
-                                    <th>Tahun Akademik</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="data,row:${list}">
-                                    <form method="post" th:action="@{/studiesActivity/sp/approve}">
-                                        <td th:text="${row.index + 1}">1</td>
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr >
+                                        <th>No</th>
+                                        <th>Matakuliah</th>
+                                        <th class="text-center">Jumlah Permintaan</th>
+                                        <th class="text-center">Jumlah Pembayaran</th>
+                                        <th class="text-center">Pilih Matakuliah</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row:${list}">
+
+                                        <td class="text-center" th:text="${row.index + 1}">1</td>
                                         <td>
                                             <div style="cursor: pointer;" data-toggle="modal" th:data-target="${'#modal-notification' + data[0]}">
                                                 <div th:text="${data[2]}"></div>
@@ -89,12 +86,12 @@
                                                                 <span class="btn-inner--icon"><i class="fa fa-download"></i></span>
                                                                 <a class="btn-inner--text text-white" th:href="@{/download/list(matkul = ${data[0]})}" >Download list</a>
                                                             </button>
-                                                            <div th:if="${data[5] == 'WAITING'}">
-                                                                <a th:href="@{/studiesActivity/sp/custom(id = ${data[0]})}" class="btn btn-warning btn-sm text-white">
-                                                                    <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
-                                                                    <span class="btn-inner--text">Custom Kelas</span>
-                                                                </a>
-                                                            </div>
+<!--                                                            <div th:if="${data[5] == 'WAITING'}">-->
+<!--                                                                <a th:href="@{/studiesActivity/sp/custom(id = ${data[0]})}" class="btn btn-warning btn-sm text-white">-->
+<!--                                                                    <span class="btn-inner&#45;&#45;icon"><i class="fa fa-edit"></i></span>-->
+<!--                                                                    <span class="btn-inner&#45;&#45;text">Custom Kelas</span>-->
+<!--                                                                </a>-->
+<!--                                                            </div>-->
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">×</span>
                                                             </button>
@@ -115,11 +112,11 @@
                                                                     </thead>
                                                                     <tbody>
                                                                     <tr th:each="dataDetail : ${matkulDetail1}">
-                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[2]}">18101040</td>
-                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[3]}">Rafhatullah</td>
-                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[4]}">HES</td>
-                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}" th:text="${dataDetail[5]}"></td>
-                                                                        <td th:if="${dataDetail[9] == data[0] or dataDetail[0] == data[1] or dataDetail[7] == data[6] or dataDetail[8] == data[2]}">
+                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[2]}">18101040</td>
+                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[3]}">Rafhatullah</td>
+                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[4]}">HES</td>
+                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[5]}"></td>
+                                                                        <td th:if="${dataDetail[0] == data[0]}" th:text="${dataDetail[9]}">
                                                                             <div th:text="${dataDetail[10]}"></div>
                                                                         </td>
                                                                     </tr>
@@ -135,32 +132,11 @@
 
                                         </td>
 
-                                        <td th:text="${data[3]}">1</td>
-                                        <td th:text="${data[4]}">2</td>
+                                        <td class="text-center" th:text="${data[3]}">1</td>
+                                        <td class="text-center" th:text="${data[4]}">2</td>
                                         <div th:if="${data[5] == 'WAITING'}">
-                                            <td>
-                                                <select th:name="${'prodi-'+data[0]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
-                                                    <option value=""></option>
-                                                    <option th:each="prodi : ${listProdi}"
-                                                            th:text="${prodi.namaProdi}"
-                                                            th:value="${prodi.id}"></option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select th:name="${'dosen-'+data[0]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
-                                                    <option value=""></option>
-                                                    <option th:each="item : ${listDosen}"
-                                                            th:text="${item.karyawan.namaKaryawan}"
-                                                            th:value="${item.id}"></option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select th:name="${'tahunAkademik-'+data[0]}" style="width: 200px!important;" class="form-control js-example-placeholder-single">
-                                                    <option value=""></option>
-                                                    <option th:each="tahun : ${listTahun}"
-                                                            th:text="${tahun.namaTahunAkademik}"
-                                                            th:value="${tahun.id}"></option>
-                                                </select>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="select-check" name="checkBox" th:value="${data[0]}">
                                             </td>
                                         </div>
                                         <div th:if="${data[5] == 'APPROVED'}">
@@ -171,37 +147,20 @@
                                             </div>
                                         </div>
                                         <div th:if="${data[5] == 'REJECTED'}">
-                                            <td ></td>
-                                            <td ></td>
-                                            <td ></td>
-                                        </div>
-                                        <div th:if="${data[5] == 'WAITING'}">
-                                            <td>
-                                                <input type="hidden" th:name="${'matkur-'+data[0]}" class="form-control" th:value="${data[0]}">
-                                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger">REJETED</button>
                                             </td>
                                         </div>
-                                    </form>
-                                    <form method="post" th:action="@{/studiesActivity/sp/reject}">
-                                        <div th:if="${data[5] == 'WAITING'}">
-                                            <td>
-                                                <input type="hidden" th:name="${'matkur-'+data[0]}" class="form-control" th:value="${data[0]}">
-                                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                                            </td>
-                                        </div>
-                                    </form>
-                                    <td colspan="2">
-                                        <div th:if="${data[5] == 'APPROVED'}">
-                                            <a href="!#" class="btn btn-info btn-sm">Approved</a>
-                                        </div>
-                                        <div th:if="${data[5] == 'REJECTED'}">
-                                            <a href="#!" class="btn btn-info btn-sm">Rejected</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button style="margin-bottom: 20px;" type="submit" class="mb-5 btn btn-success btn-lg"> Proses SP</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

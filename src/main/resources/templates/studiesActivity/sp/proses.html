@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Semester Pendek</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Semester Pendek </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card shadow">
+
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0"> Proses Request Semeter Pendek</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="nav-wrapper mb-4">
+                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"> APPROVE</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="true"> REJECT</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+
+                            <!-- Approve -->
+
+                            <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12">
+                                        <div class="card shadow">
+                                            <div class="card-header border-0">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <h3 class="mb-0">Form</h3>
+                                                    </div>
+                                                    <div class="col text-right">
+                                                        <a class="btn btn-warning btn-sm text-white" style="cursor: pointer;" data-toggle="modal" data-target="#modal-custom">
+                                                            <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
+                                                            <span class="btn-inner--text">Custom Kelas</span>
+                                                        </a>
+
+                                                        <div class="modal fade" id="modal-custom" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-header bg-transparent pb-5">
+                                                                        <h4>Pilih Matakuliah untuk jadwal</h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+
+                                                                        <form method="get" th:action="@{/studiesActivity/sp/custom}">
+                                                                            <div th:each="data, row:${listId}">
+                                                                                <input type="hidden" name="matkul" th:value="${data}">
+                                                                            </div>
+                                                                            <div class="table-responsive">
+                                                                                <table class="table align-items-center table-flush">
+                                                                                    <thead class="thead-light">
+                                                                                    <tr>
+                                                                                        <th scope="col"></th>
+                                                                                        <th scope="col">#</th>
+                                                                                        <th scope="col">Matakulah</th>
+                                                                                        <th scope="col">Kurikulum</th>
+                                                                                        <th scope="col">Kode Matakuliah</th>
+                                                                                        <th scope="col">Jumlah Sks</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    <tr th:each="data,row : ${listMatkul}">
+                                                                                        <td>
+                                                                                            <input type="checkbox" class="select-check" name="id" th:value="${data.id}">
+                                                                                        </td>
+                                                                                        <td th:text="${row.index + 1}">1</td>
+                                                                                        <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                                                                        <td th:text="${data.kurikulum.namaKurikulum}">2020</td>
+                                                                                        <td th:text="${data.matakuliah.kodeMatakuliah}">2020</td>
+                                                                                        <td th:text="${data.jumlahSks}">2020</td>
+                                                                                    </tr>
+
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                            <br>
+                                                                            <div class="form-group text-center">
+                                                                                <button class="btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+                                                                            </div>
+                                                                        </form>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <form method="post" th:action="@{/studiesActivity/sp/approve}">
+                                                    <div th:each="data, row:${listId}">
+                                                        <input type="hidden" name="id" th:value="${data}">
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <text>*Pilih Matakuliah Kurikulum untuk input ke jadwal</text>
+                                                        <table class="table align-items-center table-flush">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th scope="col"></th>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Matakulah</th>
+                                                                <th scope="col">Kurikulum</th>
+                                                                <th scope="col">Kode Matakuliah</th>
+                                                                <th scope="col">Jumlah Sks</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="data,row : ${listMatkul}">
+                                                                <td>
+                                                                    <input type="checkbox" class="select-check" name="checkBox" th:value="${data.id}">
+                                                                </td>
+                                                                <td th:text="${row.index + 1}">1</td>
+                                                                <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                                                <td th:text="${data.kurikulum.namaKurikulum}">2020</td>
+                                                                <td th:text="${data.matakuliah.kodeMatakuliah}">2020</td>
+                                                                <td th:text="${data.jumlahSks}">2020</td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group">
+                                                        <label>Dosen</label>
+                                                        <select name="dosen" id="" class="form-control js-example-placeholder-single">
+                                                            <option value=""></option>
+                                                            <option th:each="data : ${listDosen}"
+                                                                    th:text="${data.karyawan.namaKaryawan}"
+                                                                    th:selected="(${data} == *{dosen})"
+                                                                    th:value="${data.id}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Prodi</label>
+                                                        <select name="prodi" id="" class="form-control js-example-placeholder-single">
+                                                            <option value=""></option>
+                                                            <option th:each="data : ${listProdi}"
+                                                                    th:text="${data.NamaProdi}"
+                                                                    th:selected="(${data} == *{listProdi})"
+                                                                    th:value="${data.id}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Tahun Akademik</label>
+                                                        <select name="tahunAkademik" id="" class="form-control js-example-placeholder-single">
+                                                            <option value=""></option>
+                                                            <option th:each="data : ${listTahun}"
+                                                                    th:text="${data.namaTahunAkademik}"
+                                                                    th:selected="(${data} == *{listTahun})"
+                                                                    th:value="${data.id}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-success"><i class="fas fa-check"></i> Approve</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-xs-12">
+                                        <div class="card shadow">
+                                            <div class="card-header border-0">
+                                                <h3 class="mb-0">List Mahasiswa</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table align-items-center table-flush">
+                                                        <thead class="thead-light">
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Nim</th>
+                                                            <th scope="col">Nama</th>
+                                                            <th scope="col">Prodi</th>
+                                                            <th scope="col">Status</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr th:each="data,row : ${listSp}">
+                                                            <td th:text="${row.index + 1}">1</td>
+                                                            <td th:text="${data[2]}"></td>
+                                                            <td th:text="${data[3]}">2020</td>
+                                                            <td th:text="${data[4]}">2020</td>
+                                                            <td th:text="${data[10]}">2020</td>
+                                                        </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- REJECT -->
+
+                            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <div class="card shadow">
+                                                <div class="card-header border-0">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <h3 class="mb-0">List Mahasiswa</h3>
+                                                        </div>
+                                                        <div class="col text-right">
+                                                            <form method="post" th:action="@{/studiesActivity/sp/reject}">
+                                                                <button type="submit" class="btn btn-danger"><i class="fa fa-times"></i> REJECT</button>
+                                                                <div th:each="data, row:${listId}">
+                                                                    <input type="hidden" name="id" th:value="${data}">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table align-items-center table-flush">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Nim</th>
+                                                                <th scope="col">Nama</th>
+                                                                <th scope="col">Prodi</th>
+                                                                <th scope="col">Status</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="data,row : ${listAllSp}">
+                                                                <td th:text="${row.index + 1}">1</td>
+                                                                <td th:text="${data[2]}"></td>
+                                                                <td th:text="${data[3]}">2020</td>
+                                                                <td th:text="${data[4]}">2020</td>
+                                                                <td th:text="${data[10]}">2020</td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+    $(document).ready(function (){
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e){
+            localStorage.setItem('activeTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('activeTab');
+        var nim = document.getElementById("nim").value;
+        if (nim){
+            var tab = "#tabs-icons-text-1";
+            $('#tabs-icons-text a[href="' + tab + '"]').tab('show');
+            console.log(nim);
+        }else if (activeTab){
+            $('#tabs-icons-text a[href="' + activeTab + '"]').tab('show');
+            console.log(activeTab);
+        }
+    });
+
+    var max_limit = 1;
+    $(document).ready(function (){
+        $(".select-check:input:checkbox").each(function (index){
+            this.checked = (".select-check:input:checkbox" < max_limit);
+        }).change(function (){
+            if ($(".select-check:input:checkbox:checked").length > max_limit){
+                this.checked = false;
+            }
+        });
+    });
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Select One",
+        allowClear: true
+    });
+
+</script>

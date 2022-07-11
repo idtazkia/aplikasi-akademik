@@ -57,6 +57,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <form method="post" th:action="@{/studiesActivity/sp/custom}">
+                                    <div th:if="${testMatkul != null}">
+                                        <div th:each="data, row:${testMatkul}">
+                                            <input type="hidden" name="matkul" th:value="${data}">
+                                        </div>
+                                    </div>
+                                    <div th:each="data, row:${listMahasiswa}">
+                                        <input type="hidden" name="matkul" th:value="${data}">
+                                    </div>
                                     <input type="hidden" name="id" th:value="${matkul.id}">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -115,7 +123,7 @@
                                             <th>Tahun Akademik</th>
                                         </tr>
                                         </thead>
-                                        <tbody><div th:text="${jenis}"></div>
+                                        <tbody>
                                         <tr th:each="data,row:${jadwal}">
                                             <td th:text="${row.index + 1}">1</td>
                                             <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
@@ -163,6 +171,11 @@
                                     </div>
                                 </form>
                                 <form method="post" th:action="@{/studiesActivity/sp/cancel}">
+                                    <div th:if="${testMatkul != null}">
+                                        <div th:each="data, row:${testMatkul}">
+                                            <input type="hidden" name="matkul" th:value="${data}">
+                                        </div>
+                                    </div>
                                     <input type="hidden" name="id" th:value="${matkul.id}">
                                     <div class="row">
                                         <div class="col-md-12 text-center">
