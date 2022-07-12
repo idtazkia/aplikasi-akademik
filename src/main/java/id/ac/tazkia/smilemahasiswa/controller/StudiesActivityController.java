@@ -4753,15 +4753,16 @@ public class StudiesActivityController {
         Prodi prod = prodiDao.findById(prodi).get();
         TahunAkademik tahunJadwal = tahunAkademikDao.findById(tahunAkademik).get();
 
-        List<Object[]> spList = praKrsSpDao.listLunasSpPerMatkul(semesterPendek, id);
+        List<Object[]> allList = praKrsSpDao.listAllSpPerMatkul(semesterPendek, id);
 
-        List<String> idKrsSp = new ArrayList<>();
-        for(Object[] idSp : spList){
-            idKrsSp.add(idSp[9].toString());
+        List<String> idALlSp = new ArrayList<>();
+        for(Object[] idSp : allList){
+            idALlSp.add(idSp[9].toString());
             System.out.println("test data : " + idSp[9].toString());
         }
-        System.out.println("mhs : " + idKrsSp);
-        praKrsSpDao.updateStatus(karyawan,idKrsSp, "APPROVED");
+        System.out.println("mhs : " + idALlSp);
+
+        praKrsSpDao.updateStatus(karyawan,idALlSp, "APPROVED");
 
         Kelas kelas = kelasDao.findById("SP-01").get();
         TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunJadwal, prod);
@@ -4795,6 +4796,15 @@ public class StudiesActivityController {
         jadwalDosen.setJumlahSakit(0);
         jadwalDosen.setJumlahTerlambat(0);
         jadwalDosenDao.save(jadwalDosen);
+
+        List<Object[]> spList = praKrsSpDao.listLunasSpPerMatkul(semesterPendek, id);
+
+        List<String> idKrsSp = new ArrayList<>();
+        for(Object[] idSp : spList){
+            idKrsSp.add(idSp[9].toString());
+            System.out.println("test data : " + idSp[9].toString());
+        }
+        System.out.println("mhs : " + idKrsSp);
 
         for (String krsId : idKrsSp){
             PraKrsSp findMahasiswa = praKrsSpDao.findById(krsId).get();
@@ -4935,7 +4945,7 @@ public class StudiesActivityController {
             jadwalDao.delete(j);
         }
 
-        List<Object[]> m = praKrsSpDao.listLunasSpPerMatkul(tahun, matkul);
+        List<Object[]> m = praKrsSpDao.listAllSpPerMatkul(tahun, matkul);
         System.out.println("cek list: " + m);
         List<String> listId = new ArrayList<>();
         for(Object[] pks : m){
@@ -4983,7 +4993,7 @@ public class StudiesActivityController {
             jadwalDao.delete(j);
         }
 
-        List<Object[]> m = praKrsSpDao.listLunasSpPerMatkul(tahun, matkul);
+        List<Object[]> m = praKrsSpDao.listAllSpPerMatkul(tahun, matkul);
         System.out.println("cek list: " + m);
         List<String> listId = new ArrayList<>();
         for (Object[] pks : m){

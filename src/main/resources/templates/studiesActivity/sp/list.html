@@ -64,7 +64,9 @@
                                         <th>Matakuliah</th>
                                         <th class="text-center">Jumlah Permintaan</th>
                                         <th class="text-center">Jumlah Pembayaran</th>
-                                        <th class="text-center">Pilih Matakuliah</th>
+                                        <th class="text-center">
+                                            Pilih Matakuliah
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -86,12 +88,6 @@
                                                                 <span class="btn-inner--icon"><i class="fa fa-download"></i></span>
                                                                 <a class="btn-inner--text text-white" th:href="@{/download/list(matkul = ${data[0]})}" >Download list</a>
                                                             </button>
-<!--                                                            <div th:if="${data[5] == 'WAITING'}">-->
-<!--                                                                <a th:href="@{/studiesActivity/sp/custom(id = ${data[0]})}" class="btn btn-warning btn-sm text-white">-->
-<!--                                                                    <span class="btn-inner&#45;&#45;icon"><i class="fa fa-edit"></i></span>-->
-<!--                                                                    <span class="btn-inner&#45;&#45;text">Custom Kelas</span>-->
-<!--                                                                </a>-->
-<!--                                                            </div>-->
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">×</span>
                                                             </button>
@@ -140,15 +136,13 @@
                                             </td>
                                         </div>
                                         <div th:if="${data[5] == 'APPROVED'}">
-                                            <div th:each="j : ${jadwal}">
-                                                <td th:if="${j.matakuliahKurikulum.id == data[0]}" th:text="${j.prodi.namaProdi}"></td>
-                                                <td th:if="${j.matakuliahKurikulum.id == data[0]}" th:text="${j.dosen.karyawan.namaKaryawan}"></td>
-                                                <td th:if="${j.matakuliahKurikulum.id == data[0]}" th:text="${j.tahunAkademik.namaTahunAkademik}"></td>
-                                            </div>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-success btn-sm">APPROVED</button>
+                                            </td>
                                         </div>
                                         <div th:if="${data[5] == 'REJECTED'}">
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-danger">REJETED</button>
+                                                <button type="button" class="btn btn-danger btn-sm">REJETED</button>
                                             </td>
                                         </div>
                                     </tr>
@@ -179,4 +173,11 @@
             placeholder: "Select One",
             allowClear: true
         });
+
+        $(document).ready(function (){
+            $('#checkAll').click(function (){
+                $('.select-check:input:checkbox').not(this).prop('checked', this.checked);
+            });
+        });
+
     </script>
