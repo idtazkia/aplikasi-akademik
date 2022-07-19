@@ -246,7 +246,7 @@ public class DashboardController {
         if (tahun == null) {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         }
-        List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId());
+        List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId(), tahun.getId());
         model.addAttribute("tahunAktif", tahun);
         model.addAttribute("listSp", listSp);
         if (listSp.isEmpty()) {

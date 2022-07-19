@@ -140,8 +140,8 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join matakuliah as c on b.id_matakuliah=c.id where b.id=?1", nativeQuery = true)
     Object[] jumlahPerMatkul(String idMatkul);
 
-    @Query(value = "select a.id, d.nama_matakuliah as matakuliah, c.jumlah_sks as jumlahSks, a.status_approve as status, bb.status_pengembalian as pengembalian, a.id_mahasiswa as mahasiswa, a.id_tahun_akademik as tahun_akademik, c.id as idMatakuliah from pra_krs_sp as a inner join matakuliah_kurikulum as c on a.id_matakuliah_kurikulum=c.id inner join matakuliah as d on c.id_matakuliah=d.id left join (select b.id_pra_krs_sp, b.status_pengembalian from refund_sp as b where b.status='AKTIF') bb on a.id=bb.id_pra_krs_sp where a.status='AKTIF' and a.id_mahasiswa=?1", nativeQuery = true)
-    List<Object[]> listSp(String idMahasiswa);
+    @Query(value = "select a.id, d.nama_matakuliah as matakuliah, c.jumlah_sks as jumlahSks, a.status_approve as status, bb.status_pengembalian as pengembalian, a.id_mahasiswa as mahasiswa, a.id_tahun_akademik as tahun_akademik, c.id as idMatakuliah from pra_krs_sp as a inner join matakuliah_kurikulum as c on a.id_matakuliah_kurikulum=c.id inner join matakuliah as d on c.id_matakuliah=d.id left join (select b.id_pra_krs_sp, b.status_pengembalian from refund_sp as b where b.status='AKTIF') bb on a.id=bb.id_pra_krs_sp where a.status='AKTIF' and a.id_mahasiswa=?1 and a.id_tahun_akademik=?2", nativeQuery = true)
+    List<Object[]> listSp(String idMahasiswa, String idTahun);
 
     @Query(value = "select a.* from (select a.*,if(b.id_mahasiswa != '','LUNAS', 'BELUM LUNAS')as status_bayar, coalesce(tanggalBayar, '-') from \n" +
             "(select a.*, coalesce(b.id_matakuliah_setara, a.id_matakuliah) as id from \n" +
