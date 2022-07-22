@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendaftaran Wisuda</title>
+    <style type="text/css">
+        .bd-primary{
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;new Wisuda
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-primary:hover{
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-success{
+            background-color: #5cb85c;
+            border-radius: 10px;
+        }
+
+        .bd-warning{
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+        }
+
+        .bd-warning:hover{
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-danger{
+            background-color: #d9534f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body onload="myFunction()">
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Pendaftaran Wisuda</h2>
+                                        <p>Semoga Lancar!! 💙</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-report">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="bounceIn">
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Ketentuan Foto Ijazah</h2>
+                            <hr>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p><strong><center>Ikhwan</center></strong></p>
+                                    <p>1. Menggunakan jas almamater Tazkia (ketika di foto logo Tazkia harus kelihatan)</p>
+                                    <p>2. Menggunakan kemeja warna putih;</p>
+                                    <p>3. Menggunakan dasi panjang dengan motif dan warna yang bebas namun formal;</p>
+                                    <p>4. Untuk hasil yang bagus agar dapat di Studio Foto.</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <p><strong><center>Akhwat</center></strong></p>
+                                    <p>1. Menggunakan jas almamater Tazkia (ketika di foto logo Tazkia harus kelihatan);</p>
+                                    <p>2. Menggunakan jilbab warna putih;</p>
+                                    <p>3. Untuk hasil yang bagus agar dapat di Studio Foto.</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <p><strong><center>Ketentuan jenis foto </center></strong></p>
+                                    <p>1. Latar belakang berwarna biru tua; </p>
+                                    <p>2. Resolusi ketajaman foto minimal 600 pixel;</p>
+                                    <p>3. Ukuran 3x4;</p>
+                                    <p>4. Ukuran File yg diupload minimal 1MB;</p>
+                                    <p>5. Tidak boleh terlihat gigi ketika senyum;</p>
+                                    <p>6. Tidak foto menggunakan kacamata.</p>
+                                    <div class="col-md-6">
+                                        <center>
+                                            <img th:src="@{/images/ikhwan.jpeg}" width="100px" height="90px" alt="">
+                                        </center>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <center>
+                                            <img th:src="@{/images/akhwat.jpeg}" width="100px" height="90px" alt="">
+                                        </center>
+                                    </div>
+                                    <center>
+                                        <p><strong class="text-danger">* Contoh Upload Foto Wisuda/Ijazah</strong></p>
+                                    </center>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    <div class="normal-table-list mg-t-30">
+                        <div class="basic-tb-hd">
+                            <h2>Form</h2>
+                        </div>
+                        <div class="bsc-tbl-st">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div>
+                                        <form method="post" th:action="@{/graduation/sidang/mahasiswa/wisuda-revisi}" th:object="${wisuda}" enctype="multipart/form-data" >
+                                            <div class="form-group">
+                                                <label>Nama Lengkap Sesuai KTP</label>
+                                                <input type="text" th:field="*{nama}" required name="nama" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>TTL sesuai KTP</label>
+                                                <input type="date" th:field="*{tanggal}" required name="tanggal" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Jenis Kelamin</label>
+                                                <select th:field="*{kelamin}" class="form-control" required style="width: 100%;"  name="kelamin" >
+                                                    <option value="PRIA">Laki-Laki</option>
+                                                    <option value="WANITA">Perempuan</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Nomor WhatsApp</label>
+                                                <input type="text" th:field="*{nomor}" required name="tanggal" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email Pribadi</label>
+                                                <input type="text" th:field="*{email}" required name="tanggal" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Nama Ayah</label>
+                                                <input th:field="*{ayah}" type="text" required name="ayah" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Nama Ibu</label>
+                                                <input type="text" th:field="*{ibu}" required name="ibu" class="form-control">
+                                                <input type="hidden" th:field="*{id}" required name="id" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Beasiswa</label>
+                                                <input th:field="*{beasiswa}"   name="beasiswa" class="form-control" type="text" readonly >
+                                                <input th:field="*{sidang}"   name="sidang" class="form-control" type="hidden"  >
+                                                <input th:field="*{mahasiswa}"   name="mahasiswa" class="form-control" type="hidden"  >
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Ukuran Toga</label>
+                                                <select th:field="*{toga}" class="form-control" required style="width: 100%;"  name="toga" >
+                                                    <option value=""></option>
+                                                    <option value="S">S</option>
+                                                    <option value="M">M</option>
+                                                    <option value="L">L</option>
+                                                    <option value="XL">XL</option>
+                                                    <option value="XXL">XXL</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Judul Skripsi / Thesis Indonesia</label>
+                                                <input type="text" th:field="*{judulIndo}" required name="judulIndo" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Judul Skripsi / Thesis Inggris</label>
+                                                <input type="text" th:field="*{judulInggris}" required name="judulInggris" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>File Foto</label>
+                                                <input type="file"  required name="foto" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <input class="form-check-input" required type="checkbox" value="" id="flexCheckDefault">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Data yang saya isi telah divalidasi dan dapat digunakan untuk kepentingan Wisuda, Ijazah, Transkrip Nilai dan SKPI
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" th:if="${kurang != null}">
+                                                <center>
+                                                    <strong th:text="${kurang}">
+                                                        Sudah tidak bisa mengambil krs, karena sudah melewati batas waktu
+                                                    </strong>
+                                                </center>
+                                            </div>
+                                            <div class="form-group">
+                                                <button id="upload" class="btn btn-success">Upload</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
