@@ -2,8 +2,11 @@ package id.ac.tazkia.smilemahasiswa.service;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
 import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
+import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
 import id.ac.tazkia.smilemahasiswa.entity.Soal;
+import id.ac.tazkia.smilemahasiswa.entity.Wisuda;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,54 @@ public class MailService {
 
     @Autowired
     private MustacheFactory mustacheFactory;
+
+    public void detailWisuda(WisudaDto wisudaDto) {
+            Mustache templateEmail = mustacheFactory.compile("templates/email/wisuda/detail.html");
+            Map<String, String> data = new HashMap<>();
+            data.put("nama", wisudaDto.getNama());
+            data.put("tanggal", wisudaDto.getTanggal().toString());
+            data.put("kelamin", wisudaDto.getKelamin());
+            data.put("ayah", wisudaDto.getAyah());
+            data.put("ibu", wisudaDto.getIbu());
+            data.put("nomor", wisudaDto.getNomor());
+            if (wisudaDto.getBeasiswa() != null) {
+                data.put("beasiswa", wisudaDto.getBeasiswa());
+            }else {
+                data.put("beasiswa", "-");
+
+            }
+            data.put("idBeasiswa", wisudaDto.getIdBeasiswa());
+            data.put("toga", wisudaDto.getToga());
+            data.put("judulIndo", wisudaDto.getJudulIndo());
+            data.put("judulInggris", wisudaDto.getJudulInggris());
+
+            StringWriter output = new StringWriter();
+            templateEmail.execute(output, data);
+
+            gmailApiService.kirimEmail(
+                    "Smile Notifikasi",
+                    "gfrhaidar@gmail.com",
+                    "Pendaftaran Wisuda ",
+                    output.toString());
+
+    }
+
+    public void successWisuda(Wisuda wisuda) {
+        Mustache templateEmail = mustacheFactory.compile("templates/email/wisuda/success.html");
+        Map<String, String> data = new HashMap<>();
+        data.put("nama", wisuda.getId());
+
+
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+
+        gmailApiService.kirimEmail(
+                "Smile Notifikasi",
+                "gfrhaidar@gmail.com",
+                "Pendaftarn Wisuda Berhasil ",
+                output.toString());
+
+    }
 
     public void validasiSoal(Soal soal,String status) {
         if (status.equals("APPROVE")) {

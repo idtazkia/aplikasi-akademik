@@ -111,6 +111,19 @@
                                     <p>4. Ukuran File yg diupload minimal 1MB;</p>
                                     <p>5. Tidak boleh terlihat gigi ketika senyum;</p>
                                     <p>6. Tidak foto menggunakan kacamata.</p>
+                                    <div class="col-md-6">
+                                        <center>
+                                            <img th:src="@{/images/ikhwan.jpeg}" width="100px" height="90px" alt="">
+                                        </center>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <center>
+                                            <img th:src="@{/images/akhwat.jpeg}" width="100px" height="90px" alt="">
+                                        </center>
+                                    </div>
+                                    <center>
+                                        <p><strong class="text-danger">* Contoh Upload Foto Wisuda/Ijazah</strong></p>
+                                    </center>
                                 </div>
                             </div>
 
@@ -141,6 +154,14 @@
                                                     <option value="PRIA">Laki-Laki</option>
                                                     <option value="WANITA">Perempuan</option>
                                                 </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Nomor WhatsApp</label>
+                                                <input type="text" th:field="*{nomor}" required name="tanggal" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email Pribadi</label>
+                                                <input type="text" th:field="*{email}" required name="tanggal" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label>Nama Ayah</label>
@@ -178,6 +199,12 @@
                                             <div class="form-group">
                                                 <label>File Foto</label>
                                                 <input type="file"  required name="foto" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <input class="form-check-input" required type="checkbox" value="" id="flexCheckDefault">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Data yang saya isi telah divalidasi dan dapat digunakan untuk kepentingan Wisuda, Ijazah, Transkrip Nilai dan SKPI
+                                                </label>
                                             </div>
                                             <div class="alert alert-danger" th:if="${kurang != null}">
                                                 <center>

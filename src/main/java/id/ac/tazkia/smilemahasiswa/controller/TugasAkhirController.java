@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.MailService;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +57,9 @@ public class TugasAkhirController {
 
     @Autowired
     private CurrentUserService currentUserService;
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private BeasiswaDao beasiswaDao;
@@ -165,12 +169,44 @@ public class TugasAkhirController {
         wisudaDto.setSidang(sidang.getId());
         wisudaDto.setIbu(mahasiswa.getIbu().getNamaIbuKandung());
         wisudaDto.setToga(mahasiswa.getUkuranBaju());
+        wisudaDto.setNomor(mahasiswa.getTeleponSeluler());
+        wisudaDto.setEmail(mahasiswa.getEmailPribadi());
         if (mahasiswa.getBeasiswa() != null) {
             wisudaDto.setBeasiswa(mahasiswa.getBeasiswa().getNamaBeasiswa());
             wisudaDto.setIdBeasiswa(mahasiswa.getBeasiswa().getId());
         }
         wisudaDto.setJudulIndo(sidang.getJudulTugasAkhir());
         wisudaDto.setJudulInggris(sidang.getJudulInggris());
+        model.addAttribute("wisuda", wisudaDto);
+
+    }
+
+    @GetMapping("/graduation/sidang/mahasiswa/wisudarevisi")
+    public void revisiWisuda(Model model,@RequestParam(name = "id", value = "id") Wisuda wisuda, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("sidang", wisuda.getSidang());
+        model.addAttribute("beasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
+
+        WisudaDto wisudaDto = new WisudaDto();
+        wisudaDto.setMahasiswa(mahasiswa.getId());
+        wisudaDto.setNama(mahasiswa.getNama());
+        wisudaDto.setId(wisuda.getId());
+        wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
+        wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
+        wisudaDto.setAyah(mahasiswa.getAyah().getNamaAyah());
+        wisudaDto.setSidang(wisuda.getSidang().getId());
+        wisudaDto.setIbu(mahasiswa.getIbu().getNamaIbuKandung());
+        wisudaDto.setToga(mahasiswa.getUkuranBaju());
+        wisudaDto.setNomor(mahasiswa.getTeleponSeluler());
+        wisudaDto.setEmail(mahasiswa.getEmailPribadi());
+        if (mahasiswa.getBeasiswa() != null) {
+            wisudaDto.setBeasiswa(mahasiswa.getBeasiswa().getNamaBeasiswa());
+            wisudaDto.setIdBeasiswa(mahasiswa.getBeasiswa().getId());
+        }
+        wisudaDto.setJudulIndo(wisuda.getSidang().getJudulTugasAkhir());
+        wisudaDto.setJudulInggris(wisuda.getSidang().getJudulInggris());
         model.addAttribute("wisuda", wisudaDto);
 
     }
@@ -194,11 +230,13 @@ public class TugasAkhirController {
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
         mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
         mahasiswa.setUkuranBaju(wisudaDto.getToga());
+        mahasiswa.setEmailPribadi(wisudaDto.getEmail());
+        mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
         mahasiswaDao.save(mahasiswa);
 
 
-        ayah.setNamaAyah(wisudaDto.getAyah());
-        ibu.setNamaIbuKandung(wisudaDto.getNama());
+        ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
+        ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
         ayahDao.save(ayah);
         ibuDao.save(ibu);
 
@@ -229,6 +267,78 @@ public class TugasAkhirController {
             wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
             wisuda.setStatus(StatusApprove.WAITING);
             wisudaDao.save(wisuda);
+
+            mailService.detailWisuda(wisudaDto);
+            return "redirect:waiting";
+
+
+        }else {
+            attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
+            return "redirect:wisuda?sidang="+wisudaDto.getSidang();
+
+        }
+
+
+    }
+
+    @PostMapping("/graduation/sidang/mahasiswa/wisuda-revisi")
+    public String revisiWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String namaAsli = foto.getOriginalFilename();
+        Long ukuran = foto.getSize();
+
+        Ayah ayah = ayahDao.findById(mahasiswa.getAyah().getId()).get();
+        Ibu ibu = ibuDao.findById(mahasiswa.getIbu().getId()).get();
+        Sidang sidang = sidangDao.findById(wisudaDto.getSidang()).get();
+
+        sidang.setJudulTugasAkhir(wisudaDto.getJudulIndo());
+        sidang.setJudulInggris(wisudaDto.getJudulInggris());
+        sidangDao.save(sidang);
+
+        mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
+        mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
+        mahasiswa.setUkuranBaju(wisudaDto.getToga());
+        mahasiswa.setEmailPribadi(wisudaDto.getEmail());
+        mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
+        mahasiswaDao.save(mahasiswa);
+
+
+        ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
+        ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
+        ayahDao.save(ayah);
+        ibuDao.save(ibu);
+
+        if (ukuran >= 1000000){
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
+            foto.transferTo(tujuan);
+
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
+            Wisuda wisuda = wisudaDao.findById(wisudaDto.getId()).get();
+            wisuda.setMahasiswa(mahasiswa);
+            wisuda.setFoto(namaFile + "." + extension);
+            wisuda.setSidang(sidang);
+            wisuda.setPeriodeWisuda(periodeWisuda);
+            wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
+            wisuda.setStatus(StatusApprove.WAITING);
+            wisudaDao.save(wisuda);
+
+            mailService.detailWisuda(wisudaDto);
             return "redirect:waiting";
 
 
@@ -300,6 +410,7 @@ public class TugasAkhirController {
         wisuda.setStatus(StatusApprove.APPROVED);
         wisudaDao.save(wisuda);
 
+        mailService.successWisuda(wisuda);
         return "redirect:listwisuda?periode="+ wisuda.getPeriodeWisuda().getId();
     }
 

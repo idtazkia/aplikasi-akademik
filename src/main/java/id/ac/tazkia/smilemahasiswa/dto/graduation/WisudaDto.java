@@ -14,6 +14,8 @@ public class WisudaDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggal;
     private String kelamin;
+    private String nomor;
+    private String email;
     private String ayah;
     private String ibu;
     private String beasiswa;
@@ -22,4 +24,5 @@ public class WisudaDto {
     private String judulIndo;
     private String judulInggris;
     private String sidang;
+    private String id;
 }
