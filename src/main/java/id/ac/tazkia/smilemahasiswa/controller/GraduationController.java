@@ -410,7 +410,7 @@ public class GraduationController {
     public String success(Model model, @RequestParam Note note){
         List<Seminar> seminar = seminarDao.findByNote(note);
         model.addAttribute("note", note);
-        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(note.getMahasiswa(),StatusRecord.SEMPRO,true,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        EnableFiture enableFiture= enableFitureDao.findByMahasiswaAndFiturAndEnable(note.getMahasiswa(),StatusRecord.SEMPRO,true);
         if (enableFiture != null) {
             model.addAttribute("sempro", enableFiture);
         }else {
