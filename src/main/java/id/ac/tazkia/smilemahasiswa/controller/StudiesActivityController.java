@@ -4711,6 +4711,9 @@ public class StudiesActivityController {
         Karyawan karyawan = karyawanDao.findByIdUser(user);
 
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
 
         List<String> listSp = new ArrayList<>();
         for(String list : checkBox){
@@ -4746,13 +4749,16 @@ public class StudiesActivityController {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
 
-        TahunAkademik semesterPendek = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
         MatakuliahKurikulum matkur = matakuliahKurikulumDao.findById(checkBox).get();
         Dosen dos = dosenDao.findById(dosen).get();
         Prodi prod = prodiDao.findById(prodi).get();
         TahunAkademik tahunJadwal = tahunAkademikDao.findById(tahunAkademik).get();
 
-        List<Object[]> allList = praKrsSpDao.listAllSpPerMatkul(semesterPendek, id);
+        List<Object[]> allList = praKrsSpDao.listAllSpPerMatkul(tahun, id);
 
         List<String> idALlSp = new ArrayList<>();
         for(Object[] idSp : allList){
@@ -4796,7 +4802,7 @@ public class StudiesActivityController {
         jadwalDosen.setJumlahTerlambat(0);
         jadwalDosenDao.save(jadwalDosen);
 
-        List<Object[]> spList = praKrsSpDao.listLunasSpPerMatkul(semesterPendek, id);
+        List<Object[]> spList = praKrsSpDao.listLunasSpPerMatkul(tahun, id);
 
         List<String> idKrsSp = new ArrayList<>();
         for(Object[] idSp : spList){
@@ -4885,9 +4891,12 @@ public class StudiesActivityController {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
 
-        TahunAkademik semesterPendek = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
+        if (tahun == null) {
+            tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
+        }
 
-        List<Object[]> listAllSp = praKrsSpDao.listAllSpPerMatkul(semesterPendek, id);
+        List<Object[]> listAllSp = praKrsSpDao.listAllSpPerMatkul(tahun, id);
         List<String> listId = new ArrayList<>();
         for (Object[] pks : listAllSp){
             listId.add(pks[9].toString());
