@@ -4688,17 +4688,16 @@ public class StudiesActivityController {
     @GetMapping("/studiesActivity/sp/list")
     public void listSp(Model model){
 
-        TahunAkademik semesterPendek = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
-
-        List<Object[]> p1 = praKrsSpDao.listKrsSp(semesterPendek.getId());
-        model.addAttribute("list", p1);
-        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listProdi", prodiDao.findAll());
-        model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         TahunAkademik tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
         if (tahun == null) {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         }
+
+        List<Object[]> p1 = praKrsSpDao.listKrsSp(tahun.getId());
+        model.addAttribute("list", p1);
+        model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listProdi", prodiDao.findAll());
+        model.addAttribute("listTahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("jadwal", jadwalDao.findByStatusAndTahunAkademik(StatusRecord.AKTIF, tahun));
 
         model.addAttribute("matkulDetail1", praKrsSpDao.detailSp(tahun));

@@ -246,19 +246,22 @@ public class DashboardController {
         if (tahun == null) {
             tahun = tahunAkademikDao.findByStatusAndJenis(StatusRecord.AKTIF, StatusRecord.PENDEK);
         }
-        List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId(), tahun.getId());
-        model.addAttribute("tahunAktif", tahun);
-        model.addAttribute("listSp", listSp);
-        if (listSp.isEmpty()) {
-            model.addAttribute("message", "message");
-        }
-        model.addAttribute("jumlah", bs.getBiaya());
-        for (Object[] list : listSp){
-            Mahasiswa mhs = mahasiswaDao.findById(list[5].toString()).get();
-            TahunAkademik tahunAkademik = tahunAkademikDao.findById(list[6].toString()).get();
-            Tagihan tagihan = tagihanDao.tagihanSp(mhs.getId(), tahunAkademik.getId());
-            if (tagihan == null){
-                model.addAttribute("cekTagihan", "cekTagihan");
+
+        if (tahun != null) {
+            List<Object[]> listSp = praKrsSpDao.listSp(mahasiswa.getId(), tahun.getId());
+            model.addAttribute("tahunAktif", tahun);
+            model.addAttribute("listSp", listSp);
+            if (listSp.isEmpty()) {
+                model.addAttribute("message", "message");
+            }
+            model.addAttribute("jumlah", bs.getBiaya());
+            for (Object[] list : listSp){
+                Mahasiswa mhs = mahasiswaDao.findById(list[5].toString()).get();
+                TahunAkademik tahunAkademik = tahunAkademikDao.findById(list[6].toString()).get();
+                Tagihan tagihan = tagihanDao.tagihanSp(mhs.getId(), tahunAkademik.getId());
+                if (tagihan == null){
+                    model.addAttribute("cekTagihan", "cekTagihan");
+                }
             }
         }
 
