@@ -419,6 +419,9 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/graduation/sidang/dosen/list}" class="nav-link">Penilaian Sidang Skripsi / Thesis</a>
                             </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER')">
+                                <a th:href="@{/graduation/sidang/admin/listwisuda}" class="nav-link">Wisuda</a>
+                            </li>
 <!--                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_SUPERUSER')">-->
 <!--                                <a th:href="@{/graduation/periodeWisuda/list}" class="nav-link">Periode Wisuda</a>-->
 <!--                            </li>-->
