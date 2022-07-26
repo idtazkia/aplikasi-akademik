@@ -51,7 +51,7 @@ public class MailService {
 
             gmailApiService.kirimEmail(
                     "Smile Notifikasi",
-                    "gfrhaidar@gmail.com",
+                    wisudaDto.getEmail(),
                     "Pendaftaran Wisuda ",
                     output.toString());
 
@@ -68,7 +68,7 @@ public class MailService {
 
         gmailApiService.kirimEmail(
                 "Smile Notifikasi",
-                "gfrhaidar@gmail.com",
+                wisuda.getMahasiswa().getEmailPribadi(),
                 "Pendaftarn Wisuda Berhasil ",
                 output.toString());
 
