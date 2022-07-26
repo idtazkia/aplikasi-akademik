@@ -258,7 +258,16 @@ public class SidangController {
                 if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
                     return "redirect:info";
                 } else {
-                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                    TahunAkademik ta = null;
+                    TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+                    if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                        String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                    }else {
+                        ta = tahunAkademik;
+                    }
+
+                    KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,ta);
                     if (krsDetail != null) {
                         return "graduation/sidang/mahasiswa/pendaftaran";
                     }else {
