@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ public interface TahunAkademikDao extends PagingAndSortingRepository<TahunAkadem
 
 
     TahunAkademik findByStatus(StatusRecord aktif);
+
+    TahunAkademik findByStatusNotInAndKodeTahunAkademik(List<StatusRecord> status, String kode);
 
     TahunAkademik findByStatusAndId(StatusRecord statusRecord, String id);
 

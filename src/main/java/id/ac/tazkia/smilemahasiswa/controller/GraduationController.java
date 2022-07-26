@@ -641,7 +641,16 @@ public class GraduationController {
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
 
-            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            TahunAkademik ta = null;
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+            }else {
+                ta = tahunAkademik;
+            }
+
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
@@ -667,7 +676,16 @@ public class GraduationController {
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
 
-            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            TahunAkademik ta = null;
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+            }else {
+                ta = tahunAkademik;
+            }
+
+            KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
