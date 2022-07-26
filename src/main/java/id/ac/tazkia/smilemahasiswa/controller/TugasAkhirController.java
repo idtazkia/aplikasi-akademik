@@ -69,7 +69,7 @@ public class TugasAkhirController {
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
-        return prodiDao.findAll();
+        return prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS));
     }
 
     // PERIODE WISUDA
@@ -392,9 +392,9 @@ public class TugasAkhirController {
         model.addAttribute("selectedPeriode",periode);
 
         if (prodi == null){
-            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndStatusNotIn(periode,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS), page));
+            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(periode,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS), page));
         }else {
-            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(periode,prodi,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS),page));
+            model.addAttribute("list", wisudaDao.findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDesc(periode,prodi,Arrays.asList(StatusApprove.REJECTED,StatusApprove.HAPUS),page));
         }
 
 
