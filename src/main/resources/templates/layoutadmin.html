@@ -452,7 +452,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_TRANSCRIPT_ADMIN') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_TRANSCRIPT_ADMIN') or hasAuthority('SETTING_MESIN_ABSEN') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-report" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-align-left-2 ni-folder-17 text-danger"></i>
                         <span class="nav-link-text">Laporan</span>
@@ -471,7 +471,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a th:href="@{/report/recapitulation/ipk}" class="nav-link">Laporan IPK</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_TRANSCRIPT_ADMIN') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_TRANSCRIPT_ADMIN') or hasAuthority('SETTING_MESIN_ABSEN') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a th:href="@{/report/historymahasiswa}" class="nav-link">Riwayat Mahasiswa</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2')">
