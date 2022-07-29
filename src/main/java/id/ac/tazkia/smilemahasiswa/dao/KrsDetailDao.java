@@ -531,7 +531,7 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "group by c.nama_tahun_akademik", nativeQuery = true)
     List<Object[]> historyMahasiswa(Mahasiswa mahasiswa);
 
-    @Query(value = "select b.id, b.nama_tahun_akademik,b.jenis from krs as a inner join krs_detail as g on a.id = g.id_krs inner join jadwal as h on g.id_jadwal = h.id inner join matakuliah_kurikulum as i on h.id_matakuliah_kurikulum = i.id inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id order by b.id desc", nativeQuery = true)
+    @Query(value = "select b.id, b.nama_tahun_akademik,b.jenis from krs as a inner join krs_detail as g on a.id = g.id_krs inner join jadwal as h on g.id_jadwal = h.id inner join matakuliah_kurikulum as i on h.id_matakuliah_kurikulum = i.id inner join tahun_akademik as b on a.id_tahun_akademik = b.id where a.status = 'AKTIF' and g.status='AKTIF' and i.jumlah_sks > 0 and a.id_mahasiswa = ?1 group by a.id order by b.kode_tahun_akademik desc", nativeQuery = true)
     List<Object[]> semesterHistory(Mahasiswa mahasiswa);
 
     @Query(value = "select kd.* from krs_detail as kd inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and mk.konsep_note = 'METOLIT' and kd.nilai_akhir >= 55 limit 1", nativeQuery = true)
