@@ -305,14 +305,30 @@ public class GraduationController {
             note.setFileUpload(idFile + "." + extension);
             note.setTanggalInput(LocalDate.now());
             note.setStatus(StatusApprove.WAITING);
-            note.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            TahunAkademik ta = null;
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+            }else {
+                ta = tahunAkademik;
+            }
+            note.setTahunAkademik(ta);
             noteDao.save(note);
         }else {
             note.setMahasiswa(mahasiswa);
             note.setFileUpload(note.getFileUpload());
             note.setTanggalInput(LocalDate.now());
             note.setStatus(StatusApprove.WAITING);
-            note.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+            TahunAkademik ta = null;
+            TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+            }else {
+                ta = tahunAkademik;
+            }
+            note.setTahunAkademik(ta);
             noteDao.save(note);
         }
 
@@ -907,7 +923,15 @@ public class GraduationController {
         seminar.setStatus(StatusApprove.WAITING);
         seminar.setStatusSempro(StatusApprove.WAITING);
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
-        seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        TahunAkademik ta = null;
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+        }else {
+            ta = tahunAkademik;
+        }
+        seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
 
         return "redirect:seminar/waiting?id="+seminar.getNote().getId();
@@ -1087,7 +1111,15 @@ public class GraduationController {
         seminar.setStatus(StatusApprove.WAITING);
         seminar.setStatusSempro(StatusApprove.WAITING);
         seminar.setPublish(StatusRecord.NONAKTIF.toString());
-        seminar.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+        TahunAkademik ta = null;
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+            String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+        }else {
+            ta = tahunAkademik;
+        }
+        seminar.setTahunAkademik(ta);
         seminarDao.save(seminar);
 
         return "redirect:seminar/waiting?id="+seminar.getNote().getId();
