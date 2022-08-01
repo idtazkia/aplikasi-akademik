@@ -659,14 +659,31 @@ public class GraduationController {
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
             if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
                 String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
                 ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
             }else {
-                ta = tahunAkademik;
+                if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                    ta = tahunAkademik;
+                }else {
+                    int last = tahunAkademik.getKodeTahunAkademik().length();
+                    String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                    if (lastKode.equals("1")){
+                        Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                        String kode = String.valueOf(tahun) + "2";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                    }else {
+                        String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                    }
+
+                }
             }
 
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);
+
             if (krsDetail != null) {
                 if (waiting != null) {
                     model.addAttribute("seminar", waiting);
@@ -694,11 +711,27 @@ public class GraduationController {
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
             if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
                 String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
                 ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
             }else {
-                ta = tahunAkademik;
+                if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                    ta = tahunAkademik;
+                }else {
+                    int last = tahunAkademik.getKodeTahunAkademik().length();
+                    String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                    if (lastKode.equals("1")){
+                        Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                        String kode = String.valueOf(tahun) + "2";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                    }else {
+                        String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                        ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                    }
+
+                }
             }
 
             KrsDetail krsDetail = krsDetailDao.cariThesisSemester(note.getMahasiswa(),ta);

@@ -253,18 +253,64 @@ public class SidangController {
             PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
 
             if (jenjang.equals("02")) {
-                return "graduation/sidang/mahasiswa/pendaftaran";
+                TahunAkademik ta = null;
+                TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+                if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+                    String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
+                    ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                }else {
+                    if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                        ta = tahunAkademik;
+                    }else {
+                        int last = tahunAkademik.getKodeTahunAkademik().length();
+                        String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                        if (lastKode.equals("1")){
+                            Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                            String kode = String.valueOf(tahun) + "2";
+                            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                        }else {
+                            String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                            ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                        }
+
+                    }
+                }
+
+                KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,ta);
+                if (krsDetail != null) {
+                    return "graduation/sidang/mahasiswa/pendaftaran";
+                }else {
+                    return "graduation/info";
+                }
             }else {
                 if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
                     return "redirect:info";
                 } else {
                     TahunAkademik ta = null;
                     TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
                     if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
                         String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
                         ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
                     }else {
-                        ta = tahunAkademik;
+                        if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                            ta = tahunAkademik;
+                        }else {
+                            int last = tahunAkademik.getKodeTahunAkademik().length();
+                            String lastKode = String.valueOf(tahunAkademik.getKodeTahunAkademik().charAt(last - 1));
+
+                            if (lastKode.equals("1")){
+                                Integer tahun = Integer.valueOf(tahunAkademik.getTahun()) - 1;
+                                String kode = String.valueOf(tahun) + "2";
+                                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                            }else {
+                                String kode = String.valueOf(tahunAkademik.getTahun()) + "1";
+                                ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
+                            }
+
+                        }
                     }
 
                     KrsDetail krsDetail = krsDetailDao.cariThesisSemester(mahasiswa,ta);
