@@ -48,7 +48,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/setting/level/form").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/prody/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
                 .antMatchers("/setting/concentration/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2")
-                .antMatchers("/setting/mahasiswa/dosen_wali").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2","VIEW_KPS")
+                .antMatchers("/setting/mahasiswa/dosen_wali").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2","VIEW_KPS", "VIEW_TRANSCRIPT_ADMIN")
                 .antMatchers("/academic/year/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1", "VIEW_AKADEMIK2")
                 .antMatchers("/academic/year/form").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK1", "VIEW_AKADEMIK2")
                 .antMatchers("/academic/curriculum/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_AKADEMIK2", "VIEW_KPS")
