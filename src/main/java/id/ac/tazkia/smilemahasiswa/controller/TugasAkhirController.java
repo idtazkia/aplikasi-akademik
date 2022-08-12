@@ -22,9 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -406,8 +410,9 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/admin/approve")
-    public String approveWisuda(@RequestParam Wisuda wisuda){
+    public String approveWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar){
         wisuda.setStatus(StatusApprove.APPROVED);
+        wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
 
         mailService.successWisuda(wisuda);
@@ -415,8 +420,9 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/admin/reject")
-    public String rejectWisuda(@RequestParam Wisuda wisuda){
+    public String rejectWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar){
         wisuda.setStatus(StatusApprove.REJECTED);
+        wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
 
         return "redirect:listwisuda?periode="+ wisuda.getPeriodeWisuda().getId();
@@ -453,5 +459,35 @@ public class TugasAkhirController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
     }
+
+
+    @RequestMapping("/downloadwisuda/{wisuda}")
+    public void downloadImage( HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     @PathVariable("wisuda") Wisuda wisuda)
+    {
+        //If user is not authorized - he should be thrown out from here itself
+
+        //Authorized user will download the file
+        String lokasi = wisudaFolder + File.separator + wisuda.getMahasiswa().getNim()
+                + File.separator + wisuda.getFoto();
+        String dataDirectory = request.getServletContext().getRealPath(lokasi);
+        Path file = Paths.get(lokasi, wisuda.getFoto());
+        System.out.println(file);
+        if (Files.exists(file))
+        {
+            response.setContentType("image/jpeg");
+            response.addHeader("Content-Disposition", "attachment; filename="+wisuda.getFoto());
+            try
+            {
+                Files.copy(file, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
 }

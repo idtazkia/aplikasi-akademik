@@ -84,7 +84,7 @@
                   <div class="card-header pb-0 p-3">
                     <div class="row">
                       <div class="col-6 d-flex align-items-center">
-                        <h6 class="mb-0">Detail Daftar Wisuda</h6>
+                        <h3 class="mb-0">Judul Skripsi</h3>
                       </div>
                     </div>
                   </div>
@@ -92,13 +92,13 @@
                     <ul class="list-group">
                       <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                         <div class="d-flex flex-column">
-                          <h6 class="mb-1 text-dark font-weight-bold text-sm" th:text="${wisuda.tanggalUpload}">March, 01, 2020</h6>
-                          <span class="text-xs" th:text="${wisuda.mahasiswa.nama}">#MS-415646</span>
+<!--                          <h6 class="mb-1 text-dark font-weight-bold text-sm" th:text="${wisuda.tanggalUpload}">March, 01, 2020</h6>-->
+<!--                          <span class="text-xs" th:text="${wisuda.mahasiswa.nama}">#MS-415646</span>-->
                         </div>
-                        <div class="d-flex align-items-center text-sm">
-                          <a th:href="@{/graduation/sidang/admin/approve (wisuda = ${wisuda.id})}" class="btn btn-sm btn-link btn-success text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-check text-lg me-1"></i> Setujui</a>
-                          <a th:href="@{/graduation/sidang/admin/reject (wisuda = ${wisuda.id})}" class="btn btn-sm btn-danger btn-link text-sm mb-0 px-0 ms-4"><i class="fas fa-times text-lg me-1"></i> Tolak</a>
-                        </div>
+<!--                        <div class="d-flex align-items-center text-sm">-->
+<!--                          <a th:href="@{/graduation/sidang/admin/approve (wisuda = ${wisuda.id})}" class="btn btn-sm btn-link btn-success text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-check text-lg me-1"></i> Setujui</a>-->
+<!--                          <a th:href="@{/graduation/sidang/admin/reject (wisuda = ${wisuda.id})}" class="btn btn-sm btn-danger btn-link text-sm mb-0 px-0 ms-4"><i class="fas fa-times text-lg me-1"></i> Tolak</a>-->
+<!--                        </div>-->
                       </li>
 
                       <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
@@ -119,7 +119,7 @@
               <div class="card-header pb-0 p-3">
                 <div class="row">
                   <div class="col-6 d-flex align-items-center">
-                    <h6 class="mb-0">Detail Diri</h6>
+                    <h3 class="mb-0">Detail Diri</h3>
                   </div>
                 </div>
               </div>
@@ -138,14 +138,113 @@
                     </div>
                   </div>
                   <div class="col-md-4">
+                    <center><label>Jenis Kelamin</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.jenisKelamin}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <center><label>Nomor WhatsApp</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.teleponSeluler}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;7852</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <center><label>Email Pribadi</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.emailPribadi}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
                     <center><label>Ukuran Toga</label></center>
                     <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
                       <h6 class="mb-0" th:text="${wisuda.mahasiswa.ukuranBaju}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
                     </div>
                   </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <center><label>Nama Ayah</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.ayah.namaAyah}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;7852</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <center><label>Nama Ibu</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.ibu.namaIbuKandung}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <center><label>Beasiswa</label></center>
+                    <div class="card card-body border card-plain border-radius-lg d-flex align-items-center flex-row">
+                      <h6 class="mb-0" th:text="${wisuda.mahasiswa.beasiswa.namaBeasiswa}" th:if="${wisuda.mahasiswa.beasiswa != null}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                      <h6 class="mb-0" th:text="${'-'}" th:if="${wisuda.mahasiswa.beasiswa == null}">****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;&nbsp;5248</h6>
+                    </div>
+                  </div>
+                </div>
+                <br><br>
+                <div class="row">
+                  <div class="col-md-4">
+
+                  </div>
+                  <div class="col-md-4">
+                    <center>
+                      <a href="" class="show_hide_approved"><button class="btn btn-primary">Setujui</button></a>
+                      <a href="" class="show_hide_rejected"><button type="submit" class="btn btn-danger">Tolak</button></a>
+                    </center>
+                  </div>
+                  <div class="col-md-4">
+
+                  </div>
+                </div>
+
+                </div>
+
               </div>
             </div>
+          <div class="card-body">
+            <div class="approved">
+              <div class="card shadow">
+                <div class="card-header border-0">
+                  <h3 class="mb-0">Approved</h3>
+                </div>
+                <div class="card-body">
+                  <form method="get" th:action="@{/graduation/sidang/admin/approve (wisuda = ${wisuda.id})}">
+                    <input type="hidden" name="wisuda" th:value="${wisuda.id}">
+                    <div class="form-group">
+                      <textarea required name="komentar" class="form-control" placeholder="Comment"  cols="30" rows="10"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <button class="btn btn-primary" type="submit">Approve</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="rejected">
+              <div class="card shadow">
+                <div class="card-header border-0">
+                  <h3 class="mb-0">Rejected</h3>
+                </div>
+                <div class="card-body">
+                  <form method="get" th:action="@{/graduation/sidang/admin/reject (wisuda = ${wisuda.id})}">
+                    <input type="hidden" name="wisuda" th:value="${wisuda.id}">
+                    <div class="form-group">
+                      <textarea required name="komentar" class="form-control" placeholder="Comment" id="" cols="30" rows="10"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <button class="btn btn-danger" type="submit">Reject</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -155,3 +254,22 @@
 </div>
 </body>
 </html>
+<script>
+      $(document).ready(function(){
+        $(".approved").hide();
+        $(".rejected").hide();
+        $(".show_hide_approved").show();
+
+        $('.show_hide_approved').click(function(){
+          $(".rejected").hide();
+          $(".approved").slideToggle();
+          return false;
+        })
+        $('.show_hide_rejected').click(function(){
+          $(".approved").hide();
+          $(".rejected").slideToggle();
+          return false;
+        })
+
+      });
+</script>

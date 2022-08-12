@@ -111,9 +111,14 @@
 <!--        <i class="fas fa-times" style="color: #4DA8A8;"></i>-->
         <h2 style="color: #4DA8A8;" th:if="${waiting != null}">Sedang divalidasi !</h2>
         <h2 style="color: red;" th:if="${waiting == null}">Ditolak !</h2>
+        <div class="col-md-12 col-xs-12 margin-col" th:if="${waiting == null}">
+            <div class="card-red">
+                <b class="card-title">Komentar  </b>
+                <p class="p-comment" th:text="${data.komentar}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
+                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+            </div>
+        </div>
         <p th:if="${waiting != null}">Data dan File yang Anda Upload sedang di Validasi oleh Akademik</p>
-        <p th:if="${waiting == null}">Data dan File yang Anda Upload Ditolak Silahkan Upload Ulang</p>
-        <br><br>
         <div class="col-md-12" th:if="${waiting != null}">
             <h2 style="color: #4DA8A8;">Good Luck 💚</h2><br>
             <a th:href="@{/graduation/sidang/mahasiswa/wisudarevisi (id = ${waiting.id})}" class="btn" style="background-color: #4DA8A8;">Revisi</a>

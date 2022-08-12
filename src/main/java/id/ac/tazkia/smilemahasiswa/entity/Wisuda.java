@@ -39,6 +39,9 @@ public class Wisuda {
     @Enumerated(EnumType.STRING)
     private StatusApprove status;
 
+    @Lob
+    private String komentar;
+
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalUpload = LocalDate.now();
