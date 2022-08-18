@@ -2,13 +2,9 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
-import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalDto;
-import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
-import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanDto;
-import id.ac.tazkia.smilemahasiswa.dto.human.KaryawanIntDto;
-import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasDto;
-import id.ac.tazkia.smilemahasiswa.dto.kelas.KelasIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.*;
+import id.ac.tazkia.smilemahasiswa.dto.report.RekapAbsenDosen;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikDto;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -19,17 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -68,6 +62,9 @@ public class ApiController {
     @Autowired
     private KelasDao kelasDao;
 
+    @Autowired
+    private ImportAbsenDao importAbsenDao;
+
     @GetMapping("/api/tarikData")
     @ResponseBody
     public Iterable<JadwalDosenDto> tarikData (@RequestParam(required = false) String id){
@@ -91,6 +88,41 @@ public class ApiController {
             jadwalDosenDtos.add(jadwalDosenDto);
         }
         return jadwalDosenDtos;
+    }
+
+    @GetMapping("/api/rekap-absen-dosen")
+    @ResponseBody
+    public List<RekapAbsenDosen> rekapAbsenDosen (@RequestParam(required = false) String tahun, @RequestParam(required = false) String bulan){
+
+
+        return jadwalDao.test("2022", "06");
+    }
+
+    @PostMapping(value = "/import-absen", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public BaseResponse importAbsen(@RequestBody List<ImportAbsenDto> request) {
+
+        for (ImportAbsenDto importAbsenDto : request) {
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(importAbsenDto.getNim());
+            if (importAbsenDao.findByMahasiswaAndTanggalAndWaktuAndStatus(mahasiswa,importAbsenDto.getTanggal(),LocalTime.parse(importAbsenDto.getWaktu()),StatusRecord.AKTIF) == null) {
+                try {
+                    ImportAbsen importAbsen = new ImportAbsen();
+                    importAbsen.setMahasiswa(mahasiswa);
+                    importAbsen.setTanggal(importAbsenDto.getTanggal());
+                    importAbsen.setWaktu(LocalTime.parse(importAbsenDto.getWaktu()));
+                    importAbsenDao.save(importAbsen);
+                } catch (Exception ex) {
+                    return new BaseResponse(HttpStatus.BAD_GATEWAY.getReasonPhrase(),
+                            String.valueOf(HttpStatus.BAD_GATEWAY.value()));
+                }
+
+            }
+        }
+
+        return new BaseResponse(HttpStatus.OK.getReasonPhrase(),
+                String.valueOf(HttpStatus.OK.value()));
+
     }
 
     @GetMapping("/api/uploadMesin")
@@ -200,15 +232,15 @@ public class ApiController {
             LocalTime minus5 = pd.getJadwal().getJamMulai().minusMinutes(10);
             if (date.isEqual(LocalDate.now())){
                 if (masuk.compareTo(minus5) >= 0 && masuk .compareTo(pd.getJadwal().getJamSelesai()) <= 0){
-                            SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(pd);
-                            ApiPresensiDosenDto api = new ApiPresensiDosenDto();
-                            api.setPresensiDosen(pd.getId());
-                            api.setSesiKuliah(sesiKuliah.getId());
-                            api.setJamMulai(pd.getWaktuMasuk().toLocalTime());
-                            api.setJadwal(pd.getJadwal().getId());
-                            api.setJamSelesai(pd.getWaktuSelesai().toLocalTime() );
-                            api.setJumlah(1);
-                            return api;
+                    SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(pd);
+                    ApiPresensiDosenDto api = new ApiPresensiDosenDto();
+                    api.setPresensiDosen(pd.getId());
+                    api.setSesiKuliah(sesiKuliah.getId());
+                    api.setJamMulai(pd.getWaktuMasuk().toLocalTime());
+                    api.setJadwal(pd.getJadwal().getId());
+                    api.setJamSelesai(pd.getWaktuSelesai().toLocalTime() );
+                    api.setJumlah(1);
+                    return api;
                 }
             }
 
@@ -522,100 +554,5 @@ public class ApiController {
         return adto;
 
     }
-
-//    //detailJadwal
-//    @GetMapping("/api/getDetailJadwal")
-//    @ResponseBody
-//    public List<DetailJadwalDto> getDetailJadwal(){
-//
-//        List<DetailJadwalIntDto> alog = jadwalDao.getDetailJadwal();
-//        List<DetailJadwalDto> adto = new ArrayList<>();
-//
-//        for (DetailJadwalIntDto detailJadwalIntDto : alog){
-//            DetailJadwalDto detailJadwalDto = new DetailJadwalDto();
-//
-//            detailJadwalDto.setId(detailJadwalIntDto.getId());
-//            detailJadwalDto.setNamaProdi(detailJadwalIntDto.getNamaProdi());
-//            detailJadwalDto.setNamaKelas(detailJadwalIntDto.getNamaKelas());
-//            detailJadwalDto.setKodeMatakuliah(detailJadwalIntDto.getKodeMatakuliah());
-//            detailJadwalDto.setNamaMatakuliah(detailJadwalIntDto.getNamaMatakuliah());
-//            detailJadwalDto.setNamaMatakuliahEnglish(detailJadwalIntDto.getNamaMatakuliahEnglish());
-//            detailJadwalDto.setIdDosen(detailJadwalIntDto.getIdDosen());
-//            detailJadwalDto.setDosen(detailJadwalIntDto.getDosen());
-//            detailJadwalDto.setJamMulai(detailJadwalIntDto.getJamMulai());
-//            detailJadwalDto.setJamSelesai(detailJadwalIntDto.getJamSelesai());
-//            detailJadwalDto.setIdNumberElearning(detailJadwalIntDto.getIdNumberElearning());
-//            detailJadwalDto.setIdTahunAkademik(detailJadwalIntDto.getIdTahunAkademik());
-//            detailJadwalDto.setStatus(detailJadwalIntDto.getStatus());
-//
-//            adto.add(detailJadwalDto);
-//        }
-//
-//        return adto;
-//
-//    }
-//
-//
-//    //kelas
-//    @GetMapping("/api/getKelas")
-//    @ResponseBody
-//    public List<KelasDto> getKelas(){
-//
-//        List<KelasIntDto> alog = kelasDao.apiKelas();
-//        List<KelasDto> adto = new ArrayList<>();
-//
-//        for (KelasIntDto kelasIntDto : alog){
-//            KelasDto kelasDto = new KelasDto();
-//
-//            kelasDto.setIdKelas(kelasIntDto.getIdKelas());
-//            kelasDto.setKodeKelas(kelasIntDto.getKodeKelas());
-//            kelasDto.setNamaKelas(kelasIntDto.getNamaKelas());
-//            kelasDto.setKeterangan(kelasIntDto.getKeterangan());
-//            kelasDto.setIdProdi(kelasIntDto.getIdProdi());
-//            kelasDto.setStatus(kelasIntDto.getStatus());
-//            kelasDto.setKurikulum(kelasIntDto.getKurikulum());
-//            kelasDto.setKonsentrasi(kelasIntDto.getKonsentrasi());
-//            kelasDto.setAngkatan(kelasIntDto.getAngkatan());
-//            kelasDto.setBahasa(kelasIntDto.getBahasa());
-//
-//
-//            adto.add(kelasDto);
-//        }
-//
-//        return adto;
-//
-//    }
-//
-//    //kelas
-//    @GetMapping("/api/apiGetKaryawan")
-//    @ResponseBody
-//    public List<KaryawanDto> getKaryawan(){
-//
-//        List<KaryawanIntDto> alog = karyawanDao.apiGetKaryawan();
-//        List<KaryawanDto> adto = new ArrayList<>();
-//
-//        for (KaryawanIntDto karyawanIntDto : alog){
-//            KaryawanDto karyawanDto = new KaryawanDto();
-//
-//            karyawanDto.setId(karyawanIntDto.getId());
-//            karyawanDto.setNik(karyawanIntDto.getNik());
-//            karyawanDto.setNamaKaryawan(karyawanIntDto.getNamaKaryawan());
-//            karyawanDto.setGelar(karyawanIntDto.getGelar());
-//            karyawanDto.setJenisKelamin(karyawanIntDto.getJenisKelamin());
-//            karyawanDto.setStatus(karyawanIntDto.getStatus());
-//            karyawanDto.setIdUser(karyawanIntDto.getIdUser());
-//            karyawanDto.setNidn(karyawanIntDto.getNidn());
-//            karyawanDto.setEmail(karyawanIntDto.getEmail());
-//            karyawanDto.setTanggalLahir(karyawanIntDto.getTanggalLahir());
-//            karyawanDto.setRfid(karyawanIntDto.getRfid());
-//            karyawanDto.setIdAbsen(karyawanIntDto.getIdAbsen());
-//            karyawanDto.setFoto(karyawanIntDto.getFoto());
-//
-//            adto.add(karyawanDto);
-//        }
-//
-//        return adto;
-//
-//    }
 
 }
