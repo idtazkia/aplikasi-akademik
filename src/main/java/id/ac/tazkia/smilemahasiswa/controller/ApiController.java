@@ -4,7 +4,6 @@ package id.ac.tazkia.smilemahasiswa.controller;
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.machine.*;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapAbsenDosen;
-import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikDto;
 import id.ac.tazkia.smilemahasiswa.dto.tahunakademik.TahunAkademikIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -15,11 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,8 +62,8 @@ public class ApiController {
     @Autowired
     private KelasDao kelasDao;
 
-    @Autowired
-    private ImportAbsenDao importAbsenDao;
+//    @Autowired
+//    private ImportAbsenDao importAbsenDao;
 
     @GetMapping("/api/tarikData")
     @ResponseBody
@@ -95,35 +95,35 @@ public class ApiController {
     public List<RekapAbsenDosen> rekapAbsenDosen (@RequestParam(required = false) String tahun, @RequestParam(required = false) String bulan){
 
 
-        return jadwalDao.test("2022", "06");
+        return jadwalDao.importAbsen(tahun, bulan);
     }
 
-    @PostMapping(value = "/import-absen", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public BaseResponse importAbsen(@RequestBody List<ImportAbsenDto> request) {
-
-        for (ImportAbsenDto importAbsenDto : request) {
-            Mahasiswa mahasiswa = mahasiswaDao.findByNim(importAbsenDto.getNim());
-            if (importAbsenDao.findByMahasiswaAndTanggalAndWaktuAndStatus(mahasiswa,importAbsenDto.getTanggal(),LocalTime.parse(importAbsenDto.getWaktu()),StatusRecord.AKTIF) == null) {
-                try {
-                    ImportAbsen importAbsen = new ImportAbsen();
-                    importAbsen.setMahasiswa(mahasiswa);
-                    importAbsen.setTanggal(importAbsenDto.getTanggal());
-                    importAbsen.setWaktu(LocalTime.parse(importAbsenDto.getWaktu()));
-                    importAbsenDao.save(importAbsen);
-                } catch (Exception ex) {
-                    return new BaseResponse(HttpStatus.BAD_GATEWAY.getReasonPhrase(),
-                            String.valueOf(HttpStatus.BAD_GATEWAY.value()));
-                }
-
-            }
-        }
-
-        return new BaseResponse(HttpStatus.OK.getReasonPhrase(),
-                String.valueOf(HttpStatus.OK.value()));
-
-    }
+//    @PostMapping(value = "/import-absen", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public BaseResponse importAbsen(@RequestBody List<ImportAbsenDto> request) {
+//
+//        for (ImportAbsenDto importAbsenDto : request) {
+//            Mahasiswa mahasiswa = mahasiswaDao.findByNim(importAbsenDto.getNim());
+//            if (importAbsenDao.findByMahasiswaAndTanggalAndWaktuAndStatus(mahasiswa,importAbsenDto.getTanggal(),LocalTime.parse(importAbsenDto.getWaktu()),StatusRecord.AKTIF) == null) {
+//                try {
+//                    ImportAbsen importAbsen = new ImportAbsen();
+//                    importAbsen.setMahasiswa(mahasiswa);
+//                    importAbsen.setTanggal(importAbsenDto.getTanggal());
+//                    importAbsen.setWaktu(LocalTime.parse(importAbsenDto.getWaktu()));
+//                    importAbsenDao.save(importAbsen);
+//                } catch (Exception ex) {
+//                    return new BaseResponse(HttpStatus.BAD_GATEWAY.getReasonPhrase(),
+//                            String.valueOf(HttpStatus.BAD_GATEWAY.value()));
+//                }
+//
+//            }
+//        }
+//
+//        return new BaseResponse(HttpStatus.OK.getReasonPhrase(),
+//                String.valueOf(HttpStatus.OK.value()));
+//
+//    }
 
     @GetMapping("/api/uploadMesin")
     @ResponseBody

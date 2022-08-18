@@ -214,6 +214,6 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "where tanggal_mulai <= date(concat(?1,'-',?2,'-','01')) and c.tanggal_selesai >= date(concat(?1,'-',?2,'-','01')) \n" +
             "and a.status = 'AKTIF' and a.status_presensi = 'HADIR' \n" +
             "group by id_jadwal, id_dosen) as b on a.id_jadwal = b.id_jadwal and a.id_dosen = b.id_dosen", nativeQuery = true)
-    List<RekapAbsenDosen> test (String tahun, String bulan);
+    List<RekapAbsenDosen> importAbsen (String tahun, String bulan);
 
 }
