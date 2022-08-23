@@ -241,6 +241,6 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     @Query(value = "select a.* from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id where a.status_tagihan='AKTIF' and lunas='0' and b.nim=?1 and a.status = 'AKTIF'", nativeQuery = true)
     List<Tagihan> cekTagihanLunas(String nim);
 
-    List<Tagihan> findByStatusAndStatusTagihanAndMahasiswa(StatusRecord status, StatusTagihan statusTagihan, Mahasiswa mahasiswa);
+    Tagihan findByStatusAndStatusTagihanAndMahasiswa(StatusRecord status, StatusTagihan statusTagihan, Mahasiswa mahasiswa);
 
 }

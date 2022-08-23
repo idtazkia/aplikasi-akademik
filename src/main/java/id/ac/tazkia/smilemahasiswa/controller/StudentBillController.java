@@ -151,6 +151,9 @@ public class StudentBillController {
     @Autowired
     private KuotaOfflineDao kuotaOfflineDao;
 
+    @Autowired
+    private RoleDao roleDao;
+
     @Value("classpath:kwitansi.odt")
     private Resource templateKwitansi;
 
@@ -1469,6 +1472,7 @@ public class StudentBillController {
 
         Tagihan t = tagihanDao.findById(tagihan).get();
         RequestCicilan requestCicilan = requestCicilanDao.findById(rc).get();
+        User usr = t.getMahasiswa().getUser();
 
         String idPeserta = t.getMahasiswa().getNim();
 
@@ -1512,6 +1516,12 @@ public class StudentBillController {
             t.setLunas(true);
             t.setStatusTagihan(StatusTagihan.LUNAS);
             log.info("nomor tagihan {} LUNAS", t.getNomor());
+
+            if (usr.getRole().getId().equals("mahasiswanunggak")){
+                Role role = roleDao.findById("mahasiswa").get();
+                usr.setRole(role);
+                userDao.save(usr);
+            }
         }
         tagihanDao.save(t);
 
@@ -1521,11 +1531,23 @@ public class StudentBillController {
         RequestCicilan rCicilan = requestCicilanDao.cariCicilanSelanjutnya(t);
         if (rCicilan == null) {
             log.info("Tidak ada cicilan lagi. ");
+
+            if (usr.getRole().getId().equals("mahasiswanunggak")){
+                Role role = roleDao.findById("mahasiswa").get();
+                usr.setRole(role);
+                userDao.save(usr);
+            }
         }else{
             rCicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
             requestCicilanDao.save(rCicilan);
             tagihanService.ubahJadiCicilan(rCicilan);
             log.info("kirim cicilan selanjutnya : {}", rCicilan.getNilaiCicilan());
+
+            if (usr.getRole().getId().equals("mahasiswanunggak")){
+                Role role = roleDao.findById("mahasiswa").get();
+                usr.setRole(role);
+                userDao.save(usr);
+            }
         }
 
         if (TAGIHAN_KRS.contains(t.getNilaiJenisTagihan().getJenisTagihan().getKode())) {
@@ -2465,6 +2487,17 @@ public class StudentBillController {
 
     @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
     public void akumulasiTagihan(){
+
+        List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(10));
+        for (RequestCicilan cariMahasiswa : setDashboardMhs){
+            Role role = roleDao.findById("mahasiswanunggak").get();
+            User usr = cariMahasiswa.getTagihan().getMahasiswa().getUser();
+            usr.setRole(role);
+            userDao.save(usr);
+
+            log.info("set mhs nunggak : ", cariMahasiswa.getTagihan().getMahasiswa().getNim());
+
+        }
 
         List<RequestCicilan> requestCicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now());
         for (RequestCicilan cariCicilanHariIni : requestCicilan){

@@ -111,6 +111,15 @@ public class DashboardController {
     private RequestPeringananDao requestPeringananDao;
 
     @Autowired
+    private PembayaranDao pembayaranDao;
+
+    @Autowired
+    private VirtualAccountDao virtualAccountDao;
+
+    @Autowired
+    private BankDao bankDao;
+
+    @Autowired
     private CutiDao cutiDao;
 
     @Autowired
@@ -199,6 +208,10 @@ public class DashboardController {
 
         if (mahasiswa == null){
             return "redirect:admin";
+        }
+
+        if (user.getRole().getId().equals("mahasiswanunggak")){
+            return "redirect:mahasiswa";
         }
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -665,5 +678,23 @@ public class DashboardController {
         }
 
     }
+
+    @GetMapping("/mahasiswa")
+    public String mahasiswaNunggak(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mhs = mahasiswaDao.findByUser(user);
+
+        Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.DICICIL, mhs);
+
+        model.addAttribute("cekJumlahCicilan", requestCicilanDao.jumlahCicilan(tagihan));
+        model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan));
+        model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan.getId()));
+        model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan.getId()));
+        model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
+
+        return "tunggakan";
+    }
+
 
 }

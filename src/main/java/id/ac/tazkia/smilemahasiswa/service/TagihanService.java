@@ -63,6 +63,12 @@ public class TagihanService {
     private RequestCicilanDao requestCicilanDao;
 
     @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private PraKrsSpDao praKrsSpDao;
 
     @Autowired
@@ -277,6 +283,14 @@ public class TagihanService {
                 cicilanLunas.setStatusCicilan(StatusCicilan.LUNAS);
                 requestCicilanDao.save(cicilanLunas);
                 log.info("cicilan lunas : {}", cicilanLunas.getTagihan().getKeterangan());
+
+                User usr = cicilanLunas.getTagihan().getMahasiswa().getUser();
+                if (usr.getRole().getId().equals("mahasiswanunggak")){
+                    Role role = roleDao.findById("mahasiswa").get();
+                    usr.setRole(role);
+                    userDao.save(usr);
+                }
+
             }
 
             RequestCicilan requestCicilan = requestCicilanDao.cariCicilanSelanjutnya(tagihan);
@@ -287,6 +301,14 @@ public class TagihanService {
                 requestCicilanDao.save(requestCicilan);
                 mengirimCicilanSelanjutnya(requestCicilan);
                 log.info("kirim cicilan selanjutnya : {}", requestCicilan.getNilaiCicilan());
+
+                User usr = requestCicilan.getTagihan().getMahasiswa().getUser();
+                if (usr.getRole().getId().equals("mahasiswanunggak")){
+                    Role role = roleDao.findById("mahasiswa").get();
+                    usr.setRole(role);
+                    userDao.save(usr);
+                }
+
             }
         }
 
