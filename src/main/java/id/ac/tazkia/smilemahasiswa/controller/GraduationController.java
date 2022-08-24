@@ -179,32 +179,43 @@ public class GraduationController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
+        KrsDetail krsDetail = krsDetailDao.cariNilaiThesis(mahasiswa);
 
-
-        List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa,Arrays.asList(StatusApprove.HAPUS));
-
-        if (empty == null || empty.isEmpty()) {
-            return "graduation/register";
-        } else {
-            List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
-            if (cekSidang == null || cekSidang.isEmpty()){
-                List<Object> seminar = seminarDao.cekSeminar(mahasiswa);
-                if (seminar == null || seminar.isEmpty()){
-                    return "redirect:list";
-                }else {
-                    Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
-
-                    return "redirect:seminar/waiting?id="+approve.getId();
-
-                }
+        if (krsDetail != null && mahasiswa.getIdProdi().getIdJenjang().getId().equals("02")) {
+            Wisuda wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+            if (wisuda == null) {
+                return "redirect:wisuda/form";
             }else {
-                List<Wisuda> wisuda = wisudaDao.findByMahasiswaAndStatusNotIn(mahasiswa,Arrays.asList(StatusApprove.HAPUS));
-                if (wisuda.isEmpty()) {
-                    Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
-                    return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
-                }else {
-                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                return "redirect:sidang/mahasiswa/waiting?pasca=aktif";
+            }
+        }else {
 
+
+            List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
+
+            if (empty == null || empty.isEmpty()) {
+                return "graduation/register";
+            } else {
+                List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
+                if (cekSidang == null || cekSidang.isEmpty()) {
+                    List<Object> seminar = seminarDao.cekSeminar(mahasiswa);
+                    if (seminar == null || seminar.isEmpty()) {
+                        return "redirect:list";
+                    } else {
+                        Note approve = noteDao.findByMahasiswaAndStatus(mahasiswa, StatusApprove.APPROVED);
+
+                        return "redirect:seminar/waiting?id=" + approve.getId();
+
+                    }
+                } else {
+                    List<Wisuda> wisuda = wisudaDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
+                    if (wisuda.isEmpty()) {
+                        Seminar seminar = seminarDao.findByStatusAndPublishAndNilaiGreaterThanAndNoteMahasiswa(StatusApprove.APPROVED, "AKTIF", new BigDecimal(70), mahasiswa);
+                        return "redirect:sidang/mahasiswa/list?id=" + seminar.getId();
+                    } else {
+                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+
+                    }
                 }
             }
         }

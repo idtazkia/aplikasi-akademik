@@ -760,7 +760,13 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "select kd.* from krs_detail as kd \n" +
             "inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id \n" +
             "inner join matakuliah as m on mk.id_matakuliah = m.id \n" +
-            "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and kd.id_tahun_akademik = ?2 and m.nama_matakuliah_english = 'Thesis' ;", nativeQuery = true)
+            "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and kd.id_tahun_akademik = ?2 and m.nama_matakuliah_english = 'Thesis'", nativeQuery = true)
     KrsDetail cariThesisSemester(Mahasiswa mahasiswa, TahunAkademik tahunAkademik);
+
+    @Query(value = "select kd.* from krs_detail as kd \n" +
+            "inner join matakuliah_kurikulum as mk on kd.id_matakuliah_kurikulum = mk.id \n" +
+            "inner join matakuliah as m on mk.id_matakuliah = m.id \n" +
+            "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and kd.nilai_akhir >= 70.00  and m.nama_matakuliah_english = 'Thesis' order by bobot desc limit 1;", nativeQuery = true)
+    KrsDetail cariNilaiThesis(Mahasiswa mahasiswa);
 
 }

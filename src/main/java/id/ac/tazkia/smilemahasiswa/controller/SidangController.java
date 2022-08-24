@@ -791,7 +791,6 @@ public class SidangController {
     public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
         model.addAttribute("sidang", sidang);
         if (!tagihanDao.cekTagihanLunas(sidang.getSeminar().getNote().getMahasiswa().getNim()).isEmpty()) {
-            System.out.printf("teaaegj");
             model.addAttribute("wisuda", "wisuda");
         }
 

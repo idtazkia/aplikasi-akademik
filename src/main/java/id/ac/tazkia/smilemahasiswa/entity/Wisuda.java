@@ -24,7 +24,6 @@ public class Wisuda {
     private Mahasiswa mahasiswa;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "id_sidang")
     private Sidang sidang;
 
