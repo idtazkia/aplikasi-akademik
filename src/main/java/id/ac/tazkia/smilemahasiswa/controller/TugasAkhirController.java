@@ -185,6 +185,32 @@ public class TugasAkhirController {
 
     }
 
+    @GetMapping("/graduation/wisuda/form")
+    public void daftarWisudaPasca(Model model, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("beasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
+        WisudaDto wisudaDto = new WisudaDto();
+        wisudaDto.setMahasiswa(mahasiswa.getId());
+        wisudaDto.setNama(mahasiswa.getNama());
+        wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
+        wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
+        wisudaDto.setAyah(mahasiswa.getAyah().getNamaAyah());
+        wisudaDto.setIbu(mahasiswa.getIbu().getNamaIbuKandung());
+        wisudaDto.setToga(mahasiswa.getUkuranBaju());
+        wisudaDto.setNomor(mahasiswa.getTeleponSeluler());
+        wisudaDto.setEmail(mahasiswa.getEmailPribadi());
+        if (mahasiswa.getBeasiswa() != null) {
+            wisudaDto.setBeasiswa(mahasiswa.getBeasiswa().getNamaBeasiswa());
+            wisudaDto.setIdBeasiswa(mahasiswa.getBeasiswa().getId());
+        }
+        wisudaDto.setJudulIndo(mahasiswa.getJudul());
+        wisudaDto.setJudulInggris(mahasiswa.getTitle());
+        model.addAttribute("wisuda", wisudaDto);
+
+    }
+
     @GetMapping("/graduation/sidang/mahasiswa/wisudarevisi")
     public void revisiWisuda(Model model,@RequestParam(name = "id", value = "id") Wisuda wisuda, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
@@ -215,6 +241,34 @@ public class TugasAkhirController {
 
     }
 
+    @GetMapping("/graduation/wisuda/revisi")
+    public void revisiWisudaPasca(Model model,@RequestParam(name = "id", value = "id") Wisuda wisuda, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        model.addAttribute("mahasiswa", mahasiswa);
+        model.addAttribute("beasiswa", beasiswaDao.findByStatusOrderByNamaBeasiswa(StatusRecord.AKTIF));
+
+        WisudaDto wisudaDto = new WisudaDto();
+        wisudaDto.setMahasiswa(mahasiswa.getId());
+        wisudaDto.setNama(mahasiswa.getNama());
+        wisudaDto.setId(wisuda.getId());
+        wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
+        wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
+        wisudaDto.setAyah(mahasiswa.getAyah().getNamaAyah());
+        wisudaDto.setIbu(mahasiswa.getIbu().getNamaIbuKandung());
+        wisudaDto.setToga(mahasiswa.getUkuranBaju());
+        wisudaDto.setNomor(mahasiswa.getTeleponSeluler());
+        wisudaDto.setEmail(mahasiswa.getEmailPribadi());
+        if (mahasiswa.getBeasiswa() != null) {
+            wisudaDto.setBeasiswa(mahasiswa.getBeasiswa().getNamaBeasiswa());
+            wisudaDto.setIdBeasiswa(mahasiswa.getBeasiswa().getId());
+        }
+        wisudaDto.setJudulIndo(mahasiswa.getJudul());
+        wisudaDto.setJudulInggris(mahasiswa.getTitle());
+        model.addAttribute("wisuda", wisudaDto);
+
+    }
+
     @PostMapping("/graduation/sidang/mahasiswa/wisuda-post")
     public String daftarWisuda(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
         User user = currentUserService.currentUser(authentication);
@@ -232,7 +286,8 @@ public class TugasAkhirController {
 
         mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
-        mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
+        mahasiswa.setJudul(wisudaDto.getJudulIndo());
+        mahasiswa.setTitle(wisudaDto.getJudulInggris());
         mahasiswa.setUkuranBaju(wisudaDto.getToga());
         mahasiswa.setEmailPribadi(wisudaDto.getEmail());
         mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
@@ -279,6 +334,71 @@ public class TugasAkhirController {
         }else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
             return "redirect:wisuda?sidang="+wisudaDto.getSidang();
+
+        }
+
+
+    }
+
+    @PostMapping("/graduation/wisuda/form-post")
+    public String daftarWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String namaAsli = foto.getOriginalFilename();
+        Long ukuran = foto.getSize();
+
+        Ayah ayah = ayahDao.findById(mahasiswa.getAyah().getId()).get();
+        Ibu ibu = ibuDao.findById(mahasiswa.getIbu().getId()).get();
+
+        mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
+        mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setJudul(wisudaDto.getJudulIndo());
+        mahasiswa.setTitle(wisudaDto.getJudulInggris());
+        mahasiswa.setUkuranBaju(wisudaDto.getToga());
+        mahasiswa.setEmailPribadi(wisudaDto.getEmail());
+        mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
+        mahasiswaDao.save(mahasiswa);
+
+
+        ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
+        ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
+        ayahDao.save(ayah);
+        ibuDao.save(ibu);
+
+        if (ukuran >= 1000000){
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
+            foto.transferTo(tujuan);
+
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
+            Wisuda wisuda = new Wisuda();
+            wisuda.setMahasiswa(mahasiswa);
+            wisuda.setFoto(namaFile + "." + extension);
+            wisuda.setPeriodeWisuda(periodeWisuda);
+            wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
+            wisuda.setStatus(StatusApprove.WAITING);
+            wisudaDao.save(wisuda);
+
+            mailService.detailWisuda(wisudaDto);
+            return "redirect:../sidang/mahasiswa/waiting?pasca=aktif";
+
+
+        }else {
+            attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
+            return "redirect:form";
 
         }
 
@@ -348,7 +468,73 @@ public class TugasAkhirController {
 
         }else {
             attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
-            return "redirect:wisuda?sidang="+wisudaDto.getSidang();
+            return "redirect:wisudarevisi?id="+wisudaDto.getId();
+
+        }
+
+
+    }
+
+    @PostMapping("/graduation/wisuda/wisuda-revisi")
+    public String revisiWisudaPasca(@Valid WisudaDto wisudaDto, MultipartFile foto, RedirectAttributes attributes, Authentication authentication) throws Exception{
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        String namaAsli = foto.getOriginalFilename();
+        Long ukuran = foto.getSize();
+
+        Ayah ayah = ayahDao.findById(mahasiswa.getAyah().getId()).get();
+        Ibu ibu = ibuDao.findById(mahasiswa.getIbu().getId()).get();
+
+        mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
+        mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
+        mahasiswa.setJudul(wisudaDto.getJudulIndo());
+        mahasiswa.setTitle(wisudaDto.getJudulInggris());
+        mahasiswa.setUkuranBaju(wisudaDto.getToga());
+        mahasiswa.setEmailPribadi(wisudaDto.getEmail());
+        mahasiswa.setTeleponSeluler(wisudaDto.getNomor());
+        mahasiswaDao.save(mahasiswa);
+
+
+        ayah.setNamaAyah(WordUtils.capitalize(wisudaDto.getAyah()));
+        ibu.setNamaIbuKandung(WordUtils.capitalize(wisudaDto.getIbu()));
+        ayahDao.save(ayah);
+        ibuDao.save(ibu);
+
+        if (ukuran >= 1000000){
+            String extension = "";
+
+            int i = namaAsli.lastIndexOf('.');
+            int p = Math.max(namaAsli.lastIndexOf('/'), namaAsli.lastIndexOf('\\'));
+
+            if (i > p) {
+                extension = namaAsli.substring(i + 1);
+            }
+
+
+            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
+            new File(lokasiUpload).mkdirs();
+            File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
+            foto.transferTo(tujuan);
+
+            PeriodeWisuda periodeWisuda = periodeWisudaDao.findByStatus(StatusRecord.AKTIF);
+
+            Wisuda wisuda = wisudaDao.findById(wisudaDto.getId()).get();
+            wisuda.setMahasiswa(mahasiswa);
+            wisuda.setFoto(namaFile + "." + extension);
+            wisuda.setPeriodeWisuda(periodeWisuda);
+            wisuda.setUkuran(String.valueOf(ukuran / (1024 * 1024)) + " Mb");
+            wisuda.setStatus(StatusApprove.WAITING);
+            wisudaDao.save(wisuda);
+
+            mailService.detailWisuda(wisudaDto);
+            return "redirect:../sidang/mahasiswa/waiting?pasca=aktif";
+
+
+        }else {
+            attributes.addFlashAttribute("kurang", "Ukuran File yg diupload kurang dari 1MB");
+            return "redirect:revisi?id="+wisudaDto.getId();
 
         }
 
@@ -363,14 +549,21 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/waiting")
-    public void waitingWisuda(Model model, Authentication authentication){
+    public void waitingWisuda(Model model,@RequestParam(required = false)String pasca, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
+
         Wisuda waiting = wisudaDao.findByMahasiswaAndStatus(mahasiswa,StatusApprove.WAITING);
         if (waiting != null){
+            if (!pasca.isEmpty()){
+                model.addAttribute("pasca", pasca);
+            }
             model.addAttribute("waiting", waiting);
         }else {
+            if (!pasca.isEmpty()){
+                model.addAttribute("pasca", pasca);
+            }
             model.addAttribute("data", wisudaDao.findFirstByMahasiswaAndStatus(mahasiswa, StatusApprove.REJECTED));
             model.addAttribute("reject", "reject");
         }

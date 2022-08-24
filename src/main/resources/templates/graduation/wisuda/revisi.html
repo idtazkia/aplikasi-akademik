@@ -139,7 +139,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div>
-                                        <form method="post" th:action="@{/graduation/sidang/mahasiswa/wisuda-revisi}" th:object="${wisuda}" enctype="multipart/form-data" >
+                                        <form method="post" th:action="@{/graduation/wisuda/wisuda-revisi}" th:object="${wisuda}" enctype="multipart/form-data" >
                                             <div class="form-group">
                                                 <label>Nama Lengkap Sesuai KTP</label>
                                                 <input type="text" th:field="*{nama}" required name="nama" class="form-control">
@@ -175,7 +175,6 @@
                                             <div class="form-group">
                                                 <label>Beasiswa</label>
                                                 <input th:field="*{beasiswa}"   name="beasiswa" class="form-control" type="text" readonly >
-                                                <input th:field="*{sidang}"   name="sidang" class="form-control" type="hidden"  >
                                                 <input th:field="*{mahasiswa}"   name="mahasiswa" class="form-control" type="hidden"  >
                                             </div>
                                             <div class="form-group">
