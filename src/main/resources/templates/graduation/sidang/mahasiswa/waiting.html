@@ -121,11 +121,13 @@
         <p th:if="${waiting != null}">Data dan File yang Anda Upload sedang di Validasi oleh Akademik</p>
         <div class="col-md-12" th:if="${waiting != null}">
             <h2 style="color: #4DA8A8;">Good Luck 💚</h2><br>
-            <a th:href="@{/graduation/sidang/mahasiswa/wisudarevisi (id = ${waiting.id})}" class="btn" style="background-color: #4DA8A8;">Revisi</a>
+            <a th:if="${pasca == null}" th:href="@{/graduation/sidang/mahasiswa/wisudarevisi (id = ${waiting.id})}" class="btn" style="background-color: #4DA8A8;">Revisi</a>
+            <a th:if="${pasca != null}" th:href="@{/graduation/wisuda/revisi (id = ${waiting.id})}" class="btn" style="background-color: #4DA8A8;">Revisi</a>
             <a th:href="@{/dashboard}" class="btn btn-sm btn-info">Kembali ke Halaman Utama</a>
         </div>
         <div class="col-md-12" th:if="${waiting == null}">
-            <a th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${data.sidang.id})}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
+            <a th:if="${pasca == null}" th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${data.sidang.id})}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
+            <a th:if="${pasca != null}" th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${data.sidang.id})}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
             <a th:href="@{/dashboard}" class="btn btn-sm btn-info">Kembali ke Halaman Utama</a>
         </div>
         <br>
