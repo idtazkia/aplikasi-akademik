@@ -50,6 +50,9 @@ public class ImportDataController  {
     @Autowired
     private TagihanDao tagihanDao;
 
+    @Autowired
+    private MahasiswaCicilanDao mahasiswaCicilanDao;
+
     @PostMapping(value = "/proses", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -87,6 +90,11 @@ public class ImportDataController  {
     }
 
     private void createTagihan(List<RequestCicilanDto> cicilans, Mahasiswa mahasiswa){
+        MahasiswaCicilan mahasiswaCicilan = new MahasiswaCicilan();
+        mahasiswaCicilan.setMahasiswa(mahasiswa);
+        mahasiswaCicilan.setStatus(StatusRecord.NONAKTIF);
+        mahasiswaCicilanDao.save(mahasiswaCicilan);
+
         JenisTagihan jenisTagihan = jenisTagihanDao.findByKodeAndStatus("02",StatusRecord.AKTIF);
         NilaiJenisTagihan cekNilaiJenis = nilaiJenisTagihanDao.
                 findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan(),tahunAkademikDao.findByStatus(StatusRecord.AKTIF),mahasiswa.getIdProgram(),StatusRecord.AKTIF,jenisTagihan);
@@ -117,6 +125,15 @@ public class ImportDataController  {
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
             handleCicilan(cicilans,tagihan);
+
+
+            // cek cicilan 48x
+            if (totalNominal.compareTo(new BigDecimal(50000000)) > 0){
+                MahasiswaCicilan cicilan = mahasiswaCicilanDao.findByStatusAndMahasiswa(StatusRecord.NONAKTIF, mahasiswa);
+                cicilan.setStatus(StatusRecord.AKTIF);
+                mahasiswaCicilanDao.save(cicilan);
+            }
+
         }else {
             BigDecimal totalNominal = cicilans.stream().map(RequestCicilanDto::getNominal)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -134,13 +151,20 @@ public class ImportDataController  {
             tagihan.setStatus(StatusRecord.AKTIF);
             tagihanDao.save(tagihan);
             handleCicilan(cicilans,tagihan);
+
+            // cek cicilan 48x
+            if (totalNominal.compareTo(new BigDecimal(50000000)) > 0){
+                MahasiswaCicilan cicilan = mahasiswaCicilanDao.findByStatusAndMahasiswa(StatusRecord.NONAKTIF, mahasiswa);
+                cicilan.setStatus(StatusRecord.AKTIF);
+                mahasiswaCicilanDao.save(cicilan);
+            }
+
         }
 
     }
 
     private void handleCicilan(List<RequestCicilanDto> cicilans, Tagihan tagihan){
         for (RequestCicilanDto detailCicilan : cicilans){
-            if (detailCicilan.getStatus() == Boolean.TRUE) {
                 RequestCicilan cicilan = new RequestCicilan();
                 cicilan.setTagihan(tagihan);
                 cicilan.setTanggalPengajuan(LocalDate.now());
@@ -148,18 +172,11 @@ public class ImportDataController  {
                 cicilan.setTanggalPengajuan(LocalDate.now());
                 cicilan.setTanggalJatuhTempo(detailCicilan.getTanggalKirim().plusMonths(1));
                 cicilan.setStatusApprove(StatusApprove.APPROVED);
-                cicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                if (detailCicilan.getStatus() == Boolean.TRUE) {
+                    cicilan.setStatusCicilan(StatusCicilan.SEDANG_DITAGIHKAN);
+                }
                 requestCicilanDao.save(cicilan);
-            }else {
-                RequestCicilan cicilan = new RequestCicilan();
-                cicilan.setTagihan(tagihan);
-                cicilan.setTanggalPengajuan(LocalDate.now());
-                cicilan.setNilaiCicilan(detailCicilan.getNominal());
-                cicilan.setTanggalPengajuan(LocalDate.now());
-                cicilan.setTanggalJatuhTempo(detailCicilan.getTanggalKirim().plusMonths(1));
-                cicilan.setStatusApprove(StatusApprove.APPROVED);
-                requestCicilanDao.save(cicilan);
-            }
+
         }
 
         RequestCicilanDto requestCicilan = cicilans.stream()
