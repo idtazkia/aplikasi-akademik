@@ -186,7 +186,7 @@ public class GraduationController {
             if (wisuda == null) {
                 return "redirect:wisuda/form";
             }else {
-                return "redirect:sidang/mahasiswa/waiting?pasca=aktif";
+                return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
             }
         }else {
 
