@@ -285,7 +285,7 @@ public class SidangController {
                     return "graduation/info";
                 }
             }else {
-                if (LocalDate.now().compareTo(periodeWisuda.getTutupSidang()) >= 0 && LocalDate.now().compareTo(periodeWisuda.getBukaSidang()) <= 0 ){
+                if (LocalDate.now().isAfter(periodeWisuda.getTutupSidang()) && LocalDate.now().isBefore(periodeWisuda.getBukaSidang())){
                     return "redirect:info";
                 } else {
                     TahunAkademik ta = null;
