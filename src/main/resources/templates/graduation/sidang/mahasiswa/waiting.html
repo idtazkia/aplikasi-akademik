@@ -114,8 +114,8 @@
         <div class="col-md-12 col-xs-12 margin-col" th:if="${waiting == null}">
             <div class="card-red">
                 <b class="card-title">Komentar  </b>
-                <p class="p-comment" th:text="${data.komentar}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.
-                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>
+<!--                <p class="p-comment"  th:text="${data.komentar}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet architecto at earum, eum nam perferendis ullam.-->
+<!--                    Ab ad delectus, dolore, eos, id modi molestiae molestias nam numquam officiis ullam voluptas?</p>-->
             </div>
         </div>
         <p th:if="${waiting != null}">Data dan File yang Anda Upload sedang di Validasi oleh Akademik</p>
@@ -127,7 +127,7 @@
         </div>
         <div class="col-md-12" th:if="${waiting == null}">
             <a th:if="${pasca == null}" th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${data.sidang.id})}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
-            <a th:if="${pasca != null}" th:href="@{/graduation/sidang/mahasiswa/wisuda (sidang = ${data.sidang.id})}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
+            <a th:if="${pasca != null}" th:href="@{/graduation/wisuda/form}" class="btn btn-sm btn-danger" style="background-color: red;">Daftar Ulang</a>
             <a th:href="@{/dashboard}" class="btn btn-sm btn-info">Kembali ke Halaman Utama</a>
         </div>
         <br>

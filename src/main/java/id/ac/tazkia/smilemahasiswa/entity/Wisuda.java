@@ -39,7 +39,7 @@ public class Wisuda {
     private StatusApprove status;
 
     @Lob
-    private String komentar;
+    private String komentar = "-";
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
