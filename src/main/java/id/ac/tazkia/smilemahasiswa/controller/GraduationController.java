@@ -95,6 +95,9 @@ public class GraduationController {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
+    private TahunProdiDao tahunProdiDao;
+
+    @Autowired
     private ProdiDao prodiDao;
 
     @Autowired
@@ -722,12 +725,13 @@ public class GraduationController {
 
             TahunAkademik ta = null;
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+            TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahunAkademik, note.getMahasiswa().getIdProdi());
 
-            if (tahunAkademik.getJenis() == StatusRecord.PENDEK){
+            if (tahunProdi.getTahunAkademik().getJenis() == StatusRecord.PENDEK){
                 String kode = tahunAkademik.getKodeTahunAkademik().substring(0,4) + "2";
                 ta = tahunAkademikDao.findByStatusNotInAndKodeTahunAkademik(Arrays.asList(StatusRecord.HAPUS),kode );
             }else {
-                if (LocalDate.now().compareTo(tahunAkademik.getTanggalMulai()) >= 0){
+                if (LocalDate.now().isAfter((tahunProdi.getMulaiKrs()))){
                     ta = tahunAkademik;
                 }else {
                     int last = tahunAkademik.getKodeTahunAkademik().length();
