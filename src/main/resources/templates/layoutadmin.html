@@ -524,6 +524,12 @@
                                     Import Nilai
                                 </a>
                             </li>
+                            <!--dosen-->
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                                <a class="nav-link " th:href="@{/elearning/importNilaiDosen}">
+                                    Import Nilai
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

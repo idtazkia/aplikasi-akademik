@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="sweetalert2.all.min.js"></script>
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Elearning Tazkia</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Import Penilaian Elearning </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--7">
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Import Nilai</h3>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form th:action="@{/elearning/importNilaiDosen}" method="post">
+                            <div class="form-group">
+                                <label >Prodi</label>
+                                <select class="form-control"
+                                        id="select2-prodi" name="prodi" required>
+                                    <option value=""></option>
+                                    <option value="" disabled>Pilih Prodi</option>
+                                    <option th:each="pro : ${prodi}"
+                                            th:text="${pro.namaProdi}"
+                                            th:value="${pro.id}">prodi</option>
+                                </select>
+<!--                                                                <input type="hidden" name="prodi" id="isiProdi">-->
+                            </div>
+                            <div class="form-group">
+                                <label>Nama matakuliah</label>
+                                <select class="form-control" name="jadwal"required >
+                                    <option value=""></option>
+                                    <option value="" disabled><b>-- Pilih Mata Kuliah --</b></option>
+                                    <option th:each="jad : ${jadwal}"
+                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"
+                                            th:value="${jad.jadwal.id}">matkul</option>
+<!--                                    <input type="hidden" id="isiJadwal" name="jadwal">-->
+                                </select>
+                            </div>
+                            <input type="hidden" name="id" >
+                            <p><small>This is some smaller text.</small></p>
+                            <div class="form-group">
+                                <!--                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="presensi" >Import PRESENSI</button>-->
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="tugas" >Import TUGAS</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uts" >Import UTS</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uas" >Import UAS</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="sds" >Import SDS</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card shadow">
+                        <div class="card-header">
+
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Keterangan</th>
+                                        <th scope="col">Kategori</th>
+                                        <th scope="col">Tanggal</th>
+                                        <th scope="col">Tanggal Mulai</th>
+                                        <th scope="col">Tanggal Selesai</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col"></th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listProses2}">
+                                        <td th:text="${(row.index + 1) + (listProses2.number * listProses2.size)}">1</td>
+                                        <td th:text="${data.getKeterangan()}">12</td>
+                                        <td th:text="${data.getNamaProses()}">12</td>
+                                        <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                        <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td th:text="${data.getStatus()}">2020</td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dark table -->
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
