@@ -10,7 +10,9 @@ import id.ac.tazkia.smilemahasiswa.dto.elearning.MdlGradeItemsDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.DisableMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.payment.MahasiswaDisabledDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ImporNilaiElearningService;
+import id.ac.tazkia.smilemahasiswa.service.ImportNilaiElearningDosenService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -83,11 +86,28 @@ public class ElearningController {
     private ImporNilaiElearningService imporNilaiElearningService;
 
     @Autowired
+    private ImportNilaiElearningDosenService importNilaiElearningDosenService;
+
+    @Autowired
     private ProsesBackgroundDao prosesBackgroundDao;
 
+    @Autowired
+    private ProsesBackgroundDosenDao prosesBackgroundDosenDao;
 
     @Autowired
     private ScoreService scoreService;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
+
+    @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
+    private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
     WebClient webClient1 = WebClient.builder()
             .baseUrl("https://elearning.tazkia.ac.id")
@@ -229,6 +249,22 @@ public class ElearningController {
         model.addAttribute("tahunAkademik", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("listProses", prosesBackgroundDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
+
+    }
+
+    @GetMapping("/elearning/importNilaiDosen")
+    public void importNilaiDosen(Model model, Authentication authentication,
+                                 @PageableDefault(size = 10) Pageable page){
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+        model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("listProses2", prosesBackgroundDosenDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
 
     }
 
@@ -1077,7 +1113,7 @@ public class ElearningController {
             }
         }
 
-        System.out.println("Impor Data Finished");
+        System.out.println("Import Data Finished");
         return "redirect:importNilai";
 
     }
@@ -1499,6 +1535,104 @@ public class ElearningController {
         }
 
         return "redirect:importNilai";
+
+    }
+
+
+
+
+
+//  import untuk dosen
+    @PostMapping("/elearning/importNilaiDosen")
+    public String inputFormDosen(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
+                                 @RequestParam(required = false) String jadwal, @RequestParam(value="action", required=true) String action, Authentication authentication){
+
+        System.out.println("Impor Jalan");
+        System.out.println("Prodinya :" + prodi);
+        System.out.println("Jadwalnya :" + jadwal);
+
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+//        TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
+        TahunAkademik tahunAkademik1 = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Prodi prodi1 = prodiDao.findById(prodi).get();
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+//        JadwalDosen jadwalDos = jadwalDosenDao.findById(jadwal).get();
+
+        System.out.println("Masih Jalan");
+
+        if (action.equals("tugas")) {
+
+            ProsesBackgroundDosen prosesBackgroundDosen = new ProsesBackgroundDosen();
+            prosesBackgroundDosen.setNamaProses("TUGAS");
+            prosesBackgroundDosen.setNamaDosen(dosen.getKaryawan().getNamaKaryawan());
+            prosesBackgroundDosen.setStatus(StatusRecord.WAITING);
+            prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
+            prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackgroundDosen.setProdi(prodi1.getId());
+            prosesBackgroundDosen.setJadwal(jadwal1.getId());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosenDao.save(prosesBackgroundDosen);
+            return "redirect:importNilaiDosen";
+
+
+        }
+
+        if (action.equals("uts")) {
+
+            ProsesBackgroundDosen prosesBackgroundDosen = new ProsesBackgroundDosen();
+            prosesBackgroundDosen.setNamaProses("UTS");
+            prosesBackgroundDosen.setNamaDosen(dosen.getKaryawan().getNamaKaryawan());
+            prosesBackgroundDosen.setStatus(StatusRecord.WAITING);
+            prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
+            prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackgroundDosen.setProdi(prodi1.getId());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosen.setJadwal(jadwal1.getId());
+            prosesBackgroundDosenDao.save(prosesBackgroundDosen);
+            return "redirect:importNilaiDosen";
+
+
+        }
+
+        if (action.equals("uas")) {
+
+            ProsesBackgroundDosen prosesBackgroundDosen = new ProsesBackgroundDosen();
+            prosesBackgroundDosen.setNamaProses("UAS");
+            prosesBackgroundDosen.setNamaDosen(dosen.getKaryawan().getNamaKaryawan());
+            prosesBackgroundDosen.setStatus(StatusRecord.WAITING);
+            prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
+            prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackgroundDosen.setProdi(prodi1.getId());
+            prosesBackgroundDosen.setJadwal(jadwal1.getId());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosenDao.save(prosesBackgroundDosen);
+            return "redirect:importNilaiDosen";
+
+
+        }
+
+        //SDS
+        if (action.equals("sds")) {
+
+            ProsesBackgroundDosen prosesBackgroundDosen = new ProsesBackgroundDosen();
+            prosesBackgroundDosen.setNamaProses("SDS");
+            prosesBackgroundDosen.setNamaDosen(dosen.getKaryawan().getNamaKaryawan());
+            prosesBackgroundDosen.setStatus(StatusRecord.WAITING);
+            prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
+            prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
+            prosesBackgroundDosen.setProdi(prodi1.getId());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosenDao.save(prosesBackgroundDosen);
+            return "redirect:importNilaiDosen";
+
+
+        }
+
+        System.out.println("Import Data Finished");
+        return "redirect:importNilaiDosen";
 
     }
 
