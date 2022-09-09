@@ -1,10 +1,12 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.select2.BaseRequest;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -97,6 +100,15 @@ public class DashboardController {
 
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private JadwalDao jadwalDao;
+
+    @Autowired
+    private KelasDao kelasDao;
+
+    @Autowired
+    private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
     private TagihanDao tagihanDao;
@@ -173,17 +185,31 @@ public class DashboardController {
         return pendidikanDao.findAll();
     }
 
+    @GetMapping("/api/provinsi")
+    @ResponseBody
+    public List<BaseRequest> provinsiList(@RequestParam String search){
+        List<BaseRequest> wilayah = wilayahDao.provinsi(search);
+        return wilayah;
+    }
+
     @GetMapping("/api/kabupaten")
     @ResponseBody
-    public List<Wilayah> kabupatenList(@RequestParam String id){
-        List<Wilayah> wilayah = wilayahDao.kabupaten(id);
+    public List<BaseRequest> kabupatenList(@RequestParam String id,@RequestParam String search){
+        List<BaseRequest> wilayah = wilayahDao.kabupaten(id,search);
         return wilayah;
     }
 
     @GetMapping("/api/kecamatan")
     @ResponseBody
-    public List<Wilayah> kecamatanList(@RequestParam String id){
-        List<Wilayah> wilayah = wilayahDao.kecamatan(id);
+    public List<BaseRequest> kecamatanList(@RequestParam String id,@RequestParam String search){
+        List<BaseRequest> wilayah = wilayahDao.kecamatan(id,search);
+        return wilayah;
+    }
+
+    @GetMapping("/api/desa")
+    @ResponseBody
+    public List<BaseRequest> desaList(@RequestParam String id, @RequestParam String search){
+        List<BaseRequest> wilayah = wilayahDao.desa(id,search);
         return wilayah;
     }
 
@@ -194,12 +220,6 @@ public class DashboardController {
 //        return asuransiMahasiswaList;
 //    }
 
-    @GetMapping("/api/desa")
-    @ResponseBody
-    public List<Wilayah> desaList(@RequestParam String id){
-        List<Wilayah> wilayah = wilayahDao.desa(id);
-        return wilayah;
-    }
 
     @GetMapping("/dashboard")
     public String dashboardUtama(Model model, Authentication authentication, Device device){
@@ -374,12 +394,11 @@ public class DashboardController {
         model.addAttribute("type", type);
         model.addAttribute("transportasi", transportasiDao.findAll());
         model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
-        model.addAttribute("provinsi", wilayahDao.provinsi());
         model.addAttribute("listProdi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
+
         model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
-//        model.addAttribute("listAsuransi", asuransiDao.findByStatus(StatusRecord.AKTIF));
 
         model.addAttribute("mhsw",mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
@@ -400,10 +419,6 @@ public class DashboardController {
         mahasiswaDto.setReligion(mahasiswa.getIdAgama());
         mahasiswaDto.setTempat(mahasiswa.getTempatLahir());
         mahasiswaDto.setTanggalLahir(mahasiswa.getTanggalLahir());
-        mahasiswaDto.setIdKelurahan(mahasiswa.getIdKelurahan());
-        mahasiswaDto.setIdKecamatan(mahasiswa.getIdKecamatan());
-        mahasiswaDto.setIdKotaKabupaten(mahasiswa.getIdKotaKabupaten());
-        mahasiswaDto.setIdProvinsi(mahasiswa.getIdProvinsi());
         mahasiswaDto.setIdNegara(mahasiswa.getIdNegara());
         mahasiswaDto.setKewarganegaraan(mahasiswa.getKewarganegaraan());
         mahasiswaDto.setNik(mahasiswa.getNik());
@@ -421,7 +436,48 @@ public class DashboardController {
         mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
         mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
         mahasiswaDto.setIdUser(mahasiswa.getUser());
+        if (mahasiswa.getIdProvinsi() != null){
+            BaseRequest provinsi = wilayahDao.getProvinsi(mahasiswa.getIdProvinsi());
+            if (provinsi != null) {
+                mahasiswaDto.setIdProvinsi(provinsi.getId());
+                mahasiswaDto.setProvinsi(provinsi.getNama());
 
+                if (mahasiswa.getIdKotaKabupaten() != null) {
+                    BaseRequest kabupaten = wilayahDao.getKabupaten(provinsi.getId(), mahasiswa.getIdKotaKabupaten());
+                    if (kabupaten != null) {
+                        mahasiswaDto.setIdKotaKabupaten(kabupaten.getId());
+                        mahasiswaDto.setKotaKabupaten(kabupaten.getNama());
+
+                        if (mahasiswa.getIdKecamatan() != null) {
+                            BaseRequest kecamatan = wilayahDao.getKecamatan(kabupaten.getId(), mahasiswa.getIdKecamatan());
+                            if (kecamatan != null) {
+                                mahasiswaDto.setIdKecamatan(kecamatan.getId());
+                                mahasiswaDto.setKecamatan(kecamatan.getNama());
+
+                                if (mahasiswa.getIdKelurahan() != null){
+                                    BaseRequest kelurahan = wilayahDao.getDesa(kecamatan.getId(),mahasiswa.getIdKelurahan());
+                                    if (kelurahan!= null) {
+                                        mahasiswaDto.setIdKelurahan(kelurahan.getId());
+                                        mahasiswaDto.setKelurahan(kelurahan.getNama());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if (mahasiswa.getFileIjazah() != null){
+            mahasiswaDto.setFileIjazah(mahasiswa.getFileIjazah());
+        }
+        if (mahasiswa.getFileKtp() != null){
+            mahasiswaDto.setFileKtp(mahasiswa.getFileKtp());
+        }
+        if (mahasiswa.getFoto() != null){
+            mahasiswaDto.setFoto(mahasiswa.getFoto());
+        }
         mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
         mahasiswaDto.setNamaIbuKandung(mahasiswa.getIbu().getNamaIbuKandung());
         mahasiswaDto.setKebutuhanKhususIbu(mahasiswa.getIbu().getKebutuhanKhusus());
@@ -430,10 +486,16 @@ public class DashboardController {
         mahasiswaDto.setIdJenjangPendidikanIbu(mahasiswa.getIbu().getIdJenjangPendidikan());
         mahasiswaDto.setIdPekerjaanIbu(mahasiswa.getIbu().getIdPekerjaan());
         mahasiswaDto.setPenghasilanIbu(mahasiswa.getIbu().getPenghasilan());
+        mahasiswaDto.setNikIbu(mahasiswa.getAyah().getNik());
+        mahasiswaDto.setEmailIbu(mahasiswa.getIbu().getEmailIbu());
+        mahasiswaDto.setNomorIbu(mahasiswa.getIbu().getNomorIbu());
         mahasiswaDto.setAgamaIbu(mahasiswa.getIbu().getAgama());
         mahasiswaDto.setStatusHidupIbu(mahasiswa.getIbu().getStatusHidup());
 
         mahasiswaDto.setAyah(mahasiswa.getAyah().getId());
+        mahasiswaDto.setNikAyah(mahasiswa.getAyah().getNik());
+        mahasiswaDto.setEmailAyah(mahasiswa.getAyah().getEmailAyah());
+        mahasiswaDto.setNomorAyah(mahasiswa.getAyah().getNomorAyah());
         mahasiswaDto.setNamaAyah(mahasiswa.getAyah().getNamaAyah());
         mahasiswaDto.setKebutuhanKhusus(mahasiswa.getAyah().getKebutuhanKhusus());
         mahasiswaDto.setTempatLahirAyah(mahasiswa.getAyah().getTempatLahir());
@@ -456,8 +518,9 @@ public class DashboardController {
                              MultipartFile file, MultipartFile ijazah,MultipartFile foto,@RequestParam(required = false) String type,
                              Authentication authentication) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
-
-        if (!file.isEmpty() || file != null){
+        System.out.println(foto.getSize());
+        System.out.println(ijazah.getSize());
+        if (file.getSize() > 0){
             String namaFile = file.getName();
             String jenisFile = file.getContentType();
             String namaAsliFile = file.getOriginalFilename();
@@ -483,7 +546,7 @@ public class DashboardController {
             mahasiswa.setFileKtp(mahasiswa.getFileKtp());
         }
 
-        if (!ijazah.isEmpty() || ijazah != null){
+        if (ijazah.getSize() > 0){
             String namaFile = ijazah.getName();
             String namaFileAsli = ijazah.getOriginalFilename();
 
@@ -506,7 +569,7 @@ public class DashboardController {
             mahasiswa.setFileIjazah(mahasiswa.getFileIjazah());
         }
 
-        if (!foto.isEmpty() || foto != null){
+        if (foto.getSize() > 0){
             String namaFile = foto.getName();
             String namaFileAsli = foto.getOriginalFilename();
 
@@ -529,7 +592,6 @@ public class DashboardController {
             mahasiswa.setFoto(mahasiswa.getFoto());
         }
 
-
         mahasiswa.setStatus(mahasiswa.getStatus());
         mahasiswa.setIdAgama(mahasiswaDto.getAgama());
         mahasiswa.setEmailPribadi(mahasiswaDto.getEmailPribadi());
@@ -544,10 +606,10 @@ public class DashboardController {
         mahasiswa.setTempatLahir(mahasiswaDto.getTempat());
         mahasiswa.setIdNegara(mahasiswaDto.getIdNegara());
         mahasiswa.setNamaJalan(mahasiswaDto.getNamaJalan());
-        mahasiswa.setIdProvinsi(mahasiswaDto.getIdProvinsi());
-        mahasiswa.setIdKotaKabupaten(mahasiswaDto.getIdKotaKabupaten());
-        mahasiswa.setIdKecamatan(mahasiswaDto.getIdKecamatan());
-        mahasiswa.setIdKelurahan(mahasiswaDto.getIdKelurahan());
+        mahasiswa.setIdProvinsi(mahasiswaDto.getProvinsi());
+        mahasiswa.setIdKotaKabupaten(mahasiswaDto.getKotaKabupaten());
+        mahasiswa.setIdKecamatan(mahasiswaDto.getKecamatan());
+        mahasiswa.setIdKelurahan(mahasiswaDto.getKelurahan());
         mahasiswa.setRt(mahasiswaDto.getRt());
         if (mahasiswa.getStatusAktif() == null){
             mahasiswa.setStatusAktif("AKTIF");
@@ -586,9 +648,8 @@ public class DashboardController {
         ayahDao.save(ayah);
 
         if (type.equals("profile")){
-            return "user/profile?type=profile";
+            return  "redirect:../user/profile?type=profile";
         }else {
-
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
             DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
             if (daftarUlang == null) {
@@ -600,6 +661,75 @@ public class DashboardController {
             }
             return "redirect:study/comingsoon";
 
+        }
+    }
+
+    @GetMapping("/activation/krsdetail")
+    public void activeKrs(){}
+
+    @PostMapping("/activation/krsdetail")
+    public void setKrsDetail(@RequestParam(required = false) String nim, @RequestParam(required = false) String jadwal, @RequestParam(required = false) String kelas){
+        Jadwal j = jadwalDao.findById(jadwal).get();
+
+        if (nim != null){
+            Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+            Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(),mahasiswa,StatusRecord.AKTIF);
+            if (krs != null){
+                KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa,j,StatusRecord.AKTIF);
+                if (krsDetail == null){
+                    KrsDetail kd = new KrsDetail();
+                    kd.setJadwal(j);
+                    kd.setKrs(krs);
+                    kd.setMahasiswa(mahasiswa);
+                    kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+                    kd.setNilaiPresensi(BigDecimal.ZERO);
+                    kd.setNilaiTugas(BigDecimal.ZERO);
+                    kd.setNilaiUas(BigDecimal.ZERO);
+                    kd.setNilaiUts(BigDecimal.ZERO);
+                    kd.setFinalisasi("N");
+                    kd.setJumlahMangkir(0);
+                    kd.setJumlahKehadiran(0);
+                    kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                    kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                    kd.setJumlahTerlambat(0);
+                    kd.setJumlahIzin(0);
+                    kd.setJumlahSakit(0);
+                    kd.setStatusEdom(StatusRecord.UNDONE);
+                    kd.setTahunAkademik(j.getTahunAkademik());
+                    krsDetailDao.save(kd);
+                }
+            }
+        }else {
+            Kelas k = kelasDao.findById(kelas).get();
+            Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(k, StatusRecord.AKTIF);
+            for (KelasMahasiswa km : kelasMahasiswa){
+                Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(),km.getMahasiswa(),StatusRecord.AKTIF);
+                if (krs != null){
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(km.getMahasiswa(),j,StatusRecord.AKTIF);
+                    if (krsDetail == null){
+                        KrsDetail kd = new KrsDetail();
+                        kd.setJadwal(j);
+                        kd.setKrs(krs);
+                        kd.setMahasiswa(km.getMahasiswa());
+                        kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+                        kd.setNilaiPresensi(BigDecimal.ZERO);
+                        kd.setNilaiTugas(BigDecimal.ZERO);
+                        kd.setNilaiUas(BigDecimal.ZERO);
+                        kd.setNilaiUts(BigDecimal.ZERO);
+                        kd.setFinalisasi("N");
+                        kd.setJumlahMangkir(0);
+                        kd.setJumlahKehadiran(0);
+                        kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                        kd.setJumlahTerlambat(0);
+                        kd.setJumlahIzin(0);
+                        kd.setJumlahSakit(0);
+                        kd.setStatusEdom(StatusRecord.UNDONE);
+                        kd.setTahunAkademik(j.getTahunAkademik());
+                        krsDetailDao.save(kd);
+                    }
+                }
+            }
         }
     }
 

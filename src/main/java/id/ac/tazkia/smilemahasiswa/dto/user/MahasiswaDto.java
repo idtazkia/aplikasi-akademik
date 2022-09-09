@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Data
 public class MahasiswaDto {
 
+
     private String id;
     private String angkatan;
     private Prodi idProdi;
@@ -28,9 +29,13 @@ public class MahasiswaDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLahir;
     private String idKelurahan;
+    private String kelurahan;
     private String idKecamatan;
+    private String kecamatan;
     private String idKotaKabupaten;
+    private String kotaKabupaten;
     private String idProvinsi;
+    private String provinsi;
     private String idNegara;
     private String kewarganegaraan;
     private String nik;
@@ -102,5 +107,8 @@ public class MahasiswaDto {
     private String idPekerjaanWali;
     private String idPenghasilanWali;
     private String rfid;
+    private String fileIjazah;
+    private String fileKtp;
+    private String foto;
     private  Agama agamaWali;
 }
