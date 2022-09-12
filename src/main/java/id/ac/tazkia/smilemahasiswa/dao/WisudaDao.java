@@ -15,5 +15,7 @@ public interface WisudaDao extends PagingAndSortingRepository<Wisuda, String> {
     Wisuda findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusApprove statusApprove);
     Wisuda findByMahasiswa(Mahasiswa mahasiswa);
     Wisuda findFirstByMahasiswaAndStatus(Mahasiswa mahasiswa,StatusApprove statusApprove);
-    List<Wisuda> findByStatusAndPeriodeWisuda(StatusApprove status, PeriodeWisuda periodeWisuda);
+    List<Wisuda> findByStatusAndPeriodeWisudaOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda);
+    List<Wisuda> findByStatusAndPeriodeWisudaAndMahasiswaIdProdiOrderByMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda,Prodi prodi);
+    List<Wisuda> findByStatusAndPeriodeWisudaAndMahasiswaIdProdiIdJenjangOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda,Jenjang jenjang);
 }

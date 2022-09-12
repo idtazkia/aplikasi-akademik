@@ -4316,8 +4316,6 @@ public class StudiesActivityController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
-        System.out.println(sks);
-        System.out.println(mutu);
 
         BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
 
@@ -7597,6 +7595,7 @@ public class StudiesActivityController {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         LocalDate mulaiUts = tahunAkademik.getTanggalMulaiUts().minusWeeks(3);
         LocalDate mulaiUas = tahunAkademik.getTanggalMulaiUas().minusWeeks(3);
+        System.out.println(mulaiUts);
 
         if (LocalDate.now().compareTo(mulaiUts) >= 0 && LocalDate.now().compareTo(mulaiUts.plusWeeks(1)) <= 0){
             model.addAttribute("upload", "jadwal upload soal");

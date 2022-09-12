@@ -57,7 +57,13 @@ public class TugasAkhirController {
     KategoriTugasAkhirDao kategoriDao;
 
     @Autowired
+    KrsDetailDao krsDetailDao;
+
+    @Autowired
     private SidangDao sidangDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
     WisudaDao wisudaDao;
@@ -86,7 +92,7 @@ public class TugasAkhirController {
     @Value("${upload.wisuda}")
     private String wisudaFolder;
 
-    @Value("classpath:/sample/wisuda.xlsx")
+    @Value("classpath:/sample/wisudawan.xlsx")
     private Resource getContohExcelWisuda;
 
     @ModelAttribute("prodi")
@@ -712,310 +718,196 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/report/wisuda")
-    public void wisudaExcel (@RequestParam(required = false) String nim, HttpServletResponse response) throws IOException {
+    public void wisudaExcel (@RequestParam(required = false, name = "periode", value = "periode") PeriodeWisuda periodeWisuda,
+                             @RequestParam(required = false, name = "prodi", value = "prodi") Prodi prodi,
+                             @RequestParam(required = false, name = "jenjang", value = "jenjang") Jenjang jenjang, HttpServletResponse response) throws IOException {
 
         InputStream file = getContohExcelWisuda.getInputStream();
 
-        List<Wisuda> wisuda = wisudaDao.findByStatusAndPeriodeWisuda(StatusApprove.APPROVED, periodeWisudaDao.findByStatus(StatusRecord.AKTIF));
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
         workbook.setSheetName(workbook.getSheetIndex(sheet), "Data Wisuda");
 
-        Font manajemenFont = workbook.createFont();
-        manajemenFont.setItalic(true);
-        manajemenFont.setFontHeightInPoints((short) 10);
-        manajemenFont.setFontName("Cambria");
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short) 12);
+        font.setFontName("Times New Roman");
 
-        Font dataManajemenFont = workbook.createFont();
-        dataManajemenFont.setFontHeightInPoints((short) 10);
-        dataManajemenFont.setFontName("Cambria");
+        Font fontCenter = workbook.createFont();
+        fontCenter.setFontHeightInPoints((short) 12);
+        fontCenter.setFontName("Times New Roman");
 
-        Font subHeaderFont = workbook.createFont();
-        subHeaderFont.setFontHeightInPoints((short) 10);
-        subHeaderFont.setFontName("Cambria");
-        subHeaderFont.setBold(true);
+        Font fontHeader = workbook.createFont();
+        fontHeader.setBold(true);
+        fontHeader.setFontHeightInPoints((short) 14);
+        fontHeader.setFontName("Times New Roman");
 
-        Font judulFont = workbook.createFont();
-        judulFont.setFontHeightInPoints((short) 10);
-        judulFont.setFontName("Cambria");
-        judulFont.setBold(true);
-
-        Font thesisFont = workbook.createFont();
-        thesisFont.setFontHeightInPoints((short) 10);
-        thesisFont.setFontName("Cambria");
-
-        Font symbolFont = workbook.createFont();
-        symbolFont.setFontHeightInPoints((short) 10);
-        symbolFont.setFontName("Cambria");
-
-        Font dataFont = workbook.createFont();
-        dataFont.setFontHeightInPoints((short) 10);
-        dataFont.setFontName("Cambria");
-
-        Font dataTableFont = workbook.createFont();
-        dataTableFont.setFontHeightInPoints((short) 10);
-        dataTableFont.setFontName("Cambria");
-
-        Font prestasiFont = workbook.createFont();
-        prestasiFont.setFontHeightInPoints((short) 10);
-        prestasiFont.setFontName("Cambria");
-
-        Font judulSkripsiFont = workbook.createFont();
-        judulSkripsiFont.setFontHeightInPoints((short) 10);
-        judulSkripsiFont.setFontName("Cambria");
-
-        Font dataKhsFont = workbook.createFont();
-        dataKhsFont.setFontHeightInPoints((short) 10);
-        dataKhsFont.setFontName("Cambria");
-
-        Font dataIpkFont = workbook.createFont();
-        dataIpkFont.setFontHeightInPoints((short) 10);
-        dataIpkFont.setFontName("Cambria");
-
-        Font penilaianFont = workbook.createFont();
-        penilaianFont.setFontHeightInPoints((short) 10);
-        penilaianFont.setFontName("Cambria");
-
-        Font prestasiFont2 = workbook.createFont();
-        prestasiFont2.setFontHeightInPoints((short) 10);
-        prestasiFont2.setFontName("Cambria");
-
-        Font dataPrestasiFont = workbook.createFont();
-        dataPrestasiFont.setFontHeightInPoints((short) 10);
-        dataPrestasiFont.setFontName("Cambria");
-
-        Font matkulFont = workbook.createFont();
-        matkulFont.setFontHeightInPoints((short) 10);
-        matkulFont.setFontName("Cambria");
-
-        Font dataFontNew = workbook.createFont();
-        dataFontNew.setFontHeightInPoints((short) 10);
-        dataFontNew.setFontName("Times New Roman");
-
-        Font prodiFont = workbook.createFont();
-        prodiFont.setUnderline(XSSFFont.U_DOUBLE);
-        prodiFont.setFontHeightInPoints((short) 10);
-        prodiFont.setFontName("Cambria");
-
-        Font  presFont = workbook.createFont();
-        presFont.setFontHeightInPoints((short) 10);
-        presFont.setFontName("Cambria");
-
-        Font ipFont = workbook.createFont();
-        ipFont.setBold(true);
-        ipFont.setItalic(true);
-        ipFont.setFontHeightInPoints((short) 10);
-        ipFont.setFontName("Cambria");
-
-        Font ipFontBorder = workbook.createFont();
-        ipFontBorder.setBold(true);
-        ipFontBorder.setItalic(true);
-        ipFontBorder.setFontHeightInPoints((short) 10);
-        ipFontBorder.setFontName("Cambria");
-
-        Font lectureFont = workbook.createFont();
-        lectureFont.setBold(true);
-        lectureFont.setFontName("Cambria");
-        lectureFont.setUnderline(XSSFFont.U_DOUBLE);
-        lectureFont.setFontHeightInPoints((short) 10);
-
-        Font nikFont = workbook.createFont();
-        nikFont.setBold(true);
-        nikFont.setFontName("Cambria");
-        nikFont.setFontHeightInPoints((short) 10);
-
-        CellStyle styleNik = workbook.createCellStyle();
-        styleNik.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleNik.setFont(nikFont);
-
-
-        CellStyle styleManajemen = workbook.createCellStyle();
-        styleManajemen.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleManajemen.setAlignment(HorizontalAlignment.CENTER);
-        styleManajemen.setFont(manajemenFont);
-
-        CellStyle styleDosen = workbook.createCellStyle();
-        styleDosen.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDosen.setFont(lectureFont);
-
-        CellStyle styleProdi = workbook.createCellStyle();
-        styleProdi.setBorderTop(BorderStyle.MEDIUM);
-        styleProdi.setBorderBottom(BorderStyle.MEDIUM);
-        styleProdi.setBorderLeft(BorderStyle.MEDIUM);
-        styleProdi.setBorderRight(BorderStyle.MEDIUM);
-        styleProdi.setFont(dataManajemenFont);
-
-        CellStyle styleSubHeader = workbook.createCellStyle();
-        styleSubHeader.setFont(subHeaderFont);
-        styleSubHeader.setAlignment(HorizontalAlignment.LEFT);
-        styleSubHeader.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        CellStyle styleJudul = workbook.createCellStyle();
-        styleJudul.setFont(judulFont);
-        styleJudul.setAlignment(HorizontalAlignment.LEFT);
-        styleJudul.setVerticalAlignment(VerticalAlignment.TOP);
-
-        CellStyle styleThesis = workbook.createCellStyle();
-        styleThesis.setFont(thesisFont);
-        styleThesis.setAlignment(HorizontalAlignment.LEFT);
-        styleThesis.setVerticalAlignment(VerticalAlignment.TOP);
-        styleThesis.setWrapText(true);
-
+        CellStyle styleHeader = workbook.createCellStyle();
+        styleHeader.setAlignment(HorizontalAlignment.LEFT);
+        styleHeader.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleHeader.setFillBackgroundColor(IndexedColors.LIME.getIndex());
+        styleHeader.setFont(fontHeader);
 
         CellStyle styleData = workbook.createCellStyle();
-        styleData.setFont(dataFont);
+        styleData.setAlignment(HorizontalAlignment.LEFT);
+        styleData.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleData.setFont(font);
+        styleData.setBorderBottom(BorderStyle.THIN);
+        styleData.setBorderRight(BorderStyle.THIN);
+        styleData.setBorderLeft(BorderStyle.THIN);
+        styleData.setBorderTop(BorderStyle.THIN);
 
-        CellStyle styleDataNew = workbook.createCellStyle();
-        styleDataNew.setFont(dataFontNew);
-        styleDataNew.setAlignment(HorizontalAlignment.CENTER);
+        CellStyle styleDataCenter = workbook.createCellStyle();
+        styleDataCenter.setAlignment(HorizontalAlignment.LEFT);
+        styleDataCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleDataCenter.setFont(fontCenter);
+        styleDataCenter.setBorderBottom(BorderStyle.THIN);
+        styleDataCenter.setBorderRight(BorderStyle.THIN);
+        styleDataCenter.setBorderLeft(BorderStyle.THIN);
+        styleDataCenter.setBorderTop(BorderStyle.THIN);
 
-        CellStyle styleDataKhs = workbook.createCellStyle();
-        styleDataKhs.setAlignment(HorizontalAlignment.CENTER);
-        styleDataKhs.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataKhs.setFont(dataKhsFont);
-
-        CellStyle styleIsiIpk = workbook.createCellStyle();
-        styleIsiIpk.setAlignment(HorizontalAlignment.CENTER);
-        styleIsiIpk.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleIsiIpk.setFont(dataIpkFont);
-
-        CellStyle stylePenilaian = workbook.createCellStyle();
-        stylePenilaian.setAlignment(HorizontalAlignment.CENTER);
-        stylePenilaian.setVerticalAlignment(VerticalAlignment.CENTER);
-        stylePenilaian.setFont(penilaianFont);
-
-        CellStyle styleDataTale = workbook.createCellStyle();
-        styleDataTale.setFont(dataTableFont);
-        styleDataTale.setAlignment(HorizontalAlignment.CENTER);
-        styleDataTale.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataTale.setBorderRight(BorderStyle.THIN);
-        styleDataTale.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle styleDataTale2 = workbook.createCellStyle();
-        styleDataTale2.setFont(dataTableFont);
-        styleDataTale2.setAlignment(HorizontalAlignment.CENTER);
-        styleDataTale2.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataTale2.setBorderRight(BorderStyle.THIN);
-        styleDataTale2.setBorderBottom(BorderStyle.THIN);
-        styleDataTale2.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle styleDataPrestasiAkademik = workbook.createCellStyle();
-        styleDataPrestasiAkademik.setFont(prestasiFont);
-        styleDataPrestasiAkademik.setAlignment(HorizontalAlignment.LEFT);
-        styleDataPrestasiAkademik.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataPrestasiAkademik.setBorderBottom(BorderStyle.MEDIUM);
-        styleDataPrestasiAkademik.setBorderTop(BorderStyle.MEDIUM);
-        styleDataPrestasiAkademik.setBorderRight(BorderStyle.MEDIUM);
-        styleDataPrestasiAkademik.setBorderLeft(BorderStyle.MEDIUM);
-
-        CellStyle styleDataKhsTable = workbook.createCellStyle();
-        styleDataKhsTable.setAlignment(HorizontalAlignment.LEFT);
-        styleDataKhsTable.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataKhsTable.setFont(matkulFont);
-        styleDataKhsTable.setBorderRight(BorderStyle.THIN);
-        styleDataKhsTable.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle styleDataKhsTable2 = workbook.createCellStyle();
-        styleDataKhsTable2.setAlignment(HorizontalAlignment.LEFT);
-        styleDataKhsTable2.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleDataKhsTable2.setFont(matkulFont);
-        styleDataKhsTable2.setBorderBottom(BorderStyle.THIN);
-        styleDataKhsTable2.setBorderRight(BorderStyle.THIN);
-        styleDataKhsTable2.setBorderLeft(BorderStyle.THIN);
+        int header1 = 0 ;
+        int header2 = 1 ;
+        int header3 = 2 ;
+        String namaFile ="";
 
 
-        CellStyle stylePrestasiAkademik = workbook.createCellStyle();
-        stylePrestasiAkademik.setAlignment(HorizontalAlignment.LEFT);
-        stylePrestasiAkademik.setVerticalAlignment(VerticalAlignment.CENTER);
-        stylePrestasiAkademik.setFont(prestasiFont);
 
-        CellStyle styleSubHeader1 = workbook.createCellStyle();
-        styleSubHeader1.setAlignment(HorizontalAlignment.LEFT);
-        styleSubHeader1.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleSubHeader1.setFont(ipFont);
+        List<Wisuda> wisuda = null;
 
-        CellStyle styleJudulSkripsi = workbook.createCellStyle();
-        styleJudulSkripsi.setFont(judulSkripsiFont);
-        styleJudulSkripsi.setWrapText(true);
+        if (prodi == null && jenjang == null){
+            namaFile = "Data Wisudawan & " + periodeWisuda.getNama();
+            wisuda = wisudaDao.findByStatusAndPeriodeWisudaOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda);
+            Row HeaderLulusan = sheet.createRow(header1);
+            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
+            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
+        }
 
-        CellStyle styleSymbol = workbook.createCellStyle();
-        styleSymbol.setAlignment(HorizontalAlignment.RIGHT);
-        styleSymbol.setFont(symbolFont);
+        if (prodi != null){
+            namaFile = "Data Wisudawan Prodi " + prodi.getNamaProdi() + " & " + periodeWisuda.getNama();
+            wisuda = wisudaDao.findByStatusAndPeriodeWisudaAndMahasiswaIdProdiOrderByMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda,prodi);
+            Row HeaderLulusan = sheet.createRow(header1);
+            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
+            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
+            Row HeaderProdi = sheet.createRow(header2);
+            HeaderProdi.createCell(0).setCellValue("PROGRAM STUDI  " + periodeWisuda.getNama());
+            HeaderProdi.getCell(0).setCellStyle(styleHeader);
 
-        CellStyle styleTotal = workbook.createCellStyle();
-        styleTotal.setAlignment(HorizontalAlignment.LEFT);
-        styleTotal.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleTotal.setFont(ipFont);
+        }
 
-        CellStyle styleTotalBorder = workbook.createCellStyle();
-        styleTotalBorder.setAlignment(HorizontalAlignment.CENTER);
-        styleTotalBorder.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleTotalBorder.setFont(ipFontBorder);
-        styleTotalBorder.setBorderBottom(BorderStyle.THIN);
-        styleTotalBorder.setBorderTop(BorderStyle.THIN);
-        styleTotalBorder.setBorderRight(BorderStyle.THIN);
-        styleTotalBorder.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle styleIpk = workbook.createCellStyle();
-        styleIpk.setFont(prodiFont);
-        styleIpk.setAlignment(HorizontalAlignment.CENTER);
-        styleIpk.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        CellStyle stylePres = workbook.createCellStyle();
-        stylePres.setFont(presFont);
-        stylePres.setAlignment(HorizontalAlignment.CENTER);
-        stylePres.setVerticalAlignment(VerticalAlignment.CENTER);
-        stylePres.setBorderBottom(BorderStyle.MEDIUM);
-        stylePres.setBorderTop(BorderStyle.MEDIUM);
-        stylePres.setBorderRight(BorderStyle.MEDIUM);
-        stylePres.setBorderLeft(BorderStyle.MEDIUM);
-
-        CellStyle borderRight = workbook.createCellStyle();
-        borderRight.setBorderRight(BorderStyle.MEDIUM);
+        if (jenjang != null){
+            wisuda = wisudaDao.findByStatusAndPeriodeWisudaAndMahasiswaIdProdiIdJenjangOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda,jenjang);
+            Row HeaderLulusan = sheet.createRow(header1);
+            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
+            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
+            Row HeaderProdi = sheet.createRow(header2);
+            if (jenjang.getId().equals("01")) {
+                namaFile = "Data Wisudawan S1 & " + periodeWisuda.getNama();
+                HeaderProdi.createCell(0).setCellValue("SARJANA STRATA SATU" + periodeWisuda.getNama());
+                HeaderProdi.getCell(0).setCellStyle(styleHeader);
+            }else {
+                namaFile = "Data Wisudawan S2 & " + periodeWisuda.getNama();
+                HeaderProdi.createCell(0).setCellValue("MAGISTER  ");
+                HeaderProdi.getCell(0).setCellStyle(styleHeader);
+            }
+        }
 
         int dataWisuda = 5 ;
+        int no = 1;
         for (Wisuda data : wisuda) {
             Row row = sheet.createRow(dataWisuda);
-//            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,2,5));
-//            sheet.addMergedRegion(new CellRangeAddress(rowNumSemester8,rowNumSemester8,8,9));
-
+            row.createCell(0).setCellValue(no++);
             row.createCell(1).setCellValue(data.getMahasiswa().getNim());
             row.createCell(2).setCellValue(data.getMahasiswa().getNama());
-            row.createCell(3).setCellValue(data.getMahasiswa().getTanggalLahir().toString());
-            row.createCell(4).setCellValue(data.getMahasiswa().getAyah().getNamaAyah());
-            if (data.getMahasiswa().getBeasiswa() != null) {
-                row.createCell(5).setCellValue(data.getMahasiswa().getBeasiswa().getNamaBeasiswa());
-                row.getCell(5).setCellStyle(styleDataKhsTable2);
+            row.createCell(3).setCellValue(data.getMahasiswa().getIdProdi().getNamaProdi());
+            row.createCell(4).setCellValue(data.getMahasiswa().getIdProdi().getFakultas().getNamaFakultas());
+            row.createCell(5).setCellValue(data.getMahasiswa().getJenisKelamin().name());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            if (data.getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
+                row.createCell(6).setCellValue("Sarjana Strata Satu");
+                row.getCell(6).setCellStyle(styleData);
             }else {
-                row.createCell(5).setCellValue("-");
-                row.getCell(5).setCellStyle(styleDataKhsTable2);
+                row.createCell(6).setCellValue("Magister");
+                row.getCell(6).setCellStyle(styleData);
 
             }
-            row.createCell(6).setCellValue(data.getMahasiswa().getUkuranBaju());
-            row.createCell(7).setCellValue(data.getMahasiswa().getJudul());
-            row.createCell(8).setCellValue(data.getMahasiswa().getTitle());
-            row.createCell(9).setCellValue(data.getMahasiswa().getJenisKelamin().toString());
-            row.createCell(10).setCellValue(data.getMahasiswa().getTeleponSeluler());
-            row.createCell(11).setCellValue(data.getMahasiswa().getEmailPribadi());
-            row.createCell(12).setCellValue("3.22");
-            row.createCell(13).setCellValue("asdasdasdad");
-            row.getCell(1).setCellStyle(styleDataTale2);
-                row.getCell(2).setCellStyle(styleDataKhsTable2);
-                row.getCell(3).setCellStyle(styleDataKhsTable2);
-                row.getCell(4).setCellStyle(styleDataKhsTable2);
-                row.getCell(6).setCellStyle(styleDataTale2);
-                row.getCell(7).setCellStyle(styleDataTale2);
-                row.getCell(8).setCellStyle(styleDataTale2);
-                row.getCell(10).setCellStyle(styleDataTale2);
-                row.getCell(11).setCellStyle(styleDataTale2);
-                row.getCell(12).setCellStyle(styleDataTale2);
-                row.getCell(13).setCellStyle(styleDataTale2);
+            row.createCell(7).setCellValue(data.getMahasiswa().getTanggalLulus().toString());
+            row.createCell(8).setCellValue("-");
+            row.getCell(7).setCellStyle(styleData);
+            row.getCell(8).setCellStyle(styleData);
+
+
+            List<DataTranskript> listTranskript = krsDetailDao.listTranskript(data.getMahasiswa());
+            listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+            int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+            BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
+            BigDecimal validate = krsDetailDao.validasiTranskrip(data.getMahasiswa());
+
+
+            row.createCell(12).setCellValue("-");
+            row.getCell(12).setCellStyle(styleDataCenter);
+            row.createCell(15).setCellValue(ipk.toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+
+            if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
+                row.createCell(16).setCellValue("Memuaskan");
+                row.getCell(16).setCellStyle(styleData);
+
+            }
+
+            if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
+                row.createCell(16).setCellValue("Sangat Memuaskan");
+                row.getCell(16).setCellStyle(styleData);
+
+            }
+
+            if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
+
+                if (validate != null){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleData);
+                }else {
+                    row.createCell(16).setCellValue("Pujian ");
+                    row.getCell(16).setCellStyle(styleData);
+                }
+
+            }
+
+            if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
+
+                if (validate != null){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleData);
+                }else {
+                    row.createCell(16).setCellValue("Pujian Tertinggi ");
+                    row.getCell(16).setCellStyle(styleData);
+                }
+
+
+            }
+
+            if (data.getMahasiswa().getBeasiswa() == null) {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue(data.getMahasiswa().getBeasiswa().getNamaBeasiswa());
+                row.getCell(17).setCellStyle(styleData);
+
+            }
             dataWisuda++;
         }
 
 
 
-        String namaFile = "Data Wisuda";
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");

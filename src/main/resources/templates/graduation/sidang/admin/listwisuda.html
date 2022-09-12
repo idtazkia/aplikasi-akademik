@@ -89,11 +89,23 @@
                             </div>
                         </form>
                     </div>
-                    <div class="card-body" th:if="${list != null}">
-                        <div class="card shadow">
-                            <div class="card-header border-0">
-                                <h3 class="mb-0">List</h3>
+                    <div class="card-body">
+                        <div class="col-md-11 col-xs-offset-6 text-right">
+                            <div class="dropdown">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Download
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a target="_blank" th:href="@{/report/wisuda (periode = ${selectedPeriode.id})}" class="dropdown-item">Semua Data</a>
+                                    <a target="_blank" class="dropdown-item" th:href="@{/report/wisuda (periode = ${selectedPeriode.id}, jenjang = ${'01'})}">S1</a>
+                                    <a target="_blank" class="dropdown-item" th:href="@{/report/wisuda (periode = ${selectedPeriode.id}, jenjang = ${'02'})}">S2</a>
+                                    <a target="_blank" class="dropdown-item" th:each="prodi : ${prodi}"
+                                       th:text="${prodi.namaProdi}" th:href="@{/report/wisuda (periode = ${selectedPeriode.id}, prodi = ${prodi.id})}">S2</a>
+                                </div>
                             </div>
+                        </div>
+                        <br>
+                        <div class="card shadow">
                             <div class="table-responsive">
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
