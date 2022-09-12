@@ -66,6 +66,10 @@ public class FinanceController {
     private CurrentUserService currentUserService;
     @Autowired
     private KaryawanDao karyawanDao;
+    @Autowired
+    private JadwalDao jadwalDao;
+    @Autowired
+    private SesiDao sesiDao;
 
 
     @ModelAttribute("prodi")
@@ -90,6 +94,20 @@ public class FinanceController {
 
     @Value("${upload.memoKeuangan}")
     private String uploadMemo;
+
+    @GetMapping("/activation/sesi")
+    public void aktifasiKrs(Model model,@RequestParam(required = false) TahunAkademik tahun){
+        if (tahun != null){
+            List<Jadwal> jadwal = jadwalDao.cariSesiNull(tahun);
+            for (Jadwal j : jadwal){
+                Sesi sesi = sesiDao.findByJamMulaiAndJamSelesaiAndSks(j.getJamMulai(),j.getJamSelesai(),j.getMatakuliahKurikulum().getJumlahSks());
+                j.setSesi(sesi.getSesi());
+                jadwalDao.save(j);
+            }
+        }
+
+    }
+
 
     @GetMapping("/activation/krs")
     public void aktifasiKrs(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,

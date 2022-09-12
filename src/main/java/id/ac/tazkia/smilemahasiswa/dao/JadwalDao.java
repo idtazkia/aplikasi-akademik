@@ -133,6 +133,9 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByMatakuliahKurikulumAndStatus(MatakuliahKurikulum matkur, StatusRecord statusRecord);
 
+    @Query(value = "SELECT * FROM jadwal where id_tahun_akademik = ?1 and id_hari is not null and status = 'AKTIF' and (sesi = '' or sesi is null)", nativeQuery = true)
+    List<Jadwal> cariSesiNull(TahunAkademik tahunAkademik);
+
     @Query(value = "select id, id_number_elearning as idNumberElearning from jadwal where id_prodi = ?1 and id_tahun_akademik = ?2 \n" +
             " and status = 'AKTIF' and id_number_elearning is not null", nativeQuery = true)
     List<ListJadwalDto> listJadwalDto( String idProdi, String idTahunAkademik);
