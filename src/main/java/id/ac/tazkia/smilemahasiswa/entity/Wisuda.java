@@ -32,6 +32,7 @@ public class Wisuda {
     @JoinColumn(name = "id_periode")
     private PeriodeWisuda periodeWisuda;
 
+    @Lob
     private String foto;
     private String ukuran;
 

@@ -42,10 +42,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Controller
 public class TugasAkhirController {
@@ -334,7 +331,7 @@ public class TugasAkhirController {
             }
 
 
-            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
@@ -400,7 +397,7 @@ public class TugasAkhirController {
             }
 
 
-            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
@@ -469,7 +466,7 @@ public class TugasAkhirController {
             }
 
 
-            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
@@ -536,7 +533,7 @@ public class TugasAkhirController {
             }
 
 
-            String namaFile = mahasiswa.getNim() + "_" + mahasiswa.getNama();
+            String namaFile = UUID.randomUUID().toString();
             String lokasiUpload = wisudaFolder + File.separator + mahasiswa.getNim();
             new File(lokasiUpload).mkdirs();
             File tujuan = new File(lokasiUpload + File.separator + namaFile + "." + extension);
@@ -618,7 +615,7 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/admin/listwisuda")
-    public void resultWisuda(Model model,@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) PeriodeWisuda periode, Pageable page){
+    public void resultWisuda(Model model,@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) PeriodeWisuda periode,@PageableDefault(size = 30) Pageable page){
         model.addAttribute("periode", periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("selectedProdi",prodi);
         model.addAttribute("selectedPeriode",periode);
@@ -638,7 +635,20 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/graduation/sidang/admin/approve")
-    public String approveWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar){
+    public String approveWisuda(@RequestParam Wisuda wisuda,@RequestParam String komentar) throws Exception{
+        String lokasiUpload = wisudaFolder + File.separator + wisuda.getMahasiswa().getNim();
+        Path  lokasiFoto = Path.of(lokasiUpload + File.separator + wisuda.getFoto());
+
+        String extension = "";
+
+        int i = wisuda.getFoto().lastIndexOf('.');
+        int p = Math.max(wisuda.getFoto().lastIndexOf('/'), wisuda.getFoto().lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = wisuda.getFoto().substring(i + 1);
+        }
+
+        Files.move(lokasiFoto, lokasiFoto.resolveSibling( wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension));
         wisuda.setStatus(StatusApprove.APPROVED);
         wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);
@@ -836,9 +846,17 @@ public class TugasAkhirController {
                 row.getCell(6).setCellStyle(styleData);
 
             }
-            row.createCell(7).setCellValue(data.getMahasiswa().getTanggalLulus().toString());
+
+            if (data.getMahasiswa().getTanggalLulus() != null) {
+                row.createCell(7).setCellValue(data.getMahasiswa().getTanggalLulus().toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+
+            }
             row.createCell(8).setCellValue("-");
-            row.getCell(7).setCellStyle(styleData);
             row.getCell(8).setCellStyle(styleData);
 
 
