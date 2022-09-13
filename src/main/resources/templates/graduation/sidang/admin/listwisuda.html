@@ -90,7 +90,7 @@
                         </form>
                     </div>
                     <div class="card-body">
-                        <div class="col-md-11 col-xs-offset-6 text-right">
+                        <div class="col-md-11 col-xs-offset-6 text-right" th:if="${selectedProdi != null}">
                             <div class="dropdown">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Download
@@ -133,6 +133,31 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <center>
+                                    <div class="card-footer">
+
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination" sd:pagination="full">
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#" aria-label="Previous">
+                                                        <i class="fa fa-angle-left"></i>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#" aria-label="Next">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+
+
+                                    </div>
+                                </center>
                             </div>
 <!--                            <center>-->
 <!--                                <div class="card-footer">-->
