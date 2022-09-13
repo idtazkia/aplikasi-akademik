@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -23,8 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class StudyActivityController {
@@ -292,7 +292,7 @@ public class StudyActivityController {
     }
 
     @GetMapping("/study/form")
-    public void getForm(Model model, Authentication authentication, @RequestParam(required = false) String lebih){
+    public void getForm(Model model, Authentication authentication, @RequestParam(required = false) String lebih,@RequestParam(required = false) String validasi){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
@@ -369,91 +369,79 @@ public class StudyActivityController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, tahunAkademik,StatusRecord.AKTIF);
+        List<BaseResponse> validasi = new ArrayList<>();
 
         if (k == null){
             System.out.println("Bayar");
             return "redirect:alert";
         }
 
-        Long krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k);
+        int krsDetail = 0;
+
+        if (krsDetailDao.jumlahSks(StatusRecord.AKTIF, k) == null){
+            krsDetail = 0;
+        }else {
+            krsDetail = krsDetailDao.jumlahSks(StatusRecord.AKTIF, k).intValue();
+        }
 
         if (selected == null){
 
         }else {
             Long jadwal = jadwalDao.totalSks(selected);
-            if (krsDetail == null){
-                if (jadwal > Integer.valueOf(jumlah)) {
-                    System.out.println("lebih kosong");
-                    return "redirect:form?lebih=true";
-                }else {
-                    for (String idJadwal : selected) {
-                        Jadwal j = jadwalDao.findById(idJadwal).get();
-                        if (krsDetailDao.cariKrs(j,tahunAkademik,mahasiswa) == null) {
-                            KrsDetail kd = new KrsDetail();
-                            kd.setJadwal(j);
-                            kd.setKrs(k);
-                            kd.setMahasiswa(mahasiswa);
-                            kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
-                            kd.setNilaiPresensi(BigDecimal.ZERO);
-                            kd.setNilaiTugas(BigDecimal.ZERO);
-                            kd.setNilaiUas(BigDecimal.ZERO);
-                            kd.setNilaiUts(BigDecimal.ZERO);
-                            kd.setFinalisasi("N");
-                            kd.setJumlahMangkir(0);
-                            kd.setJumlahKehadiran(0);
-                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setJumlahTerlambat(0);
-                            kd.setJumlahIzin(0);
-                            kd.setJumlahSakit(0);
-                            kd.setStatusEdom(StatusRecord.UNDONE);
-                            kd.setTahunAkademik(tahunAkademik);
-                            krsDetailDao.save(kd);
+            if (jadwal + krsDetail > Integer.valueOf(jumlah)) {
+                return "redirect:form?lebih=true";
+            } else {
+                for (String idJadwal : selected) {
+                    Jadwal j = jadwalDao.findById(idJadwal).get();
+                    System.out.println(krsDetailDao.findByJadwalAndStatus(j, StatusRecord.AKTIF).size());
+                    if (krsDetailDao.countByJadwalAndStatus(j, StatusRecord.AKTIF) < j.getKapasitas()) {
+                        if (krsDetailDao.cariKrs(j, tahunAkademik, mahasiswa) == null) {
+                            if (krsDetailDao.findByTahunAkademikAndStatusAndJadwalHariAndJadwalSesiAndMahasiswa(tahunAkademik, StatusRecord.AKTIF, j.getHari(), j.getSesi(), mahasiswa) == null) {
+                                KrsDetail kd = new KrsDetail();
+                                kd.setJadwal(j);
+                                kd.setKrs(k);
+                                kd.setMahasiswa(mahasiswa);
+                                kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
+                                kd.setNilaiPresensi(BigDecimal.ZERO);
+                                kd.setNilaiTugas(BigDecimal.ZERO);
+                                kd.setNilaiUas(BigDecimal.ZERO);
+                                kd.setNilaiUts(BigDecimal.ZERO);
+                                kd.setFinalisasi("N");
+                                kd.setJumlahMangkir(0);
+                                kd.setJumlahKehadiran(0);
+                                kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
+                                kd.setJumlahTerlambat(0);
+                                kd.setJumlahIzin(0);
+                                kd.setJumlahSakit(0);
+                                kd.setStatusEdom(StatusRecord.UNDONE);
+                                kd.setTahunAkademik(tahunAkademik);
+                                krsDetailDao.save(kd);
+                            } else {
+                                BaseResponse baseResponse = new BaseResponse();
+                                baseResponse.setCode(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                                baseResponse.setMessage("Jadwal Bentrok");
+                                validasi.add(baseResponse);
+                            }
                         }
-
+                    } else {
+                        BaseResponse baseResponse = new BaseResponse();
+                        baseResponse.setCode(j.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+                        baseResponse.setMessage("Kelas telah penuh");
+                        validasi.add(baseResponse);
                     }
                 }
             }
-
-            if (krsDetail != null){
-                if (jadwal + krsDetail > Integer.valueOf(jumlah)) {
-                    System.out.println("lebih");
-                    return "redirect:form?lebih=true";
-                }else {
-                    for (String idJadwal : selected) {
-                        Jadwal j = jadwalDao.findById(idJadwal).get();
-                        if (krsDetailDao.cariKrs(j,tahunAkademik,mahasiswa) == null) {
-                            KrsDetail kd = new KrsDetail();
-                            kd.setJadwal(j);
-                            kd.setKrs(k);
-                            kd.setMahasiswa(mahasiswa);
-                            kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
-                            kd.setNilaiPresensi(BigDecimal.ZERO);
-                            kd.setNilaiTugas(BigDecimal.ZERO);
-                            kd.setFinalisasi("N");
-                            kd.setNilaiUas(BigDecimal.ZERO);
-                            kd.setNilaiUts(BigDecimal.ZERO);
-                            kd.setJumlahMangkir(0);
-                            kd.setJumlahKehadiran(0);
-                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-                            kd.setJumlahTerlambat(0);
-                            kd.setJumlahIzin(0);
-                            kd.setTahunAkademik(tahunAkademik);
-                            kd.setJumlahSakit(0);
-                            kd.setStatusEdom(StatusRecord.UNDONE);
-                            krsDetailDao.save(kd);
-                        }
-                    }
-                }
-            }
-
-
-
         }
 
-        return "redirect:krs";
+        if (validasi.isEmpty()){
+            return "redirect:krs";
 
+        }else {
+            System.out.println(validasi);
+            attributes.addFlashAttribute("listValidasi", validasi);
+            return "redirect:form?validasi=true";
+        }
 
     }
 

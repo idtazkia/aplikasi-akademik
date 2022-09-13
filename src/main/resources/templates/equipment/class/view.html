@@ -64,7 +64,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="data,row : ${kelasMahasiswa}">
-                                <td></td>
+                                <td th:text="${(row.index + 1)}"></td>
                                 <td th:text="${data.mahasiswa.nim}">Edinburgh</td>
                                 <td th:text="${data.mahasiswa.nama}">61</td>
                                 <td th:text="${data.kelas.namaKelas}">61</td>

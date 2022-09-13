@@ -172,12 +172,22 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query("select kd from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF' and kd.krs.tahunAkademik = :tahun and kd.mahasiswa = :mahasiswa")
     KrsDetail cariKrs(@Param("jadwal")Jadwal jadwal,@Param("tahun")TahunAkademik tahun,@Param("mahasiswa")Mahasiswa mahasiswa);
 
+    KrsDetail findByTahunAkademikAndStatusAndJadwalHariAndJadwalSesiAndMahasiswa(TahunAkademik tahunAkademik,StatusRecord statusRecord,Hari hari, String sesi, Mahasiswa mahasiswa);
+
     List<KrsDetail> findByJadwalAndStatus(Jadwal jadwal, StatusRecord aktif);
 
     @Query("select kd.id from KrsDetail kd where kd.mahasiswa.id = :id and kd.status = :status and kd.matakuliahKurikulum.matakuliah.namaMatakuliah like %:nama%")
     String idKrsDetail(@Param("id")String id,@Param("status")StatusRecord statusRecord,@Param("nama")String nama);
 
     KrsDetail findByMahasiswaAndJadwalAndStatus(Mahasiswa byNim, Jadwal jadwal, StatusRecord aktif);
+
+    @Query(value = "select kd.* from krs_detail as kd inner join mahasiswa as m on kd.id_mahasiswa = m.id \n" +
+            "inner join jadwal as j on kd.id_jadwal = j.id \n" +
+            "inner join kelas as k on j.id_kelas = k.id\n" +
+            "inner join kelas_mahasiswa as km on km.id_mahasiswa = m.id\n" +
+            "inner join kelas as kk on km.id_kelas = kk.id\n" +
+            "where kd.status = 'AKTIF' and kd.id_jadwal = ?1 and km.status = 'AKTIF' and kk.id not in (k.id)", nativeQuery = true)
+    List<KrsDetail> cariJadwalPindah(Jadwal jadwal);
 
     @Query("SELECT sum(kd.e1) from KrsDetail kd where kd.jadwal = :jadwal and kd.status = 'AKTIF'")
     Long jumlahE1 (@Param("jadwal") Jadwal jadwal);
