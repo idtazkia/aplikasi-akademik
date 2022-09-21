@@ -307,13 +307,28 @@ public class FinanceController {
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFitureDao.save(enableFiture);
             }
-        }else{
+        }
+        if (status.equals("SKRIPSI")){
             Mahasiswa m = mahasiswaDao.findByNim(nim);
             EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.SKRIPSI, true);
             if (validasi == null) {
                 EnableFiture enableFiture = new EnableFiture();
                 enableFiture.setMahasiswa(m);
                 enableFiture.setFitur(StatusRecord.SKRIPSI);
+                enableFiture.setEnable(true);
+                enableFiture.setTahunAkademik(tahunAkademik);
+                enableFiture.setKeterangan("-");
+                enableFitureDao.save(enableFiture);
+            }
+        }
+
+        if (status.equals("WISUDA")){
+            Mahasiswa m = mahasiswaDao.findByNim(nim);
+            EnableFiture validasi = enableFitureDao.findByMahasiswaAndFiturAndEnable(m, StatusRecord.WISUDA, true);
+            if (validasi == null) {
+                EnableFiture enableFiture = new EnableFiture();
+                enableFiture.setMahasiswa(m);
+                enableFiture.setFitur(StatusRecord.WISUDA);
                 enableFiture.setEnable(true);
                 enableFiture.setTahunAkademik(tahunAkademik);
                 enableFiture.setKeterangan("-");
