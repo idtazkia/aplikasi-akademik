@@ -854,11 +854,17 @@ public class TugasAkhirController {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
-
             }
-            row.createCell(8).setCellValue("-");
+            row.createCell(8).setCellValue(data.getMahasiswa().getNik());
             row.getCell(8).setCellStyle(styleData);
-
+            row.createCell(9).setCellValue(data.getMahasiswa().getTempatLahir());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data.getMahasiswa().getTanggalLahir().toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data.getMahasiswa().getTanggalLahir().toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
 
             List<DataTranskript> listTranskript = krsDetailDao.listTranskript(data.getMahasiswa());
             listTranskript.removeIf(e -> e.getGrade().equals("E"));
@@ -870,8 +876,12 @@ public class TugasAkhirController {
             BigDecimal validate = krsDetailDao.validasiTranskrip(data.getMahasiswa());
 
 
-            row.createCell(12).setCellValue("-");
+            row.createCell(12).setCellValue(data.getMahasiswa().getUkuranBaju());
             row.getCell(12).setCellStyle(styleDataCenter);
+            row.createCell(13).setCellValue(data.getMahasiswa().getJudul());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data.getMahasiswa().getTitle());
+            row.getCell(14).setCellStyle(styleData);
             row.createCell(15).setCellValue(ipk.toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
