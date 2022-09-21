@@ -97,6 +97,9 @@ public class SidangController {
     @Autowired
     PeriodeWisudaDao periodeWisudaDao;
 
+    @Autowired
+    EnableFitureDao enableFitureDao;
+
     @Value("classpath:sample/filesidang.odt")
     private Resource fileNilai;
 
@@ -796,8 +799,12 @@ public class SidangController {
         model.addAttribute("sidang", sidang);
         if (!tagihanDao.cekTagihanLunas(sidang.getSeminar().getNote().getMahasiswa().getNim()).isEmpty()) {
             model.addAttribute("wisuda", "wisuda");
+        }else {
+            EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(sidang.getSeminar().getNote().getMahasiswa(),StatusRecord.WISUDA, true);
+            if (fiture != null) {
+                model.addAttribute("wisuda", "wisuda");
+            }
         }
-
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/list")
