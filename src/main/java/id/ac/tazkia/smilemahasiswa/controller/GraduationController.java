@@ -176,6 +176,10 @@ public class GraduationController {
     }
 
 //    Graduation Mahasiswa
+    @GetMapping("/graduation/finance")
+    public void alertFinance() {
+
+    }
 
     @GetMapping("/graduation/register")
     public String register(Model model, Authentication authentication) {
@@ -184,13 +188,28 @@ public class GraduationController {
 
         KrsDetail krsDetail = krsDetailDao.cariNilaiThesis(mahasiswa);
 
-        if (krsDetail != null && mahasiswa.getIdProdi().getIdJenjang().getId().equals("02")) {
-            Wisuda wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-            if (wisuda == null) {
-                return "redirect:wisuda/form";
+        if (krsDetail != null) {
+            if (!tagihanDao.cekTagihanLunas(mahasiswa.getNim()).isEmpty()) {
+                Wisuda wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                if (wisuda == null) {
+                    return "redirect:wisuda/form";
+                }else {
+                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                }
             }else {
-                return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,StatusRecord.WISUDA, true);
+                if (fiture != null) {
+                    Wisuda wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                    if (wisuda == null) {
+                        return "redirect:wisuda/form";
+                    }else {
+                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                    }
+                }else {
+                    return "redirect:finance";
+                }
             }
+
         }else {
 
 
