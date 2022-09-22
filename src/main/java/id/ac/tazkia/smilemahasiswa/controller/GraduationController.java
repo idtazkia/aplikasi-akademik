@@ -188,35 +188,37 @@ public class GraduationController {
 
         KrsDetail krsDetail = krsDetailDao.cariNilaiThesis(mahasiswa);
 
-        if (krsDetail != null) {
-            if (!tagihanDao.cekTagihanLunas(mahasiswa.getNim()).isEmpty()) {
-                EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,StatusRecord.WISUDA, true);
-                if (fiture != null) {
-                    List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-                    if (wisuda == null) {
-                        return "redirect:wisuda/form";
-                    }else {
-                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
-                    }
-                }else {
-                    return "redirect:finance";
-                }
-            }else {
-                List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-                if (wisuda == null) {
-                    return "redirect:wisuda/form";
-                }else {
-                    return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
-                }
-            }
 
-        }else {
 
 
             List<Note> empty = noteDao.findByMahasiswaAndStatusNotIn(mahasiswa, Arrays.asList(StatusApprove.HAPUS));
 
             if (empty == null || empty.isEmpty()) {
-                return "graduation/register";
+                if (krsDetail != null) {
+                    if (!tagihanDao.cekTagihanLunas(mahasiswa.getNim()).isEmpty()) {
+                        EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,StatusRecord.WISUDA, true);
+                        if (fiture != null) {
+                            List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                            if (wisuda == null) {
+                                return "redirect:wisuda/form";
+                            }else {
+                                return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                            }
+                        }else {
+                            return "redirect:finance";
+                        }
+                    }else {
+                        List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                        if (wisuda == null) {
+                            return "redirect:wisuda/form";
+                        }else {
+                            return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
+                        }
+                    }
+
+                }else {
+                    return "graduation/register";
+                }
             } else {
                 List<Object> cekSidang = sidangDao.cekSidang(mahasiswa);
                 if (cekSidang == null || cekSidang.isEmpty()) {
@@ -240,7 +242,6 @@ public class GraduationController {
                     }
                 }
             }
-        }
     }
 
     @GetMapping("/graduation/alert")
