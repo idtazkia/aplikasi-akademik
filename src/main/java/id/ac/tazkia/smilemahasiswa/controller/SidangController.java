@@ -797,14 +797,7 @@ public class SidangController {
     @GetMapping("/graduation/sidang/mahasiswa/nilai")
     public void nilaiPage(Model model,@RequestParam(name = "id", value = "id", required = false) Sidang sidang){
         model.addAttribute("sidang", sidang);
-        if (tagihanDao.cekTagihanLunas(sidang.getSeminar().getNote().getMahasiswa().getNim()).isEmpty()) {
-            model.addAttribute("wisuda", "wisuda");
-        }else {
-            EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(sidang.getSeminar().getNote().getMahasiswa(),StatusRecord.WISUDA, true);
-            if (fiture != null) {
-                model.addAttribute("wisuda", "wisuda");
-            }
-        }
+
     }
 
     @GetMapping("/graduation/sidang/mahasiswa/list")

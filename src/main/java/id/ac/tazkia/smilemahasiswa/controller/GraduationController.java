@@ -195,27 +195,12 @@ public class GraduationController {
 
             if (empty == null || empty.isEmpty()) {
                 if (krsDetail != null) {
-                    if (!tagihanDao.cekTagihanLunas(mahasiswa.getNim()).isEmpty()) {
-                        EnableFiture fiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa,StatusRecord.WISUDA, true);
-                        if (fiture != null) {
-                            List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-                            if (wisuda == null) {
-                                return "redirect:wisuda/form";
-                            }else {
-                                return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
-                            }
-                        }else {
-                            return "redirect:finance";
-                        }
+                    List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
+                    if (wisuda.isEmpty()) {
+                        return "redirect:wisuda/form";
                     }else {
-                        List<Wisuda> wisuda = wisudaDao.findByMahasiswa(mahasiswa);
-                        if (wisuda == null) {
-                            return "redirect:wisuda/form";
-                        }else {
-                            return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
-                        }
+                        return "redirect:sidang/mahasiswa/valid?id=" + mahasiswa.getId();
                     }
-
                 }else {
                     return "graduation/register";
                 }
