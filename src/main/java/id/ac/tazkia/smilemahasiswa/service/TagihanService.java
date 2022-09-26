@@ -129,14 +129,20 @@ public class TagihanService {
     }
 
     public void mengirimCicilanSelanjutnya(RequestCicilan requestCicilan) {
+        String keterangan;
+        if (requestCicilan.getTagihan().getNilaiTagihan().intValue() > 50000000){
+            keterangan = "Cicilan biaya kuliah bulan " + requestCicilan.getTanggalJatuhTempo().getMonth() + " tahun " + requestCicilan.getTanggalJatuhTempo().getYear();
+        }else{
+            keterangan = requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()
+                    + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama();
+        }
         TagihanRequest tagihanRequest = TagihanRequest.builder()
                 .kodeBiaya(requestCicilan.getTagihan().getNilaiJenisTagihan().getProdi().getKodeBiaya())
                 .jenisTagihan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getId())
                 .nilaiTagihan(requestCicilan.getNilaiCicilan())
                 .tahunAkademik(requestCicilan.getTagihan().getTahunAkademik().getId())
                 .debitur(requestCicilan.getTagihan().getMahasiswa().getNim())
-                .keterangan(requestCicilan.getTagihan().getNilaiJenisTagihan().getJenisTagihan().getNama()
-                        + " a.n. " +requestCicilan.getTagihan().getMahasiswa().getNama())
+                .keterangan(keterangan)
                 .tanggalJatuhTempo(Date.from(requestCicilan.getTanggalJatuhTempo().atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .jenisRequest(TagihanRequest.Type.CREATE)
                 .build();

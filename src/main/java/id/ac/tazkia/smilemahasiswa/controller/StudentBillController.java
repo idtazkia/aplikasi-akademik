@@ -537,7 +537,7 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/billAdmin/detail")
     public void detailBill(Model model, @RequestParam(required = false) String tagihan,
-                           @PageableDefault(size = 10) Pageable page){
+                           @PageableDefault(size = 50) Pageable page){
 
         Tagihan tagihan1 = tagihanDao.findById(tagihan).get();
         StatusTagihan info = tagihan1.getStatusTagihan();
@@ -1214,6 +1214,7 @@ public class StudentBillController {
         model.addAttribute("uploadBerkas", new UploadBerkasDto());
         model.addAttribute("penangguhan", new RequestPenangguhan());
         model.addAttribute("bill", tagihan);
+        model.addAttribute("minimalTgl", LocalDate.now().plusMonths(1));
         model.addAttribute("tahun", tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, tagihan.getMahasiswa().getIdProdi()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PENANGGUHAN));
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PENANGGUHAN, page));

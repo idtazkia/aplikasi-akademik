@@ -280,7 +280,7 @@
                                     <div class="form-group">
                                         <label>Tanggal Pengajuan yang di ajukan</label>
                                         <input type="date" name="tanggalPenangguhan" class="form-control" required
-                                               placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:field="*{tanggalPenangguhan}">
+                                               placeholder="yyyy-MM-dd" th:max="${tahun.mulaiUas}" th:min="${minimalTgl}" th:field="*{tanggalPenangguhan}">
                                     </div>
                                     <input type="hidden" name="id" th:field="*{id}">
                                     <div style="margin-top: 45px;" class="form-group">
