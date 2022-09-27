@@ -43,6 +43,7 @@ import java.time.LocalDate;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class TugasAkhirController {
@@ -728,15 +729,25 @@ public class TugasAkhirController {
     }
 
     @GetMapping("/report/wisuda")
-    public void wisudaExcel (@RequestParam(required = false, name = "periode", value = "periode") PeriodeWisuda periodeWisuda,
-                             @RequestParam(required = false, name = "prodi", value = "prodi") Prodi prodi,
-                             @RequestParam(required = false, name = "jenjang", value = "jenjang") Jenjang jenjang, HttpServletResponse response) throws IOException {
+    public void wisudaExcel (@RequestParam(required = false, name = "periode", value = "periode") PeriodeWisuda periodeWisuda,HttpServletResponse response) throws IOException {
 
         InputStream file = getContohExcelWisuda.getInputStream();
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
-        workbook.setSheetName(workbook.getSheetIndex(sheet), "Data Wisuda");
+        workbook.setSheetName(workbook.getSheetIndex(sheet), "MBS");
+        XSSFSheet as = workbook.getSheetAt(1);
+        workbook.setSheetName(workbook.getSheetIndex(as), "AS");
+        XSSFSheet es = workbook.getSheetAt(2);
+        workbook.setSheetName(workbook.getSheetIndex(es), "ES");
+        XSSFSheet hes = workbook.getSheetAt(3);
+        workbook.setSheetName(workbook.getSheetIndex(hes), "HES");
+        XSSFSheet d3 = workbook.getSheetAt(4);
+        workbook.setSheetName(workbook.getSheetIndex(d3), "D3");
+        XSSFSheet tips = workbook.getSheetAt(5);
+        workbook.setSheetName(workbook.getSheetIndex(tips), "Tadris IPS");
+        XSSFSheet pasca = workbook.getSheetAt(6);
+        workbook.setSheetName(workbook.getSheetIndex(pasca), "S2");
 
         Font font = workbook.createFont();
         font.setFontHeightInPoints((short) 12);
@@ -778,59 +789,22 @@ public class TugasAkhirController {
         int header1 = 0 ;
         int header2 = 1 ;
         int header3 = 2 ;
-        String namaFile ="";
+        String namaFile = "Data Wisudawan & " + periodeWisuda.getNama();
 
+        List<String> listWisudaMbs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"01");
+        List<Object[]> mbs = wisudaDao.getDetailWisuda(listWisudaMbs,"01");
 
+        int dataWisudaMbs = 5 ;
+        int noMbs = 1;
+        for (Object[] data : mbs) {
+            Row row = sheet.createRow(dataWisudaMbs);
 
-        List<Wisuda> wisuda = null;
-
-        if (prodi == null && jenjang == null){
-            namaFile = "Data Wisudawan & " + periodeWisuda.getNama();
-            wisuda = wisudaDao.findByStatusAndPeriodeWisudaOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda);
-            Row HeaderLulusan = sheet.createRow(header1);
-            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
-            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
-        }
-
-        if (prodi != null){
-            namaFile = "Data Wisudawan Prodi " + prodi.getNamaProdi() + " & " + periodeWisuda.getNama();
-            wisuda = wisudaDao.findByStatusAndPeriodeWisudaAndMahasiswaIdProdiOrderByMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda,prodi);
-            Row HeaderLulusan = sheet.createRow(header1);
-            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
-            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
-            Row HeaderProdi = sheet.createRow(header2);
-            HeaderProdi.createCell(0).setCellValue("PROGRAM STUDI  " + periodeWisuda.getNama());
-            HeaderProdi.getCell(0).setCellStyle(styleHeader);
-
-        }
-
-        if (jenjang != null){
-            wisuda = wisudaDao.findByStatusAndPeriodeWisudaAndMahasiswaIdProdiIdJenjangOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove.APPROVED, periodeWisuda,jenjang);
-            Row HeaderLulusan = sheet.createRow(header1);
-            HeaderLulusan.createCell(0).setCellValue("DAFTAR NAMA WISUDAWAN DAN " + periodeWisuda.getNama());
-            HeaderLulusan.getCell(0).setCellStyle(styleHeader);
-            Row HeaderProdi = sheet.createRow(header2);
-            if (jenjang.getId().equals("01")) {
-                namaFile = "Data Wisudawan S1 & " + periodeWisuda.getNama();
-                HeaderProdi.createCell(0).setCellValue("SARJANA STRATA SATU" + periodeWisuda.getNama());
-                HeaderProdi.getCell(0).setCellStyle(styleHeader);
-            }else {
-                namaFile = "Data Wisudawan S2 & " + periodeWisuda.getNama();
-                HeaderProdi.createCell(0).setCellValue("MAGISTER  ");
-                HeaderProdi.getCell(0).setCellStyle(styleHeader);
-            }
-        }
-
-        int dataWisuda = 5 ;
-        int no = 1;
-        for (Wisuda data : wisuda) {
-            Row row = sheet.createRow(dataWisuda);
-            row.createCell(0).setCellValue(no++);
-            row.createCell(1).setCellValue(data.getMahasiswa().getNim());
-            row.createCell(2).setCellValue(data.getMahasiswa().getNama());
-            row.createCell(3).setCellValue(data.getMahasiswa().getIdProdi().getNamaProdi());
-            row.createCell(4).setCellValue(data.getMahasiswa().getIdProdi().getFakultas().getNamaFakultas());
-            row.createCell(5).setCellValue(data.getMahasiswa().getJenisKelamin().name());
+            row.createCell(0).setCellValue(noMbs++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
             row.getCell(0).setCellStyle(styleData);
             row.getCell(1).setCellStyle(styleData);
             row.getCell(2).setCellStyle(styleData);
@@ -838,103 +812,510 @@ public class TugasAkhirController {
             row.getCell(4).setCellStyle(styleData);
             row.getCell(5).setCellStyle(styleData);
 
-            if (data.getMahasiswa().getIdProdi().getIdJenjang().getId().equals("01")) {
                 row.createCell(6).setCellValue("Sarjana Strata Satu");
                 row.getCell(6).setCellStyle(styleData);
-            }else {
-                row.createCell(6).setCellValue("Magister");
-                row.getCell(6).setCellStyle(styleData);
 
-            }
-
-            if (data.getMahasiswa().getTanggalLulus() != null) {
-                row.createCell(7).setCellValue(data.getMahasiswa().getTanggalLulus().toString());
+            if (data[6].toString() != null) {
+                row.createCell(7).setCellValue(data[6].toString());
                 row.getCell(7).setCellStyle(styleData);
             }else {
                 row.createCell(7).setCellValue("-");
                 row.getCell(7).setCellStyle(styleData);
 
             }
-            row.createCell(8).setCellValue(data.getMahasiswa().getNik());
+            row.createCell(8).setCellValue(data[7].toString());
             row.getCell(8).setCellStyle(styleData);
-            row.createCell(9).setCellValue(data.getMahasiswa().getTempatLahir());
+            row.createCell(9).setCellValue(data[8].toString());
             row.getCell(9).setCellStyle(styleData);
-            row.createCell(10).setCellValue(data.getMahasiswa().getTanggalLahir().toString());
-            row.getCell(10).setCellStyle(styleData);
-            row.createCell(10).setCellValue(data.getMahasiswa().getTanggalLahir().toString());
+            row.createCell(10).setCellValue(data[9].toString());
             row.getCell(10).setCellStyle(styleData);
             row.createCell(11).setCellValue("-");
             row.getCell(11).setCellStyle(styleData);
-
-            List<DataTranskript> listTranskript = krsDetailDao.listTranskript(data.getMahasiswa());
-            listTranskript.removeIf(e -> e.getGrade().equals("E"));
-
-            int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
-            BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
-            BigDecimal validate = krsDetailDao.validasiTranskrip(data.getMahasiswa());
-
-
-            row.createCell(12).setCellValue(data.getMahasiswa().getUkuranBaju());
-            row.getCell(12).setCellStyle(styleDataCenter);
-            row.createCell(13).setCellValue(data.getMahasiswa().getJudul());
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
             row.getCell(13).setCellStyle(styleData);
-            row.createCell(14).setCellValue(data.getMahasiswa().getTitle());
+            row.createCell(14).setCellValue(data[12].toString());
             row.getCell(14).setCellStyle(styleData);
-            row.createCell(15).setCellValue(ipk.toString());
+            row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
 
-            if (ipk.compareTo(new BigDecimal(2.99)) <= 0){
-                row.createCell(16).setCellValue("Memuaskan");
-                row.getCell(16).setCellStyle(styleData);
-
-            }
-
-            if (ipk.compareTo(new BigDecimal(3.00)) >= 0 && ipk.compareTo(new BigDecimal(3.49)) <= 0){
-                row.createCell(16).setCellValue("Sangat Memuaskan");
-                row.getCell(16).setCellStyle(styleData);
-
-            }
-
-            if (ipk.compareTo(new BigDecimal(3.50)) >= 0 && ipk.compareTo(new BigDecimal(3.79)) <= 0){
-
-                if (validate != null){
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
                     row.createCell(16).setCellValue("Sangat Memuaskan");
-                    row.getCell(16).setCellStyle(styleData);
+                    row.getCell(16).setCellStyle(styleDataCenter);
                 }else {
-                    row.createCell(16).setCellValue("Pujian ");
-                    row.getCell(16).setCellStyle(styleData);
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
                 }
-
             }
 
-            if (ipk.compareTo(new BigDecimal(3.80)) >= 0 && ipk.compareTo(new BigDecimal(4.00)) <= 0){
 
-                if (validate != null){
-                    row.createCell(16).setCellValue("Sangat Memuaskan");
-                    row.getCell(16).setCellStyle(styleData);
-                }else {
-                    row.createCell(16).setCellValue("Pujian Tertinggi ");
-                    row.getCell(16).setCellStyle(styleData);
-                }
-
-
-            }
-
-            if (data.getMahasiswa().getBeasiswa() == null) {
-                row.createCell(17).setCellValue("-");
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
                 row.getCell(17).setCellStyle(styleData);
             }else {
-                row.createCell(17).setCellValue(data.getMahasiswa().getBeasiswa().getNamaBeasiswa());
+                row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaMbs++;
+        }
+
+        List<String> listWisudaAs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
+        List<Object[]> asList = wisudaDao.getDetailWisuda(listWisudaAs,"02");
+
+        int dataWisudaAs = 5 ;
+        int noAs = 1;
+        for (Object[] data : asList) {
+            Row row = as.createRow(dataWisudaAs);
+
+            row.createCell(0).setCellValue(noAs++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
 
             }
-            dataWisuda++;
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaAs++;
+        }
+
+        List<String> listWisudaEs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"03");
+        List<Object[]> esList = wisudaDao.getDetailWisuda(listWisudaEs,"03");
+
+        int dataWisudaEs = 5 ;
+        int noEs = 1;
+        for (Object[] data : esList) {
+            Row row = es.createRow(dataWisudaEs);
+
+            row.createCell(0).setCellValue(noEs++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+            }
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaEs++;
         }
 
 
+        List<String> listWisudaHes = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"06");
+        List<Object[]> hesList = wisudaDao.getDetailWisuda(listWisudaHes,"06");
+
+        int dataWisudaHEs = 5 ;
+        int noHes = 1;
+        for (Object[] data : hesList) {
+            Row row = hes.createRow(dataWisudaHEs);
+
+            row.createCell(0).setCellValue(noHes++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+            }
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaHEs++;
+        }
+
+        List<String> listWisudaDiploma = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"04");
+        List<Object[]> diplomaList = wisudaDao.getDetailWisuda(listWisudaDiploma,"04");
+
+        int dataWisudaDiplomaa = 5 ;
+        int noDiploma = 1;
+        for (Object[] data : diplomaList) {
+            Row row = d3.createRow(dataWisudaDiplomaa);
+
+            row.createCell(0).setCellValue(noDiploma++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+            }
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaDiplomaa++;
+        }
+
+        List<String> listWisudaTips = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"08");
+        List<Object[]> tipsList = wisudaDao.getDetailWisuda(listWisudaTips,"08");
+
+        int dataWisudaTips = 5 ;
+        int noTips = 1;
+        for (Object[] data : tipsList) {
+            Row row = tips.createRow(dataWisudaTips);
+
+            row.createCell(0).setCellValue(noTips++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+            }
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaTips++;
+        }
+
+        List<String> listWisudaPasca = wisudaDao.cariIdMahasiswaJenjang(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
+        List<Object[]> pascaList = wisudaDao.getDetailWisudaJenjang(listWisudaPasca,"02");
+
+        int dataWisudaPasca = 5 ;
+        int noPasca = 1;
+        for (Object[] data : pascaList) {
+            Row row = pasca.createRow(dataWisudaPasca);
+
+            row.createCell(0).setCellValue(noPasca++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            row.createCell(5).setCellValue(data[4].toString());
+            row.getCell(0).setCellStyle(styleData);
+            row.getCell(1).setCellStyle(styleData);
+            row.getCell(2).setCellStyle(styleData);
+            row.getCell(3).setCellStyle(styleData);
+            row.getCell(4).setCellStyle(styleData);
+            row.getCell(5).setCellStyle(styleData);
+
+            row.createCell(6).setCellValue("Pascasarjana");
+            row.getCell(6).setCellStyle(styleData);
+
+            if (data[6] != null) {
+                row.createCell(7).setCellValue(data[6].toString());
+                row.getCell(7).setCellStyle(styleData);
+            }else {
+                row.createCell(7).setCellValue("-");
+                row.getCell(7).setCellStyle(styleData);
+
+            }
+            row.createCell(8).setCellValue(data[7].toString());
+            row.getCell(8).setCellStyle(styleData);
+            row.createCell(9).setCellValue(data[8].toString());
+            row.getCell(9).setCellStyle(styleData);
+            row.createCell(10).setCellValue(data[9].toString());
+            row.getCell(10).setCellStyle(styleData);
+            row.createCell(11).setCellValue("-");
+            row.getCell(11).setCellStyle(styleData);
+            row.createCell(12).setCellValue(data[10].toString());
+            row.getCell(12).setCellStyle(styleData);
+            row.createCell(13).setCellValue(data[11].toString());
+            row.getCell(13).setCellStyle(styleData);
+            row.createCell(14).setCellValue(data[12].toString());
+            row.getCell(14).setCellStyle(styleData);
+            row.createCell(15).setCellValue(data[13].toString());
+            row.getCell(15).setCellStyle(styleDataCenter);
+
+            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+
+            if (validate == null){
+                row.createCell(16).setCellValue(data[16].toString());
+                row.getCell(16).setCellStyle(styleDataCenter);
+            }else {
+                if (new BigDecimal(data[13].toString()).compareTo(new BigDecimal(3.50)) >= 0){
+                    row.createCell(16).setCellValue("Sangat Memuaskan");
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }else {
+                    row.createCell(16).setCellValue(data[16].toString());
+                    row.getCell(16).setCellStyle(styleDataCenter);
+                }
+            }
+
+
+            if (data[14] != null) {
+                row.createCell(17).setCellValue(data[14].toString());
+                row.getCell(17).setCellStyle(styleData);
+            }else {
+                row.createCell(17).setCellValue("-");
+                row.getCell(17).setCellStyle(styleData);
+            }
+            dataWisudaPasca++;
+        }
 
         String extentionX = ".xlsx";
         response.setContentType("application/vnd.ms-excel");
