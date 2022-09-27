@@ -26,8 +26,8 @@ public interface WisudaDao extends PagingAndSortingRepository<Wisuda, String> {
     @Query(value = "select w.id_mahasiswa from wisuda as w inner join mahasiswa as m on w.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id inner join jenjang as j on p.id_jenjang = j.id where w.id_periode = ?1 and w.status = 'APPROVED' and j.id = ?2", nativeQuery = true)
     List<String> cariIdMahasiswaJenjang(PeriodeWisuda periodeWisuda,String jenjang);
 
-    @Query(value = "select distinct m.nim,m.nama,p.nama_prodi,f.nama_fakultas,m.jenis_kelamin,p.id,m.tanggal_lulus,m.nik,m.tempat_lahir,m.tanggal_lahir,m.ukuran_baju," +
-            " m.judul,m.title, gg.ipk2 as ipk,b.nama_beasiswa,m.id as idMahasiswa, if(ipk2 >= 3.80,'Pujian Tertinggi',if(ipk2 >= 3.50,'Pujian',if(ipk2 >= 3.00,'Sangat Memuaskan','Memuaskan'))) as predikat\n" +
+    @Query(value = "select distinct m.nim,m.nama,p.nama_prodi,f.nama_fakultas,m.jenis_kelamin,p.id,coalesce(m.tanggal_lulus,'-')as tanggal,m.nik,m.tempat_lahir,m.tanggal_lahir,m.ukuran_baju," +
+            "m.judul,m.title, gg.ipk2 as ipk,coalesce(b.nama_beasiswa,'-')as beasiswa,m.id as idMahasiswa, if(ipk2 >= 3.80,'Pujian Tertinggi',if(ipk2 >= 3.50,'Pujian',if(ipk2 >= 3.00,'Sangat Memuaskan','Memuaskan'))) as predikat\n" +
             " from sidang as s inner join seminar as se on s.id_seminar = se.id \n" +
             "inner join note as n on se.id_note = n.id\n" +
             "inner join mahasiswa as m on n.id_mahasiswa = m.id\n" +
@@ -43,8 +43,8 @@ public interface WisudaDao extends PagingAndSortingRepository<Wisuda, String> {
             "where s.akademik in ('WAITING','APPROVED') and s.status_sidang not in ('REJECTED') and p.id = ?2  order by p.id asc;", nativeQuery = true)
     List<Object[]> getDetailWisuda(List<String> mahasiswa,String id);
 
-    @Query(value = "select distinct m.nim,m.nama,p.nama_prodi,f.nama_fakultas,m.jenis_kelamin,p.id,m.tanggal_lulus,m.nik,m.tempat_lahir,m.tanggal_lahir,m.ukuran_baju," +
-            " m.judul,m.title, gg.ipk2 as ipk,b.nama_beasiswa,m.id as idMahasiswa, if(ipk2 >= 3.80,'Pujian Tertinggi',if(ipk2 >= 3.50,'Pujian',if(ipk2 >= 3.00,'Sangat Memuaskan','Memuaskan'))) as predikat\n" +
+    @Query(value = "select distinct m.nim,m.nama,p.nama_prodi,f.nama_fakultas,m.jenis_kelamin,p.id,coalesce(m.tanggal_lulus,'-')as tanggal,m.nik,m.tempat_lahir,m.tanggal_lahir,m.ukuran_baju," +
+            "m.judul,m.title, gg.ipk2 as ipk,coalesce(b.nama_beasiswa,'-')as beasiswa,m.id as idMahasiswa, if(ipk2 >= 3.80,'Pujian Tertinggi',if(ipk2 >= 3.50,'Pujian',if(ipk2 >= 3.00,'Sangat Memuaskan','Memuaskan'))) as predikat\n" +
             " from sidang as s inner join seminar as se on s.id_seminar = se.id \n" +
             "inner join note as n on se.id_note = n.id\n" +
             "inner join mahasiswa as m on n.id_mahasiswa = m.id\n" +

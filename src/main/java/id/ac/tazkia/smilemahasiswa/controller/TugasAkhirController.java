@@ -1113,7 +1113,7 @@ public class TugasAkhirController {
             row.getCell(4).setCellStyle(styleData);
             row.getCell(5).setCellStyle(styleData);
 
-            row.createCell(6).setCellValue("Sarjana Strata Satu");
+            row.createCell(6).setCellValue("Diploma III");
             row.getCell(6).setCellStyle(styleData);
 
             if (data[6] != null) {
