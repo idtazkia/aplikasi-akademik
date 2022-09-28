@@ -840,9 +840,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -915,9 +915,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -990,9 +990,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -1066,9 +1066,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -1141,9 +1141,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -1216,9 +1216,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
@@ -1291,9 +1291,9 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            KrsDetail validate = krsDetailDao.cariTahunPendek(data[15].toString());
+            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
 
-            if (validate == null){
+            if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
                 row.getCell(16).setCellStyle(styleDataCenter);
             }else {
