@@ -216,6 +216,7 @@ public class TugasAkhirController {
         WisudaDto wisudaDto = new WisudaDto();
         wisudaDto.setMahasiswa(mahasiswa.getId());
         wisudaDto.setNama(mahasiswa.getNama());
+        wisudaDto.setNik(mahasiswa.getNik());
         wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
         wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
         wisudaDto.setAyah(mahasiswa.getAyah().getNamaAyah());
@@ -244,6 +245,7 @@ public class TugasAkhirController {
         WisudaDto wisudaDto = new WisudaDto();
         wisudaDto.setMahasiswa(mahasiswa.getId());
         wisudaDto.setNama(mahasiswa.getNama());
+        wisudaDto.setNik(mahasiswa.getNik());
         wisudaDto.setId(wisuda.getId());
         wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
         wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
@@ -275,6 +277,7 @@ public class TugasAkhirController {
         wisudaDto.setNama(mahasiswa.getNama());
         wisudaDto.setId(wisuda.getId());
         wisudaDto.setTanggal(mahasiswa.getTanggalLahir());
+        wisudaDto.setNik(mahasiswa.getNik());
         wisudaDto.setKelamin(mahasiswa.getJenisKelamin().toString());
         wisudaDto.setAyah(mahasiswa.getAyah().getNamaAyah());
         wisudaDto.setIbu(mahasiswa.getIbu().getNamaIbuKandung());
@@ -308,6 +311,7 @@ public class TugasAkhirController {
 
         mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setNik(wisudaDto.getNik());
         mahasiswa.setJudul(wisudaDto.getJudulIndo());
         mahasiswa.setTitle(wisudaDto.getJudulInggris());
         mahasiswa.setUkuranBaju(wisudaDto.getToga());
@@ -374,6 +378,7 @@ public class TugasAkhirController {
 
         mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setNik(wisudaDto.getNik());
         mahasiswa.setJudul(wisudaDto.getJudulIndo());
         mahasiswa.setTitle(wisudaDto.getJudulInggris());
         mahasiswa.setUkuranBaju(wisudaDto.getToga());
@@ -443,6 +448,7 @@ public class TugasAkhirController {
         sidangDao.save(sidang);
 
         mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
+        mahasiswa.setNik(wisudaDto.getNik());
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
         mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
         mahasiswa.setUkuranBaju(wisudaDto.getToga());
@@ -509,6 +515,7 @@ public class TugasAkhirController {
 
         mahasiswa.setNama(WordUtils.capitalize(wisudaDto.getNama()));
         mahasiswa.setTanggalLahir(wisudaDto.getTanggal());
+        mahasiswa.setNik(wisudaDto.getNik());
         mahasiswa.setJenisKelamin(JenisKelamin.valueOf(wisudaDto.getKelamin()));
         mahasiswa.setJudul(wisudaDto.getJudulIndo());
         mahasiswa.setTitle(wisudaDto.getJudulInggris());

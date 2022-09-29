@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Data
 public class WisudaDto {
     private String mahasiswa;
+    private String nik;
     private String nama;
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

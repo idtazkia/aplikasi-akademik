@@ -141,6 +141,10 @@
                                     <div>
                                         <form method="post" th:action="@{/graduation/wisuda/wisuda-revisi}" th:object="${wisuda}" enctype="multipart/form-data" >
                                             <div class="form-group">
+                                                <label>NIK Sesuai KTP</label>
+                                                <input type="text" th:field="*{nik}" required name="nik" class="form-control">
+                                            </div>
+                                            <div class="form-group">
                                                 <label>Nama Lengkap Sesuai KTP</label>
                                                 <input type="text" th:field="*{nama}" required name="nama" class="form-control">
                                             </div>
