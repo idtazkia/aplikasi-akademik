@@ -15,5 +15,10 @@ public interface RekapAbsenDosen {
     Integer getTotalsks();
     Integer getTotalseluruhsesi();
     Integer getTotalseluruhsks();
+    String getIdprodi();
+    String getProdi();
+    String getidJenjang();
+    String getJenjang();
+
 
 }
