@@ -484,7 +484,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF') or hasAuthority('VIEW_DOSEN')">
                     <a class="nav-link" href="#navbar-elearning" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                         <i class="ni ni-laptop text-orange"></i>
                         <span class="nav-link-text">Elearning</span>
@@ -500,6 +500,17 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a class="nav-link " th:href="@{/elearning/importNilaiProdi}">
                                     Import Nilai Prodi
+                                </a>
+                            </li>
+                            <!--dosen-->
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                                <a class="nav-link " th:href="@{/elearning/importNilaiDosen}">
+                                    Import Nilai
+                                </a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
+                                <a class="nav-link " th:href="@{/elearning/importAbsen}">
+                                    Import Absensi
                                 </a>
                             </li>
                         </ul>
@@ -521,12 +532,6 @@
 
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_MATRIKULASI')">
                                 <a class="nav-link " th:href="@{/matrikulasi/importNilai}">
-                                    Import Nilai
-                                </a>
-                            </li>
-                            <!--dosen-->
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
-                                <a class="nav-link " th:href="@{/elearning/importNilaiDosen}">
                                     Import Nilai
                                 </a>
                             </li>
