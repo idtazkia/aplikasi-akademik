@@ -10,18 +10,17 @@ import java.util.List;
 
 public interface WisudaDao extends PagingAndSortingRepository<Wisuda, String> {
     Page<Wisuda> findByPeriodeWisudaAndStatusNotInOrderByStatusDescMahasiswaIdProdiAsc(PeriodeWisuda periodeWisuda, List<StatusApprove> statusApproves, Pageable page);
-    Page<Wisuda> findByPeriodeWisudaOrderByStatusDescMahasiswaIdProdiAsc(PeriodeWisuda periodeWisuda, Pageable page);
     Page<Wisuda> findByPeriodeWisudaAndMahasiswaIdProdiAndStatusNotInOrderByStatusDesc(PeriodeWisuda periodeWisuda, Prodi prodi, List<StatusApprove> statusApproves,Pageable page);
     List<Wisuda> findByMahasiswaAndStatusNotIn(Mahasiswa mahasiswa, List<StatusApprove> statusApprove);
     Wisuda findByMahasiswaAndStatus(Mahasiswa mahasiswa, StatusApprove statusApprove);
     List<Wisuda> findByMahasiswa(Mahasiswa mahasiswa);
     Wisuda findFirstByMahasiswaAndStatus(Mahasiswa mahasiswa,StatusApprove statusApprove);
-    List<Wisuda> findByStatusAndPeriodeWisudaOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda);
-    List<Wisuda> findByStatusAndPeriodeWisudaAndMahasiswaIdProdiOrderByMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda,Prodi prodi);
-    List<Wisuda> findByStatusAndPeriodeWisudaAndMahasiswaIdProdiIdJenjangOrderByMahasiswaIdProdiIdAscMahasiswaNimAsc(StatusApprove status, PeriodeWisuda periodeWisuda,Jenjang jenjang);
 
     @Query(value = "select w.id_mahasiswa from wisuda as w inner join mahasiswa as m on w.id_mahasiswa = m.id where w.id_periode = ?1 and w.status = 'APPROVED' and m.id_prodi = ?2", nativeQuery = true)
     List<String> cariIdMahasiswa(PeriodeWisuda periodeWisuda,String prodi);
+
+    @Query(value = "select w.* from wisuda as w inner join mahasiswa as m on w.id_mahasiswa = m.id where w.id_periode = ?1 and w.status = 'APPROVED' and m.id_prodi = ?2", nativeQuery = true)
+    List<Wisuda> cariWisudaProdi(PeriodeWisuda periodeWisuda,String prodi);
 
     @Query(value = "select w.id_mahasiswa from wisuda as w inner join mahasiswa as m on w.id_mahasiswa = m.id inner join prodi as p on m.id_prodi = p.id inner join jenjang as j on p.id_jenjang = j.id where w.id_periode = ?1 and w.status = 'APPROVED' and j.id = ?2", nativeQuery = true)
     List<String> cariIdMahasiswaJenjang(PeriodeWisuda periodeWisuda,String jenjang);

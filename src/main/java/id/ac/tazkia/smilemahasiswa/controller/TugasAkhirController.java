@@ -2,14 +2,11 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.WisudaDto;
-import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +36,9 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.chrono.HijrahDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class TugasAkhirController {
@@ -1331,4 +1326,34 @@ public class TugasAkhirController {
         workbook.close();
     }
 
+    @GetMapping("/graduation/wisuda/foto")
+    public void setWisudaFoto(Model model,RedirectAttributes attributes,@RequestParam(required = false) Prodi prodi,@RequestParam(required = false) PeriodeWisuda periode){
+        model.addAttribute("periode", periodeWisudaDao.findByStatusNotInOrderByTanggalWisudaDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("selectedProdi",prodi);
+        model.addAttribute("selectedPeriode",periode);
+
+        if (periode != null){
+            List<Wisuda> wisudaList = wisudaDao.cariWisudaProdi(periode,prodi.getId());
+            for (Wisuda wisuda : wisudaList){
+                String extension = "";
+
+                int i = wisuda.getFoto().lastIndexOf('.');
+                int p = Math.max(wisuda.getFoto().lastIndexOf('/'), wisuda.getFoto().lastIndexOf('\\'));
+
+                if (i > p) {
+                    extension = wisuda.getFoto().substring(i + 1);
+                }
+                String namaFile = wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension;
+
+                if (!wisuda.getFoto().equals(namaFile)){
+                    System.out.println(wisuda.getMahasiswa().getNim() + " - " + namaFile);
+                    wisuda.setFoto(namaFile);
+                    wisudaDao.save(wisuda);
+                }
+
+            }
+
+            model.addAttribute("listWisuda", wisudaList);
+        }
+    }
 }
