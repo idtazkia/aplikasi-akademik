@@ -5,7 +5,6 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
-import id.ac.tazkia.smilemahasiswa.dto.krs.KrsSpDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
@@ -14,7 +13,6 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-//import id.ac.tazkia.smilemahasiswa.service.MailService;
 import id.ac.tazkia.smilemahasiswa.service.MailService;
 import id.ac.tazkia.smilemahasiswa.service.PresensiService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
@@ -117,13 +115,7 @@ public class StudiesActivityController {
     private KelasMahasiswaDao kelasMahasiswaDao;
 
     @Autowired
-    private IpkDao ipkDao;
-
-    @Autowired
     private BobotTugasDao bobotTugasDao;
-
-    @Autowired
-    private GradeDao gradeDao;
 
     @Autowired
     private CurrentUserService currentUserService;
@@ -214,6 +206,11 @@ public class StudiesActivityController {
     @ModelAttribute("hari")
     public Iterable<Hari> hari() {
         return hariDao.findAll();
+    }
+
+    @ModelAttribute("angkatan")
+    public Iterable<Mahasiswa> angkatan() {
+        return mahasiswaDao.cariAngkatan();
     }
 
 //    API
@@ -4374,6 +4371,7 @@ public class StudiesActivityController {
 
     }
 
+
 //    Exam Validation
 
     @GetMapping("/studiesActivity/validation/list")
@@ -7591,19 +7589,6 @@ public class StudiesActivityController {
         User user = currentUserService.currentUser(authentication);
         Karyawan k = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(k);
-
-        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
-        LocalDate mulaiUts = tahunAkademik.getTanggalMulaiUts().minusWeeks(3);
-        LocalDate mulaiUas = tahunAkademik.getTanggalMulaiUas().minusWeeks(3);
-        System.out.println(mulaiUts);
-
-        if (LocalDate.now().compareTo(mulaiUts) >= 0 && LocalDate.now().compareTo(mulaiUts.plusWeeks(1)) <= 0){
-            model.addAttribute("upload", "jadwal upload soal");
-        }
-
-        if (LocalDate.now().compareTo(mulaiUas) >= 0 && LocalDate.now().compareTo(mulaiUas.plusWeeks(1)) <= 0){
-            model.addAttribute("upload", "jadwal upload soal");
-        }
 
         model.addAttribute("dosen", dosen);
         model.addAttribute("dosenAkses", jadwalDosenDao.findByJadwalTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF)));
