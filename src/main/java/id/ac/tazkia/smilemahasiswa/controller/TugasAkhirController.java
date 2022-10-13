@@ -794,7 +794,7 @@ public class TugasAkhirController {
         String namaFile = "Data Wisudawan & " + periodeWisuda.getNama();
 
         List<String> listWisudaMbs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"01");
-        List<Object[]> mbs = wisudaDao.getDetailWisuda(listWisudaMbs,"01");
+        List<Object[]> mbs = wisudaDao.getDetailWisuda(listWisudaMbs);
 
         int dataWisudaMbs = 5 ;
         int noMbs = 1;
@@ -865,11 +865,13 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaMbs++;
         }
 
         List<String> listWisudaAs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
-        List<Object[]> asList = wisudaDao.getDetailWisuda(listWisudaAs,"02");
+        List<Object[]> asList = wisudaDao.getDetailWisuda(listWisudaAs);
 
         int dataWisudaAs = 5 ;
         int noAs = 1;
@@ -940,11 +942,13 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaAs++;
         }
 
         List<String> listWisudaEs = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"03");
-        List<Object[]> esList = wisudaDao.getDetailWisuda(listWisudaEs,"03");
+        List<Object[]> esList = wisudaDao.getDetailWisuda(listWisudaEs);
 
         int dataWisudaEs = 5 ;
         int noEs = 1;
@@ -1015,12 +1019,14 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaEs++;
         }
 
 
         List<String> listWisudaHes = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"06");
-        List<Object[]> hesList = wisudaDao.getDetailWisuda(listWisudaHes,"06");
+        List<Object[]> hesList = wisudaDao.getDetailWisuda(listWisudaHes);
 
         int dataWisudaHEs = 5 ;
         int noHes = 1;
@@ -1091,11 +1097,13 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaHEs++;
         }
 
         List<String> listWisudaDiploma = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"04");
-        List<Object[]> diplomaList = wisudaDao.getDetailWisuda(listWisudaDiploma,"04");
+        List<Object[]> diplomaList = wisudaDao.getDetailWisuda(listWisudaDiploma);
 
         int dataWisudaDiplomaa = 5 ;
         int noDiploma = 1;
@@ -1166,11 +1174,13 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaDiplomaa++;
         }
 
         List<String> listWisudaTips = wisudaDao.cariIdMahasiswa(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"08");
-        List<Object[]> tipsList = wisudaDao.getDetailWisuda(listWisudaTips,"08");
+        List<Object[]> tipsList = wisudaDao.getDetailWisuda(listWisudaTips);
 
         int dataWisudaTips = 5 ;
         int noTips = 1;
@@ -1241,11 +1251,13 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaTips++;
         }
 
         List<String> listWisudaPasca = wisudaDao.cariIdMahasiswaJenjang(periodeWisudaDao.findByStatus(StatusRecord.AKTIF),"02");
-        List<Object[]> pascaList = wisudaDao.getDetailWisudaJenjang(listWisudaPasca,"02");
+        List<Object[]> pascaList = wisudaDao.getDetailWisuda(listWisudaPasca);
 
         int dataWisudaPasca = 5 ;
         int noPasca = 1;
@@ -1316,6 +1328,8 @@ public class TugasAkhirController {
                 row.createCell(17).setCellValue("-");
                 row.getCell(17).setCellStyle(styleData);
             }
+            row.createCell(18).setCellValue(data[17].toString());
+            row.getCell(18).setCellStyle(styleData);
             dataWisudaPasca++;
         }
 
