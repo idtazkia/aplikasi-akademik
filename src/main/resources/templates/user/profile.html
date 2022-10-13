@@ -750,35 +750,35 @@
     }
 
 
-    function validateForm() {
-        if($('#div-ktp').css('display') === 'block')
-        {
-            var ktp = document.forms["myForm"]["file"].value;
-            if (ktp == "") {
-                alert("Upload KTP Harus Diisi !!!");
-                return false;
-            }
-        }
-
-        if($('#div-ijazah').css('display') === 'block')
-        {
-            var ijazah = document.forms["myForm"]["ijazah"].value;
-            if (ijazah == ""){
-                alert("Upload Ijazah Harus Diisi !!!");
-                return false;
-            }
-        }
-
-        if($('#div-foto').css('display') === 'block')
-        {
-            var foto = document.forms["myForm"]["foto"].value;
-            if (foto == ""){
-                alert("Upload Foto Harus Diisi !!!");
-                return false;
-            }
-        }
-
-    }
+    // function validateForm() {
+    //     if($('#div-ktp').css('display') === 'block')
+    //     {
+    //         var ktp = document.forms["myForm"]["file"].value;
+    //         if (ktp == "") {
+    //             alert("Upload KTP Harus Diisi !!!");
+    //             return false;
+    //         }
+    //     }
+    //
+    //     if($('#div-ijazah').css('display') === 'block')
+    //     {
+    //         var ijazah = document.forms["myForm"]["ijazah"].value;
+    //         if (ijazah == ""){
+    //             alert("Upload Ijazah Harus Diisi !!!");
+    //             return false;
+    //         }
+    //     }
+    //
+    //     if($('#div-foto').css('display') === 'block')
+    //     {
+    //         var foto = document.forms["myForm"]["foto"].value;
+    //         if (foto == ""){
+    //             alert("Upload Foto Harus Diisi !!!");
+    //             return false;
+    //         }
+    //     }
+    //
+    // }
 
 
     var triggerTabList = [].slice.call(document.querySelectorAll('#myTab a'))
