@@ -492,6 +492,12 @@
                     <div class="collapse" id="navbar-elearning">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                                <a class="nav-link " th:href="@{/elearning/importAbsen}">
+                                    Import Absen
+                                </a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a class="nav-link " th:href="@{/elearning/importNilai}">
                                     Import Nilai
                                 </a>
@@ -509,7 +515,7 @@
                                 </a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
-                                <a class="nav-link " th:href="@{/elearning/importAbsen}">
+                                <a class="nav-link " th:href="@{/elearning/importAbsenDosen}">
                                     Import Absensi
                                 </a>
                             </li>
