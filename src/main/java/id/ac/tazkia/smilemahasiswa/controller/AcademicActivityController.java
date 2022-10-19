@@ -10,15 +10,12 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jboss.jandex.Index;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -31,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.Document;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
@@ -321,10 +317,20 @@ public class  AcademicActivityController {
 
         TahunAkademik tahunAkademik = tahunAkademikDao.findById(idTahun).get();
         Prodi p = prodiDao.findById(idProdi).get();
-        List<MatkulKonversiDto> jadwal = jadwalDao.cariMatkulKonversi(idTahun, idProdi, p.getIdJenjang().getId());
+        List<MatkulKonversiDto> jadwal = jadwalDao.cariMatkulKonversi(tahunAkademik);
 
         return jadwal;
     }
+
+//    @GetMapping("/api/pindah-jadwal")
+//    @ResponseBody
+//    public List<PindahJadwalDto> pindahJadwal() {
+//
+//        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+//        List<PindahJadwalDto> jadwal = jadwalDao.cariSemuaJadwal(tahunAkademik);
+//
+//        return jadwal;
+//    }
 
     @GetMapping("/api/jadwal")
     @ResponseBody
@@ -1027,6 +1033,26 @@ public class  AcademicActivityController {
             model.addAttribute("jumat", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("5").get()));
             model.addAttribute("sabtu", jadwalDao.schedule(prodi,StatusRecord.AKTIF,tahunAkademik,hariDao.findById("6").get()));
         }
+    }
+
+    @GetMapping("/academic/schedule/pindah")
+    public void listSchedule(@RequestParam(required = false) Jadwal dari,@RequestParam(required = false) Jadwal tujuan){
+        List<KrsDetail> krsDetail = krsDetailDao.cariJadwalPindah(dari);
+        List<String> nama = new ArrayList<>();
+        System.out.println(krsDetail.size());
+        for (KrsDetail kd : krsDetail){
+            if (krsDetailDao.findByJadwalAndStatus(dari,StatusRecord.AKTIF).size() > dari.getKapasitas() && krsDetailDao.findByJadwalAndStatus(tujuan,StatusRecord.AKTIF).size() < tujuan.getKapasitas()) {
+                if (krsDetailDao.findByTahunAkademikAndStatusAndJadwalHariAndJadwalSesiAndMahasiswa(dari.getTahunAkademik(), StatusRecord.AKTIF, tujuan.getHari(), tujuan.getSesi(), kd.getMahasiswa()) == null) {
+                    kd.setJadwal(tujuan);
+                    kd.setMatakuliahKurikulum(tujuan.getMatakuliahKurikulum());
+                    krsDetailDao.save(kd);
+                    nama.add(kd.getMahasiswa().getNama());
+                }
+            }
+        }
+
+        System.out.println(nama);
+
     }
 
     @GetMapping("/academic/schedule/form")
