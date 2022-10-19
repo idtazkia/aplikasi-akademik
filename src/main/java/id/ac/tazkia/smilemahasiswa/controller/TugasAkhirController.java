@@ -842,7 +842,7 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -919,7 +919,7 @@ public class TugasAkhirController {
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -996,7 +996,7 @@ row.createCell(18).setCellValue(data[17].toString());
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -1074,7 +1074,7 @@ row.createCell(18).setCellValue(data[17].toString());
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -1151,7 +1151,7 @@ row.createCell(18).setCellValue(data[17].toString());
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -1228,7 +1228,7 @@ row.createCell(18).setCellValue(data[17].toString());
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
@@ -1305,7 +1305,7 @@ row.createCell(18).setCellValue(data[17].toString());
             row.createCell(15).setCellValue(data[13].toString());
             row.getCell(15).setCellStyle(styleDataCenter);
 
-            Integer validate = krsDetailDao.cariTahunPendek(mahasiswaDao.findByNim(data[0].toString()));
+            Integer validate = krsDetailDao.validasiPredikat(mahasiswaDao.findByNim(data[0].toString()));
 
             if (validate.equals(0)){
                 row.createCell(16).setCellValue(data[16].toString());
