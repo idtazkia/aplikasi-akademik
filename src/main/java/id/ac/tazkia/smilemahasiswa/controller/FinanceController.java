@@ -188,7 +188,7 @@ public class FinanceController {
     public String prosesKrs(@RequestParam TahunAkademik tahunAkademik,
                             @RequestParam(required = false) String nim,@RequestParam(required = false) String status){
 
-        if (status == "UTS") {
+        if (status.equals("UTS")) {
             Mahasiswa mhsw = mahasiswaDao.findByNim(nim);
             EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhsw,
                     StatusRecord.UTS,true,tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
@@ -202,7 +202,9 @@ public class FinanceController {
                 enableFitureDao.save(enableFiture);
             }
 
-        }else {
+        }
+
+        if (status.equals("UAS")){
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
             EnableFiture validasiFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mahasiswa,
                     StatusRecord.UAS, true, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
