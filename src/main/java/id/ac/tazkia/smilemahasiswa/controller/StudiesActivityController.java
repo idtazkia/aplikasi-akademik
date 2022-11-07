@@ -4371,6 +4371,80 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/transcript/inggris")
+    public void printTranskriptInggris(Model model, @RequestParam(required = false)String nim){
+        Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+        model.addAttribute("mhsw",mahasiswa);
+
+        BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+        List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+        listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+
+
+        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+
+        BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
+
+
+        model.addAttribute("ipk", ipk);
+        model.addAttribute("sks", sks);
+        model.addAttribute("mutu", mutu);
+
+        List<DataTranskript> semester1 = new ArrayList<>();
+        List<DataTranskript> semester2 = new ArrayList<>();
+        List<DataTranskript> semester3 = new ArrayList<>();
+        List<DataTranskript> semester4 = new ArrayList<>();
+        List<DataTranskript> semester5 = new ArrayList<>();
+        List<DataTranskript> semester6 = new ArrayList<>();
+        List<DataTranskript> semester7 = new ArrayList<>();
+        List<DataTranskript> semester8 = new ArrayList<>();
+
+
+        for (DataTranskript data : listTranskript){
+            if (data.getSemester().equals("1")){
+                semester1.add(data);
+            }
+            if (data.getSemester().equals("2")){
+                semester2.add(data);
+            }
+            if (data.getSemester().equals("3")){
+                semester3.add(data);
+            }
+            if (data.getSemester().equals("4")){
+                semester4.add(data);
+            }
+            if (data.getSemester().equals("5")){
+                semester5.add(data);
+            }
+            if (data.getSemester().equals("6")){
+                semester6.add(data);
+            }
+            if (data.getSemester().equals("7")){
+                semester7.add(data);
+            }
+            if (data.getSemester().equals("8")){
+                semester8.add(data);
+            }
+        }
+
+
+        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+        model.addAttribute("transkrip1", semester1);
+        model.addAttribute("transkrip2", semester2);
+        model.addAttribute("transkrip3", semester3);
+        model.addAttribute("transkrip4", semester4);
+        model.addAttribute("transkrip5", semester5);
+        model.addAttribute("transkrip6", semester6);
+        model.addAttribute("transkrip7", semester7);
+        model.addAttribute("transkrip8", semester8);
+
+    }
+
 
 //    Exam Validation
 
