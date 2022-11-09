@@ -2544,7 +2544,7 @@ public class StudentBillController {
         enableFitureDao.save(enableFiture);
     }
 
-    @Scheduled(cron = "0 00 22 * * *", zone = "Asia/Jakarta")
+    @Scheduled(cron = "0 00 19 * * *", zone = "Asia/Jakarta")
     public void akumulasiTagihan(){
 
         List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(10));
@@ -2588,7 +2588,7 @@ public class StudentBillController {
 
     }
 
-    @Scheduled(cron = "0 44 11 * * *", zone = "Asia/Jakarta")
+//    @Scheduled(cron = "0 44 11 * * *", zone = "Asia/Jakarta")
     public void kirimUlangNotifikasi(){
 
         List<RequestCicilan> cicilan = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusWeeks(1));
