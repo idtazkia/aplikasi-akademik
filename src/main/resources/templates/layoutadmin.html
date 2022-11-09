@@ -498,6 +498,12 @@
                             </li>
 
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                                <a class="nav-link " th:href="@{/elearning/importAbsenProdi}">
+                                    Import Absen Prodi
+                                </a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
                                 <a class="nav-link " th:href="@{/elearning/importNilai}">
                                     Import Nilai
                                 </a>
@@ -517,6 +523,11 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')">
                                 <a class="nav-link " th:href="@{/elearning/importAbsenDosen}">
                                     Import Absensi
+                                </a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_AKADEMIK1') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_STAFF')">
+                                <a class="nav-link " th:href="@{/elearning/enrollKelas}">
+                                    Enroll Kelas
                                 </a>
                             </li>
                         </ul>

@@ -222,4 +222,16 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "group by id_jadwal, id_dosen) as b on a.id_jadwal = b.id_jadwal and a.id_dosen = b.id_dosen", nativeQuery = true)
     List<RekapAbsenDosen> importAbsen (String tahun, String bulan);
 
+    @Query(value = "select a.id,d.nama_prodi, e.nama_kelas, c.kode_matakuliah, c.nama_matakuliah, c.nama_matakuliah_english, h.nama_karyawan as dosen, a.id_number_elearning, id_tahun_akademik\n" +
+            "from jadwal as a\n" +
+            "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id\n" +
+            "inner join matakuliah as c on b.id_matakuliah = c.id\n" +
+            "inner join prodi as d on a.id_prodi = d.id\n" +
+            "inner join kelas as e on a.id_kelas = e.id\n" +
+            "inner join jadwal_dosen as f on a.id = f.id_jadwal\n" +
+            "inner join dosen as g on f.id_dosen = g.id\n" +
+            "inner join karyawan as h on g.id_karyawan = h.id\n" +
+            "where a.id_tahun_akademik = ?1 and a.id_hari is not null and a.status = 'AKTIF' \n" +
+            "and a.id_number_elearning is null or a.id_number_elearning = '' and f.status_jadwal_dosen = 'PENGAMPU' order by e.nama_kelas;" , nativeQuery = true)
+    List<Jadwal> listJadwalEnroll (String tahun);
 }
