@@ -128,7 +128,7 @@ public class ElearningController {
     private AttendanceImportBerhasilDao listImportBerhasilDao;
 
     WebClient webClient1 = WebClient.builder()
-            .baseUrl("http://localhost:8081")
+            .baseUrl("https://elearning.tazkia.ac.id")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
