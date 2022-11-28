@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Form Pengajuan Cuti</title>
+    <title>Cicilan Tagihan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <style type="text/css">
@@ -109,7 +109,7 @@
                     <div class="row">
                         <div class="col-md-12 col-xs-12 text-center">
                             <b class="card-title" style="font-size: 30px;">
-                                Cicilan Tagihan
+                                Cicilan Tagihan <span th:text="${namaTagihan}"></span>
                             </b>
                         </div>
                     </div>
@@ -160,22 +160,22 @@
 
                                 </tr>
                             </table>
-                            <span style="color: red;">*Bayar cicilan yang berstatus <b>SEDANG DITAGIHKAN</b> untuk membuka akun smile</span>
+                            <span style="color: red;">*Segera Bayar cicilan yang berstatus <b>SEDANG DITAGIHKAN</b> untuk melihat dashboard!</span>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-sm-12">
                             <h4 class="text-center">Nomor Virtual Account</h4>
-                            <small th:if="${pembayaran} == null">*Pilih Salah Satu</small>
+                            <small>*Pilih Salah Satu</small>
                             <div class="table-responsive">
                                 <table class="table">
                                     <tbody>
                                         <div>
                                             <tr th:each="va, row:${virtualAccount}">
                                                 <td th:text="${(row.index + 1)}">#</td>
-                                                <td th:text="${'Virtual Account '+va.bank.nama}">Virtual Account CIMB Syariah</td>
-                                                <th th:text="${va.nomor}">20191000010020167</th>
+                                                <td th:text="${'Virtual Account '+va[1]}">Virtual Account CIMB Syariah</td>
+                                                <th th:text="${va[2]}">20191000010020167</th>
                                             </tr>
                                         </div>
                                     </tbody>
@@ -186,8 +186,8 @@
                     <br>
                     <div class="row">
                         <div class="col-sm-12">
-                            <form name="f" th:action="@{/logout}" method="post">
-                                <button class="col-sm-12 btn btn-danger btn-block" type="submit">LOGOUT</button>
+                            <form name="f" th:action="@{/studentBill/bill/list}" method="get">
+                                <button class="col-sm-12 btn btn-primary btn-block" type="submit">LIHAT SEMUA TAGIHAN</button>
                             </form>
                         </div>
                     </div>

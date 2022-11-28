@@ -18,6 +18,9 @@ public interface VirtualAccountDao extends PagingAndSortingRepository<VirtualAcc
     @Query(value = "SELECT * FROM virtual_account where id_tagihan=?1 limit 2", nativeQuery = true)
     List<VirtualAccount> listVa(String idTagihan);
 
+    @Query(value = "select distinct id_bank, nama, nomor, id_tagihan from virtual_account as a inner join bank as b on a.id_bank=b.id where id_tagihan=?1", nativeQuery = true)
+    List<Object[]> listVaCicilan(String idTagihan);
+
     @Query(value = "select * from virtual_account where id_bank=?1 and id_tagihan=?2 limit 1", nativeQuery = true)
     VirtualAccount vaPembayaran(String idBank, String idTagihan );
 

@@ -232,6 +232,7 @@ public class DashboardController {
 
         if (user.getRole().getId().equals("mahasiswanunggak")){
             return "redirect:mahasiswa";
+//            return "dashboard";
         }
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
@@ -816,11 +817,8 @@ public class DashboardController {
 
         Tagihan tagihan = tagihanDao.findByStatusAndStatusTagihanAndMahasiswa(StatusRecord.AKTIF, StatusTagihan.DICICIL, mhs);
 
-        model.addAttribute("cekJumlahCicilan", requestCicilanDao.jumlahCicilan(tagihan));
-        model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan));
-        model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan.getId()));
-        model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan.getId()));
+        model.addAttribute("namaTagihan", tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama());
+        model.addAttribute("virtualAccount", virtualAccountDao.listVaCicilan(tagihan.getId()));
         model.addAttribute("request", requestCicilanDao.findByStatusNotInAndTagihanOrderByTanggalJatuhTempo(Arrays.asList(StatusRecord.HAPUS), tagihan, page));
 
         return "tunggakan";

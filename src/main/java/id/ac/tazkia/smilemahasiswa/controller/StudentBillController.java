@@ -2100,7 +2100,8 @@ public class StudentBillController {
         model.addAttribute("cekJumlahPembayaran", pembayaranDao.countAllByTagihan(tagihan1));
         model.addAttribute("pembayaran", pembayaranDao.cekPembayaran(tagihan));
         model.addAttribute("bank", bankDao.findByStatus(StatusRecord.AKTIF));
-        model.addAttribute("virtualAccount", virtualAccountDao.listVa(tagihan1.getId()));
+        model.addAttribute("virtualAccount", virtualAccountDao.listVaCicilan(tagihan1.getId()));
+        model.addAttribute("va", virtualAccountDao.listVa(tagihan1.getId()));
         model.addAttribute("tagihan", tagihan1);
         model.addAttribute("penangguhan", requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
         model.addAttribute("cekPeringanan", requestPeringananDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.REJECTED)));
@@ -2547,7 +2548,7 @@ public class StudentBillController {
     @Scheduled(cron = "0 00 19 * * *", zone = "Asia/Jakarta")
     public void akumulasiTagihan(){
 
-        List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(10));
+        List<RequestCicilan> setDashboardMhs = requestCicilanDao.findByStatusAndStatusCicilanAndTanggalJatuhTempo(StatusRecord.AKTIF, StatusCicilan.SEDANG_DITAGIHKAN, LocalDate.now().plusDays(3));
         for (RequestCicilan cariMahasiswa : setDashboardMhs){
             Role role = roleDao.findById("mahasiswanunggak").get();
             User usr = cariMahasiswa.getTagihan().getMahasiswa().getUser();
@@ -2564,6 +2565,11 @@ public class StudentBillController {
             requestCicilanDao.save(cariCicilanHariIni);
 
             log.info("Update status cicilan : {}", cariCicilanHariIni);
+
+            Role role = roleDao.findById("mahasiswa").get();
+            User usr = cariCicilanHariIni.getTagihan().getMahasiswa().getUser();
+            usr.setRole(role);
+            userDao.save(usr);
 
             RequestCicilan cicilanSelanjutnya = requestCicilanDao.cariCicilanSelanjutnya(cariCicilanHariIni.getTagihan());
             if (cicilanSelanjutnya != null){
