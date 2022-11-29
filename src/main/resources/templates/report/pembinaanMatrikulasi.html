@@ -156,16 +156,17 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label>Kelas Matrikulasi</label>
-                                        <h4>-</h4>
+                                        <label>Email Tazkia</label>
+                                        <h4 th:text="${mhs.emailTazkia}">-</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Email Pribadi</label>
+                                        <h4 th:text="${mhs.emailPribadi}">-</h4>
                                     </div>
                                     <div class="col-md-4">
                                         <label>Beasiswa</label>
-                                        <h4>-</h4>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Pembina</label>
-                                        <h4>-</h4>
+                                        <h4 th:if="${mhs.beasiswa != null}" th:text="${mhs.beasiswa.namaBeasiswa}">-</h4>
+                                        <h4 th:if="${mhs.beasiswa == null}" th:text="${'-'}">-</h4>
                                     </div>
 
                                 </div>

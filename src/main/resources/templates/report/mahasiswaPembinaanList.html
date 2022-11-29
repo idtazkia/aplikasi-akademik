@@ -113,6 +113,7 @@
                                     <th scope="col">Nama</th>
                                     <th scope="col">Prodi</th>
                                     <th scope="col">Dosen Wali</th>
+                                    <th scope="col">Status Mahasiswa</th>
                                     <th scope="col"></th>
 
                                 </tr>
@@ -126,7 +127,12 @@
                                     <td th:text="${selectedProdi.namaProdi}">-</td>
                                     <td th:text="${dataMahasiswaDosenWali[3]}">AKTIF</td>
                                     <td>
-                                          <a th:href="@{/report/pembinaanMatrikulasi(nim = ${dataMahasiswaDosenWali[1]})}" class="btn btn-md btn-info"  target="_blank" ><i class="fas fa-plus-circle"></i> Matriculation Program</a>
+                                        <span th:if="${dataMahasiswaDosenWali[4] == 'KELUAR'}" class="badge badge-danger">Keluar</span>
+                                        <span th:if="${dataMahasiswaDosenWali[4] == 'AKTIF'}" class="badge badge-primary">Aktif</span>
+                                        <span th:if="${dataMahasiswaDosenWali[4] == 'LULUS'}" class="badge badge-success">Lulus</span>
+                                    </td>
+                                    <td>
+                                          <a th:href="@{/report/pembinaanMatrikulasi(nim = ${dataMahasiswaDosenWali[1]})}" class="btn btn-sm btn-md btn-info"  target="_blank" ><i class="fas fa-plus-circle"></i> Matriculation Program</a>
                                     </td>
                                 </tr>
                                 </tbody>
