@@ -58,23 +58,31 @@
                         <br>
                         <form th:action="@{/studiesActivity/assesment/upload/soal}" method="post" enctype="multipart/form-data" th:if="${approve == null}">
                             <div class="row">
-                                <div class="col-md-4 col-xs-12">
+                                <div class="col-md-3 col-xs-12">
                                     <label>File Upload</label>
                                     <input type="file" name="file" class="form-control">
                                 </div>
                                 <input type="hidden" name="jadwal" th:value="${jadwal.id}">
                                 <input type="hidden" name="dosen" th:value="${dosen.id}">
-                                <div class="col-md-4 col-xs-12">
+                                <div class="col-md-3 col-xs-12">
                                     <label>Description</label>
                                     <input type="text" name="keterangan" class="form-control">
                                 </div>
-                                <div class="col-md-4 col-xs-12">
+                                <div class="col-md-2 col-xs-12">
                                     <label>Status Soal</label>
                                     <select name="statusSoal" readonly class="form-control" th:if="${status.UTS == status}">
                                         <option value="UTS">UTS</option>
                                     </select>
                                     <select name="statusSoal" readonly class="form-control" th:if="${status.UAS == status}">
                                         <option value="UAS">UAS</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Media dan Format Ujian</label>
+                                    <select name="formatUjian"  class="form-control" >
+                                        <option value="Elearning"><strong>Elearning Tazkia</strong>, ketersediaan soal oleh Dosen Pengampu</option>
+                                        <option value="Dicetak"><strong>Soal Ujian dicetak dan disalin</strong>, dibantu Tim Admin Akademik</option>
+                                        <option value="Take Home"><strong>Take Home/Paper/Presentasi</strong></option>
                                     </select>
                                 </div>
                             </div>
