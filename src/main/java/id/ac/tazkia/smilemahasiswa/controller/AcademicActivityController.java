@@ -980,6 +980,10 @@ public class  AcademicActivityController {
             jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
             jadwal.setProgram(programDao.findById("01").get());
             jadwal.setAkses(Akses.PRODI);
+            jadwal.setAksesUas(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setAksesUts(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setFormatUas("Dicetak");
+            jadwal.setFormatUts("Dicetak");
             jadwalDao.save(jadwal);
         }else {
             Jadwal jadwal = jadwalDao.findById(plotingDto.getId()).get();
@@ -999,6 +1003,10 @@ public class  AcademicActivityController {
             jadwal.setStatusUts(StatusApprove.NOT_UPLOADED_YET);
             jadwal.setProgram(programDao.findById("01").get());
             jadwal.setAkses(Akses.PRODI);
+            jadwal.setAksesUas(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setAksesUts(dosenDao.findById(plotingDto.getIdDosen()).get());
+            jadwal.setFormatUas("Dicetak");
+            jadwal.setFormatUts("Dicetak");
             jadwalDao.save(jadwal);
         }
 
