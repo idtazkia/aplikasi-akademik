@@ -9,9 +9,11 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -121,6 +124,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private EdomQuestionDao edomQuestionDao;
+
+    @Value("classpath:/sample/jadwalUjian.xlsx")
+    private Resource getContohExcelJadwalUjian;
 
     //    Attribute
     @ModelAttribute("angkatan")
@@ -1554,5 +1560,43 @@ public class  AcademicActivityController {
 
     }
 
+    @GetMapping("/testJadwal")
+    public void transkriptFormatExcel2 (HttpServletResponse response) throws IOException {
+
+
+
+
+        InputStream file = getContohExcelJadwalUjian.getInputStream();
+
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        workbook.setSheetName(workbook.getSheetIndex(sheet), "Jadwal Uts");
+
+
+        List<Object[]> jadwal = jadwalDao.cariJadwalUts();
+        int rowNumSemester1 = 5 ;
+        int no = 1;
+
+        for (Object[] data : jadwal){
+            Row row = sheet.createRow(rowNumSemester1);
+
+            row.createCell(0).setCellValue(no++);
+            row.createCell(1).setCellValue(data[0].toString());
+            row.createCell(2).setCellValue(data[1].toString());
+            row.createCell(3).setCellValue(data[2].toString());
+            row.createCell(4).setCellValue(data[3].toString());
+            rowNumSemester1++;
+
+        }
+
+
+
+        String namaFile = "Jadwal Ujian" ;
+        String extentionX = ".xlsx";
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition","attachment; filename=\""+ namaFile  + extentionX +  "\"");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
 
 }
