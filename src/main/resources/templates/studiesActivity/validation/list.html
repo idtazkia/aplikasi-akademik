@@ -166,10 +166,9 @@
                                         <th>Kelas</th>
                                         <th>Dosen</th>
                                         <th>Status Upload</th>
+                                        <th>Format Ujian</th>
                                         <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
+
                                     </tr>
                                     </thead>
 
@@ -208,25 +207,28 @@
                                                data-content="Soal yang Anda upload ditolak, silahkan upload ulang soal">NOT UPLOAD YET
                                             </a>
                                         </td>
-                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET} != ${data.statusUts}"></td>
-
-                                        <td>
+                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts}">
+                                            <span th:if="${data.formatUts == 'Dicetak'}" class="badge badge-success" th:text="${data.formatUts}"></span>
+                                            <span th:if="${data.formatUts == 'Elearning'}" class="badge badge-primary" th:text="${data.formatUts}"></span>
+                                            <span th:if="${data.formatUts == 'Take Home'}" class="badge badge-warning" th:text="${data.formatUts}"></span>
+                                        </td>
+                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET} != ${data.statusUts}">
                                             <a th:if="${data.statusUts.NOT_UPLOADED_YET != data.statusUts && data.statusUts.APPROVED != data.statusUts && data.statusUts.REJECTED != data.statusUts}" th:href="@{/studiesActivity/validation/approval (jadwal = ${data.id}, status =  'UTS')}" type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-check"></i> Validasi Soal
                                             </a>
-                                        </td>
-                                        <td>
                                             <a th:if="${data.statusUts.APPROVED == data.statusUts}" th:href="@{/studiesActivity/validation/detail (jadwal = ${data.id}, status = 'UTS')}" type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-check"></i> Download Soal
                                             </a>
                                         </td>
-                                        <td>
-                                            <form th:if="${data.statusUts.APPROVED == data.statusUts}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">
-                                                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">
-                                                    <i class="fa fa-close"></i> Cancel
-                                                </button>
-                                            </form>
+                                        <td th:if="${data.statusUts.NOT_UPLOADED_YET == data.statusUts}">
                                         </td>
+<!--                                        <td>-->
+<!--                                            <form th:if="${data.statusUts.APPROVED == data.statusUts}" th:action="@{/uploadsoal/cancel (jadwal = ${data.id})}" method="post">-->
+<!--                                                <button type="submit" class="btn btn-sm btn-danger btn-xs" onclick="return confirm('Are you sure?')">-->
+<!--                                                    <i class="fa fa-close"></i> Cancel-->
+<!--                                                </button>-->
+<!--                                            </form>-->
+<!--                                        </td>-->
                                     </tr>
                                     </tbody>
                                 </table>

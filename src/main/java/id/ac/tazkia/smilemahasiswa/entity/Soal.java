@@ -47,4 +47,6 @@ public class Soal {
 
     @Enumerated(EnumType.STRING)
     private StatusRecord statusSoal;
+
+    private String formatUjian;
 }

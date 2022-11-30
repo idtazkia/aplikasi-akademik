@@ -91,6 +91,8 @@ public class Jadwal extends Auditable {
     private Integer kapasitas;
 
     private String idNumberElearning;
+    private String formatUts;
+    private String formatUas;
 
     @ManyToOne
     @JoinColumn(name = "akses_uts")

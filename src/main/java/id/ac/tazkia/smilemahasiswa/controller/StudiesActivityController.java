@@ -923,6 +923,7 @@ public class StudiesActivityController {
         if (soal.getStatusSoal() == StatusRecord.UTS) {
             Soal s = soalDao.findByJadwalAndStatusAndStatusApproveNotInAndStatusSoal(soal.getJadwal(),StatusRecord.AKTIF,Arrays.asList(StatusApprove.REJECTED), StatusRecord.UTS);
             if (s == null){
+
                 soalDao.save(soal);
             }
 
@@ -950,9 +951,12 @@ public class StudiesActivityController {
         Jadwal jadwal = jadwalDao.findById(soal.getJadwal().getId()).get();
         if (soal.getStatusSoal() == StatusRecord.UTS) {
             jadwal.setStatusUts(StatusApprove.WAITING);
+            jadwal.setFormatUts(soal.getFormatUjian());
         }
         if (soal.getStatusSoal() == StatusRecord.UAS) {
             jadwal.setStatusUas(StatusApprove.WAITING);
+            jadwal.setFormatUas(soal.getFormatUjian());
+
         }
         jadwalDao.save(jadwal);
 
