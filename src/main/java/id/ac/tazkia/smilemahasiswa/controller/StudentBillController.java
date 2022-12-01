@@ -1195,6 +1195,104 @@ public class StudentBillController {
         return "redirect:list?tahunAkademik="+tagihan.getTahunAkademik().getId()+"&nim="+tagihan.getMahasiswa().getNim();
     }
 
+//    REKAPAN TAGIHAN
+
+    @GetMapping("/studentBill/rekapTagihan/angkatan")
+    public String listRekapTagihanAngkatan(Model model){
+
+        model.addAttribute("toTagihan", tagihanDao.totalAllTagihan());
+        model.addAttribute("toDibayar", pembayaranDao.totalAllDibayar());
+        model.addAttribute("listData", tagihanDao.listAllTagihanPerAngkatan());
+
+        return "studentBill/rekapTagihan/listAngkatan";
+    }
+    @GetMapping("/studentBill/rekapTagihan/list")
+    public String listRekapanTagihan(Model model, @RequestParam(required = false) String angkatan){
+
+        model.addAttribute("selectAngkatan", angkatan);
+
+        if (angkatan != null){
+            model.addAttribute("listMahasiswa", tagihanDao.listAllTagihanPerMahasiswaByAngkatan(angkatan));
+        }
+
+        return "studentBill/rekapTagihan/list";
+    }
+
+    @GetMapping("/studentBill/rekapTagihan/detail")
+    public String detailRekapanTagihan(Model model, @RequestParam(required = false) String nim){
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        List<Object[]> listDetail = tagihanDao.listDetailRekapTagihanPerMahasiswa(nim);
+
+        model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanPerMahasiswa(nim));
+        model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswa(nim));
+        model.addAttribute("listDetail", listDetail);
+        model.addAttribute("mhs", mhs);
+
+        return "studentBill/rekapTagihan/detail";
+    }
+
+    @GetMapping("/rekapTagihan/detailMahasiswa")
+    public void rekapTagihanPerMahasiswa(@RequestParam String nim, HttpServletResponse response) throws IOException {
+        String[] columns = {"No", "Tahun Akademik", "Keterangan", "Tanggal ditagihkan", "Tagihan", "Tanggal dibayar", "Dibayar", "Sisa"};
+
+        Mahasiswa mhs = mahasiswaDao.findByNim(nim);
+        BigDecimal totalTagihan = tagihanDao.totalAllTagihanPerMahasiswa(nim);
+        BigDecimal totalPembayaran = pembayaranDao.totalAllDibayarPerMahasiswa(nim);
+        BigDecimal sisa = totalTagihan.subtract(totalPembayaran);
+        List<Object[]> listDetail = tagihanDao.listDetailRekapTagihanPerMahasiswa(nim);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Rekap Tagihan");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.getIndex());
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listDetail){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[1].toString());
+            row.createCell(2).setCellValue(list[2].toString());
+            row.createCell(3).setCellValue(list[3].toString());
+            row.createCell(4).setCellValue(list[4].toString());
+            row.createCell(5).setCellValue(list[5].toString());
+            row.createCell(6).setCellValue(list[6].toString());
+            row.createCell(7).setCellValue(list[7].toString());
+        }
+
+        Row row = sheet.createRow(rowNum);
+        row.createCell(2).setCellValue("Total");
+        row.createCell(4).setCellValue(totalTagihan.toString());
+        row.createCell(6).setCellValue(totalPembayaran.toString());
+        row.createCell(7).setCellValue(sisa.toString());
+
+        for (int i = 0;i<columns.length;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekap Tagihan Mahasiswa "+mhs.getNim()+"_"+mhs.getNama()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
+    }
+
 //    Request Penangguhan
 
     @GetMapping("/studentBill/requestPenangguhan/list")

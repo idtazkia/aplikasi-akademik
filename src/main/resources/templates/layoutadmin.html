@@ -358,6 +358,9 @@
                                 <a th:href="@{/studentBill/billAdmin/list}" class="nav-link">Tagihan</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
+                                <a th:href="@{/studentBill/rekapTagihan/angkatan}" class="nav-link">Rekapan Tagihan</a>
+                            </li>
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/studentBill/pembayaran/list}" class="nav-link">Pembayaran</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_FINANCE') or hasAuthority('VIEW_WAREK2')">

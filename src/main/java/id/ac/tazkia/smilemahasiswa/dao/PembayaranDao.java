@@ -48,6 +48,11 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     @Query(value = "select p.id as idPembayaran, t.id as idTagihan, m.nim as nim, m.nama as nama, jt.nama as jenisTagihan, b.nama as bank, p.amount as jumlah, p.waktu_bayar as tanggalTransaksi, p.referensi as referensi from pembayaran as p inner join tagihan as t on p.id_tagihan=t.id inner join mahasiswa as m on t.id_mahasiswa=m.id inner join bank as b on p.id_bank=b.id inner join nilai_jenis_tagihan as njt on t.id_nilai_jenis_tagihan=njt.id inner join jenis_tagihan as jt on njt.id_jenis_tagihan=jt.id where p.waktu_bayar between :mulai and :sampai order by p.waktu_bayar", nativeQuery = true)
     List<PembayaranDto> downloadPembayaran(@Param("mulai") String mulai, @Param("sampai") String selesai);
 
+    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id where b.status!='HAPUS'", nativeQuery = true)
+    BigDecimal totalAllDibayar();
+
+    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where c.nim=?1 and b.status!='HAPUS'", nativeQuery = true)
+    BigDecimal totalAllDibayarPerMahasiswa(String nim);
 
     @Query(value = "SELECT * FROM pembayaran where id_tagihan=?1 limit 1", nativeQuery = true)
     Pembayaran cekPembayaran(String idTagihan);
