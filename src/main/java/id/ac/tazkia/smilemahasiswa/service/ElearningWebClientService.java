@@ -384,6 +384,7 @@ public class ElearningWebClientService {
 
                         if (jadwalList1 != null) {
                             for (Jadwal jadwal : jadwalList1){
+                                if (jadwal.getIdNumberElearning() != null) {
                                 pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
                                 pd.setJadwal(jadwal);
                                 if (jadwal.getJamMulai() != null){
@@ -440,34 +441,35 @@ public class ElearningWebClientService {
                                 listImportBerhasilDao.save(ib);
                                 System.out.println("Tanggal Input =" + LocalDateTime.of(timeIp,jamNya));
 
+
+                                //remove html tag
+                                String strHTML = mdldos.getBeritaAcara();
+                                org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
+
+                                org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
+                                outputSettings.prettyPrint(false);
+                                jsoupDoc.outputSettings(outputSettings);
+                                jsoupDoc.select("br").before("\\n");
+                                jsoupDoc.select("p").before("\\n");
+
+                                String str = jsoupDoc.html().replaceAll("\\\\n", "");
+                                String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
+
+
+
+
+                                    sesiKuliah.setJadwal(pd.getJadwal());
+                                    sesiKuliah.setPresensiDosen(pd);
+                                    sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
+                                    sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
+                                    sesiKuliah.setBeritaAcara(strWithNewLines);
+                                    sesiKuliahDao.save(sesiKuliah);
+                                    System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
+                                } else {
+                                    System.out.println("ID NUMBER ELEARNING BELUM TERDAFTAR");
+                                }
                             }
 
-
-                            //remove html tag
-                            String strHTML = mdldos.getBeritaAcara();
-                            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
-
-                            org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
-                            outputSettings.prettyPrint(false);
-                            jsoupDoc.outputSettings(outputSettings);
-                            jsoupDoc.select("br").before("\\n");
-                            jsoupDoc.select("p").before("\\n");
-
-                            String str = jsoupDoc.html().replaceAll("\\\\n", "");
-                            String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
-
-
-
-
-                            if (jadwalList1 != null) {
-                                sesiKuliah.setJadwal(pd.getJadwal());
-                                sesiKuliah.setPresensiDosen(pd);
-                                sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
-                                sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-                                sesiKuliah.setBeritaAcara(strWithNewLines);
-                                sesiKuliahDao.save(sesiKuliah);
-                                System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
-                                }
                             }
 
 
@@ -670,6 +672,7 @@ public class ElearningWebClientService {
 //
 //                        if (jadwalList1 != null) {
 //                        for (Jadwal jadwal : jadwalList1){
+//                            if (jadwal.getIdNumberElearning() != null) {
 //                                pd.setTahunAkademik(jadwal.getTahunAkademik());
 //                                pd.setJadwal(jadwal);
 ////                            pd.setJadwal(jadwalDao.findByIdNumberElearning(mdldos.getIdJadwal()));
@@ -722,7 +725,7 @@ public class ElearningWebClientService {
 //
 //
 //
-//                            if (jadwalList1 != null) {
+//
 //                                sesiKuliah.setJadwal(pd.getJadwal());
 //                                sesiKuliah.setPresensiDosen(pd);
 //                                sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
@@ -730,6 +733,8 @@ public class ElearningWebClientService {
 //                                sesiKuliah.setBeritaAcara(strWithNewLines);
 //                                sesiKuliahDao.save(sesiKuliah);
 //                                System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
+//                            } else {
+//                                System.out.println("ID NUMBER ELEARNING BELUM TERDAFTAR");
 //                            }
 //
 //
