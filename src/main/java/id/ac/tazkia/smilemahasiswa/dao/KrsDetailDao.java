@@ -356,6 +356,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Query(value = "SELECT sum(b.jumlah_sks*a.bobot) FROM krs_detail AS a inner join jadwal as g on a.id_jadwal = g.id INNER JOIN matakuliah_kurikulum AS b ON g.id_matakuliah_kurikulum=b.id INNER JOIN matakuliah AS c ON b.id_matakuliah=c.id WHERE a.status='AKTIF' AND id_mahasiswa=?1 AND b.jumlah_sks > 0 ORDER BY b.semester", nativeQuery = true)
     Long totalMutu(Mahasiswa mahasiswa);
 
+    @Query(value = "select count(*) from krs_detail where status = 'AKTIF' and id_jadwal = ?1", nativeQuery = true)
+    Integer totalMahasiswaJadwal(String id);
+
     @Query(value = "select coalesce(sum(mutu),0.00) as mutu from\n" +
             "(select aa.*,coalesce(bb.bobot,0.00)as bobots from\n" +
             "(select b.id_Tahun_akademik,a.id_krs,f.kode_matakuliah,f.nama_matakuliah,f.nama_matakuliah_english,e.jumlah_sks,bobot,grade,bobot*jumlah_sks as mutu, c.kode_tahun_akademik from krs_detail as a \n" +
