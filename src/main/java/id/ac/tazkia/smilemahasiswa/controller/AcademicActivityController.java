@@ -1564,8 +1564,6 @@ public class  AcademicActivityController {
     public void transkriptFormatExcel2 (HttpServletResponse response) throws IOException {
 
 
-
-
         InputStream file = getContohExcelJadwalUjian.getInputStream();
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -1573,19 +1571,31 @@ public class  AcademicActivityController {
         workbook.setSheetName(workbook.getSheetIndex(sheet), "Jadwal Uts");
 
 
-        List<Object[]> jadwal = jadwalDao.cariJadwalUts();
-        int rowNumSemester1 = 5 ;
+        List<Object[]> jadwal = jadwalDao.cariJadwalUjian();
+        List<Object[]> ruangan = ruanganDao.listNamaRuangan();
+        int rowDatajadwal = 5 ;
+        int rowRuangan = 1000 ;
         int no = 1;
 
         for (Object[] data : jadwal){
-            Row row = sheet.createRow(rowNumSemester1);
+            Row row = sheet.createRow(rowDatajadwal);
 
             row.createCell(0).setCellValue(no++);
             row.createCell(1).setCellValue(data[0].toString());
             row.createCell(2).setCellValue(data[1].toString());
             row.createCell(3).setCellValue(data[2].toString());
             row.createCell(4).setCellValue(data[3].toString());
-            rowNumSemester1++;
+            row.createCell(8).setCellValue(krsDetailDao.totalMahasiswaJadwal(data[6].toString()));
+            row.createCell(9).setCellValue(data[4].toString());
+            rowDatajadwal++;
+
+        }
+
+        for (Object[] data : ruangan){
+            Row row = sheet.createRow(rowRuangan);
+
+            row.createCell(7).setCellValue(data[0].toString());
+            rowRuangan++;
 
         }
 
@@ -1598,5 +1608,8 @@ public class  AcademicActivityController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+    @GetMapping("/academic/schedule/ujian")
+    public void listUjian(){}
 
 }

@@ -236,10 +236,10 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     List<Jadwal> listJadwalEnroll (String tahun);
 
     @Query(value = "select ke.nama_kelas,m.kode_matakuliah,m.nama_matakuliah,\n" +
-            "mk.jumlah_sks,k.nama_karyawan,j.status_uts,j.id,(select count(*) from krs_detail where id_jadwal = j.id and status = 'AKTIF') from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id\n" +
+            "mk.jumlah_sks,k.nama_karyawan,j.status_uts,j.id,j.status_uas  from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id\n" +
             "inner join matakuliah as m on mk.id_matakuliah = m.id inner join dosen as d on j.id_dosen_pengampu = d.id \n" +
             "inner join kelas as ke on j.id_kelas = ke.id\n" +
             "inner join karyawan as k on  d.id_karyawan = k.id\n" +
-            " where j.status = 'AKTIF' and j.id_tahun_akademik = '55b8be89-ccab-4db8-9e61-9486c465ba13' and j.id_hari is not null and j.jam_mulai is not null", nativeQuery = true)
-    List<Object[]> cariJadwalUts();
+            " where j.status = 'AKTIF' and j.id_tahun_akademik = '55b8be89-ccab-4db8-9e61-9486c465ba13' and j.id_hari is not null and j.jam_mulai is not null order by ke.nama_kelas", nativeQuery = true)
+    List<Object[]> cariJadwalUjian();
 }
