@@ -242,4 +242,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "inner join karyawan as k on  d.id_karyawan = k.id\n" +
             " where j.status = 'AKTIF' and j.id_tahun_akademik = '55b8be89-ccab-4db8-9e61-9486c465ba13' and j.id_hari is not null and j.jam_mulai is not null order by ke.nama_kelas", nativeQuery = true)
     List<Object[]> cariJadwalUjian();
+
+    Jadwal findByProdiAndIdNumberElearningAndStatus(Prodi prodi,String idNumber,StatusRecord statusRecord);
+
 }

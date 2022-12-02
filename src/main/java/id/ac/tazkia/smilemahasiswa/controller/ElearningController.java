@@ -2283,14 +2283,20 @@ public class ElearningController {
     }
 
     @PostMapping("/elearning/importAbsenProdi")
-    public String inputFormAbsenProdi(@RequestParam String prodi){
+    public String inputFormAbsenProdi(@RequestParam Prodi prodi){
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         List<MdlAttendanceLogDosenDto> daftarPresensiDosen2 = getAttendanceDosen2();
 
                 for (MdlAttendanceLogDosenDto mdldos : daftarPresensiDosen2) {
-                    if (jadwalDao.findByIdNumberElearning(mdldos.getIdJadwal()).getProdi().getId().equals(prodi)) {
+
+                    Jadwal jdlIdNum = jadwalDao.findByProdiAndIdNumberElearningAndStatus(prodi,mdldos.getIdJadwal(),StatusRecord.AKTIF);
+
+
+                    if (jdlIdNum != null) {
                         System.out.println("PROGRESS INPUT DOSEN PER PRODI");
+                        System.out.println("ID PRODI = " + prodi.getId());
+                        System.out.println("NAMA PRODI = " + prodi.getNamaProdi());
                         System.out.println(mdldos.getIdDosen());
                         if (mdldos.getIdDosen() != null) {
                             Karyawan karyawan = karyawanDao.findByEmail(mdldos.getIdDosen());
