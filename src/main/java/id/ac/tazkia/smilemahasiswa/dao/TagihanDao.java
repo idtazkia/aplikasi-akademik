@@ -108,7 +108,7 @@ public interface TagihanDao extends PagingAndSortingRepository<Tagihan, String> 
     @Query(value = "select coalesce(sum(nilai_tagihan),0) as tagihan from tagihan as a join tahun_akademik as b on a.id_tahun_akademik=b.id where a.status!='HAPUS'", nativeQuery = true)
     BigDecimal totalAllTagihan();
 
-    @Query(value = "select coalesce(sum(nilai_tagihan),0) as tagihan from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id where b.nim=?1 and a.status!='HAPUS'", nativeQuery = true)
+    @Query(value = "select coalesce(sum(nilai_tagihan),0) as tagihan from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id where b.nim=?1 and a.status='AKTIF'", nativeQuery = true)
     BigDecimal totalAllTagihanPerMahasiswa(String nim);
 
     @Query(value = "select 'LANCAR' as status, count(id_mahasiswa)as jumlah, coalesce(selisih, 100),'Lunas dan tepat waktu' as keterangan from (select a.id_mahasiswa, tanggal_pembuatan,\n" +
