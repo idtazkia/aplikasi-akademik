@@ -603,8 +603,14 @@ public class GraduationController {
     public String prosesScoreInput(@RequestParam(required = false)String nim,@RequestParam(required = false)BigDecimal nilai,
                                    RedirectAttributes attributes){
 
+        String krsDetail = null;
+        if (mahasiswaDao.findByNim(nim).getIdProdi().getId().equals("08")){
+            krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Praktek Pengajaran Lapangan");
 
-        String krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang");
+        }else {
+            krsDetail = krsDetailDao.idKrsDetail(mahasiswaDao.findByNim(nim).getId(), StatusRecord.AKTIF, "Magang");
+
+        }
         if (StringUtils.hasText(krsDetail)){
             KrsDetail kd = krsDetailDao.findById(krsDetail).get();
             kd.setNilaiAkhir(nilai);
