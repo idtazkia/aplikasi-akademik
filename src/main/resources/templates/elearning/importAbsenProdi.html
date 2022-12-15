@@ -62,40 +62,94 @@
                         <form th:action="@{/elearning/importAbsenProdi}" method="post">
                             <div class="form-group">
                                 <label >Tahun Akademik</label>
-                                <select class="form-control" onchange="myTahun()"
-                                        id="select2-tahun" required>
+                                <select class="form-control"
+                                        id="select2-tahun" name="ta" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Tahun Akademik</option>
                                     <option th:each="data : ${tahunAkademik}"
                                             th:text="${data.namaTahunAkademik}"
                                             th:value="${data.id}">STEI Tazkia</option>
                                 </select>
-                                <input type="hidden" name="ta" id="isiTahun">
+<!--                                <input type="hidden" name="ta" id="isiTahun">-->
                             </div>
                             <div class="form-group">
                                 <label >Prodi</label>
-                                <select class="form-control" onchange="myProdi()"
-                                        id="select2-prodi" required>
+                                <select class="form-control"
+                                        id="select2-prodi" name="prodi" required>
                                     <option value=""></option>
                                     <option value="" disabled>Pilih Prodi</option>
                                     <option th:each="pro : ${prodi}"
                                             th:text="${pro.namaProdi}"
                                             th:value="${pro.id}">prodi</option>
                                 </select>
-                                <input type="hidden" name="prodi" id="isiProdi">
+<!--                                <input type="hidden" name="prodi" id="isiProdi">-->
                             </div>
 
 
                             <input type="hidden" name="id" >
                             <div class="form-group">
                                 <!--                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="presensi" >Import PRESENSI</button>-->
-                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" >Import Absen</button>
+                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" >Import Absen</button>
                             </div>
                         </form>
                     </div>
 
 
                 </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Keterangan</th>
+                                    <th scope="col">Kategori</th>
+                                    <th scope="col">Tanggal Input</th>
+                                    <th scope="col">Tanggal Mulai</th>
+                                    <th scope="col">Tanggal Selesai</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data,row : ${listProses}">
+                                    <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
+                                    <td th:text="${data.getKeterangan()}">12</td>
+                                    <td th:text="${data.getNamaProses()}">12</td>
+                                    <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                    <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                    <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                    <td th:text="${data.getStatus()}">2020</td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+
+
+
             </div>
         </div>
 
@@ -119,113 +173,109 @@
         allowClear: true
     });
 
-    (function($){
-        $('#locality-dropdown').select2();
-        $('#locality-dropdown-2').select2();
-        $('#select2-tahun').select2();
-        $('#select2-prodi').select2();
-
-        $('#select2-tahun').on('select2:selecting', function(e){
-            console.log('Selecting: ' , e.params.args.data.id);
-            $('#isiTahun').val(e.params.args.data.id);
-        });
-        $('#select2-prodi').on('select2:selecting', function(e){
-            console.log('Selecting: ' , e.params.args.data.id);
-            $('#isiProdi').val(e.params.args.data.id);
-        });
-
-        $('#locality-dropdown').on('select2:selecting', function (e){
-            console.log('Selecting: ' , e.params.args.data.id);
-            $('#isiJadwal').val(e.params.args.data.id);
-        });
-        $('#locality-dropdown-2').on('select2:selecting', function (e){
-            console.log('Selecting: ' , e.params.args.data.id);
-            $('#isiMahasiswa').val(e.params.args.data.id);
-        });
-
-    })(jQuery);
-
-    function myTahun(){
-
-        console.log($('#isiTahun').val());
-        const url = '/api/prodi2?ta='+$('#isiTahun').val();
-
-        $.getJSON(url, function (data){
-
-        });
-
-    }
-
-    function myProdi(){
-
-        let dropdown = $('#locality-dropdown');
-
-        dropdown.empty();
-
-        dropdown.append('<option selected="true" disabled>Pilih Matakuliah</option>')
-        dropdown.prop('selectedIndex', 0);
-        console.log($('#isiTahun').val());
-        const url = '/api/tahun2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val();
-
-        $.getJSON(url, function (data){
-            console.log(data);
-            $.each(data, function (key, entry){
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliahKurikulum.matakuliah.namaMatakuliah + ' - ' + entry.kelas.namaKelas + ' - ' + entry.dosen.karyawan.namaKaryawan))
-            })
-
-        });
-
-    }
-
-    function myJadwal() {
-        $('#submit').show();
-        $('#notif').hide();
-        $('#sks').hide();
-
-        var x = document.getElementById('locality-dropdown').value;
-
-        console.log(x);
-        const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
-        $.getJSON(url, function (data) {
-
-        });
-
-        let dropdown = $('#locality-dropdown-2');
-
-        dropdown.empty();
-
-        dropdown.append('<option selected="true" disabled>Pilih Mahasiswa</option>')
-        dropdown.prop('selectedIndex', 0);
-        console.log($('#isiJadwal').val());
-        const url2 = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
-
-        $.getJSON(url2, function (data){
-            console.log(data);
-            $.each(data, function (key, entry){
-                dropdown.append($('<option></option>').attr('value', entry.mahasiswa.id).text(entry.mahasiswa.nim + ' - ' +entry.mahasiswa.nama))
-            })
-
-        });
-    }
-
-
-    function myMahasiswa() {
-        $('#submit').show();
-        $('#notif').hide();
-        $('#sks').hide();
-
-        var x = document.getElementById('locality-dropdown-2').value;
-        console.log(x);
-        const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&nim='+$('#isiMahasiswa').val();
-        $.getJSON(url, function (data) {
-
-
-        });
-    }
-
-
-
-
+    // (function($){
+    //     $('#locality-dropdown').select2();
+    //     $('#locality-dropdown-2').select2();
+    //     $('#select2-tahun').select2();
+    //     $('#select2-prodi').select2();
+    //
+    //     $('#select2-tahun').on('select2:selecting', function(e){
+    //         console.log('Selecting: ' , e.params.args.data.id);
+    //         $('#isiTahun').val(e.params.args.data.id);
+    //     });
+    //     $('#select2-prodi').on('select2:selecting', function(e){
+    //         console.log('Selecting: ' , e.params.args.data.id);
+    //         $('#isiProdi').val(e.params.args.data.id);
+    //     });
+    //
+    //     $('#locality-dropdown').on('select2:selecting', function (e){
+    //         console.log('Selecting: ' , e.params.args.data.id);
+    //         $('#isiJadwal').val(e.params.args.data.id);
+    //     });
+    //     $('#locality-dropdown-2').on('select2:selecting', function (e){
+    //         console.log('Selecting: ' , e.params.args.data.id);
+    //         $('#isiMahasiswa').val(e.params.args.data.id);
+    //     });
+    //
+    // })(jQuery);
+    //
+    // function myTahun(){
+    //
+    //     console.log($('#isiTahun').val());
+    //     const url = '/api/prodi2?ta='+$('#isiTahun').val();
+    //
+    //     $.getJSON(url, function (data){
+    //
+    //     });
+    //
+    // }
+    //
+    // function myProdi(){
+    //
+    //     let dropdown = $('#locality-dropdown');
+    //
+    //     dropdown.empty();
+    //
+    //     dropdown.append('<option selected="true" disabled>Pilih Matakuliah</option>')
+    //     dropdown.prop('selectedIndex', 0);
+    //     console.log($('#isiTahun').val());
+    //     const url = '/api/tahun2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val();
+    //
+    //     $.getJSON(url, function (data){
+    //         console.log(data);
+    //         $.each(data, function (key, entry){
+    //             dropdown.append($('<option></option>').attr('value', entry.id).text(entry.matakuliahKurikulum.matakuliah.namaMatakuliah + ' - ' + entry.kelas.namaKelas + ' - ' + entry.dosen.karyawan.namaKaryawan))
+    //         })
+    //
+    //     });
+    //
+    // }
+    //
+    // function myJadwal() {
+    //     $('#submit').show();
+    //     $('#notif').hide();
+    //     $('#sks').hide();
+    //
+    //     var x = document.getElementById('locality-dropdown').value;
+    //
+    //     console.log(x);
+    //     const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
+    //     $.getJSON(url, function (data) {
+    //
+    //     });
+    //
+    //     let dropdown = $('#locality-dropdown-2');
+    //
+    //     dropdown.empty();
+    //
+    //     dropdown.append('<option selected="true" disabled>Pilih Mahasiswa</option>')
+    //     dropdown.prop('selectedIndex', 0);
+    //     console.log($('#isiJadwal').val());
+    //     const url2 = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val();
+    //
+    //     $.getJSON(url2, function (data){
+    //         console.log(data);
+    //         $.each(data, function (key, entry){
+    //             dropdown.append($('<option></option>').attr('value', entry.mahasiswa.id).text(entry.mahasiswa.nim + ' - ' +entry.mahasiswa.nama))
+    //         })
+    //
+    //     });
+    // }
+    //
+    //
+    // function myMahasiswa() {
+    //     $('#submit').show();
+    //     $('#notif').hide();
+    //     $('#sks').hide();
+    //
+    //     var x = document.getElementById('locality-dropdown-2').value;
+    //     console.log(x);
+    //     const url = '/api/jadwal2?ta='+$('#isiTahun').val()+'&prodi='+$('#isiProdi').val()+'&jadwal='+$('#isiJadwal').val()+'&nim='+$('#isiMahasiswa').val();
+    //     $.getJSON(url, function (data) {
+    //
+    //
+    //     });
+    // }
 
 
 </script>
