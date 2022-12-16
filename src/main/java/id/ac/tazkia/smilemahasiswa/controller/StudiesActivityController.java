@@ -2153,13 +2153,25 @@ public class StudiesActivityController {
 
         }
         if (mahasiswa != null){
+            Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan());
+            if (cekTanggalDisahkan != null){
+                model.addAttribute("disahkan", cekTanggalDisahkan.getTanggalDisahkan());
+            }
+
             model.addAttribute("mahasiswa",mahasiswa);
 
         }
     }
 
     @PostMapping("/studiesActivity/transcript/cetaktranscript")
-    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa){
+    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa, @RequestParam String tanggal){
+        LocalDate tanggalDisahkann = LocalDate.parse(tanggal);
+        Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan());
+        if (cekTanggalDisahkan == null){
+            mahasiswa.setTanggalDisahkan(tanggalDisahkann);
+        }else {
+            cekTanggalDisahkan.setTanggalDisahkan(tanggalDisahkann);
+        }
 
         mahasiswaDao.save(mahasiswa);
 

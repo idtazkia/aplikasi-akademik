@@ -128,7 +128,8 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Tanggal disahkan</label>
-                                                    <input type="date" th:field="*{tanggalDisahkan}" required name="tanggalDisahkan" class="form-control">
+                                                    <input type="date" th:if="${disahkan != null}" th:value="${disahkan}" required name="tanggal" class="form-control">
+                                                    <input type="date" th:if="${disahkan == null}" required name="tanggal" class="form-control">
                                                 </div>
                                             </div>
                                         </div>
