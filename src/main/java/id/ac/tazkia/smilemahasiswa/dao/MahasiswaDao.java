@@ -68,4 +68,7 @@ public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa,Strin
     @Query(value = "UPDATE mahasiswa SET id_absen= FLOOR(RAND() * (99999 - 77777) + 9999)", nativeQuery = true)
     Update updataIdAbsenMahasiswa();
 
+    @Query(value = "select * from mahasiswa where id_prodi = ?1 and angkatan = ?2 and tanggal_disahkan is not null limit 1", nativeQuery = true)
+    Mahasiswa cekTanggalDisahkan(Prodi prodi,String angkatan);
+
 }
