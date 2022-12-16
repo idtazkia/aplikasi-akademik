@@ -2153,7 +2153,7 @@ public class StudiesActivityController {
 
         }
         if (mahasiswa != null){
-            Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan());
+            Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
             if (cekTanggalDisahkan != null){
                 model.addAttribute("disahkan", cekTanggalDisahkan.getTanggalDisahkan());
             }
@@ -2166,7 +2166,7 @@ public class StudiesActivityController {
     @PostMapping("/studiesActivity/transcript/cetaktranscript")
     public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa, @RequestParam String tanggal){
         LocalDate tanggalDisahkann = LocalDate.parse(tanggal);
-        Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getIdProdi(),mahasiswa.getAngkatan());
+        Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
         if (cekTanggalDisahkan == null){
             mahasiswa.setTanggalDisahkan(tanggalDisahkann);
         }else {
