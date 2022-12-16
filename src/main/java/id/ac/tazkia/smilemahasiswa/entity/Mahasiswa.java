@@ -160,4 +160,7 @@ public class Mahasiswa {
     private String fileIjazah;
     private String foto;
 
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalDisahkan;
 }

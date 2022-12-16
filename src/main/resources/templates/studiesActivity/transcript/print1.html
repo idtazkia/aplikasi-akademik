@@ -181,6 +181,9 @@
 
 
         var doc = new jsPDF('p', 'pt', 'letter');
+        var img = new Image()
+        img.src = '/images/tazkia.png'
+        doc.addImage(img, 'png', 90, 10, 70, 60)
         var res = doc.autoTableHtmlToJson(document.getElementById('table'));
         var footer = doc.autoTableHtmlToJson(document.getElementById('footer'));
         doc.setFontSize(10);
