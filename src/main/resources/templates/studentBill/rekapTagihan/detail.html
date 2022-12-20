@@ -110,7 +110,12 @@
                                 </div>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/studentBill/rekapTagihan/list(angkatan=${mhs.angkatan})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                <div th:if="${selectTahun == null}">
+                                    <a th:href="@{/studentBill/rekapTagihan/list(angkatan=${mhs.angkatan})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                </div>
+                                <div th:if="${selectTahun != null}">
+                                    <a th:href="@{/studentBill/rekapTagihan/list(angkatan=${mhs.angkatan}, tahunAkademik=${selectTahun})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                </div>
                             </div>
                         </div>
                     </div>

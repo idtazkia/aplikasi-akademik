@@ -54,7 +54,12 @@
 <!--                                </div>-->
 <!--                            </div>-->
                             <div class="col text-right">
-                                <a th:href="@{/studentBill/rekapTagihan/angkatan}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                <div th:if="${selectTahun == null}">
+                                    <a th:href="@{/studentBill/rekapTagihan/angkatan}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                </div>
+                                <div th:if="${selectTahun != null}">
+                                    <a th:href="@{/studentBill/rekapTagihan/angkatan(tahunAkademik=${selectTahun})}" class="btn btn-sm btn-default"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,10 +87,20 @@
                                                 <td th:text="${(row.index + 1)}">1</td>
                                                 <td th:text="${data[2]}"></td>
                                                 <td>
-                                                    <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]})}" class="text-default" th:text="${data[3]}"></a>
+                                                    <div th:if="${selectTahun == null}">
+                                                        <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]})}" class="text-default" th:text="${data[3]}"></a>
+                                                    </div>
+                                                    <div th:if="${selectTahun != null}">
+                                                        <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]}, tahunAkademik=${selectTahun})}" class="text-default" th:text="${data[3]}"></a>
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                    <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]})}" class="text-default" th:text="${data[4]}"></a>
+                                                    <div th:if="${selectTahun == null}">
+                                                        <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]})}" class="text-default" th:text="${data[4]}"></a>
+                                                    </div>
+                                                    <div th:if="${selectTahun != null}">
+                                                        <a th:href="@{/studentBill/rekapTagihan/detail(nim=${data[3]}, tahunAkademik=${selectTahun})}" class="text-default" th:text="${data[4]}"></a>
+                                                    </div>
                                                 </td>
                                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[5], 0, 'POINT', 2, 'COMMA')}"></td>
                                                 <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>

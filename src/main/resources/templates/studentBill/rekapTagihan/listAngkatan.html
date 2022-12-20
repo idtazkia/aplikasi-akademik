@@ -41,6 +41,37 @@
         <div class="row">
             <div class="col-md-12 col-xs-12">
                 <div class="card shadow">
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option value=""></option>
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}">STEI TAZKIA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit"><i class="fas fa-eye"></i> &nbsp;Show</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1" th:if="${selectTahun != null}">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-append">
+                                            <a th:href="@{/studentBill/rekapTagihan/angkatan}" class="btn btn-info" type="submit"><i class="fas fa-sync-alt"></i> &nbsp;Refresh</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -58,8 +89,14 @@
                                     <tr th:each="data, row:${listData}">
                                         <td th:text="${(row.index + 1)}">1</td>
                                         <td class="text-center">
-                                            <a class="text-default" th:href="@{/studentBill/rekapTagihan/list(angkatan=${data[0]})}"
-                                               th:text="${data[0]}"></a>
+                                            <div th:if="${selectTahun == null}">
+                                                <a class="text-default" th:href="@{/studentBill/rekapTagihan/list(angkatan=${data[0]})}"
+                                                   th:text="${data[0]}"></a>
+                                            </div>
+                                            <div th:if="${selectTahun != null}">
+                                                <a class="text-default" th:href="@{/studentBill/rekapTagihan/list(angkatan=${data[0]}, tahunAkademik=${selectTahun.id})}"
+                                                   th:text="${data[0]}"></a>
+                                            </div>
                                         </td>
                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[1], 0, 'POINT', 2, 'COMMA')}"></td>
                                         <td class="text-center" th:text="${'Rp. ' + #numbers.formatDecimal(data[2], 0, 'POINT', 2, 'COMMA')}"></td>

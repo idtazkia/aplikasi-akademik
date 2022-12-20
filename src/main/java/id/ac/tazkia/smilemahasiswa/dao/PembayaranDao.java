@@ -27,6 +27,9 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join tahun_akademik as c on b.id_tahun_akademik=c.id where b.status!='HAPUS' and c.id=?1", nativeQuery = true)
     BigDecimal totalDibayar(TahunAkademik tahunAkademik);
 
+    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join tahun_akademik as c on b.id_tahun_akademik=c.id inner join mahasiswa as d on b.id_mahasiswa=d.id where b.status!='HAPUS' and d.status_aktif='AKTIF' and c.id=?1", nativeQuery = true)
+    BigDecimal totalAllDibayarByTahunAkademik(String tahunAkademik);
+
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id\n" +
             "where b.id_mahasiswa=?1 and b.status = 'AKTIF'", nativeQuery = true)
     BigDecimal totalDibayarMahasiswa(String idMahasiswa);
@@ -53,6 +56,9 @@ public interface PembayaranDao extends PagingAndSortingRepository<Pembayaran, St
 
     @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where c.nim=?1 and b.status!='HAPUS'", nativeQuery = true)
     BigDecimal totalAllDibayarPerMahasiswa(String nim);
+
+    @Query(value = "select coalesce(sum(amount),0) from pembayaran as a inner join tagihan as b on a.id_tagihan=b.id inner join mahasiswa as c on b.id_mahasiswa=c.id where c.nim=?1 and b.id_tahun_akademik=?2 and b.status!='HAPUS'", nativeQuery = true)
+    BigDecimal totalAllDibayarPerMahasiswaByTahunAkademik(String nim, String tahunAkademik);
 
     @Query(value = "SELECT * FROM pembayaran where id_tagihan=?1 limit 1", nativeQuery = true)
     Pembayaran cekPembayaran(String idTagihan);

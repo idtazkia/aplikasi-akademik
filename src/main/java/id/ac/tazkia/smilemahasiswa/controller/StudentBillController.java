@@ -1198,36 +1198,54 @@ public class StudentBillController {
 //    REKAPAN TAGIHAN
 
     @GetMapping("/studentBill/rekapTagihan/angkatan")
-    public String listRekapTagihanAngkatan(Model model){
+    public String listRekapTagihanAngkatan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik){
 
+        model.addAttribute("selectTahun", tahunAkademik);
+
+        model.addAttribute("listData", tagihanDao.listAllTagihanPerAngkatan());
         model.addAttribute("toTagihan", tagihanDao.totalAllTagihan());
         model.addAttribute("toDibayar", pembayaranDao.totalAllDibayar());
-        model.addAttribute("listData", tagihanDao.listAllTagihanPerAngkatan());
+        if (tahunAkademik != null) {
+            model.addAttribute("listData", tagihanDao.listAllTagihanPerAngkatanByTahunAkademik(tahunAkademik.getId()));
+            model.addAttribute("toTagihan", tagihanDao.totalAllTagihanByTahunAkademik(tahunAkademik.getId()));
+            model.addAttribute("toDibayar", pembayaranDao.totalAllDibayarByTahunAkademik(tahunAkademik.getId()));
+        }
 
         return "studentBill/rekapTagihan/listAngkatan";
     }
     @GetMapping("/studentBill/rekapTagihan/list")
-    public String listRekapanTagihan(Model model, @RequestParam(required = false) String angkatan){
+    public String listRekapanTagihan(Model model, @RequestParam(required = false) String angkatan, @RequestParam(required = false) String tahunAkademik){
 
         model.addAttribute("selectAngkatan", angkatan);
+        model.addAttribute("selectTahun", tahunAkademik);
 
         if (angkatan != null){
             model.addAttribute("listMahasiswa", tagihanDao.listAllTagihanPerMahasiswaByAngkatan(angkatan));
+            if (tahunAkademik != null) {
+                model.addAttribute("listMahasiswa", tagihanDao.listAllTagihanPerMahasiswaByAngkatanDanTahunAkademik(angkatan, tahunAkademik));
+            }
         }
 
         return "studentBill/rekapTagihan/list";
     }
 
     @GetMapping("/studentBill/rekapTagihan/detail")
-    public String detailRekapanTagihan(Model model, @RequestParam(required = false) String nim){
+    public String detailRekapanTagihan(Model model, @RequestParam(required = false) String nim, @RequestParam(required = false) String tahunAkademik){
 
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         List<Object[]> listDetail = tagihanDao.listDetailRekapTagihanPerMahasiswa(nim);
+        model.addAttribute("selectTahun", tahunAkademik);
 
+        model.addAttribute("listDetail", listDetail);
         model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanPerMahasiswa(nim));
         model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswa(nim));
-        model.addAttribute("listDetail", listDetail);
         model.addAttribute("mhs", mhs);
+
+        if (tahunAkademik != null) {
+            model.addAttribute("listDetail", tagihanDao.listDetailRekapTagihanPerMahasiswaByTahunAkademik(nim, tahunAkademik));
+            model.addAttribute("totalTagihan", tagihanDao.totalAllTagihanPerMahasiswaByTahunAkademik(nim, tahunAkademik));
+            model.addAttribute("totalDibayar", pembayaranDao.totalAllDibayarPerMahasiswaByTahunAkademik(nim, tahunAkademik));
+        }
 
         return "studentBill/rekapTagihan/detail";
     }
