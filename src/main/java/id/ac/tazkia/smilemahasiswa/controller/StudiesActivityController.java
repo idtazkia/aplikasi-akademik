@@ -7533,9 +7533,9 @@ public class StudiesActivityController {
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("d", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
 
-        int monthCreate = mahasiswa.getTanggalDisahkan().getDayOfMonth();
+        int monthCreate = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth();
         DateTimeFormatter formatterCreate = DateTimeFormatter.ofPattern(getPattern(monthCreate));
-        String createDatee = mahasiswa.getTanggalDisahkan().format(formatterCreate);
+        String createDatee = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().format(formatterCreate);
 
         if (namaBulanHijri.equals("Jumada I")){
             createDateRow.createCell(0).setCellValue("This is certified to be true and accurate statement, issued in Bogor on " + createDatee + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri);
@@ -8934,247 +8934,247 @@ public class StudiesActivityController {
 
         int createDate = 24+semester1.size()+semester2.size()+semester3.size()+semester4.size()+semester5.size()+semester6.size()+semester7.size()+semester8.size()+22;
         Row createDateRow = sheet.createRow(createDate);
-        HijrahDate islamicDate = HijrahDate.from(mahasiswa.getTanggalDisahkan());
+        HijrahDate islamicDate = HijrahDate.from(mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan());
         String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
         String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("dd", new Locale("en")));
         String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 1){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 1){
 
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Januari " + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari " + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Januari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 2){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 2){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Februari" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 3){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 3){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Maret" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 4){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 4){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " April" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 5){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 5){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Mei" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 6){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 6){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juni" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 7){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 7){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Juli" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 8){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 8){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Agustus" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 9){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 9){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " September" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 10){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 10){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Oktober" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 11){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 11){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor, " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " November" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
         }
 
-        if (mahasiswa.getTanggalDisahkan().getMonthValue() == 12){
+        if (mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getMonthValue() == 12){
             if (namaBulanHijri.equals("Jumada I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Jumada II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Jumadil Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ I")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Awal " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else if (namaBulanHijri.equals("Rabiʻ II")){
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " Rabi'ul Akhir " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }else{
-                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswa.getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswa.getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
+                createDateRow.createCell(1).setCellValue("Transkrip ini dibuat dengan sebenarnya dan telah disahkan di Bogor,  " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getDayOfMonth() + " Desember" + " " + mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan()).getTanggalDisahkan().getYear() + " / " + tanggalHijri + " " + namaBulanHijri + " " + tahunHijri + " H");
                 createDateRow.getCell(1).setCellStyle(styleData);
             }
 
