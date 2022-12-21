@@ -38,13 +38,35 @@
         </div>
     </div>
 
+    <div class="modal fade" id="exampleModal"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form th:action="@{/studiesActivity/transcript/uploadpin}" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <input type="file" class="form-control" name="file">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="col text-right">
-                            <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#rekap"><i class="fas fa-book"></i> Rekap Tugas Akhir</button>
+                            <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-book"></i> Upload Nomor Transkrip & PIN</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -62,7 +84,9 @@
             </div>
         </div>
         <br>
-        <div class="row" th:if="${mahasiswa != null}">
+
+
+        <div class="row" th:if="${mahasiswa != null && errors == null}">
             <div class="col-md-12">
                 <div class="card shadow">
 
@@ -164,6 +188,40 @@
 
                 </div>
             </div>
+
+
+        <div class="row" th:if="${errors != null}">
+            <div class="col-md-12">
+                <div class="card shadow">
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">NIM</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="error : ${errors}">
+                                            <td style="alignment: center" th:text="${error.nim}"></td>
+                                            <td style="alignment: center"><span class="badge badge-danger" th:text="${error.message}"></span></td>
+                                        </tr>
+                                        <tr th:each="success : ${success}">
+                                            <td style="alignment: center" th:text="${success.nim}"></td>
+                                            <td style="alignment: center"><span class="badge badge-success" th:text="${success.message}"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         </div>
     </div>
 </div>

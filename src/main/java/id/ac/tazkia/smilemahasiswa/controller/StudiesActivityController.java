@@ -2,6 +2,7 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import com.github.mustachejava.MustacheFactory;
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
@@ -2177,6 +2178,61 @@ public class StudiesActivityController {
 
         return "redirect:cetaktranscript?nim=" + mahasiswa.getNim();
 
+    }
+
+    @PostMapping("/studiesActivity/transcript/uploadpin")
+    public String uploadPin(MultipartFile file,RedirectAttributes attributes){
+
+
+        List<BaseResponse> errors = new ArrayList<>();
+        List<BaseResponse> success = new ArrayList<>();
+
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+            int row = 1;
+            int terakhir = sheetPertama.getLastRowNum() - row;
+
+            for (int i = 0; i <= terakhir; i++) {
+                Row baris = sheetPertama.getRow(row + i);
+
+                if (baris.getCell(0) == null) {
+
+                } else {
+
+                    String nim = baris.getCell(0).getStringCellValue();
+                    Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
+                    if (mahasiswa != null) {
+                        mahasiswa.setNoTranskript(baris.getCell(1).getStringCellValue());
+                        mahasiswa.setIndukNasional(baris.getCell(2).getStringCellValue());
+                        mahasiswaDao.save(mahasiswa);
+
+                        BaseResponse response = new BaseResponse();
+                        response.setNim(mahasiswa.getNim() + " - " + mahasiswa.getNama());
+                        response.setMessage("Sukses");
+                        success.add(response);
+
+                    } else {
+                        BaseResponse response = new BaseResponse();
+                        response.setNim(nim);
+                        response.setMessage("Mahasiswa tidak ditemukan");
+                        errors.add(response);
+                    }
+
+                }
+            }
+
+
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        attributes.addFlashAttribute("errors", errors);
+        attributes.addFlashAttribute("success", success);
+
+        return "redirect:cetaktranscript";
+//        attributes.addFlashAttribute("mahasiswa", mahasiswas);
     }
 
     @GetMapping("/studiesActivity/transcript/transkriptexcel")
