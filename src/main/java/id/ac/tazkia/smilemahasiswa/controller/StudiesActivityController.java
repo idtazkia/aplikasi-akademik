@@ -2146,9 +2146,13 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/transcript/cetaktranscript")
-    public void cetakTranscript(Model model,@RequestParam(required = false) String nim){
+    public void cetakTranscript(Model model,@RequestParam(required = false) String nim,@RequestParam(required = false) String nirm){
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
 
+        if (StringUtils.hasText(nirm)) {
+            model.addAttribute("nirm",nirm);
+
+        }
         if (StringUtils.hasText(nim)) {
             model.addAttribute("search",nim);
 
@@ -2165,18 +2169,24 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/transcript/cetaktranscript")
-    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa, @RequestParam String tanggal){
-        LocalDate tanggalDisahkann = LocalDate.parse(tanggal);
-        Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
-        if (cekTanggalDisahkan == null){
-            mahasiswa.setTanggalDisahkan(tanggalDisahkann);
+    public String updateTranscript(@Valid @ModelAttribute Mahasiswa mahasiswa, @RequestParam(required = false) String tanggal, @RequestParam(required = false) String nirm){
+
+
+        if (nirm != null){
+            mahasiswaDao.save(mahasiswa);
+            return "redirect:cetaktranscript?nim=" + mahasiswa.getNim() + "&nirm=AKTIF";
         }else {
-            cekTanggalDisahkan.setTanggalDisahkan(tanggalDisahkann);
+            LocalDate tanggalDisahkann = LocalDate.parse(tanggal);
+            Mahasiswa cekTanggalDisahkan = mahasiswaDao.cekTanggalDisahkan(mahasiswa.getAngkatan());
+            if (cekTanggalDisahkan == null){
+                mahasiswa.setTanggalDisahkan(tanggalDisahkann);
+            }else {
+                cekTanggalDisahkan.setTanggalDisahkan(tanggalDisahkann);
+            }
+
+            mahasiswaDao.save(mahasiswa);
+            return "redirect:cetaktranscript?nim=" + mahasiswa.getNim();
         }
-
-        mahasiswaDao.save(mahasiswa);
-
-        return "redirect:cetaktranscript?nim=" + mahasiswa.getNim();
 
     }
 
