@@ -79,9 +79,9 @@
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <label>Media dan Format Ujian</label>
-                                    <select name="formatUjian"  class="form-control" >
-                                        <option value="Elearning"><strong>Elearning Tazkia</strong>, ketersediaan soal oleh Dosen Pengampu</option>
+                                    <select name="formatUjian" required  class="form-control" >
                                         <option value="Dicetak"><strong>Soal Ujian dicetak dan disalin</strong>, dibantu Tim Admin Akademik</option>
+                                        <option value="Elearning"><strong>Elearning Tazkia</strong>, ketersediaan soal oleh Dosen Pengampu</option>
                                         <option value="Take Home"><strong>Take Home/Paper/Presentasi</strong></option>
                                     </select>
                                 </div>
@@ -115,7 +115,7 @@
                                         <th>Course</th>
                                         <th>Lecture</th>
                                         <th>Uploaded Date</th>
-                                        <th>Description</th>
+                                        <th>Exam Format</th>
                                         <th>Status</th>
                                         <th>Download File</th>
                                         <th></th>
@@ -127,7 +127,7 @@
                                         <td th:text="${data.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">Pajak</td>
                                         <td th:text="${data.dosen.karyawan.namaKaryawan}">Tutut Adiningsih</td>
                                         <td th:text="${data.tanggalUpload}">10-10-2019</td>
-                                        <td th:text="${data.keterangan}">Soal Uts</td>
+                                        <td th:text="${data.formatUjian}">Soal Uts</td>
                                         <td>
                                             <a th:if="${data.statusApprove.APPROVED} == ${data.statusApprove}" class="btn btn-success btn-sm">Approved</a>
                                             <a th:if="${data.statusApprove.WAITING} == ${data.statusApprove}" class="btn btn-warning btn-sm">Waiting</a>

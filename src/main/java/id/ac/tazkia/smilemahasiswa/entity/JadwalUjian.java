@@ -36,5 +36,9 @@ public class JadwalUjian {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    private StatusRecord jenis;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private StatusRecord status = StatusRecord.AKTIF;
 }
