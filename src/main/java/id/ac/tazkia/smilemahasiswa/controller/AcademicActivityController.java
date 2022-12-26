@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.MatkulKonversiDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.*;
 import id.ac.tazkia.smilemahasiswa.dto.select2.CourseDto;
@@ -99,6 +100,9 @@ public class  AcademicActivityController {
     private JadwalDao jadwalDao;
 
     @Autowired
+    private JadwalUjianDao jadwalUjianDao;
+
+    @Autowired
     private HariDao hariDao;
 
     @Autowired
@@ -124,6 +128,9 @@ public class  AcademicActivityController {
 
     @Autowired
     private EdomQuestionDao edomQuestionDao;
+
+//    @Autowired
+//    private JadwalUjianDao jadwalUjianDao;
 
     @Value("classpath:/sample/jadwalUjian.xlsx")
     private Resource getContohExcelJadwalUjian;
@@ -1560,10 +1567,18 @@ public class  AcademicActivityController {
 
     }
 
-    @GetMapping("/testJadwal")
+    @GetMapping("/jadwalUjian")
     public void transkriptFormatExcel2 (HttpServletResponse response) throws IOException {
 
 
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        String jenis = null;
+        if (LocalDate.now().isAfter(tahunAkademik.getTanggalSelesaiUts())){
+            jenis = "UAS";
+        }else {
+            jenis = "UTS";
+        }
+        System.out.println(jenis);
         InputStream file = getContohExcelJadwalUjian.getInputStream();
 
         XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -1571,7 +1586,7 @@ public class  AcademicActivityController {
         workbook.setSheetName(workbook.getSheetIndex(sheet), "Jadwal Uts");
 
 
-        List<Object[]> jadwal = jadwalDao.cariJadwalUjian();
+        List<Object[]> jadwal = jadwalDao.cariJadwalUjian(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         List<Object[]> ruangan = ruanganDao.listNamaRuangan();
         int rowDatajadwal = 5 ;
         int rowRuangan = 1000 ;
@@ -1587,6 +1602,12 @@ public class  AcademicActivityController {
             row.createCell(4).setCellValue(data[3].toString());
             row.createCell(8).setCellValue(krsDetailDao.totalMahasiswaJadwal(data[6].toString()));
             row.createCell(9).setCellValue(data[4].toString());
+            if (jenis.equals("UTS")){
+                row.createCell(10).setCellValue(data[5].toString());
+            }else {
+                row.createCell(10).setCellValue(data[7].toString());
+            }
+            row.createCell(11).setCellValue(data[6].toString());
             rowDatajadwal++;
 
         }
@@ -1609,7 +1630,126 @@ public class  AcademicActivityController {
         workbook.close();
     }
 
+
+    @GetMapping("/test")
+    public void test(){}
+
     @GetMapping("/academic/schedule/ujian")
-    public void listUjian(){}
+    public void jadwalUjian(@RequestParam(required = false) TahunAkademik tahunAkademik,Model model,
+                            @RequestParam(required = false) String jenis,@RequestParam(required = false) String tanggal){
+        if (tahunAkademik != null){
+            if (tanggal == null || tanggal.equals("-")){
+                Iterable<JadwalUjian> jadwalUjian = jadwalUjianDao.findByJadwalTahunAkademikAndStatusAndJenisOrderByTanggalAscJamMulaiAsc(tahunAkademik,StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
+                model.addAttribute("listJadwal", jadwalUjian);
+                model.addAttribute("selectedTanggal", tanggal);
+            }else {
+                Iterable<JadwalUjian> jadwalUjian = jadwalUjianDao.findByJadwalTahunAkademikAndStatusAndJenisAndTanggalOrderByJamMulaiAsc(tahunAkademik,StatusRecord.AKTIF, StatusRecord.valueOf(jenis),LocalDate.parse(tanggal));
+                model.addAttribute("listJadwal", jadwalUjian);
+                model.addAttribute("selectedTanggal", tanggal);
+
+
+            }
+            model.addAttribute("listTanggal", jadwalUjianDao.listTanggal(jenis,tahunAkademik));
+            model.addAttribute("selectedTahun", tahunAkademik);
+            model.addAttribute("selectedJenis", jenis);
+
+        }
+    }
+
+    @PostMapping("/academic/schedule/uploadUjian")
+    public String listUjian(@RequestParam String jenis, MultipartFile file, RedirectAttributes attributes){
+        List<BaseResponse> errors = new ArrayList<>();
+        List<BaseResponse> success = new ArrayList<>();
+        try {
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheetPertama = workbook.getSheetAt(0);
+
+
+            int row = 5;
+            int jumlahJadwal = sheetPertama.getLastRowNum() - row;
+            for (int i = 0; i < jumlahJadwal;i++){
+                Row baris = sheetPertama.getRow(row + i);
+
+                if (baris == null) {
+
+                }else {
+                    if (baris.getCell(11) == null){
+
+                    }else {
+                        String stringJadwal = baris.getCell(11).getStringCellValue();
+                        Jadwal jadwal = jadwalDao.findById(stringJadwal).get();
+                        if (jadwal == null) {
+                            BaseResponse response = new BaseResponse();
+                            response.setNim(stringJadwal);
+                            response.setMessage("Id jadwal tidak ditemukan");
+                            errors.add(response);
+                        } else {
+                            Cell tanggal = baris.getCell(5);
+
+                            if (tanggal != null) {
+                                Ruangan ruangan = ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF);
+                                if (ruangan != null) {
+                                    LocalDate localDate = LocalDate.parse(baris.getCell(5).getStringCellValue());
+                                    JadwalUjian ujian = jadwalUjianDao.findByJadwalAndStatusAndJenis(jadwal, StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
+                                    if (ujian == null) {
+                                        JadwalUjian jadwalUjian = new JadwalUjian();
+                                        jadwalUjian.setJadwal(jadwalDao.findById(baris.getCell(11).getStringCellValue()).get());
+                                        jadwalUjian.setTanggal(localDate);
+                                        String jamMulai = baris.getCell(6).toString().substring(0, 5);
+                                        String jamSelesai = baris.getCell(6).toString().substring(11 - 5);
+                                        jadwalUjian.setJamMulai(LocalTime.parse(jamMulai.replace(".", ":")));
+                                        jadwalUjian.setJamSelesai(LocalTime.parse(jamSelesai.replace(".", ":")));
+                                        jadwalUjian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
+                                        jadwalUjian.setJenis(StatusRecord.valueOf(jenis));
+                                        jadwalUjianDao.save(jadwalUjian);
+
+                                        BaseResponse response = new BaseResponse();
+                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                        response.setMessage("Sukses");
+                                        success.add(response);
+                                    } else {
+                                        ujian.setTanggal(localDate);
+                                        String jamMulai = baris.getCell(6).toString().substring(0, 5);
+                                        String jamSelesai = baris.getCell(6).toString().substring(11 - 5);
+                                        ujian.setJamMulai(LocalTime.parse(jamMulai.replace(".", ":")));
+                                        ujian.setJamMulai(LocalTime.parse(jamSelesai.replace(".", ":")));
+                                        ujian.setRuangan(ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF));
+                                        ujian.setJenis(StatusRecord.valueOf(jenis));
+                                        jadwalUjianDao.save(ujian);
+
+                                        BaseResponse response = new BaseResponse();
+                                        response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                        response.setMessage("Jadwal Ujian Terupdate");
+                                        success.add(response);
+                                    }
+
+
+                                } else {
+                                    BaseResponse response = new BaseResponse();
+                                    response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                    response.setMessage("Ruangan tidak ditemukan");
+                                    errors.add(response);
+                                }
+
+                            } else {
+                                BaseResponse response = new BaseResponse();
+                                response.setNim(jadwal.getDosen().getKaryawan().getNamaKaryawan() + " ( " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " / " + jadwal.getKelas().getNamaKelas() + " ) ");
+                                response.setMessage("Tanggal tidak ditemukan");
+                                errors.add(response);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        } catch (IOException e) {
+//            LOGGER.error(e.getMessage(), e);
+        }
+        attributes.addFlashAttribute("errors", errors);
+        attributes.addFlashAttribute("success", success);
+
+        return "redirect:ujian";
+    }
 
 }

@@ -13,6 +13,8 @@ import java.util.List;
 public interface RuanganDao extends PagingAndSortingRepository<Ruangan, String> {
     Iterable<Ruangan> findByStatus(StatusRecord aktif);
 
+    Ruangan findByNamaRuanganAndStatus(String nama, StatusRecord statusRecord);
+
     Iterable<Ruangan> findByStatusAndGedung(StatusRecord aktif, Gedung gedung);
 
     Page<Ruangan> findByStatusNotInAndAndNamaRuanganContainingIgnoreCaseOrderByNamaRuangan(List<StatusRecord> asList, String search, Pageable page);

@@ -48,10 +48,19 @@
                             <div class="col">
                                 <h3 class="mb-0">Form</h3>
                             </div>
-
+                            <div class="col text-right">
+                                <a id="btnJadwal" class="btn btn-sm btn-default">Download List Jadwal</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="modal fade" tabindex="-1" data-backdrop="false" role="dialog" id="spinnerModal">
+                            <div class="modal-dialog modal-dialog-centered text-center" role="document">
+                                <span class="fa fa-spinner fa-spin fa-3x w-100"></span>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <form method="get">
@@ -1368,3 +1377,30 @@
 </div>
 </body>
 </html>
+<script>
+    $('#btnJadwal').on('click', function () {
+        $("#spinnerModal").modal({
+            show: true
+        });
+
+        $.ajax({
+            url: '/jadwalUjian',
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data) {
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = 'List Jadwal.xlsx';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                $("#spinnerModal").modal('hide');
+
+            }
+        });
+    });
+</script>
