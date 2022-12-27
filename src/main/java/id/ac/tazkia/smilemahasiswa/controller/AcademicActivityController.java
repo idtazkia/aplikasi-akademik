@@ -129,8 +129,6 @@ public class  AcademicActivityController {
     @Autowired
     private EdomQuestionDao edomQuestionDao;
 
-//    @Autowired
-//    private JadwalUjianDao jadwalUjianDao;
 
     @Value("classpath:/sample/jadwalUjian.xlsx")
     private Resource getContohExcelJadwalUjian;
@@ -447,7 +445,7 @@ public class  AcademicActivityController {
             tahunAkademik.setTanggalSelesai(LocalDate.parse(tanggalSelesai, formatter));
             tahunAkademik.setTanggalSelesaiKrs(LocalDate.parse(tanggalSelesaiKrs, formatter));
             tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiKuliah, formatter));
-            tahunAkademik.setTanggalSelesaiKuliah(LocalDate.parse(tanggalSelesaiUas, formatter));
+            tahunAkademik.setTanggalSelesaiUas(LocalDate.parse(tanggalSelesaiUas, formatter));
             tahunAkademik.setTanggalSelesaiUts(LocalDate.parse(tanggalSelesaiUts, formatter));
             tahunAkademik.setTanggalSelesaiNilai(LocalDate.parse(tanggalSelesaiNilai, formatter));
             tahunAkademik.setTahun(tahunAkademik.getTahun());
