@@ -160,6 +160,7 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Ruangan</th>
+                                                            <th>Tanggal</th>
                                                             <th>Waktu</th>
                                                             <th>Matakuliah</th>
                                                             <th>Kelas</th>
@@ -170,6 +171,7 @@
                                                         <tr th:each="data,row : ${ujian}" th:if="${not #lists.isEmpty(ujian)}">
                                                             <td th:text="${row.index + 1}"></td>
                                                             <td th:text="${data.ruangan}"></td>
+                                                            <td><b th:text="${data.tanggal}"></b></td>
                                                             <td><b th:text="${data.waktu}"></b></td>
                                                             <td th:text="${data.matkul}"></td>
                                                             <td th:text="${data.kelas}"></td>
