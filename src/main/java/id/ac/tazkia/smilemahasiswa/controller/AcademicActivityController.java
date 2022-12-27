@@ -1629,8 +1629,19 @@ public class  AcademicActivityController {
     }
 
 
-    @GetMapping("/test")
-    public void test(){}
+    @GetMapping("/getdata/jadwal-ujian")
+    @ResponseBody
+    public TableJadwalUjian getDataJadwalUjian(@RequestParam(required = false)TahunAkademik tahunAkademik,@RequestParam(required = false) String jenis){
+
+
+        TableJadwalUjian response = new TableJadwalUjian();
+        response.setTotal(jadwalUjianDao.jadwalUjian(tahunAkademik,jenis).size());
+        response.setTotalNotFiltered(jadwalUjianDao.jadwalUjian(tahunAkademik,jenis).size());
+        List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjian(tahunAkademik,jenis);
+        response.setRows(jadwalUjian);
+
+        return response;
+    }
 
     @GetMapping("/academic/schedule/ujian")
     public void jadwalUjian(@RequestParam(required = false) TahunAkademik tahunAkademik,Model model,
