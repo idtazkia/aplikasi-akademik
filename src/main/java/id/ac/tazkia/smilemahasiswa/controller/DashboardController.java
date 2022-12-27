@@ -96,6 +96,9 @@ public class DashboardController {
     private DosenDao dosenDao;
 
     @Autowired
+    private JadwalUjianDao jadwalUjianDao;
+
+    @Autowired
     private KaryawanDao karyawanDao;
 
     @Autowired
@@ -746,6 +749,17 @@ public class DashboardController {
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
+
+        if (tahunAkademik.getTanggalMulaiUas().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUas()) >= 0){
+            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik,"UAS", dosen));
+            model.addAttribute("judul", "Jadwal Ujian Akhir Semester");
+        }
+
+        if (tahunAkademik.getTanggalMulaiUts().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUts()) >= 0){
+            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik,"UTS", dosen));
+            model.addAttribute("judul", "Jadwal Ujian Tengah Semester");
+        }
+
 
         model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
         model.addAttribute("listCutiDosenWali", cutiDao.listCutiDosenWali(user));
