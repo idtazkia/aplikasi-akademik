@@ -1648,11 +1648,11 @@ public class  AcademicActivityController {
                             @RequestParam(required = false) String jenis,@RequestParam(required = false) String tanggal){
         if (tahunAkademik != null){
             if (tanggal == null || tanggal.equals("-")){
-                Iterable<JadwalUjian> jadwalUjian = jadwalUjianDao.findByJadwalTahunAkademikAndStatusAndJenisOrderByTanggalAscJamMulaiAsc(tahunAkademik,StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
+                List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjian(tahunAkademik, jenis);
                 model.addAttribute("listJadwal", jadwalUjian);
                 model.addAttribute("selectedTanggal", tanggal);
             }else {
-                Iterable<JadwalUjian> jadwalUjian = jadwalUjianDao.findByJadwalTahunAkademikAndStatusAndJenisAndTanggalOrderByJamMulaiAsc(tahunAkademik,StatusRecord.AKTIF, StatusRecord.valueOf(jenis),LocalDate.parse(tanggal));
+                List<ListJadwalUjian> jadwalUjian = jadwalUjianDao.jadwalUjianTanggal(tahunAkademik,jenis,tanggal);
                 model.addAttribute("listJadwal", jadwalUjian);
                 model.addAttribute("selectedTanggal", tanggal);
 
@@ -1698,6 +1698,7 @@ public class  AcademicActivityController {
                             if (tanggal != null) {
                                 Ruangan ruangan = ruanganDao.findByNamaRuanganAndStatus(baris.getCell(7).getStringCellValue(), StatusRecord.AKTIF);
                                 if (ruangan != null) {
+                                    System.out.println(ruangan.getNamaRuangan());
                                     LocalDate localDate = LocalDate.parse(baris.getCell(5).getStringCellValue());
                                     JadwalUjian ujian = jadwalUjianDao.findByJadwalAndStatusAndJenis(jadwal, StatusRecord.AKTIF, StatusRecord.valueOf(jenis));
                                     if (ujian == null) {
