@@ -51,13 +51,11 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -1935,9 +1933,19 @@ public class GraduationController {
         }
     }
 
+    protected static String tampilkanTanggalDanWaktu(LocalDate tanggalDanWaktu,
+                                                     String pola) {
+        String tanggalStr = null;
+        SimpleDateFormat formatter = null;
+        formatter = new SimpleDateFormat(pola);
+
+        tanggalStr = formatter.format(tanggalDanWaktu);
+        return tanggalStr;
+    }
+
     @GetMapping("/dowload/dataSeminar")
     public void downloadDataSeminar(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException{
-        String[] colums = {"No", "Nim", "Nama", "Judul Seminar","Pembimbing", "Ketua Penguji", "Dosen Penguji", "Status"};
+        String[] colums = {"No", "Nim", "Nama", "Judul Seminar","Pembimbing", "Ketua Penguji", "Dosen Penguji","Tanggal","Waktu"};
 
         List<Seminar> seminar = seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusDescTanggalInputDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED));
 
@@ -1981,17 +1989,128 @@ public class GraduationController {
                 row.createCell(6).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
             }
 
-            if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.WAITING){
-                row.createCell(7).setCellValue("Menunggu Penilaian Lengkap");
-            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "NONAKTIF"){
-                row.createCell(7).setCellValue("Menunggu Publish");
-            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "AKTIF"){
-                row.createCell(7).setCellValue("Seminar Sudah Publish");
-            }else if(data.getStatus() == StatusApprove.WAITING){
-                row.createCell(7).setCellValue("Menunggu Persetujuan");
-            }else if (data.getStatus() == StatusApprove.REJECTED){
-                row.createCell(7).setCellValue("Ditolak");
+
+            if(data.getTanggalUjian() != null) {
+                if (data.getTanggalUjian().getDayOfWeek().getValue() != 7) {
+                    if (data.getTanggalUjian().getMonthValue() == 1) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Januari " + data.getTanggalUjian().getYear());
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 2) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Februari " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 3) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Maret " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 4) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " April " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 5) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Mei " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 6) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juni " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 7) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Juli " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 8) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Agustus " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 9) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " September " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 10) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Oktober " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 11) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " November " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 12) {
+                        row.createCell(7).setCellValue(hariDao.findById(String.valueOf(data.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + data.getTanggalUjian().getDayOfMonth() + " Desember " + data.getTanggalUjian().getYear());
+
+                    }
+
+                } else {
+                    if (data.getTanggalUjian().getMonthValue() == 1) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Januari " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 2) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Februari " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 3) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Maret " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 4) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " April " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 5) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Mei " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 6) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juni " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 7) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Juli " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 8) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Agustus " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 9) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " September " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 10) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Oktober " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 11) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " November " + data.getTanggalUjian().getYear());
+
+                    }
+                    if (data.getTanggalUjian().getMonthValue() == 12) {
+                        row.createCell(7).setCellValue("Sabtu , " + data.getTanggalUjian().getDayOfMonth() + " Desember " + data.getTanggalUjian().getYear());
+
+                    }
+                }
+            }else {
+                row.createCell(7).setCellValue("-");
             }
+
+            if (data.getJamMulai() != null){
+                row.createCell(8).setCellValue(data.getJamMulai() + " - " + data.getJamSelesai());
+            }else {
+                row.createCell(8).setCellValue("-");
+            }
+
+            /*if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.WAITING && data.getPublish() == "NONAKTIF"){
+                row.createCell(9).setCellValue("Menunggu Penilaian Lengkap");
+            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "NONAKTIF"){
+                row.createCell(9).setCellValue("Menunggu Publish");
+            }else if (data.getStatus() == StatusApprove.APPROVED && data.getStatusSempro() == StatusApprove.APPROVED && data.getPublish() == "AKTIF"){
+                row.createCell(9).setCellValue("Seminar Sudah Publish");
+            }else if(data.getStatus() == StatusApprove.WAITING){
+                row.createCell(9).setCellValue("Menunggu Persetujuan");
+            }else if (data.getStatus() == StatusApprove.REJECTED){
+                row.createCell(9).setCellValue("Ditolak");
+            }*/
         }
 
         for (int i = 0; i < colums.length; i++){
