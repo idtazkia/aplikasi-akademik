@@ -44,10 +44,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -423,6 +420,7 @@ public class StudentBillController {
     @GetMapping("/studentBill/billAdmin/list")
     public void listBillAdmin(Model model,
                               @RequestParam(required = false) TahunAkademik tahunAkademik,
+                              @RequestParam(required = false) Prodi prodi,
                               @RequestParam(required = false) String nim, @PageableDefault(size = 10) Pageable page,
                               @RequestParam(required = false) String date1, @RequestParam(required = false) String date2,
                               @RequestParam(required = false) String date3, @RequestParam(required = false) String date4){
@@ -431,6 +429,7 @@ public class StudentBillController {
 
         model.addAttribute("selectTahun", tahunAkademik);
         model.addAttribute("selectNim", nim);
+        model.addAttribute("selectProdi", prodi);
         Mahasiswa mhs = mahasiswaDao.findByNim(nim);
         if (mhs != null){
             model.addAttribute("mhs", mhs);
@@ -471,8 +470,25 @@ public class StudentBillController {
             model.addAttribute("listAngkatan", tagihanDao.listTagihanPerAngkatan(tahunAkademik));
 
             // list klasifikasi piutang
-            model.addAttribute("listPiutang", tagihanDao.listPiutang(tahunAkademik.getKodeTahunAkademik()));
-
+            String th = null;
+            List<String> thak = new ArrayList<>();
+            if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
+                Integer ta = new Integer(tahunAkademik.getTahun());
+                Integer k = ta-1;
+                th = k + "2";
+            }else{
+                Integer ta = new Integer(tahunAkademik.getKodeTahunAkademik());
+                Integer j = ta - 1;
+                th = j.toString();
+            }
+            TahunAkademik th1 = tahunAkademikDao.findByKodeTahunAkademik(th);
+            thak.add(tahunAkademik.getId());
+            thak.add(th1.getId());
+            model.addAttribute("listPiutang", tagihanDao.listNewPiutang(thak));
+            if (prodi != null) {
+                model.addAttribute("listPiutang", tagihanDao.listNewPiutangDanProdi(thak, prodi.getId()));
+            }
+            model.addAttribute("detailTahun", thak);
         }
 
 
@@ -582,10 +598,30 @@ public class StudentBillController {
 
     @GetMapping("/studentBill/billAdmin/detailPiutang")
     public void detailPiutang(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
+                              @RequestParam(required = false) Prodi prodi,
                               @RequestParam(required = false) String status){
 
         model.addAttribute("tahun", tahunAkademik);
-        if (status.equals("LANCAR")){
+        model.addAttribute("prodi", prodi);
+        String th;
+        List<String> thak = new ArrayList<>();
+        if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
+            Integer ta = new Integer(tahunAkademik.getTahun());
+            Integer k = ta-1;
+            th = k + "2";
+        }else{
+            Integer ta = new Integer(tahunAkademik.getKodeTahunAkademik());
+            Integer j = ta - 1;
+            th = j.toString();
+        }
+        TahunAkademik th1 = tahunAkademikDao.findByKodeTahunAkademik(th);
+        thak.add(tahunAkademik.getId());
+        thak.add(th1.getId());
+        model.addAttribute("detailPiutang", tagihanDao.newDetailPiutang(thak, status));
+        if (prodi != null) {
+            model.addAttribute("detailPiutang", tagihanDao.newDetailPiutangDanProdi(thak, status, prodi.getId()));
+        }
+        /*if (status.equals("LANCAR")){
             model.addAttribute("detailPiutang", tagihanDao.detailLancar(tahunAkademik.getKodeTahunAkademik(), status));
         }else if(status.equals("KURANG LANCAR")){
             model.addAttribute("detailPiutang", tagihanDao.detailKurangLancar(tahunAkademik.getKodeTahunAkademik(), status));
@@ -601,7 +637,77 @@ public class StudentBillController {
             model.addAttribute("detailPiutang", tagihanDao.detailTersendat(tahunAkademik.getKodeTahunAkademik(), status));
         } else if (status.equals("MACET")) {
             model.addAttribute("detailPiutang", tagihanDao.detailMacet(tahunAkademik.getKodeTahunAkademik(), status));
+        }*/
+        model.addAttribute("status", status);
+    }
+
+    @GetMapping("/billReport/permahasiswa/piutang")
+    public void reportPerMahasiswaPiutang(@RequestParam String tahun, @RequestParam(required = false) String prodi, @RequestParam String status, HttpServletResponse response) throws IOException {
+        String[] columns = {"NO", "NIM", "NAMA", "TAGIHAN", "DIBAYAR", "SISA"};
+
+        TahunAkademik tahunAkademik = tahunAkademikDao.findById(tahun).get();
+
+        List<Object[]> listPiutang = null;
+        String th;
+        List<String> thak = new ArrayList<>();
+        if (tahunAkademik.getJenis() == StatusRecord.GANJIL) {
+            Integer ta = new Integer(tahunAkademik.getTahun());
+            Integer k = ta-1;
+            th = k + "2";
+        }else {
+            Integer ta = new Integer(tahunAkademik.getKodeTahunAkademik());
+            Integer j = ta - 1;
+            th = j.toString();
         }
+        TahunAkademik th1 = tahunAkademikDao.findByKodeTahunAkademik(th);
+        thak.add(tahunAkademik.getId());
+        thak.add(th1.getId());
+        listPiutang = tagihanDao.newDetailPiutang(thak, status);
+
+        if (prodi != null) {
+            listPiutang = tagihanDao.newDetailPiutangDanProdi(thak, status, prodi);
+        }
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Detail Piutang Mahasiswa");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : listPiutang){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[0].toString());
+            row.createCell(2).setCellValue(list[1].toString());
+            row.createCell(3).setCellValue(list[2].toString());
+            row.createCell(4).setCellValue(list[3].toString());
+            row.createCell(5).setCellValue(list[4].toString());
+        }
+
+        for (int i = 0; i<columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename = Detail Piutang "+status+"_"+"Tahun Akademik"+"_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 
