@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <style type="text/css">
+      .list-chat{
+        height:550px;overflow: auto;
+      }
+
+      .form-chat{
+        height:400px;
+        overflow: auto;
+      }
+
+      .incoming_msg_img {
+        display: inline-block;
+        width: 6%;
+      }
+      .received_msg {
+        display: inline-block;
+        padding: 0 0 0 10px;
+        vertical-align: top;
+        width: 92%;
+      }
+      .received_withd_msg p {
+        background: #ebebeb none repeat scroll 0 0;
+        border-radius: 3px;
+        color: #646464;
+        font-size: 14px;
+        margin: 0;
+        padding: 5px 10px 5px 12px;
+        width: 100%;
+      }
+
+      .chat{
+        background-color: #098577;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        padding: 10px;
+        margin: 7px;
+      }
+      .chat-out{
+        background-color: #EEEEEE;
+        border: none;
+        border-radius: 10px;
+        color: black;
+        padding: 10px;
+        margin: 7px;
+      }
+
+      .check-box{
+        width: 15px;
+        height: 15px;
+      }
+
+      @media screen and (max-width: 1280px){
+        .list-chat{
+          height:350px;
+        }
+        .form-chat{
+          height: 200px;
+        }
+      }
+
+      @media screen and (max-width: 1390px) {
+        .list-chat{
+          height:400px;
+        }
+      }
+    </style>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                    <span class="h2 font-weight-bold mb-0">Chat</span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-user-astronaut"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card shadow">
+          <div class="card-header border-0">
+            <h3 class="mb-0">Data</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 list-chat">
+                <div class="row" style="border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <b style="font-size: 12px;">Muhammad Rafizki Lestaluhu</b>
+                      </div>
+                      <div class="col-md-4 text-right">
+                        <span style="font-size: 10px; color: #808080;">10.30</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-10">
+                        <p style="font-size: 10px; color: black;">Assamualaikum pak. saya ingin mengumpulkan tugas.</p>
+                      </div>
+                      <div class="col-md-2 text-right"><input class="check-box" type="checkbox"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row" style="border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <b style="font-size: 12px;">Muhammad Rafizki Lestaluhu</b>
+                      </div>
+                      <div class="col-md-4 text-right">
+                        <span style="font-size: 10px; color: #808080;">10.30</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-10">
+                        <p style="font-size: 10px; color: black;">Assamualaikum pak. saya ingin mengumpulkan tugas.</p>
+                      </div>
+                      <div class="col-md-2 text-right"><input class="check-box" type="checkbox"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row" style="border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <b style="font-size: 12px;">Muhammad Rafizki Lestaluhu</b>
+                      </div>
+                      <div class="col-md-4 text-right">
+                        <span style="font-size: 10px; color: #808080;">10.30</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-10">
+                        <p style="font-size: 10px; color: black;">Assamualaikum pak. saya ingin mengumpulkan tugas.</p>
+                      </div>
+                      <div class="col-md-2 text-right"><input class="check-box" type="checkbox"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row" style="border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <b style="font-size: 12px;">Muhammad Rafizki Lestaluhu</b>
+                      </div>
+                      <div class="col-md-4 text-right">
+                        <span style="font-size: 10px; color: #808080;">10.30</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-10">
+                        <p style="font-size: 10px; color: black;">Assamualaikum pak. saya ingin mengumpulkan tugas.</p>
+                      </div>
+                      <div class="col-md-2 text-right"><input class="check-box" type="checkbox"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row" style="border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <b style="font-size: 12px;">Muhammad Rafizki Lestaluhu</b>
+                      </div>
+                      <div class="col-md-4 text-right">
+                        <span style="font-size: 10px; color: #808080;">10.30</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-10">
+                        <p style="font-size: 10px; color: black;">Assamualaikum pak. saya ingin mengumpulkan tugas.</p>
+                      </div>
+                      <div class="col-md-2 text-right"><input class="check-box" type="checkbox"></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="col-md-8">
+                <div class="card">
+                  <div class="card-header">
+                    <h3>Muhammad Rafizki Lestaluhu</h3>
+                  </div>
+                  <div class="card-body form-chat">
+                    <div class="row">
+                      <div class="col-md-8 chat">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span><b>Pak Dosen</b></span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus alias, eum iure maiores optio quas quis. Aspernatur dolorum obcaecati porro provident ratione. Adipisci amet autem nemo possimus quas quisquam reprehenderit.</span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 text-right">
+                            <span style="font-size: 12px;">10.30</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-8 chat-out">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span style="font-size: 15px;"><b>Muhammad Rafizki Lestaluhu</b></span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span style="font-size: 15px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus alias, eum iure maiores optio quas quis. Aspernatur dolorum obcaecati porro provident ratione. Adipisci amet autem nemo possimus quas quisquam reprehenderit.</span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 text-right">
+                            <span style="font-size: 12px;">10.30</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-8 chat">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span style="font-size: 15px;"><b>Pak Dosen</b></span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <span style="font-size: 15px;">Oke Mantap Rafizki</span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 text-right">
+                            <span style="font-size: 12px;">10.30</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <form action="">
+                      <div class="input-group mb-3">
+                        <input type="text" name="search" class="form-control" placeholder="Ketik Pesan" th:value="${search}">
+                        <div class="input-group-append">
+                          <button class="btn btn-info" type="submit"><i class="fa fa-paper-plane"></i> Kirim </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

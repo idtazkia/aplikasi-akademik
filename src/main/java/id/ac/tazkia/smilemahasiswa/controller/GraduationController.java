@@ -2170,5 +2170,10 @@ public class GraduationController {
 
     }
 
+    @GetMapping("/graduation/chat")
+    public void chatForm(){
+
+    }
+
 
 }
