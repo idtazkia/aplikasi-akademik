@@ -42,9 +42,9 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "group by a.id_mahasiswa,a.id_matakuliah order by a.nama_matakuliah", nativeQuery = true)
     List<Object[]> detailSp(TahunAkademik tahunAkademik);
     
-    @Query(value = "select a.*,if(b.id_mahasiswa != '','LUNAS', 'BELUM LUNAS')as status_bayar, coalesce(tanggalBayar, '-') from\n" +
+    @Query(value = "select a.*,if(b.id_mahasiswa != '','LUNAS', 'BELUM LUNAS')as status_bayar, coalesce(tanggalBayar, '-'), coalesce(c.status_pengembalian, '-') as statusPengembalian from\n" +
             "(select a.*, coalesce(b.id_matakuliah_setara, a.id_matakuliah) as id from\n" +
-            "(select b.id_matakuliah,a.id_mahasiswa, d.nim, d.nama, e.nama_prodi,a.nomor_telepon, c.nama_matakuliah, b.jumlah_sks from pra_krs_sp as a \n" +
+            "(select b.id_matakuliah,a.id_mahasiswa, d.nim, d.nama, e.nama_prodi,a.nomor_telepon, c.nama_matakuliah, b.jumlah_sks, a.status_approve from pra_krs_sp as a \n" +
             "inner join matakuliah_kurikulum as b on a.id_matakuliah_kurikulum = b.id \n" +
             "inner join matakuliah as c on b.id_matakuliah = c.id \n" +
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
@@ -57,6 +57,8 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join nilai_jenis_tagihan as c on b.id_nilai_jenis_tagihan = c.id \n" +
             "inner join jenis_tagihan as d on c.id_jenis_tagihan = d.id \n" +
             "where d.kode = '23' and b.lunas = true and b.id_tahun_akademik = ?1)b on a.id_mahasiswa = b.id_mahasiswa\n" +
+            "left join\n" +
+            "(select * from refund_sp where status='AKTIF')c on a.id_mahasiswa=c.id_mahasiswa\n" +
             "group by a.id_mahasiswa,a.id_matakuliah\n" +
             "order by a.nim", nativeQuery = true)
     List<Object[]> allDetail(TahunAkademik tahunAkademik);
@@ -67,7 +69,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join matakuliah as c on b.id_matakuliah = c.id \n" +
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
             "inner join prodi as e on d.id_prodi = e.id \n" +
-            "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and c.id in(?2))a \n" +
+            "where a.status = 'AKTIF' and a.status_approve='WAITING' and a.id_tahun_akademik = ?1 and c.id in(?2))a \n" +
             "left join \n" +
             "(select b.id_mahasiswa from pembayaran as a \n" +
             "inner join tagihan as b on a.id_tagihan = b.id \n" +
@@ -83,7 +85,7 @@ public interface PraKrsSpDao extends PagingAndSortingRepository<PraKrsSp, String
             "inner join matakuliah as c on b.id_matakuliah = c.id \n" +
             "inner join mahasiswa as d on a.id_mahasiswa = d.id\n" +
             "inner join prodi as e on d.id_prodi = e.id \n" +
-            "where a.status = 'AKTIF' and a.id_tahun_akademik = ?1 and c.id in(?2))a \n" +
+            "where a.status = 'AKTIF' and a.status_approve='WAITING' and a.id_tahun_akademik = ?1 and c.id in(?2))a \n" +
             "left join \n" +
             "(select b.id_mahasiswa from pembayaran as a \n" +
             "inner join tagihan as b on a.id_tagihan = b.id \n" +

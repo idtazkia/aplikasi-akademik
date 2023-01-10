@@ -42,7 +42,12 @@
         <!-- Table -->
         <div class="row">
             <div class="col-md-12 col-xs-12">
-                <div class="card shadow">
+                <div class="card shadow" th:if="${message != null}">
+                    <div class="alert alert-danger">
+                        <h1 class="text-white">Aktifkan Tahun Akademik Semester Pendek terlebih dahulu!!</h1>
+                    </div>
+                </div>
+                <div class="card shadow" th:if="${message == null}">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
@@ -64,6 +69,7 @@
                                         <th>Matakuliah</th>
                                         <th class="text-center">Jumlah Permintaan</th>
                                         <th class="text-center">Jumlah Pembayaran</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center">
                                             Pilih Matakuliah
                                         </th>
@@ -132,7 +138,7 @@
                                         <td class="text-center" th:text="${data[4]}">2</td>
                                         <div th:if="${data[5] == 'WAITING'}">
                                             <td class="text-center">
-                                                <input type="checkbox" class="select-check" name="checkBox" th:value="${data[0]}">
+                                                <button type="button" class="btn btn-primary btn-sm">WAITING</button>
                                             </td>
                                         </div>
                                         <div th:if="${data[5] == 'APPROVED'}">
@@ -145,6 +151,9 @@
                                                 <button type="button" class="btn btn-danger btn-sm">REJETED</button>
                                             </td>
                                         </div>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="select-check" name="checkBox" th:value="${data[0]}">
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>

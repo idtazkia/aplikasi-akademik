@@ -68,83 +68,112 @@
                             <!-- Approve -->
 
                             <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                <div class="row">
-                                    <div class="col-md-6 col-xs-12">
-                                        <div class="card shadow">
-                                            <div class="card-header border-0">
-                                                <div class="row align-items-center">
-                                                    <div class="col">
-                                                        <h3 class="mb-0">Form</h3>
-                                                    </div>
-                                                    <div class="col text-right">
-                                                        <a class="btn btn-warning btn-sm text-white" style="cursor: pointer;" data-toggle="modal" data-target="#modal-custom">
-                                                            <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
-                                                            <span class="btn-inner--text">Custom Kelas</span>
-                                                        </a>
+                                <form method="post" th:action="@{/studiesActivity/sp/approve}">
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="card shadow">
+                                                <div class="card-header border-0">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <h3 class="mb-0">Form</h3>
+                                                        </div>
+                                                        <div class="col text-right">
+<!--                                                            <a class="btn btn-warning btn-sm text-white" style="cursor: pointer;" data-toggle="modal" data-target="#modal-custom">-->
+<!--                                                                <span class="btn-inner&#45;&#45;icon"><i class="fa fa-edit"></i></span>-->
+<!--                                                                <span class="btn-inner&#45;&#45;text">Custom Kelas</span>-->
+<!--                                                            </a>-->
 
-                                                        <div class="modal fade" id="modal-custom" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                                <div class="modal-content">
+                                                            <div class="modal fade" id="modal-custom" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                                    <div class="modal-content">
 
-                                                                    <div class="modal-header bg-transparent pb-5">
-                                                                        <h4>Pilih Matakuliah untuk jadwal</h4>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">×</span>
-                                                                        </button>
-                                                                    </div>
+                                                                        <div class="modal-header bg-transparent pb-5">
+                                                                            <h4>Pilih Matakuliah untuk jadwal</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">×</span>
+                                                                            </button>
+                                                                        </div>
 
-                                                                    <div class="modal-body">
+                                                                        <div class="modal-body">
 
-                                                                        <form method="get" th:action="@{/studiesActivity/sp/custom}">
-                                                                            <div th:each="data, row:${listId}">
-                                                                                <input type="hidden" name="matkul" th:value="${data}">
-                                                                            </div>
-                                                                            <div class="table-responsive">
-                                                                                <table class="table align-items-center table-flush">
-                                                                                    <thead class="thead-light">
-                                                                                    <tr>
-                                                                                        <th scope="col"></th>
-                                                                                        <th scope="col">#</th>
-                                                                                        <th scope="col">Matakulah</th>
-                                                                                        <th scope="col">Kurikulum</th>
-                                                                                        <th scope="col">Kode Matakuliah</th>
-                                                                                        <th scope="col">Jumlah Sks</th>
-                                                                                    </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                    <tr th:each="data,row : ${listMatkul}">
-                                                                                        <td>
-                                                                                            <input type="checkbox" class="select-check" name="id" th:value="${data.id}">
-                                                                                        </td>
-                                                                                        <td th:text="${row.index + 1}">1</td>
-                                                                                        <td th:text="${data.matakuliah.namaMatakuliah}"></td>
-                                                                                        <td th:text="${data.kurikulum.namaKurikulum}">2020</td>
-                                                                                        <td th:text="${data.matakuliah.kodeMatakuliah}">2020</td>
-                                                                                        <td th:text="${data.jumlahSks}">2020</td>
-                                                                                    </tr>
+                                                                            <form method="get" th:action="@{/studiesActivity/sp/custom}">
+                                                                                <div th:each="data, row:${listId}">
+                                                                                    <input type="hidden" name="matkul" th:value="${data}">
+                                                                                </div>
+                                                                                <div class="table-responsive">
+                                                                                    <table class="table align-items-center table-flush">
+                                                                                        <thead class="thead-light">
+                                                                                        <tr>
+                                                                                            <th scope="col"></th>
+                                                                                            <th scope="col">#</th>
+                                                                                            <th scope="col" class="text-center">Matakulah</th>
+                                                                                            <th scope="col" class="text-center">Kurikulum</th>
+                                                                                            <th scope="col">Kode Matakuliah</th>
+                                                                                            <th scope="col">Jumlah Sks</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr th:each="data,row : ${listMatkul}">
+                                                                                            <td>
+                                                                                                <input type="checkbox" class="select-check" name="id" th:value="${data.id}">
+                                                                                            </td>
+                                                                                            <td th:text="${row.index + 1}">1</td>
+                                                                                            <td th:text="${data.matakuliah.namaMatakuliah}"></td>
+                                                                                            <td th:text="${data.kurikulum.namaKurikulum}">2020</td>
+                                                                                            <td th:text="${data.matakuliah.kodeMatakuliah}">2020</td>
+                                                                                            <td th:text="${data.jumlahSks}">2020</td>
+                                                                                        </tr>
 
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                            <br>
-                                                                            <div class="form-group text-center">
-                                                                                <button class="btn btn-primary"><i class="fas fa-check"></i> Submit</button>
-                                                                            </div>
-                                                                        </form>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                                <br>
+                                                                                <div class="form-group text-center">
+                                                                                    <button class="btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+                                                                                </div>
+                                                                            </form>
 
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <form method="post" th:action="@{/studiesActivity/sp/approve}">
+                                                <div class="card-body">
                                                     <div th:each="data, row:${listId}">
                                                         <input type="hidden" name="id" th:value="${data}">
                                                     </div>
+                                                    <div class="table-responsive">
+                                                        <text>*Pilih dari jadwal yang sudah ada</text>
+                                                        <table class="table align-items-center table-flush">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th scope="col"></th>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Matakulah</th>
+                                                                <th scope="col">Dosen</th>
+                                                                <th scope="col">Prodi</th>
+<!--                                                                <th scope="col">Jumlah Sks</th>-->
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="data,row : ${jadwal}">
+                                                                <td>
+                                                                    <input type="checkbox" class="select-check" name="checkJadwal" th:value="${data.id}">
+                                                                </td>
+                                                                <td th:text="${row.index + 1}">1</td>
+                                                                <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                                                <td th:text="${data.dosen.karyawan.namaKaryawan}">2020</td>
+                                                                <td th:text="${data.prodi.namaProdi}">2020</td>
+<!--                                                                <td th:text="${data.jumlahSks}">2020</td>-->
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <br><br>
                                                     <div class="table-responsive">
                                                         <text>*Pilih Matakuliah Kurikulum untuk input ke jadwal</text>
                                                         <table class="table align-items-center table-flush">
@@ -168,6 +197,35 @@
                                                                 <td th:text="${data.kurikulum.namaKurikulum}">2020</td>
                                                                 <td th:text="${data.matakuliah.kodeMatakuliah}">2020</td>
                                                                 <td th:text="${data.jumlahSks}">2020</td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="table-responsive" th:if="${message == null && jadwalJadi != null}">
+                                                        <text>*Jadwal yang sudah ada</text>
+                                                        <table class="table align-items-center table-flush">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th scope="col"></th>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Matakulah</th>
+                                                                <th scope="col">Dosen</th>
+                                                                <th scope="col">Prodi</th>
+                                                                <th scope="col">Tahun Akademik</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="data,row : ${jadwalJadi}">
+                                                                <td>
+                                                                    <input type="checkbox" class="select-check" name="checkBox" th:value="${data.id}">
+                                                                </td>
+                                                                <td th:text="${row.index + 1}">1</td>
+                                                                <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                                                <td th:text="${data.dosen.karyawan.namaKaryawan}">2020</td>
+                                                                <td th:text="${data.prodi.namaProdi}">2020</td>
+                                                                <td th:text="${data.tahunAkademik.namaTahunAkademik}">2020</td>
                                                             </tr>
 
                                                             </tbody>
@@ -207,73 +265,23 @@
                                                     <div class="form-group">
                                                         <button class="btn btn-success"><i class="fas fa-check"></i> Approve</button>
                                                     </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 col-xs-12">
-                                        <div class="card shadow">
-                                            <div class="card-header border-0">
-                                                <h3 class="mb-0">List Mahasiswa</h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table align-items-center table-flush">
-                                                        <thead class="thead-light">
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Nim</th>
-                                                            <th scope="col">Nama</th>
-                                                            <th scope="col">Prodi</th>
-                                                            <th scope="col">Status</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <tr th:each="data,row : ${listSp}">
-                                                            <td th:text="${row.index + 1}">1</td>
-                                                            <td th:text="${data[2]}"></td>
-                                                            <td th:text="${data[3]}">2020</td>
-                                                            <td th:text="${data[4]}">2020</td>
-                                                            <td th:text="${data[10]}">2020</td>
-                                                        </tr>
-
-                                                        </tbody>
-                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- REJECT -->
-
-                            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 col-xs-12">
+                                        <div class="col-md-6 col-xs-12">
                                             <div class="card shadow">
                                                 <div class="card-header border-0">
-                                                    <div class="row align-items-center">
-                                                        <div class="col">
-                                                            <h3 class="mb-0">List Mahasiswa</h3>
-                                                        </div>
-                                                        <div class="col text-right">
-                                                            <form method="post" th:action="@{/studiesActivity/sp/reject}">
-                                                                <button type="submit" class="btn btn-danger"><i class="fa fa-times"></i> REJECT</button>
-                                                                <div th:each="data, row:${listId}">
-                                                                    <input type="hidden" name="id" th:value="${data}">
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
+                                                    <h3 class="mb-0">List Mahasiswa</h3>
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="table-responsive">
                                                         <table class="table align-items-center table-flush">
                                                             <thead class="thead-light">
                                                             <tr>
+                                                                <th scope="col">
+                                                                    <input type="checkbox" id="checkAll">
+                                                                </th>
                                                                 <th scope="col">#</th>
                                                                 <th scope="col">Nim</th>
                                                                 <th scope="col">Nama</th>
@@ -282,7 +290,10 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr th:each="data,row : ${listAllSp}">
+                                                            <tr th:each="data,row : ${listSp}">
+                                                                <td>
+                                                                    <input type="checkbox" name="checkMhs" class="select-mhs" th:value="${data[9]}">
+                                                                </td>
                                                                 <td th:text="${row.index + 1}">1</td>
                                                                 <td th:text="${data[2]}"></td>
                                                                 <td th:text="${data[3]}">2020</td>
@@ -294,6 +305,65 @@
                                                         </table>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- REJECT -->
+
+                            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <div class="card shadow">
+                                                <form method="post" th:action="@{/studiesActivity/sp/reject}">
+                                                    <div class="card-header border-0">
+                                                        <div class="row align-items-center">
+                                                            <div class="col">
+                                                                <h3 class="mb-0">List Mahasiswa</h3>
+                                                            </div>
+                                                            <div class="col text-right">
+                                                                <button type="submit" class="btn btn-danger"><i class="fa fa-times"></i> REJECT</button>
+                                                                <div th:each="data, row:${listId}">
+                                                                    <input type="hidden" name="id" th:value="${data}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center table-flush">
+                                                                <thead class="thead-light">
+                                                                <tr>
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">Nim</th>
+                                                                    <th scope="col">Nama</th>
+                                                                    <th scope="col">Prodi</th>
+                                                                    <th scope="col">Status</th>
+                                                                    <th scope="col">
+                                                                        <input type="checkbox" id="checkAllReject">
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr th:each="data,row : ${listAllSp}">
+                                                                    <td th:text="${row.index + 1}">1</td>
+                                                                    <td th:text="${data[2]}"></td>
+                                                                    <td th:text="${data[3]}">2020</td>
+                                                                    <td th:text="${data[4]}">2020</td>
+                                                                    <td th:text="${data[10]}">2020</td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="checkMhsRe" class="select-mhs-reject" th:value="${data[9]}">
+                                                                    </td>
+                                                                </tr>
+
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -338,6 +408,18 @@
             if ($(".select-check:input:checkbox:checked").length > max_limit){
                 this.checked = false;
             }
+        });
+    });
+
+    $(document).ready(function (){
+        $('#checkAll').click(function (){
+            $('.select-mhs:input:checkbox').not(this).prop('checked', this.checked);
+        });
+    });
+
+    $(document).ready(function (){
+        $('#checkAllReject').click(function (){
+            $('.select-mhs-reject:input:checkbox').not(this).prop('checked', this.checked);
         });
     });
 
