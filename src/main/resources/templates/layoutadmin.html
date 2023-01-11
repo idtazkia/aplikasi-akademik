@@ -419,7 +419,7 @@
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">
                                 <a th:href="@{/graduation/lecture/sempro}" class="nav-link">Penilaian Seminar</a>
                             </li>
-                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS')">
+                            <li class="nav-item" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_STAFF_PRODI')">
                                 <a th:href="@{/graduation/sidang/prodi/list}" class="nav-link">Penjadwalan Sidang</a>
                             </li>
                             <li class="nav-item" sec:authorize="hasAuthority('VIEW_DOSEN') or hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN_AKADEMIK') or hasAuthority('VIEW_WAREK2')">

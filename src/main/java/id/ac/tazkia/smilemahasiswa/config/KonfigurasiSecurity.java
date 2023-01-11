@@ -86,6 +86,7 @@ public class KonfigurasiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/studentBill/jenisDiskon/list").hasAnyAuthority("VIEW_FINANCE", "VIEW_WAREK2")
                 .antMatchers("/studentBill/payment/report").hasAnyAuthority("VIEW_FINANCE", "VIEW_WAREK2")
                 .antMatchers("/graduation/admin/score").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_AKADEMIK1", "VIEW_STAFF_PRODI")
+                .antMatchers("/graduation/sidang/prodi/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_AKADEMIK1", "VIEW_STAFF_PRODI")
                 .antMatchers("/graduation/admin/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_AKADEMIK1", "VIEW_STAFF_PRODI")
                 .antMatchers("/graduation/seminar/list").hasAnyAuthority("VIEW_SUPERUSER", "VIEW_KPS", "VIEW_AKADEMIK1", "VIEW_STAFF_PRODI")
                 .antMatchers("/graduation/lecture/list").hasAnyAuthority("VIEW_DOSEN", "VIEW_KPS", "VIEW_WAREK2","VIEW_DOSEN_AKADEMIK")
