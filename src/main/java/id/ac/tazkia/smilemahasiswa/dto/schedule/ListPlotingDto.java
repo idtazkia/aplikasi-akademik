@@ -15,4 +15,6 @@ public interface ListPlotingDto {
     String getJadwal();
     String getHari();
     String getMulai();
+    String getTeam();
+    String getTeamNama();
 }

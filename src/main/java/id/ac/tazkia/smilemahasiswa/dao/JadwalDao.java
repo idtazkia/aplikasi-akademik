@@ -6,7 +6,10 @@ import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.SoalDto;
 import id.ac.tazkia.smilemahasiswa.dto.courses.DetailJadwalIntDto;
+import id.ac.tazkia.smilemahasiswa.dto.ploting.DataPlotingDto;
+import id.ac.tazkia.smilemahasiswa.dto.ploting.ValidasiSesi;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapAbsenDosen;
+import id.ac.tazkia.smilemahasiswa.dto.schedule.ListPlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.PlotingDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.ScheduleDto;
 import id.ac.tazkia.smilemahasiswa.dto.schedule.SesiDto;
@@ -130,6 +133,16 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByMatakuliahKurikulumAndStatus(MatakuliahKurikulum matkur, StatusRecord statusRecord);
 
+    @Query(value = "select j.* from jadwal as j where id_tahun_akademik =?1 and " +
+            "id_kelas = ?2 and id_matakuliah_kurikulum = ?3 and status = 'AKTIF' and id_hari is null", nativeQuery = true)
+    Jadwal cariDosenSebelumnya(TahunAkademik tahunAkademik,Kelas kelas, MatakuliahKurikulum matakuliahKurikulum);
+
+    @Query(value = "select j.id as jadwal, ke.id as idKelas,ke.nama_kelas as kelas, mk.id as mkkur, m.nama_matakuliah as matkul, m.nama_matakuliah_english as course,mk.jumlah_sks as sks,d.id as idDos, k.nama_karyawan as dosen,CONCAT(ke.nama_kelas,'-',m.kode_matakuliah) as validasi from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id\n" +
+            "inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id\n" +
+            "inner join matakuliah as m on mk.id_matakuliah = m.id inner join kelas as ke on j.id_kelas = ke.id\n" +
+            "where j.id = ?1 ", nativeQuery = true)
+    ListPlotingDto detailPloting(String id);
+
     @Query(value = "SELECT * FROM jadwal where id_tahun_akademik = ?1 and id_hari is not null and status = 'AKTIF' and (sesi = '' or sesi is null)", nativeQuery = true)
     List<Jadwal> cariSesiNull(TahunAkademik tahunAkademik);
 
@@ -247,4 +260,47 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
 
     List<Jadwal> findByTahunAkademikAndStatusAndMatakuliahKurikulumIn(TahunAkademik tahunAkademik, StatusRecord status, List<MatakuliahKurikulum> idMatkur);
 
+    @Query(value = "select j.id as jadwal,h.nama_hari as hari, k.id as idKelas,k.nama_kelas as kelas,mk.id as mkkur,m.kode_matakuliah as kode, m.nama_matakuliah as matkul," +
+            "m.nama_matakuliah_english as course, mk.jumlah_sks as sks,d.id as idDos, ka.nama_karyawan as dosen from jadwal as j " +
+            "inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id left join hari as h on j.id_hari = h.id inner join matakuliah as m on mk.id_matakuliah = m.id " +
+            "inner join kelas as k on j.id_kelas = k.id inner join dosen as d on j.id_dosen_pengampu = d.id" +
+            " inner join karyawan as ka on d.id_karyawan = ka.id where j.id_tahun_akademik = ?1 and j.id_hari is null and j.status = 'AKTIF' and j.jam_mulai is null order by k.nama_kelas asc LIMIT ?2 OFFSET ?3", nativeQuery = true)
+    List<DataPlotingDto> detailJadwalKosongLimit(TahunAkademik tahunAkademik, Integer limit, Integer offser);
+
+    @Query(value = "select j.id as jadwal,h.nama_hari as hari, k.id as idKelas,k.nama_kelas as kelas,mk.id as mkkur,m.kode_matakuliah as kode, m.nama_matakuliah as matkul," +
+            "m.nama_matakuliah_english as course, mk.jumlah_sks as sks,d.id as idDos, ka.nama_karyawan as dosen from jadwal as j " +
+            "inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id left join hari as h on j.id_hari = h.id inner join matakuliah as m on mk.id_matakuliah = m.id " +
+            "inner join kelas as k on j.id_kelas = k.id inner join dosen as d on j.id_dosen_pengampu = d.id" +
+            " inner join karyawan as ka on d.id_karyawan = ka.id where j.id_tahun_akademik = ?1 and j.status = 'AKTIF'  and j.id_hari is null and j.jam_mulai is null order by k.nama_kelas asc", nativeQuery = true)
+    List<DataPlotingDto> detailJadwalKosong(TahunAkademik tahunAkademik);
+
+    @Query(value = "select j.id as jadwal,h.nama_hari as hari, k.id as idKelas,k.nama_kelas as kelas,mk.id as mkkur,m.kode_matakuliah as kode, m.nama_matakuliah as matkul," +
+            "m.nama_matakuliah_english as course, mk.jumlah_sks as sks,d.id as idDos, ka.nama_karyawan as dosen from jadwal as j " +
+            "inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id left join hari as h on j.id_hari = h.id inner join matakuliah as m on mk.id_matakuliah = m.id " +
+            "inner join kelas as k on j.id_kelas = k.id inner join dosen as d on j.id_dosen_pengampu = d.id" +
+            " inner join karyawan as ka on d.id_karyawan = ka.id where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and (m.nama_matakuliah like %?2% or k.nama_kelas like %?2% or ka.nama_karyawan like %?2% ) and j.id_hari is null and j.jam_mulai is null order by k.nama_kelas asc LIMIT ?3 OFFSET ?4", nativeQuery = true)
+    List<DataPlotingDto> detailJadwalKosongSearchLimit(TahunAkademik tahunAkademik, String search , Integer limit, Integer offset);
+
+    @Query(value = "select j.id as jadwal,h.nama_hari as hari, k.id as idKelas,k.nama_kelas as kelas,mk.id as mkkur,m.kode_matakuliah as kode, m.nama_matakuliah as matkul," +
+            "m.nama_matakuliah_english as course, mk.jumlah_sks as sks,d.id as idDos, ka.nama_karyawan as dosen from jadwal as j " +
+            "inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id left join hari as h on j.id_hari = h.id inner join matakuliah as m on mk.id_matakuliah = m.id " +
+            "inner join kelas as k on j.id_kelas = k.id inner join dosen as d on j.id_dosen_pengampu = d.id" +
+            " inner join karyawan as ka on d.id_karyawan = ka.id where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and (m.nama_matakuliah like %?2% or k.nama_kelas like %?2% or ka.nama_karyawan like %?2% ) and j.id_hari is null and j.jam_mulai is null order by k.nama_kelas asc ", nativeQuery = true)
+    List<DataPlotingDto> detailJadwalKosongSearch(TahunAkademik tahunAkademik, String search );
+
+    @Query(value = "select s.sesi as id,s.id as idSesi,s.nama_sesi as namaSesi,TIME_FORMAT(s.jam_mulai, \"%H:%i\") as mulai,TIME_FORMAT(s.jam_selesai, \"%H:%i\") as selesai,aa.* from sesi as s left join\n" +
+            "(select 'Bentrok Dosen' as bentrok, k.nama_karyawan as dosen, m.nama_matakuliah as matkul,j.sesi from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id\n" +
+            "inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id \n" +
+            "where j.id_tahun_akademik = ?1 and j.status = 'AKTIF' and j.id_hari = ?2 \n" +
+            "and j.id_dosen_pengampu = ?7 and j.id not in (?3)\n" +
+            "union\n" +
+            "select 'Bentrok Ruangan' as bentrok, k.nama_karyawan as dosen, m.nama_matakuliah as matkul,j.sesi from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id\n" +
+            "inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id \n" +
+            "where j.id_tahun_akademik = ?1 and j.id_ruangan = ?4 and j.status = 'AKTIF' and j.id_hari = ?2 and j.id not in (?3) \n" +
+            "union\n" +
+            "select 'Bentrok Kelas' as bentrok, k.nama_karyawan as dosen, m.nama_matakuliah as matkul,j.sesi from jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id\n" +
+            "inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id \n" +
+            "where j.id_tahun_akademik = ?1 and j.id_kelas = ?5 and j.status = 'AKTIF' and j.id_hari = ?2 and j.id not in (?3)) aa on s.sesi = aa.sesi where sks = ?6 group by if(bentrok is not null,trim(s.sesi),id)", nativeQuery = true)
+    List<ValidasiSesi> validateSesi(TahunAkademik tahunAkademik, Hari hari, String id, Ruangan ruangan, Kelas kelas, Integer sks, Dosen dosen);
 }
+
