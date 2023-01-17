@@ -243,9 +243,9 @@ public class  AcademicActivityController {
 
     @GetMapping("/detail/lecture")
     @ResponseBody
-    public SelectDosen detailDOsen(@RequestParam String search){
+    public SelectDosen detailDOsen(@RequestParam String search,@RequestParam TahunAkademik tahun){
 
-        return dosenDao.detailDosen(tahunAkademikDao.findByStatus(StatusRecord.AKTIF),dosenDao.findById(search).get());
+        return dosenDao.detailDosen(tahun,dosenDao.findById(search).get());
     }
 
     @GetMapping("/detail-ploting")

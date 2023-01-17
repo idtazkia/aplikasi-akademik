@@ -485,7 +485,7 @@
         });
 
     $('#optionDosen').on('select2:selecting', function(e) {
-        const url = '/detail/lecture?search='+e.params.args.data.id;
+        const url = '/detail/lecture?search='+e.params.args.data.id+'&tahun='+$('#tahun').val();
         var sksMatkul = $('#sks1').val();
         $.getJSON(url, function (data) {
             $('#idDosen1').val(data.id);
@@ -596,7 +596,7 @@
         });
 
     $('#dosenList').on('select2:selecting', function(e) {
-        const url = '/detail/lecture?search='+e.params.args.data.id;
+        const url = '/detail/lecture?search='+e.params.args.data.id+'&tahun='+$('#tahun').val();
         var sksMatkul = $('#sks').val();
         $('#sksDosen').val(null);
         console.log(sksMatkul);
@@ -733,7 +733,7 @@
                         document.getElementById('dosen-' + jadwal.validasi).id = 'dosen-' + data.id;
                         document.getElementById('team-' + jadwal.validasi).id = 'team-' + data.id;
                         $('#team-'+data.id).prop('disabled', false);
-                        const urlDetail = '/detail/lecture?search='+value
+                        const urlDetail = '/detail/lecture?search='+value+'&tahun='+$('#tahun').val()
                         $.getJSON(urlDetail, function (data) {
                             $('.dosen-' + value).val(data.total);
                             console.log(data.total)
@@ -770,8 +770,8 @@
                             })
 
                          document.getElementById('dosen-'+jadwal.id).className = 'form-control dosen-'+ value;
-                         const urlDetail = '/detail/lecture?search='+value
-                         const urlDetailDosen = '/detail/lecture?search='+dosenSebelum
+                         const urlDetail = '/detail/lecture?search='+value+'&tahun='+$('#tahun').val()
+                         const urlDetailDosen = '/detail/lecture?search='+dosenSebelum+'&tahun='+$('#tahun').val()
                          $.getJSON(urlDetail, function (data1) {
                              // $('#dosen-' + jadwal.id).val(+data.total + +jadwal.sks)
                              $('.dosen-' + value).val(data1.total);
