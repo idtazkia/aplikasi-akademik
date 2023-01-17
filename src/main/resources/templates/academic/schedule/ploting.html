@@ -53,71 +53,20 @@
                             </div>
                         </div>
                     </div>
-                    <form method="post" th:action="@{/academic/schedule/ploting(id = ${selectedProdi.id}, tahun = ${selectedTahun.id})}">
                         <div class="card-body">
+                            <input type="hidden" id="tahun" th:value="${selectedTahun.id}">
                             <div class="table-responsive">
-                                <table id="data-table-basic" class="table table-striped">
-                                    <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">Class</th>
-                                        <th scope="col">Lecturer</th>
-                                        <th scope="col">Courses</th>
-                                        <th scope="col">Day</th>
-                                        <th scope="col">Room</th>
-                                        <th scope="col">Session</th>
-                                        <th scope="col">Jam Mulai</th>
-                                        <th scope="col">Jam Selesai</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    <tr th:each="data,row : ${ploting}">
-                                        <td th:text="${data.kelas}">MBS-17-A</td>
-                                        <td th:text="${data.dosen}">AEM2204</td>
-                                        <td th:text="${data.course}">Cost And Management Accounting</td>
-                                        <td>
-                                            <select th:name="${data.id+'_hari'}" style="width: 200px!important;" th:id="${data.id+'_hari'}" class="form-control js-example-placeholder-single" onchange="mySesi(this)">
-                                                <option value=""></option>
-                                                <option th:each="data: ${hari}"
-                                                        th:text="${data.namaHari + '  -  ' + data.namaHariEng}"
-                                                        th:value="${data.id}">sdasd</option>
-                                            </select>
-                                            <input type="hidden" th:id="${data.id+'_hariisi'}" th:name="${data.id+'_hariisi'}">
-                                        </td>
-                                        <td>
-                                            <select th:name="${data.id+'_room'}" style="width: 200px!important;" th:id="${data.id+'_room'}" onchange="myRoom(this)" class="form-control js-example-placeholder-single">
-                                                <option value=""></option>
-                                                <option th:each="data: ${ruangan}"
-                                                        th:text="${data.namaRuangan + '  -  ' + data.gedung.namaGedung}"
-                                                        th:value="${data.id}">sdasd</option>
-                                                <input type="hidden" th:id="${data.id+'_roomisi'}" th:name="${data.id+'_roomisi'}">
-                                                <input type="hidden" th:id="${data.id+'_sks'}" th:value="${data.sks}" th:name="${data.id+'_sks'}">
-                                                <input type="hidden" th:id="${data.id+'_dosen'}" th:value="${data.idDosen}" th:name="${data.id+'_dosen'}">
-                                                <input type="hidden" th:id="${data.id+'_kelas'}" th:value="${data.idKelas}" th:name="${data.id+'_kelas'}">
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select th:id="${data.id+'_sesi'}" style="width: 200px!important;" class="form-control" onchange="waktu(this)">
-                                                <option value=""></option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" style="width: 100px;" th:id="${data.id+'_mulai'}" th:name="${data.id+'_mulai'}" readonly class="form-control"></td>
-                                        <td><input type="text" style="width: 100px;" th:id="${data.id+'_selesai'}" th:name="${data.id+'_selesai'}" readonly class="form-control"></td>
-                                        <input type="hidden" th:id="${data.id+'_sesii'}" th:name="${data.id+'_sesii'}" disabled class="form-control">
-                                        <input type="hidden" th:id="${data.id+'_idSesi'}" disabled class="form-control">
-                                        <input type="hidden" th:id="${data.id+'_isiSesi'}" disabled class="form-control">
-                                    </tr>
-
-                                    </tbody>
+                                <table
+                                        id="table-jadwal"
+                                        data-search="true"
+                                        data-show-refresh="true"
+                                        data-flat="true"
+                                        data-pagination="true"
+                                        data-ajax="ajaxRequestJadwal"
+                                        data-side-pagination="server">
                                 </table>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -129,72 +78,204 @@
 </div>
 </body>
 </html>
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
 <script>
-    $(".js-example-placeholder-single").select2({
-        placeholder: "Select One",
-        allowClear: true
-    });
+    function ajaxRequestJadwal(params) {
+        // th:attr="data-url=@{/akademik/getdata-ploting(tahunAkademik='11fadd8d-383f-47b5-83ef-b6d79a5a96cd', kelas='61142fd3-701e-45a5-824a-b414f30e02ce')}"
+        var url = '/akademik/detail-ploting-jadwal?tahun=' + $('#tahun').val()
+        $.get(url + '&' + $.param(params.data)).then(function (res) {
+            params.success(res)
+        })
+    }
 
-    function mySesi(arg) {
-        var id = arg.getAttribute('id');
-        var isiHari = id+'isi';
-        var value = arg.value;
-        console.log(isiHari);
-        $('#'+isiHari).val(value);
+    var $tableJadwal = $('#table-jadwal')
+
+    $(function() {
+        $tableJadwal.bootstrapTable({
+            columns: [{
+                field: 'kelas',
+                title : 'Kelas',
+                align: 'center',
+                valign: 'middle'
+            }, {
+                title: 'Matakuliah',
+                field: 'matkul',
+                align: 'center',
+                valign: 'middle'
+            }, {
+                title: 'SKS',
+                field: 'sks',
+                align: 'center',
+                valign: 'middle'
+            },{
+                title: 'Dosen',
+                field: 'dosen',
+                align: 'center',
+                valign: 'middle'
+            },{
+                title: 'Hari',
+                field: 'totsks',
+                align: 'center',
+                valign: 'middle',
+                formatter: selectHari
+
+            },{
+                title: 'Ruangan',
+                field: 'html',
+                align: 'center',
+                valign: 'middle',
+                formatter: selectRuangan
+            },{
+                title: 'Sesi',
+                field: 'html',
+                align: 'center',
+                valign: 'middle',
+                formatter: selectSesi
+            }]
+        })
+    })
+
+    function selectHari(value, row, index) {
+        return [
+            '<input type="hidden" id=kelas-'+ row.jadwal +'  value="'+ row.idKelas +'"> ',
+            '<input type="hidden" id=dosen-'+ row.jadwal +'  value="'+ row.idDos +'"> ',
+            '<input type="hidden" id=sks-'+ row.jadwal +'  value="'+ row.sks +'"> ',
+            '<select id=hari-'+ row.jadwal +' onclick="validateHari(this);"  class="form-control">',
+            '<option value="-">Pilih Hari</option>',
+            '<option value="0">Minggu</option>',
+            '<option value="1">Senin</option>',
+            '<option value="2">Selasa</option>',
+            '<option value="3">Rabu</option>',
+            '<option value="4">Kamis</option>',
+            '<option value="5">Jumat</option>',
+            '<option value="6">Sabtu</option>',
+            '</select>'
+        ].join('')
 
     }
 
-    function waktu(arg) {
-        var id = arg.getAttribute('id');
-        var value = arg.value;
-        console.log(value);
-        const url = '/api/waktu?id='+value;
-        const withoutLastChunk = id.slice(0, id.lastIndexOf("_"));
-
-        $.getJSON(url, function (data) {
-
-            $('#'+withoutLastChunk+'_mulai').val(data.jamMulai);
-            $('#'+withoutLastChunk+'_selesai').val(data.jamSelesai);
-            $('#'+withoutLastChunk+"_isiSesi").val(data.sesi);
-            $('#'+withoutLastChunk+'_sesii').val(data.id);
-            $('#'+withoutLastChunk+'_idSesi').val(data.id);
-            // document.getElementById("mulai").value = data.jamMulai;
-            // document.getElementById("selesai").value = data.jamSelesai;
-        });
+    function selectRuangan(value, row, index) {
+        return [
+            '<select id=ruangan-'+ row.jadwal +' onchange="validateRuangan(this);" style="width: 100%;" disabled class="form-control">',
+            // '<option value="-" selected>Pilih Ruangan</option>',
+            '</select>'
+        ].join('')
 
     }
 
-    function myRoom(arg) {
+    function selectSesi(value, row, index) {
+        return [
+            '<select id=sesi-'+ row.jadwal +' class="form-control sesi-"'+ row.jadwal +' onchange="validateSesi(this);" disabled style="width: 100%;">',
+            '</select>'
+        ].join('')
+
+    }
+
+    function validateHari(arg) {
         var id = arg.getAttribute('id');
-        var isiRoom = id+'isi';
+        var idRuangan = 'ruangan-'+id.slice(5);
+        var idSesi = 'sesi-'+id.slice(5);
         var value = arg.value;
-        console.log(isiRoom);
-        $('#'+isiRoom).val(value);
 
-        const withoutLastChunk = id.slice(0, id.lastIndexOf("_"));
-        var isiHari = withoutLastChunk+'_hariisi';
-        var sks = withoutLastChunk+'_sks';
-        var dosen = withoutLastChunk+'_dosen';
-        var kelas = withoutLastChunk+'_kelas';
 
-        let dropdown = $('#'+withoutLastChunk+'_sesi');
-
-        dropdown.empty();
-
-        dropdown.append('<option selected="true" disabled>Select One</option>');
-        dropdown.prop('selectedIndex', 0);
-        const url = '/api/sesi?idHari='+$('#'+isiHari).val()+'&idRuangan='+$('#'+isiRoom).val()+'&sks='+$('#'+sks).val()+'&kelas='+$('#'+kelas).val()+'&dosen='+$('#'+dosen).val();
-
-        // Populate dropdown with list of provinces
-        $.getJSON(url, function (data) {
-
-            $.each(data, function (key, entry) {
-                dropdown.append($('<option></option>').attr('value', entry.id).text(entry.namaSesi));
+        $('#'+idRuangan).select2();
+        if (value == '-'){
+            $('#'+idRuangan).prop('disabled', true);
+            $('#'+idRuangan).empty();
+            $('#'+idSesi).prop('disabled', true);
+            $('#'+idSesi).empty();
+        }else {
+            $('#'+idRuangan).prop('disabled', false);
+            var url = '/get-ruangan-list'
+            var newOption = new Option('Pilih Ruangan', '-', true, true);
+            $('#'+idRuangan).append(newOption).trigger('change');
+            $.getJSON(url, function (data) {
+                $.each(data, function (key, entry) {
+                    var newOption = new Option(entry.namaRuangan, entry.id, true, true);
+                    $('#'+idRuangan).append(newOption);
+                })
+                $('#'+idRuangan).val("-").trigger("change");
             })
-        });
+        }
 
     }
 
+    function validateRuangan(arg) {
+        var id = arg.getAttribute('id');
+        var idSesi = 'sesi-'+id.slice(8);
+        var value = arg.value;
 
+        $('#'+idSesi).select2();
+        if (value == '-'){
+            $('#'+idSesi).prop('disabled', true);
+            $('#'+idSesi).empty();
+        }else {
+            $('#'+idSesi).prop('disabled', false);
+            $('#'+idSesi).empty();
+            var url = '/akademik/validasi-sesi/'+id.slice(8)+'?tahun='+$('#tahun').val()+'&hari='+$('#hari-'+id.slice(8)).val()+'&sks='+$('#sks-'+id.slice(8)).val()+'&ruangan='+$('#ruangan-'+id.slice(8)).val()+'&kelas='+$('#'+'kelas-'+id.slice(8)).val()+'&dosen='+$('#'+'dosen-'+id.slice(8)).val();
+            var newOption = new Option('Pilih Sesi ' + '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '-', true, true);
+            $('#'+idSesi).append(newOption).trigger('change');
+            $.getJSON(url, function (data) {
+                $.each(data, function (key, entry) {
+                    if (entry.bentrok == null){
+                        var newOption = $("<option id='"+ entry.id + '-' + id.slice(8) +"'></option>").val(entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )')
+                        $('#'+idSesi).append(newOption);
+                    }else {
+                        var newOption = $("<option disabled title='"+entry.bentrok + ' ( ' + entry.dosen + ' - ' + entry.matkul + ')' +"' id='"+ entry.id + '-' + id.slice(8) +"'></option>").val(entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )')
+                        $('#'+idSesi).append(newOption);
+                    }
 
+                })
+                $('#'+idSesi).val("-");
+            })
+        }
+    }
+
+    function validateSesi(arg) {
+        id = arg.getAttribute('id');
+        var idRuangan = 'ruangan-'+id.slice(5);
+        var idHari = 'hari-'+id.slice(5);
+        var value = arg.value;
+
+        if (value == '-'){
+            console.log("test")
+        }else {
+
+            var request = {};
+            var token = $("input[name='_csrf']").val();
+
+            request["id"] = id.slice(5);
+            request["hari"] = $('#' + idHari).val();
+            request["ruangan"] = $('#' + idRuangan).val();
+            request["sesi"] = value;
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/ploting-update",
+                data: JSON.stringify(request),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data Sudah Terjadwalkan ',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    $tableJadwal.bootstrapTable('refresh')
+                },
+                error: function (result) {
+                }
+            });
+        }
+    }
 </script>
