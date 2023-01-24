@@ -4,4 +4,5 @@ public interface SelectDosen {
     String getId();
     String getDosen();
     Integer getTotal();
+    Integer getMaksimalSks();
 }
