@@ -59,6 +59,7 @@
                     </div>
 
                     <div class="card-body">
+                        <p><small>Pilih prodi anda dan cek kembali nilai antara elearning dan smile</small></p>
                         <form th:action="@{/elearning/importNilaiDosen}" method="post">
                             <div class="form-group">
                                 <label >Prodi</label>
@@ -78,13 +79,13 @@
                                     <option value=""></option>
                                     <option value="" disabled><b>-- Pilih Mata Kuliah --</b></option>
                                     <option th:each="jad : ${jadwal}"
-                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"
+                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + ' - ' + jad.jadwal.kelas.namaKelas}"
                                             th:value="${jad.jadwal.id}">matkul</option>
 <!--                                    <input type="hidden" id="isiJadwal" name="jadwal">-->
                                 </select>
                             </div>
                             <input type="hidden" name="id" >
-                            <p><small>This is some smaller text.</small></p>
+                            <p><small>Pilih bagian yang ingin diimport</small></p>
                             <div class="form-group">
                                 <!--                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="presensi" >Import PRESENSI</button>-->
                                 <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="tugas" >Import TUGAS</button>
@@ -99,6 +100,7 @@
 
                         </div>
                         <div class="card-body">
+                            <p><small>Scroll ke kanan untuk melihat status import</small></p>
                             <div class="table-responsive">
                                 <table class="table align-items-center table-flush">
                                     <thead class="thead-light">
@@ -106,6 +108,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Keterangan</th>
                                         <th scope="col">Kategori</th>
+                                        <th scope="col">Dosen</th>
                                         <th scope="col">Tanggal</th>
                                         <th scope="col">Tanggal Mulai</th>
                                         <th scope="col">Tanggal Selesai</th>
@@ -120,6 +123,7 @@
                                         <td th:text="${(row.index + 1) + (listProses2.number * listProses2.size)}">1</td>
                                         <td th:text="${data.getKeterangan()}">12</td>
                                         <td th:text="${data.getNamaProses()}">12</td>
+                                        <td th:text="${data.getNamaDosen()}"></td>
                                         <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
                                         <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
                                         <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>

@@ -1437,7 +1437,7 @@ public class StudentBillController {
         model.addAttribute("penangguhan", new RequestPenangguhan());
         model.addAttribute("bill", tagihan);
         model.addAttribute("minimalTgl", LocalDate.now().plusMonths(1));
-        model.addAttribute("tahun", tahunProdiDao.findByStatusAndProdi(StatusRecord.AKTIF, tagihan.getMahasiswa().getIdProdi()));
+        model.addAttribute("tahun", tahunProdiDao.findByTahunAkademikAndProdi(tagihan.getTahunAkademik(), tagihan.getMahasiswa().getIdProdi()));
         model.addAttribute("jumlahFile", tagihanDocumentDao.countAllByTagihanAndStatusAndStatusDocument(tagihan, StatusRecord.AKTIF, StatusDocument.PENANGGUHAN));
         model.addAttribute("dokumen", tagihanDocumentDao.findByStatusNotInAndTagihanAndStatusDocument(Arrays.asList(StatusRecord.HAPUS), tagihan, StatusDocument.PENANGGUHAN, page));
     }

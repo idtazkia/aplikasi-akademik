@@ -164,7 +164,92 @@
                                                                     <input type="checkbox" class="select-check" name="checkJadwal" th:value="${data.id}">
                                                                 </td>
                                                                 <td th:text="${row.index + 1}">1</td>
-                                                                <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                                                <td>
+                                                                    <div style="cursor: pointer;" data-toggle="modal" th:data-target="${'#modal-detail' + data.id}">
+                                                                        <div th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></div>
+                                                                    </div>
+
+                                                                    <div class="modal fade" th:id="${'modal-detail' + data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                                            <div class="modal-content">
+
+                                                                                <div class="modal-header bg-transparent pb-5">
+                                                                                    <h4>Detail Jadwal</h4>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">×</span>
+                                                                                    </button>
+                                                                                </div>
+
+                                                                                <div class="modal-body">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-6 col-xs-12">
+                                                                                            <div class="table-responsive">
+                                                                                                <table class="table align-items-center table-flush">
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Prodi</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data.prodi.namaProdi}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Hari</td>
+                                                                                                        <td style="width: 5px;">:</td>
+                                                                                                        <td th:text="${data?.hari?.namaHari}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Ruang Kelas</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data?.ruangan?.namaRuangan + '  -  ' + data?.ruangan?.gedung?.namaGedung}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Jam Mulai</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data?.jamMulai}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Kelas</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data?.kelas?.namaKelas}"></td>
+                                                                                                    </tr>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-md-6 col-xs-12">
+                                                                                            <div class="table-responsive">
+                                                                                                <table class="table align-items-center table-flush">
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Program</td>
+                                                                                                        <td >:</td>
+                                                                                                        <td th:text="${data.program.namaProgram}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right" >Matakuliah</td>
+                                                                                                        <td style="width: 5px;">:</td>
+                                                                                                        <td th:text="${data.matakuliahKurikulum.matakuliah.namaMatakuliah}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Sesi</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data?.sesi}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Jam Selesai</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data?.jamSelesai}"></td>
+                                                                                                    </tr>
+                                                                                                    <tr>
+                                                                                                        <td class="text-right">Dosen</td>
+                                                                                                        <td>:</td>
+                                                                                                        <td th:text="${data.dosen.karyawan.namaKaryawan}"></td>
+                                                                                                    </tr>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
                                                                 <td th:text="${data.dosen.karyawan.namaKaryawan}">2020</td>
                                                                 <td th:text="${data.prodi.namaProdi}">2020</td>
 <!--                                                                <td th:text="${data.jumlahSks}">2020</td>-->
