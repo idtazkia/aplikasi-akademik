@@ -2,30 +2,33 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.human.DosenDto;
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.Karyawan;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.User;
+import id.ac.tazkia.smilemahasiswa.dto.human.JabatanRequest;
+import id.ac.tazkia.smilemahasiswa.dto.human.TableJabatan;
+import id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse;
+import id.ac.tazkia.smilemahasiswa.dto.select2.SelectDosen;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.SplittableRandom;
 import java.util.UUID;
 
@@ -50,35 +53,173 @@ public class HumanResourcesController {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private JabatanDao jabatanDao;
+
     @Value("${upload.fotoKaryawan}")
     private String uploadFolder;
+
+    @GetMapping("/select/dosen-jabatan")
+    @ResponseBody
+    public List<SelectDosen> cariDosenJabatan(@RequestParam String search, String jabatan){
+
+        return dosenDao.searchDosenJabatan(search, Arrays.asList(jabatan));
+    }
 
 //Employee
 
     @GetMapping("/humanResources/employee/list")
-    public void daftarKaryawan(Model model, @PageableDefault(size = 10) Pageable page, String search){
-        if (StringUtils.hasText(search)){
+    public void daftarKaryawan(Model model, @PageableDefault(size = 10) Pageable page, String search) {
+        if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
             model.addAttribute("listkaryawan", karyawanDao.findByStatusAndNamaKaryawanContainingIgnoreCaseOrderByNamaKaryawan(StatusRecord.AKTIF, search, page));
-        }else{
+        } else {
             model.addAttribute("listkaryawan", karyawanDao.findByStatusOrderByNamaKaryawan(StatusRecord.AKTIF, page));
         }
     }
 
+    @GetMapping("/humanResources/jabatan-list")
+    public String viewJabatan() {
+
+        return "/humanResources/lecturer/jabatan";
+    }
+
+    @GetMapping("/getdata-jabatan")
+    @ResponseBody
+    public List<JabatanDosen> getDataJabatan() {
+        return jabatanDao.findByStatus(StatusRecord.AKTIF);
+    }
+
+    @GetMapping("/jabatan/{id}")
+    @ResponseBody
+    public JabatanDosen getDetailJabatan(@PathVariable String id) {
+        return jabatanDao.findById(id).get();
+    }
+
+    @PostMapping(value = "/jabatan-post", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse simpanJabatan(@RequestBody JabatanRequest request) {
+        JabatanDosen jabatanDosen = new JabatanDosen();
+        jabatanDosen.setNama(request.getNama());
+        jabatanDosen.setStatusDosen(request.getStatus());
+        jabatanDosen.setMinimalSks(request.getMinimal());
+        jabatanDosen.setMaksimalSks(request.getMaksimal());
+        jabatanDao.save(jabatanDosen);
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Jabatan Berhasil Disimpan");
+        baseResponse.setCode(HttpStatus.CREATED.getReasonPhrase());
+
+        return baseResponse;
+    }
+
+    @PostMapping(value = "/jabatan-dosen-post/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse simpanJabatanDosen(@PathVariable String id,@RequestParam List<String> dosenList) {
+        JabatanDosen jabatanDosen = jabatanDao.findById(id).get();
+
+        for (String idDosen : dosenList){
+            Dosen dosen = dosenDao.findById(idDosen).get();
+            dosen.setJabatanDosen(jabatanDosen);
+            dosenDao.save(dosen);
+        }
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Dosen Berhasil Disimpan");
+        baseResponse.setCode(HttpStatus.CREATED.getReasonPhrase());
+
+        return baseResponse;
+    }
+
+    @PutMapping(value = "/jabatan-update", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse updateJabatan(@RequestBody JabatanRequest request) {
+        JabatanDosen jabatanDosen = jabatanDao.findById(request.getId()).get();
+        jabatanDosen.setNama(request.getNama());
+        jabatanDosen.setStatusDosen(request.getStatus());
+        jabatanDosen.setMinimalSks(request.getMinimal());
+        jabatanDosen.setMaksimalSks(request.getMaksimal());
+        jabatanDao.save(jabatanDosen);
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("Jabatan Berhasil Diupdate");
+        baseResponse.setCode(HttpStatus.CREATED.getReasonPhrase());
+
+        return baseResponse;
+    }
+
+    @PostMapping(value = "/jabatan-delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse deleteJabatan(@PathVariable String id) {
+        JabatanDosen jabatanDosen = jabatanDao.findById(id).get();
+
+        List<Dosen> dosen = dosenDao.findByStatusAndJabatanDosen(StatusRecord.AKTIF, jabatanDosen);
+
+        if (dosen.size() > 0) {
+            BaseResponse baseResponse = new BaseResponse();
+            baseResponse.setMessage("Jabatan Gagal Dihapus");
+            baseResponse.setCode(String.valueOf(HttpStatus.FORBIDDEN.value()));
+
+            return baseResponse;
+        } else {
+            jabatanDosen.setStatus(StatusRecord.HAPUS);
+            jabatanDao.save(jabatanDosen);
+
+            BaseResponse baseResponse = new BaseResponse();
+            baseResponse.setMessage("Jabatan Berhasil Dihapus");
+            baseResponse.setCode(String.valueOf(HttpStatus.CREATED.value()));
+
+            return baseResponse;
+        }
+
+
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/get-jabatan-list/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public TableJabatan getDataMatakuliah(@PathVariable String id, @RequestParam(required = false) String search,
+                                          @RequestParam(required = false) String sort,
+                                          @RequestParam(required = false) String order,
+                                          @RequestParam(required = false) Integer offset,
+                                          @RequestParam(required = false) Integer limit) {
+        JabatanDosen jabatanDosen = jabatanDao.findById(id).get();
+        if (search.isEmpty()) {
+            TableJabatan table = new TableJabatan();
+            table.setTotal(dosenDao.countListJabatanDosen(jabatanDosen));
+            table.setTotalNotFiltered(dosenDao.countListJabatanDosen(jabatanDosen));
+            table.setRows(dosenDao.listJabatanDosen(jabatanDosen, limit, offset));
+            return table;
+
+        } else {
+            TableJabatan table = new TableJabatan();
+            table.setTotal(dosenDao.countListJabatanDosenSearch(jabatanDosen,search));
+            table.setTotalNotFiltered(dosenDao.listJabatanDosenSearch(jabatanDosen,limit,offset,search).size());
+            table.setRows(dosenDao.listJabatanDosenSearch(jabatanDosen,limit,offset,search));
+            return table;
+
+        }
+
+    }
+
     @GetMapping("/humanResources/employee/form")
-    public void  formKaryawan(Model model, @RequestParam(required = false) String id){
+    public void formKaryawan(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("karyawan", new Karyawan());
 
         if (id != null && !id.isEmpty()) {
             Karyawan karyawan = karyawanDao.findById(id).get();
-            model.addAttribute("karyawan" , karyawan);
+            model.addAttribute("karyawan", karyawan);
         }
 
 
     }
 
     @PostMapping("/humanResources/employee/save")
-    public String saveKaryawan(@Valid Karyawan karyawan, BindingResult error, MultipartFile foto){
+    public String saveKaryawan(@Valid Karyawan karyawan, BindingResult error, MultipartFile foto) {
 
 
         try {
@@ -132,7 +273,7 @@ public class HumanResourcesController {
     }
 
     @PostMapping("/humanResources/employee/delete")
-    public String deleteKaryawan(@Valid Karyawan karyawan){
+    public String deleteKaryawan(@Valid Karyawan karyawan) {
         karyawan.setStatus(StatusRecord.HAPUS);
         karyawan.setIdAbsen(karyawan.getIdAbsen());
         karyawanDao.save(karyawan);
@@ -146,14 +287,14 @@ public class HumanResourcesController {
 
         if (StringUtils.hasText(search)) {
             model.addAttribute("search", search);
-            model.addAttribute("listDosen", dosenDao.findByStatusNotInAndKaryawanNamaKaryawanContainingIgnoreCaseOrKaryawanNikContainingIgnoreCase(Arrays.asList(StatusRecord.HAPUS), search,search,page));
+            model.addAttribute("listDosen", dosenDao.findByStatusNotInAndKaryawanNamaKaryawanContainingIgnoreCaseOrKaryawanNikContainingIgnoreCase(Arrays.asList(StatusRecord.HAPUS), search, search, page));
         } else {
-            model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS),page));
+            model.addAttribute("listDosen", dosenDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS), page));
         }
     }
 
     @GetMapping("/humanResources/lecturer/form")
-    public void   formDosen(Model model,@RequestParam(required = false) String id){
+    public void formDosen(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("prodi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("karyawan", new DosenDto());
 
@@ -185,13 +326,13 @@ public class HumanResourcesController {
     }
 
     @PostMapping("/humanResources/lecturer/form")
-    public String prosesForm(Model model ,@Valid DosenDto dosenDto){
+    public String prosesForm(Model model, @Valid DosenDto dosenDto) {
 
         Integer idAbesen = karyawanDao.cariIDAbesen();
 
         if (dosenDto.getId() == null || dosenDto.getId().isEmpty()) {
             User user1 = userDao.findByUsername(dosenDto.getEmail());
-            if (user1 == null){
+            if (user1 == null) {
                 User user = new User();
                 user.setActive(Boolean.TRUE);
                 user.setRole(roleDao.findById("dosen").get());
@@ -200,8 +341,6 @@ public class HumanResourcesController {
 
                 //            SplittableRandom splittableRandom = new SplittableRandom();
 //            int randomWithSplittableRandom = splittableRandom.nextInt(1, 999999);
-
-
 
 
                 Karyawan karyawan = new Karyawan();
@@ -224,9 +363,9 @@ public class HumanResourcesController {
                 d.setHonor(dosenDto.getHonor());
                 d.setStatus(StatusRecord.AKTIF);
                 dosenDao.save(d);
-            }else {
+            } else {
                 Karyawan cekKaryawan = karyawanDao.findByIdUser(user1);
-                if (cekKaryawan != null){
+                if (cekKaryawan != null) {
                     model.addAttribute("email", dosenDto.getEmail());
                     return "/humanResources/lecturer/alert";
                 }
@@ -254,25 +393,24 @@ public class HumanResourcesController {
             }
 
 
-
-        }else {
+        } else {
             Karyawan karyawan = karyawanDao.findById(dosenDto.getId()).get();
-            if (dosenDto.getIdUser() == null){
+            if (dosenDto.getIdUser() == null) {
                 User user1 = userDao.findByUsername(dosenDto.getEmail());
-                if (user1 == null){
+                if (user1 == null) {
                     User user = new User();
                     user.setActive(Boolean.TRUE);
                     user.setRole(roleDao.findById("dosen").get());
                     user.setUsername(dosenDto.getEmail());
                     userDao.save(user);
                     karyawan.setIdUser(user);
-                }else {
+                } else {
                     model.addAttribute("email", dosenDto.getEmail());
                     return "/humanResources/lecturer/alert";
                 }
 
             }
-            if (dosenDto.getIdUser() != null){
+            if (dosenDto.getIdUser() != null) {
                 karyawan.setIdUser(dosenDto.getIdUser());
                 User user = userDao.findById(dosenDto.getIdUser().getId()).get();
                 user.setUsername(dosenDto.getEmail());
@@ -308,7 +446,7 @@ public class HumanResourcesController {
     }
 
     @PostMapping("/humanResources/lecturer/delete")
-    public String delete(@RequestParam Dosen dosen){
+    public String delete(@RequestParam Dosen dosen) {
         Karyawan karyawan = karyawanDao.findById(dosen.getKaryawan().getId()).get();
         karyawan.setStatus(StatusRecord.HAPUS);
         karyawan.setIdUser(null);
@@ -318,9 +456,6 @@ public class HumanResourcesController {
 
         return "redirect:list";
     }
-
-
-
 
 
 }

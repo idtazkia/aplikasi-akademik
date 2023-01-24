@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Jabatan</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Jabatan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Input Jabatan</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="validation" id="validation">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Jabatan</label>
+                                            <input type="text" id="nama" required name="nama" class="form-control">
+                                            <div class="invalid-feedback">
+                                                Nama Belum Diisi
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Status Dosen</label>
+                                            <select name="status" id="status" class="form-control">
+                                                <option value="HB">Dosen Tetep</option>
+                                                <option value="LB">Dosen LB</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Minimal Sks</label>
+                                            <input type="text" id="minimal" required name="minimal" class="form-control"
+                                                   value="0"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <div class="invalid-feedback">
+                                                Minimal Belum Diisi
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Maksimal Sks</label>
+                                            <input type="text" id="maksimal" required name="maksimal"
+                                                   class="form-control"
+                                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            <input type="hidden" id="id">
+                                            <div class="invalid-feedback">
+                                                Maksimal SKS Belum Diisi
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button id="btnSimpan" class="btn btn-success">Simpan</button>
+                                <button id="btnUpdate" onclick="updateJabatan()" type="button" style="display: none"
+                                        class="btn btn-success">Update
+                                </button>
+                                <button id="closemodal" class="btn btn-danger">Tutup</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Dosen</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="validation" id="update-validation">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Dosen</label>
+                                            <select id="dosenList" name="dosen" style="width: 100%!important;"
+                                                    class="js-example-basic-multiple js-states form-control js-data-example-ajax">
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Dosen Belum Diisi
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-success" type="button" onclick="tambahDosen()">Simpan</button>
+                                <button onclick="closeModalAdd()" type="button" class="btn btn-danger">Tutup</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col-md-5 col-xs-12">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Form</h3>
+                            </div>
+                            <div class="col text-right">
+                                <a onclick="openModal()" class="btn btn-sm btn-default"><i
+                                        class="fas fa-plus-circle"></i>
+                                    Tambah</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table
+                                    id="table-jabatan"
+                                    data-filter-control="true"
+                                    data-search="true"
+                                    data-show-refresh="true"
+                                    data-flat="true"
+                                    data-auto-refresh-interval=60
+                                    data-auto-refresh="true"
+                                    data-pagination="true"
+                                    th:attr="data-url=@{/getdata-jabatan}"
+                                    data-side-pagination="client">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7 col-xs-12" id="div-detail" style="display: none">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0" id="div-judul"></h3>
+                        <div class="col text-right">
+                            <a onclick="openModalAdd()" class="btn btn-sm btn-default"><i
+                                    class="fas fa-plus-circle"></i>
+                                Tambah Dosen</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-striped">
+                            <input type="hidden" id="idJabatan">
+                            <table
+                                    id="tableDetail"
+                                    data-search="true"
+                                    data-show-refresh="true"
+                                    data-flat="true"
+                                    data-pagination="true"
+                                    data-ajax="ajaxRequestJabatan"
+                                    data-side-pagination="server">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Dark table -->
+
+
+    </div>
+</div>
+</body>
+</html>
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+<script>
+
+    $("#dosenList").select2(
+        {
+            dropdownParent: $('#tambahModal'),
+            placeholder: 'Cari Dosen',
+            multiple: 'true',
+            minimumInputLength: 3,
+            ajax: {
+                url: function (params) {
+                    return '/select/dosen-jabatan?search=' + params.term + '&jabatan=' + $('#idJabatan').val();
+                },
+                dataType: 'json',
+                type: "GET",
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    for(var i = 0; i < data.length; i++){
+                        data[i]={id:data[i].id,text:data[i].dosen,value:data[i].id}
+                    }
+                    return {
+                        results: data
+                    };
+                }
+            },
+
+        });
+
+    function openModal(row) {
+        $("#exampleModal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+
+        console.log(row)
+        if (row != null) {
+            const url = '/jabatan/' + row
+            $.getJSON(url, function (response) {
+                document.getElementById("btnUpdate").style.display = "block";
+                document.getElementById("btnSimpan").style.display = "none";
+                $('#id').val(response.id);
+                $('#nama').val(response.nama);
+                $('#status').val(response.statusDosen);
+                $('#minimal').val(response.minimalSks);
+                $('#maksimal').val(response.maksimalSks);
+
+            });
+        }
+    }
+
+    function openModalAdd(row) {
+        $("#tambahModal").modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    function openDetail(args) {
+        $('#idJabatan').val(args.id)
+        $tableDetail.bootstrapTable('refresh')
+        document.getElementById('div-judul').innerHTML = args.nama;
+        $("#div-detail").slideDown("slow");
+        document.getElementById("div-detail").style.display = "block";
+
+    }
+
+    var $tableDetail = $('#tableDetail')
+    var $tableJabatan = $('#table-jabatan')
+
+    $(function () {
+        $tableJabatan.bootstrapTable({
+            columns: [{
+                field: 'nama',
+                title: 'Nama Jabatan',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'Maksimal SKS',
+                field: 'maksimalSks',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'operate',
+                title: 'Item Operate',
+                align: 'center',
+                clickToSelect: false,
+                events: window.operateEvents,
+                formatter: operateFormatter
+            }]
+        })
+    })
+
+    $(function () {
+        $tableDetail.bootstrapTable({
+            columns: [{
+                field: 'nama',
+                title: 'Nama Dosen',
+                align: 'center',
+                valign: 'middle',
+            }]
+        })
+    })
+
+    function ajaxRequestJabatan(params) {
+        if ($('#idJabatan').val() != '') {
+            var url = '/get-jabatan-list/' + $('#idJabatan').val()
+            $.get(url + '?' + $.param(params.data)).then(function (res) {
+                params.success(res)
+            })
+        }
+    }
+
+    function operateFormatter(value, row, index) {
+        return [
+            '<button type="button" class="btn btn-sm btn-info view">',
+            '<i class="fas fa-eye view"></i> View',
+            '</button>  &nbsp;',
+            '<button type="button" class="btn btn-sm btn-primary edit">',
+            '<i class="fas fa-edit edit"></i> Edit',
+            '</button>  &nbsp;',
+            '<button type="button" class="btn btn-sm btn-danger delete">',
+            '<i class="fa fa-trash"></i> Hapus',
+            '</button>'
+        ].join('')
+    }
+
+    window.operateEvents = {
+        'click .view': function (e, value, row, index) {
+            openDetail(row);
+        }, 'click .edit': function (e, value, row, index) {
+            openModal(row.id);
+        },
+        'click .delete': function (e, value, row, index) {
+            deleteJabatan(row.id);
+        }
+    }
+
+    function simpanJabatan() {
+        var request = {};
+        var token = $("input[name='_csrf']").val();
+
+        request["nama"] = $('#nama').val();
+        request["status"] = $('#status').val();
+        request["maksimal"] = $('#maksimal').val();
+        request["minimal"] = $('#minimal').val();
+
+        var forms = document.querySelectorAll('.validation');
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('click', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+
+        if ($(".validation")[0].checkValidity()) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/jabatan-post",
+                data: JSON.stringify(request),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+                    $('#exampleModal').modal('hide');
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data Sudah Tersimpan ',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    $tableJabatan.bootstrapTable('refresh')
+                },
+                error: function (result) {
+
+                }
+            });
+        }
+    }
+
+    function updateJabatan() {
+        var request = {};
+        var token = $("input[name='_csrf']").val();
+
+        request["id"] = $('#id').val();
+        request["nama"] = $('#nama').val();
+        request["status"] = $('#status').val();
+        request["maksimal"] = $('#maksimal').val();
+        request["minimal"] = $('#minimal').val();
+
+        var forms = document.querySelectorAll('.validation');
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('click', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+
+        if ($(".validation")[0].checkValidity()) {
+            $.ajax({
+                type: "PUT",
+                contentType: "application/json",
+                headers: {"X-CSRF-TOKEN": token},
+                url: "/jabatan-update",
+                data: JSON.stringify(request),
+                dataType: 'json',
+                cache: false,
+                timeout: 600000,
+                success: function (result) {
+                    $('#exampleModal').modal('hide');
+                    $('.validation').trigger("reset");
+                    Array.prototype.slice.call(forms)
+                        .forEach(function (form) {
+                            form.classList.remove("was-validated");
+                        })
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data Sudah Terupdate ',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    $tableJabatan.bootstrapTable('refresh')
+                },
+                error: function (result) {
+
+                }
+            });
+        }
+    }
+
+    function deleteJabatan(id) {
+        var token = $("input[name='_csrf']").val();
+        var url = "/jabatan-delete/" + id;
+
+        Swal.fire({
+            title: 'Anda Yakin Menghapus?',
+            text: "Data Akan terhapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus Data!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    contentType: "application/json;charset=UTF-8",
+                    headers: {"X-CSRF-TOKEN": token},
+                    method: 'post',
+                    dataType: 'JSON',
+                    data: JSON.stringify({
+                        "id": id
+                    }), success: function (result) {
+
+                        if (result.code == '302') {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Gagal Dihapus ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Data Sudah Terupdate ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            $tableJabatan.bootstrapTable('refresh')
+                        }
+                    },
+                    error: function (result) {
+                        alert('error');
+                    }
+                })
+            }
+        })
+    }
+
+    function closeModal() {
+        $('#exampleModal').modal('hide');
+        $('.validation').trigger("reset");
+
+    }
+
+    $('#closemodal').click(function () {
+        $('#exampleModal').modal('hide');
+        $('.validation').trigger("reset");
+        var forms = document.querySelectorAll('.validation');
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.classList.remove("was-validated");
+            })
+
+    });
+
+    function tambahDosen() {
+
+        var request = {};
+        var token = $("input[name='_csrf']").val();
+
+        request["idDosen"] = $("#dosenList").val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            headers: {"X-CSRF-TOKEN": token},
+            url: "/jabatan-dosen-post/"+$('#idJabatan').val()+"?dosenList="+$("#dosenList").val(),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success:function(result) {
+                $('#tambahModal').modal('hide');
+                $('#dosenList').val('').trigger('change')
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Data Tersimpan',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                $tableDetail.bootstrapTable('refresh')
+            },
+            error:function(result) {
+            }
+        });
+    }
+
+    function closeModalAdd() {
+        $('#tambahModal').modal('hide');
+        $('#dosenList').val('').trigger('change')
+    }
+</script>

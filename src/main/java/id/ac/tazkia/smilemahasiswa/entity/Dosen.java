@@ -21,7 +21,7 @@ public class Dosen {
     private Prodi prodi;
 
     @Enumerated(EnumType.STRING)
-    private StatusRecord status = StatusRecord.Y;
+    private StatusRecord status = StatusRecord.AKTIF;
 
     @ManyToOne
     @NotNull
@@ -33,4 +33,9 @@ public class Dosen {
     private BigDecimal honor;
 
     private String statusDosen;
+
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "id_jabatan")
+    private JabatanDosen jabatanDosen;
 }
