@@ -1655,7 +1655,7 @@ public class ElearningController {
             prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
             prosesBackgroundDosen.setProdi(prodi1.getId());
             prosesBackgroundDosen.setJadwal(jadwal1.getId());
-            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas());
             prosesBackgroundDosenDao.save(prosesBackgroundDosen);
             return "redirect:importNilaiDosen";
 
