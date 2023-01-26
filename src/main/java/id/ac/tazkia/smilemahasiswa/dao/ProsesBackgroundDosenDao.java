@@ -19,4 +19,6 @@ public interface ProsesBackgroundDosenDao extends PagingAndSortingRepository<Pro
 
     Page<ProsesBackgroundDosen> findByStatusNotInOrderByTanggalInputDesc(List<StatusRecord> asList, Pageable page);
 
+    Page<ProsesBackgroundDosen> findByNamaDosenContainingIgnoreCaseAndStatusNotInOrderByTanggalInputDesc(String search,List<StatusRecord> asList, Pageable page);
+
 }

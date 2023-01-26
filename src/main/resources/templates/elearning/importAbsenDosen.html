@@ -78,7 +78,7 @@
                                     <option value=""></option>
                                     <option value="" disabled><b>-- Pilih Mata Kuliah --</b></option>
                                     <option th:each="jad : ${jadwal}"
-                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}"
+                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + ' - ' + jad.jadwal.kelas.namaKelas + ' - ' + jad.jadwal.prodi.namaProdi}"
                                             th:value="${jad.jadwal.id}">matkul</option>
                                     <!--                                    <input type="hidden" id="isiJadwal" name="jadwal">-->
                                 </select>
@@ -91,6 +91,69 @@
                             </div>
                         </form>
                     </div>
+
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <div class="form-group">
+                                <form method="get">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Cari nama anda disini untuk melihat status import" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p><small>Scroll ke kanan untuk melihat status import</small></p>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Keterangan</th>
+                                        <th scope="col">Kategori</th>
+                                        <th scope="col">Dosen</th>
+                                        <th scope="col">Tanggal</th>
+                                        <th scope="col">Tanggal Mulai</th>
+                                        <th scope="col">Tanggal Selesai</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col"></th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listProses2}">
+                                        <td th:text="${(row.index + 1) + (listProses2.number * listProses2.size)}">1</td>
+                                        <td th:text="${data.getKeterangan()}">12</td>
+                                        <td th:text="${data.getNamaProses()}">12</td>
+                                        <td th:text="${data.getNamaDosen()}"></td>
+                                        <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                        <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td th:text="${data.getStatus()}">2020</td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
