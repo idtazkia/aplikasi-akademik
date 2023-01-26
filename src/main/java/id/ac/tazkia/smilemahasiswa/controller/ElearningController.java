@@ -130,6 +130,9 @@ public class ElearningController {
     @Autowired
     private ProsesBackgroundAbsensiElearningDao prosesBackgroundAbsensiElearningDao;
 
+    @Autowired
+    private ProsesBackgroundAbsensiDosenDao prosesBackgroundAbsensiDosenDao;
+
     WebClient webClient1 = WebClient.builder()
             .baseUrl("https://elearning.tazkia.ac.id")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -298,7 +301,7 @@ public class ElearningController {
 
     @GetMapping("/elearning/importNilaiDosen")
     public void importNilaiDosen(Model model, Authentication authentication,
-                                 @PageableDefault(size = 10) Pageable page){
+                                 @PageableDefault(size = 10) Pageable page, String search){
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -308,7 +311,14 @@ public class ElearningController {
         Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("jadwal", jadwal);
-        model.addAttribute("listProses2", prosesBackgroundDosenDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
+
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listProses2", prosesBackgroundDosenDao.findByNamaDosenContainingIgnoreCaseAndStatusNotInOrderByTanggalInputDesc(search,Arrays.asList(StatusRecord.HAPUS), page));
+        } else {
+            model.addAttribute("listProses2", prosesBackgroundDosenDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
+        }
 
     }
 
@@ -332,7 +342,7 @@ public class ElearningController {
 
     @GetMapping("/elearning/importAbsenDosen")
     public void importAbsenDosen(Model model, Authentication authentication,
-                                 @PageableDefault(size = 10) Pageable page){
+                                 @PageableDefault(size = 10) Pageable page, String search){
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
@@ -342,6 +352,14 @@ public class ElearningController {
         Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
         model.addAttribute("prodi", prodiDao.findByStatus(StatusRecord.AKTIF));
         model.addAttribute("jadwal", jadwal);
+
+        if (StringUtils.hasText(search)) {
+            model.addAttribute("search", search);
+            model.addAttribute("listProses2", prosesBackgroundAbsensiDosenDao.findByNamaDosenContainingIgnoreCaseAndStatusNotInOrderByTanggalInputDesc(search,Arrays.asList(StatusRecord.HAPUS), page));
+        } else {
+            model.addAttribute("listProses2", prosesBackgroundAbsensiDosenDao.findByStatusNotInOrderByTanggalInputDesc(Arrays.asList(StatusRecord.HAPUS), page));
+        }
+
 
     }
 
@@ -1671,7 +1689,7 @@ public class ElearningController {
             prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
             prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
             prosesBackgroundDosen.setProdi(prodi1.getId());
-            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas());
             prosesBackgroundDosen.setJadwal(jadwal1.getId());
             prosesBackgroundDosenDao.save(prosesBackgroundDosen);
             return "redirect:importNilaiDosen";
@@ -1689,7 +1707,7 @@ public class ElearningController {
             prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
             prosesBackgroundDosen.setProdi(prodi1.getId());
             prosesBackgroundDosen.setJadwal(jadwal1.getId());
-            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas());
             prosesBackgroundDosenDao.save(prosesBackgroundDosen);
             return "redirect:importNilaiDosen";
 
@@ -1706,7 +1724,8 @@ public class ElearningController {
             prosesBackgroundDosen.setTanggalInput(LocalDateTime.now());
             prosesBackgroundDosen.setTahunAkademik(tahunAkademik1.getId());
             prosesBackgroundDosen.setProdi(prodi1.getId());
-            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            prosesBackgroundDosen.setJadwal(jadwal1.getId());
+            prosesBackgroundDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas());
             prosesBackgroundDosenDao.save(prosesBackgroundDosen);
             return "redirect:importNilaiDosen";
 
@@ -1721,279 +1740,34 @@ public class ElearningController {
 
 
     @PostMapping("/elearning/importAbsenDosen")
-    public String inputFormAbsenDosen(@RequestParam String jadwal){
+    public String inputFormAbsenDosen(@RequestParam(required = false) String ta, @RequestParam(required = false) String prodi,
+                                      @RequestParam(required = false) String jadwal, @RequestParam(value="action", required=true) String action, Authentication authentication){
 
-        Jadwal jadwalIdNum = jadwalDao.findByStatusAndId(StatusRecord.AKTIF, jadwal);
-        List<MdlAttendanceLogDosenDto> daftarPresensiDosen = getAttendanceDosen3(jadwalIdNum.getIdNumberElearning());
+        System.out.println("Impor Jalan");
+        System.out.println("Prodinya :" + prodi);
+        System.out.println("Jadwalnya :" + jadwal);
 
-        TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        User user = currentUserService.currentUser(authentication);
+        Karyawan karyawan = karyawanDao.findByIdUser(user);
+        Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        for (MdlAttendanceLogDosenDto mdldos : daftarPresensiDosen) {
-            System.out.println("PROGRESS INPUT DOSEN");
-            System.out.println(mdldos.getIdDosen());
-            if (mdldos.getIdDosen() != null) {
-                Karyawan karyawan = karyawanDao.findByEmail(mdldos.getIdDosen());
-                Dosen dosen = dosenDao.findByKaryawan(karyawan);
-                if (karyawan != null) {
-                    if (dosen != null) {
+//        TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
+        TahunAkademik tahunAkademik1 = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        Prodi prodi1 = prodiDao.findById(prodi).get();
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+//        JadwalDosen jadwalDos = jadwalDosenDao.findById(jadwal).get();
 
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        LocalDate timeIn = LocalDate.parse(mdldos.getWaktuMasuk(), formatter);
-                        LocalDate timeOut = LocalDate.parse(mdldos.getWaktuSelesai(), formatter);
-                        LocalDate timeIp = LocalDate.parse(mdldos.getTanggalInput(), formatter);
-
-                        LocalTime jamNya = LocalTime.of(00,00,00);
-
-
-                        PresensiDosen pd = new PresensiDosen();
-
-                        SesiKuliah sesiKuliah = new SesiKuliah();
-
-//                        Jadwal jadwal = jadwalDao.findById(mdldos.getIdJadwal()).get();
-//                        Jadwal jadwal = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(),ta, StatusRecord.AKTIF);
-                        List<Jadwal> jadwalList1 = jadwalDao.findByTahunAkademikAndIdNumberElearningAndStatus(ta,mdldos.getIdJadwal(),StatusRecord.AKTIF);
-
-
-                        if (jadwalList1 != null) {
-                            for (Jadwal jadwal2 : jadwalList1){
-                                pd.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-                                pd.setJadwal(jadwal2);
-                                if (jadwal2.getJamMulai() != null){
-                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal2.getJamMulai()));
-                                }
-                                if (jadwal2.getJamMulai() == null){
-                                    pd.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
-                                }
-                                if (jadwal2.getJamSelesai() != null){
-                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal2.getJamSelesai()));
-                                }
-                                if (jadwal2.getJamSelesai() == null){
-                                    pd.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
-                                }
-                                pd.setStatusPresensi(StatusPresensi.valueOf(mdldos.getStatusPresensi()));
-                                pd.setStatus(StatusRecord.valueOf(mdldos.getStatus()));
-                                pd.setDosen(dosen);
-                                presensiDosenDao.save(pd);
-//                            update(mdldos.getIdLog());
-                                System.out.println("INPUT DOSEN SUKSES  = " + mdldos.getIdDosen());
-                                System.out.println("ID LOG  =  " + mdldos.getIdLog());
-                                if (jadwal2.getJamMulai() != null){
-                                    System.out.println(" JAM MULAI == " + LocalDateTime.of(timeIn,jadwal2.getJamMulai()));
-                                }
-                                if (jadwal2.getJamMulai() == null){
-                                    System.out.println(" JAM MULAI NULL ");
-                                }
-                                if (jadwal2.getJamSelesai() != null){
-                                    System.out.println(" JAM SELESAI == " + LocalDateTime.of(timeIn,jadwal2.getJamSelesai()));
-                                }
-                                if (jadwal2.getJamSelesai() == null){
-                                    System.out.println(" JAM SELESAI NULL");
-                                }
-
-                                AttendanceImportBerhasil ib = new AttendanceImportBerhasil();
-                                ib.setTahunAkademik(tahunAkademikDao.findById(mdldos.getIdTahunAkademik()).get());
-                                ib.setJadwal(jadwal2);
-                                ib.setKelas(jadwal2.getKelas().getNamaKelas());
-                                ib.setDosen(dosen);
-                                if (jadwal2.getJamMulai() != null){
-                                    ib.setWaktuMasuk(LocalDateTime.of(timeIn,jadwal2.getJamMulai()));
-                                }
-                                if (jadwal2.getJamMulai() == null){
-                                    ib.setWaktuMasuk(LocalDateTime.of(timeIn,jamNya ));
-                                }
-                                if (jadwal2.getJamSelesai() != null){
-                                    ib.setWaktuSelesai(LocalDateTime.of(timeOut,jadwal2.getJamSelesai()));
-                                }
-                                if (jadwal2.getJamSelesai() == null){
-                                    ib.setWaktuSelesai(LocalDateTime.of(timeOut,jamNya ));
-                                }
-                                ib.setTanggalImport(LocalDateTime.of(timeIp, jamNya));
-                                ib.setStatus(StatusRecord.AKTIF);
-                                listImportBerhasilDao.save(ib);
-                                System.out.println("Tanggal Input =" + LocalDateTime.of(timeIp,jamNya));
-
-                            }
-
-
-                            //remove html tag
-                            String strHTML = mdldos.getBeritaAcara();
-                            org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(strHTML);
-
-                            org.jsoup.nodes.Document.OutputSettings outputSettings = new org.jsoup.nodes.Document.OutputSettings();
-                            outputSettings.prettyPrint(false);
-                            jsoupDoc.outputSettings(outputSettings);
-                            jsoupDoc.select("br").before("\\n");
-                            jsoupDoc.select("p").before("\\n");
-
-                            String str = jsoupDoc.html().replaceAll("\\\\n", "");
-                            String strWithNewLines = Jsoup.clean(str, "", Whitelist.none(), outputSettings);
-
-
-
-
-                            if (jadwalList1 != null) {
-                                sesiKuliah.setJadwal(pd.getJadwal());
-                                sesiKuliah.setPresensiDosen(pd);
-                                sesiKuliah.setWaktuMulai(pd.getWaktuMasuk());
-                                sesiKuliah.setWaktuSelesai(pd.getWaktuSelesai());
-                                sesiKuliah.setBeritaAcara(strWithNewLines);
-                                sesiKuliahDao.save(sesiKuliah);
-                                System.out.println("INPUT SESI KULIAH SUKSES  = " + pd.getJadwal());
-                            }
-                        }
-
-
-                        List<MdlAttendanceLogMahasiswaDto> daftarPresensiMahasiswa = getAttendanceMahasiswa2(mdldos.getIdSession());
-                        for (MdlAttendanceLogMahasiswaDto mdlmah : daftarPresensiMahasiswa) {
-
-//                            Jadwal j = jadwalDao.findById(mdldos.getIdJadwal()).get();
-                            Jadwal j = jadwalDao.findByIdNumberElearningAndTahunAkademikAndStatus(mdldos.getIdJadwal(), ta, StatusRecord.AKTIF);
-
-
-                            if (j != null) {
-                                if (mdlmah.getMahasiswa() != null) {
-                                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                                    LocalDateTime mahasiswaIn = LocalDateTime.parse(mdlmah.getWaktuMasuk(), formatter2);
-                                    LocalDateTime mahasiswaOut = LocalDateTime.parse(mdlmah.getWaktuSelesai(), formatter2);
-                                    User user = userDao.findByUsername(mdlmah.getMahasiswa());
-                                    if (user != null) {
-                                        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-                                        Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mahasiswa, ta, StatusRecord.AKTIF);
-
-                                        if (k != null) {
-                                            Long jmlData = krsDetailDao.countKrsDetail2(mdlmah.getIdJadwal(), mahasiswa, ta, StatusRecord.AKTIF);
-//                                        Long jmlData = krsDetailDao.countByJadwalIdAndKrsAndStatusAndTahunAkademik(mdlmah.getIdJadwal(), k, StatusRecord.AKTIF, ta);
-                                            System.out.println("INPUT MAHASISWA PROGRESS");
-                                            System.out.println(" JUMLAH KRS = " + jmlData);
-                                            System.out.println(" NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
-
-
-                                            if (jmlData.compareTo(Long.valueOf(1)) > 0) {
-                                                Object idKrsDetail = krsDetailDao.getKrsDetailId(j, mahasiswa);
-                                                List<KrsDetail> cariDouble = krsDetailDao.findByStatusAndJadwalAndMahasiswaAndIdNot(StatusRecord.AKTIF, j, mahasiswa, idKrsDetail);
-                                                for (KrsDetail thekrsDetail : cariDouble) {
-                                                    thekrsDetail.setStatus(StatusRecord.HAPUS);
-                                                    krsDetailDao.save(thekrsDetail);
-                                                }
-
-                                                PresensiMahasiswa pm = new PresensiMahasiswa();
-                                                pm.setMahasiswa(mahasiswa);
-                                                pm.setKrsDetail(krsDetailDao.findById(idKrsDetail.toString()).get());
-                                                pm.setSesiKuliah(sesiKuliah);
-                                                pm.setWaktuMasuk(mahasiswaIn);
-                                                pm.setWaktuKeluar(mahasiswaOut);
-                                                if (mdlmah.getStatusPresensi().equals("Present")) {
-                                                    pm.setStatusPresensi(StatusPresensi.HADIR);
-                                                }
-                                                if (mdlmah.getStatusPresensi().equals("Late")) {
-                                                    pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
-                                                }
-
-                                                if (mdlmah.getStatusPresensi().equals("Absent")) {
-                                                    pm.setStatusPresensi(StatusPresensi.MANGKIR);
-                                                }
-
-                                                if (mdlmah.getStatusPresensi().equals("Excused")) {
-                                                    pm.setStatusPresensi(StatusPresensi.IZIN);
-                                                }
-                                                pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-                                                presensiMahasiswaDao.save(pm);
-                                                System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
-
-                                            }
-
-                                            if (jmlData.compareTo(Long.valueOf(1)) == 0) {
-                                                PresensiMahasiswa pm = new PresensiMahasiswa();
-                                                pm.setMahasiswa(mahasiswa);
-                                                KrsDetail krsDetail = krsDetailDao.getKrsDetail4(mdlmah.getIdJadwal(), mahasiswa, k, ta, StatusRecord.AKTIF);
-//                                            KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatusAndKrsAndTahunAkademik(mahasiswa, jadwalDao.findById(mdlmah.getIdJadwal()).get(), StatusRecord.AKTIF, k, ta);
-                                                pm.setKrsDetail(krsDetail);
-                                                pm.setSesiKuliah(sesiKuliah);
-                                                pm.setWaktuMasuk(mahasiswaIn);
-                                                pm.setWaktuKeluar(mahasiswaOut);
-                                                if (mdlmah.getStatusPresensi().equals("Present")) {
-                                                    pm.setStatusPresensi(StatusPresensi.HADIR);
-                                                }
-                                                if (mdlmah.getStatusPresensi().equals("Late")) {
-                                                    pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
-                                                }
-
-                                                if (mdlmah.getStatusPresensi().equals("Absent")) {
-                                                    pm.setStatusPresensi(StatusPresensi.MANGKIR);
-                                                }
-
-                                                if (mdlmah.getStatusPresensi().equals("Excused")) {
-                                                    pm.setStatusPresensi(StatusPresensi.IZIN);
-                                                }
-                                                pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-                                                presensiMahasiswaDao.save(pm);
-                                                System.out.println("INPUT MAHASISWA SUKSES  =" + "NIM = " + mahasiswa.getId() + "     " + " JADWAL = " + mdlmah.getIdJadwal());
-
-                                            }
-
-
-//                                        if (jmlData.compareTo(Long.valueOf(1)) < 0) {
-//                                            KrsDetail kd = new KrsDetail();
-//                                            kd.setJadwal(j);
-//                                            kd.setKrs(k);
-//                                            kd.setMahasiswa(mahasiswa);
-//                                            kd.setMatakuliahKurikulum(j.getMatakuliahKurikulum());
-//                                            kd.setNilaiPresensi(BigDecimal.ZERO);
-//                                            kd.setNilaiTugas(BigDecimal.ZERO);
-//                                            kd.setNilaiUas(BigDecimal.ZERO);
-//                                            kd.setNilaiUts(BigDecimal.ZERO);
-//                                            kd.setFinalisasi("N");
-//                                            kd.setJumlahMangkir(0);
-//                                            kd.setJumlahKehadiran(0);
-//                                            kd.setKodeUts(RandomStringUtils.randomAlphanumeric(5));
-//                                            kd.setKodeUas(RandomStringUtils.randomAlphanumeric(5));
-//                                            kd.setJumlahTerlambat(0);
-//                                            kd.setJumlahIzin(0);
-//                                            kd.setJumlahSakit(0);
-//                                            kd.setStatusEdom(StatusRecord.UNDONE);
-//                                            kd.setTahunAkademik(ta);
-//                                            krsDetailDao.save(kd);
-//
-//                                            PresensiMahasiswa pm = new PresensiMahasiswa();
-//                                            pm.setMahasiswa(mahasiswa);
-//                                            pm.setKrsDetail(kd);
-//                                            pm.setSesiKuliah(sesiKuliah);
-//                                            pm.setWaktuMasuk(mahasiswaIn);
-//                                            pm.setWaktuKeluar(mahasiswaOut);
-//                                            if (mdlmah.getStatusPresensi().equals("Present")) {
-//                                                pm.setStatusPresensi(StatusPresensi.HADIR);
-//                                            }
-//                                            if (mdlmah.getStatusPresensi().equals("Late")) {
-//                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
-//                                            }
-//
-//                                            if (mdlmah.getStatusPresensi().equals("Absent")) {
-//                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
-//                                            }
-//
-//                                            if (mdlmah.getStatusPresensi().equals("Excused")) {
-//                                                pm.setStatusPresensi(StatusPresensi.IZIN);
-//                                            }
-//                                            pm.setStatus(StatusRecord.valueOf(mdlmah.getStatus()));
-//                                            presensiMahasiswaDao.save(pm);
-//                                        }
-                                        } else {
-                                            System.out.printf("Belum bayaran  > ");
-                                        }
-
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-
-                }
-
-            }
-        }
+        ProsesBackgroundAbsensiDosen prosesBackgroundAbsensiDosen = new ProsesBackgroundAbsensiDosen();
+        prosesBackgroundAbsensiDosen.setNamaProses("ABSENSI");
+        prosesBackgroundAbsensiDosen.setNamaDosen(dosen.getKaryawan().getNamaKaryawan());
+        prosesBackgroundAbsensiDosen.setStatus(StatusRecord.WAITING);
+        prosesBackgroundAbsensiDosen.setTanggalInput(LocalDateTime.now());
+        prosesBackgroundAbsensiDosen.setTahunAkademik(tahunAkademik1.getId());
+        prosesBackgroundAbsensiDosen.setProdi(prodi1.getId());
+        prosesBackgroundAbsensiDosen.setJadwal(jadwal1.getId());
+        prosesBackgroundAbsensiDosen.setIdDosen(dosen.getId());
+        prosesBackgroundAbsensiDosen.setKeterangan(tahunAkademik1.getKodeTahunAkademik() + " - " + prodi1.getNamaProdi() + " - " + jadwal1.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal1.getKelas().getNamaKelas());
+        prosesBackgroundAbsensiDosenDao.save(prosesBackgroundAbsensiDosen);
 
         System.out.println("Import Data Finished");
         return "redirect:importAbsenDosen";

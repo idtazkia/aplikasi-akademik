@@ -79,7 +79,7 @@
                                     <option value=""></option>
                                     <option value="" disabled><b>-- Pilih Mata Kuliah --</b></option>
                                     <option th:each="jad : ${jadwal}"
-                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + ' - ' + jad.jadwal.kelas.namaKelas}"
+                                            th:text="${jad.jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish + ' - ' + jad.jadwal.kelas.namaKelas + ' - ' + jad.jadwal.prodi.namaProdi}"
                                             th:value="${jad.jadwal.id}">matkul</option>
 <!--                                    <input type="hidden" id="isiJadwal" name="jadwal">-->
                                 </select>
@@ -97,7 +97,16 @@
                     </div>
                     <div class="card shadow">
                         <div class="card-header">
-
+                            <div class="form-group">
+                                <form method="get">
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Cari nama anda disini untuk melihat status import" th:value="${search}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                         <div class="card-body">
                             <p><small>Scroll ke kanan untuk melihat status import</small></p>
