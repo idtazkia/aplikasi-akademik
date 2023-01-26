@@ -52,6 +52,8 @@
                     <td class="text"><b>Lecture</b></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
                     <td class="text"><b th:text="${dosen}">KholifahST, M.E.Sy</b></td>
+                    <input type="hidden" id="matkul" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">
+                    <input type="hidden" id="kelas" th:value="${jadwal.kelas.namaKelas}">
                 </tr>
             </table>
         </div>
@@ -148,9 +150,10 @@
     }
 
     var doc = new jsPDF('p','pt','letter');
+    var namaFile = $('#matkul').val() + ' - ' + $('#kelas').val()
     var content = $('#content');
     doc.addHTML(document.body,function() {
-        doc.save('Topic-BKD.pdf');
+        doc.save('Berita Acara ' +namaFile);
     });
 
 </script>

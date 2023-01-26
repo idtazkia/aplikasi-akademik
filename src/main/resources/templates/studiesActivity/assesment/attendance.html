@@ -46,6 +46,8 @@
                     <td class="text"><b>Subject</b></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
                     <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">ACC2701-Islamic Business Ethic</b></td>
+                    <input type="hidden" id="matkul" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">
+                    <input type="hidden" id="kelas" th:value="${jadwal.kelas.namaKelas}">
                 </tr>
                 <tr>
                     <td class="text"><b>Lecture</b></td>
@@ -177,9 +179,10 @@
     }
 
     var doc = new jsPDF('p','pt','letter');
+    var namaFile = $('#matkul').val() + ' - ' + $('#kelas').val()
     var content = $('#content');
     doc.addHTML(document.body,function() {
-        doc.save('sample-file.pdf');
+        doc.save('Presensi ' +namaFile);
     });
 
 </script>

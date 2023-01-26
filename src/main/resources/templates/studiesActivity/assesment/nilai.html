@@ -46,11 +46,13 @@
                     <td class="text"><i>Mata Kuliah</i></td>
                     <td class="text"><b> &nbsp; &nbsp; :</b></td>
                     <td class="text"><b th:text="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliahEnglish}">AEM2106 Fiqh Muamalah II</b></td>
+                    <input type="hidden" id="matkul" th:value="${jadwal.matakuliahKurikulum.matakuliah.namaMatakuliah}">
                 </tr>
                 <tr>
                     <td class="text"><i>Kelas / Thn Akd</i></td>
                     <td class="text"><b>&nbsp; &nbsp; :</b></td>
                     <td class="text"><b th:text="${jadwal.kelas.namaKelas + ' / ' + jadwal.tahunAkademik.namaTahunAkademik}">MBS-A-17 / 2018/2019 Semester Ganjil</b></td>
+                    <input type="hidden" id="kelas" th:value="${jadwal.kelas.namaKelas}">
                 </tr>
                 <tr>
                     <td class="text"><i>Semester / SKS</i></td>
@@ -153,9 +155,10 @@
     }
 
     var doc = new jsPDF('p','pt','letter');
+    var namaFile = $('#matkul').val() + ' - ' + $('#kelas').val()
     var content = $('#content');
     doc.addHTML(document.body,function() {
-        doc.save('Nilai-BKD.pdf');
+        doc.save('Nilai ' +namaFile);
     });
 
 </script>
