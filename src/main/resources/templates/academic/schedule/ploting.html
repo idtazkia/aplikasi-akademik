@@ -222,11 +222,9 @@
             $.getJSON(url, function (data) {
                 $.each(data, function (key, entry) {
                     if (entry.bentrok == null){
-                        var newOption = $("<option id='"+ entry.id + '-' + id.slice(8) +"'></option>").val(entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )')
-                        $('#'+idSesi).append(newOption);
+                        $('#'+idSesi).append($('<option></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
                     }else {
-                        var newOption = $("<option disabled title='"+entry.bentrok + ' ( ' + entry.dosen + ' - ' + entry.matkul + ')' +"' id='"+ entry.id + '-' + id.slice(8) +"'></option>").val(entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )')
-                        $('#'+idSesi).append(newOption);
+                        $('#'+idSesi).append($('<option disabled title="'+ entry.bentrok + ' ( '+ entry.dosen + ' - ' + entry.matkul + ')' + '" ></option>').attr('value', entry.idSesi).text(entry.namaSesi + ' ( ' + entry.mulai + ' - ' +entry.selesai + ' )'));
                     }
 
                 })
