@@ -165,6 +165,8 @@
                                                 <tr th:each="data,row : ${listPloting}">
                                                     <input type="hidden" th:id="${'matkur-'+ data.validasi}"
                                                            th:value="${data.mkkur}">
+                                                    <input type="hidden" th:id="${'course-'+ data.validasi}"
+                                                           th:value="${data.course}">
                                                     <input type="hidden" th:id="${'kelas-'+ data.validasi}"
                                                            th:value="${data.idKelas}">
                                                     <input type="hidden" th:id="${'sks-'+ data.validasi}"
@@ -754,6 +756,7 @@
             if (jadwal.id == '-') {
                 var token = $("input[name='_csrf']").val();
                 var matkul = document.getElementById('matkur-' + jadwal.validasi).value
+                var course = document.getElementById('course-' + jadwal.validasi).value
                 var dosen = value
                 var kelas = document.getElementById('kelas-' + jadwal.validasi).value
                 var sksMatkul = document.getElementById('sks-' + jadwal.validasi).value;
@@ -762,14 +765,47 @@
                 const urlDetailDosen = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
                 $.getJSON(urlDetailDosen, function (data) {
                     if (parseInt(data.maksimalSks) <= +data.total + +sksMatkul) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                        $("#"+jadwal.validasi).empty().trigger('change')
+                        if (course == 'Thesis') {
+                            $.ajax({
+                                url: url + '?tahun=' + $('#tahun').val(),
+                                contentType: "application/json;charset=UTF-8",
+                                headers: {"X-CSRF-TOKEN": token},
+                                method: 'post',
+                                dataType: 'JSON',
+                                data: JSON.stringify({
+                                    "matakuliah": matkul,
+                                    "kelas": kelas,
+                                    "idDosen": dosen,
+                                }), success: function (data) {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Data Ploting terupdate ',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+
+                                    document.getElementById('dosen-' + jadwal.validasi).className = 'form-control dosen-' + value;
+                                    document.getElementById('dosen-' + jadwal.validasi).id = 'dosen-' + data.id;
+                                    document.getElementById('team-' + jadwal.validasi).id = 'team-' + data.id;
+                                    $('#team-' + data.id).prop('disabled', false);
+                                    const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
+                                    $.getJSON(urlDetail, function (data) {
+                                        $('.dosen-' + value).val(data.total);
+                                        console.log(data.total)
+                                    });
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            $("#" + jadwal.validasi).empty().trigger('change')
+                        }
                     } else {
                         $.ajax({
                             url: url + '?tahun=' + $('#tahun').val(),
@@ -815,15 +851,53 @@
                 const urlDetailDosen = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
                 $.getJSON(urlDetailDosen, function (data) {
                     if (parseInt(data.maksimalSks) <= +data.total + +jadwal.sks) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                        var newOption = new Option(jadwal.dosen, jadwal.id, true, true);
-                        $('#'+jadwal.id).append(newOption);
+
+                        if (jadwal.course == 'Thesis') {
+                            $.ajax({
+                                url: url + '?tahun=' + $('#tahun').val(),
+                                contentType: "application/json;charset=UTF-8",
+                                headers: {"X-CSRF-TOKEN": token},
+                                method: 'post',
+                                dataType: 'JSON',
+                                data: JSON.stringify({
+                                    "id": id,
+                                    "matakuliah": matkul,
+                                    "idDosen": dosen,
+                                }), success: function (data) {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Data Ploting tersimpan ',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+
+                                    document.getElementById('dosen-' + jadwal.id).className = 'form-control dosen-' + value;
+                                    const urlDetail = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
+                                    const urlDetailDosen = '/detail/lecture?search=' + dosenSebelum + '&tahun=' + $('#tahun').val()
+                                    $.getJSON(urlDetail, function (data1) {
+                                        $('.dosen-' + value).val(data1.total);
+                                    });
+
+                                    $.getJSON(urlDetailDosen, function (data2) {
+                                        console.log(data2)
+                                        $('.dosen-' + data2.id).val(data2.total);
+                                    });
+
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            var newOption = new Option(jadwal.dosen, jadwal.id, true, true);
+                            $('#' + jadwal.id).append(newOption);
+                        }
+
                     } else {
                         $.ajax({
                             url: url + '?tahun=' + $('#tahun').val(),
