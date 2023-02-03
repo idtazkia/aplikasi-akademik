@@ -81,7 +81,7 @@ public class HumanResourcesController {
     @GetMapping("/humanResources/jabatan-list")
     public String viewJabatan() {
 
-        return "/humanResources/lecturer/jabatan";
+        return "humanResources/lecturer/jabatan";
     }
 
     @GetMapping("/getdata-jabatan")
