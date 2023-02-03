@@ -37,7 +37,7 @@ public interface DosenDao extends PagingAndSortingRepository<Dosen, String> {
     Iterable<Dosen> validasiDosen(@Param("status") List<StatusRecord> statusRecord, @Param("dosen") List<Dosen> dosen);
     List<Dosen> findByStatusNotInAndIdNotIn(List<StatusRecord> status, List<String> dosen);
 
-    @Query(value = "select d.id,k.nama_karyawan as dosen,coalesce((SELECT sum(mk.jumlah_sks) FROM jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id where id_tahun_akademik = ?1 and id_dosen_pengampu = d.id and j.status = 'AKTIF'),0) as total from dosen as d inner join karyawan as k on d.id_karyawan = k.id where k.status = 'AKTIF' and k.nama_karyawan like %?2%", nativeQuery = true)
+    @Query(value = "select d.id,k.nama_karyawan as dosen,coalesce((SELECT sum(mk.jumlah_sks) FROM jadwal as j inner join matakuliah_kurikulum as mk on j.id_matakuliah_kurikulum = mk.id inner join matakuliah as m on mk.id_matakuliah = m.id where id_tahun_akademik = ?1 and id_dosen_pengampu = d.id and m.nama_matakuliah_english not in ('Thesis') and j.status = 'AKTIF'),0) as total from dosen as d inner join karyawan as k on d.id_karyawan = k.id where k.status = 'AKTIF' and k.nama_karyawan like %?2%", nativeQuery = true)
     List<SelectDosen> searchPlotingDosen(TahunAkademik tahunAkademik, String namaDosen);
 
     @Query(value = "select d.id,k.nama_karyawan as dosen,jd.maksimal_sks as total from dosen as d inner join karyawan as k on d.id_karyawan = k.id left join jabatan_dosen as jd on d.id_jabatan = jd.id where k.status = 'AKTIF' and k.nama_karyawan like %?1% and d.id_jabatan not in (?2)", nativeQuery = true)

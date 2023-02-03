@@ -350,6 +350,7 @@
                                     </div>
                                     <input type="hidden" id="idDosen1" name="idDosen" class="form-control" readonly>
                                     <input type="hidden" id="jadwal1" name="jadwal" class="form-control" readonly>
+                                    <input type="hidden" id="course1" name="jadwal" class="form-control" readonly>
                                     <input type="hidden" id="sks1" name="sks" class="form-control" readonly>
                                     <input type="hidden" id="idKelas1" name="idKelas" class="form-control" readonly>
                                     <input type="hidden" id="idMatkur1" name="idMatkur" class="form-control" readonly>
@@ -493,6 +494,7 @@
         const url = '/detail/matkur?search=' + e.params.args.data.value;
         $.getJSON(url, function (data) {
             $('#sks1').val(data.jumlahSks);
+            $('#course1').val(data.matakuliah.namaMatakuliahEnglish);
         });
 
 
@@ -548,45 +550,90 @@
         var url = "/academic/ploting/save";
         e.preventDefault();
 
-        $.ajax({
-            url: url + '?tahun=' + $('#tahun').val(),
-            contentType: "application/json;charset=UTF-8",
-            headers: {"X-CSRF-TOKEN": token},
-            method: 'post',
-            dataType: 'JSON',
-            data: JSON.stringify({
-                "id": null,
-                "kodeMatakuliah": null,
-                "matakuliah": matkul,
-                "course": null,
-                "kelas": kelas,
-                "sks": null,
-                "idDosen": dosen,
-                "dosen": null,
-                "idKelas": null
-            }), error: function (data) {
-                if (data.status == "500") {
-                    document.getElementById('alertAdd').style.display = "block";
-                    setTimeout(function () {
-                        document.getElementById('alertAdd').style.display = "none";
-                    }, 5000);
-                }
+        const urlDetailDosen = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
+        $.getJSON(urlDetailDosen, function (data) {
+            if (parseInt(data.maksimalSks) <= +data.total + +$('#sks1').val()) {
+                if ($('#course1') == 'Thesis') {
+                    $.ajax({
+                        url: url + '?tahun=' + $('#tahun').val(),
+                        contentType: "application/json;charset=UTF-8",
+                        headers: {"X-CSRF-TOKEN": token},
+                        method: 'post',
+                        dataType: 'JSON',
+                        data: JSON.stringify({
+                            "id": null,
+                            "kodeMatakuliah": null,
+                            "matakuliah": matkul,
+                            "course": null,
+                            "kelas": kelas,
+                            "sks": null,
+                            "idDosen": dosen,
+                            "dosen": null,
+                            "idKelas": null
+                        }), success: function (data) {
+                            $('#addPloting').modal('hide');
+                            resetModalAdd();
+                            const urlDetail = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
+                            $.getJSON(urlDetail, function (data1) {
+                                $('.dosen-' + dosen).val(data1.total);
+                            });
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Data Ploting Tersimpan  ',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
 
-                if (data.status == "200") {
-                    $('#addPloting').modal('hide');
-                    resetModalAdd();
+
+                        }
+                    })
+                } else {
                     Swal.fire({
                         position: 'top-end',
-                        icon: 'success',
-                        title: 'Data tersimpan, data otomatis terupdate setiap 8 detik',
+                        icon: 'error',
+                        title: 'Data Ploting Melebihi Batas Maksimal SKS ( ' + data.maksimalSks + ' SKS )',
                         showConfirmButton: false,
                         timer: 2000
                     })
                 }
+            } else {
+                $.ajax({
+                    url: url + '?tahun=' + $('#tahun').val(),
+                    contentType: "application/json;charset=UTF-8",
+                    headers: {"X-CSRF-TOKEN": token},
+                    method: 'post',
+                    dataType: 'JSON',
+                    data: JSON.stringify({
+                        "id": null,
+                        "kodeMatakuliah": null,
+                        "matakuliah": matkul,
+                        "course": null,
+                        "kelas": kelas,
+                        "sks": null,
+                        "idDosen": dosen,
+                        "dosen": null,
+                        "idKelas": null
+                    }), success: function (data) {
+                        $('#addPloting').modal('hide');
+                        resetModalAdd();
+                        const urlDetail = '/detail/lecture?search=' + dosen + '&tahun=' + $('#tahun').val()
+                        $.getJSON(urlDetail, function (data1) {
+                            $('.dosen-' + dosen).val(data1.total);
+                        });
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Data Ploting Tersimpan  ',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
 
 
+                    }
+                })
             }
-        })
+        });
 
     });
 
@@ -690,6 +737,7 @@
         $('#idMatkur1').val(null);
         $('#sksDosen1').val(null);
         $('#sks1').val(null);
+        $('#course1').val(null);
     }
 
     $("#saveData").click(function (e) {
