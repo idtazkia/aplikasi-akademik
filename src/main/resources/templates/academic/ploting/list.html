@@ -812,7 +812,7 @@
 
                 const urlDetailDosen = '/detail/lecture?search=' + value + '&tahun=' + $('#tahun').val()
                 $.getJSON(urlDetailDosen, function (data) {
-                    console.log(data.total + parseInt(sksMatkul))
+                    console.log(data.total + sksMatkul)
                     if (parseInt(data.maksimalSks) <= data.total + parseInt(sksMatkul)) {
                         if (course == 'Thesis') {
                             $.ajax({
