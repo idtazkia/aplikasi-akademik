@@ -368,7 +368,7 @@ public class HumanResourcesController {
                 Karyawan cekKaryawan = karyawanDao.findByIdUser(user1);
                 if (cekKaryawan != null) {
                     model.addAttribute("email", dosenDto.getEmail());
-                    return "/humanResources/lecturer/alert";
+                    return "humanResources/lecturer/alert";
                 }
 
                 Karyawan karyawan = new Karyawan();
@@ -408,7 +408,7 @@ public class HumanResourcesController {
                     karyawan.setIdUser(user);
                 } else {
                     model.addAttribute("email", dosenDto.getEmail());
-                    return "/humanResources/lecturer/alert";
+                    return "humanResources/lecturer/alert";
                 }
 
             }
