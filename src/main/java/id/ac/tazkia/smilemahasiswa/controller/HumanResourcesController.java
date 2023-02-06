@@ -389,6 +389,7 @@ public class HumanResourcesController {
                 d.setKaryawan(karyawan);
                 d.setStatusDosen(dosenDto.getStatusDosen());
                 d.setHonor(dosenDto.getHonor());
+                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatan()).get());
                 d.setStatus(StatusRecord.AKTIF);
                 dosenDao.save(d);
             }
