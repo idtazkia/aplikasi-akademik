@@ -152,9 +152,12 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Absen</label>
+                                            <label>Jabatan Dosen</label>
                                             &nbsp&nbsp
-                                            <input type="text" class="form-control" name="absen" readonly th:field="*{absen}" placeholder="Absen">
+                                            <select name="role" required class="form-control">
+                                                <option th:field="*{jabatan}" th:each="jabatan : ${listJabatan}" th:text="${jabatan.nama}" th:value="${jabatan.id}"></option>
+                                                <!--                                                <option value="warek2"></option>-->
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

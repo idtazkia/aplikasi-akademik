@@ -78,10 +78,9 @@ public class HumanResourcesController {
         }
     }
 
-    @GetMapping("/humanResources/jabatan-list")
-    public String viewJabatan() {
+    @GetMapping("/humanResources/lecturer/jabatan")
+    public void viewJabatan() {
 
-        return "humanResources/lecturer/jabatan";
     }
 
     @GetMapping("/getdata-jabatan")
@@ -209,7 +208,6 @@ public class HumanResourcesController {
     @GetMapping("/humanResources/employee/form")
     public void formKaryawan(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("karyawan", new Karyawan());
-
         if (id != null && !id.isEmpty()) {
             Karyawan karyawan = karyawanDao.findById(id).get();
             model.addAttribute("karyawan", karyawan);
@@ -297,6 +295,7 @@ public class HumanResourcesController {
     public void formDosen(Model model, @RequestParam(required = false) String id) {
         model.addAttribute("prodi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
         model.addAttribute("karyawan", new DosenDto());
+        model.addAttribute("listJabatan", jabatanDao.findByStatus(StatusRecord.AKTIF));
 
         if (id != null && !id.isEmpty()) {
             Karyawan karyawan = karyawanDao.findById(id).get();
@@ -313,6 +312,7 @@ public class HumanResourcesController {
                 dosenDto.setHonor(dosenDao.findByKaryawan(karyawan).getHonor());
                 dosenDto.setRfid(karyawan.getRfid());
                 dosenDto.setAbsen(karyawan.getIdAbsen());
+                dosenDto.setJabatan(dosenDao.findByKaryawan(karyawan).getJabatanDosen().getId());
                 if (karyawan.getIdUser() != null) {
                     dosenDto.setIdUser(karyawan.getIdUser());
                 }
@@ -362,6 +362,7 @@ public class HumanResourcesController {
                 d.setStatusDosen(dosenDto.getStatusDosen());
                 d.setHonor(dosenDto.getHonor());
                 d.setStatus(StatusRecord.AKTIF);
+                d.setJabatanDosen(jabatanDao.findById(dosenDto.getJabatan()).get());
                 dosenDao.save(d);
             } else {
                 Karyawan cekKaryawan = karyawanDao.findByIdUser(user1);
