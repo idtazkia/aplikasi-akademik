@@ -372,7 +372,7 @@ public class HumanResourcesController {
                 }
 
                 Karyawan karyawan = new Karyawan();
-                karyawan.setEmail(dosenDto.getEmail());F
+                karyawan.setEmail(dosenDto.getEmail());
                 karyawan.setGelar(dosenDto.getGelar());
                 karyawan.setJenisKelamin(dosenDto.getJenisKelamin());
                 karyawan.setNamaKaryawan(dosenDto.getNama());
