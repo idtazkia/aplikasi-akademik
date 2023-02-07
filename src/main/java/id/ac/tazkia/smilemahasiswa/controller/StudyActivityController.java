@@ -861,7 +861,7 @@ public class StudyActivityController {
     public String formDaftarUlang(Model model, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
+        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         if (cuti == null){
             return "du/form";
         }else {
@@ -885,10 +885,15 @@ public class StudyActivityController {
     public String prosesCuti(@Valid Cuti cuti, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+        Prodi prodi = prodiDao.findById(mahasiswa.getIdProdi().getId()).get();
 
         cuti.setMahasiswa(mahasiswa);
+        cuti.setDosenWali(mahasiswa.getDosen());
+        cuti.setKps(prodi.getDosen());
         cuti.setTanggalPengajuaan(LocalDate.now());
         cuti.setStatusPengajuaan(StatusApprove.WAITING);
+        cuti.setDosenWaliApproved(StatusApprove.WAITING);
+        cuti.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         cutiDao.save(cuti);
 
         return "redirect:/du/cuti/list";
@@ -900,11 +905,16 @@ public class StudyActivityController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswa(StatusRecord.AKTIF, mahasiswa);
+        Cuti cuti = cutiDao.findCutiByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
         if (cuti == null){
             return "redirect:/du/cuti/form";
         }else {
-            model.addAttribute("cuti", cutiDao.findCutiByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF));
+            model.addAttribute("cuti", cuti);
+            if (cuti.getStatusPengajuaan() == StatusApprove.WAITING) {
+                model.addAttribute("waiting", "Menunggu persetujuan");
+            }else{
+                model.addAttribute("approved", "Cuti di approve");
+            }
             return "du/cuti/list";
         }
 

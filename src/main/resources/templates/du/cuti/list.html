@@ -238,9 +238,9 @@
                     </div>
                   </div>
                   <div class="col-md-12 col-xs-12">
-                    <button class="btn btn-primary" th:if="${data.statusPengajuaan == 'APPROVED'}">Approved</button>
+                    <button class="btn btn-primary" th:if="${approved != null}">Approved</button>
                     <div class="wrapper">
-                    <button class="btn-style" th:if="${data.statusPengajuaan == 'WAITING'}">
+                    <button class="btn-style" th:if="${waiting != null}">
                       Waiting for Approval by Dosen Wali
                       <span></span>
                       <span></span>
@@ -249,7 +249,7 @@
                     </button>
                     </div>
                     <div class="wrapper">
-                      <button class="btn-style" th:if="${data.statusPengajuaan == 'APPROVED_DOSEN_WALI'}">
+                      <button class="btn-style" th:if="${data.dosenWaliApproved == 'APPROVED'}">
                         Waiting for approval by KPS
                         <span></span>
                         <span></span>
@@ -261,7 +261,7 @@
                   <br>
                   <br>
                   <div class="col-md-6 col-xs-12">
-                    <form th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post" th:if="${data.statusPengajuaan != 'APPROVED'}">
+                    <form th:if="${approved != null}" th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post">
                       <button class="btn btn-danger">Batal</button>
                     </form>
                   </div>

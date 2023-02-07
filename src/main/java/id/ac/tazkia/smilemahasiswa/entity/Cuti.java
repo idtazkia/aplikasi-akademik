@@ -20,6 +20,10 @@ public class Cuti {
     @JoinColumn(name = "id_mahasiswa")
     private Mahasiswa mahasiswa;
 
+    @ManyToOne
+    @JoinColumn(name = "id_tahun_akademik")
+    private TahunAkademik tahunAkademik;
+
     private String keterangan;
 
     @Enumerated(EnumType.STRING)
@@ -47,4 +51,12 @@ public class Cuti {
 
     @Enumerated(EnumType.STRING)
     private StatusApprove kpsApproved;
+
+    @ManyToOne
+    @JoinColumn(name = "id_dosen")
+    private Dosen dosenWali;
+
+    @ManyToOne
+    @JoinColumn(name = "id_kps")
+    private Dosen kps;
 }

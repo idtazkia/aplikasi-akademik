@@ -779,7 +779,6 @@ public class DashboardController {
         String idMahasiswa = cuti.getMahasiswa().getNim();
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
 
-        cuti.setStatusPengajuaan(StatusApprove.APPROVED);
         cuti.setDosenWaliApproved(StatusApprove.APPROVED);
         cutiDao.save(cuti);
         return "redirect:/admin";
