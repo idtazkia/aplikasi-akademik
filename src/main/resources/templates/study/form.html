@@ -97,6 +97,18 @@
                 </div>
             </div>
 
+            <div class="row" th:if="${listValidasi != null}">
+                <div class="col-md-12 col-xs-12">
+                    <div class="alert alert-danger">
+                        <table>
+                            <tr th:each="data : ${listValidasi}">
+                                <td th:text="${'*  ' + data.code + ' - ' + data.message}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="row" th:if="${lebih != null}">
                 <div class="col-md-12 col-xs-12">
                     <div class="alert alert-danger">
