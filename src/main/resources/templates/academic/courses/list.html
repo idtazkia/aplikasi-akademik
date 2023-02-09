@@ -49,7 +49,8 @@
                                 <h3 class="mb-0">Data List</h3>
                             </div>
                             <div class="col text-right">
-                                <a th:href="@{/academic/courses/form}" class="btn btn-sm btn-default"><i class="fas fa-plus-circle"></i> Tambah</a>
+                                <a th:href="@{/academic/courses/form}" class="btn btn-sm btn-default"><i
+                                        class="fas fa-plus-circle"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -60,9 +61,12 @@
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" class="form-control" placeholder="Search" th:value="${search}">
+                                        <input type="text" name="search" class="form-control" placeholder="Search"
+                                               th:value="${search}">
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i> Cari</button>
+                                            <button class="btn btn-info" type="submit"><i class="fas fa-search"></i>
+                                                Cari
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -87,25 +91,36 @@
                             <tr th:each="item,row : ${courses}">
                                 <td th:text="${(row.index + 1) + (courses.number * courses.size)}">1</td>
                                 <td th:text="${item.kodeMatakuliah}">1</td>
-                                <td><button type="button" class="btn btn-outline-success btn-sm" th:text="${item.namaMatakuliah}">Matematika</button></td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-success btn-sm"
+                                            th:text="${item.namaMatakuliah}">Matematika
+                                    </button>
+                                </td>
                                 <td th:text="${item.namaMatakuliahEnglish}">mathematics</td>
                                 <td th:text="${item.singkatan}">MTK</td>
-<!--                                <td>-->
-<!--                                    <a th:href="@{/academic/courses/form (id = ${item.id})}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-edit"></i></a>-->
-<!--                                </td>-->
+                                <td>
+                                    <a th:href="@{/academic/courses/form (id = ${item.id})}"
+                                       class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom"
+                                       title="Edit"><i class="fas fa-edit"></i></a>
+                                </td>
                                 <td>
                                     <!--button-->
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+item.id}">
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                            th:data-target="${'#modal-notification'+item.id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
 
-                                    <div class="modal fade" th:id="${'modal-notification'+item.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                    <div class="modal fade" th:id="${'modal-notification'+item.id}" tabindex="-1"
+                                         role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                        <div class="modal-dialog modal-danger modal-dialog-centered modal-"
+                                             role="document">
                                             <div class="modal-content bg-gradient-danger">
 
                                                 <div class="modal-header">
-                                                    <h6 class="modal-title" id="modal-title-notification">Your attention is required</h6>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <h6 class="modal-title" id="modal-title-notification">Your attention
+                                                        is required</h6>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
                                                         <span aria-hidden="true">×</span>
                                                     </button>
                                                 </div>
@@ -115,16 +130,20 @@
                                                     <div class="py-3 text-center">
                                                         <i class="far fa-trash-alt fa-3x"></i>
                                                         <h4 class="heading mt-4">Are you sure ?</h4>
-                                                        <p>Once deleted, you will not be able to recover this imaginary file!</p>
+                                                        <p>Once deleted, you will not be able to recover this imaginary
+                                                            file!</p>
                                                     </div>
 
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <form th:action="@{/academic/courses/delete (id = ${item.id})}" method="post">
+                                                    <form th:action="@{/academic/courses/delete (id = ${item.id})}"
+                                                          method="post">
                                                         <button type="submit" class="btn btn-white">Hapus</button>
                                                     </form>
-                                                    <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Tutup</button>
+                                                    <button type="button" class="btn btn-link text-white ml-auto"
+                                                            data-dismiss="modal">Tutup
+                                                    </button>
                                                 </div>
 
                                             </div>
