@@ -142,7 +142,6 @@
                                                                 <th>Bill</th>
                                                                 <th>Amount</th>
                                                                 <th>Payment</th>
-                                                                <th>Due Date</th>
                                                                 <th>Status</th>
                                                             </tr>
                                                             </thead>
@@ -152,10 +151,6 @@
                                                                     <td th:text="${data.nilaiJenisTagihan.jenisTagihan.nama}"></td>
                                                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.nilaiTagihan, 0, 'POINT', 2, 'COMMA')}"></td>
                                                                     <td th:text="${'Rp. ' + #numbers.formatDecimal(data.akumulasiPembayaran, 0, 'POINT', 2, 'COMMA')}"></td>
-                                                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} != ${data.statusTagihan}"
-                                                                        th:text="${#temporals.format(data.tanggalJatuhTempo, 'dd - MMM - yyyy')}"></td>
-                                                                    <td th:if="${data.statusTagihan.DITANGGUHKAN} == ${data.statusTagihan}"
-                                                                        th:text="${#temporals.format(data.tanggalPenangguhan, 'dd - MMM - yyyy')}"></td>
                                                                     <td>
                                                                         <div th:if="${data.statusTagihan.AKTIF} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-info btn-sm"></div>
                                                                         <div th:if="${data.statusTagihan.LUNAS} == ${data.statusTagihan}" th:text="${data.statusTagihan}" class="btn btn-success btn-sm"></div>

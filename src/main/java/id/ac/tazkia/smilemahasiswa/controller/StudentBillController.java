@@ -528,6 +528,10 @@ public class StudentBillController {
         model.addAttribute("selectProdi", prodi);
         model.addAttribute("selectProgram", program);
 
+        if (tahunAkademik != null) {
+            model.addAttribute("lTagihan", tagihanDao.listAfterGenerate(tahunAkademik.getId(), angkatan, prodi.getId(), program.getId()));
+        }
+
     }
 
     @GetMapping("/studentBill/billAdmin/form")
@@ -720,7 +724,7 @@ public class StudentBillController {
     }
 
     @PostMapping("/studentBill/billAdmin/generate")
-    public String generateTagihan(@RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Program program,
+    public String generateTagihan(RedirectAttributes attributes, @RequestParam(required = false) Prodi prodi, @RequestParam(required = false) Program program,
                                   @RequestParam(required = false) String angkatan, @RequestParam(required = false) TahunAkademik tahun){
 
         List<Mahasiswa> reguler = mahasiswaDao.findByIdProdiAndIdProgramAndAngkatanAndStatusAktifAndStatusAndBeasiswaIsNull(prodi, program, angkatan, "AKTIF", StatusRecord.AKTIF);
@@ -1094,7 +1098,6 @@ public class StudentBillController {
         }
 
         return "redirect:generate";
-//        return "redirect:preview?tahun="+tahun.getId()+"&prodi=" +prodi.getId()+"&program="+program.getId()+"&angkatan="+angkatan;
     }
 
     @PostMapping("/studentBill/billAdmin/form")
