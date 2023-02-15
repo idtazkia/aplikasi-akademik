@@ -640,7 +640,7 @@ public class EquipmentController {
             return "redirect:../sukses-absen/" + presensiMahasiswa.getId();
         } else {
 
-            return "redirect:../expired-absen";
+            return "redirect:../study/expired";
 
         }
 
