@@ -90,7 +90,11 @@
                                 <td th:text="${data.waktuSelesai}">Jam</td>
                                 <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
                                 <td th:text="${data.beritaAcara}">Dosen</td>
-                                <td><a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Kehadiran Mahasiswa</a></td>
+                                <td><a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Kehadiran Mahasiswa</a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/studiesActivity/attendance/barcode (id = ${data.presensiDosen.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Barcode</a>
+                                </td>
                                 <td><a th:href="@{/studiesActivity/attendance/form (id = ${data.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit Topic</a></td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
@@ -155,27 +159,16 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Pertemuan :</label>
-                                        <input type="text" name="pertemuan" class="form-control">
+                                        <select name="pertemuan" class="form-control">
+                                            <option value="Offline">Kelas Offline</option>
+                                            <option value="Online">Kelas Online</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Tanggal :</label>
                                         <input type="date" name="tanggal" required class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Waktu Masuk :</label>
-                                        <input type="text" readonly  required th:field="*{jamMulai}" max="5" name="jamMulai" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Waktu Selesai :</label>
-                                        <input type="text" th:field="*{jamSelesai}" placeholder="09:30" name="jamSelesai" class="form-control" readonly>
                                     </div>
                                 </div>
                             </div>
