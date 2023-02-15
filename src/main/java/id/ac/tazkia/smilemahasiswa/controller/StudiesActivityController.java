@@ -313,15 +313,14 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/detail")
-    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto){
+    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto)throws Exception{
 
-        String jamMulai1 = jadwalDto.getJamMulai().toString().substring(0,5);
-        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
+        LocalTime jamMulai1 = LocalTime.now().plusHours(7);
         DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
 
         presensiService.inputPresensi(jadwalDto.getDosen(),
                 jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
-                LocalDateTime.of(jadwalDto.getTanggal(),jadwalDto.getJamMulai()));
+                LocalDateTime.of(jadwalDto.getTanggal(),jamMulai1),jadwalDto.getPertemuan());
 
         return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
 
