@@ -51,4 +51,7 @@ public class PresensiDosen {
     @NotFound(action = NotFoundAction.IGNORE)
     private Dosen dosen;
 
+    private String barcodeBefore;
+    private String barcodeNow;
+
 }

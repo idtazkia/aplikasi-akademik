@@ -31,6 +31,8 @@ public class SesiKuliah {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull private LocalDateTime waktuSelesai = LocalDateTime.now();
 
+    private String pertemuan;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_presensi_dosen")
     @NotNull
