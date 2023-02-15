@@ -255,7 +255,7 @@ public class ApiController {
 
     @PostMapping("/api/inputpresensi")
     @ResponseBody
-    private ApiPresensiDosenDto input(@RequestParam String jadwal, @RequestParam String dosen, @RequestParam String hari, @RequestParam String jam){
+    private ApiPresensiDosenDto input(@RequestParam String jadwal, @RequestParam String dosen, @RequestParam String hari, @RequestParam String jam) throws Exception {
 
         LOGGER.info("Input presensi by API : Jadwal : {}, Dosen : {}, Hari : {}, Jam : {}",jadwal, dosen, hari, jam);
 
@@ -280,7 +280,7 @@ public class ApiController {
 
         Dosen d = od.get();
 
-        PresensiDosen presensiDosen = presensiService.inputPresensi(d, j, dateTime);
+        PresensiDosen presensiDosen = presensiService.inputPresensi(d, j, dateTime, "Offline");
 
         return presensiDosen(j.getId(),d.getId());
 
