@@ -110,7 +110,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "order by nama_matakuliah", nativeQuery = true)
     List<MatkulKonversiDto> cariMatkulKonversi(TahunAkademik tahunAkademik);
 
-    List<Jadwal> findByTahunAkademikAndProdiAndHariNotNull(TahunAkademik tahunAkademik, Prodi prodi);
+    List<Jadwal> findByTahunAkademikAndProdiAndHariNotNullAndStatus(TahunAkademik tahunAkademik, Prodi prodi, StatusRecord statusRecord);
 
     Page<Jadwal> findByStatusAndTahunAkademikAndDosenKaryawanNamaKaryawanContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNullOrStatusAndTahunAkademikAndMatakuliahKurikulumMatakuliahNamaMatakuliahContainingIgnoreCaseAndHariNotNullAndJamMulaiNotNullAndKelasNotNull(StatusRecord aktif, TahunAkademik tahun, String search,StatusRecord status, TahunAkademik akademik, String search1, Pageable page);
 
@@ -302,5 +302,8 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "inner join dosen as d on j.id_dosen_pengampu = d.id inner join karyawan as k on d.id_karyawan = k.id \n" +
             "where j.id_tahun_akademik = ?1 and j.id_kelas = ?5 and j.status = 'AKTIF' and j.id_hari = ?2 and j.id not in (?3)) aa on s.sesi = aa.sesi where sks = ?6 group by if(bentrok is not null,trim(s.sesi),id)", nativeQuery = true)
     List<ValidasiSesi> validateSesi(TahunAkademik tahunAkademik, Hari hari, String id, Ruangan ruangan, Kelas kelas, Integer sks, Dosen dosen);
+
+
+
 }
 
