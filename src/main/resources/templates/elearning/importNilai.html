@@ -92,12 +92,12 @@
                                 <input type="hidden" id="isiJadwal" name="jadwal">
                             </div>
 
-                            <div class="form-group">
-                                <label>Nama Mahasiswa</label>
-                                <select class="form-control" id="locality-dropdown-2" onchange="myMahasiswa()">
-                                </select>
-                                <input type="hidden" id="isiMahasiswa" name="nim">
-                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label>Nama Mahasiswa</label>-->
+<!--                                <select class="form-control" id="locality-dropdown-2" onchange="myMahasiswa()">-->
+<!--                                </select>-->
+<!--                                <input type="hidden" id="isiMahasiswa" name="nim">-->
+<!--                            </div>-->
 
 <!--                            <div class="form-group">-->
 <!--                                <label>Description</label>-->
@@ -107,7 +107,6 @@
 
                             <input type="hidden" name="id" >
                             <div class="form-group">
-<!--                                <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="presensi" >Import PRESENSI</button>-->
                                 <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="tugas" >Import TUGAS</button>
                                 <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uts" >Import UTS</button>
                                 <button type="submit" class="btn btn-primary"  onclick="return confirm('Are you sure?')" name="action" value="uas" >Import UAS</button>
@@ -115,6 +114,55 @@
                             </div>
                         </form>
                     </div>
+
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <p><small>Scroll ke kanan untuk melihat status import</small></p>
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Keterangan</th>
+                                        <th scope="col">Kategori</th>
+                                        <th scope="col">Tanggal</th>
+                                        <th scope="col">Tanggal Mulai</th>
+                                        <th scope="col">Tanggal Selesai</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col"></th>
+
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listProses}">
+                                        <td th:text="${(row.index + 1) + (listProses.number * listProses.size)}">1</td>
+                                        <td th:text="${data.getKeterangan()}">12</td>
+                                        <td th:text="${data.getNamaProses()}">12</td>
+                                        <td th:text="${#temporals.format(data.getTanggalInput().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}">2020</td>
+                                        <td><span th:if="${data.getTanggalMulai() != null}" th:text="${#temporals.format(data.getTanggalMulai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td><span th:if="${data.getTanggalSelesai() != null}" th:text="${#temporals.format(data.getTanggalSelesai().plusHours(7),'dd-MMM-yyyy hh:mm:ss a')}"></span></td>
+                                        <td th:text="${data.getStatus()}">2020</td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="card-footer py-4">
+                            <nav aria-label="...">
+                                <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                    <li class="disabled"><a href="#" aria-label="Previous"><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                    </li>
+                                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
 
 
                 </div>
