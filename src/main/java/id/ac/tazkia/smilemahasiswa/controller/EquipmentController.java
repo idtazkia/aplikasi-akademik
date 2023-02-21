@@ -35,6 +35,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
@@ -533,8 +536,8 @@ public class EquipmentController {
                     + String.format("%1$" + productNumberLength + "s", i)
                     .replace(' ', '2');
             System.out.println("Generate QR Code for product number " + presensiBarcode);
-//            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-            BufferedImage qrCode = generateQRcode("https://smile.tazkia.ac.id/presensi/"+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+//            BufferedImage qrCode = generateQRcode("https://smile.tazkia.ac.id/presensi/"+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
             ImageIO.write(qrCode, "png",
                     new File(folderOutput + File.separator
                             + presensiBarcode + ".png"));
@@ -586,7 +589,26 @@ public class EquipmentController {
             if (!presensiMahasiswa.isPresent()) {
                 return "redirect:../dashboard";
             } else {
+                model.addAttribute("detail", presensiMahasiswa.get());
+                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : " + presensiMahasiswa.get().getWaktuMasuk().getMinute());
                 return "study/success";
+            }
+        } else {
+            return "redirect:../dashboard";
+        }
+
+    }
+
+    @GetMapping("/terlambat-absen/{id}")
+    public String alertTerlambat(@PathVariable String id, Model model) {
+        if (StringUtils.hasText(id)) {
+            Optional<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findById(id);
+            if (!presensiMahasiswa.isPresent()) {
+                return "redirect:../dashboard";
+            } else {
+                model.addAttribute("detail", presensiMahasiswa.get());
+                model.addAttribute("jamMasuk", presensiMahasiswa.get().getWaktuMasuk().getHour() + " : " + presensiMahasiswa.get().getWaktuMasuk().getMinute());
+                return "study/terlambat";
             }
         } else {
             return "redirect:../dashboard";
@@ -634,10 +656,23 @@ public class EquipmentController {
 
         if (barcode.equals(presensiDosen.getBarcodeNow()) || barcode.equals(presensiDosen.getBarcodeBefore())) {
             PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa, sesiKuliah, StatusRecord.AKTIF);
-            presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
-            presensiMahasiswaDao.save(presensiMahasiswa);
+            if (LocalTime.now().plusHours(7).compareTo(presensiDosen.getJadwal().getJamMulai().plusMinutes(15)) >= 0){
+                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
+                presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
+                presensiMahasiswaDao.save(presensiMahasiswa);
+                return "redirect:../terlambat-absen/" + presensiMahasiswa.getId();
 
-            return "redirect:../sukses-absen/" + presensiMahasiswa.getId();
+            }else {
+                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+                presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
+                presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
+                presensiMahasiswaDao.save(presensiMahasiswa);
+                return "redirect:../sukses-absen/" + presensiMahasiswa.getId();
+
+            }
+
+
         } else {
 
             return "redirect:../study/expired";
