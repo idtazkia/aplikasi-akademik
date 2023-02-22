@@ -95,6 +95,9 @@ public class EquipmentController {
     @Value("${upload.barcode}")
     private String uploadFolder;
 
+    @Value("${presensi.barcode.url}")
+    private String barcodeUrl;
+
     //    Attribute
     @ModelAttribute("angkatan")
     public Iterable<Mahasiswa> angkatan() {
@@ -537,7 +540,7 @@ public class EquipmentController {
                     .replace(' ', '2');
             System.out.println("Generate QR Code for product number " + presensiBarcode);
 //            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-            BufferedImage qrCode = generateQRcode("https://smile.tazkia.ac.id/presensi/"+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            BufferedImage qrCode = generateQRcode(barcodeUrl+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
             ImageIO.write(qrCode, "png",
                     new File(folderOutput + File.separator
                             + presensiBarcode + ".png"));
