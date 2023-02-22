@@ -536,8 +536,8 @@ public class EquipmentController {
                     + String.format("%1$" + productNumberLength + "s", i)
                     .replace(' ', '2');
             System.out.println("Generate QR Code for product number " + presensiBarcode);
-            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
-//            BufferedImage qrCode = generateQRcode("https://smile.tazkia.ac.id/presensi/"+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+//            BufferedImage qrCode = generateQRcode("http://localhost:8080/presensi/" + presensiDosen.getId() + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
+            BufferedImage qrCode = generateQRcode("https://smile.tazkia.ac.id/presensi/"+ presensiDosen.getId()  + "?barcode=" + presensiBarcode + ".png", qrCodeSize);
             ImageIO.write(qrCode, "png",
                     new File(folderOutput + File.separator
                             + presensiBarcode + ".png"));
