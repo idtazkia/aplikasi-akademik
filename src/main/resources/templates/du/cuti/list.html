@@ -261,9 +261,13 @@
                   <br>
                   <br>
                   <div class="col-md-6 col-xs-12">
-                    <form th:if="${approved != null}" th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post">
+<!--                    th:if="${waiting != null}"-->
+                    <form th:action="@{/du/cuti/batal(cuti = ${data.id})}" method="post">
                       <button class="btn btn-danger">Batal</button>
                     </form>
+                  </div>
+                  <div class="col-md-6 col-xs-12">
+                    <a class="btn btn-info" th:href="@{/dashboard}"> Back</a>
                   </div>
                 </div>
               </div>

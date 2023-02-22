@@ -303,6 +303,10 @@ public class MahasiswaController {
         List<MahasiswaBeasiswa> cek = mahasiswaBeasiswaDao.findByMahasiswaAndBeasiswaAndStatus(mahasiswa, beasiswa, StatusRecord.AKTIF);
 
         if (cek.isEmpty()){
+
+            mahasiswa.setBeasiswa(beasiswa);
+            mahasiswaDao.save(mahasiswa);
+
             mahasiswaBeasiswa.setStatus(StatusRecord.AKTIF);
             mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
         }else {
@@ -318,6 +322,11 @@ public class MahasiswaController {
         System.out.println("Cek = " + mahasiswaBeasiswa1);
         mahasiswaBeasiswa.setStatus(StatusRecord.HAPUS);
         mahasiswaBeasiswaDao.save(mahasiswaBeasiswa);
+
+        Mahasiswa m = mahasiswaDao.findByNim(mahasiswaBeasiswa.getMahasiswa().getNim());
+        m.setBeasiswa(null);
+        mahasiswaDao.save(m);
+
         return "redirect:/mahasiswa/form?mahasiswa=" + mahasiswaBeasiswa1.getMahasiswa().getId();
     }
 

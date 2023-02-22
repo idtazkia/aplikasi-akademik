@@ -312,6 +312,108 @@ public class StudiesActivityController {
 
     }
 
+    @GetMapping("/studiesActivity/attendance/download")
+    public void downloadAttendance(@RequestParam(required = false) Jadwal jadwal, HttpServletResponse response) throws IOException {
+
+        String[] column = {"No", "Nim", "Nama", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
+
+        List<Object[]> listAbsen = presensiMahasiswaDao.bkdAttendance(jadwal);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Absensi");
+
+        Font titleFont = workbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setFontHeightInPoints((short) 30);
+        titleFont.setColor(IndexedColors.BLACK.getIndex());
+        titleFont.setFontName("Cambria");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+        headerFont.setFontName("Cambria");
+
+        Font dataFont = workbook.createFont();
+        dataFont.setFontHeightInPoints((short) 10);
+        dataFont.setFontName("Cambria");
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        CellStyle dataCellStyle = workbook.createCellStyle();
+        dataCellStyle.setFont(dataFont);
+
+        CellStyle titleCellStyle = workbook.createCellStyle();
+        titleCellStyle.setFont(titleFont);
+        titleCellStyle.setAlignment(HorizontalAlignment.LEFT);
+        titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        Row titleRow = sheet.createRow(0);
+
+        Row headerRow = sheet.createRow(9);
+
+        for (int i = 0; i < column.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(column[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 10;
+        int baris = 1;
+
+        for (Object[] list : listAbsen){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[2].toString());
+            row.createCell(2).setCellValue(list[3].toString());
+            row.createCell(3).setCellValue(list[4].toString());
+            row.createCell(4).setCellValue(list[5].toString());
+            row.createCell(5).setCellValue(list[6].toString());
+            row.createCell(6).setCellValue(list[7].toString());
+            row.createCell(7).setCellValue(list[8].toString());
+            row.createCell(8).setCellValue(list[9].toString());
+            row.createCell(9).setCellValue(list[10].toString());
+            row.createCell(10).setCellValue(list[11].toString());
+            row.createCell(11).setCellValue(list[12].toString());
+            row.createCell(12).setCellValue(list[13].toString());
+            row.createCell(13).setCellValue(list[14].toString());
+            row.createCell(14).setCellValue(list[15].toString());
+            row.createCell(15).setCellValue(list[16].toString());
+            row.createCell(16).setCellValue(list[17].toString());
+            row.createCell(17).setCellValue(list[18].toString());
+            row.createCell(18).setCellValue(list[19].toString());
+            row.getCell(0).setCellStyle(dataCellStyle);
+            row.getCell(1).setCellStyle(dataCellStyle);
+            row.getCell(2).setCellStyle(dataCellStyle);
+            row.getCell(3).setCellStyle(dataCellStyle);
+            row.getCell(4).setCellStyle(dataCellStyle);
+            row.getCell(5).setCellStyle(dataCellStyle);
+            row.getCell(6).setCellStyle(dataCellStyle);
+            row.getCell(7).setCellStyle(dataCellStyle);
+            row.getCell(8).setCellStyle(dataCellStyle);
+            row.getCell(9).setCellStyle(dataCellStyle);
+            row.getCell(10).setCellStyle(dataCellStyle);
+            row.getCell(11).setCellStyle(dataCellStyle);
+            row.getCell(12).setCellStyle(dataCellStyle);
+            row.getCell(13).setCellStyle(dataCellStyle);
+            row.getCell(14).setCellStyle(dataCellStyle);
+            row.getCell(15).setCellStyle(dataCellStyle);
+            row.getCell(16).setCellStyle(dataCellStyle);
+            row.getCell(17).setCellStyle(dataCellStyle);
+            row.getCell(18).setCellStyle(dataCellStyle);
+        }
+
+        for (int i = 0; i<column.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Daftar Hadir Kelas.xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
     @PostMapping("/studiesActivity/attendance/detail")
     public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto)throws Exception{
 

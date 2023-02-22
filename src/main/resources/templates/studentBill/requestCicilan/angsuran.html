@@ -323,7 +323,7 @@
                                         <tr th:each="data, row : ${listCicilan}">
                                             <td th:text="${(row.index + 1)}"></td>
                                             <td width="40%">
-                                                <input type="text" th:name="${'nilaiCicilan-'+data.id+data.tanggalJatuhTempo}" class="form-control" th:value="${data.nilaiCicilan}">
+                                                <input id="jumlahCustom" type="text" th:name="${'nilaiCicilan-'+data.id+data.tanggalJatuhTempo}" class="form-control" th:value="${data.nilaiCicilan}">
                                             </td>
                                             <td th:text="${#temporals.format(data.tanggalJatuhTempo, 'dd - MMM - yyyy')}"></td>
                                             <td >
