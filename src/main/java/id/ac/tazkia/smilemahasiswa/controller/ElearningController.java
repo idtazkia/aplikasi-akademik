@@ -679,8 +679,8 @@ public class ElearningController {
         System.out.println("Jadwalnya :" + jadwal);
 
 
-//        TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
-        TahunAkademik tahunAkademik1 = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+        TahunAkademik tahunAkademik1 = tahunAkademikDao.findById(ta).get();
+//        TahunAkademik tahunAkademik1 = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
         Prodi prodi1 = prodiDao.findById(prodi).get();
         Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
 //        JadwalDosen jadwalDos = jadwalDosenDao.findById(jadwal).get();
