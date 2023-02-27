@@ -6,6 +6,7 @@ import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.*;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.JadwalDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.krs.SpDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.room.KelasMahasiswaDto;
@@ -449,10 +450,18 @@ public class StudiesActivityController {
         }
         model.addAttribute("statusPresensi", StatusPresensi.values());
         model.addAttribute("status", statusPresensi);
-        model.addAttribute("presensi", presensiMahasiswa);
+        model.addAttribute("presensi", presensiMahasiswaDao.listPresensiMahasiswa(sesiKuliah));
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi",sesiKuliah.getId());
         model.addAttribute("statusPresensi", StatusPresensi.values());
+    }
+
+    @GetMapping("/data-presensi-mahasiswa")
+    @ResponseBody
+    public List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(@RequestParam String id){
+        PresensiDosen presensiDosen = presensiDosenDao.findById(id).get();
+        SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
+        return presensiMahasiswaDao.listPresensiMahasiswaBarcode(sesiKuliah);
     }
 
     @PostMapping("/studiesActivity/attendance/mahasiswa")
@@ -471,7 +480,7 @@ public class StudiesActivityController {
                 presensiMahasiswa.setCatatan("Manual");
                 presensiMahasiswa.setKrsDetail(presensiMahasiswa.getKrsDetail());
                 presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),j.getJamSelesai()));
-                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
+                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
                 presensiMahasiswaDao.save(presensiMahasiswa);
                 System.out.println(presensiMahasiswa.getId());
