@@ -516,7 +516,7 @@ public class ElearningWebClientService {
                                                 pm.setStatusPresensi(StatusPresensi.HADIR);
                                             }
                                             if (mdlmah.getStatusPresensi().equals("Late")) {
-                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
                                             }
 
                                             if (mdlmah.getStatusPresensi().equals("Absent")) {
@@ -545,7 +545,7 @@ public class ElearningWebClientService {
                                                 pm.setStatusPresensi(StatusPresensi.HADIR);
                                             }
                                             if (mdlmah.getStatusPresensi().equals("Late")) {
-                                                pm.setStatusPresensi(StatusPresensi.TERLAMBAT);
+                                                pm.setStatusPresensi(StatusPresensi.MANGKIR);
                                             }
 
                                             if (mdlmah.getStatusPresensi().equals("Absent")) {
