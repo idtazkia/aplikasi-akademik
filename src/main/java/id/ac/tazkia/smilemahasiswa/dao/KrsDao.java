@@ -1,11 +1,13 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.EnrollMahasiswaIntDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
@@ -77,5 +79,19 @@ public interface KrsDao extends PagingAndSortingRepository<Krs, String> {
             "GROUP BY a.id \n" +
             "ORDER BY nama_matakuliah)a WHERE already IS NULL", nativeQuery = true)
     List<Object[]> listKrs(TahunAkademik ta, Mahasiswa mahasiswa);
+
+
+    @Query(value = "SELECT * FROM\n" +
+            "(SELECT a.id AS idKrs, b.id AS idKrsDetail, b.id_jadwal as idJadwal, b.id_mahasiswa as idMahasiswa, COALESCE(e.username,c.email_tazkia) AS email, c.nim, d.id_number_elearning as idNumberElearning, b.status_enroll as statusEnroll\n" +
+            "FROM krs AS a \n" +
+            "INNER JOIN krs_detail AS b ON a.id = b.id_krs\n" +
+            "INNER JOIN mahasiswa AS c ON b.id_mahasiswa = c.id\n" +
+            "INNER JOIN jadwal AS d ON b.id_jadwal = d.id\n" +
+            "INNER JOIN s_user AS e ON c.id_user = e.id\n" +
+            "INNER JOIN matakuliah_kurikulum AS f ON d.id_matakuliah_kurikulum = f.id\n" +
+            "WHERE a.id_tahun_akademik = 'ee76b7a4-c486-4cf0-850d-8c176dca8c40' AND a.status = 'AKTIF' AND b.status = 'AKTIF' AND b.status_enroll is NULL) mdl_krs_smile", nativeQuery = true)
+    List<EnrollMahasiswaIntDto> findEnrollMahasiswa();
+
+
 
 }
