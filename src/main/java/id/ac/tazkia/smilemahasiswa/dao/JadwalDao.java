@@ -207,7 +207,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
     @Query(value = "update jadwal set final_status='FINAL' where id_tahun_akademik=?1 and status='AKTIF' and id_hari is not null and jam_mulai is not null and jam_selesai is not null", nativeQuery = true)
     void updateFinalStatus(String idTahunAkademik);
 
-    @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,total_seluruh_sesi as totalseluruhsesi, sks * total_seluruh_sesi as totalseluruhsks,idprodi,prodi,idjenjang,jenjang from\n" +
+    @Query(value = "select a.id_jadwal as jadwal,a.id_dosen as dosen,a.nama_karyawan as nama,a.email as email,a.nama_matakuliah as matkul,a.nama_kelas as kelas,a.sks as sks,a.month as bulan,a.day as hari,a.date as tanggal,a.total_sesi as totalsesi,a.total_sks as totalsks,coalesce(total_seluruh_sesi,0) as totalseluruhsesi, sks * coalesce(total_seluruh_sesi,0) as totalseluruhsks,idprodi,prodi,idjenjang,jenjang from\n" +
             "(select id_jadwal,id_dosen, nama_karyawan, email, nama_matakuliah, nama_kelas, jumlah_sks as sks, month, day, group_concat(date order by date) as date, sum(sesi) as total_sesi,\n" +
             "jumlah_sks * sum(sesi) as total_sks,idprodi,prodi,idjenjang,jenjang from\n" +
             "(select a.id_jadwal,a.id_dosen, h.nama_karyawan, email, d.nama_matakuliah, e.nama_kelas, c.jumlah_sks,monthname(waktu_masuk) as month, dayname(waktu_masuk) as day, \n" +
