@@ -86,78 +86,7 @@
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <div class="header-top-menu">
                     <ul class="nav navbar-nav notika-top-nav">
-
-
-                        <!--<li class="nav-item nc-al"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span><i class="fa fa-bell"></i></span></a>-->
-                            <!--<div role="menu" class="dropdown-menu message-dd notification-dd animated zoomIn">-->
-                                <!--<div class="hd-mg-tt">-->
-                                    <!--<h2>Notification</h2>-->
-                                <!--</div>-->
-                                <!--<div class="hd-message-info">-->
-                                    <!--<a href="#">-->
-                                        <!--<div class="hd-message-sn">-->
-                                            <!--<div class="hd-message-img">-->
-                                                <!--<img src="img/post/1.jpg" alt="" />-->
-                                            <!--</div>-->
-                                            <!--<div class="hd-mg-ctn">-->
-                                                <!--<h3>David Belle</h3>-->
-                                                <!--<p>Cum sociis natoque penatibus et magnis dis parturient montes</p>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</a>-->
-                                    <!--<a href="#">-->
-                                        <!--<div class="hd-message-sn">-->
-                                            <!--<div class="hd-message-img">-->
-                                                <!--<img src="img/post/2.jpg" alt="" />-->
-                                            <!--</div>-->
-                                            <!--<div class="hd-mg-ctn">-->
-                                                <!--<h3>Jonathan Morris</h3>-->
-                                                <!--<p>Cum sociis natoque penatibus et magnis dis parturient montes</p>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</a>-->
-                                    <!--<a href="#">-->
-                                        <!--<div class="hd-message-sn">-->
-                                            <!--<div class="hd-message-img">-->
-                                                <!--<img src="img/post/4.jpg" alt="" />-->
-                                            <!--</div>-->
-                                            <!--<div class="hd-mg-ctn">-->
-                                                <!--<h3>Fredric Mitchell</h3>-->
-                                                <!--<p>Cum sociis natoque penatibus et magnis dis parturient montes</p>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</a>-->
-                                    <!--<a href="#">-->
-                                        <!--<div class="hd-message-sn">-->
-                                            <!--<div class="hd-message-img">-->
-                                                <!--<img src="img/post/1.jpg" alt="" />-->
-                                            <!--</div>-->
-                                            <!--<div class="hd-mg-ctn">-->
-                                                <!--<h3>David Belle</h3>-->
-                                                <!--<p>Cum sociis natoque penatibus et magnis dis parturient montes</p>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</a>-->
-                                    <!--<a href="#">-->
-                                        <!--<div class="hd-message-sn">-->
-                                            <!--<div class="hd-message-img">-->
-                                                <!--<img src="img/post/2.jpg" alt="" />-->
-                                            <!--</div>-->
-                                            <!--<div class="hd-mg-ctn">-->
-                                                <!--<h3>Glenn Jecobs</h3>-->
-                                                <!--<p>Cum sociis natoque penatibus et magnis dis parturient montes</p>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</a>-->
-                                <!--</div>-->
-                                <!--<div class="hd-mg-va">-->
-                                    <!--<a href="#">View All</a>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</li>-->
                         <li class="nav-item"><a th:href="@{/user/profile(type = 'profile')}" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span th:text="${#authentication.principal.fullName}"><i class="fa fa-user"></i></span>
-                            <!--<div class="spinner4 spinner-4"></div>-->
-                            <!--<div class="ntd-ctn"><span>2</span></div> -->
                             </a>
                         </li>
                         <li class="nav-item">
@@ -214,6 +143,7 @@
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/study/comingsoon}"><i class="fa fa-user"></i> Study Activites</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/studentBill/bill/list}"> Student Bill</a></li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#Charts"><i class="fa fa-bar-chart"></i> Report</a>
+                    <li sec:authorize="hasAuthority('VIEW_PARENT')"><a th:href="@{/report/transcriptParent}"><i class="fa fa-bar-chart"></i> Laporan Transkript</a>
                     </li>
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/graduation/register}"><i class="fa fa-graduation-cap"></i> Graduation</a>
                     </li>

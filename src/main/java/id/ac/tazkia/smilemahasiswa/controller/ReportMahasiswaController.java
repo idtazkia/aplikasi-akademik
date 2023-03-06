@@ -49,6 +49,15 @@ public class ReportMahasiswaController {
     private MahasiswaDao mahasiswaDao;
 
     @Autowired
+    KelasMahasiswaDao kelasMahasiswaDao;
+
+    @Autowired
+    private IbuDao ibuDao;
+
+    @Autowired
+    private AyahDao ayahDao;
+
+    @Autowired
     private NilaiTugasDao nilaiTugasDao;
 
     @Autowired
@@ -99,7 +108,7 @@ public class ReportMahasiswaController {
             kosong.setMatakuliah("");
             kosong.setIdUjian("KOSONG");
             return kosong;
-        } else{
+        } else {
 
             MatakuliahKurikulum matakuliahKurikulum = matakuliahKurikulumDao.findById(search).get();
             PrasyaratDto prasyarat = prasyaratDao.cariPrasyarat(matakuliahKurikulum);
@@ -124,46 +133,46 @@ public class ReportMahasiswaController {
                 kartu.setIdUjian("LULUS");
                 return kartu;
             }
-    }
+        }
 
     }
 
 
     @GetMapping("/report/khs")
-    public String khs(Model model, Authentication authentication,@RequestParam(required = false) TahunAkademik tahunAkademik) throws ParseException {
+    public String khs(Model model, Authentication authentication, @RequestParam(required = false) TahunAkademik tahunAkademik) throws ParseException {
 
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
         List<TugasDto> tugasDtos = new ArrayList<>();
-        model.addAttribute("tahun" , tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("tahun", tahunAkademikDao.findByStatusNotInOrderByTahunDesc(Arrays.asList(StatusRecord.HAPUS)));
         if (tahunAkademik != null) {
-            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa,tahunAkademik,StatusRecord.AKTIF, StatusRecord.UNDONE);
+            List<KrsDetail> validasiEdom = krsDetailDao.findByMahasiswaAndKrsTahunAkademikAndStatusAndStatusEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
-            model.addAttribute("selectedTahun" , tahunAkademik);
+            model.addAttribute("selectedTahun", tahunAkademik);
 
-            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik,mahasiswa);
+            List<DataKhsDto> krsDetail = krsDetailDao.getKhs(tahunAkademik, mahasiswa);
             for (DataKhsDto data : krsDetail) {
                 List<TugasDto> nilaiTugas = nilaiTugasDao.findTaskScore(data.getId());
                 tugasDtos.addAll(nilaiTugas);
             }
 
-            if (validasiEdom.isEmpty() || validasiEdom == null){
-                if (!krsDetail.isEmpty()){
-                    model.addAttribute("tugas",tugasDtos);
-                    model.addAttribute("khs",krsDetail);
+            if (validasiEdom.isEmpty() || validasiEdom == null) {
+                if (!krsDetail.isEmpty()) {
+                    model.addAttribute("tugas", tugasDtos);
+                    model.addAttribute("khs", krsDetail);
                     model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
-                    model.addAttribute("ip", krsDetailDao.ip(mahasiswa,tahunAkademik));
+                    model.addAttribute("ip", krsDetailDao.ip(mahasiswa, tahunAkademik));
                 }
                 return "report/khs";
-            }else {
+            } else {
                 SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
                 Date dateNow = sdformat.parse(LocalDate.now().toString());
                 Date scoreEnd = sdformat.parse(tahunAkademik.getTanggalSelesaiNilai().toString());
-                if (dateNow.compareTo(scoreEnd) > 0){
-                    return "redirect:edom?tahunAkademik="+tahunAkademik.getId();
-                }else {
+                if (dateNow.compareTo(scoreEnd) > 0) {
+                    return "redirect:edom?tahunAkademik=" + tahunAkademik.getId();
+                } else {
                     model.addAttribute("hidden", "Data KHS masih terkunci");
                     return "report/khs";
                 }
@@ -176,7 +185,7 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/report/edom")
-    public void edom(Authentication authentication, Model model,@RequestParam(required = false) TahunAkademik tahunAkademik) {
+    public void edom(Authentication authentication, Model model, @RequestParam(required = false) TahunAkademik tahunAkademik) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -184,7 +193,7 @@ public class ReportMahasiswaController {
 
         List<EdomDto> krsDetail = krsDetailDao.cariEdom(mahasiswa, tahunAkademik, StatusRecord.AKTIF, StatusRecord.UNDONE);
 
-        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,tahunAkademik);
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa, tahunAkademik);
         List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
 
         model.addAttribute("detail", detailEdoms);
@@ -193,20 +202,20 @@ public class ReportMahasiswaController {
     }
 
     @PostMapping("/report/edom")
-    public String prosesForm(Authentication authentication, HttpServletRequest request,@RequestParam TahunAkademik tahunAkademik,
+    public String prosesForm(Authentication authentication, HttpServletRequest request, @RequestParam TahunAkademik tahunAkademik,
                              RedirectAttributes attributes) {
         User user = currentUserService.currentUser(authentication);
 
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa,tahunAkademik);
+        List<DetailEdom> detailEdoms = krsDetailDao.getListEdom(mahasiswa, tahunAkademik);
         List<EdomQuestion> listQuestion = edomQuestionDao.findByStatusAndTahunAkademikOrderByNomorAsc(StatusRecord.AKTIF, tahunAkademik);
 
-        for (DetailEdom edom : detailEdoms){
-            for (EdomQuestion question : listQuestion){
-                String pertanyaan1 = request.getParameter(edom.getKrs()+"-"+edom.getDosen()+"-"+question.getNomor());
+        for (DetailEdom edom : detailEdoms) {
+            for (EdomQuestion question : listQuestion) {
+                String pertanyaan1 = request.getParameter(edom.getKrs() + "-" + edom.getDosen() + "-" + question.getNomor());
                 KrsDetail krsDetail = krsDetailDao.findById(edom.getKrs()).get();
-                if (pertanyaan1 == null){
+                if (pertanyaan1 == null) {
                     EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
                     edomMahasiswa.setEdomQuestion(question);
                     edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
@@ -215,7 +224,7 @@ public class ReportMahasiswaController {
                     edomMahasiswa.setTahunAkademik(tahunAkademik);
                     edomMahasiswa.setDosen(dosenDao.findById(edom.getDosen()).get());
                     edomMahasiswaDao.save(edomMahasiswa);
-                }else {
+                } else {
                     EdomMahasiswa edomMahasiswa = new EdomMahasiswa();
                     edomMahasiswa.setEdomQuestion(question);
                     edomMahasiswa.setJadwal(jadwalDao.findById(edom.getJadwal()).get());
@@ -236,18 +245,18 @@ public class ReportMahasiswaController {
     }
 
     @GetMapping("/report/transcript")
-    public void checkTranscript(Authentication authentication,Model model){
+    public void checkTranscript(Authentication authentication, Model model) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
-        if (mahasiswa.getKurikulum() != null){
+        if (mahasiswa.getKurikulum() != null) {
             model.addAttribute("matakuliah", matakuliahKurikulumDao.listMatkulSelection(mahasiswa));
         }
         TahunAkademik tahun = tahunAkademikDao.findByStatus(StatusRecord.PRAAKTIF);
         model.addAttribute("tahun", tahun);
         model.addAttribute("ceklis", praKrsSpDao.cariKrsSp(mahasiswa, tahun));
         model.addAttribute("total", praKrsSpDao.countSp(mahasiswa, tahun));
-        System.out.println(praKrsSpDao.countSp(mahasiswa,tahun));
+        System.out.println(praKrsSpDao.countSp(mahasiswa, tahun));
         //tampilsemua
         model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
 
@@ -259,8 +268,44 @@ public class ReportMahasiswaController {
 
     }
 
+    @GetMapping("/report/transcriptParent")
+    public void laporanTranskripOrangTua(Authentication authentication, Model model) {
+
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = null;
+        Ibu ibu = ibuDao.findByUser(user);
+        if (ibu != null) {
+            mahasiswa = mahasiswaDao.findByIbu(ibu);
+        } else {
+            Ayah ayah = ayahDao.findByUser(user);
+            if (ayah != null){
+                mahasiswa = mahasiswaDao.findByAyah(ayah);
+            }else {
+
+            }
+        }
+
+        String URL =  "https://api.whatsapp.com/send?phone=" + mahasiswa.getTeleponSeluler();
+        String urlProdi = "https://smile.tazkia.ac.id/mahasiswa/form?mahasiswa=" + mahasiswa.getNim();
+        KelasMahasiswa kelasMahasiswa = kelasMahasiswaDao.findByMahasiswaAndStatus(mahasiswa, StatusRecord.AKTIF);
+
+        model.addAttribute("mhs",mahasiswa);
+        model.addAttribute("kelas", kelasMahasiswa);
+        model.addAttribute("url", URL);
+        model.addAttribute("urlProdi", urlProdi);
+        model.addAttribute("history", krsDetailDao.historyMahasiswa(mahasiswa));
+        model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
+        model.addAttribute("sksTotal", krsDetailDao.totalSks(mahasiswa));
+        model.addAttribute("semester", krsDetailDao.semesterHistory(mahasiswa));
+        model.addAttribute("khsHistory", krsDetailDao.khsHistoty(mahasiswa));
+        model.addAttribute("transkrip", krsDetailDao.transkrip(mahasiswa));
+        model.addAttribute("semesterTranskript", krsDao.semesterTranskript(mahasiswa.getId()));
+        model.addAttribute("transkriptTampil", krsDetailDao.transkriptTampil(mahasiswa.getId()));
+
+    }
+
     @PostMapping("/report/akselerasi")
-    public String akselerasi(@RequestParam String idMatkul,@RequestParam(required = false) String idMatkul2, Authentication authentication){
+    public String akselerasi(@RequestParam String idMatkul, @RequestParam(required = false) String idMatkul2, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         JenisTagihan jt = jenisTagihanDao.findByKodeAndStatus("23", StatusRecord.AKTIF);
@@ -342,7 +387,7 @@ public class ReportMahasiswaController {
                         tagihan.setStatus(StatusRecord.AKTIF);
                         tagihanDao.save(tagihan);
                         tagihanService.requestCreateTagihan(tagihan);
-                    }else{
+                    } else {
                         if (cekSp.isEmpty() || cekSp == null) {
                             Tagihan tagihan = new Tagihan();
                             tagihan.setMahasiswa(mahasiswa);
@@ -358,7 +403,7 @@ public class ReportMahasiswaController {
                             tagihan.setStatus(StatusRecord.AKTIF);
                             tagihanDao.save(tagihan);
                             tagihanService.requestCreateTagihan(tagihan);
-                        }else{
+                        } else {
                             if (total.compareTo(t.getNilaiTagihan()) > 0) {
                                 Tagihan tagihan = new Tagihan();
                                 tagihan.setMahasiswa(mahasiswa);
@@ -378,7 +423,7 @@ public class ReportMahasiswaController {
 
                         }
                     }
-                }else{
+                } else {
                     t.setNilaiTagihan(t.getNilaiTagihan().add(total));
                     tagihanDao.save(t);
                     tagihanService.editTagihan(t);
@@ -386,7 +431,7 @@ public class ReportMahasiswaController {
 
 
             }
-        }else {
+        } else {
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
             MatakuliahKurikulum mk1 = matakuliahKurikulumDao.findById(idMatkul).get();
             MatakuliahKurikulum mk2 = matakuliahKurikulumDao.findById(idMatkul2).get();
@@ -410,10 +455,10 @@ public class ReportMahasiswaController {
 
             NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(),
                     mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
-            if (nilaiJenisTagihan == null){
+            if (nilaiJenisTagihan == null) {
 
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
-                BigDecimal total = bs.getBiaya().multiply(new BigDecimal(mk1.getJumlahSks()+mk2.getJumlahSks()));
+                BigDecimal total = bs.getBiaya().multiply(new BigDecimal(mk1.getJumlahSks() + mk2.getJumlahSks()));
 
                 NilaiJenisTagihan nilaiTagihan = new NilaiJenisTagihan();
                 nilaiTagihan.setJenisTagihan(jt);
@@ -443,10 +488,10 @@ public class ReportMahasiswaController {
                 tagihanDao.save(tagihan);
                 tagihanService.requestCreateTagihan(tagihan);
 
-            } else{
+            } else {
 
                 BiayaSksSp bs = biayaSksDao.findByStatus(StatusRecord.AKTIF);
-                BigDecimal total = bs.getBiaya().multiply(new BigDecimal(mk1.getJumlahSks()+mk2.getJumlahSks()));
+                BigDecimal total = bs.getBiaya().multiply(new BigDecimal(mk1.getJumlahSks() + mk2.getJumlahSks()));
 
                 String keteranganTagihan = "Tagihan " + nilaiJenisTagihan.getJenisTagihan().getNama()
                         + " a.n. " + mahasiswa.getNama();
@@ -469,7 +514,7 @@ public class ReportMahasiswaController {
                         tagihanDao.save(tagihan);
                         tagihanService.requestCreateTagihan(tagihan);
                     }
-                }else{
+                } else {
                     Tagihan tagihan = new Tagihan();
                     tagihan.setMahasiswa(mahasiswa);
                     tagihan.setNilaiJenisTagihan(nilaiJenisTagihan);
@@ -492,7 +537,7 @@ public class ReportMahasiswaController {
     }
 
     @PostMapping("/report/sp/delete")
-    public String deleteSp(Authentication authentication){
+    public String deleteSp(Authentication authentication) {
 
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
@@ -501,7 +546,7 @@ public class ReportMahasiswaController {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatusAndJenis(StatusRecord.PRAAKTIF, StatusRecord.PENDEK);
 
         List<PraKrsSp> listSp = praKrsSpDao.findByMahasiswaAndStatusAndStatusApproveAndTahunAkademik(mahasiswa, StatusRecord.AKTIF, StatusApprove.WAITING, tahunAkademik);
-        for (PraKrsSp deleteSp : listSp){
+        for (PraKrsSp deleteSp : listSp) {
             deleteSp.setStatus(StatusRecord.HAPUS);
             deleteSp.setUserDelete(user);
             deleteSp.setStatusApprove(StatusApprove.HAPUS);
@@ -510,7 +555,7 @@ public class ReportMahasiswaController {
         NilaiJenisTagihan nilaiJenisTagihan = nilaiJenisTagihanDao.findByProdiAndAngkatanAndTahunAkademikAndProgramAndStatusAndJenisTagihan(mahasiswa.getIdProdi(), mahasiswa.getAngkatan(), tahunAkademik, mahasiswa.getIdProgram(), StatusRecord.AKTIF, jt);
         Tagihan t = tagihanDao.findByStatusAndTahunAkademikAndMahasiswaAndNilaiJenisTagihanAndLunas(StatusRecord.AKTIF, tahunAkademik, mahasiswa, nilaiJenisTagihan, false);
 
-        if (t != null){
+        if (t != null) {
             t.setStatus(StatusRecord.HAPUS);
             t.setStatusTagihan(StatusTagihan.HAPUS);
             tagihanDao.save(t);
@@ -519,7 +564,6 @@ public class ReportMahasiswaController {
 
         return "redirect:../transcript";
     }
-
 
 
 }
