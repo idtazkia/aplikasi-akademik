@@ -55,4 +55,8 @@ public class Ibu {
 
     private String nomorIbu;
 
+    @OneToOne
+    @JoinColumn(name = "id_user")
+    private User user;
+
 }

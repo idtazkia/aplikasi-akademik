@@ -55,4 +55,8 @@ public class Ayah {
 
     private String nomorAyah;
 
+    @OneToOne
+    @JoinColumn(name = "id_user")
+    private User user;
+
 }

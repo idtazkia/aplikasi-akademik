@@ -34,7 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@Controller @Slf4j
+@Controller
+@Slf4j
 public class DashboardController {
 
     @Autowired
@@ -190,29 +191,29 @@ public class DashboardController {
 
     @GetMapping("/api/provinsi")
     @ResponseBody
-    public List<BaseRequest> provinsiList(@RequestParam String search){
+    public List<BaseRequest> provinsiList(@RequestParam String search) {
         List<BaseRequest> wilayah = wilayahDao.provinsi(search);
         return wilayah;
     }
 
     @GetMapping("/api/kabupaten")
     @ResponseBody
-    public List<BaseRequest> kabupatenList(@RequestParam String id,@RequestParam String search){
-        List<BaseRequest> wilayah = wilayahDao.kabupaten(id,search);
+    public List<BaseRequest> kabupatenList(@RequestParam String id, @RequestParam String search) {
+        List<BaseRequest> wilayah = wilayahDao.kabupaten(id, search);
         return wilayah;
     }
 
     @GetMapping("/api/kecamatan")
     @ResponseBody
-    public List<BaseRequest> kecamatanList(@RequestParam String id,@RequestParam String search){
-        List<BaseRequest> wilayah = wilayahDao.kecamatan(id,search);
+    public List<BaseRequest> kecamatanList(@RequestParam String id, @RequestParam String search) {
+        List<BaseRequest> wilayah = wilayahDao.kecamatan(id, search);
         return wilayah;
     }
 
     @GetMapping("/api/desa")
     @ResponseBody
-    public List<BaseRequest> desaList(@RequestParam String id, @RequestParam String search){
-        List<BaseRequest> wilayah = wilayahDao.desa(id,search);
+    public List<BaseRequest> desaList(@RequestParam String id, @RequestParam String search) {
+        List<BaseRequest> wilayah = wilayahDao.desa(id, search);
         return wilayah;
     }
 
@@ -224,47 +225,57 @@ public class DashboardController {
 //    }
 
 
-    @GetMapping("/dashboard")
-    public String dashboardUtama(Model model, Authentication authentication, Device device){
+    @GetMapping("/parent")
+    public String dashboardParent(Model model, Authentication authentication, Device device) {
+
+        return "dashboardParent";
+
+    }
+        @GetMapping("/dashboard")
+    public String dashboardUtama(Model model, Authentication authentication, Device device) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
 
-        if (mahasiswa == null){
-            return "redirect:admin";
+        if (mahasiswa == null) {
+            if (user.getRole().getId().equals("parent")) {
+                return "redirect:parent";
+            } else {
+                return "redirect:admin";
+            }
         }
 
-        if (user.getRole().getId().equals("mahasiswanunggak")){
+        if (user.getRole().getId().equals("mahasiswanunggak")) {
             return "redirect:mahasiswa";
 //            return "dashboard";
         }
 
         TahunAkademik ta = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        Krs k = krsDao.findByTahunAkademikAndMahasiswaAndStatus(ta,mahasiswa,StatusRecord.AKTIF);
+        Krs k = krsDao.findByTahunAkademikAndMahasiswaAndStatus(ta, mahasiswa, StatusRecord.AKTIF);
 
         model.addAttribute("krsdetail", krsDetailDao.findByMahasiswaAndKrsAndStatus(mahasiswa, k, StatusRecord.AKTIF));
-        model.addAttribute("persentase", krsDetailDao.persentaseKehadiran(mahasiswa,ta));
+        model.addAttribute("persentase", krsDetailDao.persentaseKehadiran(mahasiswa, ta));
 
         // tampilan tagihan
         List<Tagihan> cekTagihan = tagihanDao.findByStatusNotInAndLunasAndMahasiswaAndTahunAkademik(Arrays.asList(StatusRecord.HAPUS), false, mahasiswa, ta);
         model.addAttribute("tagihan", cekTagihan);
-        if(cekTagihan.isEmpty()){
+        if (cekTagihan.isEmpty()) {
             model.addAttribute("message", "message");
         }
 
         // request cicilan
         List<Object[]> cekCicilan = requestCicilanDao.cekCicilanPerMahasiswa(ta, mahasiswa);
-        if (cekCicilan.isEmpty()){
+        if (cekCicilan.isEmpty()) {
             model.addAttribute("cekCicilan", "cekCicilan");
-        }else {
+        } else {
             model.addAttribute("cicilan", cekCicilan);
         }
 
         // request penangguhan
         List<Object[]> cekPenangguhan = requestPenangguhanDao.cekPenangguhanPerMahasiswa(mahasiswa.getId(), ta.getId());
-        if (cekPenangguhan.isEmpty()){
+        if (cekPenangguhan.isEmpty()) {
             model.addAttribute("cekPenangguhan", "cekPenangguhan");
-        }else {
+        } else {
             model.addAttribute("penangguhan", cekPenangguhan);
         }
 
@@ -272,7 +283,7 @@ public class DashboardController {
         List<RequestPeringanan> cekPeringanan = requestPeringananDao.findByTagihanTahunAkademikAndTagihanMahasiswa(ta, mahasiswa);
         if (cekPeringanan.isEmpty()) {
             model.addAttribute("cekPeringanan", "request peringanan");
-        }else{
+        } else {
             model.addAttribute("peringanan", cekPeringanan);
         }
 
@@ -292,11 +303,11 @@ public class DashboardController {
                 model.addAttribute("message", "message");
             }
             model.addAttribute("jumlah", bs.getBiaya());
-            for (Object[] list : listSp){
+            for (Object[] list : listSp) {
                 Mahasiswa mhs = mahasiswaDao.findById(list[5].toString()).get();
                 TahunAkademik tahunAkademik = tahunAkademikDao.findById(list[6].toString()).get();
                 Tagihan tagihan = tagihanDao.tagihanSp(mhs.getId(), tahunAkademik.getId());
-                if (tagihan == null){
+                if (tagihan == null) {
                     model.addAttribute("cekTagihan", "cekTagihan");
                 }
             }
@@ -306,7 +317,7 @@ public class DashboardController {
 
         if (device.isMobile()) {
             model.addAttribute("mobile", "mobile device");
-        }else{
+        } else {
             model.addAttribute("normal", "normal devide");
         }
 
@@ -380,31 +391,31 @@ public class DashboardController {
     }*/
 
     @GetMapping("/")
-    public String formAwal(){
+    public String formAwal() {
         return "redirect:/dashboard";
     }
 
     @GetMapping("/login")
-    public void login(){
+    public void login() {
 
     }
 
 
     @GetMapping("/user/profile")
-    public void UserProfile(Model model,@RequestParam(required = false)String type, Authentication authentication){
+    public void UserProfile(Model model, @RequestParam(required = false) String type, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         model.addAttribute("mhsw", mahasiswa);
         model.addAttribute("type", type);
         model.addAttribute("transportasi", transportasiDao.findAll());
-        model.addAttribute("kebutuhan",kebutuhanKhususDao.findAll());
-        model.addAttribute("listProdi",prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
-        model.addAttribute("listKurikulum",kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("kebutuhan", kebutuhanKhususDao.findAll());
+        model.addAttribute("listProdi", prodiDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
+        model.addAttribute("listKurikulum", kurikulumDao.findByStatusNotIn(Arrays.asList(StatusRecord.HAPUS)));
 
 
-        model.addAttribute("agama",agamaDao.findByStatus(StatusRecord.AKTIF));
+        model.addAttribute("agama", agamaDao.findByStatus(StatusRecord.AKTIF));
 
-        model.addAttribute("mhsw",mahasiswa);
+        model.addAttribute("mhsw", mahasiswa);
         MahasiswaDto mahasiswaDto = new MahasiswaDto();
 
         mahasiswaDto.setId(mahasiswa.getId());
@@ -440,7 +451,7 @@ public class DashboardController {
         mahasiswaDto.setEmailTazkia(mahasiswa.getEmailTazkia());
         mahasiswaDto.setStatusAktif(mahasiswa.getStatusAktif());
         mahasiswaDto.setIdUser(mahasiswa.getUser());
-        if (mahasiswa.getIdProvinsi() != null){
+        if (mahasiswa.getIdProvinsi() != null) {
             BaseRequest provinsi = wilayahDao.getProvinsi(mahasiswa.getIdProvinsi());
             if (provinsi != null) {
                 mahasiswaDto.setIdProvinsi(provinsi.getId());
@@ -458,9 +469,9 @@ public class DashboardController {
                                 mahasiswaDto.setIdKecamatan(kecamatan.getId());
                                 mahasiswaDto.setKecamatan(kecamatan.getNama());
 
-                                if (mahasiswa.getIdKelurahan() != null){
-                                    BaseRequest kelurahan = wilayahDao.getDesa(kecamatan.getId(),mahasiswa.getIdKelurahan());
-                                    if (kelurahan!= null) {
+                                if (mahasiswa.getIdKelurahan() != null) {
+                                    BaseRequest kelurahan = wilayahDao.getDesa(kecamatan.getId(), mahasiswa.getIdKelurahan());
+                                    if (kelurahan != null) {
                                         mahasiswaDto.setIdKelurahan(kelurahan.getId());
                                         mahasiswaDto.setKelurahan(kelurahan.getNama());
                                     }
@@ -473,13 +484,13 @@ public class DashboardController {
         }
 
 
-        if (mahasiswa.getFileIjazah() != null){
+        if (mahasiswa.getFileIjazah() != null) {
             mahasiswaDto.setFileIjazah(mahasiswa.getFileIjazah());
         }
-        if (mahasiswa.getFileKtp() != null){
+        if (mahasiswa.getFileKtp() != null) {
             mahasiswaDto.setFileKtp(mahasiswa.getFileKtp());
         }
-        if (mahasiswa.getFoto() != null){
+        if (mahasiswa.getFoto() != null) {
             mahasiswaDto.setFoto(mahasiswa.getFoto());
         }
         mahasiswaDto.setIbu(mahasiswa.getIbu().getId());
@@ -519,12 +530,12 @@ public class DashboardController {
 
     @PostMapping("/user/profile")
     public String prosesUser(@ModelAttribute @Valid MahasiswaDto mahasiswaDto, BindingResult result,
-                             MultipartFile file, MultipartFile ijazah,MultipartFile foto,@RequestParam(required = false) String type,
+                             MultipartFile file, MultipartFile ijazah, MultipartFile foto, @RequestParam(required = false) String type,
                              Authentication authentication) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(mahasiswaDto.getIdUser());
         System.out.println(foto.getSize());
         System.out.println(ijazah.getSize());
-        if (file.getSize() > 0){
+        if (file.getSize() > 0) {
             String namaFile = file.getName();
             String jenisFile = file.getContentType();
             String namaAsliFile = file.getOriginalFilename();
@@ -535,7 +546,7 @@ public class DashboardController {
             int i = namaAsliFile.lastIndexOf('.');
             int p = Math.max(namaAsliFile.lastIndexOf('/'), namaAsliFile.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extension = namaAsliFile.substring(i + 1);
             }
 
@@ -546,11 +557,11 @@ public class DashboardController {
             file.transferTo(tujuan);
 
             mahasiswa.setFileKtp(idFile + "." + extension);
-        }else {
+        } else {
             mahasiswa.setFileKtp(mahasiswa.getFileKtp());
         }
 
-        if (ijazah.getSize() > 0){
+        if (ijazah.getSize() > 0) {
             String namaFile = ijazah.getName();
             String namaFileAsli = ijazah.getOriginalFilename();
 
@@ -558,7 +569,7 @@ public class DashboardController {
             int i = namaFileAsli.lastIndexOf('.');
             int p = Math.max(namaFileAsli.lastIndexOf('/'), namaFileAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extinsion = namaFileAsli.substring(i + 1);
             }
 
@@ -569,11 +580,11 @@ public class DashboardController {
             ijazah.transferTo(tujuan);
 
             mahasiswa.setFileIjazah(idFile + "." + extinsion);
-        }else {
+        } else {
             mahasiswa.setFileIjazah(mahasiswa.getFileIjazah());
         }
 
-        if (foto.getSize() > 0){
+        if (foto.getSize() > 0) {
             String namaFile = foto.getName();
             String namaFileAsli = foto.getOriginalFilename();
 
@@ -581,7 +592,7 @@ public class DashboardController {
             int i = namaFileAsli.lastIndexOf('.');
             int p = Math.max(namaFileAsli.lastIndexOf('/'), namaFileAsli.lastIndexOf('\\'));
 
-            if (i > p){
+            if (i > p) {
                 extinsion = namaFileAsli.substring(i + 1);
             }
 
@@ -592,7 +603,7 @@ public class DashboardController {
             foto.transferTo(tujuan);
 
             mahasiswa.setFoto(idFile + "." + extinsion);
-        }else {
+        } else {
             mahasiswa.setFoto(mahasiswa.getFoto());
         }
 
@@ -615,7 +626,7 @@ public class DashboardController {
         mahasiswa.setIdKecamatan(mahasiswaDto.getKecamatan());
         mahasiswa.setIdKelurahan(mahasiswaDto.getKelurahan());
         mahasiswa.setRt(mahasiswaDto.getRt());
-        if (mahasiswa.getStatusAktif() == null){
+        if (mahasiswa.getStatusAktif() == null) {
             mahasiswa.setStatusAktif("AKTIF");
         } else {
             mahasiswa.setStatusAktif(mahasiswa.getStatusAktif());
@@ -651,9 +662,9 @@ public class DashboardController {
         ayah.setNomorAyah(mahasiswaDto.getNomorAyah());
         ayahDao.save(ayah);
 
-        if (type.equals("profile")){
-            return  "redirect:../user/profile?type=profile";
-        }else {
+        if (type.equals("profile")) {
+            return "redirect:../user/profile?type=profile";
+        } else {
             TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
             DaftarUlang daftarUlang = daftarUlangDao.findByStatusAndMahasiswaAndTahunAkademik(StatusRecord.AKTIF, mahasiswa, tahunAkademik);
             if (daftarUlang == null) {
@@ -669,18 +680,19 @@ public class DashboardController {
     }
 
     @GetMapping("/activation/krsdetail")
-    public void activeKrs(){}
+    public void activeKrs() {
+    }
 
     @PostMapping("/activation/krsdetail")
-    public void setKrsDetail(@RequestParam(required = false) String nim, @RequestParam(required = false) String jadwal, @RequestParam(required = false) String kelas){
+    public void setKrsDetail(@RequestParam(required = false) String nim, @RequestParam(required = false) String jadwal, @RequestParam(required = false) String kelas) {
         Jadwal j = jadwalDao.findById(jadwal).get();
 
-        if (nim != null){
+        if (nim != null) {
             Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
-            Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(),mahasiswa,StatusRecord.AKTIF);
-            if (krs != null){
-                KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa,j,StatusRecord.AKTIF);
-                if (krsDetail == null){
+            Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(), mahasiswa, StatusRecord.AKTIF);
+            if (krs != null) {
+                KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(mahasiswa, j, StatusRecord.AKTIF);
+                if (krsDetail == null) {
                     KrsDetail kd = new KrsDetail();
                     kd.setJadwal(j);
                     kd.setKrs(krs);
@@ -703,14 +715,14 @@ public class DashboardController {
                     krsDetailDao.save(kd);
                 }
             }
-        }else {
+        } else {
             Kelas k = kelasDao.findById(kelas).get();
             Iterable<KelasMahasiswa> kelasMahasiswa = kelasMahasiswaDao.findByKelasAndStatus(k, StatusRecord.AKTIF);
-            for (KelasMahasiswa km : kelasMahasiswa){
-                Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(),km.getMahasiswa(),StatusRecord.AKTIF);
-                if (krs != null){
-                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(km.getMahasiswa(),j,StatusRecord.AKTIF);
-                    if (krsDetail == null){
+            for (KelasMahasiswa km : kelasMahasiswa) {
+                Krs krs = krsDao.findByTahunAkademikAndMahasiswaAndStatus(j.getTahunAkademik(), km.getMahasiswa(), StatusRecord.AKTIF);
+                if (krs != null) {
+                    KrsDetail krsDetail = krsDetailDao.findByMahasiswaAndJadwalAndStatus(km.getMahasiswa(), j, StatusRecord.AKTIF);
+                    if (krsDetail == null) {
                         KrsDetail kd = new KrsDetail();
                         kd.setJadwal(j);
                         kd.setKrs(krs);
@@ -738,43 +750,42 @@ public class DashboardController {
     }
 
     @GetMapping("/admin")
-    public String adminDashboard(Model model, Authentication authentication, @PageableDefault(size = 10)Pageable pageable){
+    public String adminDashboard(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable pageable) {
         TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
 
-        model.addAttribute("jmlDosen",dosenDao.countDosenByStatus(StatusRecord.AKTIF));
-        model.addAttribute("jmlMhsA" ,krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik,StatusRecord.AKTIF));
-        model.addAttribute("jmlL",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.PRIA));
-        model.addAttribute("jmlP",krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik,JenisKelamin.WANITA));
+        model.addAttribute("jmlDosen", dosenDao.countDosenByStatus(StatusRecord.AKTIF));
+        model.addAttribute("jmlMhsA", krsDao.countKrsByTahunAkademikAndMahasiswaStatus(tahunAkademik, StatusRecord.AKTIF));
+        model.addAttribute("jmlL", krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik, JenisKelamin.PRIA));
+        model.addAttribute("jmlP", krsDao.countKrsByTahunAkademikAndMahasiswaJenisKelamin(tahunAkademik, JenisKelamin.WANITA));
 
         User user = currentUserService.currentUser(authentication);
         Karyawan karyawan = karyawanDao.findByIdUser(user);
         Dosen dosen = dosenDao.findByKaryawan(karyawan);
 
-        if (tahunAkademik.getTanggalMulaiUas().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUas()) >= 0){
-            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik,"UAS", dosen));
+        if (tahunAkademik.getTanggalMulaiUas().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUas()) >= 0) {
+            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik, "UAS", dosen));
             model.addAttribute("judul", "Jadwal Ujian Akhir Semester");
         }
 
-        if (tahunAkademik.getTanggalMulaiUts().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUts()) >= 0){
-            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik,"UTS", dosen));
+        if (tahunAkademik.getTanggalMulaiUts().minusWeeks(1).compareTo(LocalDate.now()) * LocalDate.now().compareTo(tahunAkademik.getTanggalSelesaiUts()) >= 0) {
+            model.addAttribute("ujian", jadwalUjianDao.jadwalUjianDosen(tahunAkademik, "UTS", dosen));
             model.addAttribute("judul", "Jadwal Ujian Tengah Semester");
         }
 
 
-        model.addAttribute("listCutiMahasiswa",cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
+        model.addAttribute("listCutiMahasiswa", cutiDao.findByStatusOrderByStatusPengajuaanDesc(StatusRecord.AKTIF, pageable));
         model.addAttribute("listCutiDosenWali", cutiDao.listCutiDosenWali(user));
         model.addAttribute("listCutiKps", cutiDao.listCutiKps(user));
 
-        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik,dosen);
+        Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, dosen);
         model.addAttribute("jadwal", jadwal);
-
 
 
         return "dashboardadmin";
     }
 
     @PostMapping("/admin/updateCuti")
-    public String updateStatus(@RequestParam Cuti cuti, Authentication authentication){
+    public String updateStatus(@RequestParam Cuti cuti, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         String idMahasiswa = cuti.getMahasiswa().getNim();
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
@@ -785,7 +796,7 @@ public class DashboardController {
     }
 
     @PostMapping("/admin/approved")
-    public String approvedStatus(@RequestParam Cuti cuti, Authentication authentication){
+    public String approvedStatus(@RequestParam Cuti cuti, Authentication authentication) {
         User user = currentUserService.currentUser(authentication);
         String idMahasiswa = cuti.getMahasiswa().getNim();
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(idMahasiswa);
@@ -824,7 +835,7 @@ public class DashboardController {
     }
 
     @GetMapping("/mahasiswa")
-    public String mahasiswaNunggak(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page){
+    public String mahasiswaNunggak(Model model, Authentication authentication, @PageableDefault(size = 10) Pageable page) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mhs = mahasiswaDao.findByUser(user);
 
