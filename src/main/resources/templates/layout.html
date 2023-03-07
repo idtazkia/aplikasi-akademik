@@ -223,6 +223,7 @@
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/khs}">KHS</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/transcript}">Transcript</a></li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a href="">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
                         </ul>
                     </div>
                     <div id="Tables" class="tab-pane notika-tab-menu-bg animated flipInX">
