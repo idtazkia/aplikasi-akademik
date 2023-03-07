@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
+import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
@@ -46,5 +47,17 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
             "left join presensi_mahasiswa as d on c.id = d.id_sesi_kuliah and a.id_krs = d.id_krs_detail\n" +
             "where coalesce(d.status,'HAPUS') = 'AKTIF'", nativeQuery = true)
     NilaiAbsenSdsDto listNilaiAbsenSds(String idMahasiswa, String kodeTahunAkademik);
+
+    @Query(value = "select p.id as idPresensi,p.id_sesi_kuliah as idSesi, m.id as idMahasiswa,p.id_krs_detail as krs, m.nama as nama , m.nim as nim,\n" +
+            " p.status_presensi as presensi, coalesce (cast(p.waktu_masuk as time(0)), '-') as time\n" +
+            "from presensi_mahasiswa as p inner join mahasiswa as m on p.id_mahasiswa = m.id\n" +
+            "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1", nativeQuery = true)
+    List<PresensiMahasiswaDto> listPresensiMahasiswa(SesiKuliah sesiKuliah);
+
+    @Query(value = "select p.id as idPresensi,p.id_sesi_kuliah as idSesi, m.id as idMahasiswa,p.id_krs_detail as krs, m.nama as nama , m.nim as nim,\n" +
+            " p.status_presensi as presensi, coalesce (cast(p.waktu_masuk as time(0)), '-') as time\n" +
+            "from presensi_mahasiswa as p inner join mahasiswa as m on p.id_mahasiswa = m.id\n" +
+            "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1 and p.catatan = 'Barcode'", nativeQuery = true)
+    List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(SesiKuliah sesiKuliah);
 
 }

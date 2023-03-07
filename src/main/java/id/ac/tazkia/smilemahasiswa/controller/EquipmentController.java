@@ -659,10 +659,11 @@ public class EquipmentController {
 
         if (barcode.equals(presensiDosen.getBarcodeNow()) || barcode.equals(presensiDosen.getBarcodeBefore())) {
             PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findByMahasiswaAndSesiKuliahAndStatus(mahasiswa, sesiKuliah, StatusRecord.AKTIF);
-            if (LocalTime.now().plusHours(7).compareTo(presensiDosen.getWaktuMasuk().plusMinutes(15).toLocalTime()) >= 0){
+            if (LocalTime.now().plusHours(7).compareTo(presensiDosen.getWaktuMasuk().plusMinutes(15).toLocalTime()) > 0){
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.MANGKIR);
+                presensiMahasiswa.setCatatan("Barcode");
                 presensiMahasiswaDao.save(presensiMahasiswa);
                 return "redirect:../terlambat-absen/" + presensiMahasiswa.getId();
 
@@ -670,6 +671,7 @@ public class EquipmentController {
                 presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
                 presensiMahasiswa.setWaktuKeluar(LocalDateTime.of(LocalDate.now(),presensiMahasiswa.getKrsDetail().getJadwal().getJamSelesai()));
                 presensiMahasiswa.setStatusPresensi(StatusPresensi.HADIR);
+                presensiMahasiswa.setCatatan("Barcode");
                 presensiMahasiswaDao.save(presensiMahasiswa);
                 return "redirect:../sukses-absen/" + presensiMahasiswa.getId();
 

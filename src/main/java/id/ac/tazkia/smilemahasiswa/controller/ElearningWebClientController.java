@@ -2,6 +2,8 @@ package id.ac.tazkia.smilemahasiswa.controller;
 
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.EnrollMahasiswaDto;
+import id.ac.tazkia.smilemahasiswa.dto.EnrollMahasiswaIntDto;
 import id.ac.tazkia.smilemahasiswa.dto.assesment.ScoreHitungDto;
 import id.ac.tazkia.smilemahasiswa.dto.elearning.*;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -12,18 +14,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -380,6 +387,38 @@ public class ElearningWebClientController {
 
         return "redirect:admin";
     }
+
+
+    @GetMapping("/api/enrollKrsMahasiswa")
+    @Transactional
+    @ResponseBody
+    public List<EnrollMahasiswaDto> enrollMahasiswa(){
+
+        List<EnrollMahasiswaIntDto> alog = krsDao.findEnrollMahasiswa();
+        List<EnrollMahasiswaDto> adto = new ArrayList<>();
+
+
+        for (EnrollMahasiswaIntDto enrollMahasiswa : alog){
+            EnrollMahasiswaDto enrollMahasiswaDto = new EnrollMahasiswaDto();
+
+            enrollMahasiswaDto.setIdNumberElearning(enrollMahasiswa.getIdNumberElearning());
+            enrollMahasiswaDto.setIdKrs(enrollMahasiswa.getIdKrs());
+            enrollMahasiswaDto.setIdKrsDetail(enrollMahasiswa.getIdKrsDetail());
+            enrollMahasiswaDto.setIdJadwal(enrollMahasiswa.getIdJadwal());
+            enrollMahasiswaDto.setIdMahasiswa(enrollMahasiswa.getIdMahasiswa());
+            enrollMahasiswaDto.setEmail(enrollMahasiswa.getEmail());
+            enrollMahasiswaDto.setNim(enrollMahasiswa.getNim());
+
+
+            adto.add(enrollMahasiswaDto);
+        }
+
+        krsDetailDao.updateStatusEnroll(new String());
+        return adto;
+
+    }
+
+
 
 
 }

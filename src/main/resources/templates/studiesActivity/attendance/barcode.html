@@ -53,19 +53,34 @@
                     </div>
 
                     <div class="card-body">
-                        <input type="hidden" id="presensiDosen" th:value="${presensi.id}">
-                        <input type="hidden" id="url" th:value="${'/uploaded/' + presensi.id + '/barcode/'}">
-                        <!--<center>
-
-                            <img id="barcodeImage" th:src="@{/uploaded/{presensi}/barcode/ (presensi = ${presensi.id})}"  width="500px;" height="500px" alt="">
-                        </center>-->
-                        <div class="table-responsive">
-                            <center>
-                                <img id="barcodeImage"
-                                     th:src="@{/uploaded/{presensi}/barcode/ (presensi = ${presensi.id})}"
-                                     width="500px;" height="500px" alt="">
-                            </center>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <table
+                                        id="table"
+                                        data-filter-control="true"
+                                        data-search="true"
+                                        data-show-refresh="true"
+                                        data-flat="true"
+                                        data-auto-refresh-interval = 6
+                                        data-auto-refresh="true"
+                                        data-pagination="true"
+                                        th:attr="data-url=@{/data-presensi-mahasiswa(id=${presensi.id})}"
+                                        data-side-pagination="client">
+                                </table>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="hidden" id="presensiDosen" th:value="${presensi.id}">
+                                <input type="hidden" id="url" th:value="${'/uploaded/' + presensi.id + '/barcode/'}">
+                                <div class="table-responsive">
+                                    <center>
+                                        <img id="barcodeImage"
+                                             th:src="@{/uploaded/{presensi}/barcode/ (presensi = ${presensi.id})}"
+                                             width="500px;" height="500px" alt="">
+                                    </center>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -82,6 +97,7 @@
 <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
     setInterval(function() {
         var url = '/refrshBarcode?id=' + $('#presensiDosen').val()
@@ -93,4 +109,37 @@
         var myImageElement = document.getElementById('barcodeImage');
         myImageElement.src = $('#url').val()
     }, 30000);
+
+
+    var $table = $('#table')
+
+    $(function() {
+        $table.bootstrapTable({
+            columns: [{
+                field: 'nim',
+                title : 'NIM',
+                sortable: true,
+                align: 'center',
+                valign: 'middle'
+            }, {
+                title: 'Nama',
+                field: 'nama',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'Waktu',
+                field: 'time',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                title: 'Status',
+                field: 'presensi',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }]
+        })
+    })
 </script>

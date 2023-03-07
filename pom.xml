@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <revision>2.6.11-RELEASE</revision>
+        <revision>2.6.18-RELEASE</revision>
     </properties>
 
     <dependencies>
@@ -151,6 +151,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.20</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

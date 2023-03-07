@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Transkrip</title>
+    <style type="text/css">
+        .background-color-white {
+            background-color: white;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 10px;
+        }
+
+        .shape {
+            background-color: #4285f4;
+            color: white;
+            padding-top: 15px;
+            padding-left: 15px;
+            padding-bottom: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .bd-warning {
+            background-color: white;
+            border: 2px solid #f0ad4e;
+            border-radius: 15px;
+            color: #f0ad4e;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-warning:hover {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .bd-primary {
+            background-color: white;
+            border: 2px solid #0275d8;
+            border-radius: 15px;
+            color: #0275d8;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-primary:hover {
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .bd-danger {
+            background-color: white;
+            border: 2px solid #d9534f;
+            border-radius: 15px;
+            color: #d9534f;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-danger:hover {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .bd-success {
+            background-color: white;
+            border: 2px solid #5cb85c;
+            border-radius: 15px;
+            color: #5cb85c;
+            padding: 7px;
+            font-size: 12px;
+            transition: 1s;
+            width: 50px;
+        }
+
+        .bd-success:hover {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+
+    </script>
+</th:block>
+<section layout:fragment="main" class="content">
+    <div class="breadcomb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="breadcomb-list">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <div class="breadcomb-wp">
+                                    <div class="breadcomb-icon">
+                                        <i class="notika-icon notika-form"></i>
+                                    </div>
+                                    <div class="breadcomb-ctn">
+                                        <h2>Transkrip List</h2><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="widget-tabs-list">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#home">Rekaman Akademik</a></li>
+                <li><a data-toggle="tab" href="#menu1">Rekaman Transkript</a></li>
+            </ul>
+            <div class="tab-content tab-custom-st">
+                <div id="home" class="tab-pane fade in active">
+                    <div class="tab-ctn">
+                        <div class="row">
+                            <div class="col-md-8 col-xs-12">
+                                <div class="normal-table-list mg-t-30">
+                                    <div class="basic-tb-hd">
+                                        <h2>Data Diri Mahasiswa</h2>
+                                    </div>
+                                    <div class="bsc-tbl-st">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Nama</label><br>
+                                                <span th:text="${mhs.nama}">Muhammad Arif Rahmatullah</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>NIM</label><br>
+                                                <span th:text="${mhs.nim}">18120029</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>NIK</label>
+                                                <br>
+                                                <span th:if="${mhs.nik} == null">-</span>
+                                                <span th:text="${mhs.nik}"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>TTL</label> <br>
+                                                <span th:text="${mhs.tempatLahir}">Bogor, 29 November 2000</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Program Studi</label>
+                                                <br>
+                                                <span><a th:href="${urlProdi}" th:text="${mhs.idProdi.namaProdi}">Ekonomi
+                                                    Syariah</a></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>No. HP</label>
+                                                <br>
+                                                <span th:if="${mhs.teleponSeluler} == null">-</span>
+                                                <span><a th:href="${url}"
+                                                         th:text="${mhs.teleponSeluler}">085819531387</a>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Alamat</label>
+                                                <br>
+                                                <span th:if="${mhs.namaJalan} == null">-</span>
+                                                <span th:if="${mhs.idKelurahan != null || mhs.namaJalan != null}"
+                                                      th:text="${mhs.namaJalan + ' Rt.' + mhs.rt + '/Rw.' + mhs.rw + ' Desa ' + mhs.idKelurahan + ' Kec. ' + mhs.idKecamatan + ' ' + mhs.idKotaKabupaten }">
+                                                    Bogor</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Beasiswa</label>
+                                                <br>
+                                                <span>-</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Tahun Akademik Masuk</label>
+                                                <br>
+                                                <span>-</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Pembina</label>
+                                                <br>
+                                                <span>-</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Dosen Wali</label>
+                                                <br>
+                                                <span th:if="${mhs.dosen} == null">-</span>
+                                                <span th:if="${mhs.dosen.karyawan} != null"
+                                                      th:text="${mhs.dosen.karyawan.namaKaryawan}">Sopian Lc, MA</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Kelas Matrikulasi</label>
+                                                <br>
+                                                <span>-</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Kelas Program Studi</label>\
+                                                <br>
+                                                <span th:text="${kelas.kelas.namaKelas}">-</span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Asal Program Studi</label>
+                                                <br>
+                                                <span th:text="${mhs.idProdi.namaProdi}">-</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Asal Perguruan Tinggi Sebelumnya</label>
+                                                <br>
+                                                <span>-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xs-12">
+                                <div class="ongoing-task-inner notika-shadow mg-t-30">
+                                    <div class="realtime-ctn">
+                                        <div class="realtime-title ongoing-hd-wd">
+                                            <h2>Rekaman Akademik</h2>
+                                        </div>
+                                    </div>
+                                    <div class="skill-content-3 ongoing-tsk">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th><b>Tahun Akademik</b></th>
+                                                <th><b>Jumlah SKS</b></th>
+                                                <th><b>IPS</b></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="data, row : ${history}">
+                                                <td th:text="${data[0]}"></td>
+                                                <td th:text="${data[1]}"></td>
+                                                <td th:text="${data[2]}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Total SKS :</b></td>
+                                                <td colspan="2"><b th:text="${sksTotal}"></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>IPK :</b></td>
+                                                <td colspan="2"><b th:text="${ipk.ipk}"></b></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="menu1" class="tab-pane fade">
+                    <div class="tab-ctn">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12 background-color-white">
+
+                                <form method="get" th:action="@{/study/prakrssp}">
+                                    <input type="hidden" id="totalMatkul" name="total" th:value="${total}">
+                                    <div class="card-body" th:each="dataSemester,row : ${semesterTranskript}">
+                                        <div class="card shadow">
+                                            <div class="table-responsive">
+                                                <div class="col-md-12 col-xs-12 shape">
+                                                    <h3 th:if="${dataSemester[3] == 'PENDEK'}" class="mb-0"
+                                                        th:text="${dataSemester[2] + ' ( Semester ' + dataSemester[3] + ')'}">
+                                                        Semester<b>
+                                                        1</b></h3>
+
+                                                    <h3 th:if="${dataSemester[3] != 'PENDEK'}" class="mb-0"
+                                                        th:text="${dataSemester[2] + ' ( Semester ' + (row.index + 1) + ')'}">
+                                                        Semester<b>
+                                                        1</b></h3>
+                                                </div>
+                                                <table class="table align-items-center table-flush">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Kode MK</th>
+                                                        <th>Nama Mata Kuliah</th>
+                                                        <th>SKS</th>
+                                                        <th>Nilai</th>
+                                                        <th>Bobot</th>
+                                                        <th>Mutu</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="data : ${transkriptTampil}">
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[1]}">
+                                                            AEM1101
+                                                        </td>
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[2]}">
+                                                            Dirasah Islamiah
+                                                        </td>
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[3]}">
+                                                            <b>3</b></td>
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[5]}">
+                                                            <button class="bd-primary"><b>B</b></button>
+                                                        </td>
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[4]}">
+                                                            <button class="bd-danger"><b>3.00</b></button>
+                                                        </td>
+                                                        <td th:if="${dataSemester[0] == data[0]}" th:text="${data[6]}">
+                                                            <b>9</b></td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>

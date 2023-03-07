@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, String> {
@@ -805,5 +806,9 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
             "inner join matakuliah as m on mk.id_matakuliah = m.id \n" +
             "where kd.id_mahasiswa = ?1 and kd.status = 'AKTIF' and kd.nilai_akhir >= 70.00  and m.nama_matakuliah_english = 'Thesis' order by bobot desc limit 1;", nativeQuery = true)
     KrsDetail cariNilaiThesis(Mahasiswa mahasiswa);
+
+    @Modifying
+    @Query(value = "update krs_detail set status_enroll = 'DONE'", nativeQuery = true)
+    void updateStatusEnroll(String id);
 
 }
