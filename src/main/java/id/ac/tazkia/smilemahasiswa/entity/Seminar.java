@@ -173,4 +173,6 @@ public class Seminar {
     @Column(name = "nilai_f")
     private BigDecimal nilaiF = BigDecimal.ZERO;
 
+    private String kodeSuratTugas;
+
 }

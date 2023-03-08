@@ -151,6 +151,6 @@ public class Sidang {
     @Enumerated(EnumType.STRING)
     private StatusRecord publish;
 
-
+    private String kodeSuratTugas;
 
 }

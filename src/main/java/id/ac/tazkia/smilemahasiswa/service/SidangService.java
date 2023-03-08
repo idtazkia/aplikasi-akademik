@@ -1,19 +1,31 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
-import id.ac.tazkia.smilemahasiswa.dao.EnableFitureDao;
-import id.ac.tazkia.smilemahasiswa.dao.JenjangDao;
-import id.ac.tazkia.smilemahasiswa.dao.SeminarDao;
-import id.ac.tazkia.smilemahasiswa.dao.SidangDao;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
+import com.oracle.webservices.api.message.BaseDistributedPropertySet;
+import com.sun.xml.xsom.impl.UName;
+import id.ac.tazkia.smilemahasiswa.controller.DashboardController;
+import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SeminarDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SemproDto;
 import id.ac.tazkia.smilemahasiswa.dto.graduation.SidangDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.openxmlformats.schemas.presentationml.x2006.main.CTEmbeddedFontDataId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.chrono.HijrahDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.concurrent.Phaser;
 
 @Service
 public class SidangService {
@@ -29,6 +41,11 @@ public class SidangService {
     @Autowired
     private EnableFitureDao enableFitureDao;
 
+    @Autowired
+    private KodeSidangDao kodeSidangDao;
+
+    @Autowired
+    private HariDao hariDao;
     public Seminar updatePublish(Seminar seminar,SeminarDto seminarDto){
         BeanUtils.copyProperties(seminarDto,seminar);
         if (seminarDto.getJenis() == StatusRecord.SKRIPSI){
@@ -451,4 +468,935 @@ public class SidangService {
         seminar.setNilai(nilaiA.add(nilaiB).add(nilaiC).add(nilaiD).add(nilaiE));
         seminarDao.save(seminar);
     }
+
+    public void suratTugasSeminar(@RequestParam Seminar seminar, HttpServletResponse response) throws IOException, DocumentException {
+
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        String tgl = seminar.getTanggalInput().toString().substring(5,7);
+        String tahun = seminar.getTanggalInput().toString().substring(0,4);
+        String kdBln = "";
+        System.out.println("tes bulan :" + tgl);
+        System.out.println("tes tahun :" + tahun);
+        switch (tgl){
+            case "01":
+                kdBln = "I";
+                break;
+            case "02":
+                kdBln = "II";
+                break;
+            case "03":
+                kdBln = "III";
+                break;
+            case "04":
+                kdBln = "IV";
+                break;
+            case "05":
+                kdBln = "V";
+                break;
+            case "06":
+                kdBln = "VI";
+                break;
+            case "07":
+                kdBln = "VII";
+                break;
+            case "08":
+                kdBln = "VIII";
+                break;
+            case "09":
+                kdBln = "IX";
+                break;
+            case "10":
+                kdBln = "X";
+                break;
+            case "11":
+                kdBln = "XI";
+                break;
+            case "12":
+                kdBln = "XII";
+                break;
+            default:
+                kdBln = "";
+                break;
+        }
+        System.out.println("romawi : " + kdBln);
+
+        HijrahDate islamicDate = HijrahDate.from(seminar.getTanggalInput());
+        String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
+        String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("d", new Locale("en")));
+        String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
+
+        if ("Jumada I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Awal";
+        } else if ("Jumada II".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Akhir";
+        } else if ("Rabiʻ I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Rabi'ul Awal";
+        }else if ("Rabiʻ II".equals(namaBulanHijri)){
+            namaBulanHijri = "Rabi'ul Akhir";
+        }else {
+            namaBulanHijri = namaBulanHijri;
+        }
+        String kode = "";
+        String existingKode = seminar.getKodeSuratTugas();
+        if (existingKode == null) {
+            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(seminar.getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
+            if (cek == null) {
+                KodeSidang newKode = new KodeSidang();
+                newKode.setKode(1);
+                newKode.setKodeString("001");
+                newKode.setTahun(tahun);
+                newKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
+                newKode.setStatus(StatusRecord.AKTIF);
+                kodeSidangDao.save(newKode);
+                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+
+                seminar.setKodeSuratTugas(kode);
+            }else{
+                KodeSidang addKode = new KodeSidang();
+                Integer newCode = cek.getKode() + 1;
+                String kodeString = String.format("%03d", newCode);
+                addKode.setKodeString(kodeString);
+                addKode.setKode(newCode);
+                addKode.setTahun(tahun);
+                addKode.setProdi(seminar.getNote().getMahasiswa().getIdProdi());
+                addKode.setStatus(StatusRecord.AKTIF);
+                kodeSidangDao.save(addKode);
+                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+
+                seminar.setKodeSuratTugas(kode);
+            }
+        }else{
+            kode = seminar.getKodeSuratTugas();
+        }
+
+        seminarDao.save(seminar);
+
+        document.open();
+
+        Image background = Image.getInstance("src/main/resources/static/images/LOGO TR.png");
+        background.setAbsolutePosition(400, 190);
+        background.scaleAbsolute(400, 450);
+        document.add(background);
+
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        titleFont.setStyle(Font.UNDERLINE);
+        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+
+        Paragraph paragrafkosong = new Paragraph("");
+
+        Image img = Image.getInstance("src/main/resources/static/images/bismillah.png");
+//        img.setWidthPercentage(20);
+        img.scaleToFit(140, 140);
+        img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
+        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        lTazkia.scaleToFit(100, 100);
+        lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
+        Paragraph newLine = new Paragraph("\n\n");
+        document.add(img);
+        document.add(lTazkia);
+        document.add(newLine);
+
+        Paragraph titleParagraph = new Paragraph("SURAT TUGAS", titleFont);
+        titleParagraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(titleParagraph);
+
+        Paragraph kodeSurat = new Paragraph(kode);
+        kodeSurat.setAlignment(Paragraph.ALIGN_CENTER);
+        kodeSurat.setFont(kodeFont);
+        document.add(kodeSurat);
+
+        Paragraph nLine = new Paragraph("\n");
+        Image salam = Image.getInstance("src/main/resources/static/images/salam.png");
+        salam.scaleToFit(140, 140);
+        salam.setAbsolutePosition(85, PageSize.A4.getHeight() - (salam.getScaledHeight()) - 115);
+        document.add(salam);
+        document.add(nLine);
+
+        paragrafkosong = new Paragraph("Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table = new PdfPTable(3);
+        table.setWidthPercentage(70);
+        table.setWidths(new int[] {3,1,15});
+        table.setSpacingBefore(10);
+        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        font.setColor(CMYKColor.BLACK);
+
+        PdfPCell cell;
+        cell = new PdfPCell(new Phrase("Nama",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIDN",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Jabatan",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getJabatan(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Unit Kerja",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Institut Agama Islam Tazkia", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+
+        document.add(table);
+
+        paragrafkosong = new Paragraph("Memberi tugas kepada: ", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table1 = new PdfPTable(4);
+        table1.setSpacingBefore(15);
+        table1.setWidthPercentage(90);
+        table1.setWidths(new int[] {3, 5, 8, 5});
+
+        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+
+        cell = new PdfPCell(new Phrase("No. ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIDN ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Nama ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Sebagai ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("1 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getKetuaPenguji().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getKetuaPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Ketua Penguji ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("2 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Anggota Penguji ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("3 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+
+        document.add(table1);
+
+        paragrafkosong = new Paragraph();
+        paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
+        paragrafkosong.add(new Chunk("Sidang Seminar Proposal", fontB));
+        paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
+        paragrafkosong.add(new Chunk(seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
+        paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
+        paragrafkosong.add(new Chunk(seminar.getTahunAkademik().getNamaTahunAkademik(), fStandard));
+        paragrafkosong.add(new Chunk(" sebagai berikut:", fStandard));
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table2 = new PdfPTable(3);
+        table2.setWidthPercentage(70);
+        table2.setWidths(new int[] {3,1,15});
+        table2.setSpacingBefore(10);
+        Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        font2.setColor(CMYKColor.BLACK);
+
+        cell = new PdfPCell(new Phrase("Nama",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getNama(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIM",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getNim(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase("Judul",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getNote().getJudul(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+
+        document.add(table2);
+
+        paragrafkosong = new Paragraph("Yang dilaksanakan pada: ", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table3 = new PdfPTable(3);
+        table3.setWidthPercentage(70);
+        table3.setWidths(new int[] {4,1,15});
+        table3.setSpacingBefore(10);
+        Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        font2.setColor(CMYKColor.BLACK);
+
+        cell = new PdfPCell(new Phrase("Hari/Tanggal",font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(hariDao.findById(String.valueOf(seminar.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + seminar.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")), font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase("Waktu",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        Phrase w = new Phrase();
+        w.add(new Chunk("Pkl ", font));
+        w.add(new Chunk(seminar.getJamMulai().toString() + " - " + seminar.getJamSelesai().toString() + " WIB", fontB));
+        cell = new PdfPCell(new Phrase(w));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase("Tempat",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(seminar.getRuangan().getNamaRuangan(), fontB));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+
+        document.add(table3);
+
+        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        Image wassalam = Image.getInstance("src/main/resources/static/images/wassalam.png");
+        wassalam.scaleToFit(140, 140);
+        wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
+        document.add(wassalam);
+
+        document.add(nLine);
+        document.add(nLine);
+        paragrafkosong = new Paragraph();
+        paragrafkosong.add(new Chunk("Bogor, ", fStandard));
+        paragrafkosong.add(new Chunk(seminar.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong.add(new Chunk(" / ", fStandard));
+        paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        document.add(newLine);
+        document.add(newLine);
+
+        Paragraph kpsName = new Paragraph(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
+        kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
+        kpsName.setIndentationLeft(50);
+        document.add(kpsName);
+
+        Paragraph nidn = new Paragraph("NIDN: " + seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn());
+        nidn.setAlignment(Paragraph.ALIGN_BASELINE);
+        nidn.setIndentationLeft(50);
+        nidn.setFont(kodeFont);
+        document.add(nidn);
+
+        Image footer = Image.getInstance("src/main/resources/static/images/footer.png");
+        footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
+        footer.setAbsolutePosition( 10, 10);
+        document.add(footer);
+
+        document.close();
+
+    }
+
+    public void suratTugasSidang(@RequestParam Sidang sidang, HttpServletResponse response) throws IOException, DocumentException {
+
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        String tgl = sidang.getTanggalInput().toString().substring(5,7);
+        String tahun = sidang.getTanggalInput().toString().substring(0,4);
+        String kdBln = "";
+        System.out.println("tes bulan :" + tgl);
+        System.out.println("tes tahun :" + tahun);
+        switch (tgl){
+            case "01":
+                kdBln = "I";
+                break;
+            case "02":
+                kdBln = "II";
+                break;
+            case "03":
+                kdBln = "III";
+                break;
+            case "04":
+                kdBln = "IV";
+                break;
+            case "05":
+                kdBln = "V";
+                break;
+            case "06":
+                kdBln = "VI";
+                break;
+            case "07":
+                kdBln = "VII";
+                break;
+            case "08":
+                kdBln = "VIII";
+                break;
+            case "09":
+                kdBln = "IX";
+                break;
+            case "10":
+                kdBln = "X";
+                break;
+            case "11":
+                kdBln = "XI";
+                break;
+            case "12":
+                kdBln = "XII";
+                break;
+            default:
+                kdBln = "";
+                break;
+        }
+        System.out.println("romawi : " + kdBln);
+
+        HijrahDate islamicDate = HijrahDate.from(sidang.getTanggalInput());
+        String namaBulanHijri = islamicDate.format(DateTimeFormatter.ofPattern("MMMM", new Locale("en")));
+        String tanggalHijri = islamicDate.format(DateTimeFormatter.ofPattern("d", new Locale("en")));
+        String tahunHijri = islamicDate.format(DateTimeFormatter.ofPattern("yyyy", new Locale("en")));
+
+        if ("Jumada I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Awal";
+        } else if ("Jumada II".equals(namaBulanHijri)) {
+            namaBulanHijri = "Jumadil Akhir";
+        } else if ("Rabiʻ I".equals(namaBulanHijri)) {
+            namaBulanHijri = "Rabi'ul Awal";
+        }else if ("Rabiʻ II".equals(namaBulanHijri)){
+            namaBulanHijri = "Rabi'ul Akhir";
+        }else {
+            namaBulanHijri = namaBulanHijri;
+        }
+        String kode = "";
+        String existingKode = sidang.getKodeSuratTugas();
+        if (existingKode == null) {
+            KodeSidang cek = kodeSidangDao.findTopByProdiAndTahunAndStatusOrderByKodeDesc(sidang.getSeminar().getNote().getMahasiswa().getIdProdi(), tahun, StatusRecord.AKTIF);
+            if (cek == null) {
+                KodeSidang newKode = new KodeSidang();
+                newKode.setKode(1);
+                newKode.setKodeString("001");
+                newKode.setTahun(tahun);
+                newKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
+                newKode.setStatus(StatusRecord.AKTIF);
+                kodeSidangDao.save(newKode);
+                kode = "No. " + newKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+
+                sidang.setKodeSuratTugas(kode);
+            }else{
+                KodeSidang addKode = new KodeSidang();
+                Integer newCode = cek.getKode() + 1;
+                String kodeString = String.format("%03d", newCode);
+                addKode.setKodeString(kodeString);
+                addKode.setKode(newCode);
+                addKode.setTahun(tahun);
+                addKode.setProdi(sidang.getSeminar().getNote().getMahasiswa().getIdProdi());
+                addKode.setStatus(StatusRecord.AKTIF);
+                kodeSidangDao.save(addKode);
+                kode = "No. " + addKode.getKodeString() + "-A/IAI TAZKIA/Prodi-" + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi() + "/" + kdBln + "/" + tahun;
+
+                sidang.setKodeSuratTugas(kode);
+            }
+        }else{
+            kode = sidang.getKodeSuratTugas();
+        }
+
+        sidangDao.save(sidang);
+
+        document.open();
+
+        Image background = Image.getInstance("src/main/resources/static/images/LOGO TR.png");
+        background.setAbsolutePosition(400, 190);
+        background.scaleAbsolute(400, 450);
+        document.add(background);
+
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        titleFont.setStyle(Font.UNDERLINE);
+        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+
+        Paragraph paragrafkosong = new Paragraph("");
+
+        Image img = Image.getInstance("src/main/resources/static/images/bismillah.png");
+//        img.setWidthPercentage(20);
+        img.scaleToFit(140, 140);
+        img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
+        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        lTazkia.scaleToFit(100, 100);
+        lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
+        Paragraph newLine = new Paragraph("\n\n");
+        document.add(img);
+        document.add(lTazkia);
+        document.add(newLine);
+
+        Paragraph titleParagraph = new Paragraph("SURAT TUGAS", titleFont);
+        titleParagraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(titleParagraph);
+
+        Paragraph kodeSurat = new Paragraph(kode);
+        kodeSurat.setAlignment(Paragraph.ALIGN_CENTER);
+        kodeSurat.setFont(kodeFont);
+        document.add(kodeSurat);
+
+        Paragraph nLine = new Paragraph("\n");
+        Image salam = Image.getInstance("src/main/resources/static/images/salam.png");
+        salam.scaleToFit(140, 140);
+        salam.setAbsolutePosition(85, PageSize.A4.getHeight() - (salam.getScaledHeight()) - 115);
+        document.add(salam);
+        document.add(nLine);
+
+        paragrafkosong = new Paragraph("Dengan senantiasa mengharap rahmat dan ridha Allah, yang bertanda tangan di bawah ini :", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table = new PdfPTable(3);
+        table.setWidthPercentage(70);
+        table.setWidths(new int[] {3,1,15});
+        table.setSpacingBefore(10);
+        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        font.setColor(CMYKColor.BLACK);
+
+        PdfPCell cell;
+        cell = new PdfPCell(new Phrase("Nama",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIDN",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Jabatan",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan(), font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Unit Kerja",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell = new PdfPCell(new Phrase("Institut Agama Islam Tazkia", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+
+        document.add(table);
+
+        paragrafkosong = new Paragraph("Memberi tugas kepada: ", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table1 = new PdfPTable(4);
+        table1.setSpacingBefore(15);
+        table1.setWidthPercentage(90);
+        table1.setWidths(new int[] {3, 5, 8, 5});
+
+        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+
+        cell = new PdfPCell(new Phrase("No. ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIDN ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Nama ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Sebagai ", fontHeader));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("1 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getKetuaPenguji().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getKetuaPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Ketua Penguji ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("2 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getDosenPenguji().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getDosenPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Anggota Penguji ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("3 ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNidn(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+        cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table1.addCell(cell);
+
+        document.add(table1);
+
+        paragrafkosong = new Paragraph();
+        paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
+        paragrafkosong.add(new Chunk("Sidang Seminar Proposal", fontB));
+        paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
+        paragrafkosong.add(new Chunk(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
+        paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
+        paragrafkosong.add(new Chunk(sidang.getSeminar().getTahunAkademik().getNamaTahunAkademik(), fStandard));
+        paragrafkosong.add(new Chunk(" sebagai berikut:", fStandard));
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table2 = new PdfPTable(3);
+        table2.setWidthPercentage(70);
+        table2.setWidths(new int[] {3,1,15});
+        table2.setSpacingBefore(10);
+        Font font2 = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        font2.setColor(CMYKColor.BLACK);
+
+        cell = new PdfPCell(new Phrase("Nama",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getNama(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase("NIM",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getNim(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase("Judul",font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table2.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getJudulTugasAkhir(), font2));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table2.addCell(cell);
+
+        document.add(table2);
+
+        paragrafkosong = new Paragraph("Yang dilaksanakan pada: ", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        PdfPTable table3 = new PdfPTable(3);
+        table3.setWidthPercentage(70);
+        table3.setWidths(new int[] {4,1,15});
+        table3.setSpacingBefore(10);
+        Font font3 = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
+        font2.setColor(CMYKColor.BLACK);
+
+        cell = new PdfPCell(new Phrase("Hari/Tanggal",font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(hariDao.findById(String.valueOf(sidang.getTanggalUjian().getDayOfWeek().getValue())).get().getNamaHari() + ", " + sidang.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")), font3));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase("Waktu",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        Phrase w = new Phrase();
+        w.add(new Chunk("Pkl ", font));
+        w.add(new Chunk(sidang.getJamMulai().toString() + " - " + sidang.getJamSelesai().toString() + " WIB", fontB));
+        cell = new PdfPCell(new Phrase(w));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase("Tempat",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(":", font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table3.addCell(cell);
+        cell = new PdfPCell(new Phrase(sidang.getRuangan().getNamaRuangan(), fontB));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table3.addCell(cell);
+
+        document.add(table3);
+
+        paragrafkosong = new Paragraph("Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.", fStandard);
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        Image wassalam = Image.getInstance("src/main/resources/static/images/wassalam.png");
+        wassalam.scaleToFit(140, 140);
+        wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
+        document.add(wassalam);
+
+        document.add(nLine);
+        document.add(nLine);
+        paragrafkosong = new Paragraph();
+        paragrafkosong.add(new Chunk("Bogor, ", fStandard));
+        paragrafkosong.add(new Chunk(sidang.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong.add(new Chunk(" / ", fStandard));
+        paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
+        paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
+        paragrafkosong.setIndentationLeft(50);
+        document.add(paragrafkosong);
+
+        document.add(newLine);
+        document.add(newLine);
+
+        Paragraph kpsName = new Paragraph(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
+        kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
+        kpsName.setIndentationLeft(50);
+        document.add(kpsName);
+
+        Paragraph nidn = new Paragraph("NIDN: " + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn());
+        nidn.setAlignment(Paragraph.ALIGN_BASELINE);
+        nidn.setIndentationLeft(50);
+        nidn.setFont(kodeFont);
+        document.add(nidn);
+
+        Image footer = Image.getInstance("src/main/resources/static/images/footer.png");
+        footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
+        footer.setAbsolutePosition( 10, 10);
+        document.add(footer);
+
+        document.close();
+
+    }
+
 }
