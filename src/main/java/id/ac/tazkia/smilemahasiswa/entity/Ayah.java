@@ -55,7 +55,7 @@ public class Ayah {
 
     private String nomorAyah;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_user")
     private User user;
 
