@@ -1411,5 +1411,18 @@ public class SidangController {
 
     }
 
+    @GetMapping("/suratTugas/sidang/pdf")
+    public String pdfSuratTugasSidang(@RequestParam Sidang sidang, HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=ST Menguji Skripsi " + sidang.getSeminar().getNote().getMahasiswa().getNama() + ".pdf";
+
+        response.setHeader(headerKey, headerValue);
+
+        sidangService.suratTugasSidang(sidang, response);
+
+        return "dashboardadmin";
+    }
 
 }

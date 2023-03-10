@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
+import com.lowagie.text.DocumentException;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
@@ -2175,5 +2176,19 @@ public class GraduationController {
 
     }
 
+    @GetMapping("/suratTugas/seminar/pdf")
+    public String pdfSuratTugas(Model model, @RequestParam Seminar seminar, HttpServletResponse response) throws IOException, DocumentException {
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=ST Menguji Seminar " + seminar.getNote().getMahasiswa().getNama() + ".pdf";
+
+        response.setHeader(headerKey, headerValue);
+
+        sidangService.suratTugasSeminar(seminar, response);
+
+        return "dashboardadmin";
+
+    }
 
 }

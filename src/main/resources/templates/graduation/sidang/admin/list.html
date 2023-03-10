@@ -156,7 +156,7 @@
                                         <td>
                                             <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.jamMulai == null}">Menunggu jadwal sidang</button>
                                             <button class="btn btn-primary btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF}">Menunggu Penilaian & Publish Nilai</button>
-                                            <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}"  th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">LULUS</button>
+                                            <button class="btn btn-success btn-sm" data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">LULUS</button>
                                             <button class="btn btn-danger btn-sm"  data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish'+data.id}" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai < 70}">TIDAK LULUS</button>
                                             <button class="btn btn-warning btn-sm" th:if="${data.akademik == data.akademik.WAITING}" th:text="${data.akademik}">Approved</button>
 
@@ -371,6 +371,10 @@
                                             </button>
                                             <button type="button" class="btn btn-primary btn-outline-danger btn-sm" th:if="${data.statusSidang != data.akademik.APPROVED}" th:data-target="${'#modal-tolak'+data.id}" data-toggle="modal">
                                                 <i class="fas fa-times"></i> Tolak
+                                            </button>
+
+                                            <button type="button" class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.NONAKTIF || data.publish == data.publish.AKTIF && data.nilai >= 70}">
+                                                <a class="text-white" th:href="@{/suratTugas/sidang/pdf(sidang = ${data.id})}">Cetak Surat Tugas</a>
                                             </button>
                                             <button th:if="${data.publish == data.publish.NONAKTIF && data.statusSidang == data.statusSidang.APPROVED}"  type="button" class="btn btn-info btn-outline-primary btn-sm fas fa-share"
                                                     data-toggle="modal" aria-haspopup="true" th:data-target="${'#modal-publish1'+data.id}"> Publish</button>

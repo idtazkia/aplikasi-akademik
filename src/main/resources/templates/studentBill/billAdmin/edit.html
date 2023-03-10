@@ -50,7 +50,7 @@
                             <form method="post" th:action="@{/studentBill/billAdmin/edit}" th:object="${tagihan}">
                                 <div class="row">
                                     <input type="hidden" name="tahun" th:value="${tagihan.tahunAkademik.id}">
-                                    <input type="hidden" name="nim" th:value="${tagihan.mahasiswa.nim}">
+                                    <input type="hidden" name="nim" th:value="${tagihan.mahasiswa.id}">
                                     <input type="hidden" name="tagihan" th:value="${tagihan.id}">
                                     <div class="col-md-6">
                                         <div class="form-group">

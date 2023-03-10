@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +53,9 @@ public class DashboardController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private RoleDao roleDao;
 
     @Autowired
     private TahunAkademikDao tahunAkademikDao;
@@ -227,11 +231,56 @@ public class DashboardController {
 
     @GetMapping("/parent")
     public String dashboardParent(Model model, Authentication authentication, Device device) {
-
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = null;
+        Ayah ayah = ayahDao.findByUser(user);
+            if (ayah != null) {
+                mahasiswa = mahasiswaDao.findByAyah(ayah);
+                model.addAttribute("mahasiswa", mahasiswa);
+            } else {
+                return "redirect:login";
+            }
         return "dashboardParent";
 
     }
-        @GetMapping("/dashboard")
+
+    @PostMapping("/update-userParent")
+    @Transactional
+    public String updateUserParent(Authentication authentication,@RequestParam String nomor,@RequestParam String teleponSeluler,@RequestParam String email){
+        User user = currentUserService.currentUser(authentication);
+        Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
+
+        Role rolePendaftar = roleDao.findById("parent").get();
+        Ayah ayah = ayahDao.findById(mahasiswa.getAyah().getId()).get();
+        ayah.setEmailAyah(email);
+        ayah.setNomorAyah(nomor);
+        if (ayah.getUser() == null) {
+            User userParent = new User();
+            userParent.setUsername(email);
+            userParent.setActive(true);
+            userParent.setRole(rolePendaftar);
+            userDao.save(userParent);
+
+            ayah.setUser(userParent);
+        }else {
+            User userParent = userDao.findById(ayah.getUser().getId()).get();
+            userParent.setUsername(email);
+            userParent.setActive(true);
+            userParent.setRole(rolePendaftar);
+            userDao.save(userParent);
+            ayah.setUser(userParent);
+        }
+
+        ayahDao.save(ayah);
+
+        mahasiswa.setTerakhirUpdate(LocalDate.now());
+        mahasiswa.setTeleponSeluler(teleponSeluler);
+        mahasiswaDao.save(mahasiswa);
+
+        return "redirect:dashboard";
+    }
+
+    @GetMapping("/dashboard")
     public String dashboardUtama(Model model, Authentication authentication, Device device) {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
