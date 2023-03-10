@@ -14,10 +14,7 @@ import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.TranskriptDto;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
-import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
-import id.ac.tazkia.smilemahasiswa.service.MailService;
-import id.ac.tazkia.smilemahasiswa.service.PresensiService;
-import id.ac.tazkia.smilemahasiswa.service.ScoreService;
+import id.ac.tazkia.smilemahasiswa.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -159,6 +156,9 @@ public class StudiesActivityController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private TranscriptService transcriptService;
 
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
@@ -4471,26 +4471,46 @@ public class StudiesActivityController {
     }
 
     @GetMapping("/studiesActivity/transcript/print")
-    public void printTranskript(Model model, @RequestParam(required = false)String nim){
+    public void printTranskript(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
         model.addAttribute("ipk", krsDetailDao.ipk(mahasiswa));
 
+        IpkDto ipk = krsDetailDao.ipk(mahasiswa);
+        Long sks = krsDetailDao.totalSks(mahasiswa);
+        Long mutu = krsDetailDao.totalMutu(mahasiswa);
 
-        model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
-        model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
-        model.addAttribute("transkrip1", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"1"));
-        model.addAttribute("transkrip2", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"2"));
-        model.addAttribute("transkrip3", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"3"));
-        model.addAttribute("transkrip4", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"4"));
-        model.addAttribute("transkrip5", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"5"));
-        model.addAttribute("transkrip6", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"6"));
-        model.addAttribute("transkrip7", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"7"));
-        model.addAttribute("transkrip8", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
+        List<Object[]> semester1 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "1");
+        List<Object[]> semester2 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "2");
+        List<Object[]> semester3 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "3");
+        List<Object[]> semester4 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "4");
+        List<Object[]> semester5 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "5");
+        List<Object[]> semester6 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "6");
+        List<Object[]> semester7 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "7");
+        List<Object[]> semester8 = krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa, "8");
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Transcript Sementara Mahasiswa " + mahasiswa.getNama() + ".pdf";
+
+        response.setHeader(headerKey, headerValue);
+
+        transcriptService.transkripSementara(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+
+//        model.addAttribute("sks", krsDetailDao.totalSks(mahasiswa));
+//        model.addAttribute("mutu", krsDetailDao.totalMutu(mahasiswa));
+//        model.addAttribute("transkrip1", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"1"));
+//        model.addAttribute("transkrip2", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"2"));
+//        model.addAttribute("transkrip3", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"3"));
+//        model.addAttribute("transkrip4", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"4"));
+//        model.addAttribute("transkrip5", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"5"));
+//        model.addAttribute("transkrip6", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"6"));
+//        model.addAttribute("transkrip7", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"7"));
+//        model.addAttribute("transkrip8", krsDetailDao.transkripSemesterWithoutWaiting(mahasiswa,"8"));
     }
 
     @GetMapping("/studiesActivity/transcript/print1")
-    public void printTranskript1(Model model, @RequestParam(required = false)String nim){
+    public void printTranskript1(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws IOException {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
 
@@ -4550,21 +4570,31 @@ public class StudiesActivityController {
             }
         }
 
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Transcript Mahasiswa " + mahasiswa.getNama() + ".pdf";
 
-        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
-        model.addAttribute("transkrip1", semester1);
-        model.addAttribute("transkrip2", semester2);
-        model.addAttribute("transkrip3", semester3);
-        model.addAttribute("transkrip4", semester4);
-        model.addAttribute("transkrip5", semester5);
-        model.addAttribute("transkrip6", semester6);
-        model.addAttribute("transkrip7", semester7);
-        model.addAttribute("transkrip8", semester8);
+        response.setHeader(headerKey, headerValue);
+
+        transcriptService.transkripIndo(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+
+
+//        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+//        model.addAttribute("transkrip1", semester1);
+//        model.addAttribute("transkrip2", semester2);
+//        model.addAttribute("transkrip3", semester3);
+//        model.addAttribute("transkrip4", semester4);
+//        model.addAttribute("transkrip5", semester5);
+//        model.addAttribute("transkrip6", semester6);
+//        model.addAttribute("transkrip7", semester7);
+//        model.addAttribute("transkrip8", semester8);
+
+//        return "dashboardadmin";
 
     }
 
     @GetMapping("/studiesActivity/transcript/inggris")
-    public void printTranskriptInggris(Model model, @RequestParam(required = false)String nim){
+    public void printTranskriptInggris(Model model, @RequestParam(required = false)String nim, HttpServletResponse response) throws Exception {
         Mahasiswa mahasiswa = mahasiswaDao.findByNim(nim);
         model.addAttribute("mhsw",mahasiswa);
 
@@ -4624,16 +4654,23 @@ public class StudiesActivityController {
             }
         }
 
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Student Transcript " + mahasiswa.getNama() + ".pdf";
 
-        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
-        model.addAttribute("transkrip1", semester1);
-        model.addAttribute("transkrip2", semester2);
-        model.addAttribute("transkrip3", semester3);
-        model.addAttribute("transkrip4", semester4);
-        model.addAttribute("transkrip5", semester5);
-        model.addAttribute("transkrip6", semester6);
-        model.addAttribute("transkrip7", semester7);
-        model.addAttribute("transkrip8", semester8);
+        response.setHeader(headerKey, headerValue);
+
+        transcriptService.transcriptEnglish(mahasiswa, semester1, semester2, semester3, semester4, semester5, semester6, semester7, semester8, sks, ipk, mutu, response);
+
+//        model.addAttribute("transkrip", krsDetailDao.listTranskript(mahasiswa));
+//        model.addAttribute("transkrip1", semester1);
+//        model.addAttribute("transkrip2", semester2);
+//        model.addAttribute("transkrip3", semester3);
+//        model.addAttribute("transkrip4", semester4);
+//        model.addAttribute("transkrip5", semester5);
+//        model.addAttribute("transkrip6", semester6);
+//        model.addAttribute("transkrip7", semester7);
+//        model.addAttribute("transkrip8", semester8);
 
     }
 

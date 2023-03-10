@@ -469,6 +469,7 @@ public class SidangService {
         seminarDao.save(seminar);
     }
 
+    // CREATE SURAT TUGAS SEMINAR
     public void suratTugasSeminar(@RequestParam Seminar seminar, HttpServletResponse response) throws IOException, DocumentException {
 
         Document document = new Document(PageSize.A4);
@@ -934,6 +935,7 @@ public class SidangService {
 
     }
 
+    // CREATE SURAT TUGAS SIDANG
     public void suratTugasSidang(@RequestParam Sidang sidang, HttpServletResponse response) throws IOException, DocumentException {
 
         Document document = new Document(PageSize.A4);
