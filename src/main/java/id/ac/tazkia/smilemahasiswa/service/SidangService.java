@@ -29,6 +29,10 @@ import java.util.concurrent.Phaser;
 
 @Service
 public class SidangService {
+
+    @Value("${logo.surat}")
+    private String logo;
+
     @Autowired
     private SidangDao sidangDao;
 
@@ -576,7 +580,7 @@ public class SidangService {
 
         document.open();
 
-        Image background = Image.getInstance("src/main/resources/static/images/LOGO TR.png");
+        Image background = Image.getInstance(logo + File.separator + "LOGO TR.png");
         background.setAbsolutePosition(400, 190);
         background.scaleAbsolute(400, 450);
         document.add(background);
@@ -589,11 +593,11 @@ public class SidangService {
 
         Paragraph paragrafkosong = new Paragraph("");
 
-        Image img = Image.getInstance("src/main/resources/static/images/bismillah.png");
+        Image img = Image.getInstance(logo + File.separator + "bismillah.png");
 //        img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
-        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(100, 100);
         lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
         Paragraph newLine = new Paragraph("\n\n");
@@ -611,7 +615,7 @@ public class SidangService {
         document.add(kodeSurat);
 
         Paragraph nLine = new Paragraph("\n");
-        Image salam = Image.getInstance("src/main/resources/static/images/salam.png");
+        Image salam = Image.getInstance(logo + File.separator + "salam.png");
         salam.scaleToFit(140, 140);
         salam.setAbsolutePosition(85, PageSize.A4.getHeight() - (salam.getScaledHeight()) - 115);
         document.add(salam);
@@ -896,7 +900,7 @@ public class SidangService {
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        Image wassalam = Image.getInstance("src/main/resources/static/images/wassalam.png");
+        Image wassalam = Image.getInstance(logo + File.separator + "wassalam.png");
         wassalam.scaleToFit(140, 140);
         wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
         document.add(wassalam);
@@ -926,7 +930,7 @@ public class SidangService {
         nidn.setFont(kodeFont);
         document.add(nidn);
 
-        Image footer = Image.getInstance("src/main/resources/static/images/footer.png");
+        Image footer = Image.getInstance(logo + File.separator + "footer.png");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
         footer.setAbsolutePosition( 10, 10);
         document.add(footer);
@@ -1042,7 +1046,7 @@ public class SidangService {
 
         document.open();
 
-        Image background = Image.getInstance("src/main/resources/static/images/LOGO TR.png");
+        Image background = Image.getInstance(logo + File.separator + "LOGO TR.png");
         background.setAbsolutePosition(400, 190);
         background.scaleAbsolute(400, 450);
         document.add(background);
@@ -1055,11 +1059,11 @@ public class SidangService {
 
         Paragraph paragrafkosong = new Paragraph("");
 
-        Image img = Image.getInstance("src/main/resources/static/images/bismillah.png");
+        Image img = Image.getInstance(logo + File.separator + "bismillah.png");
 //        img.setWidthPercentage(20);
         img.scaleToFit(140, 140);
         img.setAbsolutePosition(222, PageSize.A4.getHeight() - (img.getScaledHeight()) - 40);
-        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(100, 100);
         lTazkia.setAbsolutePosition(20, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
         Paragraph newLine = new Paragraph("\n\n");
@@ -1077,7 +1081,7 @@ public class SidangService {
         document.add(kodeSurat);
 
         Paragraph nLine = new Paragraph("\n");
-        Image salam = Image.getInstance("src/main/resources/static/images/salam.png");
+        Image salam = Image.getInstance(logo + File.separator + "salam.png");
         salam.scaleToFit(140, 140);
         salam.setAbsolutePosition(85, PageSize.A4.getHeight() - (salam.getScaledHeight()) - 115);
         document.add(salam);
@@ -1362,7 +1366,7 @@ public class SidangService {
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        Image wassalam = Image.getInstance("src/main/resources/static/images/wassalam.png");
+        Image wassalam = Image.getInstance(logo + File.separator + "wassalam.png");
         wassalam.scaleToFit(140, 140);
         wassalam.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 415);
         document.add(wassalam);
@@ -1392,7 +1396,7 @@ public class SidangService {
         nidn.setFont(kodeFont);
         document.add(nidn);
 
-        Image footer = Image.getInstance("src/main/resources/static/images/footer.png");
+        Image footer = Image.getInstance(logo + File.separator + "footer.png");
         footer.scaleToFit(document.getPageSize().getWidth() - 20, 200);
         footer.setAbsolutePosition( 10, 10);
         document.add(footer);

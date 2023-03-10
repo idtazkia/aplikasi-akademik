@@ -5,11 +5,13 @@ import com.lowagie.text.pdf.*;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.dto.user.IpkDto;
 import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.crypto.Data;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +20,9 @@ import java.util.List;
 
 @Service
 public class TranscriptService {
+
+    @Value("${logo.surat}")
+    private String logo;
 
     // transkrip sementara
     public void transkripSementara(@RequestParam Mahasiswa mhs, @RequestParam(required = false) List<Object[]> semester1, @RequestParam(required = false)List<Object[]> semester2,
@@ -35,7 +40,7 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
 
@@ -471,7 +476,7 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
 
@@ -906,7 +911,7 @@ public class TranscriptService {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
         Font tTrans = FontFactory.getFont(FontFactory.HELVETICA, 8);
 
-        Image lTazkia = Image.getInstance("src/main/resources/static/images/LOGO.png");
+        Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
         lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
 
