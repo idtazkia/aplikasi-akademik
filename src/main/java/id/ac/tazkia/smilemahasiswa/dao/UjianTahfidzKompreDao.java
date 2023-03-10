@@ -1,9 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.Dosen;
-import id.ac.tazkia.smilemahasiswa.entity.Mahasiswa;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
-import id.ac.tazkia.smilemahasiswa.entity.UjianTahfidzKompre;
+import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -15,6 +14,20 @@ public interface UjianTahfidzKompreDao extends PagingAndSortingRepository<UjianT
 
     List<UjianTahfidzKompre> findByStatusAndStatusApprovalAdminOrderByTanggalPengajuanDesc(StatusRecord statusRecord, String statusAdmin);
     List<UjianTahfidzKompre> findByStatusAndUrutanAndDosenKpsOrderByTanggalPengajuanDesc(StatusRecord statusRecord, Integer urutan, Dosen dosen);
+
+    //admin
+    Page<UjianTahfidzKompre> findByStatusAndProdiAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(StatusRecord statusRecord,Prodi prodi ,String jenisUjian,TahunAkademik tahunAkademik, Pageable pageable);
+    Page<UjianTahfidzKompre> findByStatusAndProdiAndJenisUjianAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimOrderByTanggalPengajuanDesc(StatusRecord statusRecord,Prodi prodi ,String jenisUjian,TahunAkademik tahunAkademik, String search,String seacrch, Pageable pageable);
+    Page<UjianTahfidzKompre> findByStatusAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(StatusRecord statusRecord,String jenisUjian,TahunAkademik tahunAkademik, Pageable pageable);
+    Page<UjianTahfidzKompre> findByStatusAndJenisUjianAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimOrderByTanggalPengajuanDesc(StatusRecord statusRecord,String jenisUjian,TahunAkademik tahunAkademik, String search, String seacrch, Pageable pageable);
+
+    //Kps
+    Page<UjianTahfidzKompre> findByStatusAndUrutanAndProdiAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(StatusRecord statusRecord,Integer urutan, Prodi prodi ,String jenisUjian,TahunAkademik tahunAkademik, Pageable pageable);
+    Page<UjianTahfidzKompre> findByStatusAndUrutanAndProdiAndJenisUjianAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimOrderByTanggalPengajuanDesc(StatusRecord statusRecord,Integer urutan, Prodi prodi ,String jenisUjian,TahunAkademik tahunAkademik, String search,String seacrch, Pageable pageable);
+
+    Page<UjianTahfidzKompre> findByStatusAndUrutanAndJenisUjianAndTahunAkademikOrderByTanggalPengajuanDesc(StatusRecord statusRecord, Integer urutan,String jenisUjian,TahunAkademik tahunAkademik, Pageable pageable);
+    Page<UjianTahfidzKompre> findByStatusAndUrutanAndJenisUjianAndTahunAkademikAndMahasiswaNamaContainingIgnoreCaseOrMahasiswaNimOrderByTanggalPengajuanDesc(StatusRecord statusRecord, Integer urutan, String jenisUjian,TahunAkademik tahunAkademik, String search, String seacrch, Pageable pageable);
+
 
     List<UjianTahfidzKompre> findByStatusAndMahasiswaAndJenisUjian(StatusRecord statusRecord, Mahasiswa mahasiswa, String jenisUjian);
 

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Tahfidz</title>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Ujian Tahfidz</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form method="get">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Prodi</label>
+                                                <select name="prodi" class="form-control">
+                                                    <option value="" selected disabled>Pilih</option>
+                                                    <option th:each="data, row:${prodi}"
+                                                            th:text="${data.namaProdi}"
+                                                            th:value="${data.id}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Tahun Akademik</label>
+                                                <select name="tahunAkademik" class="form-control">
+                                                    <option value="" selected disabled>Pilih</option>
+                                                    <option th:each="data, row:${tahunAkademik}"
+                                                            th:text="${data.namaTahunAkademik}"
+                                                            th:value="${data.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button type="submit" class="btn btn-info">Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-md-12" style="margin-top: 20px;" th:if="${listprodi != null || listtahunAkademik != null}">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <form method="get">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" name="search" placeholder="Nim, Nama" aria-label="Nim, Nama" aria-describedby="button-addon2">
+                                                    <input type="hidden" name="tahunAkademik" th:value="${listtahunAkademik.id}">
+                                                    <input type="hidden" name="prodi" th:if="${listprodi != null}" th:value="${listprodi.id}">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-primary" type="submit" id="button-addon2">Cari</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nim</th>
+                                            <th>Nama</th>
+                                            <th>Prodi</th>
+                                            <th>Jenis Ujian</th>
+                                            <th>Ujian Ke</th>
+                                            <th>Tanggal Pengajuan</th>
+                                            <th>Formulir</th>
+                                            <th>Status</th>
+                                            <th>Approval</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="data, row:${list}">
+                                            <td th:text="${(row.index + 1)}"></td>
+                                            <td th:text="${data.mahasiswa.nim}"></td>
+                                            <td th:text="${data.mahasiswa.nama}"></td>
+                                            <td th:text="${data.mahasiswa.idProdi.namaProdi}"></td>
+                                            <td>
+                                                <span th:if="${data.jenisUjian == 'UjianKomprehensif'}" class="badge badge-primary"><b>Sidang Komprehensif</b></span>
+                                                <span th:if="${data.jenisUjian == 'UjianTahfidz'}" class="badge badge-success"><b>Ujian Tahfidz</b></span>
+                                            </td>
+                                            <td th:text="${data.ujianKe}"></td>
+                                            <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
+                                            <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat Formulir</a></td>
+                                            <td>
+                                                <span class="btn btn-warning btn-sm" th:if="${data.statusApprovalKps == 'WAITING' || data.statusApprovalAdmin == 'WAITING'}">WAITING</span>
+                                                <span class="btn btn-success btn-sm" th:if="${data.statusApprovalKps == 'APPROVED_ADMIN'}">APPROVED</span>
+                                                <span class="btn btn-danger btn-sm" th:if="${data.statusApprovalKps == 'REJECTED'}">REJECTED</span>
+                                            </td>
+                                            <td>
+                                                <!--                    approval admin-->
+                                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" th:if="${data.statusApprovalAdmin == 'WAITING'}" th:data-target="${'#exampleModal' + data.id}">Approved</button>
+
+                                                <div class="modal fade" th:id="${'exampleModal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <form th:action="@{/approvedTahfidz}" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Approval</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label>Nim</label>
+                                                                        <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nim}">
+                                                                        <input type="hidden" name="id" th:value="${data.id}">
+                                                                        <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                                                        <input type="hidden" name="jenisUjian" th:value="${data.jenisUjian}">
+                                                                        <input type="hidden" name="ujianKe" th:value="${data.ujianKe}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Nama</label>
+                                                                        <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nama}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Jenis Ujian</label>
+                                                                        <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianKomprehensif'}" th:value="${'Sidang Komprehensif'}">
+                                                                        <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianTahfidz'}" th:value="${'Ujian Tahfidz'}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Komentar</label>
+                                                                        <textarea name="komentarAdmin" class="form-control"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+
+
+                                                <!--                    rejected-->
+                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:if="${data.statusApprovalAdmin == 'WAITING'}" th:data-target="${'#RejectedAdmin' + data.id}">Rejected</button>
+
+                                                <div class="modal fade" th:id="${'RejectedAdmin' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <form th:action="@{/rejectedAdmin}" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Rejected</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <label>Nim</label>
+                                                                        <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nim}">
+                                                                        <input type="hidden" name="id" th:value="${data.id}">
+                                                                        <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                                                        <input type="hidden" name="jenisUjian" th:value="${data.jenisUjian}">
+                                                                        <input type="hidden" name="ujianKe" th:value="${data.ujianKe}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Nama</label>
+                                                                        <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nama}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Jenis Ujian</label>
+                                                                        <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianKomprehensif'}" th:value="${'Sidang Komprehensif'}">
+                                                                        <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianTahfidz'}" th:value="${'Ujian Tahfidz'}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label>Komentar</label>
+                                                                        <textarea name="komentarKps" class="form-control"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger">Rejected</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

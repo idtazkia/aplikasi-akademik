@@ -52,4 +52,8 @@ public class UjianTahfidzKompre {
     @ManyToOne
     @JoinColumn(name = "id_tahun_akademik")
     private TahunAkademik tahunAkademik;
+
+    @ManyToOne
+    @JoinColumn(name = "id_prodi")
+    private Prodi prodi;
 }
