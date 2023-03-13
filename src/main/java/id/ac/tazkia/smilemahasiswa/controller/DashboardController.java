@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +55,12 @@ public class DashboardController {
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
+
+    @Autowired
+    private ScheduleEventDao scheduleEventDao;
+
+    @Autowired
+    private HariDao hariDao;
 
     @Autowired
     private RoleDao roleDao;
@@ -80,7 +88,6 @@ public class DashboardController {
 
     @Autowired
     private AgamaDao agamaDao;
-
 
     @Autowired
     private PenghasilanDao penghasilanDao;
@@ -161,6 +168,9 @@ public class DashboardController {
     private RefundSpDao refundSpDao;
 
     @Autowired
+    private AttendanceEventParentDao attendanceEventParentDao;
+
+    @Autowired
     private DaftarUlangDao daftarUlangDao;
 
     @Autowired
@@ -232,16 +242,39 @@ public class DashboardController {
     @GetMapping("/parent")
     public String dashboardParent(Model model, Authentication authentication, Device device) {
         User user = currentUserService.currentUser(authentication);
+        System.out.println(LocalDate.parse("2023-03-12").getDayOfWeek() + " - " + LocalDate.parse("2023-03-12").getDayOfWeek().getValue());
         Mahasiswa mahasiswa = null;
         Ayah ayah = ayahDao.findByUser(user);
             if (ayah != null) {
                 mahasiswa = mahasiswaDao.findByAyah(ayah);
+                ScheduleEvent scheduleEvent = scheduleEventDao.findByStatusAndScheduleDate(StatusRecord.AKTIF, LocalDate.now());
+                int valueHari = scheduleEvent.getScheduleDate().getDayOfWeek().getValue();
+                if (valueHari == 7){
+                    model.addAttribute("hari", hariDao.findById("0").get());
+                }else {
+                    model.addAttribute("hari", hariDao.findById(String.valueOf(valueHari)).get());
+                }
+                model.addAttribute("attendance", attendanceEventParentDao.findByAyahAndScheduleEvent(ayah,scheduleEvent));
+                model.addAttribute("schedule", scheduleEvent);
                 model.addAttribute("mahasiswa", mahasiswa);
             } else {
                 return "redirect:login";
             }
         return "dashboardParent";
 
+    }
+
+    @PostMapping("/attendance-event")
+    public String insertAttandanceEvent(Authentication authentication,@RequestParam(name = "id", value = "id") ScheduleEvent scheduleEvent){
+        User user = currentUserService.currentUser(authentication);
+        Ayah ayah = ayahDao.findByUser(user);
+
+        AttendanceEventParent attendanceEventParent = new AttendanceEventParent();
+        attendanceEventParent.setScheduleEvent(scheduleEvent);
+        attendanceEventParent.setTanggalAttendance(LocalDateTime.now().plusHours(7));
+        attendanceEventParent.setAyah(ayah);
+        attendanceEventParentDao.save(attendanceEventParent);
+        return "redirect:dashboard";
     }
 
     @PostMapping("/update-userParent")
