@@ -281,34 +281,9 @@ public class StudiesActivityController {
 
     @GetMapping("/studiesActivity/attendance/detail")
     public void detailAttendance(Model model, @RequestParam Jadwal jadwal) {
-        List<SesiKuliah> sesiKuliah = sesiKuliahDao.findByJadwalAndPresensiDosenStatusOrderByWaktuMulai(jadwal, StatusRecord.AKTIF);
-
-        List<JadwalDto> detail = new ArrayList<>();
-        for (SesiKuliah sk : sesiKuliah) {
-            JadwalDto jadwalDto = new JadwalDto();
-            jadwalDto.setJadwal(sk.getJadwal());
-            jadwalDto.setBeritaAcara(sk.getBeritaAcara());
-            jadwalDto.setPresensiDosen(sk.getPresensiDosen());
-            jadwalDto.setId(sk.getId());
-            LocalDateTime jamMasuk = sk.getWaktuMulai();
-            LocalDateTime jamSelesai = sk.getWaktuSelesai();
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
-            jadwalDto.setWaktuMulai(jamMasuk.format(format));
-            jadwalDto.setWaktuSelesai(jamSelesai.format(format));
-            detail.add(jadwalDto);
-
-        }
-        model.addAttribute("detail", detail);
+        model.addAttribute("detail",presensiDosenDao.listPresensiDosen(jadwal));
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
-
-//        String jamMulai1 = jadwal.getJamMulai().toString().substring(0,5);
-//        String jamSelesai1 = jadwal.getJamSelesai().toString().substring(0,5);
-//        LocalTime jamMulai2 = LocalTime.parse(jamMulai1);
-//        LocalTime jamSelesai2 = LocalTime.parse(jamSelesai1);
-//        DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
-//        jadwal.setJamMulai(LocalTime.parse(jamMulai1).);
-//        jadwal.setJamSelesai(LocalTime.parse(jamSelesai1));
         model.addAttribute("jadwal", jadwal);
 
     }
@@ -429,6 +404,7 @@ public class StudiesActivityController {
 
     }
 
+
     @GetMapping("/studiesActivity/attendance/mahasiswa")
     public void attendance(@RequestParam(name = "id",value = "id") SesiKuliah sesiKuliah, Model model){
         List<PresensiMahasiswa> presensiMahasiswa = presensiMahasiswaDao.findBySesiKuliahAndStatus(sesiKuliah,StatusRecord.AKTIF);
@@ -449,11 +425,9 @@ public class StudiesActivityController {
 
         }
         model.addAttribute("statusPresensi", StatusPresensi.values());
-        model.addAttribute("status", statusPresensi);
         model.addAttribute("presensi", presensiMahasiswaDao.listPresensiMahasiswa(sesiKuliah));
         model.addAttribute("jadwal", sesiKuliah.getJadwal().getId());
         model.addAttribute("sesi",sesiKuliah.getId());
-        model.addAttribute("statusPresensi", StatusPresensi.values());
     }
 
     @GetMapping("/data-presensi-mahasiswa")
@@ -462,6 +436,30 @@ public class StudiesActivityController {
         PresensiDosen presensiDosen = presensiDosenDao.findById(id).get();
         SesiKuliah sesiKuliah = sesiKuliahDao.findByPresensiDosen(presensiDosen);
         return presensiMahasiswaDao.listPresensiMahasiswaBarcode(sesiKuliah);
+    }
+
+    @PutMapping("/update-presensi-mahasiswa/{id}")
+    @ResponseBody
+    public BaseResponse listPresensiMahasiswa(@PathVariable String id, @RequestParam String status){
+        PresensiMahasiswa presensiMahasiswa = presensiMahasiswaDao.findById(id).get();
+        presensiMahasiswa.setStatusPresensi(StatusPresensi.valueOf(status));
+        presensiMahasiswa.setWaktuMasuk(LocalDateTime.now().plusHours(7));
+        presensiMahasiswa.setCatatan("MANUAL");
+        presensiMahasiswaDao.save(presensiMahasiswa);
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setId(presensiMahasiswa.getId());
+        baseResponse.setNim(presensiMahasiswa.getMahasiswa().getNim());
+        baseResponse.setNama(presensiMahasiswa.getMahasiswa().getNama());
+        baseResponse.setMessage("Presensi Mahasiswa Telah Diperbarui");
+        return baseResponse;
+    }
+
+    @GetMapping("/detail-presensi-mahasiswa")
+    @ResponseBody
+    public List<PresensiMahasiswaDto> listPresensiMahasiswa(@RequestParam String id){
+        SesiKuliah sesiKuliah = sesiKuliahDao.findById(id).get();
+        return presensiMahasiswaDao.listDataPresensiMahasiswa(sesiKuliah);
     }
 
     @PostMapping("/studiesActivity/attendance/mahasiswa")

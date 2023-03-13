@@ -60,4 +60,10 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
             "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1 and p.catatan = 'Barcode'", nativeQuery = true)
     List<PresensiMahasiswaDto> listPresensiMahasiswaBarcode(SesiKuliah sesiKuliah);
 
+    @Query(value = "select p.id as idPresensi,p.id_sesi_kuliah as idSesi, m.id as idMahasiswa,p.id_krs_detail as krs, m.nama as nama , m.nim as nim,\n" +
+            " p.status_presensi as presensi, coalesce (cast(p.waktu_masuk as time(0)), '-') as time\n" +
+            "from presensi_mahasiswa as p inner join mahasiswa as m on p.id_mahasiswa = m.id\n" +
+            "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1", nativeQuery = true)
+    List<PresensiMahasiswaDto> listDataPresensiMahasiswa(SesiKuliah sesiKuliah);
+
 }

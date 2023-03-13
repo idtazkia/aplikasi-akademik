@@ -124,6 +124,8 @@ public class PresensiService {
                 presensiMahasiswa.setSesiKuliah(sesiKuliah);
                 presensiMahasiswa.setKrsDetail(kd);
                 presensiMahasiswa.setCatatan("Manual");
+                presensiMahasiswa.setWaktuMasuk(LocalDateTime.now());
+                presensiMahasiswa.setWaktuKeluar(sesiKuliah.getWaktuSelesai());
                 presensiMahasiswa.setMahasiswa(kd.getMahasiswa());
                 presensiMahasiswa.setRating(0);
                 presensiMahasiswaDao.save(presensiMahasiswa);
