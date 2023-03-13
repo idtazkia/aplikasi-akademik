@@ -33,6 +33,9 @@ public class SidangService {
     @Value("${logo.surat}")
     private String logo;
 
+    @Value("${logo.ttd}")
+    private String tandaTangan;
+
     @Autowired
     private SidangDao sidangDao;
 
@@ -916,8 +919,15 @@ public class SidangService {
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        document.add(newLine);
-        document.add(newLine);
+        Image ttd = Image.getInstance(tandaTangan + File.separator + seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan());
+        ttd.scaleToFit(100, 100);
+        ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
+        document.add(ttd);
+
+        document.add(nLine);
+        document.add(nLine);
+        document.add(nLine);
+        document.add(nLine);
 
         Paragraph kpsName = new Paragraph(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
         kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
@@ -1382,8 +1392,15 @@ public class SidangService {
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        document.add(newLine);
-        document.add(newLine);
+        Image ttd = Image.getInstance(tandaTangan + File.separator + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan());
+        ttd.scaleToFit(100, 100);
+        ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
+        document.add(ttd);
+
+        document.add(nLine);
+        document.add(nLine);
+        document.add(nLine);
+        document.add(nLine);
 
         Paragraph kpsName = new Paragraph(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
         kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
