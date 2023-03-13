@@ -87,6 +87,7 @@
                                         <th scope="col">Nama</th>
                                         <th scope="col">Status</th>
                                         <th>Action</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -441,6 +442,11 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm" th:if="${data.akademik == data.akademik.APPROVED && data.statusSidang == data.akademik.APPROVED && data.publish == data.publish.AKTIF && data.nilai >= 70}">
+                                                <a class="text-white" th:href="@{/suratTugas/sidang/pdf(sidang = ${data.id})}">Cetak Surat Tugas</a>
+                                            </button>
                                         </td>
 
                                     </tr>
