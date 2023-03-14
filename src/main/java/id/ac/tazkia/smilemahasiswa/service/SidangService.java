@@ -588,11 +588,11 @@ public class SidangService {
         background.scaleAbsolute(400, 450);
         document.add(background);
 
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         titleFont.setStyle(Font.UNDERLINE);
-        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph paragrafkosong = new Paragraph("");
 
@@ -698,7 +698,7 @@ public class SidangService {
         table1.setWidthPercentage(90);
         table1.setWidths(new int[] {3, 5, 8, 5});
 
-        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));
@@ -1061,11 +1061,11 @@ public class SidangService {
         background.scaleAbsolute(400, 450);
         document.add(background);
 
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         titleFont.setStyle(Font.UNDERLINE);
-        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font kodeFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fStandard = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
-        Font fontB = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontB = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
 
         Paragraph paragrafkosong = new Paragraph("");
 
@@ -1171,7 +1171,7 @@ public class SidangService {
         table1.setWidthPercentage(90);
         table1.setWidths(new int[] {3, 5, 8, 5});
 
-        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.BOLD);
+        Font fontHeader = FontFactory.getFont(FontFactory.TIMES_BOLD, 12);
         Font fontIsi = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12);
 
         cell = new PdfPCell(new Phrase("No. ", fontHeader));
