@@ -44,5 +44,6 @@ public class Karyawan {
 
     private String foto;
 
+    private String tandaTangan;
 
 }

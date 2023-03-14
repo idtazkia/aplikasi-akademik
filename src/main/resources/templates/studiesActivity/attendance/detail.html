@@ -75,34 +75,32 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Waktu Masuk</th>
-                                <th scope="col">Waktu Selesai</th>
                                 <th scope="col">Dosen</th>
-                                <th scope="col">Keterangan</th>
+                                <th>Berita Acara</th>
                                 <th scope="col"></th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="headings" th:each="data,row : ${detail}">
                                 <td th:text="${(row.index + 1)}">#</td>
-                                <td th:text="${data.waktuMulai}">Jam</td>
-                                <td th:text="${data.waktuSelesai}">Jam</td>
-                                <td th:text="${data.presensiDosen.dosen.karyawan.namaKaryawan}">Jam</td>
-                                <td th:text="${data.beritaAcara}">Dosen</td>
-                                <td><a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Kehadiran Mahasiswa</a>
-                                </td>
+                                <td th:text="${data.masuk}">Jam</td>
+                                <td style="white-space:pre-wrap; word-wrap:break-word" th:text="${data.dosen}">Jam</td>
+                                <td style="white-space:pre-wrap; word-wrap:break-word" th:text="${data.berita}">Dosen</td>
                                 <td>
-                                    <a th:href="@{/studiesActivity/attendance/barcode (id = ${data.presensiDosen.id})}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Barcode</a>
-                                </td>
-                                <td><a th:href="@{/studiesActivity/attendance/form (id = ${data.id})}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit Topic</a></td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.id}">
+                                    <button type="button" class="btn btn-info btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-cog"></i>
+                                        Attendence</button>
+                                    <div class="dropdown-menu">
+                                        <a th:href="@{/studiesActivity/attendance/mahasiswa (id = ${data.sesi})}" class="dropdown-item"> Kehadiran Mahasiswa</a>
+                                        <a th:href="@{/studiesActivity/attendance/barcode (id = ${data.idPresensi})}" class="dropdown-item"> Barcode</a>
+                                        <a th:href="@{/studiesActivity/attendance/form (id = ${data.sesi})}" class="dropdown-item"> Edit Topic</a>
+                                    </div>
+
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" th:data-target="${'#modal-notification'+data.sesi}">
                                         <i class="fas fa-trash"></i>
                                     </button>
 
-                                    <div class="modal fade" th:id="${'modal-notification'+data.id}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+                                    <div class="modal fade" th:id="${'modal-notification'+data.sesi}" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
                                         <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
                                             <div class="modal-content bg-gradient-danger">
 
@@ -124,7 +122,7 @@
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <form th:action="@{/studiesActivity/attendance/delete (id = ${data.id})}" method="post">
+                                                    <form th:action="@{/studiesActivity/attendance/delete (id = ${data.sesi})}" method="post">
                                                         <button type="submit" class="btn btn-white">Delete</button>
                                                     </form>
                                                     <button type="button" class="btn btn-link text-white ml-auto" data-dismiss="modal">Close</button>
@@ -134,6 +132,7 @@
                                         </div>
                                     </div>
                                 </td>
+
                             </tr>
 
                             </tbody>
@@ -206,16 +205,3 @@
 </div>
 </body>
 </html>
-<script type="text/javascript">
-    // $(function () {
-    //     $('#datetimepicker3').datetimepicker({
-    //         format: 'HH:mm:ss'
-    //     });
-    // });
-    //
-    // $(function () {
-    //     $('#datetimepicker2').datetimepicker({
-    //         format: 'HH:mm:ss'
-    //     });
-    // });
-</script>

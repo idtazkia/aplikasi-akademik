@@ -38,4 +38,5 @@ public class Dosen {
     @NotNull
     @JoinColumn(name = "id_jabatan")
     private JabatanDosen jabatanDosen;
+
 }
