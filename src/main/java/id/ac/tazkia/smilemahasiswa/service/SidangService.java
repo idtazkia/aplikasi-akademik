@@ -1243,7 +1243,7 @@ public class SidangService {
 
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
-        paragrafkosong.add(new Chunk("Sidang Seminar Proposal", fontB));
+        paragrafkosong.add(new Chunk("Sidang Skripsi ", fontB));
         paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
         paragrafkosong.add(new Chunk(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
         paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
