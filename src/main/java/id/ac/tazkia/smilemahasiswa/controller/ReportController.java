@@ -25,6 +25,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,9 @@ import java.util.*;
 public class ReportController {
     @Autowired
     private JadwalDosenDao jadwalDosenDao;
+
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
 
     @Autowired
     private JadwalDao jadwalDao;
@@ -161,6 +165,17 @@ public class ReportController {
         model.addAttribute("rekapJadwalDosen", rekap);
         model.addAttribute("rekapJadwalPerDosen", detailJadwalPerDosen);
 
+    }
+
+    @GetMapping("/report/recapitulation/schedule")
+    public void laporanPresensi(Model model, @RequestParam(required = false) String tanggal){
+        if (StringUtils.hasText(tanggal)) {
+            model.addAttribute("tanggal", LocalDate.parse(tanggal));
+            model.addAttribute("rekap", presensiDosenDao.rekapPresensiPerHari(LocalDate.parse(tanggal)));
+        } else {
+            model.addAttribute("tanggal", LocalDate.now());
+            model.addAttribute("rekap", presensiDosenDao.rekapPresensiPerHari(LocalDate.now()));
+        }
     }
 
     @GetMapping("/report/recapitulation/salary")
