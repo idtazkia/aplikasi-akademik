@@ -119,10 +119,14 @@
                                 <ul id="democrou" class="collapse dropdown-header-top">
                                     <li><a th:href="@{/report/khs}">KHS</a></li>
                                     <li><a th:href="@{/report/transcript}">Transcript</a></li>
-                                    <li><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
+
                                 </ul>
                             </li>
                             <li><a data-toggle="collapse" data-target="#demodepart" th:href="@{/graduation/register}">Graduation</a>
+                                <ul id="d" class="collapse dropdown-header-top">
+                                    <li><a th:href="@{/graduation/register}">Tugas Akhir</a></li>
+                                    <li><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
+                                </ul>
                             </li>
                         </ul>
                     </nav>
@@ -146,7 +150,7 @@
                     <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#Charts"><i class="fa fa-bar-chart"></i> Report</a>
                     <li sec:authorize="hasAuthority('VIEW_PARENT')"><a th:href="@{/report/transcriptParent}"><i class="fa fa-bar-chart"></i> Laporan Transkript</a>
                     </li>
-                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/graduation/register}"><i class="fa fa-graduation-cap"></i> Graduation</a>
+                    <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a data-toggle="tab" href="#gra"><i class="fa fa-graduation-cap"></i> Graduation</a>
                     </li>
                 </ul>
                 <div class="tab-content custom-menu-content">
@@ -154,13 +158,20 @@
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/khs}">KHS</a></li>
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/report/transcript}">Transcript</a></li>
-                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
                         </ul>
                     </div>
                     <div id="Tables" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
                             <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')"><a th:href="@{/graduation/register}">Concept Note</a>
                             </li>
+                        </ul>
+                    </div>
+                    <div id="gra" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA') or hasAuthority('VIEW_MAHASISWA_NUNGGAK')">
+                                <a th:href="@{/graduation/register}">Tugas Akhir</a>
+                            </li>
+                            <li sec:authorize="hasAuthority('VIEW_MAHASISWA')"><a th:href="@{/tahfidz}">PENDAFTARAN UJIAN TAHFIDZ & KOMPREHENSIF</a></li>
                         </ul>
                     </div>
                     <div id="Adm" class="tab-pane notika-tab-menu-bg animated flipInX">
