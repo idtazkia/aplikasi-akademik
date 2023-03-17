@@ -42,7 +42,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
 
         document.add(lTazkia);
 
@@ -60,7 +60,7 @@ public class TranscriptService {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(50);
         table.setWidths(new int[] {3, 1, 5});
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+        Font font = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
 
         PdfPCell cell;
@@ -107,7 +107,7 @@ public class TranscriptService {
         tabNilai.setWidthPercentage(100);
         tabNilai.setWidths(new int[] {3,4,7,1,3,2,3});
         tabNilai.setSpacingBefore(10);
-        Font fNilai = FontFactory.getFont(FontFactory.HELVETICA, 8);
+        Font fNilai = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
         Font fHeader = FontFactory.getFont(FontFactory.defaultEncoding, 8, Font.BOLD);
         fHeader.setColor(CMYKColor.BLACK);
@@ -478,7 +478,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
 
         document.add(lTazkia);
 
@@ -496,7 +496,7 @@ public class TranscriptService {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(50);
         table.setWidths(new int[] {3, 1, 5});
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+        Font font = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
 
         PdfPCell cell;
@@ -543,7 +543,7 @@ public class TranscriptService {
         tabNilai.setWidthPercentage(100);
         tabNilai.setWidths(new int[] {3,4,7,1,3,2,3});
         tabNilai.setSpacingBefore(10);
-        Font fNilai = FontFactory.getFont(FontFactory.HELVETICA, 8);
+        Font fNilai = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
         Font fHeader = FontFactory.getFont(FontFactory.defaultEncoding, 8, Font.BOLD);
         fHeader.setColor(CMYKColor.BLACK);
@@ -913,7 +913,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 15);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
 
         document.add(lTazkia);
 
@@ -931,7 +931,7 @@ public class TranscriptService {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(50);
         table.setWidths(new int[] {3, 1, 5});
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+        Font font = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
 
         PdfPCell cell;
@@ -978,7 +978,7 @@ public class TranscriptService {
         tabNilai.setWidthPercentage(100);
         tabNilai.setWidths(new int[] {3,4,7,1,3,2,3});
         tabNilai.setSpacingBefore(10);
-        Font fNilai = FontFactory.getFont(FontFactory.HELVETICA, 8);
+        Font fNilai = FontFactory.getFont(FontFactory.defaultEncoding, 8);
         font.setColor(CMYKColor.BLACK);
         Font fHeader = FontFactory.getFont(FontFactory.defaultEncoding, 8, Font.BOLD);
         fHeader.setColor(CMYKColor.BLACK);
