@@ -160,6 +160,9 @@ public class StudiesActivityController {
     @Autowired
     private TranscriptService transcriptService;
 
+    @Autowired
+    private ReportService reportService;
+
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
@@ -2216,6 +2219,19 @@ public class StudiesActivityController {
 
         model.addAttribute("attendance", hasil);
 
+
+    }
+
+    @GetMapping("/studiesActivity/assesment/report")
+    public void downloadReport(@RequestParam Jadwal jadwal, HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Presensi " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal.getKelas().getNamaKelas() + ".pdf";
+
+        response.setHeader(headerKey, headerValue);
+
+        reportService.downloadReport(jadwal, response);
 
     }
 

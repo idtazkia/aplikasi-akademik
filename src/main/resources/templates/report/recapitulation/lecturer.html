@@ -115,15 +115,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="dropdown" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
-                                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Download
+                                            <div sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAuthority('VIEW_AKADEMIK2') or hasAuthority('VIEW_AKADEMIK1')">
+                                                <button class="btn btn-primary btn-sm " type="button">
+                                                    <a class="text-white" th:href="@{/studiesActivity/assesment/report(jadwal = ${jd.idJadwal})}">Download</a>
                                                 </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/topic(jadwal = ${jd.idJadwal})}">Topic</a>
-                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/attendance(jadwal = ${jd.idJadwal})}">Attendance</a>
-                                                    <a target="_blank" class="dropdown-item" th:href="@{/studiesActivity/assesment/nilai(jadwal = ${jd.idJadwal})}">Score</a>
-                                                </div>
                                             </div>
                                         </td>
 

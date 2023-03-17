@@ -770,7 +770,7 @@ public class SidangService {
 
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
-        paragrafkosong.add(new Chunk("Sidang Seminar Proposal", fontB));
+        paragrafkosong.add(new Chunk("Seminar Proposal", fontB));
         paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
         paragrafkosong.add(new Chunk(seminar.getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
         paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
@@ -1241,9 +1241,17 @@ public class SidangService {
 
         document.add(table1);
 
+        String jenjang = null;
+
+        if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S1")){
+            jenjang = "Skripsi";
+        }else if (sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang().equals("S2")){
+            jenjang = "Thesis";
+        }
+
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Untuk menguji ", fStandard));
-        paragrafkosong.add(new Chunk("Sidang Skripsi ", fontB));
+        paragrafkosong.add(new Chunk("Sidang " + jenjang, fontB));
         paragrafkosong.add(new Chunk(" mahasiswa Program Studi ", fStandard));
         paragrafkosong.add(new Chunk(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getNamaProdi(), fStandard));
         paragrafkosong.add(new Chunk("Institut Agama Islam Tazkia ", fStandard));
