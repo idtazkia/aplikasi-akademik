@@ -42,7 +42,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
@@ -71,6 +71,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNim(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -83,6 +84,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNama(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -95,6 +97,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getIdProdi().getNamaProdi(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -478,7 +481,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
@@ -507,6 +510,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNim(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -519,6 +523,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNama(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -531,6 +536,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getIdProdi().getNamaProdi(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -913,7 +919,7 @@ public class TranscriptService {
 
         Image lTazkia = Image.getInstance(logo + File.separator + "LOGO.png");
         lTazkia.scaleToFit(60, 60);
-        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 30);
+        lTazkia.setAbsolutePosition(80, PageSize.A4.getHeight() - (lTazkia.getScaledHeight()) - 45);
 
         document.add(lTazkia);
 
@@ -942,6 +948,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNim(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -954,6 +961,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getNama(), font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -966,6 +974,7 @@ public class TranscriptService {
         cell = new PdfPCell(new Phrase(":", font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
         cell = new PdfPCell(new Phrase(mhs.getIdProdi().getNamaProdiEnglish(), font));
         cell.setBorder(Rectangle.NO_BORDER);

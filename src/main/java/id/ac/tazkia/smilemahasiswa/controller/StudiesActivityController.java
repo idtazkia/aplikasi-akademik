@@ -2227,7 +2227,7 @@ public class StudiesActivityController {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Presensi " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal.getKelas().getNamaKelas() + ".pdf";
+        String headerValue = "attachment; filename=Presensi - Berita Acara - Nilai " + jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah() + " - " + jadwal.getKelas().getNamaKelas() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 
