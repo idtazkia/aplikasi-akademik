@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -50,6 +51,12 @@ public class SidangService {
 
     @Autowired
     private KodeSidangDao kodeSidangDao;
+
+    @Autowired
+    private DosenDao dosenDao;
+
+    @Autowired
+    private KaryawanDao karyawanDao;
 
     @Autowired
     private HariDao hariDao;
@@ -912,14 +919,38 @@ public class SidangService {
         document.add(nLine);
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Bogor, ", fStandard));
-        paragrafkosong.add(new Chunk(seminar.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong.add(new Chunk(seminar.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
         paragrafkosong.add(new Chunk(" / ", fStandard));
         paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        Image ttd = Image.getInstance(tandaTangan + File.separator + seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan());
+        String ttdKps = null;
+        String namaKps = null;
+        String nidnKps = null;
+        String prd = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
+        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+            if ("MBS".equals(prd)) {
+                Karyawan karyawan = karyawanDao.findById("thubaz").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
+            }else if ("TIP".equals(prd)){
+                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
+            }else {
+                ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+            }
+        }else{
+            namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+            nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+            ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+        }
+
+        Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
         ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
         document.add(ttd);
@@ -929,12 +960,12 @@ public class SidangService {
         document.add(nLine);
         document.add(nLine);
 
-        Paragraph kpsName = new Paragraph(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
+        Paragraph kpsName = new Paragraph(namaKps, titleFont);
         kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
         kpsName.setIndentationLeft(50);
         document.add(kpsName);
 
-        Paragraph nidn = new Paragraph("NIDN: " + seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn());
+        Paragraph nidn = new Paragraph("NIDN: " + nidnKps);
         nidn.setAlignment(Paragraph.ALIGN_BASELINE);
         nidn.setIndentationLeft(50);
         nidn.setFont(kodeFont);
@@ -1393,14 +1424,38 @@ public class SidangService {
         document.add(nLine);
         paragrafkosong = new Paragraph();
         paragrafkosong.add(new Chunk("Bogor, ", fStandard));
-        paragrafkosong.add(new Chunk(sidang.getTanggalUjian().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
+        paragrafkosong.add(new Chunk(sidang.getTanggalInput().format(DateTimeFormatter.ofPattern("dd MMM yyyy")) + " M"));
         paragrafkosong.add(new Chunk(" / ", fStandard));
         paragrafkosong.add(new Chunk(tanggalHijri+ " " + namaBulanHijri + " " + tahunHijri + " H", fStandard));
         paragrafkosong.setAlignment(Element.ALIGN_BASELINE);
         paragrafkosong.setIndentationLeft(50);
         document.add(paragrafkosong);
 
-        Image ttd = Image.getInstance(tandaTangan + File.separator + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan());
+        String ttdKps = null;
+        String namaKps = null;
+        String nidnKps = null;
+        String prd = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
+        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+            if ("MBS".equals(prd)) {
+                Karyawan karyawan = karyawanDao.findById("thubaz").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
+            }else if ("TIP".equals(prd)){
+                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
+            }else {
+                ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+            }
+        }else{
+            namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+            nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+            ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
+        }
+
+        Image ttd = Image.getInstance(tandaTangan + File.separator + ttdKps);
         ttd.scaleToFit(100, 100);
         ttd.setAbsolutePosition(85, PageSize.A4.getHeight() - (table1.getTotalHeight()) - (table2.getTotalHeight()) - 520);
         document.add(ttd);
@@ -1410,12 +1465,12 @@ public class SidangService {
         document.add(nLine);
         document.add(nLine);
 
-        Paragraph kpsName = new Paragraph(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), titleFont);
+        Paragraph kpsName = new Paragraph(namaKps, titleFont);
         kpsName.setAlignment(Paragraph.ALIGN_BASELINE);
         kpsName.setIndentationLeft(50);
         document.add(kpsName);
 
-        Paragraph nidn = new Paragraph("NIDN: " + sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn());
+        Paragraph nidn = new Paragraph("NIDN: " + nidnKps);
         nidn.setAlignment(Paragraph.ALIGN_BASELINE);
         nidn.setIndentationLeft(50);
         nidn.setFont(kodeFont);
