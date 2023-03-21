@@ -54,12 +54,12 @@
                   <a th:href="@{/kompre}" class="btn btn-primary btn-block">Sidang Komperehensif</a>
                 </div>
               </div>
-              <div th:if="${enable == false}">
-                <div class="row" style="margin-top: 20px;">
-                  <div class="col-md-12 alert alert-danger">Fitur pendaftaran komperhensif tidak bisa di akses. Silahkan hubungi bagian keuangan.</div>
-                </div>
-              </div>
-              <div th:if="${enable == true}">
+<!--              <div th:if="${enable == false}">-->
+<!--                <div class="row" style="margin-top: 20px;">-->
+<!--                  <div class="col-md-12 alert alert-danger">Fitur pendaftaran komperhensif tidak bisa di akses. Silahkan hubungi bagian keuangan.</div>-->
+<!--                </div>-->
+<!--              </div>-->
+              <div>
                 <div th:if="${totalSks <= 138 || jumlahNilaiD >= 1}">
                   <div class="row" style="margin-top: 20px;">
                     <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks <= 138}">
