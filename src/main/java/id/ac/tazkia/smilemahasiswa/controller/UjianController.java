@@ -12,6 +12,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.UjianTahfidzKompreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -75,9 +77,15 @@ public class UjianController {
     private KrsDao krsDao;
 
     @Autowired
+    private UjianTahfidzKompreService ujianTahfidzKompreService;
+
+    @Autowired
     private MahasiswaDao mahasiswaDao;
     @Autowired
     private UjianTahfidzKompreDao ujianTahfidzKompreDao;
+
+    @Autowired
+    private EnableFitureDao enableFitureDao;
 
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
@@ -95,11 +103,18 @@ public class UjianController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianTahfidz");
         BigDecimal ipk = ujianTahfidzKompreDao.ipkCheck(mahasiswa);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TAHFIDZ, true);
 
-        model.addAttribute("data", mahasiswa);
-        model.addAttribute("check", checkRejected);
-        model.addAttribute("ipk", ipk);
-        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
+        if (enableFiture == null){
+            model.addAttribute("enable", false);
+        }else {
+            model.addAttribute("enable", true);
+            model.addAttribute("data", mahasiswa);
+            model.addAttribute("check", checkRejected);
+            model.addAttribute("ipk", ipk);
+            model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
+        }
+
         return "ujian/tahfidz";
     }
 
@@ -110,12 +125,21 @@ public class UjianController {
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianKomprehensif");
         Integer checkNilai = ujianTahfidzKompreDao.jumlahNilaiD(mahasiswa);
 
-        model.addAttribute("totalSks", 139);
-        model.addAttribute("jumlahNilaiD", checkNilai);
+        EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.KOMPRE, true);
 
-        model.addAttribute("data", mahasiswa);
-        model.addAttribute("check", checkRejected);
-        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
+        if (enableFiture == null){
+            model.addAttribute("enable", false);
+        }else {
+            model.addAttribute("enable", true);
+            model.addAttribute("totalSks", krsDetailDao.totalSks(mahasiswa));
+//        model.addAttribute("totalSks", 139);
+            model.addAttribute("jumlahNilaiD", checkNilai);
+
+            model.addAttribute("data", mahasiswa);
+            model.addAttribute("check", checkRejected);
+            model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
+        }
+
         return "ujian/kompre";
     }
 
@@ -182,6 +206,7 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setUrutan(1);
+        ujianTahfidzKompre.setStatusLulus("BELUM_DINILAI");
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
@@ -245,77 +270,93 @@ public class UjianController {
     }
 
     @GetMapping("/formulirtahfidz")
-    public void formulitTahfidz(@RequestParam(name = "id")Mahasiswa mahasiswa, HttpServletResponse response){
-        try {
-            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+    public void formulitTahfidz(@RequestParam(name = "id")Mahasiswa mahasiswa, HttpServletResponse response) throws IOException {
 
-            // 1. Load template dari file
-            InputStream in = formulirTahfidz.getInputStream();
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Formulir " + mahasiswa.getNim() + ".pdf";
 
-            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
+        response.setHeader(headerKey, headerValue);
+        ujianTahfidzKompreService.formulirTahfidz(mahasiswa ,response);
+//        try {
+//            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+//
+//            // 1. Load template dari file
+//            InputStream in = formulirTahfidz.getInputStream();
+//
+//            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
+//            IXDocReport report = XDocReportRegistry.getRegistry().
+//                    loadReport(in, TemplateEngineKind.Freemarker);
+//
+//            // 3. Context object, untuk mengisi variabel
+//            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+//            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
+//
+//            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+//
+//            IContext ctx = report.createContext();
+//            ctx.put("nama", mahasiswa.getNama());
+//            ctx.put("nim", mahasiswa.getNim());
+//            ctx.put("prodi",mahasiswa.getIdProdi().getNamaProdi());
+//            ctx.put("ipk", ipk);
+//            ctx.put("sks", totalSKS);
+//            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+//
+//            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Ujian_Tahfidz-"+ mahasiswa.getIdProdi().getKodeProdi() + "-" + mahasiswa.getNim() +".pdf");
+//            OutputStream out = response.getOutputStream();
+//            report.convert(ctx, options, out);
+//            out.flush();
+//
+//
+//        }catch (Exception err){
+////            logger.error(err.getMessage(), err);
+//        }
 
-            // 3. Context object, untuk mengisi variabel
-            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
-            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
-
-            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
-            IContext ctx = report.createContext();
-            ctx.put("nama", mahasiswa.getNama());
-            ctx.put("nim", mahasiswa.getNim());
-            ctx.put("prodi",mahasiswa.getIdProdi().getNamaProdi());
-            ctx.put("ipk", ipk);
-            ctx.put("sks", totalSKS);
-            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
-
-            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Ujian_Tahfidz-"+ mahasiswa.getIdProdi().getKodeProdi() + "-" + mahasiswa.getNim() +".pdf");
-            OutputStream out = response.getOutputStream();
-            report.convert(ctx, options, out);
-            out.flush();
 
 
-        }catch (Exception err){
-//            logger.error(err.getMessage(), err);
-        }
     }
 
     @GetMapping("/formulirkompre")
-    public void formulirKompre(@RequestParam(name = "id")Mahasiswa mahasiswa, HttpServletResponse response){
-        try {
-            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+    public void formulirKompre(@RequestParam(name = "id")Mahasiswa mahasiswa, HttpServletResponse response)throws IOException{
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Formulir_Kompre " + mahasiswa.getNim() + ".pdf";
 
-            // 1. Load template dari file
-            InputStream in = formulirKompre.getInputStream();
-
-            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
-            IXDocReport report = XDocReportRegistry.getRegistry().
-                    loadReport(in, TemplateEngineKind.Freemarker);
-
-            // 3. Context object, untuk mengisi variabel
-            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
-            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
-
-            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
-
-            IContext ctx = report.createContext();
-            ctx.put("nama", mahasiswa.getNama());
-            ctx.put("nim", mahasiswa.getNim());
-            ctx.put("prodi",mahasiswa.getIdProdi().getNamaProdi());
-            ctx.put("ipk", ipk);
-            ctx.put("sks", totalSKS);
-            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
-
-            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Sidang_kompre-"+ mahasiswa.getIdProdi().getKodeProdi() + "-" + mahasiswa.getNim() +".pdf");
-            OutputStream out = response.getOutputStream();
-            report.convert(ctx, options, out);
-            out.flush();
-
-
-        }catch (Exception err){
-//            logger.error(err.getMessage(), err);
-        }
+        response.setHeader(headerKey, headerValue);
+        ujianTahfidzKompreService.formulirKompre(mahasiswa ,response);
+//        try {
+//            Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
+//
+//            // 1. Load template dari file
+//            InputStream in = formulirKompre.getInputStream();
+//
+//            // 2. Inisialisasi template engine, menentukan sintaks penulisan variabel
+//            IXDocReport report = XDocReportRegistry.getRegistry().
+//                    loadReport(in, TemplateEngineKind.Freemarker);
+//
+//            // 3. Context object, untuk mengisi variabel
+//            BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+//            BigDecimal totalMuti = krsDetailDao.totalMutuAkhir(mahasiswa.getId());
+//
+//            BigDecimal ipk = totalMuti.divide(totalSKS,2,BigDecimal.ROUND_HALF_DOWN);
+//
+//            IContext ctx = report.createContext();
+//            ctx.put("nama", mahasiswa.getNama());
+//            ctx.put("nim", mahasiswa.getNim());
+//            ctx.put("prodi",mahasiswa.getIdProdi().getNamaProdi());
+//            ctx.put("ipk", ipk);
+//            ctx.put("sks", totalSKS);
+//            ctx.put("tgl", LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+//
+//            response.setHeader("Content-Disposition", "attachment;filename=Formulir_Sidang_kompre-"+ mahasiswa.getIdProdi().getKodeProdi() + "-" + mahasiswa.getNim() +".pdf");
+//            OutputStream out = response.getOutputStream();
+//            report.convert(ctx, options, out);
+//            out.flush();
+//
+//
+//        }catch (Exception err){
+////            logger.error(err.getMessage(), err);
+//        }
     }
 
     @GetMapping("/ujianTahfidz")
@@ -436,7 +477,7 @@ public class UjianController {
         return "redirect:/ujianTahfidz";
     }
 
-        @PostMapping("/approvedKompre")
+    @PostMapping("/approvedKompre")
     public String approvedKompre(@Valid UjianTahfidzKompre ujianTahfidzKompre, Authentication authentication){
         User user = currentUserService.currentUser(authentication);
 
@@ -512,5 +553,6 @@ public class UjianController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -56,4 +57,11 @@ public class UjianTahfidzKompre {
     @ManyToOne
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
+
+    private String statusLulus;
+
+    private BigDecimal nilai;
+
+    private String grade;
+
 }

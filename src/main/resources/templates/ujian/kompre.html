@@ -54,78 +54,86 @@
                   <a th:href="@{/kompre}" class="btn btn-primary btn-block">Sidang Komperehensif</a>
                 </div>
               </div>
-              <div th:if="${totalSks <= 138 || jumlahNilaiD >= 1}">
+              <div th:if="${enable == false}">
                 <div class="row" style="margin-top: 20px;">
-                  <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks <= 138}">
-                    <p>Jumlah SKS Anda belum memenuhi syarat untuk melaksanakan ujian komprehensif.</p>
-                    <p>Syarat untuk mengikuti ujian komprehensif adalah menyelesaikan minimal <b>138 SKS</b>. Jumlah SKS Anda <b th:text="${totalSks}"></b></p>
-                  </div>
+                  <div class="col-md-12 alert alert-danger">Fitur pendaftaran komperhensif tidak bisa di akses. Silahkan hubungi bagian keuangan.</div>
                 </div>
               </div>
-
-              <div th:if="${totalSks >= 138}">
-                <div class="row" style="margin-top: 20px;" th:if="${list.size() == 0 && check != 0 || check > list.size() || check == list.size()}">
-                  <div class="col-md-12">
-                    <a th:href="@{/formulirkompre(id = ${data.getId()})}" class="btn btn-warning">Download Formulir Sidang Komprehensif</a>
-                  </div>
-                  <div class="col-md-12" style="margin-top: 20px;">
-                    <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
-                      <div class="form-group">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <label>Nama Mahasiswa</label>
-                            <input type="text" disabled class="form-control" th:value="${data.getNama()}">
-                          </div>
-                          <div class="col-md-6">
-                            <label>Nim</label>
-                            <input type="text" disabled class="form-control" th:value="${data.getNim()}">
-                            <input type="hidden" name="jenisUjian" value="UjianKomprehensif">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label>Upload Form Pendaftaran yang sudah diisi dan di TTD <span style="color: red">*</span></label>
-                        <input type="file" name="image" class="form-control">
-                      </div>
-                      <div class="form-group">
-                        <button class="btn btn-success">Kirim</button>
-                      </div>
-                    </form>
+              <div th:if="${enable == true}">
+                <div th:if="${totalSks <= 138 || jumlahNilaiD >= 1}">
+                  <div class="row" style="margin-top: 20px;">
+                    <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks <= 138}">
+                      <p>Jumlah SKS Anda belum memenuhi syarat untuk melaksanakan ujian komprehensif.</p>
+                      <p>Syarat untuk mengikuti ujian komprehensif adalah menyelesaikan minimal <b>138 SKS</b>. Jumlah SKS Anda <b th:text="${totalSks}"></b></p>
+                    </div>
                   </div>
                 </div>
-                <div class="row" style="margin-top: 20px;" th:if="${list.size() != 0}">
-                  <div class="col-md-12">
-                    <div class="table-responsive">
-                      <table class="table table-striped">
-                        <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Dokumen</th>
-                          <th>Tanggal Pengajuan</th>
-                          <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="data, row:${list}">
-                          <td th:text="${(row.index + 1)}"></td>
-                          <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat Formulir</a></a></td>
-                          <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
-                          <td>
+
+                <div th:if="${totalSks >= 138}">
+                  <div class="row" style="margin-top: 20px;" th:if="${list.size() == 0 && check != 0 || check > list.size() || check == list.size()}">
+                    <div class="col-md-12">
+                      <a th:href="@{/formulirkompre(id = ${data.getId()})}" class="btn btn-warning">Download Formulir Sidang Komprehensif</a>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px;">
+                      <form th:action="@{/kompre/kirim}" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <label>Nama Mahasiswa</label>
+                              <input type="text" disabled class="form-control" th:value="${data.getNama()}">
+                            </div>
+                            <div class="col-md-6">
+                              <label>Nim</label>
+                              <input type="text" disabled class="form-control" th:value="${data.getNim()}">
+                              <input type="hidden" name="jenisUjian" value="UjianKomprehensif">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>Upload Form Pendaftaran yang sudah diisi dan di TTD <span style="color: red">*</span></label>
+                          <input type="file" name="image" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-success">Kirim</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top: 20px;" th:if="${list.size() != 0}">
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Dokumen</th>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Status</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr th:each="data, row:${list}">
+                            <td th:text="${(row.index + 1)}"></td>
+                            <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat Formulir</a></a></td>
+                            <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
+                            <td>
                           <span th:if="${data.statusApprovalAdmin == 'WAITING' ||
                           data.statusApprovalKps == 'WAITING' || data.statusApprovalKps == ''}" class="btn btn-warning btn-sm">WAITING</span>
-                            <span th:if="${data.statusApprovalKps == 'APPROVED_KPS'}" class="btn btn-success btn-sm">APPROVED</span>
-                            <span th:if="${data.statusApprovalKps == 'REJECTED' || data.statusApprovalAdmin == 'REJECTED'}" class="btn btn-danger btn-sm">REJECTED</span>
-                          </td>
-                          <td>
-                            <a th:href="@{/kompre/batal(id = ${data.id})}" class="btn btn-danger btn-sm">Batal</a>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
+                              <span th:if="${data.statusApprovalKps == 'APPROVED_KPS'}" class="btn btn-success btn-sm">APPROVED</span>
+                              <span th:if="${data.statusApprovalKps == 'REJECTED' || data.statusApprovalAdmin == 'REJECTED'}" class="btn btn-danger btn-sm">REJECTED</span>
+                            </td>
+                            <td>
+                              <a th:href="@{/kompre/batal(id = ${data.id})}" class="btn btn-danger btn-sm">Batal</a>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+
 
             </div>
           </div>
