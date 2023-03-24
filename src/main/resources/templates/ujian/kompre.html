@@ -60,7 +60,7 @@
 <!--                </div>-->
 <!--              </div>-->
               <div>
-                <div th:if="${totalSks <= 138 || jumlahNilaiD >= 1}">
+                <div th:if="${totalSks < 138 || jumlahNilaiD >= 1}">
                   <div class="row" style="margin-top: 20px;">
                     <div class="col-md-12 col-md-12 alert alert-danger" th:if="${totalSks <= 138}">
                       <p>Jumlah SKS Anda belum memenuhi syarat untuk melaksanakan ujian komprehensif.</p>

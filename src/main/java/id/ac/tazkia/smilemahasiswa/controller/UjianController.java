@@ -141,12 +141,25 @@ public class UjianController {
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.KOMPRE, true);
 
+        BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
+        List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
+        listTranskript.removeIf(e -> e.getGrade().equals("E"));
+
+        int sks = listTranskript.stream().map(DataTranskript::getSks).mapToInt(Integer::intValue).sum();
+
+
+        BigDecimal mutu = listTranskript.stream().map(DataTranskript::getMutu)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+
+        BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
+
         if (enableFiture == null){
             model.addAttribute("enable", false);
         }else {
             model.addAttribute("enable", true);
-            model.addAttribute("totalSks", krsDetailDao.totalSks(mahasiswa));
-//        model.addAttribute("totalSks", 139);
+            model.addAttribute("totalSks", totalSKS);
             model.addAttribute("jumlahNilaiD", checkNilai);
 
             model.addAttribute("data", mahasiswa);
