@@ -482,17 +482,19 @@ public class UjianTahfidzKompreService {
         cell.setBorder(Rectangle.NO_BORDER);
         formFormulir.addCell(cell);
 
-        if (mahasiswa.getIdKonsentrasi() == null){
-            cell = new PdfPCell(new Phrase("-",font));
-            cell.setBorder(Rectangle.NO_BORDER);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            formFormulir.addCell(cell);
-        }else {
-            cell = new PdfPCell(new Phrase(mahasiswa.getIdKonsentrasi().getNamaKonsentrasi(),font));
-            cell.setBorder(Rectangle.NO_BORDER);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            formFormulir.addCell(cell);
-        }
+        cell = new PdfPCell(new Phrase(".............................",font));
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        formFormulir.addCell(cell);
+
+//        if (mahasiswa.getIdKonsentrasi() == null){
+//
+//        }else {
+//            cell = new PdfPCell(new Phrase(mahasiswa.getIdKonsentrasi().getNamaKonsentrasi(),font));
+//            cell.setBorder(Rectangle.NO_BORDER);
+//            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//            formFormulir.addCell(cell);
+//        }
 
 
         cell = new PdfPCell(new Phrase("IPK/SKS",font));

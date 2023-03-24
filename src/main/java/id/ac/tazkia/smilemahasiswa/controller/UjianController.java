@@ -12,6 +12,7 @@ import id.ac.tazkia.smilemahasiswa.dao.*;
 import id.ac.tazkia.smilemahasiswa.dto.transkript.DataTranskript;
 import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
+import id.ac.tazkia.smilemahasiswa.service.TagihanService;
 import id.ac.tazkia.smilemahasiswa.service.UjianTahfidzKompreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,9 @@ public class UjianController {
     @Autowired
     private EnableFitureDao enableFitureDao;
 
+    @Autowired
+    private TagihanService tagihanService;
+
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
         return prodiDao.findAll();
@@ -102,7 +106,6 @@ public class UjianController {
         User user = currentUserService.currentUser(authentication);
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianTahfidz");
-//        BigDecimal ipk = ujianTahfidzKompreDao.ipkCheck(mahasiswa);
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TAHFIDZ, true);
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
@@ -123,6 +126,7 @@ public class UjianController {
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
         model.addAttribute("ipk", ipk);
+//        model.addAttribute("ipk", 3.51);
         model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
 
 
@@ -210,12 +214,13 @@ public class UjianController {
             ujianTahfidzKompre.setFileSurat(idFile + "." + extension);
         }
 
-        if (checkRejected == 0){
-            ujianTahfidzKompre.setUjianKe(1);
-        }else {
-            Integer ujianKe = checkRejected + 1;
-            ujianTahfidzKompre.setUjianKe(ujianKe);
-        }
+//        if (checkRejected == 0){
+//            ujianTahfidzKompre.setUjianKe(1);
+//        }else {
+//            Integer ujianKe = checkRejected + 1;
+//            tagihanService.cretatTagihanMengulang(mahasiswa, tahunAkademik, "UjianTahfidz");
+//            ujianTahfidzKompre.setUjianKe(ujianKe);
+//        }
         ujianTahfidzKompre.setDosenKps(dosen);
         ujianTahfidzKompre.setProdi(prodi);
         ujianTahfidzKompre.setTanggalPengajuan(LocalDate.now());
@@ -223,7 +228,7 @@ public class UjianController {
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setUrutan(1);
-        ujianTahfidzKompre.setStatusLulus("BELUM_DINILAI");
+        ujianTahfidzKompre.setStatusLulus(StatusRecord.BELUM_DINILAI);
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
@@ -264,12 +269,13 @@ public class UjianController {
             ujianTahfidzKompre.setFileSurat(idFile + "." + extension);
         }
 
-        if (checkRejected == 0){
-            ujianTahfidzKompre.setUjianKe(1);
-        }else {
-            Integer ujianKe = checkRejected + 1;
-            ujianTahfidzKompre.setUjianKe(ujianKe);
-        }
+//        if (checkRejected == 0){
+//            ujianTahfidzKompre.setUjianKe(1);
+//        }else {
+//            Integer ujianKe = checkRejected + 1;
+//            tagihanService.cretatTagihanMengulang(mahasiswa, tahunAkademik, "UjianKomprehensif");
+//            ujianTahfidzKompre.setUjianKe(ujianKe);
+//        }
 
         ujianTahfidzKompre.setDosenKps(dosen);
         ujianTahfidzKompre.setProdi(prodi);
@@ -279,6 +285,7 @@ public class UjianController {
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
         ujianTahfidzKompre.setStatusApprovalKps("WAITING");
         ujianTahfidzKompre.setUrutan(1);
+        ujianTahfidzKompre.setStatusLulus(StatusRecord.BELUM_DINILAI);
         ujianTahfidzKompre.setTahunAkademik(tahunAkademik);
         ujianTahfidzKompreDao.save(ujianTahfidzKompre);
 
@@ -291,7 +298,7 @@ public class UjianController {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Formulir " + mahasiswa.getNim() + ".pdf";
+        String headerValue = "attachment; filename=Formulir_Tahfidz_" + mahasiswa.getNim() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
         ujianTahfidzKompreService.formulirTahfidz(mahasiswa ,response);
@@ -337,7 +344,7 @@ public class UjianController {
     public void formulirKompre(@RequestParam(name = "id")Mahasiswa mahasiswa, HttpServletResponse response)throws IOException{
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Formulir_Kompre " + mahasiswa.getNim() + ".pdf";
+        String headerValue = "attachment; filename=Formulir_Kompre_" + mahasiswa.getNim() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
         ujianTahfidzKompreService.formulirKompre(mahasiswa ,response);
@@ -527,6 +534,24 @@ public class UjianController {
     @PostMapping("/rejectedtahfidz")
     public String rejectedTahfidz(@Valid UjianTahfidzKompre ujianTahfidzKompre){
         UjianTahfidzKompre saveUjianTafihzKompre = ujianTahfidzKompreDao.findById(ujianTahfidzKompre.getId()).get();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+//        EnableFiture checkEnableFitur = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(ujianTahfidzKompre.getMahasiswa(), StatusRecord.TAHFIDZ, tahunAkademik);
+//        if (checkEnableFitur == null){
+//            EnableFiture enableFiture = new EnableFiture();
+//
+//            enableFiture.setEnable(false);
+//            enableFiture.setMahasiswa(ujianTahfidzKompre.getMahasiswa());
+//            enableFiture.setFitur(StatusRecord.TAHFIDZ);
+//            enableFiture.setTahunAkademik(tahunAkademik);
+//            enableFiture.setKeterangan("-");
+//            enableFitureDao.save(enableFiture);
+//        } else {
+//            checkEnableFitur.setEnable(false);
+//            enableFitureDao.save(checkEnableFitur);
+//        }
+
+
         saveUjianTafihzKompre.setUrutan(3);
         saveUjianTafihzKompre.setStatusApprovalAdmin("REJECTED");
         saveUjianTafihzKompre.setStatusApprovalKps("REJECTED");
@@ -539,6 +564,24 @@ public class UjianController {
     @PostMapping("/rejectedkompre")
     public String rejectedkompre(@Valid UjianTahfidzKompre ujianTahfidzKompre){
         UjianTahfidzKompre saveUjianTafihzKompre = ujianTahfidzKompreDao.findById(ujianTahfidzKompre.getId()).get();
+        TahunAkademik tahunAkademik = tahunAkademikDao.findByStatus(StatusRecord.AKTIF);
+
+//        EnableFiture checkEnableFitur = enableFitureDao.findByMahasiswaAndFiturAndTahunAkademik(ujianTahfidzKompre.getMahasiswa(), StatusRecord.KOMPRE, tahunAkademik);
+//        if (checkEnableFitur == null){
+//            EnableFiture enableFiture = new EnableFiture();
+//
+//            enableFiture.setEnable(false);
+//            enableFiture.setMahasiswa(ujianTahfidzKompre.getMahasiswa());
+//            enableFiture.setFitur(StatusRecord.KOMPRE);
+//            enableFiture.setTahunAkademik(tahunAkademik);
+//            enableFiture.setKeterangan("-");
+//            enableFitureDao.save(enableFiture);
+//        } else {
+//
+//            checkEnableFitur.setEnable(false);
+//            enableFitureDao.save(checkEnableFitur);
+//        }
+
         saveUjianTafihzKompre.setUrutan(3);
         saveUjianTafihzKompre.setStatusApprovalAdmin("REJECTED");
         saveUjianTafihzKompre.setStatusApprovalKps("REJECTED");

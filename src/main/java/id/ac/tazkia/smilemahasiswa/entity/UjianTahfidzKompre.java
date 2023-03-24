@@ -58,7 +58,9 @@ public class UjianTahfidzKompre {
     @JoinColumn(name = "id_prodi")
     private Prodi prodi;
 
-    private String statusLulus;
+
+    @Enumerated(EnumType.STRING)
+    private StatusRecord statusLulus;
 
     private BigDecimal nilai;
 
