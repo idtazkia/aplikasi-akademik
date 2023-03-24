@@ -119,15 +119,12 @@ public class UjianController {
 
         BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
 
-        if (enableFiture == null){
-            model.addAttribute("enable", false);
-        }else {
-            model.addAttribute("enable", true);
-            model.addAttribute("data", mahasiswa);
-            model.addAttribute("check", checkRejected);
-            model.addAttribute("ipk", ipk);
-            model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
-        }
+        model.addAttribute("enable", true);
+        model.addAttribute("data", mahasiswa);
+        model.addAttribute("check", checkRejected);
+        model.addAttribute("ipk", ipk);
+        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianTahfidz"));
+
 
         return "ujian/tahfidz";
     }
@@ -152,20 +149,13 @@ public class UjianController {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
-
         BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
 
-        if (enableFiture == null){
-            model.addAttribute("enable", false);
-        }else {
-            model.addAttribute("enable", true);
-            model.addAttribute("totalSks", totalSKS);
-            model.addAttribute("jumlahNilaiD", checkNilai);
-
-            model.addAttribute("data", mahasiswa);
-            model.addAttribute("check", checkRejected);
-            model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
-        }
+        model.addAttribute("totalSks", sks);
+        model.addAttribute("jumlahNilaiD", checkNilai);
+        model.addAttribute("data", mahasiswa);
+        model.addAttribute("check", checkRejected);
+        model.addAttribute("list", ujianTahfidzKompreDao.findByStatusAndMahasiswaAndJenisUjian(StatusRecord.AKTIF, mahasiswa, "UjianKomprehensif"));
 
         return "ujian/kompre";
     }
