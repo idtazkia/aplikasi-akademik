@@ -41,6 +41,10 @@ public class TagihanService {
     public static final String TAGIHAN_SP = "23";
     public static final List<String> TAGIHAN_KRS = Arrays.asList("14", "22", "40", "44");
 
+    public static final String TAGIHAN_TAHFIDZ = "16";
+
+    public static final String TAGIHAN_KOMPRE = "17";
+
     @Autowired
     private PembayaranDao pembayaranDao;
 
@@ -76,6 +80,9 @@ public class TagihanService {
 
     @Autowired
     private JenisTagihanDao jenisTagihanDao;
+
+    @Autowired
+    private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
     private KrsDetailDao krsDetailDao;
@@ -280,6 +287,24 @@ public class TagihanService {
                         createKrs(tagihan, tahunAkademikProdi);
 
                     }
+            }
+        }
+
+        if (TAGIHAN_TAHFIDZ.equals(pt.getKodeJenisBiaya())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.TAHFIDZ, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
+            }
+        }
+
+        if (TAGIHAN_KOMPRE.equals(pt.getKodeJenisBiaya())) {
+            EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnable(tagihan.getMahasiswa(), StatusRecord.KOMPRE, false);
+            if (ef != null) {
+                ef.setEnable(true);
+                ef.setTahunAkademik(tahunAkademikDao.findByStatus(StatusRecord.AKTIF));
+                enableFitureDao.save(ef);
             }
         }
 
