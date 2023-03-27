@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -4993,6 +4995,64 @@ public class StudiesActivityController {
         }
 
         return "redirect:/studiesActivity/assesment/upload/rps?jadwal=" + rps.getJadwal().getId();
+
+    }
+
+    @GetMapping("/validation/download")
+    public void validationExamDownload(@RequestParam String tahunAkademik, @RequestParam String jenis, HttpServletResponse response, @PageableDefault(size = Integer.MAX_VALUE) Pageable page) throws IOException {
+
+        TahunAkademik tahun = tahunAkademikDao.findById(tahunAkademik).get();
+
+        String[] columns = {"NO. ", "Matakuliah", "Kelas", "Dosen", "Status Upload", "Bentuk Ujian", "Prodi"};
+
+        Page<Jadwal> jadwalPage = jadwalDao.findByStatusAndTahunAkademikAndJamMulaiNotNullAndHariNotNullAndKelasNotNull(StatusRecord.AKTIF, tahun, page);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List validasi soal");
+
+        Font fontHeader = workbook.createFont();
+        fontHeader.setBold(true);
+        fontHeader.setFontHeightInPoints((short) 11);
+        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(fontHeader);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Jadwal list : jadwalPage){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+            row.createCell(2).setCellValue(list.getKelas().getNamaKelas());
+            row.createCell(3).setCellValue(list.getDosen().getKaryawan().getNamaKaryawan());
+            if ("uts".equals(jenis)) {
+                row.createCell(4).setCellValue(list.getStatusUts().toString());
+                row.createCell(5).setCellValue(list.getFormatUts());
+            }else if ("uas".equals(jenis)){
+                row.createCell(4).setCellValue(list.getStatusUas().toString());
+                row.createCell(5).setCellValue(list.getFormatUas());
+            }
+            row.createCell(6).setCellValue(list.getProdi().getKodeProdi());
+        }
+
+        for (int i = 0; i<columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=List_validasi_soal " + tahun.getNamaTahunAkademik() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
 
     }
 
