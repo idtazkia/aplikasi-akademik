@@ -221,7 +221,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "inner join jenjang as j on p.id_jenjang = j.id\n" +
             "inner join dosen as g on a.id_dosen = g.id\n" +
             "inner join karyawan as h on g.id_karyawan = h.id \n" +
-            "where year(a.waktu_masuk) = ?1 and month(a.waktu_masuk)=?2 and a.status = 'AKTIF' and status_presensi = 'HADIR'\n" +
+            "where year(a.waktu_masuk) = ?1 and month(a.waktu_masuk)=?2 and a.status = 'AKTIF' and status_presensi in ('HADIR','TERLAMBAT') \n" +
             "group by nama_karyawan, nama_matakuliah, nama_kelas, waktu_masuk\n" +
             "order by nama_karyawan, nama_kelas) as a\n" +
             "group by nama_karyawan, nama_matakuliah, nama_kelas) as a\n" +
@@ -231,7 +231,7 @@ public interface JadwalDao extends PagingAndSortingRepository<Jadwal, String> {
             "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
             "inner join matakuliah_kurikulum as d on b.id_matakuliah_kurikulum = d.id\n" +
             "where tanggal_mulai <= date(concat(?1,'-',?2,'-','01')) and c.tanggal_selesai >= date(concat(?1,'-',?2,'-','01')) \n" +
-            "and a.status = 'AKTIF' and a.status_presensi = 'HADIR' \n" +
+            "and a.status = 'AKTIF' and a.status_presensi in ('HADIR','TERLAMBAT') \n" +
             "group by id_jadwal, id_dosen) as b on a.id_jadwal = b.id_jadwal and a.id_dosen = b.id_dosen", nativeQuery = true)
     List<RekapAbsenDosen> importAbsen (String tahun, String bulan);
 
