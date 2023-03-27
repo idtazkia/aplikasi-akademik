@@ -50,7 +50,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group text-center">
                                         <label>Tahun</label>
-                                        <input th:value="${selectedTahun}" required type="text" class="form-control" name="tahun">
+                                        <select name="tahun" class="form-control" id="tahun"></select>
+                                        <input type="hidden" id="selectedTahun" th:value="${selectedTahun}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -58,18 +59,18 @@
                                         <label>Semester</label>
                                         <select th:value="${selectedBulan}" required class="form-control js-example-placeholder-single"
                                                 style="width: 100%!important;" name="bulan">
-                                            <option value="01">Januari</option>
-                                            <option value="02">Februari</option>
-                                            <option value="03">Maret</option>
-                                            <option value="04">April</option>
-                                            <option value="05">Mei</option>
-                                            <option value="06">Juni</option>
-                                            <option value="07">Juli</option>
-                                            <option value="08">Agustus</option>
-                                            <option value="09">September</option>
-                                            <option value="10">Oktober</option>
-                                            <option value="11">November</option>
-                                            <option value="12">Desember</option>
+                                            <option th:selected="('01' == *{selectedBulan})" value="01">Januari</option>
+                                            <option th:selected="('02' == *{selectedBulan})" value="02">Februari</option>
+                                            <option th:selected="('03' == *{selectedBulan})" value="03">Maret</option>
+                                            <option th:selected="('04' == *{selectedBulan})" value="04">April</option>
+                                            <option th:selected="('05' == *{selectedBulan})" value="05">Mei</option>
+                                            <option th:selected="('06' == *{selectedBulan})" value="06">Juni</option>
+                                            <option th:selected="('07' == *{selectedBulan})" value="07">Juli</option>
+                                            <option th:selected="('08' == *{selectedBulan})" value="08">Agustus</option>
+                                            <option th:selected="('09' == *{selectedBulan})" value="09">September</option>
+                                            <option th:selected="('10' == *{selectedBulan})" value="10">Oktober</option>
+                                            <option th:selected="('11' == *{selectedBulan})" value="11">November</option>
+                                            <option th:selected="('12' == *{selectedBulan})" value="12">Desember</option>
                                         </select>
                                     </div>
                                 </div>
@@ -125,3 +126,16 @@
 </div>
 </body>
 </html>
+<script>
+    $(function() {
+        var start_year = new Date().getFullYear();
+
+        for (var i = start_year; i > start_year - 10; i--) {
+            $('#tahun').append('<option value="' + i + '">' + i + '</option>');
+        }
+
+        if ($('#selectedTahun').val() != ''){
+            $('#tahun').val($('#selectedTahun').val())
+        }
+    });
+</script>
