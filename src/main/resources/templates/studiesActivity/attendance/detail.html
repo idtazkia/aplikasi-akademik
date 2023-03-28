@@ -146,58 +146,67 @@
 
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <form th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tambah Presensi</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Pertemuan :</label>
-                                        <select name="pertemuan" class="form-control">
-                                            <option value="Offline">Kelas Offline</option>
-                                            <option value="Online">Kelas Online</option>
-                                        </select>
+                <div th:if="${exist == null}">
+                    <form id="save-presensi" th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Tambah Presensi</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Pertemuan :</label>
+                                            <select name="pertemuan" class="form-control">
+                                                <option value="Offline">Kelas Offline</option>
+                                                <option value="Online">Kelas Online</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Tanggal :</label>
+                                            <input type="date" name="tanggal" required class="form-control">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Tanggal :</label>
-                                        <input type="date" name="tanggal" required class="form-control">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Dosen :</label>
+                                            <select name="dosen" class="form-control">
+                                                <option value=""></option>
+                                                <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
+                                            </select>
+                                        </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Berita Acara :</label>
+                                            <textarea name="beritaAcara" class="form-control" id=""></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="jadwal" th:value="${jadwal.id}">
+                                    <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Dosen :</label>
-                                        <select name="dosen" class="form-control">
-                                            <option value=""></option>
-                                            <option th:each="dosen : ${teamTeaching}" th:text="${dosen.dosen.karyawan.namaKaryawan}" th:value="${dosen.dosen.id}">sdasd</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Berita Acara :</label>
-                                        <textarea name="beritaAcara" class="form-control" id=""></textarea>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="jadwal" th:value="${jadwal.id}">
-                                <input type="hidden" name="tahunAkademik" th:value="${jadwal.tahunAkademik.id}">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                <button type="submit" id="btnPresensi" onclick="savePresensi()" class="btn btn-primary">Simpan</button>
                             </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+                <div th:if="${exist != null}">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <h1>Absensi untuk hari ini sudah ada!</h1>
+                        </div>
                     </div>
                 </div>
-                </form>
             </div>
         </div>
 
@@ -205,3 +214,15 @@
 </div>
 </body>
 </html>
+<script >
+    function savePresensi(){
+
+        $("#btnPresensi").removeClass("btn-primary");
+        $("#btnPresensi").addClass("btn-warning");
+        $("#btnPresensi").prop('disabled', true);
+        $("#btnPresensi").html('Loading...');
+
+        $("#save-presensi").submit();
+
+    }
+</script>

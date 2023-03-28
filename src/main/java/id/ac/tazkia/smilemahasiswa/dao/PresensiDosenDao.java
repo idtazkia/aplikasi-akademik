@@ -41,4 +41,6 @@ public interface PresensiDosenDao extends PagingAndSortingRepository<PresensiDos
             "\tinner join presensi_mahasiswa as g on f.id = g.id_sesi_kuliah group by g.id_sesi_kuliah", nativeQuery = true)
     List<RekapPresensiDto> rekapPresensiPerHari(LocalDate localDate);
 
+    PresensiDosen findTopByJadwalAndStatusOrderByWaktuMasukDesc(Jadwal jadwal, StatusRecord status);
+
 }
