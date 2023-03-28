@@ -156,6 +156,7 @@ public class UjianController {
         BigDecimal ipk = mutu.divide(new BigDecimal(sks),2,BigDecimal.ROUND_HALF_UP);
 
         model.addAttribute("totalSks", sks);
+//        model.addAttribute("totalSks", 139);
         model.addAttribute("jumlahNilaiD", checkNilai);
         model.addAttribute("data", mahasiswa);
         model.addAttribute("check", checkRejected);
@@ -495,8 +496,9 @@ public class UjianController {
         saveUjianTafihzKompre.setStatusApprovalAdmin("APPROVED_ADMIN");
         saveUjianTafihzKompre.setKomentarAdmin(ujianTahfidzKompre.getKomentarAdmin());
 
-
         ujianTahfidzKompreDao.save(saveUjianTafihzKompre);
+
+        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), "UjianTahfidz", "APPROVED");
 
         return "redirect:/ujianTahfidz";
     }
@@ -515,6 +517,8 @@ public class UjianController {
 
         ujianTahfidzKompreDao.save(saveUjianTafihzKompre);
 
+        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), "UjianKomprehensif", "APPROVED");
+
         return "redirect:/komprehensif";
     }
 
@@ -527,6 +531,7 @@ public class UjianController {
         saveUjianTafihzKompre.setKomentarKps(ujianTahfidzKompre.getKomentarKps());
 
         ujianTahfidzKompreDao.save(saveUjianTafihzKompre);
+
 
         return "redirect:/komprehensif";
     }
@@ -558,6 +563,8 @@ public class UjianController {
         ujianTahfidzKompre.setKomentarAdmin(ujianTahfidzKompre.getKomentarAdmin());
         ujianTahfidzKompre.setKomentarKps(ujianTahfidzKompre.getKomentarKps());
         ujianTahfidzKompreDao.save(saveUjianTafihzKompre);
+
+        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), "UjianTahfidz", "REJECTED");
         return "redirect:/ujianTahfidz";
     }
 
@@ -588,6 +595,8 @@ public class UjianController {
         ujianTahfidzKompre.setKomentarAdmin(ujianTahfidzKompre.getKomentarAdmin());
         ujianTahfidzKompre.setKomentarKps(ujianTahfidzKompre.getKomentarKps());
         ujianTahfidzKompreDao.save(saveUjianTafihzKompre);
+
+        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), "UjianKomprehensif", "REJECTED");
         return "redirect:/komprehensif";
     }
 

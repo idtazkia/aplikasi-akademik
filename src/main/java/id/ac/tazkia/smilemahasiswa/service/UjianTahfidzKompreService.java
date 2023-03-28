@@ -1,6 +1,8 @@
 package id.ac.tazkia.smilemahasiswa.service;
 
 
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
@@ -19,9 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UjianTahfidzKompreService {
@@ -31,6 +36,12 @@ public class UjianTahfidzKompreService {
 
     @Autowired
     private KrsDetailDao krsDetailDao;
+
+    @Autowired
+    private GmailApiService gmailApiService;
+
+    @Autowired
+    private MustacheFactory mustacheFactory;
 
     public void formulirTahfidz(Mahasiswa mahasiswa, HttpServletResponse response) throws IOException {
         Document document = new Document(PageSize.A4);
@@ -460,7 +471,8 @@ public class UjianTahfidzKompreService {
         formFormulir.addCell(cell);
 
 
-        cell = new PdfPCell(new Phrase("Program Studi",font));
+        cell = new PdfPCell(new Phrase("Program Studi",font))
+;
         cell.setBorder(Rectangle.NO_BORDER);
         formFormulir.addCell(cell);
 
@@ -553,6 +565,33 @@ public class UjianTahfidzKompreService {
 
 
         document.close();
+
+    }
+
+    public void notifEmail(String email, String jenisUjian, String status){
+        Mustache templateEmail = mustacheFactory.compile("templates/ujian/notif/email.html");
+        Map<String, String> data = new HashMap<>();
+        if (jenisUjian.equals("UjianTahfidz") && status.equals("APPROVED")){
+            data.put("notif", "Selamat Pendaftaran Ujian Tahfidz Anda Berhasil");
+        } else if (jenisUjian.equals("UjianKomprehensif") && status.equals("APPROVED")) {
+            data.put("notif", "Selamat Pendaftaran Ujian Komprehensif Anda Berhasil");
+        } else if (jenisUjian.equals("UjianTahfidz") && status.equals("REJECTED")) {
+            data.put("notif", "Pendaftaran Ujian Tahfidz anda ditolak.\n" +
+                    "Silakan cek smile dan hubungi bagian Akademik.");
+        } else if (jenisUjian.equals("UjianKomprehensif") && status.equals("REJECTED")) {
+            data.put("notif", "Pendaftaran Ujian Komprehensif anda ditolak.\n" +
+                    "Silakan cek smile dan hubungi bagian Akademik.");
+        }
+
+
+        StringWriter output = new StringWriter();
+        templateEmail.execute(output, data);
+        gmailApiService.kirimEmail(
+                jenisUjian,
+                "arifrahmatullah099@gmail.com",
+                "Nofitifikasi" + jenisUjian,
+                output.toString()
+        );
 
     }
 }
