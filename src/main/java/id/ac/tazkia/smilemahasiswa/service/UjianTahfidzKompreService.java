@@ -588,7 +588,7 @@ public class UjianTahfidzKompreService {
         templateEmail.execute(output, data);
         gmailApiService.kirimEmail(
                 jenisUjian,
-                "arifrahmatullah099@gmail.com",
+                email,
                 "Nofitifikasi" + jenisUjian,
                 output.toString()
         );
