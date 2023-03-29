@@ -84,10 +84,13 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Email Orang Tua / Wali</label><br>
-                                                    <input type="email" name="email" required class="form-control">
+                                                    <input type="email" name="email" id="email" onkeyup="cekEmail(this)" required class="form-control">
                                                 </div>
                                             </div>
                                             <br>
+                                            <div class="alert alert-danger" id="validEmail" style="display: none">
+                                                Email telah digunakan, silahkan menggunakan email lain
+                                            </div>
                                         </div>
 
                                         <br>
@@ -104,7 +107,7 @@
                                                         Perbaharui data</p>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-default">Save
+                                            <button type="submit" class="btn btn-default" id="saveOrtu">Save
                                                 changes
                                             </button>
                                         </div>
@@ -647,6 +650,33 @@
         }
     });
 
+    var delay = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    function cekEmail(arg){
+        var id = arg.getAttribute('id');
+        var value = arg.value;
+
+        $(document).keyup(function (e){
+            delay(function (){
+                var url = '/cekEmail?email=' + value;
+                $.getJSON(url, function (data){
+                    if (data.id == "400"){
+                        document.getElementById("validEmail").style.display = 'block';
+                        $("#saveOrtu").hide();
+                    }else{
+                        document.getElementById("validEmail").style.display = 'none';
+                        $("#saveOrtu").show();
+                    }
+                })
+            })
+        })
+    }
 
     function changeRole(arg) {
         var id = arg.getAttribute('id');
