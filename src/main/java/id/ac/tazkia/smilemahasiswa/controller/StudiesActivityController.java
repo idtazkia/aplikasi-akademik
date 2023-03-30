@@ -290,13 +290,6 @@ public class StudiesActivityController {
         model.addAttribute("dosenUtama", jadwal.getDosen());
         model.addAttribute("teamTeaching", jadwalDosenDao.findByJadwal(jadwal));
         model.addAttribute("jadwal", jadwal);
-
-        PresensiDosen ambilHari = presensiDosenDao.findTopByJadwalAndStatusOrderByWaktuMasukDesc(jadwal, StatusRecord.AKTIF);
-        String wTerakhir = ambilHari.getWaktuMasuk().toString().substring(0,10);
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        if (today.equals(wTerakhir)) {
-            model.addAttribute("exist", "Already Exist");
-        }
     }
 
     @GetMapping("/studiesActivity/attendance/download")
