@@ -53,6 +53,20 @@
                                 <!--                                <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}" class="btn btn-success btn-sm"><i class="fas fa-download"></i> Download Absen</a>-->
                             </div>
                         </div>
+                        <div th:if="${gagal != null}" class="row align-items-center text-center">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger col-md-6 center">
+                                    <h3 class="text-white text-center">Presensi untuk hari ini sudah ada, hanya bisa mengisi kelas pengganti!</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${gagalPengganti != null}" class="row align-items-center text-center">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger col-md-6 center">
+                                    <h3 class="text-white text-center">Jam saat ini tidak masuk sesi manapun!</h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4" style="text-align: center; padding: 10px;">
@@ -146,7 +160,7 @@
 
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-                <form th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
+                <form id="save-presensi" th:action="@{/studiesActivity/attendance/detail}" th:object="${jadwal}" method="post">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Tambah Presensi</h5>
@@ -162,6 +176,8 @@
                                         <select name="pertemuan" class="form-control">
                                             <option value="Offline">Kelas Offline</option>
                                             <option value="Online">Kelas Online</option>
+                                            <option value="Pengganti Offline">Kelas Pengganti Offline</option>
+                                            <option value="Pengganti Online">Kelas Pengganti Online</option>
                                         </select>
                                     </div>
                                 </div>
@@ -194,7 +210,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" id="btnPresensi" onclick="savePresensi()" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>
                 </form>
@@ -205,3 +221,15 @@
 </div>
 </body>
 </html>
+<script >
+    function savePresensi(){
+
+        $("#btnPresensi").removeClass("btn-primary");
+        $("#btnPresensi").addClass("btn-warning");
+        $("#btnPresensi").prop('disabled', true);
+        $("#btnPresensi").html('Loading...');
+
+        $("#save-presensi").submit();
+
+    }
+</script>

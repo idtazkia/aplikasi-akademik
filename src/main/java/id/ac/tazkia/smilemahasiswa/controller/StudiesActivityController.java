@@ -165,6 +165,8 @@ public class StudiesActivityController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired private SesiDao sesiDao;
+
     @Value("classpath:sample/soal.doc")
     private Resource contohSoal;
 
@@ -395,17 +397,39 @@ public class StudiesActivityController {
     }
 
     @PostMapping("/studiesActivity/attendance/detail")
-    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto)throws Exception{
+    public String createPresensi(@ModelAttribute @Valid JadwalDto jadwalDto, RedirectAttributes attributes)throws Exception{
 
         LocalTime jamMulai1 = LocalTime.now().plusHours(7);
         DateTimeFormatter format2 = DateTimeFormatter.ofPattern("hh:mm");
 
-        presensiService.inputPresensi(jadwalDto.getDosen(),
-                jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
-                LocalDateTime.of(jadwalDto.getTanggal(),jamMulai1),jadwalDto.getPertemuan());
+        log.info("Pertemuan : {}", jadwalDto.getPertemuan());
 
-        return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+        String dateNow = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        SesiKuliah kuliah = sesiKuliahDao.cariPresensiHariIni(jadwalDto.getJadwal().getId(), dateNow);
+        if ("Online".equals(jadwalDto.getPertemuan()) || "Offline".equals(jadwalDto.getPertemuan())) {
+            if (kuliah != null) {
+                attributes.addFlashAttribute("gagal", "sudah ada");
+                return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+            }else{
+                presensiService.inputPresensi(jadwalDto.getDosen(),
+                        jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
+                        LocalDateTime.of(jadwalDto.getTanggal(), jamMulai1), jadwalDto.getPertemuan());
 
+                return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+            }
+        }else {
+            Sesi findSesi = sesiDao.cariSesi(LocalDateTime.now().plusHours(7).format(format2), jadwalDto.getJadwal().getMatakuliahKurikulum().getJumlahSks());
+            if (findSesi != null){
+                presensiService.inputPresensiPengganti(jadwalDto.getDosen(),
+                        jadwalDto.getJadwal(), jadwalDto.getBeritaAcara(),
+                        LocalDateTime.of(jadwalDto.getTanggal(), jamMulai1), jadwalDto.getPertemuan(), findSesi);
+
+                return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+            }else{
+                attributes.addFlashAttribute("gagalPengganti", "Tidak ada sesi");
+                return "redirect:detail?jadwal=" + jadwalDto.getJadwal().getId();
+            }
+        }
     }
 
 
