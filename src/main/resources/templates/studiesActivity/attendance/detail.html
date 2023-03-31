@@ -50,21 +50,7 @@
                             </div>
                             <div class="col text-right">
                                 <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus-circle"></i> Add</button>
-                                <!--                                <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}" class="btn btn-success btn-sm"><i class="fas fa-download"></i> Download Absen</a>-->
-                            </div>
-                        </div>
-                        <div th:if="${gagal != null}" class="row align-items-center text-center">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger col-md-6 center">
-                                    <h3 class="text-white text-center">Presensi untuk hari ini sudah ada, hanya bisa mengisi kelas pengganti!</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div th:if="${gagalPengganti != null}" class="row align-items-center text-center">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger col-md-6 center">
-                                    <h3 class="text-white text-center">Jam saat ini tidak masuk sesi manapun!</h3>
-                                </div>
+<!--                                <a th:href="@{/studiesActivity/attendance/download(jadwal = ${jadwal.id})}" class="btn btn-success btn-sm"><i class="fas fa-download"></i> Download Absen</a>-->
                             </div>
                         </div>
                     </div>
@@ -176,8 +162,6 @@
                                         <select name="pertemuan" class="form-control">
                                             <option value="Offline">Kelas Offline</option>
                                             <option value="Online">Kelas Online</option>
-                                            <option value="Pengganti Offline">Kelas Pengganti Offline</option>
-                                            <option value="Pengganti Online">Kelas Pengganti Online</option>
                                         </select>
                                     </div>
                                 </div>
