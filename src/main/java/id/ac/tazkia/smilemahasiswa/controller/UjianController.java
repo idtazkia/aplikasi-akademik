@@ -91,6 +91,9 @@ public class UjianController {
     @Autowired
     private TagihanService tagihanService;
 
+    @Autowired
+    private RuanganDao ruanganDao;
+
     @ModelAttribute("prodi")
     public Iterable<Prodi> prodi() {
         return prodiDao.findAll();

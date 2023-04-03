@@ -221,6 +221,58 @@
                                                     </div>
                                                 </div>
 
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" th:data-target="${'#Penjadwal' + data.id}">Penjadwalan</button>
+                                                <div class="modal fade" th:id="${'Penjadwal' + data.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Rejected</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label>Nim</label>
+                                                                    <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nim}">
+                                                                    <input type="hidden" name="id" th:value="${data.id}">
+                                                                    <input type="hidden" name="mahasiswa" th:value="${data.mahasiswa.id}">
+                                                                    <input type="hidden" name="jenisUjian" th:value="${data.jenisUjian}">
+                                                                    <input type="hidden" name="ujianKe" th:value="${data.ujianKe}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Nama</label>
+                                                                    <input type="text" disabled class="form-control" th:value="${data.mahasiswa.nama}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Jenis Ujian</label>
+                                                                    <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianKomprehensif'}" th:value="${'Sidang Komprehensif'}">
+                                                                    <input type="text" disabled class="form-control" th:if="${data.jenisUjian == 'UjianTahfidz'}" th:value="${'Ujian Tahfidz'}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Tanggal Ujian</label>
+                                                                    <input type="date" name="tanggalUjian" class="form-control" />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Ruangan</label>
+                                                                    <select name="" id="" class="form-control">
+                                                                        <option value="" selected disabled>-- Pilih Satu --</option>
+                                                                        <option value="">daf</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Penguji</label>
+                                                                    <input type="text" name="penguji" class="form-control" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </td>
                                         </tr>
                                         </tbody>
@@ -248,4 +300,10 @@
     </div>
 </div>
 </body>
+<script type="text/javascript">
+    $(".js-example-placeholder-single").select2({
+        placeholder: "Pilih Salah Satu",
+        allowClear: true
+    });
+</script>
 </html>
