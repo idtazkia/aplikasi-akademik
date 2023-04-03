@@ -294,8 +294,6 @@
             timeout: 600000,
             success: function (result) {
                 iziToast.success({title: 'Data Terupdate', message: result.message});
-                $tableMahasiswa.bootstrapTable('refresh')
-
             },
             error: function (result) {
                 alert('error');

@@ -130,7 +130,7 @@ public class ImportNilaiIndividuElearningService {
                 prosesBackgroundNilaiIndividuElearning.setTanggalMulai(LocalDateTime.now());
                 prosesBackgroundNilaiIndividuElearning.setStatus(StatusRecord.ON_PROCESS);
                 prosesBackgroundNilaiIndividuElearningDao.save(prosesBackgroundNilaiIndividuElearning);
-                imporNilaiSds(prosesBackgroundNilaiIndividuElearning.getProdi(), prosesBackgroundNilaiIndividuElearning.getTahunAkademik(), prosesBackgroundNilaiIndividuElearning);
+                imporNilaiSds(prosesBackgroundNilaiIndividuElearning.getProdi(), prosesBackgroundNilaiIndividuElearning.getTahunAkademik(),prosesBackgroundNilaiIndividuElearning.getJadwal(), prosesBackgroundNilaiIndividuElearning);
             }else{
                 throw new UnsupportedOperationException();
             }
@@ -312,10 +312,12 @@ public class ImportNilaiIndividuElearningService {
 
     }
 
-    public void imporNilaiSds(@RequestParam(required = true) String prodi, @RequestParam(required = true) String ta, @RequestParam(required = true) ProsesBackgroundNilaiIndividuElearning prosesBackgroundNilaiIndividuElearning) {
+    public void imporNilaiSds(@RequestParam(required = true) String prodi, @RequestParam(required = true) String ta, @RequestParam(required = false) String jadwal, @RequestParam(required = true) ProsesBackgroundNilaiIndividuElearning prosesBackgroundNilaiIndividuElearning) {
         System.out.println("Masuk SDS Jalan");
         //Cari Jadwal per tahun akademik dan per prodi yang ada potongan SDS nya
-        List<String> listSds = jadwalDao.findSds1(ta,prodi);
+
+        Jadwal jadwal1 = jadwalDao.findById(jadwal).get();
+        List<String> listSds = jadwalDao.findSds3(ta,prodi,jadwal1.getIdNumberElearning());
         if (listSds != null) {
             //Looping jadwal
             for (String listSds1 : listSds) {

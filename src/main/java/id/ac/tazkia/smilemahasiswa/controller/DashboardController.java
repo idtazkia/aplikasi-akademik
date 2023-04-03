@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.controller;
 
 import id.ac.tazkia.smilemahasiswa.dao.*;
+import id.ac.tazkia.smilemahasiswa.dto.BaseResponse;
 import id.ac.tazkia.smilemahasiswa.dto.select2.BaseRequest;
 import id.ac.tazkia.smilemahasiswa.dto.user.MahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -404,6 +405,19 @@ public class DashboardController {
         }
 
         return "dashboard";
+    }
+
+    @GetMapping("/cekEmail")
+    @ResponseBody
+    public BaseResponse cekEmail(@RequestParam String email){
+        User user = userDao.findByUsername(email);
+        if (user != null) {
+            BaseResponse baseResponse = BaseResponse.builder().id("400").message("Already Exist").build();
+            return baseResponse;
+        }else{
+            BaseResponse baseResponse = BaseResponse.builder().id("200").message("Empty").build();
+            return baseResponse;
+        }
     }
 
    /* @ResponseBody
