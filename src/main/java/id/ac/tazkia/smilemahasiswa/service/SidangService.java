@@ -740,38 +740,89 @@ public class SidangService {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("2 ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNidn(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("Anggota Penguji ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("3 ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNidn(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
+        if ("S2".equals(seminar.getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang())) {
+            cell = new PdfPCell(new Phrase("2 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Anggota Penguji ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("3 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing 1", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("4 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen2().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen2().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing 2", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+        }else{
+            cell = new PdfPCell(new Phrase("2 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getDosenPenguji().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Anggota Penguji ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("3 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(seminar.getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+        }
 
         document.add(table1);
 
@@ -942,6 +993,8 @@ public class SidangService {
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
             }else {
+                namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+                nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
                 ttdKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
             }
         }else{
@@ -1253,22 +1306,58 @@ public class SidangService {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("3 ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNidn(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
-        cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table1.addCell(cell);
+        if ("S2".equals(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang())) {
+            cell = new PdfPCell(new Phrase("3 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getPembimbing().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getPembimbing().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing 1", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("4 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getPembimbing2().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getPembimbing2().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing 2", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+        }else{
+
+            cell = new PdfPCell(new Phrase("3 ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNidn(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getDosen().getKaryawan().getNamaKaryawan(), fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+            cell = new PdfPCell(new Phrase("Pembimbing ", fontIsi));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table1.addCell(cell);
+        }
 
         document.add(table1);
 
@@ -1447,6 +1536,8 @@ public class SidangService {
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
             }else {
+                namaKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+                nidnKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
                 ttdKps = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getTandaTangan();
             }
         }else{
