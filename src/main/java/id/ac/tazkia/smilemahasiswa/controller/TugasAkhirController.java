@@ -651,7 +651,7 @@ public class TugasAkhirController {
             extension = wisuda.getFoto().substring(i + 1);
         }
 
-        Files.move(lokasiFoto, lokasiFoto.resolveSibling( wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension));
+//        Files.move(lokasiFoto, lokasiFoto.resolveSibling( wisuda.getMahasiswa().getNim() + "_" +  wisuda.getMahasiswa().getNama() + "." + extension));
         wisuda.setStatus(StatusApprove.APPROVED);
         wisuda.setKomentar(komentar);
         wisudaDao.save(wisuda);

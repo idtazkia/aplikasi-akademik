@@ -37,6 +37,16 @@ public class UjianTahfidzKompre {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalPengajuan;
 
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalUjian;
+
+    @ManyToOne
+    @JoinColumn(name = "id_ruangan")
+    private Ruangan ruangan;
+
+    private String penguji;
+
     @ManyToOne
     @JoinColumn(name = "approval_kps")
     private Dosen dosenKps;

@@ -105,26 +105,24 @@
                                                 <table class="table table-striped">
                                                     <thead>
                                                     <tr>
-                                                        <th>#</th>
                                                         <th>Dokumen</th>
                                                         <th>Tanggal Pengajuan</th>
                                                         <th>Status</th>
+                                                        <th>Keterangan</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     <tr th:each="data, row:${list}">
-                                                        <td th:text="${(row.index + 1)}"></td>
                                                         <td><a th:href="@{/formulir/{file}(file = ${data.id})}" target="_blank">Lihat Formulir</a></a></td>
                                                         <td th:text="${#temporals.format(data.tanggalPengajuan, 'dd-MMMM-yyyy')}"></td>
                                                         <td>
-                                                    <span th:if="${data.statusApprovalAdmin == 'WAITING' ||
-                                                    data.statusApprovalKps == 'WAITING' || data.statusApprovalKps == '' || data.statusApprovalAdmin == 'APPROVAL_ADMIN'}" class="btn btn-warning btn-sm">WAITING</span>
-                                                            <span th:if="${data.statusApprovalKps == 'APPROVED_KPS' || data.statusApprovalKps == 'APPROVED_ADMIN' }" class="btn btn-success btn-sm">APPROVED</span>
-                                                            <span th:if="${data.statusApprovalKps == 'REJECTED' || data.statusApprovalAdmin == 'REJECTED'}" class="btn btn-danger btn-sm">REJECTED</span>
+                                                            <span th:if="${data.statusApprovalAdmin == 'WAITING'}" class="btn btn-warning btn-sm">WAITING</span>
+                                                            <span th:if="${data.statusApprovalAdmin == 'APPROVED' }" class="btn btn-success btn-sm">APPROVED</span>
+                                                            <span th:if="${data.statusApprovalAdmin == 'REJECTED'}" class="btn btn-danger btn-sm">REJECTED</span>
                                                         </td>
                                                         <td>
-                                                            <a th:href="@{/tahfidz/batal(id = ${data.id})}" th:if="${data.statusApprovalAdmin == 'WAITING' || data.statusApprovalKps == 'WAITING'}" class="btn btn-danger btn-sm">Batal</a>
-                                                            <p th:href="@{/tahfidz/batal(id = ${data.id})}" th:if="${data.statusApprovalAdmin == 'REJECTED' || data.statusApprovalKps == 'APPROVED_KPS'}">-</p>
+                                                            <p th:if="${data.statusApprovalAdmin == 'WAITING'}">Menunggu Approval Akademik</p>
+                                                            <p th:if="${data.statusApprovalAdmin != 'WAITING'}" th:text="${data.komentarAdmin}">Menunggu Approval Akademik</p>
                                                         </td>
                                                     </tr>
                                                     </tbody>
