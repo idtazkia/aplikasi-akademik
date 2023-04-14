@@ -1,10 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
+<div layout:fragment="main">
+    <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+        <div class="container-fluid">
+            <div class="header-body">
+                <!-- Card stats -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">List</h5>
+                                        <span class="h2 font-weight-bold mb-0">Rekap Cicilan </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                </div>
 
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--7">
+        <div class="row">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Data List</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="input-group mb-3">
+                                        <select name="tahunAkademik" required class="form-control">
+                                            <option th:each="data : ${tahunAkademik}"
+                                                    th:selected="(${data} == *{selectTahun})"
+                                                    th:text="${data.namaTahunAkademik}"
+                                                    th:value="${data.id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group mb-3">
+                                        <input type="date" name="tglAwal" class="col-md form-control" placeholder="Tanggal Mulai" th:value="${tglAwal}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group mb-3">
+                                        <input type="date" name="tglAkhir" class="col-md form-control" placeholder="Tanggal Akhir" th:value="${tglAkhir}">
+                                    </div>
+                                </div>
+                                <div th:if="${selectTahun == null}" class="col-md-3">
+                                    <div class="input-group mb-3">
+                                        <button class="btn btn-info btn-block" type="submit"><i class="fas fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                                <div th:if="${selectTahun != null}" class="col-md-2">
+                                    <div class="input-group mb-3">
+                                        <button class="btn btn-info btn-block" type="submit"><i class="fas fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                                <div th:if="${selectTahun != null}" class="col-md-1">
+                                    <div class="input-group mb-3">
+                                        <a th:href="@{/cicilan/rekap/download(tahunAkademik=${selectTahun.id}, tglAwal=${tglAwal}, tglAkhir=${tglAkhir})}" class="btn btn-success btn-block" type="submit"><i class="fas fa-download"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div th:if="${tglAwal == '' && tglAkhir == '' && selectTahun != null}" class="card shadow">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>NIM</th>
+                                        <th>Mahasiswa</th>
+                                        <th>Nama Prodi</th>
+                                        <th>Tagihan</th>
+                                        <th>Tanggal Pengajuan</th>
+                                        <th>Cicilan</th>
+                                        <th>Total Tagihan</th>
+                                        <th>Dibayar</th>
+                                        <th>Sisa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listRekapan}">
+                                        <td th:text="${(row.index + 1) + (listRekapan.number * listRekapan.size)}">1</td>
+                                        <td th:text="${data[0]}"></td>
+                                        <td th:text="${data[1]}"></td>
+                                        <td th:text="${data[2]}"></td>
+                                        <td th:text="${data[3]}"></td>
+                                        <td th:text="${data[4]}"></td>
+                                        <td th:text="${data[5]}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[8], 0, 'POINT', 2, 'COMMA')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div th:if="${tglAwal != '' && tglAkhir != '' && selectTahun != null}" class="card shadow">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>NIM</th>
+                                        <th>Mahasiswa</th>
+                                        <th>Nama Prodi</th>
+                                        <th>Tagihan</th>
+                                        <th>Tanggal Pengajuan</th>
+                                        <th>Cicilan</th>
+                                        <th>Total Tagihan</th>
+                                        <th>Dibayar</th>
+                                        <th>Sisa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data,row : ${listRekapanDate}">
+                                        <td th:text="${(row.index + 1) + (listRekapanDate.number * listRekapanDate.size)}">1</td>
+                                        <td th:text="${data[0]}"></td>
+                                        <td th:text="${data[1]}"></td>
+                                        <td th:text="${data[2]}"></td>
+                                        <td th:text="${data[3]}"></td>
+                                        <td th:text="${data[4]}"></td>
+                                        <td th:text="${data[5]}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[6], 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[7], 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="${'Rp. ' + #numbers.formatDecimal(data[8], 0, 'POINT', 2, 'COMMA')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0" sd:pagination="full">
+                                <li class="disabled"><a href="#" aria-label="Previous"><span
+                                        aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

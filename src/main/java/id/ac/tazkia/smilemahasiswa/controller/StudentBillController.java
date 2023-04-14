@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.model.IModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2144,6 +2146,86 @@ public class StudentBillController {
         }
 
         return "redirect:../requestCicilan/angsuran?id="+tagihan.getId();
+    }
+
+    @GetMapping("/studentBill/requestCicilan/rekap")
+    public void rekapCicilan(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik, @PageableDefault(size = 10) Pageable page,
+                             @RequestParam(required = false) String tglAwal,
+                             @RequestParam(required = false) String tglAkhir){
+
+        model.addAttribute("tglAwal", tglAwal);
+        model.addAttribute("tglAkhir", tglAkhir);
+        model.addAttribute("selectTahun", tahunAkademik);
+
+        if (!StringUtils.hasText(tglAwal)  && !StringUtils.hasText(tglAkhir) && tahunAkademik != null) {
+            model.addAttribute("listRekapan", requestCicilanDao.listRekapanCicilan(tahunAkademik.getId(), page));
+        }
+
+        if (StringUtils.hasText(tglAwal) && StringUtils.hasText(tglAkhir)  && tahunAkademik != null) {
+            model.addAttribute("listRekapanDate", requestCicilanDao.listRekapanCicilanDate(tglAwal, tglAkhir, tahunAkademik.getId(), page));
+        }
+    }
+
+    @GetMapping("/cicilan/rekap/download")
+    public void downloadCicilan(@RequestParam String tahunAkademik, @RequestParam(required = false) String tglAwal, @RequestParam(required = false) String tglAkhir,
+                                HttpServletResponse response, @PageableDefault(size = Integer.MAX_VALUE) Pageable page) throws IOException {
+
+        TahunAkademik tahun = tahunAkademikDao.findById(tahunAkademik).get();
+
+        Page<Object[]> cicilan = null;
+        if ("".equals(tglAwal)) {
+            cicilan = requestCicilanDao.listRekapanCicilan(tahunAkademik, page);
+        }else{
+            cicilan = requestCicilanDao.listRekapanCicilanDate(tglAwal, tglAkhir, tahunAkademik, page);
+        }
+
+        String[] columns = {"No", "NIM", "Mahasiswa", "Nama Prodi", "Tagihan", "Tanggal Pengajuan", "Cicilan", "Total Tagihan", "Dibayar", "Sisa"};
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("List rekapan cicilan");
+
+        Font fontHeader = workbook.createFont();
+        fontHeader.setBold(true);
+        fontHeader.setFontHeightInPoints((short) 11);
+        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(fontHeader);
+
+        Row rowHeader = sheet.createRow(0);
+
+        for (int i = 0; i<columns.length; i++){
+            Cell cell = rowHeader.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Object[] list : cicilan){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(list[0].toString());
+            row.createCell(2).setCellValue(list[1].toString());
+            row.createCell(3).setCellValue(list[2].toString());
+            row.createCell(4).setCellValue(list[3].toString());
+            row.createCell(5).setCellValue(list[4].toString());
+            row.createCell(6).setCellValue(list[5].toString());
+            row.createCell(7).setCellValue(list[6].toString());
+            row.createCell(8).setCellValue(list[7].toString());
+            row.createCell(9).setCellValue(list[8].toString());
+        }
+
+        for (int i = 0; i<columns.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Rekapan cicilan " + tahun.getNamaTahunAkademik() + ".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
     // request peringanan

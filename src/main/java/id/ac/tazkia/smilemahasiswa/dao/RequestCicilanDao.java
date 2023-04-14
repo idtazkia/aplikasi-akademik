@@ -56,6 +56,34 @@ public interface RequestCicilanDao extends PagingAndSortingRepository<RequestCic
             "group by a.id, e.nama, b.status_approve", nativeQuery = true)
     List<Object[]> cekCicilanPerMahasiswa(TahunAkademik tahunAkademik, Mahasiswa mahasiswa);
 
+    @Query(value = "select nim, mahasiswa, nama_prodi, tagihan, b.tanggal_pengajuan, count(b.id) as totalCicilan, totalTagihan, dibayar, sisa from\n" +
+            "(select a.id, b.nim, b.nama as mahasiswa, c.nama_prodi, e.nama as tagihan, a.nilai_tagihan as totalTagihan, a.akumulasi_pembayaran as dibayar, a.nilai_tagihan-a.akumulasi_pembayaran as sisa " +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
+            "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id where status_tagihan='DICICIL' and a.id_tahun_akademik=?1) as a\n" +
+            "left join\n" +
+            "(select * from request_cicilan where status='AKTIF')as b on a.id=b.id_tagihan group by b.id_tagihan order by nim", nativeQuery = true,
+    countQuery = "select count(nim) from\n" +
+            "(select a.id, b.nim, b.nama as mahasiswa, c.nama_prodi, e.nama as tagihan, a.nilai_tagihan as totalTagihan, a.akumulasi_pembayaran as dibayar, a.nilai_tagihan-a.akumulasi_pembayaran as sisa " +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
+            "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id where status_tagihan='DICICIL' and a.id_tahun_akademik=?1) as a\n" +
+            "left join\n" +
+            "(select * from request_cicilan where status='AKTIF')as b on a.id=b.id_tagihan group by b.id_tagihan order by nim")
+    Page<Object[]> listRekapanCicilan(String idTahunAkademik, Pageable page);
+
+    @Query(value = "select nim, mahasiswa, nama_prodi, tagihan, b.tanggal_pengajuan, count(b.id) as totalCicilan, totalTagihan, dibayar, sisa from\n" +
+            "(select a.id, b.nim, b.nama as mahasiswa, c.nama_prodi, e.nama as tagihan, a.nilai_tagihan as totalTagihan, a.akumulasi_pembayaran as dibayar, a.nilai_tagihan-a.akumulasi_pembayaran as sisa " +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
+            "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id where status_tagihan='DICICIL' and a.id_tahun_akademik=?3) as a\n" +
+            "left join\n" +
+            "(select * from request_cicilan where status='AKTIF')as b on a.id=b.id_tagihan where b.tanggal_pengajuan between ?1 and ?2 group by b.id_tagihan order by nim", nativeQuery = true,
+    countQuery = "select count(nim) from\n" +
+            "(select a.id, b.nim, b.nama as mahasiswa, c.nama_prodi, e.nama as tagihan, a.nilai_tagihan as totalTagihan, a.akumulasi_pembayaran as dibayar, a.nilai_tagihan-a.akumulasi_pembayaran as sisa " +
+            "from tagihan as a inner join mahasiswa as b on a.id_mahasiswa=b.id inner join prodi as c on b.id_prodi=c.id inner join nilai_jenis_tagihan as d on a.id_nilai_jenis_tagihan=d.id " +
+            "inner join jenis_tagihan as e on d.id_jenis_tagihan=e.id where status_tagihan='DICICIL' and a.id_tahun_akademik=?3) as a\n" +
+            "left join\n" +
+            "(select * from request_cicilan where status='AKTIF')as b on a.id=b.id_tagihan where b.tanggal_pengajuan between ?1 and ?2 group by b.id_tagihan order by nim")
+    Page<Object[]> listRekapanCicilanDate(String tglAwal, String tglAkhir, String idTahunAkademik, Pageable page);
+
     @Query(value = "select sum(nilai_cicilan) as sisaCicilan from request_cicilan where status_cicilan!='LUNAS' and id_tagihan=?1 and status='AKTIF'", nativeQuery = true)
     BigDecimal pengajuanPelunasan(String idTagihan);
 
