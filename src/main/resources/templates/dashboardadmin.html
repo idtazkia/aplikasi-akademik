@@ -5,7 +5,7 @@
       layout:decorate="~{layoutadmin}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Dashboard</title>
 </head>
 <body>
 <div layout:fragment="main">
@@ -13,17 +13,19 @@
         <div class="container-fluid">
             <div class="header-body">
                 <!-- Card stats -->
+
+<!--                dashboard info untuk dosen-->
                 <div class="row" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAnyAuthority('VIEW_FINANCE')">
                     <div class="col-xl-3 col-lg-6">
                         <div class="card card-stats mb-4 mb-xl-0">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Total Lecture</h5>
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Jumlah Kelas</h5>
                                         <span class="h2 font-weight-bold mb-0" th:text="${jmlDosen}">120</span>
                                     </div>
                                     <div class="col-auto">
-                                        <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
                                             <i class="fas fa-user"></i>
                                         </div>
                                     </div>
@@ -37,12 +39,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Total Student</h5>
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Kelas Online</h5>
                                         <span class="h2 font-weight-bold mb-0" th:text="${jmlMhsA}">2,356</span>
                                     </div>
                                     <div class="col-auto">
-                                        <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                            <i class="fas fa-users"></i>
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -54,12 +56,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Male Students</h5>
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Kelas Terlambat</h5>
                                         <span class="h2 font-weight-bold mb-0" th:text="${jmlL}">924</span>
                                     </div>
                                     <div class="col-auto">
-                                        <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
-                                            <i class="fas fa-user-astronaut"></i>
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -72,12 +74,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <h5 class="card-title text-uppercase text-muted mb-0">Female Students</h5>
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Kelas Pengganti</h5>
                                         <span class="h2 font-weight-bold mb-0" th:text="${jmlP}">1,202</span>
                                     </div>
                                     <div class="col-auto">
-                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
-                                            <i class="fas fa-female"></i>
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -85,6 +87,372 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <br>
+                <div class="row" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAnyAuthority('VIEW_FINANCE')">
+
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Total Kelas Kosong</h5>
+                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMhsA}">2,356</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Total Kelas Online & Offline</h5>
+                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlDosen}">120</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-success text-white rounded-circle shadow">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Kelulusan Ontime</h5>
+                                        <span class="h2 font-weight-bold mb-0">200</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                            <i class="fas fa-archive"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Reserve Card</h5>
+                                        <span class="h2 font-weight-bold mb-0">-</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                            <i class="fas fa-archive"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+
+<!--                dashboard info untuk mahasiswa-->
+                <div class="row" sec:authorize="hasAuthority('VIEW_SUPERUSER') or hasAnyAuthority('VIEW_FINANCE')">
+
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Jumlah Mahasiswa</h5>
+                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMhsA}">2,356</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Ontime</h5>
+                                        <span class="h2 font-weight-bold mb-0">120</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Telat</h5>
+                                        <span class="h2 font-weight-bold mb-0" >15</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card card-stats mb-4 mb-xl-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Sempro</h5>
+                                        <span class="h2 font-weight-bold mb-0" >56</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+
+<!--                table dosen-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header pb-0">
+                                <h4>Kehadiran Dosen Terbaik</h4>
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
+                                            <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Employed</th>
+                                            <th class="opacity-7"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">John Michael</h6>
+                                                        <p class="text-xs mb-0">john@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Manager</p>
+                                                <p class="text-xs mb-0">Organization</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">Online</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">23/04/18</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Alexa Liras</h6>
+                                                        <p class="text-xs mb-0">alexa@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Programator</p>
+                                                <p class="text-xs mb-0">Developer</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">11/01/19</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Laurent Perrier</h6>
+                                                        <p class="text-xs mb-0">laurent@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Executive</p>
+                                                <p class="text-xs mb-0">Projects</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">Online</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">19/09/17</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+<!--                tabel mahasiswa-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header pb-0">
+                                <h4>Kehadiran Mahasiswa Terbaik</h4>
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Nama</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Prodi</th>
+                                            <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Sejak</th>
+                                            <th class="opacity-7"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Cera Ismail</h6>
+                                                        <p class="text-xs mb-0">cera@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Manager</p>
+                                                <p class="text-xs mb-0">Organization</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">Online</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">23/04/18</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Cindy Sarah</h6>
+                                                        <p class="text-xs mb-0">cindy@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Programator</p>
+                                                <p class="text-xs mb-0">Developer</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">11/01/19</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Pierre Kent</h6>
+                                                        <p class="text-xs mb-0">pierre@tazkia.ac.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Executive</p>
+                                                <p class="text-xs mb-0">Projects</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">Online</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-xs font-weight-bold">19/09/17</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <a href="javascript:;" class="font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                </div>
+
 
                 <div class="row" sec:authorize="hasAuthority('VIEW_KPS') or hasAuthority('VIEW_DOSEN')or hasAuthority('VIEW_WAREK2') or hasAuthority('VIEW_DOSEN_AKADEMIK')">
                     <div class="col-xl-12 mb-5 mb-xl-0">
