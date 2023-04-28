@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.math.BigDecimal;
@@ -85,6 +86,15 @@ public class TagihanService {
     private TahunAkademikDao tahunAkademikDao;
 
     @Autowired
+    private MahasiswaCicilanDao cicilanDao;
+
+    @Autowired
+    private RequestPenangguhanDao requestPenangguhanDao;
+
+    @Autowired
+    private TagihanBeasiswaDao tagihanBeasiswaDao;
+
+    @Autowired
     private KrsDetailDao krsDetailDao;
 
     @Autowired
@@ -93,6 +103,361 @@ public class TagihanService {
     @Autowired
     private KelasDao kelasDao;
 
+    public void generateTagihan(List<Mahasiswa> reguler, List<Mahasiswa> beasiswa, TahunAkademik tahun, String angkatan, TahunAkademik tahunBefore){
+
+        if (reguler != null){
+            for (Mahasiswa mhs : reguler){
+                MahasiswaCicilan mcicilan = cicilanDao.findByStatusAndMahasiswa(StatusRecord.AKTIF, mhs);
+                if (mcicilan == null){
+                    List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(tahun, angkatan, mhs.getIdProdi(), mhs.getIdProgram(), StatusRecord.AKTIF);
+                    for (NilaiJenisTagihan njt : nilaiJenisTagihans) {
+                        Tagihan tCekSudahAda = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(mhs, njt.getJenisTagihan(), tahun, StatusRecord.AKTIF);
+                        if (tCekSudahAda == null) {
+                            Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndLunasAndStatus(mhs, njt.getJenisTagihan(), tahunBefore, false, StatusRecord.AKTIF);
+                            if (tagihan1 == null) {
+                                String keteranganTagihan = "Tagihan " + njt.getJenisTagihan().getNama()
+                                        + " a.n. " + mhs.getNama();
+
+                                Tagihan tagihan = new Tagihan();
+                                tagihan.setMahasiswa(mhs);
+                                tagihan.setNilaiJenisTagihan(njt);
+                                tagihan.setKeterangan(keteranganTagihan);
+                                tagihan.setNilaiTagihan(njt.getNilai());
+                                tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                tagihan.setTanggalPembuatan(LocalDate.now());
+                                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                tagihan.setTahunAkademik(tahun);
+                                tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                tagihan.setStatus(StatusRecord.AKTIF);
+                                tagihanDao.save(tagihan);
+                                requestCreateTagihan(tagihan);
+
+                                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, false, tahun);
+                                if (enableFiture == null) {
+                                    createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
+                                }
+
+                            } else {
+
+                                tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
+                                tagihan1.setStatus(StatusRecord.NONAKTIF);
+                                tagihanDao.save(tagihan1);
+                                hapusTagihan(tagihan1);
+
+                                Integer sisaCicilan = tagihan1.getNilaiTagihan().intValue() - tagihan1.getAkumulasiPembayaran().intValue();
+
+                                Tagihan tagihan = new Tagihan();
+                                tagihan.setMahasiswa(mhs);
+                                tagihan.setNilaiJenisTagihan(njt);
+                                tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
+                                        + " a.n. " + tagihan.getMahasiswa().getNama());
+                                tagihan.setNilaiTagihan(njt.getNilai().add(new BigDecimal(sisaCicilan)));
+                                tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                tagihan.setTanggalPembuatan(LocalDate.now());
+                                tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                tagihan.setTahunAkademik(tahun);
+                                tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                tagihan.setStatus(StatusRecord.AKTIF);
+                                tagihan.setIdTagihanSebelumnya(tagihan1.getId());
+                                tagihanDao.save(tagihan);
+                                requestCreateTagihan(tagihan);
+
+                                EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, false, tahun);
+                                if (enableFiture == null) {
+                                    createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
+                                }
+
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
+                                    List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                                    if (cekSisaCicilan != null) {
+                                        for (RequestCicilan listCicilan : cekSisaCicilan){
+                                            listCicilan.setStatus(StatusRecord.HAPUS);
+                                            listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                                            listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                            requestCicilanDao.save(listCicilan);
+                                        }
+                                    }
+                                }
+
+                                if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                                    RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                                    if (rp != null) {
+                                        rp.setStatus(StatusRecord.HAPUS);
+                                        rp.setStatusApprove(StatusApprove.HAPUS);
+                                        requestPenangguhanDao.save(rp);
+                                    }
+                                }
+
+                            }
+                        }else{
+                            log.info("Tagihan {} sudah ada!", tCekSudahAda.getMahasiswa().getNim());
+                        }
+                    }
+                }else{
+                    EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, true, tahun);
+                    if (ef == null) {
+                        EnableFiture enableFiture = new EnableFiture();
+                        enableFiture.setMahasiswa(mcicilan.getMahasiswa());
+                        enableFiture.setTahunAkademik(tahun);
+                        enableFiture.setFitur(StatusRecord.KRS);
+                        enableFiture.setEnable(true);
+                        enableFiture.setKeterangan("-");
+
+                        enableFitureDao.save(enableFiture);
+                    }
+                    TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
+                    Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+                    if (k == null) {
+                        Krs krs = new Krs();
+                        krs.setTahunAkademik(tahun);
+                        krs.setTahunAkademikProdi(tahunProdi);
+                        krs.setProdi(mcicilan.getMahasiswa().getIdProdi());
+                        krs.setMahasiswa(mcicilan.getMahasiswa());
+                        krs.setNim(mcicilan.getMahasiswa().getNim());
+                        krs.setTanggalTransaksi(LocalDateTime.now());
+                        krs.setStatus(StatusRecord.AKTIF);
+                        krsDao.save(krs);
+                    }
+                }
+            }
+        }
+
+        if (beasiswa != null){
+            for(Mahasiswa mhs : beasiswa){
+                MahasiswaCicilan mcicilan = cicilanDao.findByStatusAndMahasiswa(StatusRecord.AKTIF, mhs);
+                if (mcicilan == null){
+                    List<NilaiJenisTagihan> nilaiJenisTagihans = nilaiJenisTagihanDao.findByTahunAkademikAndAngkatanAndProdiAndProgramAndStatus(tahun, mhs.getAngkatan(), mhs.getIdProdi(), mhs.getIdProgram(), StatusRecord.AKTIF);
+                    for (NilaiJenisTagihan njt : nilaiJenisTagihans){
+                        TagihanBeasiswa tBeasiswa = tagihanBeasiswaDao.findByBeasiswaAndJenisTagihanAndStatus(mhs.getBeasiswa(), njt.getJenisTagihan(), StatusRecord.AKTIF);
+                        if (tBeasiswa == null){
+                            Tagihan tCekSudahAda = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(mhs, njt.getJenisTagihan(), tahun, StatusRecord.AKTIF);
+                            if (tCekSudahAda == null) {
+                                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndLunasAndStatus(mhs, njt.getJenisTagihan(), tahunBefore, false, StatusRecord.AKTIF);
+                                if (tagihan1 == null) {
+                                    String keteranganTagihan = mhs.getBeasiswa().getNamaBeasiswa();
+
+                                    Tagihan tagihan = new Tagihan();
+                                    tagihan.setMahasiswa(mhs);
+                                    tagihan.setNilaiJenisTagihan(njt);
+                                    tagihan.setKeterangan(keteranganTagihan);
+                                    tagihan.setNilaiTagihan(BigDecimal.ZERO);
+                                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                    tagihan.setTanggalPembuatan(LocalDate.now());
+                                    tagihan.setTanggalJatuhTempo(LocalDate.now());
+                                    tagihan.setTanggalPenangguhan(LocalDate.now());
+                                    tagihan.setTahunAkademik(tahun);
+                                    tagihan.setLunas(true);
+                                    tagihan.setStatusTagihan(StatusTagihan.LUNAS);
+                                    tagihan.setStatus(StatusRecord.AKTIF);
+                                    tagihanDao.save(tagihan);
+
+                                    Pembayaran pembayaran = new Pembayaran();
+                                    pembayaran.setTagihan(tagihan);
+                                    pembayaran.setAmount(tagihan.getNilaiTagihan());
+                                    pembayaran.setWaktuBayar(LocalDateTime.now());
+                                    pembayaran.setNomorRekening("-");
+                                    pembayaran.setReferensi("-");
+                                    pembayaran.setStatus(StatusRecord.AKTIF);
+                                    pembayaranDao.save(pembayaran);
+
+                                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, true, tahun);
+                                    if (enableFiture == null) {
+                                        createEnableFitur(tahun, tagihan, StatusRecord.KRS, true);
+                                    }
+
+                                    TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
+
+                                    Krs krs = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+                                    if (krs == null) {
+                                        createKrs(tagihan, tahunProdi);
+                                    }
+
+                                } else {
+
+                                    tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
+                                    tagihan1.setStatus(StatusRecord.NONAKTIF);
+                                    tagihanDao.save(tagihan1);
+                                    hapusTagihan(tagihan1);
+
+                                    Integer sisaCicilan = tagihan1.getNilaiTagihan().intValue() - tagihan1.getAkumulasiPembayaran().intValue();
+
+                                    Tagihan tagihan = new Tagihan();
+                                    tagihan.setMahasiswa(mhs);
+                                    tagihan.setNilaiJenisTagihan(njt);
+                                    tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
+                                            + " a.n. " + tagihan.getMahasiswa().getNama());
+                                    tagihan.setNilaiTagihan(new BigDecimal(sisaCicilan));
+                                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                    tagihan.setTanggalPembuatan(LocalDate.now());
+                                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                    tagihan.setTahunAkademik(tahun);
+                                    tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                    tagihan.setStatus(StatusRecord.AKTIF);
+                                    tagihan.setIdTagihanSebelumnya(tagihan1.getId());
+                                    tagihanDao.save(tagihan);
+                                    requestCreateTagihan(tagihan);
+
+                                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, false, tahun);
+                                    if (enableFiture == null) {
+                                        createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
+                                    }
+
+                                    if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
+                                        List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                                        if (cekSisaCicilan != null) {
+                                            for (RequestCicilan listCicilan : cekSisaCicilan){
+                                                listCicilan.setStatus(StatusRecord.HAPUS);
+                                                listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                                                listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                                requestCicilanDao.save(listCicilan);
+                                            }
+                                        }
+                                    }
+
+                                    if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                                        RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                                        if (rp != null) {
+                                            rp.setStatus(StatusRecord.HAPUS);
+                                            rp.setStatusApprove(StatusApprove.HAPUS);
+                                            requestPenangguhanDao.save(rp);
+                                        }
+                                    }
+
+                                }
+                            }else{
+                                log.info("Tagihan {} sudah ada!", tCekSudahAda.getMahasiswa().getNim());
+                            }
+
+                        }else {
+                            String jenis = tBeasiswa.getJenisPotongan();
+                            Integer total = null;
+                            Integer potongan = tBeasiswa.getPotongan();
+                            if (jenis.equals("PERSEN")){
+                                Integer totalPotongan = njt.getNilai().intValue() * potongan / 100;
+                                total = njt.getNilai().intValue() - totalPotongan;
+                            }else if (jenis.equals("JUMLAH")){
+                                total = njt.getNilai().intValue() - potongan;
+                            }
+
+                            Tagihan tCekSudahAda = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndStatus(mhs, njt.getJenisTagihan(), tahun, StatusRecord.AKTIF);
+                            if (tCekSudahAda == null) {
+                                Tagihan tagihan1 = tagihanDao.findByMahasiswaAndNilaiJenisTagihanJenisTagihanAndTahunAkademikAndLunasAndStatus(mhs, njt.getJenisTagihan(), tahunBefore, false, StatusRecord.AKTIF);
+                                if (tagihan1 == null) {
+
+                                    String keteranganTagihan = "Tagihan " + njt.getJenisTagihan().getNama()
+                                            + " a.n. " + mhs.getNama();
+
+                                    Tagihan tagihan = new Tagihan();
+                                    tagihan.setMahasiswa(mhs);
+                                    tagihan.setNilaiJenisTagihan(njt);
+                                    tagihan.setKeterangan(keteranganTagihan);
+                                    tagihan.setNilaiTagihan(new BigDecimal(total));
+                                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                    tagihan.setTanggalPembuatan(LocalDate.now());
+                                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                    tagihan.setTahunAkademik(tahun);
+                                    tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                    tagihan.setStatus(StatusRecord.AKTIF);
+                                    tagihanDao.save(tagihan);
+                                    requestCreateTagihan(tagihan);
+
+                                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, true, tahun);
+                                    if (enableFiture == null) {
+                                        createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
+                                    }
+
+                                } else {
+
+                                    tagihan1.setStatusTagihan(StatusTagihan.NONAKTIF);
+                                    tagihan1.setStatus(StatusRecord.NONAKTIF);
+                                    tagihanDao.save(tagihan1);
+                                    hapusTagihan(tagihan1);
+
+                                    Integer sisaCicilan = tagihan1.getNilaiTagihan().intValue() - tagihan1.getAkumulasiPembayaran().intValue();
+
+                                    Tagihan tagihan = new Tagihan();
+                                    tagihan.setMahasiswa(mhs);
+                                    tagihan.setNilaiJenisTagihan(njt);
+                                    tagihan.setKeterangan("Tagihan " + tagihan.getNilaiJenisTagihan().getJenisTagihan().getNama()
+                                            + " a.n. " + tagihan.getMahasiswa().getNama());
+                                    tagihan.setNilaiTagihan(new BigDecimal(total).add(new BigDecimal(sisaCicilan)));
+                                    tagihan.setAkumulasiPembayaran(BigDecimal.ZERO);
+                                    tagihan.setTanggalPembuatan(LocalDate.now());
+                                    tagihan.setTanggalJatuhTempo(LocalDate.now().plusYears(1));
+                                    tagihan.setTanggalPenangguhan(LocalDate.now().plusYears(1));
+                                    tagihan.setTahunAkademik(tahun);
+                                    tagihan.setStatusTagihan(StatusTagihan.AKTIF);
+                                    tagihan.setStatus(StatusRecord.AKTIF);
+                                    tagihan.setIdTagihanSebelumnya(tagihan1.getId());
+                                    tagihanDao.save(tagihan);
+                                    requestCreateTagihan(tagihan);
+
+                                    EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, false, tahun);
+                                    if (enableFiture == null) {
+                                        createEnableFitur(tahun, tagihan, StatusRecord.KRS, false);
+                                    }
+
+                                    if (tagihan1.getStatusTagihan() == StatusTagihan.DICICIL) {
+                                        List<RequestCicilan> cekSisaCicilan = requestCicilanDao.findByTagihanAndStatusAndStatusCicilanNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusCicilan.LUNAS));
+                                        if (cekSisaCicilan != null) {
+                                            for (RequestCicilan listCicilan : cekSisaCicilan){
+                                                listCicilan.setStatus(StatusRecord.HAPUS);
+                                                listCicilan.setStatusCicilan(StatusCicilan.BATAL_CICIL);
+                                                listCicilan.setStatusApprove(StatusApprove.HAPUS);
+                                                requestCicilanDao.save(listCicilan);
+                                            }
+                                        }
+                                    }
+
+                                    if (tagihan1.getStatusTagihan() == StatusTagihan.DITANGGUHKAN) {
+                                        RequestPenangguhan rp = requestPenangguhanDao.findByTagihanAndStatusAndStatusApproveNotIn(tagihan1, StatusRecord.AKTIF, Arrays.asList(StatusApprove.WAITING));
+                                        if (rp != null) {
+                                            rp.setStatus(StatusRecord.HAPUS);
+                                            rp.setStatusApprove(StatusApprove.HAPUS);
+                                            requestPenangguhanDao.save(rp);
+                                        }
+                                    }
+
+                                }
+                            }else{
+                                log.info("Tagihan {} sudah ada!", tCekSudahAda.getMahasiswa().getNim());
+                            }
+                        }
+                    }
+                }else{
+                    EnableFiture ef = enableFitureDao.findByMahasiswaAndFiturAndEnableAndTahunAkademik(mhs, StatusRecord.KRS, true, tahun);
+                    if (ef == null) {
+                        EnableFiture enableFiture = new EnableFiture();
+                        enableFiture.setMahasiswa(mcicilan.getMahasiswa());
+                        enableFiture.setTahunAkademik(tahun);
+                        enableFiture.setFitur(StatusRecord.KRS);
+                        enableFiture.setEnable(true);
+                        enableFiture.setKeterangan("-");
+
+                        enableFitureDao.save(enableFiture);
+                    }
+                    TahunAkademikProdi tahunProdi = tahunProdiDao.findByTahunAkademikAndProdi(tahun, mhs.getIdProdi());
+                    Krs k = krsDao.findByMahasiswaAndTahunAkademikAndStatus(mhs, tahun, StatusRecord.AKTIF);
+                    if (k == null) {
+                        Krs krs = new Krs();
+                        krs.setTahunAkademik(tahun);
+                        krs.setTahunAkademikProdi(tahunProdi);
+                        krs.setProdi(mcicilan.getMahasiswa().getIdProdi());
+                        krs.setMahasiswa(mcicilan.getMahasiswa());
+                        krs.setNim(mcicilan.getMahasiswa().getNim());
+                        krs.setTanggalTransaksi(LocalDateTime.now());
+                        krs.setStatus(StatusRecord.AKTIF);
+                        krsDao.save(krs);
+                    }
+                }
+            }
+        }
+
+    }
 
     public void requestCreateTagihan(Tagihan tagihan) {
         TagihanRequest tagihanRequest = TagihanRequest.builder()
@@ -361,6 +726,17 @@ public class TagihanService {
         krs.setTanggalTransaksi(LocalDateTime.now());
         krs.setStatus(StatusRecord.AKTIF);
         krsDao.save(krs);
+    }
+
+    private void createEnableFitur(@RequestParam(required = false) TahunAkademik tahun, Tagihan tgh, StatusRecord status, Boolean enabled) {
+        EnableFiture enableFiture = new EnableFiture();
+        enableFiture.setMahasiswa(tgh.getMahasiswa());
+        enableFiture.setTahunAkademik(tahun);
+        enableFiture.setFitur(status);
+        enableFiture.setEnable(enabled);
+        enableFiture.setKeterangan("-");
+
+        enableFitureDao.save(enableFiture);
     }
 
     public void cretatTagihanMengulang(Mahasiswa mahasiswa, TahunAkademik tahunAkademik, String jenis){
