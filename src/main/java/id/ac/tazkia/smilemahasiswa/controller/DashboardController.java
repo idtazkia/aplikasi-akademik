@@ -177,6 +177,15 @@ public class DashboardController {
     @Autowired
     private MemoKeuanganDao memoKeuanganDao;
 
+    @Autowired
+    private PresensiDosenDao presensiDosenDao;
+
+    @Autowired
+    private PresensiMahasiswaDao presensiMahasiswaDao;
+
+    @Autowired
+    private SesiKuliahDao sesiKuliahDao;
+
 //    @Autowired
 //    private AsuransiMahasiswaDao asuransiMahasiswaDao;
 
@@ -875,6 +884,22 @@ public class DashboardController {
 
         Iterable<JadwalDosen> jadwal = jadwalDosenDao.findByJadwalStatusNotInAndJadwalTahunAkademikAndDosenAndJadwalHariNotNullAndJadwalKelasNotNullOrderByJadwalHariAscJadwalJamMulaiAsc(Arrays.asList(StatusRecord.HAPUS), tahunAkademik, dosen);
         model.addAttribute("jadwal", jadwal);
+
+
+
+        model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.HADIR.toString()));
+        model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.TERLAMBAT.toString()));
+
+//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jadwalMahasiswa("20192",StatusPresensi.HADIR.toString()));
+//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jadwalMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
+
+        model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Online.toString()));
+        model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Offline.toString()));
+
+
+        model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik,StatusPresensi.HADIR.toString(), pageable));
+//        model.addAttribute("klasemenMahasiswa", presensiMahasiswaDao.klasemenMahasiswa("20192",StatusPresensi.HADIR.toString(),pageable));
+
 
 
         return "dashboardadmin";

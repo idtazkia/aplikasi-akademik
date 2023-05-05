@@ -1,9 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
-import id.ac.tazkia.smilemahasiswa.entity.Jadwal;
-import id.ac.tazkia.smilemahasiswa.entity.PresensiDosen;
-import id.ac.tazkia.smilemahasiswa.entity.SesiKuliah;
-import id.ac.tazkia.smilemahasiswa.entity.StatusRecord;
+import id.ac.tazkia.smilemahasiswa.entity.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -16,4 +13,28 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     @Query(value = "select * from sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen=pd.id inner join jadwal as j on pd.id_jadwal=j.id where " +
             "j.id=?1 and date(sk.waktu_mulai)=?2 and sk.pertemuan = 'Online' or sk.pertemuan = 'Offline' order by sk.waktu_mulai", nativeQuery = true)
     SesiKuliah cariPresensiHariIni(String idJadwal, String hariIni);
+
+//    @Query(value = "SELECT COUNT(*) as kelasPengganti, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
+//            "\tFROM sesi_kuliah as sk\n" +
+//            "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+//            "\twhere jd.id_tahun_akademik = ?1)\n" +
+//            "as persentase\n" +
+//            "FROM sesi_kuliah as sk\n" +
+//            "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+//            "where jd.id_tahun_akademik = ?1 and sk.pertemuan NOT IN ('Online', 'Offline', null)", nativeQuery = true)
+//    Object jadwalKelasPengganti(String tahunAkademik,String pertemuan);
+
+    @Query(value = "SELECT COUNT(*) as kelasOnline, COUNT(*) * 100 / (SELECT COUNT(*) as semuaKelas\n" +
+            "\tFROM sesi_kuliah as sk\n" +
+            "\tINNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "\twhere jd.id_tahun_akademik = ?1)\n" +
+            "as persentase\n" +
+            "FROM sesi_kuliah as sk\n" +
+            "INNER JOIN jadwal as jd on sk.id_jadwal = jd.id\n" +
+            "where jd.id_tahun_akademik = ?1 and sk.pertemuan = ?2", nativeQuery = true)
+    Object jmlKelasOnlineOffline(TahunAkademik tahunAkademik, String pertemuan);
+
+
+
+
 }

@@ -4,6 +4,7 @@ import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.entity.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -65,5 +66,28 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
             "from presensi_mahasiswa as p inner join mahasiswa as m on p.id_mahasiswa = m.id\n" +
             "where p.status = 'AKTIF' and p.id_sesi_kuliah = ?1", nativeQuery = true)
     List<PresensiMahasiswaDto> listDataPresensiMahasiswa(SesiKuliah sesiKuliah);
+
+//    @Query(value = "SELECT COUNT(*) as jumlahMahasiswaOntime, COUNT(*) * 100 / (SELECT COUNT(*) as semuaMahasiswa\n" +
+//            "\tFROM presensi_mahasiswa as pm\n" +
+//            "    inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
+//            "\tinner join jadwal as jd on sk.id_jadwal = jd.id\n" +
+//            "\twhere jd.id_tahun_akademik = ?1 and pm.status = 'AKTIF')\n" +
+//            "as persentase\n" +
+//            "FROM presensi_mahasiswa as pm\n" +
+//            "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
+//            "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
+//            "where jd.id_tahun_akademik = ?1 and pm.status = 'AKTIF' and pm.status_presensi = ?2", nativeQuery = true)
+//    Object jmlMahasiswa(String tahunAkademik, String statusPresensi);
+
+//        @Query(value = "SELECT pm.id, jd.id_tahun_akademik, pm.id_krs_detail,pr.nama_prodi,pm.id_mahasiswa,ms.nama, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.jam_mulai, jd.jam_selesai, count(pm.id) as kehadiran\n" +
+//                "FROM presensi_mahasiswa as pm\n" +
+//                "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
+//                "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
+//                "inner join mahasiswa as ms on pm.id_mahasiswa = ms.id\n" +
+//                "inner join prodi as pr on jd.id_prodi = pr.id\n" +
+//                "where jd.id_tahun_akademik = ?1 and pm.status = 'AKTIF' and pm.status_presensi = ?2\n" +
+//                "group by pm.id_mahasiswa\n" +
+//                "order by count(pm.id) DESC", nativeQuery = true)
+//        List<Object[]> klasemenMahasiswa(String tahunAkademik, String statusPresensi,Pageable pagebable);
 
 }
