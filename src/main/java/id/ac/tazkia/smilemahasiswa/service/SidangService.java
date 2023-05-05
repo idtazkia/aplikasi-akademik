@@ -642,6 +642,36 @@ public class SidangService {
         table.setSpacingBefore(10);
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setColor(CMYKColor.BLACK);
+        String nama = null;
+        String nidnDosen = null;
+        String jabatan = null;
+        String kdProdi = seminar.getNote().getMahasiswa().getIdProdi().getKodeProdi();
+        if (seminar.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+            if ("MBS".equals(kdProdi)) {
+                Karyawan karyawan = karyawanDao.findById("thubaz").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else if ("TIP".equals(kdProdi)){
+                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else if ("MES".equals(kdProdi)){
+                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else {
+                nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+                nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+                jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+            }
+        }else{
+            nama = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+            nidnDosen = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+            jabatan = seminar.getNote().getMahasiswa().getIdProdi().getJabatan();
+        }
 
         PdfPCell cell;
         cell = new PdfPCell(new Phrase("Nama",font));
@@ -652,7 +682,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), font));
+        cell = new PdfPCell(new Phrase(nama, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -664,7 +694,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn(), font));
+        cell = new PdfPCell(new Phrase(nidnDosen, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -676,7 +706,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(seminar.getNote().getMahasiswa().getIdProdi().getJabatan(), font));
+        cell = new PdfPCell(new Phrase(jabatan, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -992,6 +1022,11 @@ public class SidangService {
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();
+            }else if ("MES".equals(prd)){
+                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
             }else {
                 namaKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
                 nidnKps = seminar.getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
@@ -1193,6 +1228,37 @@ public class SidangService {
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setColor(CMYKColor.BLACK);
 
+        String nama = null;
+        String nidnDosen = null;
+        String jabatan = null;
+        String kdProdi = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getKodeProdi();
+        if (sidang.getTanggalInput().compareTo(LocalDate.parse("2023-02-06")) <= 0){
+            if ("MBS".equals(kdProdi)) {
+                Karyawan karyawan = karyawanDao.findById("thubaz").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else if ("TIP".equals(kdProdi)){
+                Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else if ("MES".equals(kdProdi)){
+                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
+                nama = karyawan.getNamaKaryawan();
+                nidnDosen = karyawan.getNidn();
+                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+            }else {
+                nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+                nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+                jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+            }
+        }else{
+            nama = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan();
+            nidnDosen = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn();
+            jabatan = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan();
+        }
+
         PdfPCell cell;
         cell = new PdfPCell(new Phrase("Nama",font));
         cell.setBorder(Rectangle.NO_BORDER);
@@ -1202,7 +1268,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNamaKaryawan(), font));
+        cell = new PdfPCell(new Phrase(nama, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1214,7 +1280,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getDosen().getKaryawan().getNidn(), font));
+        cell = new PdfPCell(new Phrase(nidnDosen, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1226,7 +1292,7 @@ public class SidangService {
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        cell = new PdfPCell(new Phrase(sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getJabatan(), font));
+        cell = new PdfPCell(new Phrase(jabatan, font));
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -1532,6 +1598,11 @@ public class SidangService {
                 ttdKps = karyawan.getTandaTangan();
             }else if ("TIP".equals(prd)){
                 Karyawan karyawan = karyawanDao.findById("AsnanPur").get();
+                namaKps = karyawan.getNamaKaryawan();
+                nidnKps = karyawan.getNidn();
+                ttdKps = karyawan.getTandaTangan();
+            }else if ("MES".equals(prd)){
+                Karyawan karyawan = karyawanDao.findById("17700a2b-b4b1-4da3-a0af-bc788b7b6e62").get();
                 namaKps = karyawan.getNamaKaryawan();
                 nidnKps = karyawan.getNidn();
                 ttdKps = karyawan.getTandaTangan();

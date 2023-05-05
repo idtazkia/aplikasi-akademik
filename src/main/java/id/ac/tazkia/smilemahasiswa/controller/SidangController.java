@@ -1416,7 +1416,15 @@ public class SidangController {
 
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=ST Menguji Skripsi " + sidang.getSeminar().getNote().getMahasiswa().getNama() + ".pdf";
+        // pasca ubah ke thesis
+        String jenis = null;
+        String kode = sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getIdJenjang().getKodeJenjang();
+        if ("S1".equalsIgnoreCase(kode)) {
+            jenis = "Stripsi";
+        }else if ("S2".equalsIgnoreCase(kode)){
+            jenis = "Thesis";
+        }
+        String headerValue = "attachment; filename=ST Menguji " + jenis + " " + sidang.getSeminar().getNote().getMahasiswa().getNama() + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 
