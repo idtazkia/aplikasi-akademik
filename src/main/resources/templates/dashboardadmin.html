@@ -201,6 +201,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Ontime</h5>
+                                        <span> In Progress</span>
 <!--                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMahasiswaOntime[0]}">2,356</span>-->
 <!--                                        |-->
 <!--                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMahasiswaOntime[1] + '%'}">2,356</span>-->
@@ -221,6 +222,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Telat</h5>
+                                        <span>In Progress</span>
 <!--                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMahasiswaTerlambat[0]}">2,356</span>-->
 <!--                                        |-->
 <!--                                        <span class="h2 font-weight-bold mb-0" th:text="${jmlMahasiswaTerlambat[1] + '%'}">2,356</span>-->
@@ -241,7 +243,9 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Persentase Mahasiswa Sempro</h5>
-                                        <span class="h2 font-weight-bold mb-0" >-</span>
+                                            <span class="h2 font-weight-bold mb-0" th:text="${jmlSempro[0]}">2,356</span>
+                                            |
+                                            <span class="h2 font-weight-bold mb-0" th:text="${jmlSempro[1] + '%'}">2,356</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-info text-white rounded-circle shadow">

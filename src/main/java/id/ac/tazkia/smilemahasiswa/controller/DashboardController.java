@@ -186,6 +186,9 @@ public class DashboardController {
     @Autowired
     private SesiKuliahDao sesiKuliahDao;
 
+    @Autowired
+    private SeminarDao seminarDao;
+
 //    @Autowired
 //    private AsuransiMahasiswaDao asuransiMahasiswaDao;
 
@@ -890,11 +893,13 @@ public class DashboardController {
         model.addAttribute("jmlKelasOntime", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.HADIR.toString()));
         model.addAttribute("jmlKelasTerlambat", presensiDosenDao.jmlKelas(tahunAkademik,StatusPresensi.TERLAMBAT.toString()));
 
-//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jadwalMahasiswa("20192",StatusPresensi.HADIR.toString()));
-//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jadwalMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
+//        model.addAttribute("jmlMahasiswaOntime", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.HADIR.toString()));
+//        model.addAttribute("jmlMahasiswaTerlambat", presensiMahasiswaDao.jmlMahasiswa("20192",StatusPresensi.TERLAMBAT.toString()));
 
         model.addAttribute("jmlKelasOnline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Online.toString()));
         model.addAttribute("jmlKelasOffline", sesiKuliahDao.jmlKelasOnlineOffline(tahunAkademik,StatusKelas.Offline.toString()));
+
+        model.addAttribute("jmlSempro", seminarDao.jmlSempro(tahunAkademik,StatusApprove.APPROVED.toString()));
 
 
         model.addAttribute("klasemenDosen", presensiDosenDao.klasemenDosen(tahunAkademik,StatusPresensi.HADIR.toString(), pageable));

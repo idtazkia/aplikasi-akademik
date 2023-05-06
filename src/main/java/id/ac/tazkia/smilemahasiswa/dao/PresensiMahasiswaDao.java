@@ -79,6 +79,47 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
 //            "where jd.id_tahun_akademik = ?1 and pm.status = 'AKTIF' and pm.status_presensi = ?2", nativeQuery = true)
 //    Object jmlMahasiswa(String tahunAkademik, String statusPresensi);
 
+//    @Query(value = "SELECT \n" +
+//            "  COUNT(CASE WHEN pm.status_presensi = ?2 THEN 1 END) AS jumlahMahasiswaOntime, \n" +
+//            "  COUNT(CASE WHEN pm.status_presensi = ?2 THEN 1 END) * 100 / (\n" +
+//            "    SELECT COUNT(*) \n" +
+//            "    FROM presensi_mahasiswa as pm2\n" +
+//            "    inner join sesi_kuliah as sk2 on pm2.id_sesi_kuliah = sk2.id\n" +
+//            "    inner join jadwal as jd2 on sk2.id_jadwal = jd2.id\n" +
+//            "    where jd2.id_tahun_akademik = ?1 \n" +
+//            "      and pm2.status = 'AKTIF'\n" +
+//            "      and EXISTS (\n" +
+//            "        SELECT *\n" +
+//            "        FROM sesi_kuliah as sk3\n" +
+//            "        inner join jadwal as jd3 on sk3.id_jadwal = jd3.id\n" +
+//            "        where sk3.id = pm2.id_sesi_kuliah\n" +
+//            "          and jd3.id_tahun_akademik = ?1\n" +
+//            "      )\n" +
+//            "  ) as persentase\n" +
+//            "FROM presensi_mahasiswa as pm\n" +
+//            "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
+//            "inner join jadwal as jd on sk.id_jadwal = jd.id\n" +
+//            "where jd.id_tahun_akademik = ?1 \n" +
+//            "  and pm.status = 'AKTIF' \n" +
+//            "  and pm.status_presensi = ?2\n", nativeQuery = true)
+//    Object jmlMahasiswa(String tahunAkademik, String statusPresensi);
+
+//    @Query(value = "SELECT \n" +
+//            "  COUNT(pm.status_presensi = ?2) AS jumlahMahasiswaOntime,\n" +
+//            "  COUNT(pm.status_presensi = ?2) * 100 / totalMahasiswa.semuaMahasiswa AS persentase\n" +
+//            "FROM presensi_mahasiswa as pm\n" +
+//            "INNER JOIN (\n" +
+//            "  SELECT COUNT(*) as semuaMahasiswa\n" +
+//            "  FROM presensi_mahasiswa as pm2\n" +
+//            "  INNER JOIN sesi_kuliah as sk2 ON pm2.id_sesi_kuliah = sk2.id\n" +
+//            "  INNER JOIN jadwal as jd2 ON sk2.id_jadwal = jd2.id\n" +
+//            "  WHERE jd2.id_tahun_akademik = ?1 AND pm2.status = 'AKTIF'\n" +
+//            ") AS totalMahasiswa\n" +
+//            "INNER JOIN sesi_kuliah as sk ON pm.id_sesi_kuliah = sk.id\n" +
+//            "INNER JOIN jadwal as jd ON sk.id_jadwal = jd.id\n" +
+//            "WHERE jd.id_tahun_akademik = ?1 AND pm.status = 'AKTIF' AND pm.status_presensi = ?2", nativeQuery = true)
+//    Object jmlMahasiswa(String tahunAkademik, String statusPresensi);
+
 //        @Query(value = "SELECT pm.id, jd.id_tahun_akademik, pm.id_krs_detail,pr.nama_prodi,pm.id_mahasiswa,ms.nama, pm.waktu_masuk, pm.waktu_keluar,pm.status_presensi, pm.status, jd.jam_mulai, jd.jam_selesai, count(pm.id) as kehadiran\n" +
 //                "FROM presensi_mahasiswa as pm\n" +
 //                "inner join sesi_kuliah as sk on pm.id_sesi_kuliah = sk.id\n" +
