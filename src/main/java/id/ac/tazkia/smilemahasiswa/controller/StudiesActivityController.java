@@ -9450,5 +9450,25 @@ public class StudiesActivityController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
+
+    @GetMapping("/check-presensi-dosen/{id}")
+    @ResponseBody
+    public id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse checkPresensiDosenHariIni(@PathVariable String id){
+        Jadwal jadwal = jadwalDao.findById(id).get();
+        SesiKuliah sesiKuliah = sesiKuliahDao.cariSesiKuliahHariIni(jadwal);
+
+        if (sesiKuliah == null){
+            id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
+            response.setCode("404");
+            response.setMessage("Sesi Kuliah Belum Dibuat");
+            return response;
+        }else {
+            id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse response = new id.ac.tazkia.smilemahasiswa.dto.response.BaseResponse();
+            response.setCode("200");
+            response.setMessage("Sesi Kuliah Telah Dibuat");
+            return response;
+        }
+
+    }
 }
 

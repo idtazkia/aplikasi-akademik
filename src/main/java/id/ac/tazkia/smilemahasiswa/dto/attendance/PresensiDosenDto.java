@@ -7,4 +7,6 @@ public interface PresensiDosenDto {
     String getSelesai();
     String getDosen();
     String getBerita();
+
+    String getPertemuan();
 }

@@ -35,6 +35,7 @@ public interface SesiKuliahDao extends PagingAndSortingRepository<SesiKuliah, St
     Object jmlKelasOnlineOffline(TahunAkademik tahunAkademik, String pertemuan);
 
 
-
-
+    @Query(value = "SELECT sk.* FROM sesi_kuliah as sk inner join presensi_dosen as pd on sk.id_presensi_dosen = pd.id where sk.id_jadwal = ?1 " +
+            " and pd.status = 'AKTIF' and sk.pertemuan in ('Offline','Online') order by sk.waktu_mulai desc limit 1", nativeQuery = true)
+    SesiKuliah cariSesiKuliahHariIni(Jadwal jadwal);
 }
