@@ -81,5 +81,8 @@ public interface UjianTahfidzKompreDao extends PagingAndSortingRepository<UjianT
             "  = ?2 and u.id_prodi = ?3 and u.status_approval_admin not in ('REJECTED') and (m.nim like %?4% or m.nama like %?4%) order by u.tanggal_pengajuan desc LIMIT ?5 OFFSET ?6 ", nativeQuery = true)
     List<ListTahfidz> getListTahfidzAdminSearchLimit(TahunAkademik tahunAkademik, String ujian, Prodi prodi,String search, Integer limit, Integer offset);
 
+    @Query(value = "SELECT * FROM ujian_tahfidz_kompre where id_mahasiswa = ?1 and jenis_ujian = ?2 and status = 'AKTIF' order by tanggal_pengajuan desc limit 1", nativeQuery = true)
+    UjianTahfidzKompre checkDataTerakhir(Mahasiswa mahasiswa, String jenis);
+
 
 }

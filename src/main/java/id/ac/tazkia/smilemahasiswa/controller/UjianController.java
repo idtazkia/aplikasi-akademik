@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -105,6 +106,7 @@ public class UjianController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianTahfidz");
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.TAHFIDZ, true);
+        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa,"UjianTahfidz"));
 
         BigDecimal totalSKS = krsDetailDao.totalSksAkhir(mahasiswa.getId());
         List<DataTranskript> listTranskript = krsDetailDao.listTranskript(mahasiswa);
@@ -155,6 +157,7 @@ public class UjianController {
         Mahasiswa mahasiswa = mahasiswaDao.findByUser(user);
         Integer checkRejected = ujianTahfidzKompreDao.jumlahRejected(mahasiswa, "UjianKomprehensif");
         Integer checkNilai = ujianTahfidzKompreDao.jumlahNilaiD(mahasiswa);
+        model.addAttribute("dataTerakhir", ujianTahfidzKompreDao.checkDataTerakhir(mahasiswa,"UjianKomprehensif"));
 
         EnableFiture enableFiture = enableFitureDao.findByMahasiswaAndFiturAndEnable(mahasiswa, StatusRecord.KOMPRE, true);
 
@@ -231,7 +234,7 @@ public class UjianController {
         }
 
         ujianTahfidzKompre.setProdi(prodi);
-        ujianTahfidzKompre.setTanggalPengajuan(LocalDate.now());
+        ujianTahfidzKompre.setTanggalPengajuan(LocalDateTime.now());
         ujianTahfidzKompre.setMahasiswa(mahasiswa);
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
@@ -289,7 +292,7 @@ public class UjianController {
 
         ujianTahfidzKompre.setDosenKps(dosen);
         ujianTahfidzKompre.setProdi(prodi);
-        ujianTahfidzKompre.setTanggalPengajuan(LocalDate.now());
+        ujianTahfidzKompre.setTanggalPengajuan(LocalDateTime.now());
         ujianTahfidzKompre.setMahasiswa(mahasiswa);
         ujianTahfidzKompre.setStatus(StatusRecord.AKTIF);
         ujianTahfidzKompre.setStatusApprovalAdmin("WAITING");
@@ -530,6 +533,50 @@ public class UjianController {
                 BaseResponse.builder()
                         .code("200")
                         .message("Ujian " + jenis + " Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Disetujui")
+
+                        .build()
+        );
+    }
+
+    @PostMapping("/penilaian/kompre/{id}")
+    @ResponseBody
+    public ResponseEntity<BaseResponse> penilaian(@PathVariable String id, @RequestParam String status) {
+        UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).get();
+
+        ujianTahfidzKompre.setStatusLulus(StatusRecord.valueOf(status));
+        ujianTahfidzKompreDao.save(ujianTahfidzKompre);
+
+
+//        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenis, "APPROVED");
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponse.builder()
+                        .code("200")
+                        .message("Ujian Kompre Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dinilai")
+
+                        .build()
+        );
+    }
+
+    @PostMapping("/penilaian/tahfidz/{id}")
+    @ResponseBody
+    public ResponseEntity<BaseResponse> penilaianTahfidz(@PathVariable String id, @RequestParam String nilai) {
+        UjianTahfidzKompre ujianTahfidzKompre = ujianTahfidzKompreDao.findById(id).get();
+
+        BigDecimal nilaiUjian = new BigDecimal(nilai);
+        ujianTahfidzKompre.setNilai(nilaiUjian);
+        if (nilaiUjian.compareTo(new BigDecimal(70)) >= 0){
+            ujianTahfidzKompre.setStatusLulus(StatusRecord.LULUS);
+        }else {
+            ujianTahfidzKompre.setStatusLulus(StatusRecord.TIDAK_LULUS);
+        }
+        ujianTahfidzKompreDao.save(ujianTahfidzKompre);
+
+
+//        ujianTahfidzKompreService.notifEmail(ujianTahfidzKompre.getMahasiswa().getEmailTazkia(), jenis, "APPROVED");
+        return ResponseEntity.status(HttpStatus.OK).body(
+                BaseResponse.builder()
+                        .code("200")
+                        .message("Ujian Tahfidz Atas Nama " + ujianTahfidzKompre.getMahasiswa().getNama() + " Berhasil Dinilai")
 
                         .build()
         );

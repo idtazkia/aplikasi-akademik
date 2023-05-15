@@ -131,6 +131,10 @@
                                                                                     <span class="text-sm text-grey-m2 align-middle">Ruangan     :</span>
                                                                                     <span class="text-600 text-110 text-blue align-middle" id="spanRuangan"></span>
                                                                                 </div>
+                                                                                <div class="my-1">
+                                                                                    <span class="text-sm text-grey-m2 align-middle">Nilai     :</span>
+                                                                                    <span class="text-600 text-110 text-blue align-middle" id="spanNilai"></span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -306,6 +310,45 @@
                                             </div>
                                         </form>
                                     </div>
+
+                                    <div class="modal fade" id="penilaian" role="dialog" data-backdrop="false">
+                                        <form>
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Penilaian</h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Nim</label>
+                                                            <input type="text" id="nimPenilaian" disabled class="form-control">
+                                                            <input type="hidden" id="idUjianPenilaian" name="id">
+                                                            <input type="hidden" id="mahasiswaPenilaian" name="mahasiswa">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Nama</label>
+                                                            <input type="text" id="namaPenilaian" disabled class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Jenis Ujian</label>
+                                                            <input type="text" readonly class="form-control" value="Ujian Tahfidz">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Nilai</label>
+                                                            <input type="text" class="form-control" id="nilai" name="nilai">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" onclick="closeModalPenilaian()" class="btn btn-secondary">Tutup
+                                                        </button>
+                                                        <button type="button" id="btnPenilaian" onclick="simpanPenilaian()" class="btn btn-primary">
+                                                            Simpan
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
 
@@ -474,7 +517,7 @@
 
             if (row.statusUjian == 'SCHEDULED'){
                 return [
-                    '',
+                    '<button class="btn btn-sm btn-info" id="' + row.id + '" onclick="openPenilaian(this.id)" > Penilaian </button>',
                 ].join('')
             }
 
@@ -518,6 +561,19 @@
 
     }
 
+    function openPenilaian(id) {
+        $('#penilaian').modal('show');
+
+        const url = '/get-detail-tahfidz/'+ id;
+        $.getJSON(url, function (data) {
+            $('#idUjianPenilaian').val(data.id)
+            $('#namaPenilaian').val(data.mahasiswa.nama)
+            $('#nimPenilaian').val(data.mahasiswa.nim)
+        });
+
+
+    }
+
     function openReject(id) {
         $('#RejectedAdmin').modal('show');
 
@@ -552,6 +608,14 @@
         $('#penguji').val(null)
     }
 
+    function closeModalPenilaian(){
+        $('#penilaian').modal('hide');
+        $('#idUjianPenilaian').val(null)
+        $('#namaPenilaian').val(null)
+        $('#nilai').val(null)
+        $('#nimPenilaian').val(null)
+    }
+
     function closeModalReject(){
         $('#RejectedAdmin').modal('hide');
         $('#nimReject').val(null);
@@ -584,6 +648,12 @@
         const url = '/get-detail-tahfidz/'+ id;
         $.getJSON(url, function (data) {
             $('#namaDetail').text(data.mahasiswa.nama)
+
+            if (data.nilai == null){
+                $('#spanNilai').text('-')
+            }else {
+                $('#spanNilai').text(data.nilai)
+            }
 
             if (data.tanggalUjian == null){
                 $('#spanTanggal').text('Belum Dijadwalkan')
@@ -699,6 +769,35 @@
             },
             error: function (result) {
                 console.log("Error")
+            }
+        });
+    }
+
+    function simpanPenilaian() {
+        var request = {};
+        var token = $("input[name='_csrf']").val();
+
+        request["id"] = $('#idUjianPenilaian').val();
+        request["nilai"] = $('#nilai').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            headers: {"X-CSRF-TOKEN": token},
+            url: "/penilaian/tahfidz/" + $('#idUjianPenilaian').val() + "?nilai=" + $('#nilai').val(),
+            data: JSON.stringify(request),
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (result) {
+                $('#penilaian').modal('hide');
+                iziToast.success({title: 'Data Tersimpan', message: result.message});
+                $tableUjian.bootstrapTable('refresh')
+                closeModalPenjadwalan()
+
+            },
+            error: function (result) {
+                console.log("error : ", result)
             }
         });
     }
