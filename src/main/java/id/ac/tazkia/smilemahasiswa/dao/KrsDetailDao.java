@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.KrsNilaiTugasDto;
+import id.ac.tazkia.smilemahasiswa.dto.api.MahasiswaAktifDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DataKhsDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.DetailEdom;
 import id.ac.tazkia.smilemahasiswa.dto.report.EdomDto;
@@ -810,5 +811,16 @@ public interface KrsDetailDao extends PagingAndSortingRepository<KrsDetail, Stri
     @Modifying
     @Query(value = "update krs_detail set status_enroll = 'DONE'", nativeQuery = true)
     void updateStatusEnroll(String id);
+
+
+    @Query(value = "select kode_prodi as kodeProdi, pria, wanita, total from\n" +
+            "(select id_prodi,sum(if(jenis_kelamin = 'PRIA', 1,0)) as pria,sum(if(jenis_kelamin = 'WANITA', 1,if(jenis_kelamin is null, 1, 0))) as wanita, sum(1) as total from\n" +
+            "(select c.id_prodi,c.jenis_kelamin from krs as a \n" +
+            "inner join tahun_akademik as b on a.id_tahun_akademik = b.id\n" +
+            "inner join mahasiswa as c on a.id_mahasiswa = c.id\n" +
+            "where a.status = 'AKTIF' and tanggal_mulai <= date(now()) and tanggal_selesai_nilai >= date(now())\n" +
+            "group by a.id_mahasiswa) as a group by id_prodi)as a\n" +
+            "inner join prodi as b on a.id_prodi = b.id order by total desc", nativeQuery = true)
+    List<MahasiswaAktifDto> cariMahasiswaAktif();
 
 }
