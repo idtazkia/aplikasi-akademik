@@ -1,5 +1,6 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
+import id.ac.tazkia.smilemahasiswa.dto.api.DosenAktifSemesterDto;
 import id.ac.tazkia.smilemahasiswa.dto.machine.JadwalDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapDosenDto;
 import id.ac.tazkia.smilemahasiswa.dto.report.RekapJadwalDosenDto;
@@ -48,5 +49,18 @@ public interface JadwalDosenDao extends PagingAndSortingRepository<JadwalDosen,S
     String headerJadwal(String idJadwal);
 
     List<JadwalDosen> findByJadwalTahunAkademik(TahunAkademik tahunAkademik);
+
+
+    @Query(value = "select kode_prodi as kodeProdi, sum(if(status_dosen<>'HB',1,0)) as lb, sum(if(status_dosen='HB',1,0)) as hb, count(kode_prodi) as total from\n" +
+            "(select d.kode_prodi, a.id_dosen, e.status_dosen  from jadwal_dosen as a\n" +
+            "inner join jadwal as b on a.id_jadwal = b.id\n" +
+            "inner join tahun_akademik as c on b.id_tahun_akademik = c.id\n" +
+            "inner join dosen as e on a.id_dosen = e.id\n" +
+            "inner join prodi as d on b.id_prodi = d.id\n" +
+            "where c.tanggal_mulai <= date(now()) and c.tanggal_selesai_nilai >= date(now()) \n" +
+            "and b.status = 'AKTIF' and c.status = 'AKTIF' and d.status = 'AKTIF' and e.status = 'AKTIF'\n" +
+            "group by b.id_prodi, a.id_dosen) as a \n" +
+            "group by kode_prodi order by count(kode_prodi) desc", nativeQuery = true)
+    List<DosenAktifSemesterDto> cariDosenAktifSemester();
 
 }
