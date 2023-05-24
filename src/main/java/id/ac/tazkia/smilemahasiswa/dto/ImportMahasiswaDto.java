@@ -60,6 +60,10 @@ public class ImportMahasiswaDto implements Serializable {
     private String statusAktif;
     private String user;
     @NotNull
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalMasuk = LocalDate.now();
+    @NotNull
     private String ayah;
     @NotNull
     private String ibu;
