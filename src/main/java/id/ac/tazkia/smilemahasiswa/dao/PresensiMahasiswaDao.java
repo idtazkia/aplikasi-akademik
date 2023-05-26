@@ -1,6 +1,7 @@
 package id.ac.tazkia.smilemahasiswa.dao;
 
 import id.ac.tazkia.smilemahasiswa.dto.NilaiAbsenSdsDto;
+import id.ac.tazkia.smilemahasiswa.dto.api.PerformanceMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.attendance.PresensiMahasiswaDto;
 import id.ac.tazkia.smilemahasiswa.dto.bkd.Attendance;
 import id.ac.tazkia.smilemahasiswa.entity.*;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PresensiMahasiswaDao extends PagingAndSortingRepository<PresensiMahasiswa, String> {
@@ -130,5 +132,16 @@ public interface PresensiMahasiswaDao extends PagingAndSortingRepository<Presens
 //                "group by pm.id_mahasiswa\n" +
 //                "order by count(pm.id) DESC", nativeQuery = true)
 //        List<Object[]> klasemenMahasiswa(String tahunAkademik, String statusPresensi,Pageable pagebable);
+
+
+    @Query(value = "select bulan, round((coalesce(ontime)*100)/(coalesce(ontime,0)+coalesce(late,0)),0) as rate from\n" +
+            "(select monthname(waktu_masuk)as bulan, d.id,sum(if(a.status_presensi = 'HADIR', 1,0)) as ontime, sum(if(a.status_presensi <> 'HADIR',1,0)) as late from presensi_mahasiswa as a\n" +
+            "inner join krs_detail as b on a.id_krs_detail = b.id\n" +
+            "inner join jadwal as c on b.id_jadwal = c.id\n" +
+            "inner join tahun_akademik as d on c.id_tahun_akademik = d.id\n" +
+            "where a.status = 'AKTIF' and b.status = 'AKTIF' and c.status = 'AKTIF' and d.status = 'AKTIF' \n" +
+            "and year(a.waktu_masuk) = year(now()) and month(a.waktu_masuk) = month(now())\n" +
+            "and d.tanggal_mulai <= date(now()) and d.tanggal_selesai_nilai >= date(now()))as a\n", nativeQuery = true)
+    PerformanceMahasiswaDto performanceMahasiswa();
 
 }
