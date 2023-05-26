@@ -150,6 +150,10 @@ public class Mahasiswa {
 
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tanggalMasuk;
+
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tanggalLulus;
 
     @ManyToOne
