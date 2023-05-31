@@ -783,7 +783,11 @@ public class GraduationController {
         if (note.getStatus() == StatusApprove.APPROVED){
             model.addAttribute("note", note);
             Seminar waiting = seminarDao.findByNoteAndStatus(note,StatusApprove.WAITING);
-            model.addAttribute("waiting", waiting);
+            if (waiting != null) {
+                model.addAttribute("waiting", waiting);
+            }else {
+                model.addAttribute("waiting", new Seminar());
+            }
             return "graduation/seminar/ulang";
         }else {
 
@@ -2123,7 +2127,6 @@ public class GraduationController {
         workbook.write(response.getOutputStream());
         workbook.close();
     }
-
 
     @PostMapping("/graduation/seminar/dosen/publish")
     @ResponseBody
