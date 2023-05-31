@@ -1186,12 +1186,35 @@ public class GraduationController {
 
     @GetMapping("/graduation/seminar/list")
     public void seminarList(Model model, @RequestParam(required = false) TahunAkademik tahunAkademik,
-                            @RequestParam(required = false) Prodi prodi, Pageable pageable){
+                            @RequestParam(required = false) Prodi prodi, Pageable pageable, Authentication authentication){
+        User user = currentUserService.currentUser(authentication);
         if (tahunAkademik != null) {
             model.addAttribute("selectedTahun", tahunAkademik);
             model.addAttribute("selectedProdi", prodi);
-            model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
+            if ("kps".equalsIgnoreCase(user.getRole().getName())) {
+                model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED, StatusApprove.WAITING),pageable));
+            }else{
+                model.addAttribute("listSempro", seminarDao.findByTahunAkademikAndNoteMahasiswaIdProdiAndStatusNotInOrderByStatusSemproDescPublishDesc(tahunAkademik, prodi, Arrays.asList(StatusApprove.REJECTED),pageable));
+            }
         }
+    }
+
+    @PostMapping("/graduation/seminar/approvedakademik")
+    public String approvedAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
+        seminar.setKomentar(keterangan);
+        seminar.setStatus(StatusApprove.APPROVED_AKADEMIK);
+        seminarDao.save(seminar);
+
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @PostMapping("/graduation/seminar/rejectakademik")
+    public String rejectAkademik(@RequestParam Seminar seminar, @RequestParam(required = false) String keterangan){
+        seminar.setStatus(StatusApprove.REJECTED);
+        seminar.setKomentar(keterangan);
+        seminarDao.save(seminar);
+
+        return "redirect:list?tahunAkademik=" + seminar.getTahunAkademik().getId()+"&prodi="+seminar.getNote().getMahasiswa().getIdProdi().getId();
     }
 
     @GetMapping("/graduation/seminar/view")

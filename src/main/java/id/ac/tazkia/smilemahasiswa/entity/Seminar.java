@@ -175,4 +175,8 @@ public class Seminar {
 
     private String kodeSuratTugas;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String komentar;
+
 }
