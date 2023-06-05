@@ -14,6 +14,8 @@ import id.ac.tazkia.smilemahasiswa.entity.*;
 import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -898,6 +900,56 @@ public class SidangController {
         sidang.setKomentarAkademik(komentarAkademik);
         sidangDao.save(sidang);
         return "redirect:list?tahunAkademik="+sidang.getTahunAkademik().getId()+"&prodi="+sidang.getSeminar().getNote().getMahasiswa().getIdProdi().getId();
+    }
+
+    @GetMapping("/sidang/download")
+    public void downloadLulusSidang(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException {
+        String[] colums = {"No", "Nim", "Nama", "Judul Skripsi", "Nilai", "Dosen Penguji", "Dosen Pembimbing"};
+
+        List<Sidang> listSidang = sidangDao.findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(StatusApprove.APPROVED, StatusApprove.APPROVED, tahunAkademik, prodi, new BigDecimal(70));
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Sidang");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setColor(IndexedColors.BLACK.getIndex());
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+
+        for (int i = 0; i < colums.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(colums[i]);
+            cell.setCellStyle(headerStyle);
+        }
+
+        int rowNum = 1;
+        int baris = 1;
+
+        for (Sidang data : listSidang){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(baris++);
+            row.createCell(1).setCellValue(data.getSeminar().getNote().getMahasiswa().getNim());
+            row.createCell(2).setCellValue(data.getSeminar().getNote().getMahasiswa().getNama());
+            row.createCell(3).setCellValue(data.getJudulTugasAkhir());
+            row.createCell(4).setCellValue(data.getNilai().toString());
+            row.createCell(5).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
+            row.createCell(6).setCellValue(data.getPembimbing().getKaryawan().getNamaKaryawan());
+        }
+
+        for (int i = 0; i<colums.length; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=Data_Sidang_"+prodi.getKodeProdi()+"_"+tahunAkademik.getNamaTahunAkademik()+".xlsx");
+        workbook.write(response.getOutputStream());
+        workbook.close();
+
     }
 
 
