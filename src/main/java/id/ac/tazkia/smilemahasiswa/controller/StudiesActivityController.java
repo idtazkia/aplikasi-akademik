@@ -305,9 +305,13 @@ public class StudiesActivityController {
 
         Font titleFont = workbook.createFont();
         titleFont.setBold(true);
-        titleFont.setFontHeightInPoints((short) 30);
+        titleFont.setFontHeightInPoints((short) 20);
         titleFont.setColor(IndexedColors.BLACK.getIndex());
         titleFont.setFontName("Cambria");
+
+        Font detailFont = workbook.createFont();
+        detailFont.setFontHeightInPoints((short) 12);
+        detailFont.setFontName("Arial");
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
@@ -325,12 +329,64 @@ public class StudiesActivityController {
         CellStyle dataCellStyle = workbook.createCellStyle();
         dataCellStyle.setFont(dataFont);
 
+        CellStyle detailCellStyle = workbook.createCellStyle();
+        detailCellStyle.setFont(detailFont);
+
         CellStyle titleCellStyle = workbook.createCellStyle();
         titleCellStyle.setFont(titleFont);
         titleCellStyle.setAlignment(HorizontalAlignment.LEFT);
         titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:C2"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A4:C4"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A5:C5"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A6:C6"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A7:C7"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A8:C8"));
+
         Row titleRow = sheet.createRow(0);
+        titleRow.createCell(0).setCellValue("DAFTAR HADIR ");
+        titleRow.getCell(0).setCellStyle(titleCellStyle);
+
+        Row matkul = sheet.createRow(3);
+        matkul.createCell(0).setCellValue("Nama Mata Kuliah ");
+        matkul.createCell(3).setCellValue(": ");
+        matkul.createCell(4).setCellValue(jadwal.getMatakuliahKurikulum().getMatakuliah().getNamaMatakuliah());
+        matkul.getCell(0).setCellStyle(detailCellStyle);
+        matkul.getCell(3).setCellStyle(detailCellStyle);
+        matkul.getCell(4).setCellStyle(detailCellStyle);
+
+        Row kelas = sheet.createRow(4);
+        kelas.createCell(0).setCellValue("Kelas ");
+        kelas.createCell(3).setCellValue(": ");
+        kelas.createCell(4).setCellValue(jadwal.getKelas().getNamaKelas());
+        kelas.getCell(0).setCellStyle(detailCellStyle);
+        kelas.getCell(3).setCellStyle(detailCellStyle);
+        kelas.getCell(4).setCellStyle(detailCellStyle);
+
+        Row dosen = sheet.createRow(5);
+        dosen.createCell(0).setCellValue("Dosen ");
+        dosen.createCell(3).setCellValue(": ");
+        dosen.createCell(4).setCellValue(jadwal.getDosen().getKaryawan().getNamaKaryawan());
+        dosen.getCell(0).setCellStyle(detailCellStyle);
+        dosen.getCell(3).setCellStyle(detailCellStyle);
+        dosen.getCell(4).setCellStyle(detailCellStyle);
+
+        Row ruangan = sheet.createRow(6);
+        ruangan.createCell(0).setCellValue("Ruangan ");
+        ruangan.createCell(3).setCellValue(": ");
+        ruangan.createCell(4).setCellValue(jadwal.getRuangan().getNamaRuangan());
+        ruangan.getCell(0).setCellStyle(detailCellStyle);
+        ruangan.getCell(3).setCellStyle(detailCellStyle);
+        ruangan.getCell(4).setCellStyle(detailCellStyle);
+
+        Row jam = sheet.createRow(7);
+        jam.createCell(0).setCellValue("Jam ");
+        jam.createCell(3).setCellValue(": ");
+        jam.createCell(4).setCellValue(jadwal.getJamMulai().toString() + " - " + jadwal.getJamSelesai().toString());
+        jam.getCell(0).setCellStyle(detailCellStyle);
+        jam.getCell(3).setCellStyle(detailCellStyle);
+        jam.getCell(4).setCellStyle(detailCellStyle);
 
         Row headerRow = sheet.createRow(9);
 
