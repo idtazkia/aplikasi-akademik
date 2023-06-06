@@ -15,6 +15,8 @@ import id.ac.tazkia.smilemahasiswa.service.CurrentUserService;
 import id.ac.tazkia.smilemahasiswa.service.ScoreService;
 import id.ac.tazkia.smilemahasiswa.service.SidangService;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -904,22 +906,52 @@ public class SidangController {
 
     @GetMapping("/sidang/download")
     public void downloadLulusSidang(@RequestParam TahunAkademik tahunAkademik, @RequestParam Prodi prodi, HttpServletResponse response) throws IOException {
-        String[] colums = {"No", "Nim", "Nama", "Judul Skripsi", "Nilai", "Dosen Penguji", "Dosen Pembimbing"};
+        String[] colums = {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua", "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
 
         List<Sidang> listSidang = sidangDao.findByStatusSidangAndAkademikAndTahunAkademikAndSeminarNoteMahasiswaIdProdiAndNilaiIsGreaterThanEqual(StatusApprove.APPROVED, StatusApprove.APPROVED, tahunAkademik, prodi, new BigDecimal(70));
 
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Sidang");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Sidang");
+
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:G1"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A2:G2"));
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A3:G3"));
+
+        Font header = workbook.createFont();
+        header.setBold(true);
+        header.setFontHeightInPoints((short) 14);
+        header.setFontName("Times New Roman");
+
+        CellStyle styleHeader = workbook.createCellStyle();
+        styleHeader.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleHeader.setAlignment(HorizontalAlignment.CENTER);
+        styleHeader.setFont(header);
+
+        int rowJudulSidang = 0;
+        Row judulSidang = sheet.createRow(rowJudulSidang);
+        judulSidang.createCell(0).setCellValue("REKAP SIDANG SKRIPSI");
+        judulSidang.getCell(0).setCellStyle(styleHeader);
+        int rowTahunAkademik = 1;
+        Row tahunAkademikSidang = sheet.createRow(rowTahunAkademik);
+        tahunAkademikSidang.createCell(0).setCellValue("Tahun Akademik " + tahunAkademik.getNamaTahunAkademik());
+        tahunAkademikSidang.getCell(0).setCellStyle(styleHeader);
+        int rowProdi = 2;
+        Row prodiSidang = sheet.createRow(rowProdi);
+        prodiSidang.createCell(0).setCellValue("Prodi " + prodi.getNamaProdi());
+        prodiSidang.getCell(0).setCellStyle(styleHeader);
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setFontName("Times New Roman");
         headerFont.setColor(IndexedColors.BLACK.getIndex());
 
         CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         headerStyle.setFont(headerFont);
 
-        Row headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(4);
 
         for (int i = 0; i < colums.length; i++){
             Cell cell = headerRow.createCell(i);
@@ -927,7 +959,21 @@ public class SidangController {
             cell.setCellStyle(headerStyle);
         }
 
-        int rowNum = 1;
+        Font fontIsi = workbook.createFont();
+        fontIsi.setFontHeightInPoints((short) 12);
+        fontIsi.setFontName("Times New Roman");
+        CellStyle isiStyle = workbook.createCellStyle();
+        isiStyle.setFont(fontIsi);
+
+        Font fontIsiCenter = workbook.createFont();
+        fontIsiCenter.setFontHeightInPoints((short) 12);
+        fontIsiCenter.setFontName("Times New Roman");
+        CellStyle isiStyleCenter = workbook.createCellStyle();
+        isiStyleCenter.setVerticalAlignment(VerticalAlignment.CENTER);
+        isiStyleCenter.setAlignment(HorizontalAlignment.CENTER);
+        isiStyleCenter.setFont(fontIsiCenter);
+
+        int rowNum = 5;
         int baris = 1;
 
         for (Sidang data : listSidang){
@@ -935,10 +981,132 @@ public class SidangController {
             row.createCell(0).setCellValue(baris++);
             row.createCell(1).setCellValue(data.getSeminar().getNote().getMahasiswa().getNim());
             row.createCell(2).setCellValue(data.getSeminar().getNote().getMahasiswa().getNama());
-            row.createCell(3).setCellValue(data.getJudulTugasAkhir());
-            row.createCell(4).setCellValue(data.getNilai().toString());
+            if (data.getTanggalUjian() == null){
+                row.createCell(3).setCellValue("-");
+            }
+            if (data.getTanggalUjian() != null) {
+                LocalDate tanggalSidang = data.getTanggalUjian();
+                if (tanggalSidang.getDayOfWeek().getValue() != 7){
+                    if (tanggalSidang.getMonthValue() == 1){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Januari " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 2){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Februari " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 3){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Maret " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 4){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " April " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 5){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Mei " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 6){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juni " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 7){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Juli " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 8){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Agustus " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 9){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " September " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 10){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Oktober " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 11){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " November " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 12){
+                        row.createCell(3).setCellValue(hariDao.findById(String.valueOf(tanggalSidang.getDayOfWeek().getValue())).get().getNamaHari() + ", " + tanggalSidang.getDayOfMonth() + " Desember " + tanggalSidang.getYear());
+                    }
+                }else {
+                    if (tanggalSidang.getMonthValue() == 1){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Januari " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 2){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Februari " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 3){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Maret " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 4){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " April " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 5){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Mei " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 6){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juni " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 7){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Juli " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 8){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Agustus " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 9){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " September " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 10){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Oktober " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 11){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " November " + tanggalSidang.getYear());
+                    }
+                    if (tanggalSidang.getMonthValue() == 12){
+                        row.createCell(3).setCellValue( "Sabtu , " + tanggalSidang.getDayOfMonth() + " Desember " + tanggalSidang.getYear());
+                    }
+                }
+            }
+            //        {"No", "Nim", "Nama Mahasiswa", "Hari / Tanggal", "Penguji I / Ketua", "Penguji II / Pembimbing", "Penguji 3", "Pukul", "Nilai", "Nilai Mutu"};
+            row.createCell(4).setCellValue(data.getKetuaPenguji().getKaryawan().getNamaKaryawan());
             row.createCell(5).setCellValue(data.getDosenPenguji().getKaryawan().getNamaKaryawan());
             row.createCell(6).setCellValue(data.getPembimbing().getKaryawan().getNamaKaryawan());
+            row.createCell(7).setCellValue(data.getJamMulai() + " - " + data.getJamSelesai());
+            row.createCell(8).setCellValue(data.getNilai().toString());
+            if (data.getNilai().compareTo(new BigDecimal(80)) >= 0 && data.getNilai().compareTo(new BigDecimal(85)) < 0){
+                row.createCell(9).setCellValue("A-");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(75)) >= 0 && data.getNilai().compareTo(new BigDecimal(80)) < 0){
+                row.createCell(9).setCellValue("B+");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(70)) >= 0 && data.getNilai().compareTo(new BigDecimal(75)) < 0){
+                row.createCell(9).setCellValue("B");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(65)) >= 0 && data.getNilai().compareTo(new BigDecimal(70)) < 0){
+                row.createCell(9).setCellValue("B-");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(60)) >= 0 && data.getNilai().compareTo(new BigDecimal(65)) < 0){
+                row.createCell(9).setCellValue("C+");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(55)) >= 0 && data.getNilai().compareTo(new BigDecimal(60)) < 0){
+                row.createCell(9).setCellValue("C");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(50)) >= 0 && data.getNilai().compareTo(new BigDecimal(55)) < 0){
+                row.createCell(9).setCellValue("D");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(0)) >= 0 && data.getNilai().compareTo(new BigDecimal(50)) < 0){
+                row.createCell(9).setCellValue("E");
+            }
+            if (data.getNilai().compareTo(new BigDecimal(85)) >= 0){
+                row.createCell(9).setCellValue("A");
+            }
+
+            row.getCell(0).setCellStyle(isiStyleCenter);
+            row.getCell(1).setCellStyle(isiStyleCenter);
+            row.getCell(2).setCellStyle(isiStyle);
+            row.getCell(3).setCellStyle(isiStyle);
+            row.getCell(4).setCellStyle(isiStyle);
+            row.getCell(5).setCellStyle(isiStyle);
+            row.getCell(6).setCellStyle(isiStyle);
+            row.getCell(7).setCellStyle(isiStyleCenter);
+            row.getCell(8).setCellStyle(isiStyleCenter);
+            row.getCell(9).setCellStyle(isiStyleCenter);
+
         }
 
         for (int i = 0; i<colums.length; i++){
