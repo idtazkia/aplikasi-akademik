@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <style type="text/css">
-        .btn{
+        .btn {
             border-radius: 10px;
             border: none;
             background-color: #4285f4;
-            color: white;padding-top: 5px;
+            color: white;
+            padding-top: 5px;
             padding-bottom: 5px;
             padding-left: 10px;
             padding-right: 10px;
             font-size: 12px;
         }
-        .btn:hover{
+
+        .btn:hover {
             background-color: #0a5a8c;
             color: white;
         }
@@ -33,6 +35,7 @@
             text-shadow: none;
             margin-top: 30px;
         }
+
         #quote-carousel .carousel-indicators {
             position: relative;
             right: 50%;
@@ -41,6 +44,7 @@
             margin-top: 20px;
             margin-right: -19px;
         }
+
         #quote-carousel .carousel-indicators li {
             width: 50px;
             height: 50px;
@@ -53,16 +57,19 @@
             transition: all .10s ease-in;
             vertical-align: middle;
         }
+
         #quote-carousel .carousel-indicators .active {
             width: 128px;
             height: 128px;
             opacity: 1;
             transition: all .10s;
         }
+
         .item blockquote {
             border-left: none;
             margin: 0;
         }
+
         .item blockquote p:before {
             content: "\f10d";
             font-family: 'Fontawesome';
@@ -85,7 +92,7 @@
             width: 100%;
         }
 
-        .img-profile{
+        .img-profile {
             height: 70px;
             width: 70px;
             background-color: #555;
@@ -97,23 +104,40 @@
             z-index: 1;
         }
 
-        .text-title{
-            color: black; font-size: 15px;
-        }
-        .btn-status{
-            color: white; background-color: red; border: none; border-radius: 10px; width: 100px; height: 30px;
+        .text-title {
+            color: black;
+            font-size: 15px;
         }
 
-        .btn-status-warning{
-            color: white; background-color: #FFCC00; border: none; border-radius: 10px; width: 100px; height: 30px;
+        .btn-status {
+            color: white;
+            background-color: red;
+            border: none;
+            border-radius: 10px;
+            width: 100px;
+            height: 30px;
         }
 
-        .btn-status-sucess{
-            color: white; background-color: green; border: none; border-radius: 10px; width: 100px; height: 30px;
+        .btn-status-warning {
+            color: white;
+            background-color: #FFCC00;
+            border: none;
+            border-radius: 10px;
+            width: 100px;
+            height: 30px;
+        }
+
+        .btn-status-sucess {
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 10px;
+            width: 100px;
+            height: 30px;
         }
 
 
-        .card-body{
+        .card-body {
             background-color: white;
             border-bottom-right-radius: 10px;
             border-bottom-left-radius: 10px;
@@ -123,12 +147,12 @@
             padding-right: 25px;
         }
 
-        .name-profile{
+        .name-profile {
             color: black;
             font-size: 17px;
         }
 
-        .nim-profile{
+        .nim-profile {
             color: #4285f4;
             font-size: 15px;
         }
@@ -136,22 +160,24 @@
 
 
 </head>
-<body>
-<section layout:fragment="main" class="content">
 
-    <div class="breadcomb-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-xs-12">
-                    <div class="breadcomb-list">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-xs-12">
-                                <div class="breadcomb-wp">
-                                    <div class="breadcomb-icon">
-                                        <i class="notika-icon notika-form"></i>
-                                    </div>
-                                    <div class="breadcomb-ctn">
-                                        <h2>Seminar List</h2>
+<body>
+    <section layout:fragment="main" class="content">
+
+        <div class="breadcomb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="breadcomb-list">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-12">
+                                    <div class="breadcomb-wp">
+                                        <div class="breadcomb-icon">
+                                            <i class="notika-icon notika-form"></i>
+                                        </div>
+                                        <div class="breadcomb-ctn">
+                                            <h2>Seminar List</h2>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -160,16 +186,17 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-6 col-xs-12">
-                    <div style="margin: 16px;">
-                        <div>
-                            <div class="col-md-12 col-xs-12 card-profile" style="background-image: url('https://images.wallpaperscraft.com/image/landscape_blue_tree_black_92069_1920x1080.jpg')"></div>
-                            <img th:src="${#authentication.principal.picture}" class="img-profile" alt="">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 col-xs-12">
+                        <div style="margin: 16px;">
+                            <div>
+                                <div class="col-md-12 col-xs-12 card-profile"
+                                    style="background-image: url('https://images.wallpaperscraft.com/image/landscape_blue_tree_black_92069_1920x1080.jpg')">
+                                </div>
+                                <img th:src="${#authentication.principal.picture}" class="img-profile" alt="">
                             <div class="card-body">
                                 <b class="name-profile" th:text="${mahasiswa.nama}">Nama User</b>
                                 <br>
@@ -248,7 +275,7 @@
                         <div class="row" th:each="data : ${list}" style="padding: 16px;">
                             <div class="col-md-12 card">
                                 <p th:if="${data.status.WAITING == data.status}"><b class="text-title">Please wait for your seminar to be validated by admin</b></p>
-                                <p th:if="${data.status.REJECTED == data.status}"><b class="text-title">Your seminar has been rejected, please reupload your seminar</b></p>
+                                <p th:if="${data.status.REJECTED == data.status}"><b class="text-title" th:text="${data.komentar}">Your seminar has been rejected, please reupload your seminar</b></p>
                                 <button class="btn-status" th:if="${data.status.REJECTED == data.status}">
                                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                     <b>Rejected</b>
