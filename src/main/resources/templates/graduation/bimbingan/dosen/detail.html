@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layoutadmin}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div layout:fragment="main">
+  <div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <!-- Card stats -->
+        <div class="row">
+          <div class="col-xl-12 col-lg-12">
+            <div class="card card-stats mb-4 mb-xl-0">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">Form</h5>
+                    <span class="h2 font-weight-bold mb-0">Tugas Akhir </span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+                      <i class="fas fa-user-astronaut"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card shadow">
+          <div class="card-header border-1">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">List Bimbingan</h3>
+              </div>
+              <div class="col text-right">
+                <button class="btn btn-sm btn-success" data-target="modal-input" data-toggle="modal"><i class="fas fa-plus-circle"></i> Tambah Bimbingan</button>
+
+                <div class="modal fade" id="modal-input" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Keterangan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form th:action="@{/graduation/bimbingan/input(note = ${note.id})}" method="post">
+                          <div class="form-group">
+                            <label>Keterangan</label>
+                            <textarea name="keterangan" class="form-control" placeholder="Comment" cols="30" rows="10"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="tanggal">Tanggal Input</label>
+                            <input type="date" name="tanggal" id="tanggal" class="form-control">
+                          </div>
+                          <input type="hidden" name="id" th:value="${note.id}">
+                          <div class="form-group">
+                            <button class="btn btn-danger" type="submit">Reject</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Hari / Tanggal Bimbingan</th>
+                  <th>Keterangan</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="data, row : ${listBimbingan}">
+                  <td th:text="${(row.index + 1)}"></td>
+                  <td th:text="${data.hari + ' ' + #dates.format(data.tanggal, 'dd MMM')}"></td>
+                  <td th:text="${keterangan}"></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>
+<link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+<script>
+  var $table = $('#table')
+
+  $(function() {
+    $table.bootstrapTable({
+      columns: [
+        //     {
+        //     field: '-',
+        //     align: 'center',
+        //     valign: 'middle',
+        //     formatter: checkFormatter
+        // },
+        {
+          field: 'kelas',
+          align: 'center',
+          valign: 'middle',
+          formatter: detailFormatter
+        }]
+    })
+  })
+
+  function detailFormatter(value, row, index) {
+    return [
+      row.nim + ' ( ' + row.nama + ' ) '
+    ].join('')
+  }
+
+  function checkFormatter(value, row, index) {
+    return [
+      '<div className="form-check">',
+      '<input className="form-check-input" type="checkbox" value="" id="fcustomCheck1" >',
+      '<label className="custom-control-label" htmlFor="customCheck1"></label>',
+      '</div>',
+      // row.nim + ' ( ' + row.nama + ' ) '
+    ].join('')
+  }
+</script>
+

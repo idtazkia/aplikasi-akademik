@@ -25,4 +25,12 @@ public interface NoteDao extends PagingAndSortingRepository <Note, String> {
 
     @Query("select n from Note n where n.status = 'APPROVED' and n.dosen = :dosen or n.dosen2 = :dosen and  n.status = 'APPROVED'")
     List<Note> cariDosenPembimbing(@Param("dosen")Dosen dosen);
+
+    @Query(value = "select n.* from note n inner join mahasiswa m on n.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join jenjang j on p.id_jenjang=j.id where n.tanggal_input <= '2023-06-01' and n.status='APPROVED' and j.id='02' and (id_dosen1= ?1 or id_dosen2= ?1)\n" +
+            "union\n" +
+            "select n.* from note n inner join mahasiswa m on n.id_mahasiswa=m.id inner join prodi p on m.id_prodi=p.id inner join jenjang j on p.id_jenjang=j.id where n.tanggal_input >= '2023-06-01' and n.status='APPROVED' and j.id='02' and (id_dosen1= ?1) order by tanggal_input desc", nativeQuery = true)
+    List<Note> cariDosenPembimbingPasca(Dosen dosen);
+
+    List<Note> findByDosenAndStatusAndMahasiswaIdProdiIdJenjangIdOrderByTanggalInputDesc(Dosen dosen, StatusApprove status, String jenjang);
+
 }
